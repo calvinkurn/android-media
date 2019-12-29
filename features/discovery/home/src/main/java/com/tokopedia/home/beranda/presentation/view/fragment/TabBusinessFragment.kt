@@ -19,8 +19,6 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.TabBusinessViewPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.viewmodel.TabBusinessViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_parent_business_unit.*
 import javax.inject.Inject
 
@@ -91,6 +89,14 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
                 viewLifecycleOwner,
                 Observer { onErrorGetTabBusinessWidget(it.throwable) }
         )
+    }
+
+    fun refresh() {
+        errorView.visibility = View.GONE
+        container.visibility = View.GONE
+        temporayPlaceHolders.visibility = View.VISIBLE
+
+        getTabBusinessUnit()
     }
 
     private fun getTabBusinessUnit() {

@@ -10,11 +10,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 
 class HomeRecommendationFeedViewModel : HomeVisitable {
 
+    //keep this section if exist, because this viewholder is heavy to render
     override fun equalsWith(b: Any?): Boolean {
-        if (b is HomeRecommendationFeedViewModel) {
-            return feedTabModel == b.feedTabModel
-        }
-        return false
+        return true
     }
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {
@@ -46,7 +44,7 @@ class HomeRecommendationFeedViewModel : HomeVisitable {
     }
 
     override fun visitableId(): String {
-        return hashCode().toString()
+        return "recommendationSection"
     }
 
     var feedTabModel: List<FeedTabModel>? = null

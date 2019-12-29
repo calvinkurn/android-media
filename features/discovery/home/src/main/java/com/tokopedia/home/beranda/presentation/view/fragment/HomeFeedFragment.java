@@ -22,6 +22,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.helper.HomeFeedEndlessScrollListener;
+import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
@@ -59,6 +60,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
     private static final int DEFAULT_SPAN_COUNT = 2;
+    private long flingVelocity = -1;
 
     @Inject
     HomeFeedPresenter presenter;
@@ -90,8 +92,10 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         return homeFeedFragment;
     }
 
-    public void setListener(HomeEggListener homeEggListener,
+    public void setListener(HomeCategoryListener homeCategoryListener,
+                            HomeEggListener homeEggListener,
                             HomeTabFeedListener homeTabFeedListener) {
+        this.homeCategoryListener = homeCategoryListener;
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
     }
@@ -125,16 +129,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
-
-        getRecyclerView(getView()).addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-//                if (newState == RecyclerView.SCROLL_STATE_IDLE && startScrollingIsActivated) {
-//
-//                }
-            }
-        });
         if (parentPool != null) {
             parentPool.setMaxRecycledViews(
                     HomeFeedViewHolder.Companion.getLAYOUT(),
@@ -143,7 +137,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             getRecyclerView(getView()).setRecycledViewPool(parentPool);
         }
     }
-
     @Override
     public void loadData(int page) {
         presenter.attachView(this);
@@ -442,6 +435,12 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         if (getAdapter().getDataSize() < getMinimumScrollableNumOfItems() && isAutoLoadEnabled()
                 && hasNextPage && endlessRecyclerViewScrollListener !=  null) {
             endlessRecyclerViewScrollListener.loadMoreNextPage();
+        }
+    }
+
+    public void smoothScrollRecyclerViewByVelocity(int velocity) {
+        if (getView() != null && getRecyclerView(getView()) != null) {
+            getRecyclerView(getView()).smoothScrollBy(0, velocity);
         }
     }
 }

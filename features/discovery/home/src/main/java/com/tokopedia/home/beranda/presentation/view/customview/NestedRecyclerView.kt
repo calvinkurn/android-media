@@ -2,16 +2,17 @@ package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
 import androidx.core.view.NestedScrollingParent2
-import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.recyclerview.widget.CustomRecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Created by devarafikry on 02/04/19.
  */
 
-open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
+open class NestedRecyclerView : CustomRecyclerView, NestedScrollingParent2 {
     private var nestedScrollTarget: View? = null
     private var nestedScrollTargetIsBeingDragged = false
     private var nestedScrollTargetWasUnableToScroll = false
@@ -39,7 +40,6 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
             // If a descendent view is scrolling we set a flag to temporarily skip our onInterceptTouchEvent implementation
             skipsTouchInterception = true
         }
-
         // First dispatch, potentially skipping our onInterceptTouchEvent
         var handled = super.dispatchTouchEvent(ev)
 

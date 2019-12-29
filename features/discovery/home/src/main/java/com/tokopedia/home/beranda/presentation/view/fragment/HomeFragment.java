@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -66,7 +65,7 @@ import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
-import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
+import com.tokopedia.home.beranda.presentation.view.adapter.PreCachingLayoutManager;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
@@ -129,11 +128,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111;
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
-    private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
-    public static final String KEY_DIMEN = "dimen";
-    public static final String KEY_DEF_PACKAGE = "android";
     public static final String REVIEW_CLICK_AT = "REVIEW_CLICK_AT";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
@@ -141,8 +136,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static Boolean HIDE_TICKER = false;
     public static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
-    private boolean shouldDisplayReview = true;
-    private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -163,12 +156,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
     private SnackbarRetry messageSnackbar;
-    private LinearLayoutManager layoutManager;
+    private PreCachingLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private StickyLoginView stickyLoginView;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
+    private boolean scrollToRecommendList;
 
     private TrackingQueue trackingQueue;
 
@@ -184,8 +178,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private int startToTransitionOffset = 0;
     private int searchBarTransitionRange = 0;
-    private Visitable feedTabVisitable;
-    private boolean scrollToRecommendList;
     private long lastSendScreenTimeMillis;
     private Snackbar homeSnackbar;
     private SharedPreferences sharedPrefs;
@@ -282,7 +274,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if(context instanceof HomePerformanceMonitoringListener) {
             return (HomePerformanceMonitoringListener) context;
         }
-
         return null;
     }
 
@@ -292,50 +283,38 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
-        statusBarBackground.setBackground(new ColorDrawable(
-                ContextCompat.getColor(getActivity(), R.color.green_600)
-        ));
-
-        //initial condition for status and searchbar
-        setStatusBarAlpha(0f);
-
-        calculateSearchbarView(0);
-
         homeRecyclerView = view.findViewById(R.id.list);
+        refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
+        floatingTextButton = view.findViewById(R.id.recom_action_button);
+        stickyLoginView = view.findViewById(R.id.sticky_login_text);
+        root = view.findViewById(R.id.root);
+        if (getArguments() != null) {
+            scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+        }
+
+        presenter.attachView(this);
+
+        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
+        setupStatusBar();
+        calculateSearchbarView(0);
+        setupHomeRecyclerView();
+        initEggDragListener();
+
+        return view;
+    }
+
+    private void setupHomeRecyclerView() {
         //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
         //is finite
         homeRecyclerView.setItemViewCacheSize(20);
         if (homeRecyclerView.getItemDecorationCount() == 0) {
             homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
-
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
-                //set refresh layout to only enabled when reach 0 offset
-
-                //because later we will disable scroll up for this parent recyclerview
-                //and makes refresh layout think we can't scroll up (which actually can! we only disable
-                //scroll so that feed recommendation section can scroll its content)
-                if (recyclerView.computeVerticalScrollOffset() == 0) {
-                    refreshLayout.setCanChildScrollUp(false);
-                } else {
-                    refreshLayout.setCanChildScrollUp(true);
-                }
-
-                if (recyclerView.canScrollVertically(1)) {
-                    homeMainToolbar.showShadow();
-                    showFeedSectionViewHolderShadow(false);
-                    homeRecyclerView.setNestedCanScroll(false);
-                } else {
-                    //home feed now can scroll up, so hide maintoolbar shadow
-                    homeMainToolbar.hideShadow();
-                    showFeedSectionViewHolderShadow(true);
-                    homeRecyclerView.setNestedCanScroll(true);
-                }
-
+                evaluateHomeComponentOnScroll(recyclerView);
                 //calculate transparency of homeMainToolbar based on rv offset
                 calculateSearchbarView(recyclerView.computeVerticalScrollOffset());
             }
@@ -344,42 +323,76 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int position = layoutManager.findLastVisibleItemPosition();
-                    if (position == presenter.getRecommendationFeedSectionPosition()) {
-                        floatingTextButton.hide();
-                    } else {
-                        floatingTextButton.show();
-                    }
+                    evaluateFloatingTextButtonOnStateChanged();
+                    evaluateInheritScrollForHomeRecommendation();
                 }
             }
         });
-        refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
-        floatingTextButton = view.findViewById(R.id.recom_action_button);
-        stickyLoginView = view.findViewById(R.id.sticky_login_text);
+    }
 
-        root = view.findViewById(R.id.root);
-
-        if (getArguments() != null) {
-            scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
-        }
-
+    private void setupStatusBar() {
+        statusBarBackground.setBackground(new ColorDrawable(
+                ContextCompat.getColor(getActivity(), R.color.green_600)
+        ));
         //status bar background compability, we show view background for android >= Kitkat
         //because in that version, status bar can't forced to dark mode, we must set background
         //to keep status bar icon visible
         statusBarBackground.getLayoutParams().height = ViewHelper.getStatusBarHeight(getActivity());
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             statusBarBackground.setVisibility(View.INVISIBLE);
-        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             statusBarBackground.setVisibility(View.VISIBLE);
         } else {
             statusBarBackground.setVisibility(View.GONE);
         }
+        //initial condition for status and searchbar
+        setStatusBarAlpha(0f);
+    }
 
-        initEggDragListener();
+    private void evaluateInheritScrollForHomeRecommendation() {
+        if (layoutManager.findLastCompletelyVisibleItemPosition()
+                == presenter.getRecommendationFeedSectionPosition()) {
+            float vt = homeRecyclerView.getOverScroller().getCurrVelocity()/1000;
+            float a = -10f;
 
-        presenter.attachView(this);
-        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
-        return view;
+            double distanceToInherit =
+                    Math.abs(((Math.pow(vt,2))/(2*a)));
+
+            inheritScrollVelocityToRecommendation((int)distanceToInherit*1000);
+        }
+    }
+
+    private void evaluateFloatingTextButtonOnStateChanged() {
+        int position = layoutManager.findLastVisibleItemPosition();
+        if (position == presenter.getRecommendationFeedSectionPosition()) {
+            floatingTextButton.hide();
+        } else {
+            floatingTextButton.show();
+        }
+    }
+
+    private void evaluateHomeComponentOnScroll(RecyclerView recyclerView) {
+        //set refresh layout to only enabled when reach 0 offset
+
+        //because later we will disable scroll up for this parent recyclerview
+        //and makes refresh layout think we can't scroll up (which actually can! we only disable
+        //scroll so that feed recommendation section can scroll its content)
+        if (recyclerView.computeVerticalScrollOffset() == 0) {
+            refreshLayout.setCanChildScrollUp(false);
+        } else {
+            refreshLayout.setCanChildScrollUp(true);
+        }
+
+        if (recyclerView.canScrollVertically(1)) {
+            homeMainToolbar.showShadow();
+            showFeedSectionViewHolderShadow(false);
+            homeRecyclerView.setNestedCanScroll(false);
+        } else {
+            //home feed now can scroll up, so hide maintoolbar shadow
+            homeMainToolbar.hideShadow();
+            showFeedSectionViewHolderShadow(true);
+            homeRecyclerView.setNestedCanScroll(true);
+        }
     }
 
     @Override
@@ -506,7 +519,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if(data != null){
                 if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER ) {
                     configureHomeFlag(data.getHomeFlag());
-                    setData(new ArrayList(data.getList()));
+                    setData(new ArrayList(data.getList()), data.isCache());
                 } else if (!data.isCache()){
                     showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
                 }
@@ -528,8 +541,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
     }
 
-    private void setData(List<HomeVisitable> data){
+    private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
+            if (!isCache) {
+                layoutManager.setExtraLayoutSpace(getWindowHeightForExtraSpace()*5);
+            } else {
+                if (needToPerformanceMonitoring()) setOnRecyclerViewLayoutReady();
+            }
+
             adapter.submitList(data);
 
             if (isDataValid(data)) {
@@ -632,9 +651,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initAdapter() {
-        layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
+        layoutManager = new PreCachingLayoutManager(getContext());
+        layoutManager.setExtraLayoutSpace(0);
         homeRecyclerView.setLayoutManager(layoutManager);
-        homeRecyclerView.getItemAnimator().setChangeDuration(0);
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
                 this,
@@ -846,8 +865,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
+        //onrefresh most likely we already lay out many view, then we can reduce
+        //animation to keep our performance
+        homeRecyclerView.setItemAnimator(null);
+
         resetFeedState();
         removeNetworkError();
+        homeRecyclerView.setEnabled(false);
         if (presenter != null) {
             presenter.searchHint();
             presenter.refreshHomeData();
@@ -885,6 +909,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void hideLoading() {
         refreshLayout.setRefreshing(false);
+        homeRecyclerView.setEnabled(true);
     }
 
     private void setOnRecyclerViewLayoutReady() {
@@ -895,7 +920,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         //At this point the layout is complete and the
                         //dimensions of recyclerView and any child views are known.
                         //Remove listener after changed RecyclerView's height to prevent infinite loop
-                        homePerformanceMonitoringListener.stopHomePerformanceMonitoring();
+                        if (homePerformanceMonitoringListener != null) homePerformanceMonitoringListener.stopHomePerformanceMonitoring();
                         homePerformanceMonitoringListener = null;
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
@@ -1341,8 +1366,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public int getWindowHeight() {
         if (getActivity() != null) {
-            int hRoot = root.getHeight();
-            return hRoot;
+            return root.getHeight();
+        } else {
+            return 0;
+        }
+    }
+
+    private int getWindowHeightForExtraSpace() {
+        if (getActivity() != null) {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            return displayMetrics.heightPixels;
         } else {
             return 0;
         }
@@ -1366,6 +1400,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         );
         if (feedViewHolder instanceof HomeRecommendationFeedViewHolder) {
             ((HomeRecommendationFeedViewHolder) feedViewHolder).showFeedTabShadow(show);
+        }
+    }
+
+    private void inheritScrollVelocityToRecommendation(int velocity) {
+        RecyclerView.ViewHolder feedViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(
+                presenter.getRecommendationFeedSectionPosition()
+        );
+        if (feedViewHolder instanceof HomeRecommendationFeedViewHolder) {
+            ((HomeRecommendationFeedViewHolder) feedViewHolder).scrollByVelocity(velocity);
         }
     }
 

@@ -199,7 +199,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             DigitalsViewHolder.LAYOUT -> viewHolder = DigitalsViewHolder(listener, fragmentManager, view)
-            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(fragmentManager, view)
+            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(listener, view)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)

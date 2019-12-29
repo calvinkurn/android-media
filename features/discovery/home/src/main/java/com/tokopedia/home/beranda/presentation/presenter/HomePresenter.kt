@@ -598,16 +598,18 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    private fun evaluateGeolocationComponent(homeViewModel: HomeViewModel): HomeViewModel {
-        if (!viewNeedToShowGeolocationComponent()) {
-            val findGeolocationModel =
-                    homeViewModel.list.find { visitable -> visitable is GeolocationPromptViewModel }
-            val currentList = homeViewModel.list.toMutableList()
+    private fun evaluateGeolocationComponent(homeViewModel: HomeViewModel?): HomeViewModel? {
+        homeViewModel?.let {
+            if (!viewNeedToShowGeolocationComponent()) {
+                val findGeolocationModel =
+                        homeViewModel.list.find { visitable -> visitable is GeolocationPromptViewModel }
+                val currentList = homeViewModel.list.toMutableList()
 
-            currentList.let {
-                it.remove(findGeolocationModel)
-                val newHomeViewModel = homeViewModel.copy(list = it)
-                return newHomeViewModel
+                currentList.let {
+                    it.remove(findGeolocationModel)
+                    val newHomeViewModel = homeViewModel.copy(list = it)
+                    return newHomeViewModel
+                }
             }
         }
         return homeViewModel
@@ -627,15 +629,14 @@ class HomePresenter(private val userSession: UserSessionInterface,
         initHeaderViewModelData()
         launchCatchError(coroutineContext,  block = {
             homeFlowData.collect {
+                val homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
-                    _homeLiveData.value = evaluateGeolocationComponent(it)
-                    evaluateRecommendationSection()
-                    getFeedTabData()
+                    _homeLiveData.value = evaluateRecommendationSection(homeData)
                     getHeaderData()
                     getPlayData()
                     getReviewData()
                 } else {
-                    _homeLiveData.value = it
+                    _homeLiveData.value = homeData
                 }
             }
         }) {
@@ -654,14 +655,17 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    private fun evaluateRecommendationSection() {
-        val homeViewModel = _homeLiveData.value
-        val detectHomeRecom = homeViewModel?.list?.find { visitable -> visitable is HomeRecommendationFeedViewModel }
-        detectHomeRecom?.let {
-            val currentList = homeViewModel.list.toMutableList()
-            currentList.add(HomeLoadingMoreModel())
-            _homeLiveData.value = homeViewModel.copy(list = currentList)
+    private fun evaluateRecommendationSection(homeViewModel: HomeViewModel?): HomeViewModel? {
+        val detectHomeRecom = _homeLiveData.value?.list?.find { visitable -> visitable is HomeRecommendationFeedViewModel }
+        homeViewModel?.let {
+            if (detectHomeRecom != null) {
+                val currentList = homeViewModel.list.toMutableList()
+                currentList.add(detectHomeRecom)
+                return homeViewModel.copy(list = currentList)
+            }
         }
+        getFeedTabData()
+        return homeViewModel
     }
 
     override fun onCloseGeolocation() {
@@ -684,5 +688,5 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    override fun getRecommendationFeedSectionPosition() = _homeLiveData.value?.list?.size?:-1
+    override fun getRecommendationFeedSectionPosition() = (_homeLiveData.value?.list?.size?:0)-1
 }

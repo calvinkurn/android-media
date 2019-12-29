@@ -3,9 +3,9 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.content.Context
 import androidx.annotation.LayoutRes
 import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.viewpager.widget.ViewPager
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
@@ -47,14 +47,13 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         homeFeedsTabLayout.visibility = View.VISIBLE
         homeFeedsViewPager.visibility = View.VISIBLE
 
-        if (homeFeedPagerAdapter == null || homeRecommendationFeedViewModel.isNewData) {
-            initViewPagerAndTablayout()
-            homeRecommendationFeedViewModel.isNewData = false
-        }
+        initViewPagerAndTablayout()
+        homeRecommendationFeedViewModel.isNewData = false
     }
 
     private fun initViewPagerAndTablayout() {
         homeFeedPagerAdapter = HomeFeedPagerAdapter(
+                listener,
                 listener.eggListener,
                 this,
                 listener.childFragmentManager,
@@ -114,6 +113,15 @@ class HomeRecommendationFeedViewHolder(itemView: View,
             homeFeedsTabShadow.visibility = View.VISIBLE
         } else {
             homeFeedsTabShadow.visibility = View.INVISIBLE
+        }
+    }
+
+    fun scrollByVelocity(velocity: Int) {
+        val fragment = homeFeedPagerAdapter?.getRegisteredFragment(
+                homeFeedsViewPager.currentItem
+        )
+        fragment?.let {
+            fragment.smoothScrollRecyclerViewByVelocity(velocity)
         }
     }
 
