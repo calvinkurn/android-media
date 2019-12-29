@@ -1,4 +1,4 @@
-package com.tokopedia.adapter_delegate
+package com.tokopedia.adapterdelegate
 
 import androidx.recyclerview.widget.DiffUtil
 

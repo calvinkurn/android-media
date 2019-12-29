@@ -1,10 +1,10 @@
-package com.tokopedia.adapter_delegate
+package com.tokopedia.adapterdelegate
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.adapter_delegate.common.*
+import com.tokopedia.adapterdelegate.common.*
 import kotlin.reflect.KClass
 
 /**
