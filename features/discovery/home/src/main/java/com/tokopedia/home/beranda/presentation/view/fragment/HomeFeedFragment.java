@@ -60,7 +60,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
     private static final int DEFAULT_SPAN_COUNT = 2;
-    private long flingVelocity = -1;
 
     @Inject
     HomeFeedPresenter presenter;
@@ -78,7 +77,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     private HomeEggListener homeEggListener;
     private HomeTabFeedListener homeTabFeedListener;
     private RecyclerView.RecycledViewPool parentPool;
-    private boolean startScrollingIsActivated = false;
+    private HomeCategoryListener homeCategoryListener;
 
     public static HomeFeedFragment newInstance(int tabIndex,
                                                int recomId,
@@ -438,9 +437,9 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         }
     }
 
-    public void smoothScrollRecyclerViewByVelocity(int velocity) {
+    public void smoothScrollRecyclerViewByVelocity(int distance) {
         if (getView() != null && getRecyclerView(getView()) != null) {
-            getRecyclerView(getView()).smoothScrollBy(0, velocity);
+            getRecyclerView(getView()).smoothScrollBy(0, distance);
         }
     }
 }
