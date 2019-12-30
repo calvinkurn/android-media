@@ -10,10 +10,10 @@ import dagger.Module
  */
 
 @Module
-@TravelHomepageDestinationScope
-abstract class TravelHomepageDestinationViewModelModule {
+@TravelDestinationScope
+abstract class TravelDestinationViewModelModule {
 
-    @TravelHomepageDestinationScope
+    @TravelDestinationScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 

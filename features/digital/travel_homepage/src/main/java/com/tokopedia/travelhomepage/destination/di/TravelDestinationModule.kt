@@ -15,24 +15,24 @@ import kotlinx.coroutines.Dispatchers
 /**
  * @author by jessicasean on 12/23/2019
  */
-@TravelHomepageDestinationScope
+@TravelDestinationScope
 @Module
-class TravelHomepageDestinationModule {
+class TravelDestinationModule {
 
-    @TravelHomepageDestinationScope
+    @TravelDestinationScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
             UserSession(context)
 
-    @TravelHomepageDestinationScope
+    @TravelDestinationScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @TravelHomepageDestinationScope
+    @TravelDestinationScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-    @TravelHomepageDestinationScope
+    @TravelDestinationScope
     @Provides
     fun provideTravelHomepageTrackingUtil(): TravelHomepageTrackingUtil = TravelHomepageTrackingUtil()
 

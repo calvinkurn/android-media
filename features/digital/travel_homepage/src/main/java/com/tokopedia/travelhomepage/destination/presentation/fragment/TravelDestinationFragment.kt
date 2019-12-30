@@ -11,10 +11,13 @@ import com.tokopedia.travelhomepage.R
  * @author by jessica on 2019-12-20
  */
 
-class TravelHomepageDestinationFragment : Fragment() {
+class TravelDestinationFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_travel_homepage_destination, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_travel_homepage_destination, container, false)
+    }
+
+    companion object {
+        fun getInstance(): TravelDestinationFragment = TravelDestinationFragment()
     }
 }

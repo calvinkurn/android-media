@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:paddingTop="@dimen/dp_20"
+    android:paddingBottom="@dimen/dp_20">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_travel_destination_recommendation_item_category"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/Green_G500" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_travel_destination_recommendation_item_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tv_travel_destination_recommendation_item_title"
+        app:layout_constraintLeft_toRightOf="@id/iv_travel_destination_recommendation_item_category"
+        app:layout_constraintStart_toEndOf="@id/iv_travel_destination_recommendation_item_category"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Tiket Pesawat"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/dp_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_travel_destination_recommendation_item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_travel_destination_recommendation_item_category"
+        app:layout_constraintStart_toEndOf="@id/iv_travel_destination_recommendation_item_category"
+        app:layout_constraintTop_toBottomOf="@id/tv_travel_destination_recommendation_item_subtitle"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="SUB ↔ CGK"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_travel_destination_recommendation_item_desc_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tv_travel_destination_recommendation_item_title"
+        app:layout_constraintRight_toLeftOf="@id/iv_travel_destination_recommendation_item_arrow"
+        app:layout_constraintEnd_toStartOf="@id/iv_travel_destination_recommendation_item_arrow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Mulai dari"
+        android:layout_marginBottom="@dimen/dp_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_travel_destination_recommendation_item_desc_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_travel_destination_recommendation_item_arrow"
+        app:layout_constraintEnd_toStartOf="@id/iv_travel_destination_recommendation_item_arrow"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp398.999"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_travel_destination_recommendation_item_arrow"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:srcCompat="@drawable/ic_system_action_arrow_right_grayscale_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

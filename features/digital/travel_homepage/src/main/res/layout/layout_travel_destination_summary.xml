@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/destination_summary_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        android:textSize="@dimen/fontSize_lvl7"
+        app:typographyType="heading_2"
+        tools:text="Jakarta, Indonesia" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/destination_summary_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/dp_3"
+        android:maxLines="6"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_2"
+        tools:text="Daerah Khusus Ibukota Jakarta adalah ibu kota negara dan kota terbesar di Indonesia. Jakarta merupakan satu-satunya kota di Indonesia yang memiliki status setingkat provinsi. Jakarta terletak di pesisir bagian barat laut Pulau Jawa." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/destination_summary_read_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:text="Baca selengkapnya"
+        android:textColor="@color/Green_G500"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+</LinearLayout>

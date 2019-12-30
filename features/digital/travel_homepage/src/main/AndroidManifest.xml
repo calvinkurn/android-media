@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".destination.presentation.activity.TravelHomepageDestinationActivity"
+        <activity android:name=".destination.presentation.activity.TravelDestinationActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.NoActionBar"/>

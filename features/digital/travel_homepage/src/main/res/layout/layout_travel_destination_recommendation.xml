@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/layout_lvl2"
+    android:background="@drawable/bg_travel_recommendation"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/destination_recommendation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="heading_3"
+        tools:text="Siap berangkat ke Jakarta?" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_destination_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4" />
+
+</LinearLayout>
