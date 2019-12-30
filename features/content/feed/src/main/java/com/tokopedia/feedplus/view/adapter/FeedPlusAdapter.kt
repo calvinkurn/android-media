@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
+import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 
@@ -21,7 +23,7 @@ import java.util.ArrayList
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerView.Adapter<AbstractViewHolder<*>>() {
+class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadListener: OnLoadListener) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
     private var list: MutableList<Visitable<*>> = mutableListOf()
     private val emptyModel: EmptyModel
@@ -29,7 +31,6 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
     private val loadingMoreModel: LoadingMoreModel
     private val retryModel: RetryModel
     private var unsetListener: Boolean = false
-    private var loadListener: OnLoadListener? = null
     private var recyclerView: RecyclerView? = null
     var itemTreshold = 5
 
@@ -37,9 +38,9 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
             if (isLoading)
                 return
-            if (loadListener != null && !unsetListener && list.size > itemTreshold) {
+            if (!unsetListener && list.size > itemTreshold) {
                 showLoading()
-                loadListener!!.onLoad(totalItemsCount)
+                loadListener.onLoad(totalItemsCount)
             }
         }
 
@@ -59,62 +60,51 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
         this.emptyFeedBeforeLoginModel = EmptyFeedBeforeLoginModel()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>>  {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
-        return typeFactory.createViewHolder(view, viewType)
+        @Suppress("UNCHECKED_CAST")
+        return typeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>> , position: Int) {
         holder.bind(list[position])
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int,
+    override fun onBindViewHolder(holder:  AbstractViewHolder<Visitable<*>> , position: Int,
                                   payloads: List<Any>) {
         if (!payloads.isEmpty()) {
-            holder.bind(list!![position], payloads)
+            holder.bind(list[position], payloads)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return list!![position].type(typeFactory)
-    }
-
     override fun getItemCount(): Int {
-        return list!!.size
+        return list.size
     }
 
     private fun add(visitable: Visitable<*>) {
-        val position = this.list!!.size
-        if (this.list!!.add(visitable)) {
-            notifyItemInserted(position)
-        }
+       addList(mutableListOf(visitable))
+    }
+
+    fun addList(newLists: List<Visitable<*>>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.addAll(newLists)
+        updateList(newList)
     }
 
     private fun remove(visitable: Visitable<*>) {
-        val position = this.list!!.indexOf(visitable)
-        if (this.list!!.remove(visitable)) {
-            notifyItemRemoved(position)
-        }
-    }
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.remove(visitable)
+        updateList(newList)
 
-    fun setList(list: MutableList<Visitable<*>>) {
-        this.list = list
-        notifyDataSetChanged()
-    }
-
-    fun addList(list: List<Visitable<*>>) {
-        val positionStart = itemCount
-        if (this.list!!.addAll(list)) {
-            notifyItemRangeInserted(positionStart, list.size)
-        }
     }
 
     fun clearData() {
-        this.list!!.clear()
-        notifyDataSetChanged()
+        updateList(mutableListOf())
     }
 
     fun showEmpty() {
@@ -134,7 +124,7 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
     }
 
     fun showLoading() {
-        val removePosition = this.list!!.indexOf(loadingMoreModel)
+        val removePosition = this.list.indexOf(loadingMoreModel)
         if (removePosition != -1) remove(loadingMoreModel)
         add(loadingMoreModel)
     }
@@ -143,16 +133,12 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
         remove(loadingMoreModel)
     }
 
-    fun getlist(): List<Visitable<*>>? {
+    fun getlist(): MutableList<Visitable<*>> {
         return list
     }
 
     fun addItem(item: Visitable<*>) {
         add(item)
-    }
-
-    fun showUserNotLogin() {
-        add(emptyFeedBeforeLoginModel)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -161,13 +147,9 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
         setEndlessScrollListener()
     }
 
-    override fun onViewRecycled(holder: AbstractViewHolder<*>) {
+    override fun onViewRecycled(holder:  AbstractViewHolder<Visitable<*>> ) {
         super.onViewRecycled(holder)
         holder.onViewRecycled()
-    }
-
-    fun setOnLoadListener(loadListener: OnLoadListener) {
-        this.loadListener = loadListener
     }
 
     fun setEndlessScrollListener() {
@@ -180,6 +162,15 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
         recyclerView!!.removeOnScrollListener(endlessScrollListener)
     }
 
+    fun updateList(newList: List<Visitable<*>>) {
+        val diffResult = DiffUtil.calculateDiff(FeedDiffUtilCallback(list, newList))
+
+        list.clear()
+        list.addAll(newList)
+
+        diffResult.dispatchUpdatesTo(this)
+    }
+
     interface OnLoadListener {
         fun onLoad(totalCount: Int)
 
@@ -187,6 +178,5 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory) : RecyclerVi
 
     interface OnScrollListener : OnLoadListener {
         fun onScroll(lastVisiblePosition: Int)
-
     }
 }

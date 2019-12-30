@@ -42,7 +42,7 @@ interface FeedPlus {
 
         fun onInfoClicked()
 
-        fun onSuccessGetFeedFirstPage(listFeed: List<Visitable<*>>)
+        fun onSuccessGetFeedFirstPage(listFeed: MutableList<Visitable<*>>)
 
         fun onErrorGetFeedFirstPage(errorMessage: String)
 
