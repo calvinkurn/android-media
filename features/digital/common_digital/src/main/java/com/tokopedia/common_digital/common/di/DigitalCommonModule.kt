@@ -95,7 +95,7 @@ class DigitalCommonModule {
         builder.addInterceptor(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(digitalRouter.chuckInterceptor)
+                    .addInterceptor(digitalRouter.chuckerInterceptor)
         }
 
         return builder.build()
