@@ -33,7 +33,7 @@
     <string name="umrah_see_all">Lihat Semua</string>
     <string name="umrah_search_filter_travel_duration">Durasi Perjalanan (Hari)</string>
 
-    <string name="umrah_dana_impian_link">https://www.tokopedia.com/reksa-dana/dana-impian?fromUmroh=true&amp;target_amount=5000000&amp;name=TabunganUmroh</string>
+    <string name="umrah_dana_impian_link">https://www.tokopedia.com/reksa-dana/dana-impian?fromUmroh=true&amp;category_id=7&amp;target_amount=5000000&amp;name=Tabungan%20Umroh</string>
 
     <string name="umrah_common_booking_code_label">Kode Booking</string>
     <string name="umrah_common_start_from">Mulai dari %s</string>

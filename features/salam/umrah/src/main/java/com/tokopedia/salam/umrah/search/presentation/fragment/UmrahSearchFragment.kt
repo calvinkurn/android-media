@@ -342,6 +342,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onBackPressed() {
         if (!isDetached) {
+            UmrahSearchFilterFragment.selectedFilter = ParamFilter()
             isFilter = false
             umrahTrackingAnalytics.umrahSearchNCategoryBackClick(searchOrCategory)
         }
