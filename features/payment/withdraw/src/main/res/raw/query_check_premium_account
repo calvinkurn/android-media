@@ -13,6 +13,12 @@ query{
             program
             wdPoints
             statusInt
+            copywriting {
+                title
+                subtitle
+                cta
+                url
+            }
         }
     }
 }

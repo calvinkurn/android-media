@@ -70,6 +70,7 @@ import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.domain.model.premiumAccount.CheckEligible;
+import com.tokopedia.withdraw.domain.model.premiumAccount.CopyWriting;
 import com.tokopedia.withdraw.domain.model.premiumAccount.Data;
 import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
@@ -729,39 +730,23 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             } else
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.GONE);
             premiumAccountView.setVisibility(View.VISIBLE);
-
-            if (isRegisterForProgram) {
+            CopyWriting copyWriting = checkEligible.getData().getCopyWriting();
+            if (copyWriting != null) {
                 ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
-                        .setText(getString(R.string.swd_rekening_premium));
-                if (data.getWdPoints() == 0) {
-                    setProgramStatus(getString(R.string.active_bri_Account, data.getProgram()),
-                            getString(R.string.withdrawal_info));
-                } else {
-                    setProgramStatus(getString(R.string.active_bri_Account_point,
-                            data.getProgram(), data.getWdPoints()),
-                            getString(R.string.withdraw_help));
-                }
+                        .setText(copyWriting.getTitle());
+                setProgramStatus(copyWriting.getSubtitle(),copyWriting.getCta());
+                premiumAccountView.setTag(copyWriting);
             } else {
-                ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
-                        .setText(getString(R.string.swd_rekening_premium));
-
-                if (rekeningAccountStatus == REKENING_ACCOUNT_NOT_JOINED
-                        || rekeningAccountStatus == REKENING_ACCOUNT_ApprovedOut
-                        || rekeningAccountStatus == REKENING_ACCOUNT_Rejected) {
-                    setProgramStatus(getString(R.string.swd_earn_point_on_withdraw),
-                            getString(R.string.bri_cek));
-                } else if (rekeningAccountStatus == REKENING_ACCOUNT_INPROGRESSIN || rekeningAccountStatus == REKENING_ACCOUNT_PENDINGIN) {
-                    setProgramStatus(getString(R.string.account_in_progress, data.getProgram()),
-                            getString(R.string.bri_cek));
-                } else {
-                    premiumAccountView.setVisibility(View.GONE);
-                }
+                premiumAccountView.setVisibility(View.GONE);
             }
             premiumAccountView.findViewById(R.id.tv_briProgramButton)
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            handleProgramWidgetClick();
+                            if(v.getTag()!= null && v.getTag() instanceof CopyWriting) {
+                                CopyWriting copyWriting = (CopyWriting) v.getTag();
+                                handleProgramWidgetClick(copyWriting);
+                            }
                         }
                     });
 
@@ -777,7 +762,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setText(btnText);
     }
 
-    private void handleProgramWidgetClick() {
+    private void handleProgramWidgetClick(CopyWriting copyWriting) {
         analytics.eventOnPremiumProgramWidgetClick();
         if (rekeningAccountStatus == REKENING_ACCOUNT_APPROVED_IN) {
             briProgramBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
@@ -804,18 +789,18 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
                 WithdrawConstant.saveRekeningPremiumWidgetClicked(getContext());
                 briProgramBottomSheet.dismiss();
-                openRekeningAccountWebLink();
+                openRekeningAccountWebLink(copyWriting.getUrl());
             });
             briProgramBottomSheet.setContentView(view);
             briProgramBottomSheet.show();
         } else {
-            openRekeningAccountWebLink();
+            openRekeningAccountWebLink(copyWriting.getUrl());
         }
     }
 
-    private void openRekeningAccountWebLink() {
+    private void openRekeningAccountWebLink(String url) {
         String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                Uri.encode(WEB_REKENING_PREMIUM_URL), userSession.getDeviceId(), userSession.getUserId());
+                Uri.encode(url), userSession.getDeviceId(), userSession.getUserId());
         RouteManager.route(getContext(), resultGenerateUrl);
         analytics.eventClickGotoDashboard();
     }

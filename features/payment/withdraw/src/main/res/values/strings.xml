@@ -93,8 +93,8 @@
     <string name="min_saldo_withdraw_hint">Min. penarikan %s</string>
 
     <string name="withdraw_with_more">Tarik saldo makin untung</string>
-    <string name="account_in_progress">Bank %s (Dalam Proses)</string>
-    <string name="active_bri_Account">Bank %s (<b>Aktif</b>)</string>
+    <string name="account_in_progress">%s (Dalam Proses)</string>
+    <string name="active_bri_Account">%s (<b>Aktif</b>)</string>
     <string name="active_bri_Account_point">Bank %1$s (Points: <b>%2$d</b>)</string>
     <string name="bri_cek">cek</string>
     <string name="swd_label_new">BARU</string>
