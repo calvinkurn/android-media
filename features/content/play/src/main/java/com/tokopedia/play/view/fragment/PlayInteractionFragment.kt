@@ -730,6 +730,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun openPageByApplink(applink: String, vararg params: String) {
         RouteManager.route(context, applink, *params)
-        activity?.overridePendingTransition(R.anim.anim_enter_page, R.anim.anim_exit_page)
+        activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
     }
 }
