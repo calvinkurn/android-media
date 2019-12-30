@@ -193,6 +193,7 @@ android {
             ext.enableHansel = true
             minifyEnabled true
             zipAlignEnabled true
+            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
