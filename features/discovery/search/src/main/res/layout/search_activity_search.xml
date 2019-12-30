@@ -24,98 +24,96 @@
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipChildren="false"
                 android:gravity="center_vertical"
-                android:clipChildren="false">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/action_up_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_12"
                     android:layout_marginStart="@dimen/dp_12"
-                    app:srcCompat="@drawable/search_ic_back"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginLeft="@dimen/dp_12"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/layout_search"/>
+                    app:layout_constraintRight_toLeftOf="@id/searchTextView"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/search_ic_back" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_search"
+                <TextView
+                    android:id="@+id/searchTextView"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:paddingTop="@dimen/dp_6"
-                    android:paddingBottom="@dimen/dp_6"
-                    android:paddingRight="@dimen/dp_4"
-                    android:paddingEnd="@dimen/dp_4"
-                    android:paddingLeft="@dimen/dp_4"
-                    android:paddingStart="@dimen/dp_4"
+                    android:layout_weight="1"
                     android:background="@drawable/search_bg_autocomplete_input"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:paddingStart="@dimen/dp_6"
+                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_6"
+                    android:paddingRight="@dimen/dp_6"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:textSize="@dimen/sp_16"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:enabled="true"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="1"
+                    android:textColor="@color/search_text_view_color"
+                    android:textColorHint="@android:color/darker_gray"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/action_up_btn"
                     app:layout_constraintRight_toLeftOf="@id/search_home_button"
-                    >
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/searchTextView"
-                        android:gravity="center_vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textSize="@dimen/sp_16"
-                        android:inputType="none"
-                        android:focusable="false"
-                        android:enabled="true"
-                        android:focusableInTouchMode="true"
-                        android:maxLines="1"
-                        android:textColor="@color/search_text_view_color"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:background="@null"
-                        android:layout_weight="1"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
 
-                    <ImageView
-                        android:id="@+id/search_image_search_button"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"/>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/search_image_search_button"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/searchTextView"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24" />
 
                 <ImageView
                     android:id="@+id/search_home_button"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
-                    android:scaleType="centerInside"
-                    android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_8"
-                    app:srcCompat="@drawable/ic_product_discovery_home_grayscale_24"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:scaleType="centerInside"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/layout_search"
-                    app:layout_constraintRight_toLeftOf="@id/search_cart_button"/>
+                    app:layout_constraintLeft_toRightOf="@id/searchTextView"
+                    app:layout_constraintRight_toLeftOf="@id/search_cart_button"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_product_discovery_home_grayscale_24" />
 
                 <ImageView
                     android:id="@+id/search_cart_button"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
-                    android:scaleType="centerInside"
-                    android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_8"
-                    app:srcCompat="@drawable/search_ic_cart"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:scaleType="centerInside"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/search_home_button"
-                    app:layout_constraintRight_toLeftOf="@id/search_change_grid_button"/>
+                    app:layout_constraintRight_toLeftOf="@id/search_change_grid_button"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/search_ic_cart" />
 
                 <ImageView
                     android:id="@+id/search_change_grid_button"
@@ -123,12 +121,11 @@
                     android:layout_height="24dp"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
-                    app:srcCompat="@drawable/search_ic_grid"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/search_cart_button"
-                    app:layout_constraintRight_toRightOf="parent"/>
-
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/search_ic_grid" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>
