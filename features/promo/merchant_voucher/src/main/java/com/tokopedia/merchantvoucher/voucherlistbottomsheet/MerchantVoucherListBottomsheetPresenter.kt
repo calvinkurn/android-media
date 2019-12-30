@@ -1,6 +1,5 @@
 package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -16,7 +15,6 @@ import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import timber.log.Timber
 import javax.inject.Inject
 
 /**

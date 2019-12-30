@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
-import com.google.gson.Gson
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -21,7 +20,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -253,7 +251,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             }
         }
 
-        Timber.d("createMvcListMap : %s", Gson().toJsonTree(list))
         return list
     }
 

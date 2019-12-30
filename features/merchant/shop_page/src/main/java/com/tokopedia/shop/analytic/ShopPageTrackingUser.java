@@ -2,10 +2,8 @@ package com.tokopedia.shop.analytic;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.gson.Gson;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
@@ -21,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-
-import timber.log.Timber;
 
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;

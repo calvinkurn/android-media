@@ -1,8 +1,6 @@
 package com.tokopedia.promocheckout.common.analytics
 
-import com.google.gson.Gson
 import com.tokopedia.track.TrackApp
-import timber.log.Timber
 
 class TrackingPromoCheckoutUtil {
 
@@ -31,15 +29,12 @@ class TrackingPromoCheckoutUtil {
         val eventMap = createMapEvent(CLICK_ATC, CART, CLICK_USE_PROMO_FROM_SELECT_MVC, SUCCESS + promoCode)
         eventMap[KEY_PROMO_ID] = ""
 
-        Timber.d("cartClickUsePromoCodeSuccess : %s", Gson().toJsonTree(eventMap))
-
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     fun cartClickUsePromoCodeFailed(e: Throwable) {
         val eventMap = createMapEvent(CLICK_ATC, CART, CLICK_USE_PROMO_FROM_SELECT_MVC, FAILED + e.message)
         //eventMap[KEY_PROMO_ID] = promoCode
-        Timber.d("cartClickUsePromoCodeSuccess : %s", Gson().toJsonTree(eventMap))
 
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_ATC, CART, CLICK_USE_PROMO_CODE, FAILED)
