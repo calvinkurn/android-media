@@ -464,6 +464,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         swipe_refresh_layout.isEnabled = true
         trackFeedImpression(listFeed)
+        adapter.clearData()
         adapter.updateList(listFeed)
         triggerClearNewFeedNotification()
     }
