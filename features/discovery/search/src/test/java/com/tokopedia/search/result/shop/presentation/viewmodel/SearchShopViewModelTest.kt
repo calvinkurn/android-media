@@ -14,7 +14,6 @@ import com.tokopedia.search.result.*
 import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State.Error
 import com.tokopedia.search.result.common.State.Success
-import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchShop
@@ -23,6 +22,7 @@ import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchSh
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
