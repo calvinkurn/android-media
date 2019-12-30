@@ -28,56 +28,16 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+
+import static com.tokopedia.user.session.Constants.*;
 
 @Deprecated
 /**
  * Please use {@link com.tokopedia.user.session.UserSession} instead.
  */
 public class SessionHandler {
-    public static final String DEFAULT_EMPTY_SHOP_ID = "0";
-    public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
-    private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
-    private static final String SAVE_REAL = "SAVE_REAL";
-    private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
-    private static final String PHONE_NUMBER = "PHONE_NUMBER";
-    private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
-    private static final String TEMP_NAME = "TEMP_NAME";
-    private static final String IS_LOGIN = "IS_LOGIN";
-    private static final String LOGIN_ID = "LOGIN_ID";
-    private static final String GTM_LOGIN_ID = "GTM_LOGIN_ID";
-    private static final String SHOP_ID = "SHOP_ID";
-    private static final String STATE_BROWSE = "STATE_BROWSE";
-    private static final String FULL_NAME = "FULL_NAME";
-    private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
-    protected static final String LOGIN_SESSION = "LOGIN_SESSION";
-    private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
-    private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
-    private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
-    private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
-    private static final String MSISDN_SESSION = "MSISDN_SESSION";
-    private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
-    private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
-    private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
-    private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
-    private static final String TOKEN_TYPE = "TOKEN_TYPE";
-    private static final String USER_SCOPE = "USER_SCOPE";
-    private static final String IS_FIRST_TIME_STORAGE = "IS_FIRST_TIME_STORAGE";
-    private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
-    private static final String UUID_KEY = "uuid";
-    private static final String DEFAULT_UUID_VALUE = "";
-    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
-    private static final String USER_DATA = "USER_DATA";
-    private static final String KEY_IV = "tokopedia1234567";
-    private static final String TOKOCASH_SESSION = "TOKOCASH_SESSION";
-    private static final String ACCESS_TOKEN_TOKOCASH = "ACCESS_TOKEN_TOKOCASH";
-    private static final String SHOP_NAME = "SHOP_NAME";
-    private static final String TEMP_EMAIL = "TEMP_EMAIL";
-    private static final String EMAIL = "EMAIL";
-    private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
-    private static final String HAS_PASSWORD = "HAS_PASSWORD";
-    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
-    private static final String KEY_AFFILIATE = "KEY_AFFILIATE";
-    public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
+
 
     private Context context;
 
@@ -92,20 +52,26 @@ public class SessionHandler {
 
     }
 
-    /**
-     * @param context Non Null context
-     * @param isLogin flag to determine user is login or not
-     * @param user_id valid user id
-     */
-    @SuppressWarnings("unused")
-    public static void setIsLogin(Context context, boolean isLogin, int user_id) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(LOGIN_ID, user_id + "");
-        editor.putBoolean(IS_LOGIN, isLogin);
-        editor.apply();
-        TrackApp.getInstance().getGTM()
-                .pushUserId(getGTMLoginID(context));
+    private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
+    private static final String USER_DATA = "USER_DATA";
+    private static final String USER_SCOPE = "USER_SCOPE";
+    private static final String ACCESS_TOKEN_TOKOCASH = "ACCESS_TOKEN_TOKOCASH";
+    private static final String MSISDN_SESSION = "MSISDN_SESSION";
+    public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
+    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
+    private static final String TOKOCASH_SESSION = "TOKOCASH_SESSION";
+    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE = "KEY_AFFILIATE";
+    public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
+    private static final String KEY_IV = "tokopedia1234567";
+
+    private static UserSession userSession = null;
+
+    public static UserSession getUserSession(Context context) {
+        if(userSession == null){
+            userSession = new UserSession(context);
+        }
+        return userSession;
     }
 
     public static void clearUserData(Context context) {
@@ -188,12 +154,6 @@ public class SessionHandler {
             ws.setSaveFormData(false);
             ws.setSavePassword(false);
             webView.clearCache(true);
-//            webView.setWebViewClient(new InstagramAuthenticationDialog.InstagramWebViewClient(new OnRequestTokenCodeListener() {
-//                @Override
-//                public void onSuccess(String code) {
-//
-//                }
-//            }));
             webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -212,27 +172,11 @@ public class SessionHandler {
     }
 
     public static String getLoginID(Context context) {
-        String u_id;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_id = sharedPrefs.getString(LOGIN_ID, "");
-        return u_id;
+        return getUserSession(MainApplication.getAppContext()).getUserId();
     }
 
     public static String getGTMLoginID(Context context) {
-        String u_id;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_id = sharedPrefs.getString(GTM_LOGIN_ID, "");
-        if (TextUtils.isEmpty(u_id)) {
-            if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
-                SessionHandler.setGTMLoginID(context, SessionHandler.getLoginID(context));
-                return SessionHandler.getLoginID(context);
-            } else {
-                return "";
-            }
-
-        } else {
-            return u_id;
-        }
+        return getUserSession(MainApplication.getAppContext()).getUserId();
     }
 
     public static void setGTMLoginID(Context context, String userID) {
@@ -253,201 +197,103 @@ public class SessionHandler {
     }
 
     public static String getShopID(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
-        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
-            shopId = DEFAULT_EMPTY_SHOP_ID;
-        }
-        return shopId;
+        return getUserSession(MainApplication.getAppContext()).getShopId();
     }
 
     public void setShopName(String name) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        sharedPrefs.edit().putString(SHOP_NAME, name).apply();
+        getUserSession(MainApplication.getAppContext()).setShopName(name);
     }
 
     public static String getShopName(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(SHOP_NAME, "");
+        return getUserSession(MainApplication.getAppContext()).getShopName();
     }
 
     public static String getLoginName(Context context) {
-        String u_name = null;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_name = sharedPrefs.getString(FULL_NAME, null);
-        return u_name;
+        return getUserSession(MainApplication.getAppContext()).getName();
     }
 
-    /**
-     * Use shop info use case to get gold merchant status
-     *
-     * @param context
-     * @return
-     */
-    @Deprecated
     public static boolean isGoldMerchant(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getBoolean(IS_GOLD_MERCHANT, false);
+        return getUserSession(MainApplication.getAppContext()).isGoldMerchant();
     }
 
-    /**
-     * Use shop info use case to get gold merchant status
-     *
-     * @param context
-     * @param goldMerchant
-     */
     public static void setGoldMerchant(Context context, int goldMerchant) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor edit = sharedPrefs.edit();
-        edit.putBoolean(IS_GOLD_MERCHANT, goldMerchant != -1 && goldMerchant != 0);
-        edit.apply();
+        getUserSession(MainApplication.getAppContext()).setIsGoldMerchant(goldMerchant != -1 && goldMerchant != 0);
     }
 
-    /**
-     * replacement of isLogin for v$ Login
-     *
-     * @param context
-     * @return
-     */
     public static boolean isV4Login(Context context) {
-        String u_id = null;
-        boolean isLogin = false;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_id = sharedPrefs.getString(LOGIN_ID, null);
-        isLogin = sharedPrefs.getBoolean(IS_LOGIN, false);
-        return isLogin && u_id != null;
-    }
-
-    @SuppressWarnings("unused")
-    public static String getUserAvatarUri(Context context) {
-        String avatar_uri = null;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        avatar_uri = sharedPrefs.getString(USER_AVATAR_URI, null);
-        if (avatar_uri == null) {
-            return null;
-        }
-        return avatar_uri;
-    }
-
-    @SuppressWarnings("unused")
-    public static void setGridPref(Context context, int Pref) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(STATE_BROWSE, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putInt("STATE", Pref);
-        editor.apply();
-    }
-
-    @SuppressWarnings("unused")
-    public static int getGridPref(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(STATE_BROWSE, Context.MODE_PRIVATE);
-        return sharedPrefs.getInt("STATE", 1);
+        return getUserSession(MainApplication.getAppContext()).isLoggedIn();
     }
 
     public static boolean isMsisdnVerified() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        return cache.getBoolean(IS_MSISDN_VERIFIED, false);
+        return getUserSession(MainApplication.getAppContext()).isMsisdnVerified();
     }
 
     public static void setIsMSISDNVerified(boolean verified) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        cache.putBoolean(IS_MSISDN_VERIFIED, verified);
-        cache.applyEditor();
+        getUserSession(MainApplication.getAppContext()).setIsMSISDNVerified(verified);
     }
 
     public static String getPhoneNumber() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        return cache.getString(PHONE_NUMBER, "");
+        return getUserSession(MainApplication.getAppContext()).getPhoneNumber();
     }
 
     public static void setPhoneNumber(String userPhone) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        cache.putString(PHONE_NUMBER, userPhone);
-        cache.applyEditor();
+        getUserSession(MainApplication.getAppContext()).setTempPhoneNumber(userPhone);
     }
 
     public static String getTempPhoneNumber(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
+        return getUserSession(MainApplication.getAppContext()).getTempPhoneNumber();
     }
 
     public static String getAccessToken() {
-        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
+        return getUserSession(MainApplication.getAppContext()).getAccessToken();
     }
 
     public static String getRefreshTokenIV(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN_KEY, KEY_IV);
+        return getUserSession(MainApplication.getAppContext()).getFreshToken();
     }
 
     public static boolean isUserHasShop(Context context) {
-        String shopID = SessionHandler.getShopID(context);
-        return isShopIdValid(shopID);
-    }
-
-    private static boolean isShopIdValid(String shopId) {
-        return !TextUtils.isEmpty(shopId) && !DEFAULT_EMPTY_SHOP_ID.equals(shopId);
+        return getUserSession(context).hasShop();
     }
 
     public static String getAccessToken(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
+        return getUserSession(MainApplication.getAppContext()).getAccessToken();
     }
 
     public String getShopName() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        String shopName = sharedPrefs.getString(SHOP_NAME, "");
-        return shopName;
+        return getUserSession(MainApplication.getAppContext()).getShopName();
     }
 
     public void setShopId(String shopId) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        saveToSharedPref(editor, SHOP_ID, shopId);
-        editor.apply();
+        getUserSession(MainApplication.getAppContext()).setShopId(shopId);
     }
 
     public String getShopID() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
-        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
-            shopId = DEFAULT_EMPTY_SHOP_ID;
-        }
-        return shopId;
+        return getUserSession(MainApplication.getAppContext()).getShopId();
     }
 
     public void setTempLoginEmail(String tempLoginEmail) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(TEMP_EMAIL, tempLoginEmail);
-        editor.apply();
+        getUserSession(MainApplication.getAppContext()).setTempLoginEmail(tempLoginEmail);
     }
 
     public String getTempEmail() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TEMP_EMAIL, "");
+        return getUserSession(MainApplication.getAppContext()).getTempEmail();
     }
 
     public String getEmail() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(EMAIL, "");
+        return getUserSession(MainApplication.getAppContext()).getEmail();
     }
 
     public void setEmail(String email) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(EMAIL, email);
-        editor.apply();
+        getUserSession(MainApplication.getAppContext()).setEmail(email);
     }
 
     public String getAuthRefreshToken() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
+        return getUserSession(MainApplication.getAppContext()).getFreshToken();
     }
 
     public boolean isUserHasShop() {
-        String shopID = getShopID();
-        return isShopIdValid(shopID);
+        return getUserSession(MainApplication.getAppContext()).hasShop();
     }
 
     public void setLoginSession(boolean isLogin, String u_id, String u_name, String shop_id, boolean isMsisdnVerified, String shopName) {
@@ -511,18 +357,7 @@ public class SessionHandler {
     }
 
     public String getLoginName() {
-        String u_name = null;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_name = sharedPrefs.getString(FULL_NAME, null);
-        return u_name;
-    }
-
-    @SuppressWarnings("unused")
-    public void setLoginName(String u_name) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(FULL_NAME, u_name);
-        editor.apply();
+        return getUserSession(MainApplication.getAppContext()).getName();
     }
 
     public void setGoldMerchant(int goldMerchant) {
@@ -530,52 +365,23 @@ public class SessionHandler {
     }
 
     public void setGoldMerchant(boolean isGoldMerchant) {
-        SharedPreferences sharedPrefs = this.context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor edit = sharedPrefs.edit();
-        edit.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
-        edit.apply();
+        getUserSession(MainApplication.getAppContext()).setIsGoldMerchant(isGoldMerchant);
     }
 
     public void setTempPhoneNumber(String userPhone) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(TEMP_PHONE_NUMBER, userPhone);
-        editor.apply();
+        getUserSession(MainApplication.getAppContext()).setTempPhoneNumber(userPhone);
     }
 
     public void setTempLoginName(String userPhone) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(TEMP_NAME, userPhone);
-        editor.apply();
+        getUserSession(MainApplication.getAppContext()).setTempLoginName(userPhone);
     }
 
     public void setToken(String accessToken, String tokenType, String refreshToken) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        setToken(accessToken, tokenType);
-        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
-        editor.apply();
-    }
-
-    public void setScope(String scopeName) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        saveToSharedPref(editor, USER_SCOPE, scopeName);
-        editor.apply();
-    }
-
-    public static String getUserScope() {
-        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(USER_SCOPE, "");
+        getUserSession(MainApplication.getAppContext()).setToken(accessToken, tokenType, refreshToken);
     }
 
     public void setToken(String accessToken, String tokenType) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        saveToSharedPref(editor, ACCESS_TOKEN, accessToken);
-        saveToSharedPref(editor, TOKEN_TYPE, tokenType);
-        editor.apply();
+        getUserSession(MainApplication.getAppContext()).setToken(accessToken, tokenType);
     }
 
     private void saveToSharedPref(Editor editor, String key, String value) {
@@ -585,13 +391,12 @@ public class SessionHandler {
     }
 
     public String getTokenType(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TOKEN_TYPE, "").trim();
+        return getUserSession(MainApplication.getAppContext()).getTokenType();
     }
 
     public String getUUID() {
         return new LocalCacheHandler(context, LOGIN_UUID_KEY)
-                .getString(UUID_KEY, DEFAULT_UUID_VALUE);
+                .getString(UUID_KEY, "");
     }
 
     public void setUUID(String uuid) {
@@ -609,15 +414,11 @@ public class SessionHandler {
     }
 
     public String getProfilePicture() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(PROFILE_PICTURE, "");
+        return getUserSession(MainApplication.getAppContext()).getProfilePicture();
     }
 
     public void setProfilePicture(String profilePicture) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(PROFILE_PICTURE, profilePicture);
-        editor.apply();
+        getUserSession(MainApplication.getAppContext()).setProfilePicture(profilePicture);
     }
 
     public void setTempLoginSession(String u_id) {
@@ -632,13 +433,10 @@ public class SessionHandler {
     }
 
     public void setHasPassword(boolean hasPassword) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        cache.putBoolean(HAS_PASSWORD, hasPassword);
-        cache.applyEditor();
+        getUserSession(MainApplication.getAppContext()).setHasPassword(hasPassword);
     }
 
     public boolean isHasPassword() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getBoolean(HAS_PASSWORD, true);
+        return getUserSession(MainApplication.getAppContext()).hasPassword();
     }
 }

@@ -118,8 +118,8 @@ public interface SearchConstant {
     }
 
     interface GCM {
-        String GCM_ID = "gcm_id";
-        String GCM_STORAGE = "GCM_STORAGE";
+        String GCM_ID = "PjdDxdT6iOuv2tI8JecR4g\u003d\u003d\n";
+        String GCM_STORAGE = "veyVnGC5DJ3kXas2MeeMWQ\u003d\u003d\n";
         String GCM_LOCAL_CACHE = "GCM_LOCAL_CACHE";
     }
 

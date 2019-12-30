@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
@@ -127,6 +128,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TokopediaUrl.Companion.init(this); // generate base url
 
         generateConsumerAppNetworkKeys();
+
+        instanceCoreNetworkApplication = this;
+        CoreNetworkApplication.context = getApplicationContext();
 
         TrackApp.initTrackApp(this);
 

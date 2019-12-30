@@ -14,6 +14,8 @@ import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -27,10 +29,10 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class FCMCacheManager {
-    public static final String GCM_ID = "gcm_id";
+    public static final String GCM_ID = com.tokopedia.user.session.Constants.GCM_ID;
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
     private String NOTIFICATION_CODE = "tkp_code";
-    private static final String GCM_STORAGE = "GCM_STORAGE";
+    private static final String GCM_STORAGE = com.tokopedia.user.session.Constants.GCM_STORAGE;
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
@@ -189,14 +191,48 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString("gcm_id", "").equals("")) {
+        String gcmId = getAndTrimOldString(context, GCM_STORAGE, GCM_ID, "");
+        if (gcmId.equals("")) {
             String tempID = getTempFcmId();
-            cache.putString("gcm_id", tempID);
-            cache.applyEditor();
+            setString(context, GCM_STORAGE, GCM_ID, tempID);
             return tempID;
         }
-        return cache.getString("gcm_id", "");
+        return gcmId;
+    }
+
+    static String getString(Context context, String prefName, String keyName, String defValue) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName, defValue);
+    }
+
+    static void cleanKey(Context context,  String prefName, String keyName){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.remove(keyName).apply();
+    }
+
+    static void setString(Context context,String prefName, String keyName, String value) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(keyName, value);
+        editor.apply();
+    }
+
+    static String getAndTrimOldString(Context context, String prefName, String keyName, String defValue) {
+
+        String oldprefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+        String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+
+        String oldValue = getString(context, oldprefName, oldKeyName, defValue);
+
+        if(oldValue != null && !oldValue.equals(defValue)){
+            cleanKey(context, oldprefName, oldKeyName);
+            setString(context, prefName, keyName, oldValue);
+            return oldValue;
+        }
+
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName, defValue);
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {

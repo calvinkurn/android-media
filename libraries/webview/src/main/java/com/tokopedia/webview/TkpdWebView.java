@@ -1,6 +1,7 @@
 package com.tokopedia.webview;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.NonNull;
@@ -22,7 +23,9 @@ import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -40,8 +43,8 @@ public class TkpdWebView extends WebView {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
     private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
-    private static final String GCM_STORAGE = "GCM_STORAGE";
-    private static final String GCM_ID = "gcm_id";
+    private static final String GCM_STORAGE = com.tokopedia.user.session.Constants.GCM_STORAGE;
+    private static final String GCM_ID = com.tokopedia.user.session.Constants.GCM_ID;
     private RemoteConfig remoteConfig;
 
     private @Nullable TkpdWebView.WebviewScrollListener scrollListener = null;
@@ -123,15 +126,49 @@ public class TkpdWebView extends WebView {
         }
     }
 
-    private String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString(GCM_ID, "").equals("")) {
-            String tempID = UUID.randomUUID().toString();;
-            cache.putString(GCM_ID, tempID);
-            cache.applyEditor();
+    public static String getRegistrationIdWithTemp(Context context) {
+        String gcmId = getAndTrimOldString(context, GCM_STORAGE, GCM_ID, "");
+        if (gcmId.equals("")) {
+            String tempID = UUID.randomUUID().toString();
+            setString(context, GCM_STORAGE, GCM_ID, tempID);
             return tempID;
         }
-        return cache.getString(GCM_ID, "");
+        return gcmId;
+    }
+
+    static String getString(Context context, String prefName, String keyName, String defValue) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName, defValue);
+    }
+
+    static void cleanKey(Context context,  String prefName, String keyName){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.remove(keyName).apply();
+    }
+
+    static void setString(Context context,String prefName, String keyName, String value) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(keyName, value);
+        editor.apply();
+    }
+
+    static String getAndTrimOldString(Context context, String prefName, String keyName, String defValue) {
+
+        String oldprefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+        String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+
+        String oldValue = getString(context, oldprefName, oldKeyName, defValue);
+
+        if(oldValue != null && !oldValue.equals(defValue)){
+            cleanKey(context, oldprefName, oldKeyName);
+            setString(context, prefName, keyName, oldValue);
+            return oldValue;
+        }
+
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName, defValue);
     }
 
     /**
