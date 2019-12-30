@@ -42,7 +42,7 @@ object AttachInvoiceViewModelTest : Spek({
                 every { useCase.getInvoices(any(), any(), any(), any()) } just Runs
                 viewmodel.loadInvoices(1)
 
-                verify(exactly = 1) { useCase.getInvoices(any(), any(), any(), eq(1)) }
+                verify(exactly = 1) { useCase.getInvoices(any(), any(), eq(exMsgId.toInt()), eq(1)) }
             }
 
             test("Observer data changed on success") {
