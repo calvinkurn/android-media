@@ -99,12 +99,6 @@
     @android.webkit.JavascriptInterface <methods>;
 }
 
--keepclassmembers com.wandroid.traceroute.TraceRoute {
-    void clearResult();
-    void appendResult(***);
-    int execute(***);
-}
-
 -keep public class it.partytrack.sdk.ReferrerReceiver{
 public protected *;
 }
