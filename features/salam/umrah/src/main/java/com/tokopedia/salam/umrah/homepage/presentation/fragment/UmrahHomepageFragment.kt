@@ -96,7 +96,9 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         umrahHomepageViewModel.isAllError.observe(this, Observer {
             it?.let {
                 if (it) {
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadDataAll() }
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png) {
+                        loadDataAll()
+                    }
                 }
             }
         })
