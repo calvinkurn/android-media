@@ -71,7 +71,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
+
 
 /**
  * @author Irfan Khoirul on 23/04/18.

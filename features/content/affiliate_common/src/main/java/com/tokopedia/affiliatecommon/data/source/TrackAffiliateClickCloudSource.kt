@@ -22,7 +22,7 @@ class TrackAffiliateClickCloudSource @Inject constructor(
                 if (it.body() != null && it.body() != null) {
                     try {
                         val type = object : TypeToken<TrackAffiliatePojo>() {}.type
-                        gson.fromJson<TrackAffiliatePojo>(it.body(), type).success
+                        gson.fromJson<TrackAffiliatePojo>(it.body(), type).message == RESULT_SUCCESS
                     } catch (e: JSONException) {
                         e.printStackTrace()
                         false
@@ -40,5 +40,6 @@ class TrackAffiliateClickCloudSource @Inject constructor(
         const val EMPTY_BODY = "Response has empty body"
         const val NETWORK_ERROR = "Network error"
         const val PARAM_URL = "url"
+        const val RESULT_SUCCESS = "success"
     }
 }

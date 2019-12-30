@@ -37,4 +37,5 @@
 
     <color name="disabled_text">#42000000</color>
     <color name="button_border_grey">#e0e0e0</color>
+    <color name="error_area">#FFADAD</color>
 </resources>
