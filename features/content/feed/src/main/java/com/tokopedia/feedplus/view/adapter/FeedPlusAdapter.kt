@@ -63,10 +63,17 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>>  {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+
         @Suppress("UNCHECKED_CAST")
         return typeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
     }
 
+    override fun getItemViewType(position: Int): Int {
+        @Suppress("UNCHECKED_CAST")
+        val data = list[position] as Visitable<FeedPlusTypeFactory>
+
+        return data.type(typeFactory)
+    }
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>> , position: Int) {
         holder.bind(list[position])
     }
