@@ -1,12 +1,9 @@
 package com.tokopedia.hotel.roomdetail.presentation.fragment
 
 import android.app.ProgressDialog
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -15,6 +12,9 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -35,6 +35,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -190,11 +191,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString())
-                    context?.run {
-                        startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                                this, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position
-                        ))
-                    }
+                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, null)
                 }
             }
         }

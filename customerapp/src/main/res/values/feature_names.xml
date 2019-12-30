@@ -85,8 +85,8 @@
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_autocomplete_module_name" >Pencarian</string>
     <string name="autocomplete_app_name">autocomplete</string>
-    <string name="title_search_result" >Hasil Pencarian</string>
-    <string name="title_search_result_module_name" >Hasil Pencarian</string>
+    <string name="title_search_result" >Pencarian</string>
+    <string name="title_search_result_module_name" >Pencarian</string>
     <string name="search_result_app_name">search</string>
 
     <!--TopAds Dashboard-->
@@ -173,4 +173,13 @@
 
     <!-- Dynamic feature for manage product list-->
     <string name="title_product_manage">Daftar Produk</string>
+
+    <!-- Dynamic feature for opportunity-->
+    <string name="opportunity_name">Opportunity</string>
+    <string name="title_opportunity">Peluang</string>
+    <string name="title_opportunity_detail">Peluang</string>
+    <string name="title_activity_snapshot_opportunity">Snapshot</string>
+    <string name="title_take_opportunity">Ambil Peluang</string>
+    <string name="title_sort_opportunity">Urutkan</string>
+    <string name="title_filter_opportunity">Filter</string>
 </resources>

@@ -82,11 +82,12 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
-    String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
+    String OFFICIAL_STORE_CATEGORY = "tokopedia://official-store/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
+    String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String TOPCHAT_OLD = "tokopedia://topchatold";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
@@ -241,7 +242,7 @@ public interface ApplinkConst {
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
-    String KYC = "tokopedia://kyc?projectId={projectId}";
+    String KYC = "tokopedia://kyc?projectId=1";
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";

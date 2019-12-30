@@ -2,9 +2,6 @@ package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
 import android.content.Context
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,12 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
+import com.tkpd.library.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -47,7 +49,6 @@ import com.tokopedia.discovery.categoryrevamp.view.interfaces.SelectedFilterList
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -156,20 +157,32 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
     private var selectedFilterAdapter: SelectedFilterAdapter? = null
 
+    var mSelectedFilter = HashMap<String, String>()
+    var categoryUrl: String? = null
+
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+    private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
+    private val ADVERTISINGID = "ADVERTISINGID"
+    private val QUERY_APP_CLIENT_ID = "?appClientId="
 
     companion object {
         private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private val EXTRA_PARENT_ID = " PARENT_ID"
+        private val EXTRA_PARENT_NAME = " PARENT_NAME"
         private val EXTRA_BANNED_DATA = "BANNED_DATA"
+        private val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
         @JvmStatic
-        fun newInstance(departmentid: String, departmentName: String, data: Data): Fragment {
+        fun newInstance(data: Data, categoryUrl: String?): Fragment {
             val fragment = ProductNavFragment()
             val bundle = Bundle()
-            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentid)
-            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
+            if (categoryUrl != null) {
+                bundle.putString(EXTRA_CATEGORY_URL, categoryUrl)
+            } else {
+                bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, data.id.toString())
+            }
             bundle.putParcelable(EXTRA_BANNED_DATA, data)
             fragment.arguments = bundle
             return fragment
@@ -191,10 +204,12 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
-                mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
-                mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
-                bannedData = it.getParcelable(EXTRA_BANNED_DATA) as Data?
+            bannedData = it.getParcelable(EXTRA_BANNED_DATA) as Data?
+            mDepartmentId = bannedData?.id.toString()
+            mDepartmentName = bannedData?.name ?: ""
+            if (it.containsKey(EXTRA_CATEGORY_URL)) {
+                categoryUrl = it.getString(EXTRA_CATEGORY_URL, "")
+                mSelectedFilter = URLParser(it.getString(EXTRA_CATEGORY_URL, "")).paramKeyValueMap
             }
         }
     }
@@ -239,6 +254,14 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun setUpData() {
+        if (mSelectedFilter.isNotEmpty()) {
+            val filter = getSelectedFilter()
+            for (element in mSelectedFilter.entries) {
+                filter[element.key] = element.value
+            }
+            applyFilterToSearchParameter(filter)
+            setSelectedFilter(filter)
+        }
         fetchProductData(getProductListParamMap(getPage()))
         productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
         productNavViewModel.fetchQuickFilters(getQuickFilterParams())
@@ -392,13 +415,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         })
 
         productNavViewModel.getDynamicFilterData().observe(this, Observer {
-
             when (it) {
                 is Success -> {
                     renderDynamicFilter(it.data.data)
-                }
-
-                is Fail -> {
                 }
             }
         })
@@ -455,7 +474,13 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             category_btn_banned_navigation.show()
             category_btn_banned_navigation.setOnClickListener() {
                 catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
-                productNavViewModel.openBrowserSeamlessly(bannedData!!)
+                val localCacheHandler = LocalCacheHandler(activity, ADVERTISINGID)
+                val adsId = localCacheHandler.getString(KEY_ADVERTISINGID)
+                var url = Uri.parse(bannedData?.appRedirection).toString()
+                if (adsId != null && adsId.trim().isNotEmpty()) {
+                    url = url.plus(QUERY_APP_CLIENT_ID + adsId)
+                    productNavViewModel.openBrowserSeamlessly(url)
+                }
             }
         }
         txt_header.text = bannedData?.bannedMsgHeader
@@ -505,10 +530,8 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         swipe_refresh_layout.visibility = View.VISIBLE
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
-            productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
     }
 
     private fun getQuickFilterParams(): RequestParams {
@@ -541,8 +564,13 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
         searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
         searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
+        if (mSelectedFilter.isNotEmpty()) {
+            searchProductRequestParams.putAllString(mSelectedFilter)
+            mSelectedFilter.clear()
+        } else {
+            searchProductRequestParams.putAllString(getSelectedFilter())
+        }
         searchProductRequestParams.putAllString(getSelectedSort())
-        searchProductRequestParams.putAllString(getSelectedFilter())
         param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
 
 
@@ -557,6 +585,12 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, mDepartmentId)
 
         topAdsRequestParam.putAllString(getSelectedSort())
+        if (mSelectedFilter.isNotEmpty()) {
+            topAdsRequestParam.putAllString(mSelectedFilter)
+            mSelectedFilter.clear()
+        } else {
+            topAdsRequestParam.putAllString(getSelectedFilter())
+        }
 
         param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
         return param
@@ -603,6 +637,10 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             val intent = Intent(it, CategoryNavActivity::class.java)
             intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, id)
             intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryName)
+
+            intent.putExtra(EXTRA_PARENT_ID,mDepartmentId)
+            intent.putExtra(EXTRA_PARENT_NAME,mDepartmentName)
+
             it.startActivity(intent)
         }
     }
@@ -639,15 +677,14 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
+        catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), productItem.wishlist, isUserLoggedIn(), productItem.isTopAds)
 
         if (userSession.isLoggedIn) {
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
                 removeWishlist(productItem.id.toString(), userSession.userId, position)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), false)
             } else {
                 addWishlist(productItem.id.toString(), userSession.userId, position)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), true)
             }
         } else {
             launchLoginActivity(productItem.id.toString())
@@ -797,5 +834,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         layout_banned_screen.show()
         txt_header.text = getString(R.string.category_server_error_header)
         txt_sub_header.text = getString(R.string.try_again)
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return userSession.isLoggedIn
     }
 }

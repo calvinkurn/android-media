@@ -222,7 +222,7 @@ android {
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
 
@@ -293,18 +293,18 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.features.umrah)
     implementation project(rootProject.ext.features.imagePreviewSlider)
+    implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.tkpddiscovery)
-    implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecom)
@@ -344,7 +344,6 @@ dependencies {
     implementation project(rootProject.ext.features.digitalBrowse)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.commonTravel)
-    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -379,7 +378,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.features.autocomplete)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -425,8 +423,8 @@ dependencies {
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.libraries.cameraview)
-    implementation project(rootProject.ext.libraries.adapterDelegate)
-
+    implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.atc_variant)
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -451,7 +449,7 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.viewDependencies.appIntro
+
     implementation rootProject.ext.miscDependencies.bcaxcoWidget
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
@@ -461,9 +459,6 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.adapterRxJava
@@ -588,8 +583,8 @@ dependencies {
 
 
     if (enableHermes) {
-        debugImplementation 'com.facebook.hermes:hermes-debug:0.0.1@aar'
-        releaseImplementation 'com.facebook.hermes:hermes-release:0.0.1@aar'
+        debugImplementation 'com.facebook.hermes:hermes-debug:0.1.2@aar'
+        releaseImplementation 'com.facebook.hermes:hermes-release:0.1.2@aar'
     } else {
         implementation jscFlavor
     }

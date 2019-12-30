@@ -1,8 +1,7 @@
 package com.tokopedia.flight.bookingV3.data
 
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author by jessica on 2019-10-29

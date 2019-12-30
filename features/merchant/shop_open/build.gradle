@@ -40,7 +40,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
@@ -59,8 +59,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi
     kapt  rootProject.ext.miscDependencies.parceler
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }

@@ -1,6 +1,8 @@
 package com.tokopedia.navigation.presentation.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,20 +84,31 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             _adapter.addElement(it)
         })
         viewModel.notification.observe(this, Observer {
+            _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 val emptyString = EmptyState(
-                        0,
+                        R.drawable.bg_empty_state_notification,
                         getString(R.string.notification_empty_message))
                 _adapter.addElement(emptyString)
             }  else {
-                _adapter.removeEmptyState()
                 onSuccessNotificationData(it)
             }
         })
         viewModel.lastNotificationId.observe(this, Observer {
             viewModel.getTransactionNotification(it)
         })
+
+        swipeRefresh?.setOnRefreshListener {
+            swipeRefresh?.isRefreshing = true
+
+            /*
+            * add some delay for 1 sec to
+            * preventing twice swipe to refresh*/
+            Handler().postDelayed({
+                loadInitialData()
+            }, REFRESH_DELAY)
+        }
     }
 
     override fun onPause() {
@@ -121,7 +134,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     private fun onViewError() = Observer<String> { message ->
-        swipeRefresh.hide()
+        swipeRefresh?.hide()
         notificationEmpty.show()
         activity?.let {
             NetworkErrorHelper.showEmptyState(it,
@@ -133,6 +146,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun loadData(page: Int) {
+        swipeRefresh?.isRefreshing = false
         renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
     }
@@ -172,6 +186,9 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun updateFilter(filter: HashMap<String, Int>) {
+        //preventing bounce notification
+        _adapter.addElement(EmptyState(0, ""))
+
         viewModel.updateNotificationFilter(filter)
         cursor = ""
         _adapter.removeItem()
@@ -186,17 +203,14 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun showTextLonger(element: TransactionItemNotification) {
-        val bundle = Bundle().apply {
-            with(element) {
-                putString(PARAM_CONTENT_IMAGE, contentUrl)
-                putString(PARAM_CONTENT_IMAGE_TYPE, typeLink.toString())
-                putString(PARAM_CTA_APPLINK, appLink)
-                putString(PARAM_CONTENT_TEXT, body)
-                putString(PARAM_CONTENT_TITLE, title)
-                putString(PARAM_BUTTON_TEXT, btnText)
-                putString(PARAM_TEMPLATE_KEY, templateKey)
-            }
-        }
+        val bundle = Bundle()
+        bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
+        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
+        bundle.putString(PARAM_CTA_APPLINK, element.appLink)
+        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TITLE, element.title)
+        bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
+        bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
@@ -252,10 +266,9 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         analytics.saveNotificationImpression(element)
     }
 
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
     override fun getRecyclerViewResourceId() = R.id.lstNotification
-    override fun hasInitialSwipeRefresh(): Boolean = true
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME
 
@@ -269,6 +282,10 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         private const val PARAM_CTA_APPLINK = "cta applink"
         private const val PARAM_BUTTON_TEXT = "button text"
         private const val PARAM_TEMPLATE_KEY = "template key"
+
+        private const val REFRESH_DELAY = 1000L
+
+        private const val LIST_ITEM_STATE = "list_notif"
     }
 
 }

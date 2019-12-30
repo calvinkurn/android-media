@@ -72,48 +72,21 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".booking.view.activity.FlightBookingActivity"
-            android:label="@string/flight_booking_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-
-        <activity
             android:name=".bookingV2.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".booking.view.activity.FlightBookingAmenityActivity"
+            android:name=".passenger.view.activity.FlightBookingAmenityActivity"
             android:label="@string/flight_booking_luggage_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".booking.view.activity.FlightBookingPassengerActivity"
-            android:label="@string/flight_booking_passenger_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight"
-            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".passenger.view.activity.FlightBookingPassengerActivity"
             android:label="@string/flight_booking_passenger_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".booking.view.activity.FlightBookingNationalityActivity"
-            android:label="@string/activity_label_flight_nationality"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".passenger.view.activity.FlightPassengerListActivity"
-            android:label="@string/flight_booking_list_passenger_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".booking.view.activity.FlightBookingIssuingCountryActivity"
-            android:label="@string/activity_label_flight_issuing_country"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".review.view.activity.FlightBookingReviewActivity"
             android:label="@string/activity_label_flight_review"
@@ -170,12 +143,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".passenger.view.activity.FlightPassengerUpdateActivity"
-            android:label="@string/flight_passenger_update_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".cancellation.view.activity.FlightCancellationTermsAndConditionsActivity"
             android:label="@string/flight_cancellation_terms_and_condition_title"
             android:screenOrientation="portrait"
@@ -196,7 +163,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".booking.view.activity.FlightInsuranceWebviewActivity"
+            android:name=".bookingV2.presentation.activity.FlightInsuranceWebviewActivity"
             android:label="@string/flight_insurance_webview_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,10 +32,10 @@ import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.di.FlightBookingComponent
-import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
+import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingErrorCodeMapper
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
@@ -46,10 +47,7 @@ import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
-import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.common.util.FlightFlowUtil
-import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.common.util.*
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
@@ -117,6 +115,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private var needRefreshCart = false
     private var needToDoChangesOnFirstPassenger = true
     private var passengerAsTraveller = false
+    private var orderDueTimeStampString: String = ""
+    private var isFirstTime: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,6 +141,29 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putParcelable(EXTRA_SEARCH_PASS_DATA, bookingViewModel.getSearchParam())
+        outState.putString(EXTRA_FLIGHT_DEPARTURE_ID, bookingViewModel.getDepartureId())
+        outState.putString(EXTRA_FLIGHT_ARRIVAL_ID, bookingViewModel.getReturnId())
+        outState.putString(EXTRA_FLIGHT_DEPARTURE_TERM, bookingViewModel.getDepartureTerm())
+        outState.putString(EXTRA_FLIGHT_ARRIVAL_TERM, bookingViewModel.getReturnTerm())
+        outState.putParcelable(EXTRA_PRICE, bookingViewModel.getFlightPriceModel())
+        outState.putString(EXTRA_CART_ID, bookingViewModel.getCartId())
+        outState.putParcelable(EXTRA_FLIGHT_BOOKING_PARAM, bookingViewModel.getFlightBookingParam())
+        outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
+        outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(widget_traveller_info.getContactName(),
+                widget_traveller_info.getContactEmail(),
+                widget_traveller_info.getContactPhoneNum(),
+                widget_traveller_info.getContactPhoneCountry(),
+                widget_traveller_info.getContactPhoneCode()))
+        if (bookingViewModel.getPassengerModels().isNotEmpty()) outState.putParcelableArrayList(EXTRA_PASSENGER_MODELS, bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>)
+        if (bookingViewModel.getPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_PRICE_DATA, bookingViewModel.getPriceData() as ArrayList<out Parcelable>)
+        if (bookingViewModel.getOtherPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_OTHER_PRICE_DATA, bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>)
+        if (bookingViewModel.getAmenityPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_AMENITY_PRICE_DATA, bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -148,7 +171,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
-                    if (!it.data.isRefreshCart) {
+                    if (!it.data.isRefreshCart || savedInstanceState != null) {
                         renderData(it.data)
                         sendAddToCartTracking()
                     }
@@ -251,7 +274,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 if (on) {
                     val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
                     passengerAsTraveller = false
-                    navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
+                    if (isFirstTime) navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
+                    isFirstTime = true
                 } else {
                     bookingViewModel.resetFirstPassenger()
                 }
@@ -264,9 +288,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun mapThrowableToFlightError(message: String): FlightError {
         return try {
-            val gson = Gson()
-            val itemType = object : TypeToken<List<FlightError>>() {}.type
-            gson.fromJson<List<FlightError>>(message, itemType)[0]
+            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY) {
+                val error = FlightError(message)
+                error.head = getString(R.string.flight_booking_general_error_title)
+                error.message = getString(R.string.flight_booking_general_error_subtitle)
+                error
+            } else {
+                val gson = Gson()
+                val itemType = object : TypeToken<List<FlightError>>() {}.type
+                gson.fromJson<List<FlightError>>(message, itemType)[0]
+            }
         } catch (e: Exception) {
             val flightError = FlightError()
             flightError.status = message
@@ -374,6 +407,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setUpTimer(timeStamp: Date) {
+        orderDueTimeStampString = FlightDateUtil.dateToString(timeStamp, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
         countdown_timeout.setListener {
             if (context != null) {
                 refreshCart()
@@ -522,6 +556,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
         widget_traveller_info.setContactPhoneCountry("ID")
     }
 
+    private fun renderProfileData(profileInfo: FlightContactData) {
+        widget_traveller_info.setContactName(profileInfo.name)
+        widget_traveller_info.setContactPhoneNum(profileInfo.countryCode, profileInfo.phone)
+        widget_traveller_info.setContactEmail(profileInfo.email)
+        widget_traveller_info.setContactPhoneCountry(profileInfo.country)
+    }
+
     override fun initInjector() {
         getComponent(FlightBookingComponent::class.java).inject(this)
     }
@@ -532,9 +573,42 @@ class FlightBookingFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchLoadingPageJob.start()
+        isFirstTime = savedInstanceState == null
         setUpView()
-        initialize()
+
+        if (savedInstanceState == null) {
+            launchLoadingPageJob.start()
+            initialize()
+        } else {
+            hideShimmering()
+            renderUiFromBundle(savedInstanceState)
+        }
+    }
+
+    private fun renderUiFromBundle(args: Bundle) {
+        val flightBookingParam = args.getParcelable(EXTRA_FLIGHT_BOOKING_PARAM) ?: FlightBookingModel()
+        bookingViewModel.setFlightBookingParam(flightBookingParam)
+
+        val cartId = args.getString(EXTRA_CART_ID, "")
+        bookingViewModel.setCartId(cartId)
+
+        orderDueTimeStampString = args.getString(EXTRA_ORDER_DUE, "")
+        if (orderDueTimeStampString.isNotEmpty()) setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
+
+        val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
+        renderProfileData(profileData)
+
+        val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS) ?: listOf<FlightBookingPassengerViewModel>()
+        bookingViewModel.setPassengerModels(passengerModels)
+
+        val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        bookingViewModel.setPriceData(priceData)
+        val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        bookingViewModel.setOtherPriceData(otherPriceData)
+        val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        bookingViewModel.setAmenityPriceData(amenityPriceData)
+
+        refreshCart()
     }
 
     private fun initialize() {
@@ -658,17 +732,19 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private var launchLoadingPageJob = uiScope.launch {
-        val list = randomLoadingSubtitle()
         try {
-            layout_loading.visibility = View.VISIBLE
-            tv_loading_subtitle.text = list[0]
-            delay(2000L)
-            tv_loading_subtitle.text = list[1]
-            delay(2000L)
-            tv_loading_subtitle.text = list[2]
-            delay(2000L)
-            layout_loading.visibility = View.GONE
-            layout_shimmering.visibility = View.VISIBLE
+            if (bookingViewModel.getCartId().isEmpty()) {
+                val list = randomLoadingSubtitle()
+                layout_loading.visibility = View.VISIBLE
+                tv_loading_subtitle.text = list[0]
+                delay(2000L)
+                tv_loading_subtitle.text = list[1]
+                delay(2000L)
+                tv_loading_subtitle.text = list[2]
+                delay(2000L)
+                layout_loading.visibility = View.GONE
+                layout_shimmering.visibility = View.VISIBLE
+            }
         } catch (e: Throwable) {
         }
     }
@@ -699,8 +775,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
         layout_full_page_error.visibility = View.VISIBLE
         layout_full_page_error.iv_error_page.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
-        layout_full_page_error.tv_error_title.text = FlightBookingErrorCodeMapper.getErrorTitle(errorCode)
-        layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
+        layout_full_page_error.tv_error_title.text = e.head
+        layout_full_page_error.tv_error_subtitle.text = e.message
         layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_refind_ticket)
         layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
     }
@@ -799,8 +875,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                     dialog.setCancelable(false)
                     dialog.setOverlayClose(false)
-                    dialog.setTitle(FlightBookingErrorCodeMapper.getErrorTitle(errorCode))
-                    dialog.setDescription(FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode))
+                    if (e.head.isNotEmpty()) dialog.setTitle(e.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
+                    if (e.message.isNotEmpty()) dialog.setDescription(e.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
                     dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
                     dialog.show()
                 }
@@ -975,6 +1051,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_FLIGHT_ARRIVAL_TERM = "EXTRA_FLIGHT_ARRIVAL_TERM"
         const val EXTRA_PRICE = "EXTRA_PRICE"
         const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
+
+        const val EXTRA_ORDER_DUE = "EXTRA_ORDER_DUE"
+        const val EXTRA_CONTACT_DATA = "EXTRA_CONTACT_DATA"
+        const val EXTRA_PASSENGER_MODELS = "EXTRA_PASSENGER_MODELS"
+        const val EXTRA_PRICE_DATA = "EXTRA_PRICE_DATA"
+        const val EXTRA_OTHER_PRICE_DATA = "EXTRA_OTHER_PRICE_DATA"
+        const val EXTRA_AMENITY_PRICE_DATA = "EXTRA_AMENITY_PRICE_DATA"
+        const val EXTRA_CART_ID = "EXTRA_BOOKING_CART_ID"
+        const val EXTRA_FLIGHT_BOOKING_PARAM = "EXTRA_FLIGHT_BOOKING_PARAM"
 
         const val REQUEST_CODE_PASSENGER = 1
         const val REQUEST_CODE_CONTACT_FORM = 12

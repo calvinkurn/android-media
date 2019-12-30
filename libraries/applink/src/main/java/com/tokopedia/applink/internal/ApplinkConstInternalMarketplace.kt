@@ -28,6 +28,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val DISCOVERY_CATEGORY_DETAIL = "$INTERNAL_MARKETPLACE/category/{DEPARTMENT_ID}/"
 
+    @JvmField
+    val DISCOVERY_CATEGORY_DETAIL_QUERY = "$INTERNAL_MARKETPLACE/category/{DEPARTMENT_ID}/?{query_param}"
+
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
     @JvmField
     val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
