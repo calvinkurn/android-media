@@ -60,7 +60,7 @@ import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.developer_options.remote_config.StethoUtil;
+import com.tokopedia.developer_options.stetho.StethoUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
