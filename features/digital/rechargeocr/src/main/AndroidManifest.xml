@@ -19,7 +19,7 @@
             <category android:name="android.intent.category.BROWSABLE" />
 
             <data
-                android:host="@string/host_digital"
+                android:host="@string/host_recharge"
                 android:path="@string/path_camera_ocr"
                 android:scheme="@string/internal_scheme" />
         </intent-filter>
