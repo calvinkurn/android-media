@@ -1,10 +1,10 @@
-package com.tokopedia.adapter_delegate.common
+package com.tokopedia.adapterdelegate.common
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.adapter_delegate.TypedAdapterDelegate
+import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 
 /**
  * Created by jegul on 2019-10-10

@@ -1,4 +1,4 @@
-package com.tokopedia.adapter_delegate
+package com.tokopedia.adapterdelegate
 
 import android.view.View
 import androidx.annotation.StringRes
