@@ -60,7 +60,6 @@ open class VersionTask : DefaultTask() {
                     if (depGroup?.contains(TOKOPEDIA) == true) {
                         val depName = it.name
                         // create list tree
-                        println("add dependency: $projectName to $depName")
                         dependenciesHashSet.add(projectName to depName)
                     }
                 }
@@ -72,9 +71,6 @@ open class VersionTask : DefaultTask() {
                 candidateModuleListToUpdate.add(projectName)
             }
         }
-        println("hashSet $dependenciesHashSet")
-        println("candidateModuleListToUpdate $candidateModuleListToUpdate")
-        println("versionList $versionList")
     }
 
     private fun moduleHasNewChanges(module: String): Boolean {
