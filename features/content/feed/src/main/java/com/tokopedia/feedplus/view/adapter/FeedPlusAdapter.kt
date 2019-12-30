@@ -17,7 +17,7 @@ import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
@@ -142,6 +142,10 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
     fun getlist(): MutableList<Visitable<*>> {
         return list
+    }
+
+    fun getList(): ArrayList<Visitable<*>> {
+        return ArrayList(list)
     }
 
     fun addItem(item: Visitable<*>) {

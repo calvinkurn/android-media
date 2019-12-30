@@ -602,8 +602,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
             OPEN_INTERESTPICK_DETAIL -> {
-                val newList: MutableList<Visitable<*>> = mutableListOf()
-                newList.addAll(adapter.getlist())
+                val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
                 val selectedIdList = data.getIntegerArrayListExtra(FeedOnboardingFragment.EXTRA_SELECTED_IDS)
                 newList.firstOrNull { it is OnboardingViewModel }?.let {
                     (it as? OnboardingViewModel)?.dataList?.forEach {
@@ -869,8 +868,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessFollowKolFromRecommendation(rowNumber: Int, position: Int, isFollow: Boolean) {
-        val newList: MutableList<Visitable<*>> = mutableListOf()
-        newList.addAll(adapter.getlist())
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         if (newList[rowNumber] is FeedRecommendationViewModel) {
             val (_, cards) = newList[rowNumber] as FeedRecommendationViewModel
             cards[position].cta.isFollow = isFollow
@@ -879,8 +877,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
-        val newList: MutableList<Visitable<*>> = mutableListOf()
-        newList.addAll(adapter.getlist())
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         if (rowNumber != DEFAULT_VALUE
                 && newList.size > rowNumber
                 && newList[rowNumber] is DynamicPostViewModel) {
@@ -909,8 +906,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        val newList: MutableList<Visitable<*>> = mutableListOf()
-        newList.addAll(adapter.getlist())
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, header) = newList[rowNumber] as DynamicPostViewModel
             header.followCta.isFollow = !header.followCta.isFollow
@@ -926,8 +922,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        val newList: MutableList<Visitable<*>> = mutableListOf()
-        newList.addAll(adapter.getlist())
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
             val like = footer.like
@@ -978,8 +973,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onSuccessSendVote(rowNumber: Int, optionId: String,
                                    voteStatisticDomainModel: VoteStatisticDomainModel) {
-        val newList: MutableList<Visitable<*>> = mutableListOf()
-        newList.addAll(adapter.getlist())
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, contentList) = newList[rowNumber] as DynamicPostViewModel
             for (basePostViewModel in contentList) {
@@ -1028,8 +1022,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
-        val newList: MutableList<Visitable<*>> = mutableListOf()
-        newList.addAll(adapter.getlist())
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         if (newList[rowNumber] is DynamicPostViewModel) {
             val (_, _, header) = newList[rowNumber] as DynamicPostViewModel
             header.followCta.isFollow = !header.followCta.isFollow
@@ -1479,8 +1472,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
-        val newList: MutableList<Visitable<*>> = mutableListOf()
-        newList.addAll(adapter.getlist())
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         newList.removeAt(rowNumber)
         adapter.updateList(newList)
         val snackbar = ToasterNormal.make(view,
