@@ -290,7 +290,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         resetInputData()
 
         val dataList: MutableList<Visitable<RechargeGeneralAdapterFactory>> = mutableListOf()
-        if (productData.needEnquiry) {
+        if (productData.enquiryFields.isNotEmpty()) {
             val enquiryFields = productData.enquiryFields.toMutableList()
             val enquiryInfo = productData.enquiryFields.find { it.style == INPUT_TYPE_ENQUIRY_INFO }
             if (enquiryInfo != null) {
@@ -298,28 +298,30 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 // Set enquiry button label
                 setEnquiryButtonLabel(enquiryInfo.text)
             }
-            // Set favorite number if available
-            val itr = enquiryFields.listIterator()
-            while (itr.hasNext()) {
-                val item = itr.next()
-                if (item.name == PARAM_CLIENT_NUMBER) {
-                    if (favoriteNumbers.isNotEmpty()) {
-                        item.style = INPUT_TYPE_FAVORITE_NUMBER
-                    }
-                    if (clientNumber.isNotEmpty()) {
-                        item.value = clientNumber
-                        clientNumber = ""
-                    }
+            if (productData.needEnquiry) {
+                // Set favorite number if available
+                val itr = enquiryFields.listIterator()
+                while (itr.hasNext()) {
+                    val item = itr.next()
+                    if (item.name == PARAM_CLIENT_NUMBER) {
+                        if (favoriteNumbers.isNotEmpty()) {
+                            item.style = INPUT_TYPE_FAVORITE_NUMBER
+                        }
+                        if (clientNumber.isNotEmpty()) {
+                            item.value = clientNumber
+                            clientNumber = ""
+                        }
 
+                    }
+                    if (inputData.containsKey(item.name)) {
+                        item.value = inputData[item.name]!!
+                    }
+                    itr.set(item)
                 }
-                if (inputData.containsKey(item.name)) {
-                    item.value = inputData[item.name]!!
-                }
-                itr.set(item)
+                dataList.addAll(enquiryFields)
+
+                inputDataSize = enquiryFields.size
             }
-            dataList.addAll(enquiryFields)
-
-            inputDataSize = enquiryFields.size
         }
 
         // Show product field if there is > 1 product
@@ -331,7 +333,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             productId = productData.product.dataCollections.getOrNull(0)?.products?.getOrNull(0)?.id ?: ""
         }
 
-        adapter.renderList(dataList)
+        if (dataList.isNotEmpty()) adapter.renderList(dataList)
 //        trackSearchResultCategories(it.data)
     }
 
@@ -552,7 +554,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun enquire() {
         if (validateEnquiry()) {
-            getEnquiry(operatorId.toString(), productId, inputData)
+            if (!userSession.isLoggedIn) {
+                navigateToLoginPage()
+            } else {
+                getEnquiry(operatorId.toString(), productId, inputData)
+            }
         }
     }
 
