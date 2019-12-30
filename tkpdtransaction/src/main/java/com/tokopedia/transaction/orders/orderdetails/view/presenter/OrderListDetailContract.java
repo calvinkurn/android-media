@@ -102,7 +102,8 @@ public interface OrderListDetailContract {
 
         void askPermission();
 
-        void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse);
+        void setRecommendation(Object object);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
