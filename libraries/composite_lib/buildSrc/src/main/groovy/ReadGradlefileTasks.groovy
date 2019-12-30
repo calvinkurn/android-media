@@ -1,6 +1,8 @@
 import groovy.time.TimeCategory
 import org.gradle.api.DefaultTask
 
+import java.time.LocalDateTime
+
 class ReadGradlefileTasks extends DefaultTask{
     def subprojects
     ArrayList<VersionModel> listVersion = new ArrayList()
@@ -11,8 +13,6 @@ class ReadGradlefileTasks extends DefaultTask{
     Map<String, Integer> versionConfig = new HashMap<String, Integer>()
     def versionMap = new HashMap<String, String>()
 
-    String lastRelease
-    
     def readGradleFile(){
         def reader = new File('tools/version/version.gradle')
         def writer = new File('tools/version/version_temp.gradle')
@@ -36,12 +36,8 @@ class ReadGradlefileTasks extends DefaultTask{
         writer.renameTo("tools/version/version.gradle")
         if(!listVersion.empty){
             File file = new File("tools/version/release_date.txt")
-            def newdate = new Date().parse("yyyy-MM-dd HH:mm:ss", lastRelease)
-            use( TimeCategory ){
-                newdate += 30.minutes
-            }
             file << "\n"
-            file.append(newdate.format("yyyy-MM-dd HH:mm:ss"))
+            file.append(LocalDateTime.now().format("yyyy-MM-dd HH:mm:ss"))
         }
     }
     def topList(){
@@ -53,7 +49,9 @@ class ReadGradlefileTasks extends DefaultTask{
         }
         graph = new Graph(listModule.size())
         listTree.each{ tree ->
-            graph.addEdge(listModule.get("${tree.first}"),listModule.get("${tree.second}"))
+            if (listModule.get("${tree.second}") != null) {
+                graph.addEdge(listModule.get("${tree.first}"),listModule.get("${tree.second}"))
+            }
         }
         graph.topologicalSort()
 
@@ -89,7 +87,7 @@ class ReadGradlefileTasks extends DefaultTask{
 
             // total first
             splits.eachWithIndex { String entry, int i ->
-                valueResult += entry.toInteger()*unit[i]
+                valueResult += toInteger(entry) * unit[i]
             }
 
             // increment by one
@@ -102,6 +100,30 @@ class ReadGradlefileTasks extends DefaultTask{
             return result.join(".")
         }else
             return currentVersion
+    }
+
+    //allowing string to integer, and will truncate if there is exception
+    // example: "3-encrypt" -> 3
+    static Integer toInteger(String entry) {
+        try {
+            return entry.toInteger()
+        } catch (Exception e) {
+            def len = entry.length()
+            def newString = ""
+            for (int i = 0; i<len; i++) {
+                def charEntry = entry.charAt(i)
+                if (Character.isDigit(charEntry)) {
+                    newString += charEntry
+                } else {
+                    break
+                }
+            }
+            try {
+                return newString.toInteger()
+            } catch (Exception e2) {
+                return 1
+            }
+        }
     }
 
     void moduleVersionUpdate(){
@@ -155,12 +177,8 @@ class ReadGradlefileTasks extends DefaultTask{
         }
         if(!listVersion.empty){
             File file = new File("tools/version/release_date.txt")
-            def newdate = new Date().parse("yyyy-MM-dd HH:mm:ss", lastRelease)
-            use( TimeCategory ){
-                newdate += 30.minutes
-            }
             file << "\n"
-            file.append(newdate.format("yyyy-MM-dd HH:mm:ss"))
+            file.append(LocalDateTime.now().format("yyyy-MM-dd HH:mm:ss"))
         }
     }
     def returnBackup(){
@@ -180,7 +198,8 @@ class ReadGradlefileTasks extends DefaultTask{
     }
     def compileModule(String module){
         def stdout = new ByteArrayOutputStream()
-        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
-        return stdout.toString().trim().replace("'", "").replace(","," ")
+//        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel --stacktrace".execute().text
+//        return stdout.toString().trim().replace("'", "").replace(","," ")
+        return "BUILD SUCCESSFUL" // just to test
     }
 }

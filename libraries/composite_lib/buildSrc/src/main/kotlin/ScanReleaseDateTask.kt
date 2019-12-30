@@ -8,18 +8,18 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class ScanReleaseDateTask : DefaultTask() {
+    var latestReleaseDate = ""
 
-    var listReleaseDate = mutableListOf<String>()
-
-    @InputFile
+    //@InputFile
     val file = File ("tools/version/release_date.txt")
 
     @TaskAction
     fun run() {
-        println("[Start Scan Release Date Task]")
         file.forEachLine {
-            listReleaseDate.add(it)
+            if (it.isNotEmpty()) {
+                latestReleaseDate = it
+            }
         }
-        println(listReleaseDate)
+        println(latestReleaseDate)
     }
 }

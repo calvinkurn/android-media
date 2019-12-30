@@ -1,8 +1,8 @@
 package com.tokopedia.plugin
 
-data class VersionModel(
+data class VersionModelB(
     val projectName: String,
-    val incrementCount: Float,
     val groupId: String,
     val artifactId: String,
-    val artifactName: String)
+    val artifactName: String,
+    val versionName: String)

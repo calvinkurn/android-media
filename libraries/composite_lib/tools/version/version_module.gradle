@@ -1,40 +1,65 @@
-import com.tokopedia.plugin.ScanProjectTask
 import com.tokopedia.plugin.ScanReleaseDateTask
 import com.tokopedia.plugin.VersionTask
+import com.tokopedia.plugin.PublishCompositeTask
 
 // jadi cara `ini` store semua variable diantara task
-task readGradlefile(type: ReadGradlefileTasks){
-    subprojects = project.subprojects
+//task readGradlefile(type: ReadGradlefileTasks){
+//    subprojects = project.subprojects
+//    doLast{
+//        latestReleaseDate = scanReleaseDate.latestReleaseDate
+//        listVersion = versionDependency.listVersion
+//        listTree = versionDependency.listTree
+//        topList()
+//        readVersionConfig()
+//        moduleVersionUpdate()
+//    }
+//}
+
+// scan semua subproject dan simpan dalam list `listModule`
+//task scanProject(type: ScanProjectTask){}
+
+task scanReleaseDate(type: ScanReleaseDateTask){
+    doFirst {
+        println("[SCAN RELEASE DATE TASK START]")
+    }
     doLast{
-        lastRelease = scanReleaseDate.listReleaseDate[scanReleaseDate.listReleaseDate.size()-1]
-        listVersion = versionDependency.listVersion
-        listTree = versionDependency.listTree
-        topList()
-        readVersionConfig()
-        moduleVersionUpdate()
+        println("[SCAN RELEASE DATE TASK FINISHED]")
     }
 }
 
-// scan semua subproject dan simpan dalam list `listModule`
-task scanProject(type: ScanProjectTask){}
+//task versionDependency(type: VersionTasks, dependsOn: scanReleaseDate) {
+//    doFirst {
+//        // simpan list release date
+//        latestReleaseDate = scanReleaseDate.latestReleaseDate
+//
+//        // simpan root Project {Project}
+//        rootProjectTask = rootProject
+//    }
+//    // setelah task dipanggil selesaikan dengan readGradle
+////    finalizedBy readGradlefile
+//}
 
-task scanReleaseDate(type: ScanReleaseDateTask, dependsOn: scanProject){}
-
-task versionDependency(type: VersionTasks, dependsOn: scanReleaseDate) {
-    // simpan list release date
-    listReleaseDate = scanReleaseDate.listReleaseDate
-
-    // setelah task dipanggil selesaikan dengan readGradle
-    finalizedBy readGradlefile
-
-    // simpan root Project {Project}
-    rootProjectTask = rootProject
+task listingVersionTask(type: VersionTask, dependsOn: scanReleaseDate) {
+    doFirst {
+        println("[VERSION TASK START]")
+        latestReleaseDateString = scanReleaseDate.latestReleaseDate
+    }
+    doLast {
+        println("[VERSION TASK END]")
+    }
 }
 
-task versionDependencyB(type: VersionTask, dependsOn: scanReleaseDate) {
-    // simpan list release date
-    listReleaseDate = scanReleaseDate.listReleaseDate
-    finalizedBy readGradlefile
+task versionDependency(type: PublishCompositeTask, dependsOn: listingVersionTask){
+    doFirst {
+        println("[PUBLISH COMPOSITE TASK START]")
+        latestReleaseDateString = listingVersionTask.latestReleaseDateString
+        dependenciesHashSet = listingVersionTask.dependenciesHashSet
+        candidateModuleListToUpdate = listingVersionTask.candidateModuleListToUpdate
+        versionList = listingVersionTask.versionList
+    }
+    doLast{
+        println("[PUBLISH COMPOSITE TASK FINISHED]")
+    }
 }
 
 configurations {
