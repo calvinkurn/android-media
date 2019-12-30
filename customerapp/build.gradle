@@ -425,6 +425,60 @@ dependencies {
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.atc_variant)
+
+
+    //implementing dynamic features
+    implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.profile)
+
+    implementation project(rootProject.ext.features.digitalTopupBills)
+    implementation project(rootProject.ext.features.digitalHomepage)
+    implementation project(rootProject.ext.features.voucherGame)
+
+    implementation project(rootProject.ext.features.imageSearch)
+    implementation project(rootProject.ext.features.similarSearch)
+
+
+    implementation project(rootProject.ext.features.ovoPayWithQr)
+    implementation project(rootProject.ext.features.wallet)
+    implementation project(rootProject.ext.features.instantLoan)
+    implementation project(rootProject.ext.features.ovop2p)
+    implementation project(rootProject.ext.features.saldodetails)
+
+    implementation project(rootProject.ext.features.referral)
+
+    implementation project(rootProject.ext.features.report)
+    implementation project(rootProject.ext.features.powerMerchantSubscribe)
+    implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.shopSettings)
+
+    implementation project(rootProject.ext.features.contactUs)
+    implementation project(rootProject.ext.features.tokopoints)
+
+    implementation project(rootProject.ext.features.opportunity)
+    implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.travelHomepage)
+    implementation project(rootProject.ext.features.hotel)
+
+    implementation project(rootProject.ext.features.topAdsDashboard)
+
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.chatbot)
+    implementation project(rootProject.ext.features.groupchat)
+    implementation project(rootProject.ext.features.onboarding)
+    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
+
+    implementation project(rootProject.ext.features.paymentSetting)
+
+    //dynamic feature end
+
+
+
+
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
