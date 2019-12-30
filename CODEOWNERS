@@ -1,3 +1,6 @@
+/features/content/explore/              				@tokopedia/minion-dave
+/features/content/feed/                 				@tokopedia/minion-dave
+/features/content/feed_component/       				@tokopedia/minion-dave
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -67,6 +70,7 @@
 /features/payment/payment_setting/              		@tokopedia/minion-bob
 /features/payment/pms/                          		@tokopedia/minion-bob
 /features/transaction/atc_common/               		@tokopedia/minion-bob
+/features/transaction/opportunity/               		@tokopedia/minion-bob
 /features/transaction/sellerorder/                      @tokopedia/minion-bob
 /features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
@@ -108,9 +112,6 @@
 /features/content/affiliate/            				@tokopedia/minion-stuart
 /features/content/affiliate_common/     				@tokopedia/minion-stuart
 /features/content/createpost/           				@tokopedia/minion-stuart
-/features/content/explore/              				@tokopedia/minion-stuart
-/features/content/feed/                 				@tokopedia/minion-stuart
-/features/content/feed_component/       				@tokopedia/minion-stuart
 /features/content/interest_pick/        				@tokopedia/minion-stuart
 /features/content/kol/                  				@tokopedia/minion-stuart
 /features/content/kol_common/           				@tokopedia/minion-stuart
