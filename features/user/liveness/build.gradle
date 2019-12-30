@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+    mavenCentral()
+    flatDir {
+//        dirs 'libs'
+        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
+    }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation project(rootProject.ext.libraries.liveness_lib)
+//    api(name: 'guardian_core_v1.6', ext: 'aar')
+
+    implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icon
+}
