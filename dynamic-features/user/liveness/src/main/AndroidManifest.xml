@@ -3,7 +3,7 @@
     package="com.tokopedia.liveness.customerapp">
 
     <dist:module
-        dist:onDemand="false"
+        dist:onDemand="true"
         dist:title="@string/title_liveness_detection">
         <dist:fusing dist:include="true" />
     </dist:module>
