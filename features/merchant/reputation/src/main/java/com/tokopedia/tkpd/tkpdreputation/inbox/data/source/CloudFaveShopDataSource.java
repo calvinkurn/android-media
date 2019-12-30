@@ -1,10 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 

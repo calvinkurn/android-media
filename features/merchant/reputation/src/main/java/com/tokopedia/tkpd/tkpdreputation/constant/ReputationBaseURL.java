@@ -44,4 +44,8 @@ public class ReputationBaseURL {
     // Tome
     public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
 
+    // fave shop
+    public static final String PATH_FAVE_SHOP = "fav_shop.pl";
+    public static final String URL_FAVE_SHOP_ACTION = BASE_DOMAIN + "v4/action/favorite-shop/";
+
 }

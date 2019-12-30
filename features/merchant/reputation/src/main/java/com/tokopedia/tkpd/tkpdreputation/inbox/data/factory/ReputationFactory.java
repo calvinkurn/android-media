@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.factory;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.source.CloudGetLikeDislikeDataSource;
@@ -30,6 +29,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendSmileyReputa
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSkipReviewDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.LocalInboxReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
 import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetHelpfulReviewCloud;

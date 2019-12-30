@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -12,9 +13,9 @@ import rx.functions.Func1;
  * @author by nisie on 9/26/17.
  */
 
-public class FaveShopMapper implements Func1<Response<TkpdResponse>, FavoriteShopDomain> {
+public class FaveShopMapper implements Func1<Response<TokopediaWsV4Response>, FavoriteShopDomain> {
     @Override
-    public FavoriteShopDomain call(Response<TkpdResponse> response) {
+    public FavoriteShopDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 try {
