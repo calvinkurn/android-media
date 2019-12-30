@@ -178,7 +178,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         private val SHOP_INDEX_PROMO_GLOBAL = -1
 
-        private val HAS_ELEVATION = 8
+        private val HAS_ELEVATION = 12
         private val NO_ELEVATION = 0
         private val CART_TRACE = "mp_cart"
         private val CART_ALL_TRACE = "mp_cart_all"
@@ -360,12 +360,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return true
     }
 
-    private fun onContentAvailabilityChanged(available: Boolean) {
+    private fun setToolbarShadowVisibility(show: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (available) {
-                appBarLayout.elevation = NO_ELEVATION.toFloat()
-            } else {
+            if (show) {
                 appBarLayout.elevation = HAS_ELEVATION.toFloat()
+            } else {
+                appBarLayout.elevation = NO_ELEVATION.toFloat()
             }
         }
     }
@@ -435,9 +435,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if ((parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition() >= firstCartSectionHeaderPosition) {
                             if (cardHeader.visibility != View.GONE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                                 cardHeader.gone()
+                                setToolbarShadowVisibility(true)
                             }
                         } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                             cardHeader.show()
+                            setToolbarShadowVisibility(false)
                         }
                     }
                 }
@@ -1275,6 +1277,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
         )
 
+        setToolbarShadowVisibility(cartListData.shopGroupAvailableDataList.isEmpty())
         cartAdapter.notifyDataSetChanged()
     }
 
@@ -1296,6 +1299,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartRecyclerView.removeItemDecoration(cartItemDecoration)
         }
 
+        setToolbarShadowVisibility(true)
         cartAdapter.notifyDataSetChanged()
     }
 
@@ -1418,7 +1422,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             it.invalidateOptionsMenu()
             refreshHandler?.finishRefresh()
             showErrorContainer()
-            onContentAvailabilityChanged(false)
+            setToolbarShadowVisibility(true)
             NetworkErrorHelper.showEmptyState(it, llNetworkErrorView, message) {
                 llNetworkErrorView.gone()
                 rlContent.show()
@@ -1458,7 +1462,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
-        onContentAvailabilityChanged(false)
     }
 
     private fun showSnackbarRetry(message: String) {
@@ -1647,7 +1650,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun renderLoadGetCartData() {
         showMainContainerLoadingInitData()
-        onContentAvailabilityChanged(false)
     }
 
     override fun renderLoadGetCartDataFinish() {
@@ -1655,12 +1657,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             refreshHandler?.isRefreshing = false
         }
         showMainContainer()
-        onContentAvailabilityChanged(true)
     }
 
     override fun onDeleteCartDataSuccess(deletedCartIds: List<String>) {
         cartAdapter.removeCartItemById(deletedCartIds, context)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+        setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
         notifyBottomCartParent()
     }
 
