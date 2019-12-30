@@ -1,10 +1,10 @@
-package com.tokopedia.developer_options.remote_config;
+package com.tokopedia.developer_options.stetho;
 
 import android.content.Context;
 import com.facebook.stetho.Stetho;
 
 /**
- * @author okasurya on 2019-08-19.
+ * @author Vishal Gupta on 2019-12-30.
  */
 public class StethoUtil {
     public static void initStetho(Context context) {
