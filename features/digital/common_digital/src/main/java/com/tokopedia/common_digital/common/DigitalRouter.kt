@@ -12,7 +12,7 @@ import okhttp3.Interceptor
  */
 interface DigitalRouter {
 
-    val chuckInterceptor: Interceptor
+    val chuckerInterceptor: Interceptor
 
     val intentDeepLinkHandlerActivity: Intent
 
