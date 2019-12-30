@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.widget.R
+import com.tokopedia.topads.widget.dashboard.analytic.TopAdsWidgetTracker
 import com.tokopedia.topads.widget.dashboard.data.TopAdsDepositResponse
 import com.tokopedia.topads.widget.dashboard.data.TopAdsStatisticResponse
 import com.tokopedia.topads.widget.dashboard.di.DaggerDashboardWidgetComponent
@@ -39,6 +40,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: DashboardWidgetViewModel
+    internal var tracker: TopAdsWidgetTracker? = null
 
     override fun initInjector() {
         context?.let {
@@ -61,6 +63,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardWidgetViewModel::class.java)
         setupView()
+        tracker = TopAdsWidgetTracker()
     }
 
     override fun onResume() {
@@ -134,6 +137,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
             txt_empty_wording.setText(txt)
             txt_empty_wording.setOnClickListener {
                 RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+                tracker?.eventTopAdsMulaiBeriklan()
             }
         }
         btn_expander.setOnClickListener {
@@ -141,15 +145,18 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         }
         btn_go_to_dashboard_topads.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+            tracker?.eventTopAdsLihatDashboard()
         }
         btn_retry.setOnClickListener {
             loadData()
         }
         layout_ads_saldo.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT)
+            tracker?.eventTopAdsCreditHistory()
         }
         btn_start_active_topads.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+            tracker?.eventTopAdsAktifkan()
         }
     }
 
