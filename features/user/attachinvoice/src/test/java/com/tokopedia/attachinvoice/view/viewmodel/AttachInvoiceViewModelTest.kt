@@ -5,6 +5,7 @@ import com.tokopedia.attachinvoice.InstantTaskExecutorRuleSpek
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.usecase.GetInvoiceUseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
@@ -18,6 +19,7 @@ object AttachInvoiceViewModelTest : Spek({
 
         val exMsgId = "6696"
         val exInvoiceResponse = GetInvoiceResponse()
+        val exErrorInvoiceResponse = Throwable("Dummy throwable")
         val useCase by memoized { mockk<GetInvoiceUseCase>() }
         val viewmodel by memoized { AttachInvoiceViewModel(useCase) }
 
@@ -44,6 +46,8 @@ object AttachInvoiceViewModelTest : Spek({
             }
 
             test("Observer data changed on success") {
+                // In mockk, mocking observer need to use relaxed = true
+                // because we don't want to specify the onChanged(T) behaviour
                 val observer = mockk<Observer<Result<List<Invoice>>>>(relaxed = true)
                 every { useCase.getInvoices(captureLambda(), any(), any(), any()) } answers {
                     val onSuccess = lambda<(GetInvoiceResponse) -> Unit>()
@@ -55,6 +59,20 @@ object AttachInvoiceViewModelTest : Spek({
                 viewmodel.loadInvoices(1)
 
                 verify { observer.onChanged(Success(exInvoiceResponse.invoices)) }
+            }
+
+            test("Observer data changed on error") {
+                val observer = mockk<Observer<Result<List<Invoice>>>>(relaxed = true)
+                every { useCase.getInvoices(any(), captureLambda(), any(), any()) } answers {
+                    val onError = lambda<(Throwable) -> Unit>()
+                    onError.invoke(exErrorInvoiceResponse)
+                }
+
+                viewmodel.invoices.observeForever(observer)
+
+                viewmodel.loadInvoices(1)
+
+                verify { observer.onChanged(Fail(exErrorInvoiceResponse)) }
             }
         }
     }
