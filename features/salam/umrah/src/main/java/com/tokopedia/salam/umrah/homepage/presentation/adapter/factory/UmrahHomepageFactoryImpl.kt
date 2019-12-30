@@ -16,11 +16,12 @@ import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahH
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageMyUmrahViewHolder
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageSpinnerLikeViewHolder
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by firman on 23/10/19
  */
-class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener)
+class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener, val userSession: UserSessionInterface)
     : BaseAdapterTypeFactory(), UmrahHomepageFactory{
 
 
@@ -50,7 +51,7 @@ class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener)
 
         return when(type){
             UmrahHomepageSpinnerLikeViewHolder.LAYOUT -> UmrahHomepageSpinnerLikeViewHolder(view, onBindListener)
-            UmrahHomepageMyUmrahViewHolder.LAYOUT -> UmrahHomepageMyUmrahViewHolder(view, onBindListener, adapterMyUmrah)
+            UmrahHomepageMyUmrahViewHolder.LAYOUT -> UmrahHomepageMyUmrahViewHolder(view, onBindListener, adapterMyUmrah, userSession)
             UmrahHomepageCategoryViewHolder.LAYOUT -> UmrahHomepageCategoryViewHolder(view, onBindListener, adapterChoosePacket)
             UmrahHomepageCategoryFeaturedViewHolder.LAYOUT -> UmrahHomepageCategoryFeaturedViewHolder(view, onBindListener, adapterFeaturedCategory)
             else -> super.createViewHolder(view, type)

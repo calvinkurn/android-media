@@ -113,7 +113,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
 
     private fun showGetListError() {
         swipeToRefresh.isEnabled = false
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) {
+        NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.img_umrah_pdp_empty_state) {
             requestData()
         }
     }
@@ -335,6 +335,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         val hotels = umrahProduct.hotels
         umrahPdpHotelAdapter.hotels = hotels
         rv_umrah_pdp_accommodation.apply {
+            isNestedScrollingEnabled = false
             adapter = umrahPdpHotelAdapter.apply {
                 onImageListener = object : UmrahPdpHotelImagesAdapter.UmrahPdpHotelImagesListener {
                     override fun onImageClicked(itemPosition: Int, position: Int) {
@@ -365,6 +366,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private fun setupRVAirlines() {
         umrahPdpAirlineAdapter.airlines = umrahProduct.airlines
         rv_umrah_pdp_airline.apply {
+            isNestedScrollingEnabled = false
             adapter = umrahPdpAirlineAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
@@ -411,6 +413,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private fun setupRVFeaturedFacilities() {
         umrahPdpFeaturedFacilityAdapter.featuredFacilities = getHardcodedData()
         rv_umrah_pdp_facilities.apply {
+            isNestedScrollingEnabled = false
             adapter = umrahPdpFeaturedFacilityAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
@@ -449,6 +452,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         facilitiesBottomSheet.setTitle(resources.getString(R.string.umrah_pdp_facilities_title))
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_umrah_pdp_facilities, null)
         view.bs_rv_umrah_pdp_facilities.apply {
+            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = umrahPdpFacilityAdapter
         }
@@ -460,6 +464,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private fun setupRVNonFacilities() {
         umrahPdpNonFacilityAdapter.nonFacilities = umrahProduct.nonFacilities
         rv_umrah_pdp_non_facilities.apply {
+            isNestedScrollingEnabled = false
             adapter = umrahPdpNonFacilityAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
@@ -468,6 +473,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private fun setupRVFaq() {
         umrahPdpFaqAdapter.faqs = umrahProduct.faqs.contents
         rv_umrah_pdp_faqs.apply {
+            isNestedScrollingEnabled = false
             adapter = umrahPdpFaqAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)

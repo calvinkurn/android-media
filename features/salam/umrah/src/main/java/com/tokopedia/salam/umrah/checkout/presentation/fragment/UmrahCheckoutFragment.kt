@@ -128,8 +128,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                                 , View.OnClickListener { })
                     }
                     hideLoadingBar()
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView) {
-                        requestData()
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
+                    requestData()
                         showLoadingBar()
                     }
                 }

@@ -22,6 +22,7 @@ import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHome
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageCategoryViewHolder
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.homepage.presentation.viewmodel.UmrahHomepageViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_umrah_home_page.*
 import javax.inject.Inject
 
@@ -38,7 +39,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     @Inject
     lateinit var trackingUmrahUtil: UmrahTrackingAnalytics
 
-    override fun getAdapterTypeFactory(): UmrahHomepageFactoryImpl =  UmrahHomepageFactoryImpl(this)
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    override fun getAdapterTypeFactory(): UmrahHomepageFactoryImpl =  UmrahHomepageFactoryImpl(this, userSessionInterface)
 
     override fun getScreenName(): String = getString(R.string.umrah_home_page_activity_label, getYearNow())
 

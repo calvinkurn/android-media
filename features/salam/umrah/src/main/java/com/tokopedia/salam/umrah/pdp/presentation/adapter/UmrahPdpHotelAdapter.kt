@@ -43,6 +43,7 @@ class UmrahPdpHotelAdapter : RecyclerView.Adapter<UmrahPdpHotelAdapter.UmrahPdpH
                     rating = umrahHotel.rating.toFloat()
                 }
                 rv_umrah_pdp_hotel_images.apply {
+                    isNestedScrollingEnabled = false
                     layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                     adapter = UmrahPdpHotelImagesAdapter(umrahHotel.imageUrls).apply {
                         clickListener = onImageListener

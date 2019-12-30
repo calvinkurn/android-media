@@ -76,7 +76,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
     }
 
     private fun showGetListError() {
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) {
+        NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
             requestAvailabilityData()
         }
     }
@@ -145,8 +145,6 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
                 shopName = it.travelAgent.name
                 departureDate = it.departureDate
                 downPaymentPrice = it.downPaymentPrice
-
-//                categoryId = it.categoryId
             }
         }
     }

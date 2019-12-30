@@ -1,10 +1,13 @@
 package com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder
 
 
+import android.content.Context
+import android.view.ContextMenu
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
@@ -16,6 +19,7 @@ import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageMyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageMyUmrahAdapter
 import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.partial_umrah_home_page_dream_fund.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_my_umrah.view.*
 import java.net.URLEncoder
@@ -24,7 +28,9 @@ import java.net.URLEncoder
  * @author by firman on 23/10/19
  */
 
-class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onItemBindListener, val adapterMyUmrah: UmrahHomepageMyUmrahAdapter
+class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onItemBindListener,
+                                     val adapterMyUmrah: UmrahHomepageMyUmrahAdapter,
+                                     val userSessionInterface: UserSessionInterface
 ) : AbstractViewHolder<UmrahHomepageMyUmrahEntity>(view) {
 
     override fun bind(element: UmrahHomepageMyUmrahEntity) {
@@ -38,8 +44,12 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
                     UmrahHomepageFragment.isDreamFundViewed = true
                 }
                 dream_fund_umrah_home_page.setOnClickListener {
-                    onBindListener.onClickDanaImpian()
-                    RouteManager.route(context, URI_WEB + "" + getString(R.string.umrah_dana_impian_link))
+                    if (userSessionInterface.isLoggedIn) {
+                        onBindListener.onClickDanaImpian()
+                        RouteManager.route(context, URI_WEB + "" + getString(R.string.umrah_dana_impian_link))
+                    }else{
+                        goToLoginPage(context)
+                    }
                 }
             } else if (element.isLoaded && element.listMyUmrahEntity.isNotEmpty()) {
 
@@ -98,6 +108,10 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
 
         }
 
+    }
+
+    private fun goToLoginPage(context: Context) {
+            RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
     companion object {
