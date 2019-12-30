@@ -303,7 +303,7 @@ class CartListPresenterTest : Spek({
             val errorMessage = "fail testing delete"
 
             Given("fail delete") {
-                val deleteCartData = DeleteCartData(isSuccess = false)
+                val deleteCartData = DeleteCartData(isSuccess = false, message = errorMessage)
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
