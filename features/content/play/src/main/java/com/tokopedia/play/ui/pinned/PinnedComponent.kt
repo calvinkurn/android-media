@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.pinned
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,7 @@ class PinnedComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
-) : UIComponent<Unit>, CoroutineScope by coroutineScope {
+) : UIComponent<PinnedInteractionEvent>, CoroutineScope by coroutineScope, PinnedView.Listener {
 
     private val uiView = initView(container)
 
@@ -44,10 +45,16 @@ class PinnedComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): Flow<Unit> {
-        return emptyFlow()
+    override fun getUserInteractionEvents(): Flow<PinnedInteractionEvent> {
+        return bus.getSafeManagedFlow(PinnedInteractionEvent::class.java)
+    }
+
+    override fun onPinnedActionClicked(view: PinnedView, applink: String) {
+        launch {
+            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedActionClicked(applink))
+        }
     }
 
     private fun initView(container: ViewGroup): PinnedView =
-            PinnedView(container)
+            PinnedView(container, this)
 }
