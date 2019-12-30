@@ -101,7 +101,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
@@ -136,7 +136,7 @@ class ChatListNetworkModule {
     fun provideOkHttpClient(@ApplicationContext context: Context,
                             retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             xUserIdInterceptor: XUserIdInterceptor):

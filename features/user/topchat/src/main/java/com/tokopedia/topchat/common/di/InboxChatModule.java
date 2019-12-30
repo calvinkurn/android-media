@@ -68,7 +68,7 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    ChuckInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+    ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         return new ChuckerInterceptor(context);
     }
 
@@ -184,7 +184,7 @@ public class InboxChatModule {
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
-                                     ChuckInterceptor chuckInterceptor,
+                                     ChuckerInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      NetworkRouter networkRouter,
                                      UserSessionInterface userSessionInterface,

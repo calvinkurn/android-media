@@ -114,7 +114,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
@@ -149,7 +149,7 @@ class ChatModule {
     fun provideOkHttpClient(@ApplicationContext context: Context,
                             @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             xUserIdInterceptor: XUserIdInterceptor):
