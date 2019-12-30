@@ -39,7 +39,7 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
 //
 //    }
 
-    suspend fun redeemCoupon(promoCode: String, cta: String) = withContext(Dispatchers.IO) {
+    suspend fun redeemCoupon(promoCode: String) = withContext(Dispatchers.IO) {
         val variables = HashMap<String, Any>()
         variables[CommonConstant.GraphqlVariableKeys.PROMO_CODE] = promoCode
 

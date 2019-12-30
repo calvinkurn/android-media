@@ -119,7 +119,7 @@ class CouponDetailViewModel @Inject constructor(private val bundle: Bundle, priv
 
     fun redeemCoupon(code: String, cta: String) {
         launchCatchError(block = {
-            repository.redeemCoupon(code, cta).getSuccessData<ApplyCouponBaseEntity>()
+            repository.redeemCoupon(code).getSuccessData<ApplyCouponBaseEntity>()
             onRedeemCoupon.value = Success(cta)
         }) {
             onRedeemCoupon.value = ErrorMessage(cta)
