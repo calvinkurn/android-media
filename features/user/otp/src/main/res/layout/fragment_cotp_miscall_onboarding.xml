@@ -13,7 +13,7 @@
     android:layout_height="@dimen/dp_0"
     android:scrollbars="none"
     app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toTopOf="@+id/layoutCallMe">
+    app:layout_constraintBottom_toBottomOf="parent">
     
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -60,32 +60,25 @@
         android:lineHeight="@dimen/dp_20"
         android:text="@string/cotp_miscall_onboarding_desc"
         app:layout_constraintTop_toBottomOf="@id/otp_onboarding_text_title"/>
-
+      
+      <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/call_me"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:textColor="@color/grey_500"
+        android:fontFamily="sans-serif"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/cotp_miscall_onboarding_send_call"
+        app:layout_constraintTop_toBottomOf="@id/otp_onboarding_text_desc"/>
+      
     </androidx.constraintlayout.widget.ConstraintLayout>
 
   </ScrollView>
-  
-  <FrameLayout
-    android:id="@+id/layoutCallMe"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/dp_8"
-    app:layout_constraintBottom_toBottomOf="parent">
-    
-    <com.tokopedia.unifycomponents.UnifyButton
-      android:id="@+id/call_me"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/dp_48"
-      android:textColor="@color/grey_500"
-      android:fontFamily="sans-serif"
-      android:textSize="@dimen/sp_14"
-      android:textStyle="bold"
-      android:layout_marginStart="@dimen/dp_8"
-      android:layout_marginLeft="@dimen/dp_8"
-      android:layout_marginEnd="@dimen/dp_8"
-      android:layout_marginRight="@dimen/dp_8"
-      android:layout_marginBottom="@dimen/dp_16"
-      android:text="@string/cotp_miscall_onboarding_send_call"/>
-  </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
