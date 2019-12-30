@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
-import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.R
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -11,9 +11,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteCartResponseData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
@@ -37,13 +35,11 @@ import rx.subscriptions.CompositeSubscription
 class CartListPresenterTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartListUseCase = mockk()
+    val deleteCartListUseCase: DeleteCartUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase = mockk()
     val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper = mockk()
-    val checkPromoCodeCartListUseCase: CheckPromoCodeCartListUseCase = mockk()
     val compositeSubscription = CompositeSubscription()
-    val cartApiRequestParamGenerator: CartApiRequestParamGenerator = mockk()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
@@ -64,11 +60,10 @@ class CartListPresenterTest : Spek({
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
@@ -132,7 +127,7 @@ class CartListPresenterTest : Spek({
 
         Scenario("error load") {
 
-            val context: Activity = mockk()
+            val context: FragmentActivity = mockk()
             val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
 
             Given("throw error") {
@@ -145,7 +140,7 @@ class CartListPresenterTest : Spek({
             }
 
             Given("attach view") {
-                every { view.activity } returns context
+                every { view.getActivityObject() } returns context
                 every { context.getString(R.string.default_request_error_internal_server) } returns errorMessage
                 cartListPresenter.attachView(view)
             }
@@ -167,11 +162,10 @@ class CartListPresenterTest : Spek({
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
@@ -186,12 +180,11 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } returns arrayListOf()
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+                every { view.getAllAvailableCartDataList() } returns arrayListOf()
             }
 
             When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData()
+                cartListPresenter.processToUpdateAndReloadCartData("0")
             }
 
             Then("should hide loading") {
@@ -218,12 +211,11 @@ class CartListPresenterTest : Spek({
                 cartItemData.updatedData = updatedData
 
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } returns arrayListOf(cartItemData)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+                every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
             }
 
             When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData()
+                cartListPresenter.processToUpdateAndReloadCartData("0")
             }
 
             Then("should render success") {
@@ -239,11 +231,10 @@ class CartListPresenterTest : Spek({
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
@@ -253,9 +244,8 @@ class CartListPresenterTest : Spek({
             val emptyCartListData = CartListData()
 
             Given("success delete") {
-                val deleteAndRefreshCartListData = DeleteCartResponseData()
-                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+                val deleteCartData = DeleteCartData(isSuccess = true)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("empty cart list data") {
@@ -264,7 +254,6 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
             When("process delete cart item") {
@@ -283,14 +272,12 @@ class CartListPresenterTest : Spek({
         Scenario("remove some cart data") {
 
             Given("success delete") {
-                val deleteAndRefreshCartListData = DeleteCartResponseData()
-                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+                val deleteCartData = DeleteCartData(isSuccess = true)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
             When("process delete cart item") {
@@ -298,7 +285,7 @@ class CartListPresenterTest : Spek({
                 firstCartItemData.originData = CartItemData.OriginData()
                 val secondCartItemData = CartItemData()
                 secondCartItemData.originData = CartItemData.OriginData()
-                secondCartItemData.originData.cartId = 1
+                secondCartItemData.originData?.cartId = 1
 
                 cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
                         arrayListOf(firstCartItemData), arrayListOf(), false, false)
@@ -306,7 +293,7 @@ class CartListPresenterTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf(0))
+                    view.onDeleteCartDataSuccess(arrayListOf("0"))
                 }
             }
         }
@@ -316,14 +303,12 @@ class CartListPresenterTest : Spek({
             val errorMessage = "fail testing delete"
 
             Given("fail delete") {
-                val deleteAndRefreshCartListData = DeleteCartResponseData()
-                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(false).message(errorMessage).build()
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+                val deleteCartData = DeleteCartData(isSuccess = false)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
             When("process delete cart item") {
@@ -345,11 +330,10 @@ class CartListPresenterTest : Spek({
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
@@ -376,9 +360,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val firstItemFirst by memoized {
-            CartItemHolderData().apply {
-                cartItemData = firstItemFirstData
-            }
+            CartItemHolderData(cartItemData = firstItemFirstData)
         }
         //endregion
 
@@ -402,9 +384,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val firstItemSecond by memoized {
-            CartItemHolderData().apply {
-                cartItemData = firstItemSecondData
-            }
+            CartItemHolderData(cartItemData = firstItemSecondData)
         }
         //endregion
 
@@ -428,9 +408,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val secondItemFirst by memoized {
-            CartItemHolderData().apply {
-                cartItemData = secondItemFirstData
-            }
+            CartItemHolderData(cartItemData = secondItemFirstData)
         }
         //endregion
 
@@ -454,9 +432,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val secondItemSecond by memoized {
-            CartItemHolderData().apply {
-                cartItemData = secondItemSecondData
-            }
+            CartItemHolderData(cartItemData = secondItemSecondData)
         }
         //endregion
 
@@ -492,8 +468,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -521,8 +501,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -550,8 +534,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -581,8 +569,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -621,8 +613,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -660,8 +656,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -698,8 +698,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -737,8 +741,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
