@@ -22,10 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
-import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
-import com.tokopedia.settingbank.banklist.v2.domain.AddBankResponse
-import com.tokopedia.settingbank.banklist.v2.domain.Bank
-import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
+import com.tokopedia.settingbank.banklist.v2.domain.*
 import com.tokopedia.settingbank.banklist.v2.view.activity.ARG_BANK_DATA
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.*
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
@@ -111,7 +108,11 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun startObservingViewModels() {
         tNCViewModel.tncPopUpTemplate.observe(this, Observer {
-            openTNCBottomSheet(it)
+            when (it) {
+                is OnTNCSuccess -> openTNCBottomSheet(it.templateData)
+                is OnTNCError -> showErrorOnUI(it.throwable, null)
+            }
+
         })
 
         textWatcherViewModel.textWatcherState.observe(this, Observer {
@@ -126,9 +127,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
         checkAccountNumberViewModel.accountCheckState.observe(this, Observer {
             when (it) {
-                is OnNetworkError -> {
-
-                }
+                is OnCheckAccountError -> showErrorOnUI(it.throwable, null)
                 is OnAccountCheckSuccess -> {
                     onAccountCheckSuccess(it.accountHolderName)
                 }
@@ -161,25 +160,28 @@ class AddBankFragment : BaseDaggerFragment() {
                     onBankSuccessfullyAdded(it.addBankResponse)
                 }
                 is OnAccountAddingError -> {
-                    showErrorOnUI(it.message) { requestAddBankAccount() }
+                    showErrorOnUI(it.throwable) { requestAddBankAccount() }
                 }
 
             }
         })
     }
 
-    private fun showErrorOnUI(errorMessage: String?, retry: (() -> Unit)?) {
-        errorMessage?.let {
+    private fun showErrorOnUI(throwable: Throwable, retry: (() -> Unit)?) {
+        context?.let { context ->
             view?.let { view ->
                 retry?.let {
-                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
                             getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
                 } ?: run {
-                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                 }
 
             }
         }
+
     }
 
     private fun onBankSuccessfullyAdded(addBankResponse: AddBankResponse) {
@@ -332,7 +334,7 @@ class AddBankFragment : BaseDaggerFragment() {
         setBankName()
     }
 
-    private fun hideAccountHolderName(){
+    private fun hideAccountHolderName() {
         etManualAccountHolderName.setText("")
         wrapperManualAccountHolderName.gone()
         groupAccountNameAuto.gone()

@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 class AddAccountViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -40,7 +41,7 @@ class AddAccountViewModel @Inject constructor(private val graphqlRepository: Gra
 
         }) {
             addAccountState.value = OnAddBankRequestEnded
-            addAccountState.value = OnAddAccountNetworkError
+            addAccountState.value = OnAddAccountNetworkError(it)
             it.printStackTrace()
         }
     }
@@ -49,7 +50,7 @@ class AddAccountViewModel @Inject constructor(private val graphqlRepository: Gra
         if (response.response.status == 200) {
             addAccountState.value = OnSuccessfullyAdded(response.response)
         } else {
-            addAccountState.value = OnAccountAddingError(response.response.message)
+            addAccountState.value = OnAccountAddingError(Exception(response.response.message))
         }
     }
 

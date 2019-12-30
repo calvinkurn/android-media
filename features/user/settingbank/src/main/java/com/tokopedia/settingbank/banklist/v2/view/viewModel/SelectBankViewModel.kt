@@ -1,12 +1,15 @@
 package com.tokopedia.settingbank.banklist.v2.view.viewModel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.di.QUERY_GET_BANK_LIST
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.domain.GetBankListResponse
@@ -17,7 +20,8 @@ import javax.inject.Inject
 const val PARAM_CURRENT_PAGE = "page"
 const val PARAM_ITEM_PER_PAGE = "perPage"
 
-class SelectBankViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class SelectBankViewModel @Inject constructor(@ApplicationContext private val context: Context,
+                                              private val graphqlRepository: GraphqlRepository,
                                               private val rawQueries: Map<String, String>,
                                               dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
     private val DELAY_IN_SEARCH = 200L
@@ -34,11 +38,7 @@ class SelectBankViewModel @Inject constructor(private val graphqlRepository: Gra
             val response = loadBankListGQL(getBankListParams())
             processLoadedBankList(response.getSuccessData())
         }) {
-            it.message?.let { message ->
-                bankListState.value = OnBankListLoadingError(message)
-            } ?: run {
-                bankListState.value = OnBankListLoadingError("Error")
-            }
+            bankListState.value = OnBankListLoadingError(it)
             it.printStackTrace()
         }
     }
@@ -95,7 +95,8 @@ class SelectBankViewModel @Inject constructor(private val graphqlRepository: Gra
             }
             data?.let {
                 bankListState.value = OnBankSearchResult(data)
-            } ?: run { bankListState.value = OnBankListLoadingError("No Bank found") }
+            }
+                    ?: run { bankListState.value = OnBankListLoadingError(Exception(context.resources.getString(R.string.sbank_no_bank_account))) }
         }) {
             it.printStackTrace()
         }

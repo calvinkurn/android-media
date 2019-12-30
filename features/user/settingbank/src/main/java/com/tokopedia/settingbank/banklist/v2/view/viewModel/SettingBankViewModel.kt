@@ -34,6 +34,7 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
             getBankListState.value = OnShowLoading(false)
             processUserBankAccountData(data.getSuccessData())
         }) {
+            getBankListState.value = BankAccountListLoadingError(it)
             it.printStackTrace()
         }
     }

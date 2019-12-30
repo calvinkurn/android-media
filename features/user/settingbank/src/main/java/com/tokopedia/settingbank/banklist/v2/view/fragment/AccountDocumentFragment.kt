@@ -20,6 +20,7 @@ import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
+import com.tokopedia.settingbank.banklist.v2.domain.SettingBankErrorHandler
 import com.tokopedia.settingbank.banklist.v2.domain.UploadDocumentPojo
 import com.tokopedia.settingbank.banklist.v2.util.AccountConfirmationType
 import com.tokopedia.settingbank.banklist.v2.util.ImageUtils
@@ -95,7 +96,6 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         uploadDocumentViewModel = viewModelProvider.get(UploadDocumentViewModel::class.java)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -214,7 +214,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
                 is DocumentUploadError -> {
-                    showErrorOnUI(it.errorMessage, null)
+                    showErrorOnUI(it.throwable, null)
                 }
             }
         })
@@ -228,14 +228,16 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showErrorOnUI(errorMessage: String?, retry: (() -> Unit)?) {
-        errorMessage?.let {
+    private fun showErrorOnUI(throwable: Throwable, retry: (() -> Unit)?) {
+        context?.let {context->
             view?.let { view ->
                 retry?.let {
-                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
                             getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
                 } ?: run {
-                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                    Toaster.make(view,  SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                 }
 
             }
@@ -249,7 +251,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             AccountConfirmationType.COMPANY -> DOC_TYPE_COMPANY
         }
         if ((docType == DOC_TYPE_FAMILY || docType == DOC_TYPE_COMPANY) && selectedFilePath == null) {
-            showErrorOnUI("Silakan pilih foto dokumen", null)
+            showErrorOnUI(Exception(context?.getString(R.string.sbank_please_select_photo)), null)
             return null
         }
         return UploadDocumentPojo(

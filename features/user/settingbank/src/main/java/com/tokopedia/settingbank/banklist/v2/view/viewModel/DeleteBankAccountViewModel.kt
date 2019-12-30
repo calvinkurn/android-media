@@ -38,7 +38,7 @@ class DeleteBankAccountViewModel @Inject constructor(private val graphqlReposito
             deleteAccountState.value = OnDeleteAccountRequestEnded
         }) {
             deleteAccountState.value = OnDeleteAccountRequestEnded
-            deleteAccountState.value = OnDeleteAccountNoInternet
+            deleteAccountState.value = OnDeleteAccountRequestFailed(it)
             it.printStackTrace()
         }
     }
@@ -47,10 +47,8 @@ class DeleteBankAccountViewModel @Inject constructor(private val graphqlReposito
         deleteBankAccountResponse.deleteBankAccount.data?.let { data ->
             when (data.isSuccess) {
                 true -> deleteAccountState.value = OnDeleteAccountRequestSuccess(data.messages)
-                else -> deleteAccountState.value = OnDeleteAccountRequestFailed(data.messages)
+                else -> deleteAccountState.value = OnDeleteAccountRequestFailed(Exception(data.messages))
             }
-        } ?: run {
-            deleteAccountState.value = OnDeleteAccountRequestFailed("Error")
         }
     }
 

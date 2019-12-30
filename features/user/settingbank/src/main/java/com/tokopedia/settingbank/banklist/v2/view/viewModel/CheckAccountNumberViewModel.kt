@@ -10,8 +10,8 @@ import com.tokopedia.settingbank.banklist.v2.di.QUERY_CHECK_BANK_ACCOUNT
 import com.tokopedia.settingbank.banklist.v2.domain.CheckAccountResponse
 import com.tokopedia.settingbank.banklist.v2.view.viewState.AccountCheckState
 import com.tokopedia.settingbank.banklist.v2.view.viewState.OnAccountCheckSuccess
+import com.tokopedia.settingbank.banklist.v2.view.viewState.OnCheckAccountError
 import com.tokopedia.settingbank.banklist.v2.view.viewState.OnErrorInAccountNumber
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnNetworkError
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -35,14 +35,13 @@ class CheckAccountNumberViewModel @Inject constructor(private val graphqlReposit
             return
         launchCatchError(block = {
             isRequestRunning = true
-            //todo process data here first for validity all things
             val response = getAccountCheckState(getAccountCheckParams(bankId, accountNumber!!))
             val state = processAccountCheckResponse(response.getSuccessData())
             accountCheckState.value= state
             isRequestRunning = false
         }) {
             isRequestRunning = false
-            accountCheckState.value = OnNetworkError
+            accountCheckState.value =  OnCheckAccountError(it)
             it.printStackTrace()
         }
     }

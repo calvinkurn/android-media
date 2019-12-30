@@ -17,6 +17,7 @@ import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.KYCInfo
+import com.tokopedia.settingbank.banklist.v2.domain.SettingBankErrorHandler
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountClickListener
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountListAdapter
@@ -55,9 +56,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     override fun getScreenName(): String? = null
 
-    var deleteBankAccount: BankAccount? = null
-    var makePrimaryBankAccount: BankAccount? = null
-    var confirmBankAccount: BankAccount? = null
+    private var deleteBankAccount: BankAccount? = null
+    private var makePrimaryBankAccount: BankAccount? = null
+    private var confirmBankAccount: BankAccount? = null
 
     override fun initInjector() {
         getComponent(SettingBankComponent::class.java).inject(this)
@@ -131,7 +132,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         settingBankViewModel.getBankListState.observe(this, Observer {
             when (it) {
                 is OnShowLoading -> showLoadingState(it.show)
-                is BankAccountListLoadingError -> showErrorOnUI(it.errMsg, null)
+                is BankAccountListLoadingError -> {
+                    progress_bar.gone()
+                    showError(it.throwable, null)
+                }
                 is OnBankAccountListLoaded -> {
                     populateBankList(it.bankList, it.toastMessage)
                     loadBankNote()
@@ -148,7 +152,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
             populateTNCNoteInAdapter(it)
         })
         tNCViewModel.tncPopUpTemplate.observe(this, Observer {
-            openTNCBottomSheet(it)
+            when (it) {
+                is OnTNCSuccess -> openTNCBottomSheet(it.templateData)
+                is OnTNCError -> showError(it.throwable, null)
+            }
         })
 
         makeAccountPrimaryViewModel.makeAccountPrimaryState.observe(this, Observer {
@@ -179,7 +186,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                 openCheckDataBottomSheet(kycInfoState.kycInfo)
             }
             is KYCInfoError -> {
-                showErrorOnUI(kycInfoState.message, null)
+                showError(kycInfoState.throwable, null)
             }
         }
     }
@@ -209,7 +216,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                 loadUserBankAccountList()
             }
             is OnDeleteAccountRequestFailed -> {
-                showErrorOnUI(state.reason) { deleteBankAccount() }
+                showError(state.throwable) { deleteBankAccount() }
             }
         }
     }
@@ -226,8 +233,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                 showToasterOnUI(state.message)
                 loadUserBankAccountList()
             }
-            is OnMakePrimaryRequestFailed -> {
-                showErrorOnUI(state.reason) { makeAccountPrimary() }
+            is OnMakePrimaryRequestError -> {
+                showError(state.throwable) { makeAccountPrimary() }
             }
         }
     }
@@ -258,6 +265,22 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                             getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
                 } ?: run {
                     Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                }
+
+            }
+        }
+    }
+
+    private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
+        context?.let { context ->
+            view?.let { view ->
+                retry?.let {
+                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
+                } ?: run {
+                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                 }
 
             }

@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
+import com.tokopedia.settingbank.banklist.v2.domain.SettingBankErrorHandler
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankListAdapter
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankListClickListener
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.SelectBankViewModel
@@ -79,7 +80,10 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
             when (it) {
                 is OnBankListLoading -> showBankListLoading()
                 is OnBankListLoaded -> showBankList(it.bankList)
-                is OnBankListLoadingError -> showLoadingError(it.errorMessage)
+                is OnBankListLoadingError -> {
+                    hideUI()
+                    showLoadingError(it.throwable)
+                }
                 is OnBankSearchResult -> showBankSearchResult(it.bankList)
             }
         })
@@ -89,12 +93,17 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
         bankListAdapter.updateItem(bankList)
     }
 
-    private fun showLoadingError(error: String) {
+    private fun hideUI() {
         progressBar.gone()
         searchInputTextView.gone()
         rvChooseBank.gone()
+    }
+
+    private fun showLoadingError(throwable: Throwable) {
         view?.let {
-            Toaster.make(it, error, Toast.LENGTH_SHORT)
+            context?.let { context ->
+                Toaster.make(it, SettingBankErrorHandler.getErrorMessage(context, throwable), Toast.LENGTH_SHORT)
+            }
         }
     }
 
@@ -123,7 +132,6 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
     }
 
     override fun onBankSelected(bank: Bank) {
-
         if (::onBankSelectedListener.isInitialized)
             onBankSelectedListener.onBankSelected(bank)
     }
@@ -149,11 +157,6 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
 
     override fun onSearchReset() {
         selectBankViewModel.resetSearchResult()
-    }
-
-    override fun onDestroy() {
-        selectBankViewModel.bankListState.removeObservers(this)
-        super.onDestroy()
     }
 
     override fun onAttach(context: Context?) {

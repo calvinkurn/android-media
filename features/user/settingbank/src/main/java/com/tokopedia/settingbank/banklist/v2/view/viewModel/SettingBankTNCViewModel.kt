@@ -11,6 +11,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.settingbank.banklist.v2.di.QUERY_GET_ADD_BANK_TNC
 import com.tokopedia.settingbank.banklist.v2.domain.SettingBankTNC
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
+import com.tokopedia.settingbank.banklist.v2.view.viewState.OnTNCError
+import com.tokopedia.settingbank.banklist.v2.view.viewState.OnTNCSuccess
+import com.tokopedia.settingbank.banklist.v2.view.viewState.TNCViewState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,7 +29,7 @@ class SettingBankTNCViewModel @Inject constructor(private val graphqlRepository:
                                                   dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val tncNoteTemplate = MutableLiveData<TemplateData>()
-    val tncPopUpTemplate = MutableLiveData<TemplateData>()
+    val tncPopUpTemplate = MutableLiveData<TNCViewState>()
 
     internal fun loadTNCNoteTemplate() {
         launchCatchError(block = {
@@ -40,9 +43,9 @@ class SettingBankTNCViewModel @Inject constructor(private val graphqlRepository:
     internal fun loadTNCPopUpTemplate() {
         launchCatchError(block = {
             val data = loadTNCByType(PARAM_TNC_POPUP)
-            tncPopUpTemplate.value = (data.getSuccessData() as SettingBankTNC).richieTNC.data
+            tncPopUpTemplate.value = OnTNCSuccess((data.getSuccessData() as SettingBankTNC).richieTNC.data)
         }) {
-            Log.d("TNCViewModel",it.message)
+            tncPopUpTemplate.value = OnTNCError(it)
             it.printStackTrace()
         }
     }

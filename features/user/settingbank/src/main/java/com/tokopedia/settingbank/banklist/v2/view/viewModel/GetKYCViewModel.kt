@@ -37,7 +37,7 @@ class GetKYCViewModel @Inject constructor(private val graphqlRepository: Graphql
 
         }) {
             kycInfoState.value = KYCInfoRequestEnded
-            kycInfoState.value = KYCInfoError("Error")
+            kycInfoState.value = KYCInfoError(it)
             it.printStackTrace()
         }
     }

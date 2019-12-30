@@ -85,10 +85,7 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_delete_this_account">Hapus rekening ini?</string>
     <string name="sbank_add_bank_account">Tambah Rekening Lain</string>
     <string name="sbank_no_bank_add_bank_account">Tambah Rekening</string>
-
-
-
-
-
+    <string name="sbank_no_bank_account">Tidak ada Bank yang ditemukan</string>
+    <string name="sbank_please_select_photo">Silakan pilih foto dokumen</string>
 
 </resources>

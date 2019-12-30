@@ -6,5 +6,4 @@ sealed class KYCInfoState
 object KYCInfoRequestStarted : KYCInfoState()
 object KYCInfoRequestEnded : KYCInfoState()
 data class OnKYCInfoResponse(val kycInfo: KYCInfo) : KYCInfoState()
-data class KYCInfoError(val message: String) : KYCInfoState()
-object KYCNetworkError : KYCInfoState()
+data class KYCInfoError(val throwable: Throwable) : KYCInfoState()

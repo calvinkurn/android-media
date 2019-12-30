@@ -25,7 +25,7 @@ class UploadDocumentViewModel @Inject constructor(
 
                     override fun onError(e: Throwable) {
                         uploadDocumentStatus.value =  DocumentUploadEnd
-                        uploadDocumentStatus.value = DocumentUploadError(e.message)
+                        uploadDocumentStatus.value = DocumentUploadError(e)
 
                     }
 

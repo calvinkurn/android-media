@@ -101,6 +101,7 @@
             android:layout_height="wrap_content"
             android:digits="01234567890"
             android:singleLine="true"
+            android:inputType="number"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/sp_16" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>

@@ -4,5 +4,4 @@ sealed class DeleteAccountState
 object OnDeleteAccountRequestStarted : DeleteAccountState()
 object OnDeleteAccountRequestEnded : DeleteAccountState()
 data class OnDeleteAccountRequestSuccess(val message: String?) : DeleteAccountState()
-object OnDeleteAccountNoInternet : DeleteAccountState()
-data class OnDeleteAccountRequestFailed(val reason: String?) : DeleteAccountState()
+data class OnDeleteAccountRequestFailed(val throwable: Throwable) : DeleteAccountState()

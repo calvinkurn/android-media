@@ -38,7 +38,7 @@ class MakeAccountPrimaryViewModel @Inject constructor(private val graphqlReposit
             makeAccountPrimaryState.value = OnMakePrimaryRequestEnded
         }) {
             makeAccountPrimaryState.value = OnMakePrimaryRequestEnded
-            makeAccountPrimaryState.value = OnMakePrimaryRequestNoInternet
+            makeAccountPrimaryState.value = OnMakePrimaryRequestError(it)
             it.printStackTrace()
         }
     }
@@ -47,10 +47,8 @@ class MakeAccountPrimaryViewModel @Inject constructor(private val graphqlReposit
         richieSetPrimaryBankAccount.richieSetPrimaryBankAccount.data?.let { data ->
             when (data.isSuccess) {
                 true -> makeAccountPrimaryState.value = OnMakePrimaryRequestSuccess(data.messages)
-                else -> makeAccountPrimaryState.value = OnMakePrimaryRequestFailed(data.messages)
+                else -> makeAccountPrimaryState.value = OnMakePrimaryRequestError(Exception(data.messages))
             }
-        } ?: run {
-            makeAccountPrimaryState.value = OnMakePrimaryRequestFailed("Error")
         }
     }
 
