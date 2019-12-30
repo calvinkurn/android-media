@@ -55,8 +55,8 @@ internal class OriginalProductViewAnimator(
 
     private fun getOriginalProductContainerTravelDistance() =
             (fragmentView.buttonBuy?.measuredHeight ?: 0) +
-                    (buttonBuyMarginTop * 2) +
-                (fragmentView.constraintLayoutOriginalProduct?.paddingBottom ?: 0)
+                    buttonBuyMarginTop +
+                    ((fragmentView.constraintLayoutOriginalProduct?.paddingBottom ?: 0) * 2)
 
     private fun getCardViewCollapsedHeight() =
             (fragmentView.cardViewOriginalProductSimilarSearch?.measuredHeight ?: 0) -
