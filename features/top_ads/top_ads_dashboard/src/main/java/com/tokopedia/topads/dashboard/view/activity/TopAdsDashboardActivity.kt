@@ -1,19 +1,14 @@
 package com.tokopedia.topads.dashboard.view.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
-
-import com.airbnb.deeplinkdispatch.DeepLink
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.showcase.ShowCaseContentPosition
@@ -21,18 +16,15 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
-import com.tokopedia.topads.common.data.util.ApplinkUtil
+import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.utils.ShowCaseDialogFactory
-import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
-import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener
-import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by hadi.putra on 23/04/2018.
@@ -168,21 +160,6 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     companion object {
         val TAG = TopAdsDashboardActivity::class.java.simpleName
-
-        fun getCallingIntent(context: Context): Intent {
-            return Intent(context, TopAdsDashboardActivity::class.java)
-        }
-    }
-
-    object DeepLinkIntents {
-        @DeepLink(ApplinkConst.SellerApp.TOPADS_DASHBOARD, ApplinkConst.CustomerApp.TOPADS_DASHBOARD)
-        @JvmStatic
-        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return getCallingIntent(context)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -1,29 +1,20 @@
 package com.tokopedia.digital_deals.view.activity;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
-import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.locationmanager.DeviceLocation;
-import java.util.List;
 
 public class DealsHomeActivity extends DealsBaseActivity implements TrendingDealsCallBacks, DealsHomeFragment.OpenTrendingDeals, SelectLocationBottomSheet.SelectedLocationListener, CurrentLocationCallBack {
 
