@@ -1,7 +1,9 @@
 package com.tokopedia.plugin
 
+import GraphStr
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashSet
@@ -10,26 +12,78 @@ open class PublishCompositeTask : DefaultTask() {
 
     // this will be populated from previous tasks
     var latestReleaseDateString: String = ""
-    var candidateModuleListToUpdate = mutableListOf<String>()
+    var candidateModuleListToUpdate = hashSetOf<String>()
     var dependenciesHashSet = HashSet<Pair<String, String>>()
-    var versionList = hashMapOf<String, VersionModelB>()
+    var versionProjectToArtifactList = hashMapOf<String, VersionModelB>()
+    var versionArtifactToProjectList = hashMapOf<String, String>()
 
     val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
 
-    lateinit var latestReleaseDate:Date
+    lateinit var latestReleaseDate: Date
+    lateinit var sortedDependency:List<String>
+
+    val versionConfigMap = mutableMapOf<String, Int>()
 
     companion object {
-        const val TOKOPEDIA = "tokopedia"
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+        const val LOG_FILE_PATH = "tools/version/log.txt"
+        const val CONFIG_VERSION_FILE_PATH = "tools/version/config_version.txt"
     }
 
     @TaskAction
     fun run() {
         latestReleaseDate = dateFormatter.parse(latestReleaseDateString)
 
-        println(latestReleaseDateString)
-        println(candidateModuleListToUpdate)
-        println(dependenciesHashSet)
-        println(versionList)
+        println("Latest Release Date: $latestReleaseDateString")
+        println("Candidate: $candidateModuleListToUpdate")
+        println("Dep Hash Set: $dependenciesHashSet")
+        println("Project to Artifact: ${versionProjectToArtifactList.map { it.key + "-" + it.value.groupId + ":" + it.value.artifactId + ":" + it.value.versionName }}")
+        println("Artifact to Project: $versionArtifactToProjectList")
+
+        // get sorted dependency
+        sortedDependency = sortGraph().reversed()
+        println("After Topological Sort $sortedDependency")
+
+        readVersionConfig()
+
+        publishToArtifactory()
+    }
+
+    fun sortGraph(): List<String> {
+        val graph = GraphStr()
+        versionProjectToArtifactList.forEach{
+            graph.addVertices(it.value.projectName)
+        }
+        dependenciesHashSet.forEach {
+            graph.addEdge(it.first, it.second)
+        }
+        graph.topologicalSort()
+        return graph.listTop
+    }
+
+    fun readVersionConfig(){
+        val file = File(CONFIG_VERSION_FILE_PATH)
+        file.forEachLine {line ->
+            if(line.isNotEmpty() &&!line.startsWith("//")){
+                val splits = line.split("=")
+                versionConfigMap[splits[0]] = splits[1].toInt()
+            }
+        }
+    }
+
+    fun publishToArtifactory(){
+        deletePreviousLog()
+        // loop all sortedDependency
+        sortedDependency.forEach {
+            // check if it is a candidate for version increase
+            if (candidateModuleListToUpdate.contains(it)) {
+                //it is a valid candidate; publish to artifactory
+            }
+        }
+    }
+
+    fun deletePreviousLog(){
+        val logFile = File(LOG_FILE_PATH)
+        logFile.delete()
     }
 }

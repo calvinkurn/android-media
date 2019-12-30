@@ -10,10 +10,11 @@ import kotlin.collections.HashSet
 open class VersionTask : DefaultTask() {
 
     var latestReleaseDateString: String = ""
-    val candidateModuleListToUpdate = mutableListOf<String>()
+    val candidateModuleListToUpdate = hashSetOf<String>()
     val dependenciesHashSet = HashSet<Pair<String, String>>()
     val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
-    val versionList = hashMapOf<String, VersionModelB>()
+    val versionProjectToArtifactList = hashMapOf<String, VersionModelB>()
+    val versionArtifactToProjectList = hashMapOf<String, String>()
 
     lateinit var latestReleaseDate:Date
 
@@ -28,6 +29,8 @@ open class VersionTask : DefaultTask() {
 
         val flattenedAllSubProjects = mutableListOf<Project>()
         val queue = mutableListOf<Project>(project)
+
+        val dependenciesHashSetTemp = HashSet<Pair<String, String>>()
 
         //BFS to get all projects
         while (queue.isNotEmpty()) {
@@ -49,7 +52,8 @@ open class VersionTask : DefaultTask() {
                 val groupId = projectItem.properties["groupId"].toString()
                 val artifactName = projectItem.properties["artifactName"].toString()
                 val versionName = projectItem.properties["versionName"].toString()
-                versionList[projectName] = VersionModelB(projectName, groupId, artifactId, artifactName, versionName)
+                versionProjectToArtifactList[projectName] = VersionModelB(projectName, groupId, artifactId, artifactName, versionName)
+                versionArtifactToProjectList[artifactId] = projectName
             }
 
             projectItem.configurations.all { conf ->
@@ -58,9 +62,9 @@ open class VersionTask : DefaultTask() {
                     // If there are version changes in the libraries, the module will become a candidate for version increase.
                     val depGroup = it.group
                     if (depGroup?.contains(TOKOPEDIA) == true) {
-                        val depName = it.name
+                        val artifactName = it.name
                         // create list tree
-                        dependenciesHashSet.add(projectName to depName)
+                        dependenciesHashSetTemp.add(projectName to artifactName)
                     }
                 }
             }
@@ -69,6 +73,37 @@ open class VersionTask : DefaultTask() {
             val moduleHasNewChanges = moduleHasNewChanges(projectName)
             if (moduleHasNewChanges) {
                 candidateModuleListToUpdate.add(projectName)
+            }
+        }
+
+        val cloneDepHashSet: HashSet<Pair<String, String>> = hashSetOf()
+        dependenciesHashSetTemp.forEach {
+            val projectDependant = versionArtifactToProjectList[it.second] ?: ""
+            dependenciesHashSet.add(it.first to projectDependant)
+            cloneDepHashSet.add(it.first to projectDependant)
+        }
+
+        // this is to update all possible candidate version increase
+        // for example, the change of global config will also
+        // increase the version of the project that dependent on it
+        var isDepCandidateChanged = true
+        while (isDepCandidateChanged && cloneDepHashSet.isNotEmpty()) {
+            isDepCandidateChanged = false
+            val toRemoveList : MutableList<Pair<String, String>> = mutableListOf()
+            cloneDepHashSet.forEach {
+                val projectName = it.first
+                val dependencyProjectName = it.second
+                if (candidateModuleListToUpdate.contains(projectName)) {
+                    // this is to efficiency. No need to check if it already candidate (for next loop)
+                    toRemoveList.add(Pair(projectName,dependencyProjectName))
+                } else if (candidateModuleListToUpdate.contains(dependencyProjectName)){
+                    println("Add Candidate to Update $projectName")
+                    candidateModuleListToUpdate.add(projectName)
+                    isDepCandidateChanged = true
+                }
+            }
+            toRemoveList.forEach {
+                cloneDepHashSet.remove(it)
             }
         }
     }

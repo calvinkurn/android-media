@@ -55,7 +55,8 @@ task versionDependency(type: PublishCompositeTask, dependsOn: listingVersionTask
         latestReleaseDateString = listingVersionTask.latestReleaseDateString
         dependenciesHashSet = listingVersionTask.dependenciesHashSet
         candidateModuleListToUpdate = listingVersionTask.candidateModuleListToUpdate
-        versionList = listingVersionTask.versionList
+        versionProjectToArtifactList = listingVersionTask.versionProjectToArtifactList
+        versionArtifactToProjectList = listingVersionTask.versionArtifactToProjectList
     }
     doLast{
         println("[PUBLISH COMPOSITE TASK FINISHED]")
