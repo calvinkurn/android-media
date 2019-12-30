@@ -74,7 +74,8 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
 
     override fun onManualAdsClicked() {
         if(AppUtil.isSellerInstalled(context)) {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+//            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
         } else {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
         }
