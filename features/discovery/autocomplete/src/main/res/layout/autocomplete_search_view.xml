@@ -30,12 +30,12 @@
                 android:id="@+id/action_up_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="@dimen/dp_12"
                 app:srcCompat="@drawable/autocomplete_ic_back"/>
 
             <RelativeLayout
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_width="0dp"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/autocomplete_bg_input">
@@ -47,10 +47,11 @@
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
                         android:background="@null"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:paddingLeft="28dp"
-                        android:paddingRight="32dp"
+                        android:paddingTop="@dimen/dp_10"
+                        android:paddingBottom="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_28"
+                        android:paddingRight="@dimen/dp_32"
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:hint="@string/search_autocomplete_hint"
                         android:imeOptions="actionSearch"
                         android:inputType="textNoSuggestions"
@@ -63,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="4dp"
+                        android:layout_marginLeft="@dimen/dp_4"
                         app:srcCompat="@drawable/autocomplete_ic_search" />
 
                     <ImageView
@@ -72,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginRight="4dp"
+                        android:layout_marginRight="@dimen/dp_4"
                         app:srcCompat="@drawable/autocomplete_ic_camera" />
 
                     <ImageView
@@ -81,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginRight="4dp"
+                        android:layout_marginRight="@dimen/dp_4"
                         android:visibility="gone"
                         app:srcCompat="@drawable/autocomplete_ic_clear" />
 
@@ -91,8 +92,8 @@
                 android:id="@+id/action_voice_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
                 app:srcCompat="@drawable/autocomplete_ic_audio" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -100,7 +101,7 @@
                 android:text="@string/search_cancel_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:textColor="@color/unify_G500"
                 android:visibility="gone"

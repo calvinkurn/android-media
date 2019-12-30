@@ -9,16 +9,16 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp">
+        app:elevation="@dimen/dp_0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetRight="0dp"
-            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="@dimen/dp_0"
+            app:contentInsetStart="@dimen/dp_0"
+            app:contentInsetRight="@dimen/dp_0"
+            app:contentInsetEnd="@dimen/dp_0"
             android:background="@color/white"
             app:titleTextColor="@color/black_70">
 
@@ -72,7 +72,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/dp_1"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -121,8 +121,8 @@
 
                 <ImageView
                     android:id="@+id/search_change_grid_button"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
