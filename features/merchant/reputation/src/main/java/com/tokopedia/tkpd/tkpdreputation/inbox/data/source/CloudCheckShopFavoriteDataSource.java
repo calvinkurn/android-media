@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
-import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;

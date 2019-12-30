@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -52,6 +51,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.Send
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
 import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
@@ -202,6 +202,16 @@ public class ReputationModule {
     @Provides
     UploadImageService provideUploadImageService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new UploadImageService(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
+    TomeService provideTomeService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new TomeService(
                 context,
                 networkRouter,
                 userSession
@@ -414,13 +424,6 @@ public class ReputationModule {
     @Provides
     GetCacheInboxReputationUseCase provideGetCacheInboxReputationUseCase(ReputationRepository reputationRepository) {
         return new GetCacheInboxReputationUseCase(reputationRepository);
-    }
-
-
-    @ReputationScope
-    @Provides
-    TomeService provideTomeService() {
-        return new TomeService();
     }
 
     @ReputationScope

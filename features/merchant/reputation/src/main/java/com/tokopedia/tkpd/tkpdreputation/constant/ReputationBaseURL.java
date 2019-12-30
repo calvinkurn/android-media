@@ -41,4 +41,7 @@ public class ReputationBaseURL {
     public static final String PATH_GET_REVIEW_PRODUCT_RATING = REPUTATIONAPP_REVIEW_API
             + REPUTATION_VERSION + "/rating";
 
+    // Tome
+    public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
+
 }
