@@ -176,6 +176,7 @@ include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
 include "features:discovery:smart_recycler_diffutil_helper"
 include "features:user:seamless_login"
+include "features:user:liveness"
 
 include 'tkpdcore'
 include 'tkpdinbox'

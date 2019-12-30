@@ -192,6 +192,7 @@ ext {
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
+            liveness                        : ":features:user:liveness",
 
 
             tkpdcore                        : ":tkpdcore",

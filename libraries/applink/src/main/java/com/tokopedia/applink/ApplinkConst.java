@@ -122,6 +122,7 @@ public interface ApplinkConst {
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
+    String LIVENESS_DETECTION = "tokopedia://liveness-detection";
     String HOWTOPAY = "tokopedia://howtopay";
 
     String EVENTS = "tokopedia://events";

@@ -19,6 +19,7 @@ include "libraries:image_preview"
 include 'libraries:imageuploader'
 include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
+include "libraries:liveness_lib"
 include 'libraries:locationmanager'
 include "libraries:logger"
 include 'libraries:iris'

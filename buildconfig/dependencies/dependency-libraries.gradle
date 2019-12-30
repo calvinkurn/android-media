@@ -44,6 +44,7 @@ ext {
 //            iris                    : ":libraries:iris_no_op",
             kotlinExtensions        : ":libraries:kotlin_extensions",
             linker                  : ":libraries:linker",
+            liveness_lib            : ":libraries:liveness_lib",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
             oms                     : ":libraries:oms",

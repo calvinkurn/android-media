@@ -217,6 +217,7 @@ ext {
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.4",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
+            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar"
     ]
 
     testDependencies = [

@@ -15,6 +15,7 @@
     <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
+    <string name="path_liveness_detection">/liveness-detection</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
     <string name="path_change_name">/change-name</string>

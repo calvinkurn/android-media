@@ -42,6 +42,9 @@
     <string name="create_pin">Buat PIN Tokopedia</string>
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
 
+    <!--    Dynamic feature for Liveness Detection-->
+    <string name="title_liveness_detection">Liveness Detection</string>
+
     <!-- Dynamic feature for Groupchat-->
     <string name="title_groupchat">Groupchat</string>
     <string name="groupchat_app_name">Play</string>
