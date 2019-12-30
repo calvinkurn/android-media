@@ -218,16 +218,16 @@ public class TopAdsGtmTracker {
     public static void eventSearchResultPromoView(Context context, CpmData cpm, int position) {
         Analytics tracker = getTracker();
         Map<String, Object> map = DataLayer.mapOf(
-                "event", "productView",
-                "eventCategory", "topads headline",
-                "eventAction", "impression - product topads headline",
+                "event", "promoView",
+                "eventCategory", "search result",
+                "eventAction", "topads headline impression",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "id", cpm.getId(),
-                                                "name", "/topads headline search result",
+                                                "name", "/search - headline",
                                                 "creative", cpm.getRedirect(),
                                                 "position", position + 1))
                         ))
@@ -239,15 +239,15 @@ public class TopAdsGtmTracker {
         Analytics tracker = getTracker();
         Map<String, Object> map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "topads headline - search result",
-                "eventAction", "click - shop topads headline",
+                "eventCategory", "search result",
+                "eventAction", "topads headline shop",
                 "eventLabel", cpm.getRedirect(),
                 "ecommerce", DataLayer.mapOf(
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "id", cpm.getId(),
-                                                "name", "/topads headline - search result",
+                                                "name", "/search - headline shop",
                                                 "creative", cpm.getRedirect(),
                                                 "position", position + 1))
                         ))
@@ -259,15 +259,15 @@ public class TopAdsGtmTracker {
         Analytics tracker = getTracker();
         Map<String, Object> map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "topads headline - search result",
-                "eventAction", "click - shop topads headline",
+                "eventCategory", "search result",
+                "eventAction", "topads headline product",
                 "eventLabel", cpm.getRedirect(),
                 "ecommerce", DataLayer.mapOf(
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "id", cpm.getId(),
-                                                "name", "/topads headline - search result'",
+                                                "name", "/search - headline product'",
                                                 "creative", cpm.getRedirect(),
                                                 "position", position + 1))
                         ))
