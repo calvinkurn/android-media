@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
@@ -339,6 +340,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         presenter.addProductToCart(product, onSuccessAddToCart)
     }
 
+    override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {
+        analytics.trackAtcOnClick(product, atc)
+    }
+
     override fun showMessageAtcError(e: Throwable?) {
         view?.let {
             val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(it.context, e)
@@ -364,15 +369,16 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun showTextLonger(model: NotificationUpdateItemViewModel) {
+    override fun showTextLonger(element: NotificationUpdateItemViewModel) {
         val bundle = Bundle()
-        bundle.putString(PARAM_CONTENT_IMAGE, model.contentUrl)
-        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, model.typeLink.toString())
-        bundle.putString(PARAM_CTA_APPLINK, model.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, model.body)
-        bundle.putString(PARAM_CONTENT_TITLE, model.title)
-        bundle.putString(PARAM_BUTTON_TEXT, model.btnText)
-        bundle.putString(PARAM_TEMPLATE_KEY, model.templateKey)
+
+        bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
+        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
+        bundle.putString(PARAM_CTA_APPLINK, element.appLink)
+        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TITLE, element.title)
+        bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
+        bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
@@ -380,7 +386,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             longerTextDialog.arguments = bundle
         }
 
-        if (!longerTextDialog.isAdded  && longerTextDialog.dialog?.isShowing == false) {
+        if (!longerTextDialog.isAdded) {
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
         }
     }

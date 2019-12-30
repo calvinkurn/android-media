@@ -1,8 +1,6 @@
 package com.tokopedia.flight.common.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.flight.banner.data.source.BannerDataSource;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
@@ -44,7 +42,6 @@ import rx.functions.Func1;
  */
 
 public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements FlightRepository {
-    private BannerDataSource bannerDataSource;
     private FlightClassesDataSource flightClassesDataSource;
     private FlightCartDataSource flightCartDataSource;
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
@@ -53,8 +50,7 @@ public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements F
     private FlightCancelVoucherDataSource flightCancelVoucherDataSource;
     private FlightBookingCartDataSource flightBookingCartDataSource;
 
-    public FlightRepositoryImpl(BannerDataSource bannerDataSource,
-                                FlightClassesDataSource flightClassesDataSource,
+    public FlightRepositoryImpl(FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource,
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                 FlightBookingDataSource flightBookingDataSource,
@@ -65,7 +61,6 @@ public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements F
                                 FlightBookingCartDataSource flightBookingCartDataSource) {
         super(flightOrderDataSource, flightOrderMapper);
 
-        this.bannerDataSource = bannerDataSource;
         this.flightClassesDataSource = flightClassesDataSource;
         this.flightCartDataSource = flightCartDataSource;
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
@@ -130,11 +125,6 @@ public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements F
     @Override
     public Observable<OrderEntity> getOrderEntity(String id) {
         return getFlightOrderDataSource().getOrder(id);
-    }
-
-    @Override
-    public Observable<List<BannerDetail>> getBanners(Map<String, String> params) {
-        return bannerDataSource.getBannerData(params);
     }
 
     @Override

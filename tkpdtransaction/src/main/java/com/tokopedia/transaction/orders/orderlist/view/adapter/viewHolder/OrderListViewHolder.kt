@@ -198,8 +198,14 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             val shape = GradientDrawable().apply {
                 this.shape = GradientDrawable.RECTANGLE
                 cornerRadius = cornerRadiusValue
-                setColor(android.graphics.Color.parseColor(color?.background()))
-                setStroke(1, android.graphics.Color.parseColor(color?.border()))
+                color?.let {
+                    if (!it.background().isNullOrEmpty()) {
+                        setColor(android.graphics.Color.parseColor(it.background()))
+                    }
+                    if (!it.border().isNullOrEmpty()) {
+                        setStroke(1, android.graphics.Color.parseColor(it.border()))
+                    }
+                }
             }
             conditionalInfoTextBottom?.background = shape
             conditionalInfoTextBottom?.setPadding(padding16, padding16, padding16, padding16)
