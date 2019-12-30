@@ -55,7 +55,7 @@ internal class OriginalProductViewAnimator(
 
     private fun getOriginalProductContainerTravelDistance() =
             (fragmentView.buttonBuy?.measuredHeight ?: 0) +
-                buttonBuyMarginTop +
+                    (buttonBuyMarginTop * 2) +
                 (fragmentView.constraintLayoutOriginalProduct?.paddingBottom ?: 0)
 
     private fun getCardViewCollapsedHeight() =
@@ -124,7 +124,7 @@ internal class OriginalProductViewAnimator(
 
             resizeImageProduct(constraintSet)
             transitioningTextViewProductNameCollapsedState(constraintSet)
-            translateButtonAddToCartPosition(constraintSet)
+            translateButtonAddToCartCollapsedPosition(constraintSet)
             transitioningButtonsVisibility(constraintSet)
         }
     }
@@ -188,7 +188,7 @@ internal class OriginalProductViewAnimator(
         constraintSet.setAlpha(R.id.textViewProductNameCollapsed, currentVerticalScrollOffsetInPercent)
     }
 
-    private fun translateButtonAddToCartPosition(constraintSet: ConstraintSet) {
+    private fun translateButtonAddToCartCollapsedPosition(constraintSet: ConstraintSet) {
         val buttonAddToCartMarginBottom = getButtonAddToCartMarginBottomCollapsedState()
         constraintSet.connect(
                 R.id.buttonAddToCartCollapsed, ConstraintSet.BOTTOM,

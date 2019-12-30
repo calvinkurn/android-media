@@ -42,6 +42,7 @@ ext {
             flightOrderList                 : ":features:digital:flight_orderlist",
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
+            travelCountryCode               : ":features:digital:travel_country_code",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
@@ -164,6 +165,7 @@ ext {
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
+            opportunity                     : ":features:transaction:opportunity",
 
             attachproduct                   : ":features:user:attachproduct",
             changepassword                  : ":features:user:changepassword",
