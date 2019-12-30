@@ -49,10 +49,10 @@
     <string name="cotp_miscall_onboarding_desc">4 digit terakhir dari nomor yang menelpon kamu adalah kode verifikasi kamu.</string>
     <string name="cotp_miscall_onboarding_send_call">Missed Call Saya</string>
     <string name="cotp_miscall_verification_title">Masukkan 4 digit terakhir dari nomor yang menelpon kamu</string>
-    <string name="cotp_miscall_verification_resend">Kirim ulang</string>
+    <string name="cotp_miscall_verification_resend">Missed call ulang</string>
     <string name="cotp_miscall_verification_phone_code">000-00</string>
     <string name="cotp_miscall_verification_invalid_code">Kode verifikasi salah. Silakan coba lagi.</string>
-    <string name="cotp_miscall_verification_not_received_code">Tidak menerima kode?</string>
+    <string name="cotp_miscall_verification_not_received_code">Tidak menerima missed call?</string>
     <string name="cotp_miscall_verification_please_wait_to_resend">Mohon tunggu ***** untuk kirim ulang</string>
     <string name="cotp_miscall_verification_with_other_method">Gunakan Metode Verifikasi Lain</string>
   

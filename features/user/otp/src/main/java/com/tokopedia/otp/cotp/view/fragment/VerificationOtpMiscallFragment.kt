@@ -114,7 +114,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         setupGeneralView()
         updateViewFromServer()
         requestOtp()
-        showKeyboard(false)
     }
 
     private fun updateViewFromServer() {
@@ -130,7 +129,9 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         ImageHandler.loadImageAndCache(imgVerify, IMAGE_URL)
         textInputOtp?.setLength(viewModel.numberOtpDigit)
         textInputOtp?.setOnClickListener {
-            showKeyboard(true)
+            scrollView.postDelayed({
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+            }, 500)
         }
 
         textInputOtp?.addTextChangedListener(object : TextWatcher {
@@ -439,17 +440,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     override fun onSuccessGetModelFromServer(methodItem: MethodItem) {
         this.viewModel.imageUrl = methodItem.imageUrl
         this.viewModel.message = methodItem.verificationText
-    }
-
-    private fun showKeyboard(isClicked: Boolean) {
-        if (!isClicked) {
-            val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
-        }
-
-        scrollView.postDelayed({
-            scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-        }, 500)
     }
   
     companion object {
