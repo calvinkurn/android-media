@@ -4,7 +4,7 @@
 
     <dist:module
         dist:onDemand="true"
-        dist:title="@string/title_liveness_detection">
+        dist:title="@string/title_module_liveness_detection">
         <dist:fusing dist:include="true" />
     </dist:module>
 

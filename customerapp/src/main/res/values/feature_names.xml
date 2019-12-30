@@ -44,6 +44,7 @@
 
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
+    <string name="title_module_liveness_detection">Liveness Detection</string>
 
     <!-- Dynamic feature for Groupchat-->
     <string name="title_groupchat">Groupchat</string>
