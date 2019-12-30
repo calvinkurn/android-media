@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.view.util
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 
 internal class FeedDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),
@@ -24,6 +25,20 @@ internal class FeedDiffUtilCallback(
 
     private fun areFeedItemsTheSame(oldItem: DynamicPostViewModel, newItem: DynamicPostViewModel): Boolean {
         return oldItem.id == newItem.id
+                && oldItem.footer.like.value == newItem.footer.like.value
+                && oldItem.footer.comment.value == newItem.footer.comment.value
+                && !isVoteItemChanged(oldItem, newItem)
+    }
+
+    private fun isVoteItemChanged(oldItem: DynamicPostViewModel, newItem: DynamicPostViewModel): Boolean {
+        if (oldItem.contentList[0] is PollContentViewModel) {
+            for (pos in 0..oldItem.contentList.size) {
+                if ((oldItem.contentList[pos] as PollContentViewModel).voted != (newItem.contentList[pos] as PollContentViewModel).voted) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     override fun getOldListSize(): Int {
