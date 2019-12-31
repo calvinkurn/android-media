@@ -268,15 +268,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun processToUpdateCartData(cartItemDataList: List<CartItemData>) {
         view?.let {
             it.showProgressLoading()
-            val updateCartRequestList = ArrayList<UpdateCartRequest>()
-            for (cartItemData in cartItemDataList) {
-                val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
-                updateCartRequest.notes = cartItemData.updatedData?.remark
-                updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
-                updateCartRequestList.add(updateCartRequest)
-            }
 
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
@@ -291,15 +284,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                                     shopGroupAvailableData: ShopGroupAvailableData) {
         view?.let {
             it.showProgressLoading()
-            val updateCartRequestList = ArrayList<UpdateCartRequest>()
-            for (cartItemData in cartItemDataList) {
-                val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
-                updateCartRequest.notes = cartItemData.updatedData?.remark
-                updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
-                updateCartRequestList.add(updateCartRequest)
-            }
 
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
@@ -315,15 +301,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                                     goToDetail: Int) {
         view?.let {
             it.showProgressLoading()
-            val updateCartRequestList = ArrayList<UpdateCartRequest>()
-            for (cartItemData in cartItemDataList) {
-                val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
-                updateCartRequest.notes = cartItemData.updatedData?.remark
-                updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
-                updateCartRequestList.add(updateCartRequest)
-            }
 
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
@@ -342,15 +321,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     cartItemDataList.add(data)
                 }
             }
-            val updateCartRequestList = ArrayList<UpdateCartRequest>()
-            for (cartItemData in cartItemDataList) {
-                val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
-                updateCartRequest.notes = cartItemData.updatedData?.remark
-                updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
-                updateCartRequestList.add(updateCartRequest)
-            }
 
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
             requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId)
@@ -360,6 +332,18 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                             ?.subscribe(UpdateAndReloadCartSubscriber(it, this, cartListData))
             )
         }
+    }
+
+    private fun getUpdateCartRequest(cartItemDataList: List<CartItemData>): ArrayList<UpdateCartRequest> {
+        val updateCartRequestList = ArrayList<UpdateCartRequest>()
+        for (cartItemData in cartItemDataList) {
+            val updateCartRequest = UpdateCartRequest()
+            updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
+            updateCartRequest.notes = cartItemData.updatedData?.remark
+            updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
+            updateCartRequestList.add(updateCartRequest)
+        }
+        return updateCartRequestList
     }
 
     override fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>) {
