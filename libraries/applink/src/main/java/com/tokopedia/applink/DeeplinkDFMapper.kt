@@ -78,6 +78,7 @@ object DeeplinkDFMapper {
     private val DFM_DIGITAL = "df_digital"
     private val DFM_DISCOVERY = "df_discovery"
     private val DFM_FINTECH = "df_fintech"
+    private val DFM_OPERATIONAL = "df_operational"
 
     private val DFM_GROUPCHAT = "groupchat"
 
@@ -90,10 +91,8 @@ object DeeplinkDFMapper {
     private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private val DFM_TOKOPOINTS = "tokopoints"
-    private val DFM_CONTACT_US = "contact_us"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_TRADEIN = "tradein"
-    private val DFM_CHAT_BOT = "chatbot"
     private val DFM_SETTING_NOTIF = "settingnotif"
     private val DFM_PAYMENT_SETTING = "payment_setting"
 
@@ -172,8 +171,8 @@ object DeeplinkDFMapper {
             // Operational
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) ||
                     it.startsWith(CONTACT_US) ||
-                    it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
-            add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
+                    it.startsWithPattern(TICKET_DETAIL) }, DFM_OPERATIONAL, R.string.applink_title_contact_us))
+            add(DFP({it.startsWith(CHAT_BOT)}, DFM_OPERATIONAL, R.string.title_applink_chatbot))
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
