@@ -4,7 +4,7 @@ import com.tokopedia.digital.categorylist.data.cloud.entity.HomeCategoryMenuItem
 import com.tokopedia.digital.categorylist.data.cloud.entity.LayoutRow;
 import com.tokopedia.digital.categorylist.data.cloud.entity.LayoutSection;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
-import com.tokopedia.digital.exception.MapperDataException;
+import com.tokopedia.digital.common.exception.MapperDataException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -20,7 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
@@ -139,12 +140,12 @@ public class ClientNumberInputView extends LinearLayout {
 
     public void enableImageOperator(String imageUrl) {
         imgOperator.setVisibility(VISIBLE);
-        Glide.with(context).load(imageUrl).dontAnimate().into(this.imgOperator);
+        ImageHandler.LoadImage(this.imgOperator, imageUrl);
     }
 
     public void disableImageOperator() {
         imgOperator.setVisibility(GONE);
-        Glide.with(context).load("").dontAnimate().into(this.imgOperator);
+        ImageHandler.LoadImage(this.imgOperator, "");
     }
 
     public void setInputTypeNumber() {
@@ -162,7 +163,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     public void setImgOperator(String imgUrl) {
-        Glide.with(getContext()).load(imgUrl).dontAnimate().into(this.imgOperator);
+        ImageHandler.LoadImage(this.imgOperator, imgUrl);
     }
 
     public void setActionListener(ActionListener actionListener) {

@@ -19,7 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
@@ -235,7 +235,7 @@ public class OperatorVerificationDialog extends DialogFragment {
 
     public void enableImageOperator(String imageUrl) {
         imgOperator.setVisibility(VISIBLE);
-        Glide.with(getActivity()).load(imageUrl).dontAnimate().into(this.imgOperator);
+        ImageHandler.LoadImage(this.imgOperator, imageUrl);
     }
 
     @NonNull

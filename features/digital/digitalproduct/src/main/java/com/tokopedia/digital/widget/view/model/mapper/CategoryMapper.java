@@ -1,6 +1,6 @@
 package com.tokopedia.digital.widget.view.model.mapper;
 
-import com.tokopedia.digital.exception.MapperDataException;
+import com.tokopedia.digital.common.exception.MapperDataException;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.view.model.category.Attributes;
 import com.tokopedia.digital.widget.view.model.category.Category;

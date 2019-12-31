@@ -2,7 +2,6 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +10,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import androidx.annotation.Nullable;
+
 import com.elyeproj.loaderviewlibrary.LoaderTextView;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.digital.R;
@@ -70,9 +71,7 @@ public class ETollCardInfoView extends FrameLayout {
         this.cardInfo = cardInfo;
 
         imageIssuer.setVisibility(VISIBLE);
-        Glide.with(context)
-                .load(cardInfo.getIssuerImage())
-                .into(imageIssuer);
+        ImageHandler.LoadImage(imageIssuer, cardInfo.getIssuerImage());
 
         textLabelCardNumber.setText(getResources().getString(R.string.emoney_card_info_label_card_number));
         textCardNumber.setText(cardInfo.getFormattedCardNumber());

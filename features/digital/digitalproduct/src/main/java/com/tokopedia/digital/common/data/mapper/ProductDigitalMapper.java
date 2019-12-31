@@ -15,7 +15,7 @@ import com.tokopedia.digital.common.data.entity.response.RechargeFavoritNumber;
 import com.tokopedia.digital.common.data.entity.response.RechargeFavoritNumberResponseEntity;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.entity.response.Validation;
-import com.tokopedia.digital.exception.MapperDataException;
+import com.tokopedia.digital.common.exception.MapperDataException;
 import com.tokopedia.digital.product.view.model.AdditionalFeature;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
