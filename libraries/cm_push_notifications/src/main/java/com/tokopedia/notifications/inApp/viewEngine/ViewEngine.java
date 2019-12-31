@@ -1,14 +1,15 @@
 package com.tokopedia.notifications.inApp.viewEngine;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -37,6 +38,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMText;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -44,13 +46,10 @@ import java.util.List;
  */
 public class ViewEngine {
 
-    private Activity mActivity;
+    private WeakReference<Activity> activityWeakReference;
 
-    private Context appContext;
 
-    private static ViewEngine instance;
-
-    private static final Object lock = new Object();
+    private View inAppView;
 
 
     private int resCmClose = R.id.iv_close;
@@ -59,36 +58,29 @@ public class ViewEngine {
     private int resCmMessage = R.id.tv_cmMessage;
     private int buttonContainer = R.id.ll_buttonContainer;
 
-    public static ViewEngine getInstance(Context context) {
-        synchronized (lock) {
-            if (instance == null)
-                instance = new ViewEngine(context.getApplicationContext());
-        }
-        return instance;
+
+    public ViewEngine(Activity activity) {
+        activityWeakReference = new WeakReference<>(activity);
     }
 
     public boolean isViewAlreadyAttached(Activity activity) {
         return false;
     }
 
-    private ViewEngine(Context context) {
-        this.appContext = context;
-    }
-
-    public CMInApp createView(Activity activity, CMInApp cmInApp) {
+    public View createView(CMInApp cmInApp) {
         try {
-            if (activity == null)
+            if (activityWeakReference.get() == null)
                 return null;
-            mActivity = activity;
-            View view = LayoutInflater.from(appContext).inflate(R.layout.layout_inapp, null, false);
-            view.findViewById(R.id.mainContainer).setOnClickListener(v -> {
+            View view = LayoutInflater.from(activityWeakReference.get()).inflate(R.layout.layout_inapp, null, false);
+            View mainContainer = view.findViewById(R.id.mainContainer);
+            mainContainer.setOnClickListener(v -> {
             });
-            view.findViewById(R.id.mainContainer).setTag(cmInApp);
-            cmInApp.setCmInAppView(view);
+            mainContainer.setTag(cmInApp);
+            inAppView = view;
             View innerContainer = view.findViewById(R.id.innerContainer);
             addOnClose(view, cmInApp);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) innerContainer.getLayoutParams();
-            setMainContainerMargin(layoutParams, cmInApp, innerContainer);
+            setMainContainerMargin(mainContainer, layoutParams, cmInApp, innerContainer);
             setMainContainerBackGround(view, cmInApp);
             CMLayout cmLayout = cmInApp.getCmLayout();
 
@@ -96,22 +88,59 @@ public class ViewEngine {
                 innerContainer.findViewById(R.id.iv_close).setVisibility(View.INVISIBLE);
             }
 
-            if (cmInApp.getType().equalsIgnoreCase(CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY) ||
-                    cmInApp.getType().equalsIgnoreCase(CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY)) {
-                innerContainer.findViewById(R.id.tv_cmMessage).setVisibility(View.GONE);
-                innerContainer.findViewById(R.id.tv_cmTitle).setVisibility(View.GONE);
-                innerContainer.findViewById(R.id.ll_buttonContainer).setVisibility(View.GONE);
-            } else {
-                setCmInAppTitle(view, cmLayout);
-                setCmInAppMessage(view, cmLayout);
-                setButtons(view, cmInApp);
+            switch (cmInApp.getType()) {
+                case CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY:
+                case CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY:
+                    innerContainer.findViewById(R.id.tv_cmMessage).setVisibility(View.GONE);
+                    innerContainer.findViewById(R.id.tv_cmTitle).setVisibility(View.GONE);
+                    innerContainer.findViewById(R.id.ll_buttonContainer).setVisibility(View.GONE);
+                    break;
+                case CmInAppConstant.TYPE_BORDER_TOP:
+                case CmInAppConstant.TYPE_BORDER_BOTTOM:
+                    if (cmLayout.getTitleText() == null || TextUtils.isEmpty(cmLayout.getTitleText().getTxt())
+                            || (cmLayout.getTitleText().getTxt() != null
+                            && TextUtils.isEmpty(cmLayout.getTitleText().getTxt().trim())))
+                        innerContainer.findViewById(R.id.tv_cmTitle).setVisibility(View.GONE);
+                    else setCmInAppTitle(view, cmLayout);
+
+                    if (cmLayout.getMessageText() == null || TextUtils.isEmpty(cmLayout.getMessageText().getTxt())
+                            || (cmLayout.getMessageText().getTxt() != null
+                            && TextUtils.isEmpty(cmLayout.getMessageText().getTxt().trim())))
+                        innerContainer.findViewById(R.id.tv_cmMessage).setVisibility(View.GONE);
+                    else
+                        setCmInAppMessage(view, cmLayout);
+                    setButtons(view, cmInApp);
+                    mainContainer.findViewById(R.id.iv_secondary_close).setVisibility(View.VISIBLE);
+                    mainContainer.findViewById(R.id.blank_iv).setVisibility(View.VISIBLE);
+                    innerContainer.findViewById(resCmClose).setVisibility(View.GONE);
+                    break;
+                case CmInAppConstant.TYPE_ALERT:
+                    if (cmLayout.getTitleText() == null || TextUtils.isEmpty(cmLayout.getTitleText().getTxt())
+                            || (cmLayout.getTitleText().getTxt() != null
+                            && TextUtils.isEmpty(cmLayout.getTitleText().getTxt().trim())))
+                        innerContainer.findViewById(R.id.tv_cmTitle).setVisibility(View.GONE);
+                    else setCmInAppTitle(view, cmLayout);
+
+                    if (cmLayout.getMessageText() == null || TextUtils.isEmpty(cmLayout.getMessageText().getTxt())
+                            || (cmLayout.getMessageText().getTxt() != null
+                            && TextUtils.isEmpty(cmLayout.getMessageText().getTxt().trim())))
+                        innerContainer.findViewById(R.id.tv_cmMessage).setVisibility(View.GONE);
+                    else
+                        setCmInAppMessage(view, cmLayout);
+                    setButtons(view, cmInApp);
+                    break;
+                default:
+                    setCmInAppTitle(view, cmLayout);
+                    setCmInAppMessage(view, cmLayout);
+                    setButtons(view, cmInApp);
             }
 
             setDrawable(innerContainer, cmLayout.getForeground());
             setCmInAppImage(view, cmLayout, (ConstraintLayout) innerContainer);
             handleBackPress(view, cmInApp);
-            return cmInApp;
+            return inAppView;
         } catch (Exception e) {
+            inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
                 listener.onCMInAppInflateException(cmInApp);
@@ -120,12 +149,16 @@ public class ViewEngine {
         }
     }
 
-    private void setMainContainerMargin(RelativeLayout.LayoutParams layoutParams, CMInApp cmInApp, View innerContainer) {
+    private void setMainContainerMargin(View mainContainer, RelativeLayout.LayoutParams layoutParams, CMInApp cmInApp, View innerContainer) {
         int navigationHeight = getNavigationBarHeight();
         int statusBarHeight = getStatusBarHeight();
         int[] margins = {0, statusBarHeight, 0, navigationHeight};
         RelativeLayout.LayoutParams innerLayoutParams = (RelativeLayout.LayoutParams) innerContainer.getLayoutParams();
 
+        int pXtoDP40 = (int) getPXtoDP(40F);
+        boolean isAppLinkSupported = false;
+        boolean showSecondaryCross = false;
+        CMLayout cmLayout = cmInApp.getCmLayout();
         switch (cmInApp.getType()) {
             case CmInAppConstant.TYPE_FULL_SCREEN:
                 layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -135,29 +168,38 @@ public class ViewEngine {
             case CmInAppConstant.TYPE_INTERSTITIAL:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-                margins[0] = margins[0] + (int) getPXtoDP(40F);
-                margins[1] = margins[1] + (int) getPXtoDP(40F);
-                margins[2] = margins[2] + (int) getPXtoDP(40F);
-                margins[3] = margins[3] + (int) getPXtoDP(40F);
+                margins[0] = margins[0] + pXtoDP40;
+                margins[1] = margins[1] + pXtoDP40;
+                margins[2] = margins[2] + pXtoDP40;
+                margins[3] = margins[3] + pXtoDP40;
                 break;
             case CmInAppConstant.TYPE_BORDER_BOTTOM:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                ((RelativeLayout.LayoutParams)mainContainer.findViewById(R.id.blank_iv).getLayoutParams()).addRule(RelativeLayout.ABOVE, R.id.innerContainer);
                 changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
+                showSecondaryCross = true;
+
+                if (isStickWithOnlyText(cmInApp))
+                    isAppLinkSupported = true;
                 break;
             case CmInAppConstant.TYPE_BORDER_TOP:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                innerLayoutParams.addRule(RelativeLayout.BELOW, R.id.blank_iv);
                 changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
+                showSecondaryCross = true;
+
+                if (isStickWithOnlyText(cmInApp))
+                    isAppLinkSupported = true;
                 break;
             case CmInAppConstant.TYPE_ALERT:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
                 changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
-                margins[0] = margins[0] + (int) getPXtoDP(40F);
-                margins[1] = margins[1] + (int) getPXtoDP(40F);
-                margins[2] = margins[2] + (int) getPXtoDP(40F);
-                margins[3] = margins[3] + (int) getPXtoDP(40F);
+                margins[0] = margins[0] + pXtoDP40;
+                margins[1] = margins[1] + pXtoDP40;
+                margins[2] = margins[2] + pXtoDP40;
+                margins[3] = margins[3] + pXtoDP40;
                 break;
 
             case CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY:
@@ -165,29 +207,45 @@ public class ViewEngine {
                 innerLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 innerLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 changeToImageOnly((ConstraintLayout) innerContainer);
-                if (cmInApp.getCmLayout().getAppLink() != null) {
-                    ElementType elementType = new ElementType(ElementType.MAIN);
-                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
-                }
+
+                isAppLinkSupported = true;
                 break;
 
             case CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY:
                 innerLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 innerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
                 changeToImageOnly((ConstraintLayout) innerContainer);
-                margins[0] = margins[0] + (int) getPXtoDP(40F);
-                margins[1] = margins[1] + (int) getPXtoDP(40F);
-                margins[2] = margins[2] + (int) getPXtoDP(40F);
-                margins[3] = margins[3] + (int) getPXtoDP(40F);
-                if (cmInApp.getCmLayout().getAppLink() != null) {
-                    ElementType elementType = new ElementType(ElementType.MAIN);
-                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
-                }
+                margins[0] = margins[0] + pXtoDP40;
+                margins[1] = margins[1] + pXtoDP40;
+                margins[2] = margins[2] + pXtoDP40;
+                margins[3] = margins[3] + pXtoDP40;
+
+                isAppLinkSupported = true;
                 break;
         }
 
+        if (isAppLinkSupported && cmInApp.getCmLayout().getAppLink() != null) {
+            ElementType elementType = new ElementType(ElementType.MAIN);
+            addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
+        }
+
         innerContainer.setLayoutParams(innerLayoutParams);
-        layoutParams.setMargins(margins[0], margins[1], margins[2], margins[3]);
+        if (showSecondaryCross) {
+            RelativeLayout.LayoutParams mainContainerLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mainContainerLayoutParams.setMargins(margins[0], margins[1], margins[2], margins[3]);
+            mainContainer.setLayoutParams(mainContainerLayoutParams);
+        } else {
+            layoutParams.setMargins(margins[0], margins[1], margins[2], margins[3]);
+        }
+    }
+
+    private boolean isStickWithOnlyText(CMInApp cmInApp) {
+        CMLayout cmLayout = cmInApp.getCmLayout();
+        return (cmLayout.getTitleText() == null || TextUtils.isEmpty(cmLayout.getTitleText().getTxt())
+                || (cmLayout.getTitleText().getTxt() != null
+                && TextUtils.isEmpty(cmLayout.getTitleText().getTxt().trim())))
+                && (cmLayout.getMessageText() != null && !TextUtils.isEmpty(cmLayout.getMessageText().getTxt()))
+                && !hasButtons(cmInApp);
     }
 
     private void setMainContainerBackGround(View view, CMInApp cmInApp) {
@@ -200,7 +258,7 @@ public class ViewEngine {
         ImageView imageView = view.findViewById(resCmImage);
         String imageUrlStr = cmLayout.getImg();
         if (!TextUtils.isEmpty(imageUrlStr)) {
-            Glide.with(mActivity)
+            Glide.with(activityWeakReference.get())
                     .load(imageUrlStr)
                     .into(imageView);
         } else {
@@ -241,6 +299,7 @@ public class ViewEngine {
         String buttonOrientation = cmLayout.getBtnOrientation();
         List<CMButton> cmButtonList = cmLayout.getButton();
         if (cmButtonList == null) {
+            mainContainer.findViewById(R.id.ll_buttonContainer).setVisibility(View.GONE);
             return;
         }
         LinearLayout container = mainContainer.findViewById(R.id.ll_buttonContainer);
@@ -259,21 +318,36 @@ public class ViewEngine {
         for (CMButton cmButton : cmButtonList) {
             buttonCount--;
             Button button = createButton(container, cmLayout.getBtnOrientation(), cmButton, buttonCount == 0);
-            ElementType elementType = new ElementType(ElementType.BUTTON);
-            elementType.setElementId(cmButton.getId());
-            if (cmButton.getAppLink() != null)
-                addOnClickAction(cmInApp, button, cmButton.getAppLink(), elementType);
+            if (button != null) {
+                ElementType elementType = new ElementType(ElementType.BUTTON);
+                elementType.setElementId(cmButton.getId());
+                if (cmButton.getAppLink() != null)
+                    addOnClickAction(cmInApp, button, cmButton.getAppLink(), elementType);
+            }
         }
     }
 
+    private boolean hasButtons(CMInApp cmInApp) {
+        CMLayout cmLayout = cmInApp.getCmLayout();
+        List<CMButton> cmButtonList = cmLayout.getButton();
+        return cmButtonList != null && cmButtonList.size() != 0;
+    }
+
     private Button createButton(LinearLayout buttonContainer, String orientation, CMButton cmButton, boolean isLastButton) {
-        Button button = new Button(appContext);
+        Button button = new Button(activityWeakReference.get());
         button.setMinHeight(0);
         button.setMinimumHeight(0);
         LinearLayout.LayoutParams layoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         button.setText(cmButton.getTxt());
         button.setTextColor(Color.parseColor(cmButton.getColor()));
+        String size = cmButton.getSize();
+        try {
+            if (size != null && TextUtils.isEmpty(size.trim()))
+                button.setTextSize(TypedValue.COMPLEX_UNIT_SP,
+                        Float.parseFloat(size));
+        } catch (NumberFormatException ignored) {
+        }
 
         int margin[] = {0, 0, 0, 0};
         switch (orientation) {
@@ -324,14 +398,15 @@ public class ViewEngine {
                     listener.onCMinAppDismiss();
                     listener.onCMInAppLinkClick(Uri.parse(deepLink), cmInApp, elementType);
                 }
-                ((ViewGroup) cmInApp.getCmInAppView().getParent()).removeView(cmInApp.getCmInAppView());
+                if (inAppView != null)
+                    ((ViewGroup) inAppView.getParent()).removeView(inAppView);
             }
         });
     }
 
     private int getNavigationBarHeight() {
-        Resources resources = appContext.getResources();
-        if (!hasSoftKeys(mActivity.getWindowManager()))
+        Resources resources = activityWeakReference.get().getResources();
+        if (!hasSoftKeys(activityWeakReference.get().getWindowManager()))
             return 0;
         int resourceId = resources.getIdentifier("navigation_bar_height",
                 "dimen", "android");
@@ -359,20 +434,22 @@ public class ViewEngine {
     }
 
     private int getStatusBarHeight() {
-        return (int) (24 * appContext.getResources().getDisplayMetrics().density);
+        return (int) (24 * activityWeakReference.get().getResources().getDisplayMetrics().density);
     }
 
     private void addOnClose(final View view, CMInApp cmInApp) {
         View closeView = view.findViewById(R.id.iv_close);
-        closeView.setOnClickListener(v -> {
+        View secondaryCloseView = view.findViewById(R.id.iv_secondary_close);
+        View.OnClickListener onClickListener = v -> {
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
                 listener.onCMInAppClosed(cmInApp);
                 listener.onCMinAppDismiss();
             }
             ((ViewGroup) view.getParent()).removeView(view);
-        });
-
+        };
+        closeView.setOnClickListener(onClickListener);
+        secondaryCloseView.setOnClickListener(onClickListener);
     }
 
     private void handleBackPress(View view, CMInApp cmInApp) {
@@ -408,10 +485,10 @@ public class ViewEngine {
     }
 
     private float getPXtoDP(float dip) {
-        return dip * ((float) appContext.getResources().getDisplayMetrics().densityDpi
+        if (activityWeakReference.get() == null)
+            return 0;
+        return dip * ((float) activityWeakReference.get().getResources().getDisplayMetrics().densityDpi
                 / DisplayMetrics.DENSITY_DEFAULT);
-
-
     }
 
     private void changeConstraintToBorderView(ConstraintLayout constraintLayout, CMInApp cmInApp) {

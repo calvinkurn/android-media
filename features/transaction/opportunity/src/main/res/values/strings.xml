@@ -1,0 +1,50 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="opportunity_name">Opportunity</string>
+    <string name="title_opportunity_detail">Peluang</string>
+    <string name="title_take_opportunity">Ambil Peluang</string>
+
+    <string name="item_replacement_no_note"><![CDATA[<i>]]>Tidak ada catatan dari pengguna<![CDATA[</i>]]></string>
+    <string name="item">barang</string>
+
+    <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli.\n\nPembatalan akan dikenakan penalti reputasi -10</string>
+    <string name="action_agree">Setuju</string>
+    <string name="action_back">Kembali</string>
+
+    <string name="opportunity_detail_info_reputation_multiplier_title">Nilai Reputasi</string>
+    <string name="opportunity_detail_info_reputation_multiplier_content">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+    <string name="opportunity_detail_info_product_price_title">Harga Barang</string>
+    <string name="opportunity_detail_info_product_price_content">Estimasi harga barang telah disesuaikan dengan lokasi Anda.</string>
+    <string name="opportunity_detail_info_different_product_price_content">Harga yang dicoret akan dicantumkan di invoice. Estimasi harga barang baru telah disesuaikan dengan lokasi Anda.</string>
+    <string name="opportunity_detail_info_shipping_price_title">Ongkos Kirim</string>
+    <string name="opportunity_detail_info_delivery_price_content">Estimasi ongkos kirim telah disesuaikan dengan lokasi Anda.</string>
+    <string name="opportunity_detail_info_different_delivery_price_content">Ongkos kirim yang dicoret akan dicantumkan di invoice. Estimasi ongkos kirim baru telah disesuaikan dengan lokasi Anda.</string>
+
+    <string name="opportunity_showcase_reputation_value_title">Nilai Reputasi Peluang</string>
+    <string name="opportunity_showcase_reputation_value_content">Ini adalah angka pengali nilai reputasi yang akan diperbaharui setiap 30 menit. Ayo ambil order peluang sebanyak-banyaknya dan tingkatkan reputasi tokomu!</string>
+
+    <string name="format_rupiah_with_prefix">Rp %s</string>
+    <string name="label_back">Kembali</string>
+    <string name="action_sort">Urutkan</string>
+
+    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
+
+    <string name="title_quantity_colon">Jumlah:</string>
+    <string name="note_for_seller">Catatan untuk Penjual:</string>
+    <string name="see_product">Lihat Produk</string>
+
+    <string name="reputation_value">Nilai Reputasi:</string>
+    <string name="destination_city">Kota Tujuan:</string>
+    <string name="cashback_for_buyer">Cashback Untuk Pembeli:</string>
+    <string name="respond_deadline">Batas Respon:</string>
+    <string name="shipping">Pengiriman:</string>
+    <string name="transaction_value">Nilai Transaksi</string>
+
+    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+
+    <string name="test_strike"><strike>TextView</strike></string>
+
+    <string name="title_activity_snapshot_opportunity">Snapshot</string>
+
+    <string name="title_sort_opportunity">Urutkan</string>
+    <string name="title_filter_opportunity">Filter</string>
+</resources>
