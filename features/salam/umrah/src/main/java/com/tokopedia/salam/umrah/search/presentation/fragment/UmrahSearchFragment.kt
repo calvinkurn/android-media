@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -166,7 +167,12 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         umrahSearchViewModel.searchResult.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
-                is Fail -> showGetListError(it.throwable)
+                is Fail -> {
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView, null, null, null, R.drawable.img_umrah_pdp_empty_state) {
+                        loadInitialData()
+                    }
+                }
+
             }
         })
         umrah_search_bottom_action_view.setButton1OnClickListener { openSortBottomSheets() }
@@ -189,7 +195,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun createAdapterInstance(): BaseListAdapter<UmrahSearchProduct, UmrahSearchAdapterTypeFactory> {
         val adapter = super.createAdapterInstance()
-        adapter.errorNetworkModel =  ErrorNetworkModel().apply {
+        adapter.errorNetworkModel = ErrorNetworkModel().apply {
             iconDrawableRes = R.drawable.umrah_img_empty_search_png
         }
         return UmrahSearchAdapter(this, adapterTypeFactory)
