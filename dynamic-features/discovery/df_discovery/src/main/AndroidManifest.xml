@@ -1,11 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.search.customerapp">
+    package="com.tokopedia.dfdiscovery">
 
     <dist:module
         dist:onDemand="false"
-        dist:title="@string/title_search_result_module_name">
+        dist:title="@string/title_image_search_module_name">
         <dist:fusing dist:include="true" />
     </dist:module>
 
+    <application android:hasCode="false" />
 </manifest>

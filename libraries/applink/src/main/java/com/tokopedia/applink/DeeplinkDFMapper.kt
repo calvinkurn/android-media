@@ -76,10 +76,9 @@ object DeeplinkDFMapper {
 
     private val DFM_CONTENT = "df_content"
     private val DFM_DIGITAL = "df_digital"
+    private val DFM_DISCOVERY = "df_discovery"
 
     private val DFM_GROUPCHAT = "groupchat"
-    private val DFM_IMAGE_SEARCH = "image_search"
-    private val DFM_SEARCH_RESULT = "search"
 
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_FLIGHT_TRAVEL = "flight_travel"
@@ -146,9 +145,9 @@ object DeeplinkDFMapper {
 
             // Discovery
             add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) ||
-                    it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
+                    it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_DISCOVERY, R.string.title_image_search))
             add(DFP({ it.startsWith(SEARCH_RESULT) ||
-                    it.startsWith(AUTOCOMPLETE)}, DFM_SEARCH_RESULT, R.string.title_search_result))
+                    it.startsWith(AUTOCOMPLETE)}, DFM_DISCOVERY, R.string.title_search_result))
 
             // Fintech
             add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))

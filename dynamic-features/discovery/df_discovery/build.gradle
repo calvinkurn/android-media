@@ -50,6 +50,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
 
+    implementation project(rootProject.ext.features.imageSearch)
+    implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
 }
