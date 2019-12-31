@@ -73,6 +73,9 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
+
+    private val DFM_CONTENT = "df_content"
+
     private val DFM_GROUPCHAT = "groupchat"
     private val DFM_IMAGE_SEARCH = "image_search"
     private val DFM_SEARCH_RESULT = "search"
@@ -97,8 +100,6 @@ object DeeplinkDFMapper {
     private val DFM_OVO_PAY_WITH_QR = "df_ovo_pay_with_qr"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_TRADEIN = "tradein"
-    private val DFM_TRADEIN_FINAL_PRICE = "tradein"
-    private val DFM_MONEYIN = "tradein"
     private val DFM_WALLET = "fintech_wallet"
     private val DFM_PROFILE = "profile"
     private val DFM_AFFILIATE = "affiliate"
@@ -127,14 +128,14 @@ object DeeplinkDFMapper {
 
             // Category
             add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
-            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN_FINAL_PRICE, R.string.applink_harga_final))
-            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_MONEYIN, R.string.money_in))
+            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN, R.string.applink_harga_final))
+            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_TRADEIN, R.string.money_in))
 
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
 
             // Content
-            add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_AFFILIATE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(PROFILE) }, DFM_CONTENT, R.string.applink_title_profile))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_CONTENT, R.string.applink_title_affiliate))
 
             // Digital
             add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))

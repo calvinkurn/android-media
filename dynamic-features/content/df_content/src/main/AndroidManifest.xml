@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.affiliate.customerapp">
+    package="com.tokopedia.dfcontent">
 
     <dist:module
         dist:onDemand="false"
-        dist:title="@string/title_af_affiliate">
+        dist:title="@string/title_profile">
         <dist:fusing dist:include="true" />
     </dist:module>
     <application android:hasCode="false"/>
