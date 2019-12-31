@@ -79,16 +79,14 @@ object DeeplinkDFMapper {
     private val DFM_DISCOVERY = "df_discovery"
     private val DFM_FINTECH = "df_fintech"
     private val DFM_OPERATIONAL = "df_operational"
+    private val DFM_TRAVEL = "df_travel"
 
     private val DFM_GROUPCHAT = "groupchat"
 
-    private val DFM_HOTEL_TRAVEL = "hotel_travel"
-    private val DFM_FLIGHT_TRAVEL = "flight_travel"
     private val DFM_DIGITAL_DEALS = "digital_deals"
     private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
     private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
     private val DFM_USER_SETTING_BANK = "settingbank"
-    private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private val DFM_TOKOPOINTS = "tokopoints"
     private val DFM_REFERRAL = "im_referral"
@@ -181,10 +179,10 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
 
             // Travel
-            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
-            add(DFP({ it.startsWith(FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
-            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
-            add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
+            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_TRAVEL, R.string.title_travel_homepage))
+            add(DFP({ it.startsWith(FLIGHT) }, DFM_TRAVEL, R.string.title_flight))
+            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_TRAVEL, R.string.title_flight))
+            add(DFP({ it.startsWith(HOTEL) }, DFM_TRAVEL, R.string.title_hotel))
 
             // User
             add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))

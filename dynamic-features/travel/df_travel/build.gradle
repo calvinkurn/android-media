@@ -50,5 +50,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
 
+    implementation project(rootProject.ext.features.travelHomepage)
+    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
 }
