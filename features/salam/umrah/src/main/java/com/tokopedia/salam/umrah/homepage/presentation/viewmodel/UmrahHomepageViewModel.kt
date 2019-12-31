@@ -151,15 +151,19 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
     }
 
     fun checkIfAllError() {
+        var n = 0
         homePageModel.value?.let {
             var isSuccess = false
             for (item in it) {
-                if (item.isSuccess && item.isLoaded) {
-                    isSuccess = true
-                    break
+                if (n != DREAM_FUND_ORDER) {
+                    if (item.isSuccess && item.isLoaded) {
+                        isSuccess = true
+                        break
+                    }
+                    n++
+                    if (!isSuccess) _isAllError.value = true
                 }
             }
-            if (!isSuccess) _isAllError.value = true
         }
     }
 
