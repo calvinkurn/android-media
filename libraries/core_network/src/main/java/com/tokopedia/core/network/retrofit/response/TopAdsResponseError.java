@@ -31,10 +31,6 @@ public class TopAdsResponseError extends BaseResponseError {
         this.errors = errors;
     }
 
-    public String getErrorKey() {
-        return ERROR_KEY;
-    }
-
     public boolean hasBody(){
         return (errors!= null && errors.size() > 0);
     }

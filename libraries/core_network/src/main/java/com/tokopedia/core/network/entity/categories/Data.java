@@ -6,8 +6,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.discovery.model.ObjContainer;
-import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 
 @Deprecated
 public class Data implements Parcelable {
@@ -51,18 +49,4 @@ public class Data implements Parcelable {
             return new Data[size];
         }
     };
-
-    public static final class CategoryNavigationContainer implements ObjContainer<Data> {
-
-        Data model;
-
-        public CategoryNavigationContainer(Data model) {
-            this.model = model;
-        }
-
-        @Override
-        public Data body() {
-            return model;
-        }
-    }
 }

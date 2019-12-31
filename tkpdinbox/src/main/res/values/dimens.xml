@@ -25,4 +25,5 @@
 
     <dimen name="dp_128">128dp</dimen>
     <dimen name="text_size_xxxlarge">30sp</dimen>
+    <dimen name="padding_detail">15dp</dimen>
 </resources>
