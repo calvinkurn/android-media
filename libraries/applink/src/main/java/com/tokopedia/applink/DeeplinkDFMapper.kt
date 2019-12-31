@@ -7,8 +7,6 @@ import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
@@ -84,8 +82,6 @@ object DeeplinkDFMapper {
     private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_FLIGHT_TRAVEL = "flight_travel"
-    private val DFM_DIGITAL_TOPUP = "digital_topup"
-    private val DFM_VOUCHER_GAME = "voucher_game"
     private val DFM_DIGITAL_DEALS = "digital_deals"
     private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
     private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
@@ -129,15 +125,13 @@ object DeeplinkDFMapper {
         mutableListOf<DFP>().apply {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
             add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) || it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
-            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL)}, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
             add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))
             add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_GROUPCHAT, R.string.title_groupchat))
             add(DFP({ it.startsWith(FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
             add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
-            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
-            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_VOUCHER_GAME, R.string.title_voucher_game))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))

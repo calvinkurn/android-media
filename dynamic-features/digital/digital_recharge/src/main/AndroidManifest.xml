@@ -3,8 +3,8 @@
     package="com.tokopedia.digital.recharge.customerapp">
 
     <dist:module
-        dist:onDemand="false"
-        dist:title="@string/digital_subhomepage_app_name">
+        dist:onDemand="true"
+        dist:title="@string/recharge_app_name">
         <dist:fusing dist:include="true" />
     </dist:module>
 

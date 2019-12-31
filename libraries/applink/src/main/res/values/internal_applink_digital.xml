@@ -22,7 +22,6 @@
 
     <string name="path_camera_ocr" translatable="false">/ocr</string>
 
-    <string name="title_voucher_game">Cari Voucher</string>
     <string name="path_deals_home" translatable="false">/deals</string>
     <string name="path_deals_detail" translatable="false">/deals/{slug}</string>
     <string name="path_deals_brand_detail" translatable="false">/deals/brand/.*</string>

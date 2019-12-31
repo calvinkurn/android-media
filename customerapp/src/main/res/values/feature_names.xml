@@ -6,7 +6,6 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
-    <string name="title_digital_topup">Digital Topup</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
     <string name="title_flight_travel">Tiket Pesawat</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
@@ -68,11 +67,8 @@
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
     <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
 
-    <!-- Dynamic feature for Digital Subhomepage -->
-    <string name="digital_subhomepage_app_name"><![CDATA[Top-up & Tagihan]]></string>
-
-    <!-- Dynamic feature for Voucher Game -->
-    <string name="voucher_game_app_name">Cari Voucher</string>
+    <!-- Dynamic feature for Digital Recharge -->
+    <string name="recharge_app_name"><![CDATA[Top-up & Tagihan]]></string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>

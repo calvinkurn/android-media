@@ -51,5 +51,7 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
     implementation project(rootProject.ext.features.digitalHomepage)
+    implementation project(rootProject.ext.features.digitalTopupBills)
+    implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.rechargeOcr)
 }
