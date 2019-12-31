@@ -21,9 +21,11 @@ buildscript {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+//    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation project(rootProject.ext.libraries.liveness_lib)
 //    api(name: 'guardian_core_v1.6', ext: 'aar')
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.miscDependencies.lottie
