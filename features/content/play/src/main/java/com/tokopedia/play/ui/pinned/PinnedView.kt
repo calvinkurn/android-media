@@ -20,7 +20,8 @@ import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
  * Created by jegul on 03/12/19
  */
 class PinnedView(
-        container: ViewGroup
+        container: ViewGroup,
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View =
@@ -53,7 +54,11 @@ class PinnedView(
 
         view.findViewById<TextView>(R.id.tv_pinned_action)
                 .setOnClickListener {
-                    RouteManager.route(container.context, pinnedMessage.applink)
+                    listener.onPinnedActionClicked(this, pinnedMessage.applink)
                 }
+    }
+
+    interface Listener {
+        fun onPinnedActionClicked(view: PinnedView, applink: String)
     }
 }
