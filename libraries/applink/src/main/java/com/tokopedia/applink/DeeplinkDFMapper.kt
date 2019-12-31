@@ -80,18 +80,13 @@ object DeeplinkDFMapper {
     private val DFM_FINTECH = "df_fintech"
     private val DFM_OPERATIONAL = "df_operational"
     private val DFM_TRAVEL = "df_travel"
-
-    private val DFM_GROUPCHAT = "groupchat"
+    private val DFM_USER = "df_user"
 
     private val DFM_DIGITAL_DEALS = "digital_deals"
-    private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
-    private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
-    private val DFM_USER_SETTING_BANK = "settingbank"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private val DFM_TOKOPOINTS = "tokopoints"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_TRADEIN = "tradein"
-    private val DFM_SETTING_NOTIF = "settingnotif"
     private val DFM_PAYMENT_SETTING = "payment_setting"
 
     @JvmField
@@ -185,12 +180,12 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(HOTEL) }, DFM_TRAVEL, R.string.title_hotel))
 
             // User
-            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))
-            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_GROUPCHAT, R.string.title_groupchat))
-            add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
-            add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_USER_CHANGE_PHONE_NUMBER, R.string.applink_change_phone_number))
-            add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
-            add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))
+            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_USER, R.string.title_groupchat))
+            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_USER, R.string.title_groupchat))
+            add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER, R.string.applink_profile_completion_title))
+            add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_USER, R.string.applink_change_phone_number))
+            add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER, R.string.applink_setting_bank_title))
+            add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_USER, R.string.notif_settings_title))
         }
     }
 
