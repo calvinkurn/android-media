@@ -75,16 +75,14 @@ object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
 
     private val DFM_CONTENT = "df_content"
+    private val DFM_DIGITAL = "df_digital"
 
     private val DFM_GROUPCHAT = "groupchat"
     private val DFM_IMAGE_SEARCH = "image_search"
     private val DFM_SEARCH_RESULT = "search"
-    private val DFM_HOMEPAGE_DIGITAL = "homepage_digital"
 
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_FLIGHT_TRAVEL = "flight_travel"
-    private val DFM_DIGITAL_TOPUP = "digital_topup"
-    private val DFM_VOUCHER_GAME = "voucher_game"
     private val DFM_DIGITAL_DEALS = "digital_deals"
     private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
     private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
@@ -101,8 +99,6 @@ object DeeplinkDFMapper {
     private val DFM_REFERRAL = "im_referral"
     private val DFM_TRADEIN = "tradein"
     private val DFM_WALLET = "fintech_wallet"
-    private val DFM_PROFILE = "profile"
-    private val DFM_AFFILIATE = "affiliate"
     private val DFM_CHAT_BOT = "chatbot"
     private val DFM_SETTING_NOTIF = "settingnotif"
     private val DFM_PAYMENT_SETTING = "payment_setting"
@@ -138,9 +134,9 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_CONTENT, R.string.applink_title_affiliate))
 
             // Digital
-            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
-            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_VOUCHER_GAME, R.string.title_voucher_game))
+            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_DIGITAL, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL, R.string.digital_topup_title))
+            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_DIGITAL, R.string.title_voucher_game))
 
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
