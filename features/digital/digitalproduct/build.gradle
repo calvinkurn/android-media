@@ -65,10 +65,6 @@ dependencies {
     //remove
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.otp)
 }
 
 project.ext {

@@ -3,18 +3,21 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -43,9 +46,6 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -67,6 +67,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
     protected static final String ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS";
     private static final int REQUEST_CODE_OTP = 1001;
+
+    public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
+    public static final String MODE_SMS = "sms";
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -396,8 +399,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void renderToTopPay(CheckoutDigitalData checkoutDigitalData) {
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.convertToPaymenPassData(checkoutDigitalData);
-        navigateToActivityRequest(TopPayActivity.createInstance(getActivity(), paymentPassData),
-                PaymentConstant.REQUEST_CODE);
+
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+        startActivityForResult(intent, PaymentConstant.REQUEST_CODE);
     }
 
 
@@ -446,11 +451,17 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void interruptRequestTokenVerification(String phoneNumber) {
-        Intent intent = VerificationActivity.getCallingIntent(getActivity(),
-                phoneNumber,
-                RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
-                true,
-                RequestOtpUseCase.MODE_SMS);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.COTP);
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_CHECKOUT_DIGITAL);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_SMS);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false);
+
+        intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_CODE_OTP);
     }
 
