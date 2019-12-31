@@ -20,24 +20,20 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.commonDigital)
+    implementation project(rootProject.ext.features.commonWallet)
+    implementation project(rootProject.ext.features.common_promo)
+    implementation project(rootProject.ext.features.commonPayment)
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
+
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.payment)
-    implementation project(rootProject.ext.features.commonPayment)
-    implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.commonWallet)
-    implementation project(rootProject.ext.features.promoCheckoutCommon)
-    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.fingerprint)
     
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -48,33 +44,37 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.miscDependencies.guava
-    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    implementation rootProject.ext.firebase.config
-    implementation rootProject.ext.firebase.messaging
-    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
+    //remove
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.otp)
 }
 
 project.ext {
