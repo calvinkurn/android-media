@@ -77,6 +77,7 @@ object DeeplinkDFMapper {
     private val DFM_CONTENT = "df_content"
     private val DFM_DIGITAL = "df_digital"
     private val DFM_DISCOVERY = "df_discovery"
+    private val DFM_FINTECH = "df_fintech"
 
     private val DFM_GROUPCHAT = "groupchat"
 
@@ -89,15 +90,9 @@ object DeeplinkDFMapper {
     private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private val DFM_TOKOPOINTS = "tokopoints"
-    private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
     private val DFM_CONTACT_US = "contact_us"
-    private val DFM_SALDO_DEPOSIT = "saldo_deposit"
-    private val DFM_OVOP2P = "ovop2p"
-    private val DFM_SALDO_INTRO = "saldo_deposit"
-    private val DFM_OVO_PAY_WITH_QR = "df_ovo_pay_with_qr"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_TRADEIN = "tradein"
-    private val DFM_WALLET = "fintech_wallet"
     private val DFM_CHAT_BOT = "chatbot"
     private val DFM_SETTING_NOTIF = "settingnotif"
     private val DFM_PAYMENT_SETTING = "payment_setting"
@@ -150,15 +145,15 @@ object DeeplinkDFMapper {
                     it.startsWith(AUTOCOMPLETE)}, DFM_DISCOVERY, R.string.title_search_result))
 
             // Fintech
-            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
-            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
-            add(DFP({ it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
-            add(DFP({ it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
-            add(DFP({ it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
-            add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_OVOP2P, R.string.title_ovop2p))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_FINTECH, R.string.ovo_pay_with_qr_title))
+            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_FINTECH, R.string.ovo_pay_with_qr_title))
+            add(DFP({ it.startsWith(OVO_WALLET)}, DFM_FINTECH, R.string.applink_wallet_title))
+            add(DFP({ it.startsWith(SALDO_DEPOSIT)}, DFM_FINTECH, R.string.applink_saldo_deposit_title))
+            add(DFP({ it.startsWith(SALDO_INTRO)}, DFM_FINTECH, R.string.applink_saldo_intro_title))
+            add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_FINTECH, R.string.title_ovop2p))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_FINTECH, R.string.instant_loan_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB) ||
-                    it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+                    it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_FINTECH, R.string.instant_loan_title))
 
             // IM
             add(DFP({ it.startsWith(REFERRAL) }, DFM_REFERRAL, R.string.applink_title_im_referral))
