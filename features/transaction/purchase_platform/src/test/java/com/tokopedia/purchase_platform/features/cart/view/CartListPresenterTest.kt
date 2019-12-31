@@ -157,6 +157,71 @@ class CartListPresenterTest : Spek({
         }
     }
 
+    Feature("update cart list") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processToUpdateCartData(arrayListOf())
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.renderToShipmentFormSuccess(any(), any(), any(), any())
+                }
+            }
+        }
+
+        Scenario("failed update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = false
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processToUpdateCartData(arrayListOf())
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.renderErrorToShipmentForm(any())
+                }
+            }
+        }
+
+    }
+
     Feature("update and reload cart list") {
 
         val cartListPresenter by memoized {
@@ -762,4 +827,5 @@ class CartListPresenterTest : Spek({
             }
         }
     }
+
 })
