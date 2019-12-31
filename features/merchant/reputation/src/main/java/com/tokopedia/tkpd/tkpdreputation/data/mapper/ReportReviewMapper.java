@@ -3,11 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.data.pojo.ReportReviewPojo;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
 

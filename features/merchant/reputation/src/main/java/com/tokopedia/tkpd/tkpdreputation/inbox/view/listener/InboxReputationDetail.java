@@ -21,7 +21,7 @@ public interface InboxReputationDetail {
 
         void showLoading();
 
-        void onErrorGetInboxDetail(String errorMessage);
+        void onErrorGetInboxDetail(Throwable throwable);
 
         void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
                                      List<Visitable> visitables);

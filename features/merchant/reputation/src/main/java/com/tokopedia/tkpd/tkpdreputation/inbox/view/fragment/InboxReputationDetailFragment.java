@@ -26,6 +26,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -34,8 +35,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity;
@@ -214,19 +215,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetInboxDetail(String errorMessage) {
+    public void onErrorGetInboxDetail(Throwable throwable) {
         if (getActivity() != null
                 && mainView != null)
-            NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.getInboxDetail(
-                                    reputationId,
-                                    getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
-                            );
-                        }
-                    });
+            NetworkErrorHelper.showEmptyState(getActivity(), mainView, ErrorHandler.getErrorMessage(getContext(), throwable),
+                    () -> presenter.getInboxDetail(
+                            reputationId,
+                            getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
+                    ));
     }
 
     @Override
