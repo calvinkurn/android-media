@@ -909,14 +909,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var shopId = 0
         var externalSource = ""
         if (productModel is CartWishlistItemHolderData) {
-            val (id, _, _, _, _, _, _, _, _, _, shopId1) = productModel
-            productId = Integer.parseInt(id)
-            shopId = Integer.parseInt(shopId1)
+            productId = Integer.parseInt(productModel.id)
+            shopId = Integer.parseInt(productModel.shopId)
             externalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
         } else if (productModel is CartRecentViewItemHolderData) {
-            val (id, _, _, _, _, _, _, _, _, shopId1) = productModel
-            productId = Integer.parseInt(id)
-            shopId = Integer.parseInt(shopId1)
+            productId = Integer.parseInt(productModel.id)
+            shopId = Integer.parseInt(productModel.shopId)
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
         } else if (productModel is CartRecommendationItemHolderData) {
             val (recommendationItem) = productModel
