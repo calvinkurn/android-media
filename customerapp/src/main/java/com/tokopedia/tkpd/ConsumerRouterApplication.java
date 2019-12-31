@@ -691,22 +691,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getTrackingClientId() {
-        return TrackingUtils.getClientID(getAppContext());
-    }
-
-    @Override
-    public Intent getDealDetailIntent(Activity activity,
-                                      String slug,
-                                      boolean enableBuy,
-                                      boolean enableRecommendation,
-                                      boolean enableShare,
-                                      boolean enableLike) {
-        Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
-        return intent;
-    }
-
-    @Override
     public Intent getPhoneVerificationActivityIntent(Context context) {
         return PhoneVerificationActivationActivity.getIntent(context, false, false);
     }
@@ -930,11 +914,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
-    }
-
-    @Override
-    public void showForceLogoutDialog() {
-        ServerErrorHandler.showForceLogoutDialog();
     }
 
     @Override

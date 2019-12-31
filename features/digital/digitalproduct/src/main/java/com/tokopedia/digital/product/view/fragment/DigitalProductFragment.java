@@ -652,8 +652,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = ((DigitalModuleRouter) getContext().getApplicationContext())
-                .getLoginIntent(getActivity());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
     }
 

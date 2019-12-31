@@ -1,6 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.design.component.ToasterNormal;
@@ -442,7 +445,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void navigateToDealDetailPage(String slug) {
-        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), slug, false, false, false, false));
+        Intent intent = RouteManager.getIntent(getActivity(),
+                ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
+        startActivity(intent);
     }
 
     @Override

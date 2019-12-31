@@ -19,6 +19,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonWallet)

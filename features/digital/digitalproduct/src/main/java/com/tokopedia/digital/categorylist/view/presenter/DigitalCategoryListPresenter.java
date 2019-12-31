@@ -104,7 +104,7 @@ public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCa
             public void onError(Throwable e) {
                 if (e instanceof SessionExpiredException
                         && getView().isUserLogin()) {
-                    digitalModuleRouter.showForceLogoutDialog();
+//                    digitalModuleRouter.showForceLogoutDialog();
                 }
             }
 

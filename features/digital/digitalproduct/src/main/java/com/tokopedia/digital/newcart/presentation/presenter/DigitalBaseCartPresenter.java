@@ -484,7 +484,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
-        attributes.setClientId(digitalModuleRouter.getTrackingClientId());
+        String getTrackClientId = TrackApp.getInstance().getGTM().getClientIDString();
+        attributes.setClientId(getTrackClientId);
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam(
                 TrackApp.getInstance().getAppsFlyer().getUniqueId(),
                 ""));

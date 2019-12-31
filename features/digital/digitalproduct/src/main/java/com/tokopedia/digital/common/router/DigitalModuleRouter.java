@@ -14,26 +14,13 @@ import com.tokopedia.design.component.BottomSheets;
 
 public interface DigitalModuleRouter {
 
-    Intent getLoginIntent(Context activity);
-
     void showAppFeedbackRatingDialog(
             FragmentManager fragmentManager,
             Context context,
             BottomSheets.BottomSheetDismissListener listener
     );
 
-    String getTrackingClientId();
-
-    Intent getDealDetailIntent(Activity activity,
-                               String slug,
-                               boolean enableBuy,
-                               boolean enableRecommendation,
-                               boolean enableShare,
-                               boolean enableLike);
-
     Intent getOrderListIntent(Context activity);
-
-    void showForceLogoutDialog();
 
     Intent getWebviewActivityWithIntent(Context context, String url);
 

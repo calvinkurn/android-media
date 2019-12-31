@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +17,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -154,7 +157,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
             digitalModuleRouter = (DigitalModuleRouter) getActivity().getApplicationContext();
         }
 
-        if (getArguments() != null){
+        if (getArguments() != null) {
             setupArguments(getArguments());
         }
 
@@ -171,7 +174,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             onRestoreState(savedInstanceState);
         }
         presenter = new UssdProductDigitalPresenter(this);
@@ -339,14 +342,14 @@ public class DigitalUssdFragment extends BaseDaggerFragment
                 }
             case REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
-                     presenter.processAddToCartProduct(digitalCheckoutPassDataState);
+                    presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
                 break;
             case OperatorVerificationDialog.REQUEST_CODE_DIGITAL_USSD_OPERATOR_MATCH:
                 String ussdMobileNumber = data.getStringExtra(OperatorVerificationDialog.ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY);
                 selectedOperator = data.getParcelableExtra(OperatorVerificationDialog.EXTRA_CALLBACK_OPERATOR_DATA);
                 if (ussdMobileNumber != null) {
-                    ussdMobileNumber=DeviceUtil.formatPrefixClientNumber(ussdMobileNumber);
+                    ussdMobileNumber = DeviceUtil.formatPrefixClientNumber(ussdMobileNumber);
                     renderOperatorData();
                     tvPhoneNumber.setText(ussdMobileNumber);
                     tvPhoneNumber.setTextColor(getResources().getColor(R.color.black));
@@ -358,12 +361,12 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         }
 
         if (DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL() == requestCode)
-        if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-            String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
-            if (!TextUtils.isEmpty(message)) {
-                showToastMessage(message);
+            if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
+                if (!TextUtils.isEmpty(message)) {
+                    showToastMessage(message);
+                }
             }
-        }
     }
 
     @Override
@@ -394,8 +397,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = digitalModuleRouter.getLoginIntent
-                (getActivity());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
     }
 
