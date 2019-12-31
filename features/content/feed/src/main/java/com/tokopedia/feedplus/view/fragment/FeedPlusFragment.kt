@@ -923,7 +923,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        val newList: MutableList<Visitable<*>> = adapter.getlist().copy()
+        val newList: MutableList<Visitable<*>> = adapter.getList().toMutableList()
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
             val like = footer.like
@@ -945,6 +945,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 like.value = like.value - 1
             }
+
             adapter.updateList(newList)
         }
     }
