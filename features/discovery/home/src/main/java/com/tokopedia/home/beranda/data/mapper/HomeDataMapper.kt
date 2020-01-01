@@ -92,7 +92,7 @@ class HomeDataMapper(
                         DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> if (!isCache) {
                             list.add(
                                     BusinessUnitViewModel(context.getString(R.string.digital_widget_title),
-                                            position, System.currentTimeMillis())
+                                            position, false)
                             )
                         }
                         DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO -> {

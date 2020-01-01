@@ -18,6 +18,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 
 import java.util.List;
 
+import kotlinx.coroutines.CoroutineScope;
 import rx.Observable;
 
 /**
@@ -116,5 +117,7 @@ public interface HomeContract {
         void onCloseTicker();
 
         int getRecommendationFeedSectionPosition();
+
+        void onHomeNetworkRetry();
     }
 }

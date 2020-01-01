@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import kotlinx.coroutines.CoroutineScope
 
 import java.util.HashMap
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by errysuprayogi on 11/29/17.

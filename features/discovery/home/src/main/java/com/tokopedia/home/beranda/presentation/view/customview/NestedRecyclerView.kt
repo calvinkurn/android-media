@@ -114,4 +114,8 @@ open class NestedRecyclerView : CustomRecyclerView, NestedScrollingParent2 {
     override fun onNestedFling(target: View, velocityX: Float, velocityY: Float, consumed: Boolean): Boolean {
         return false
     }
+
+    fun requestScrollFromChild(distance: Int) {
+
+    }
 }

@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -23,8 +24,8 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class DynamicChannelViewHolder(itemView: View,
-                               private val listener: HomeCategoryListener,
-                               private val countDownListener: CountDownView.CountDownListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
+                                        private val listener: HomeCategoryListener,
+                                        private val countDownListener: CountDownView.CountDownListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
     private val context: Context = itemView.context
 
     lateinit var countDownView: CountDownView

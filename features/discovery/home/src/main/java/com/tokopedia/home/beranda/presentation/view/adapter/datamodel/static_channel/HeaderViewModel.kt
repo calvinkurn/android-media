@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel
 
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -99,6 +100,10 @@ data class HeaderViewModel(
                     cashBackData == b.cashBackData
         }
         return false
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 
     companion object {

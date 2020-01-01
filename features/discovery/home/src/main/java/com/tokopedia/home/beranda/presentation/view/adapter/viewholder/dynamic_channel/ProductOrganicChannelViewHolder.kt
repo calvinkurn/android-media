@@ -17,7 +17,10 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
+import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 
@@ -27,7 +30,8 @@ import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 
 class ProductOrganicChannelViewHolder(sprintView: View,
                                       private val homeCategoryListener: HomeCategoryListener,
-                                      countDownListener: CountDownView.CountDownListener) :
+                                      countDownListener: CountDownView.CountDownListener,
+                                      private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
                 sprintView, homeCategoryListener, countDownListener
         ) {
@@ -37,6 +41,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
         val LAYOUT = R.layout.home_dc_lego_product
     }
 
+    private var adapter: OrganicAdapter? = null
     val context: Context = sprintView.context
     val defaultSpanCount = 3
 
@@ -57,6 +62,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+        recyclerView.setRecycledViewPool(parentRecycledViewPool)
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
@@ -65,10 +71,28 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
-                defaultSpanCount,
-                GridLayoutManager.VERTICAL, false)
+                defaultSpanCount)
 
-        recyclerView.adapter = OrganicAdapter(context, homeCategoryListener, channel, getLayoutType(channel), countDownView)
+        if (adapter == null) {
+            adapter = OrganicAdapter(context,
+                    homeCategoryListener,
+                    channel,
+                    getLayoutType(channel),
+                    countDownView)
+            recyclerView.adapter = adapter
+        } else {
+            adapter?.grids = channel.grids
+            adapter?.notifyDataSetChanged()
+        }
+    }
+
+    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
+        if (adapter != null) {
+            element.channel?.let {
+                adapter?.grids = it.grids
+                adapter?.notifyDataSetChanged()
+            }
+        }
     }
 
     class OrganicAdapter(private val context: Context,
@@ -76,7 +100,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
                          private val channels: DynamicHomeChannel.Channels,
                          private val sprintType: Int,
                          private val countDownView: CountDownView) : RecyclerView.Adapter<OrganicViewHolder>() {
-        private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
+        var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrganicViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_organic_product_item_simple, parent, false)
@@ -86,7 +110,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: OrganicViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                holder.channelImage1.loadImage(grid.imageUrl)
+                holder.channelImage1.loadImageRounded(grid.imageUrl, 8)
                 holder.channelName.displayTextOrHide(grid.name)
                 holder.channelPrice1.displayTextOrHide(grid.price)
                 holder.channelDiscount1.displayTextOrHide(grid.discount)
@@ -119,7 +143,10 @@ class ProductOrganicChannelViewHolder(sprintView: View,
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
 
+        override fun getItemViewType(position: Int): Int {
+            return R.layout.layout_organic_product_item_simple
         }
 
         override fun getItemCount(): Int {

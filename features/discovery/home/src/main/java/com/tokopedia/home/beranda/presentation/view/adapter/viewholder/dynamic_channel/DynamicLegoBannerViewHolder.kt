@@ -23,7 +23,8 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 
 class DynamicLegoBannerViewHolder(legoBannerView: View,
                                   private val homeCategoryListener: HomeCategoryListener,
-                                  countDownListener: CountDownView.CountDownListener) :
+                                  countDownListener: CountDownView.CountDownListener,
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
                 legoBannerView, homeCategoryListener, countDownListener
         ) {
@@ -59,12 +60,19 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount, 0, true))
 
+        recyclerView.setRecycledViewPool(parentRecycledViewPool)
+        recyclerView.setHasFixedSize(true)
+
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
 
-        recyclerView.adapter = LegoItemAdapter(context, homeCategoryListener, channel, getLayoutType(channel), adapterPosition)
+        recyclerView.adapter = LegoItemAdapter(context,
+                homeCategoryListener,
+                channel,
+                getLayoutType(channel),
+                adapterPosition)
     }
 
     class LegoItemAdapter(private val context: Context,
@@ -77,6 +85,10 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_lego_item, parent, false)
             return LegoItemViewHolder(v)
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return R.layout.layout_lego_item
         }
 
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {

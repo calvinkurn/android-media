@@ -10,4 +10,8 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<HomeVisitable>() {
     override fun areContentsTheSame(oldItem: HomeVisitable, newItem: HomeVisitable): Boolean {
         return oldItem.equalsWith(newItem)
     }
+
+    override fun getChangePayload(oldItem: HomeVisitable, newItem: HomeVisitable): Any? {
+        return oldItem.getChangePayloadFrom(newItem)
+    }
 }

@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -19,9 +20,9 @@ import java.util.List;
 public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
     protected HomeAdapterFactory typeFactory;
 
-    public HomeRecycleAdapter(DiffUtil.ItemCallback<HomeVisitable> diffUtilCallback, HomeAdapterFactory adapterTypeFactory,
+    public HomeRecycleAdapter(AsyncDifferConfig<HomeVisitable> asyncDifferConfig, HomeAdapterFactory adapterTypeFactory,
                               List<Visitable> visitables) {
-        super(diffUtilCallback, adapterTypeFactory, visitables);
+        super(asyncDifferConfig, adapterTypeFactory, visitables);
         typeFactory = adapterTypeFactory;
         this.visitables = visitables;
     }

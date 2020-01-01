@@ -69,14 +69,14 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         errorView.visibility = View.GONE
-        container.visibility = View.GONE
+        container.visibility = View.INVISIBLE
         temporayPlaceHolders.visibility = View.VISIBLE
 
         getTabBusinessUnit()
 
         buttonReload.setOnClickListener {
             errorView.visibility = View.GONE
-            container.visibility = View.GONE
+            container.visibility = View.INVISIBLE
             temporayPlaceHolders.visibility = View.VISIBLE
             getTabBusinessUnit()
         }
@@ -93,7 +93,7 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
 
     fun refresh() {
         errorView.visibility = View.GONE
-        container.visibility = View.GONE
+        container.visibility = View.INVISIBLE
         temporayPlaceHolders.visibility = View.VISIBLE
 
         getTabBusinessUnit()
@@ -101,7 +101,7 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
 
     private fun getTabBusinessUnit() {
         temporayPlaceHolders.visibility = View.VISIBLE
-        container.visibility = View.GONE
+        container.visibility = View.INVISIBLE
 
         viewModel.getTabList(getRawQuery())
     }
@@ -119,7 +119,6 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
 
             adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, homeWidget.widgetHeader.backColor, positionWidget)
             viewPager.adapter = adapter
-            viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
             viewPager.removeOnPageChangeListener(this)
             viewPager.addOnPageChangeListener(this)
             viewPager.setCanScrollHorizontal(false)
@@ -131,7 +130,7 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
     private fun onErrorGetTabBusinessWidget(throwable: Throwable) {
         throwable.printStackTrace()
         errorView.visibility = View.VISIBLE
-        container.visibility = View.GONE
+        container.visibility = View.INVISIBLE
         temporayPlaceHolders.visibility = View.GONE
     }
 

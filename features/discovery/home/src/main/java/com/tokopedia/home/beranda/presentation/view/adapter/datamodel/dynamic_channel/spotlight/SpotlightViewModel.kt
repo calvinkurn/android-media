@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -49,5 +50,9 @@ class SpotlightViewModel(val spotlightItems: List<SpotlightItemViewModel>,
 
     override fun setTrackingCombined(isCombined: Boolean) {
         this.isCombined = isCombined
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 }

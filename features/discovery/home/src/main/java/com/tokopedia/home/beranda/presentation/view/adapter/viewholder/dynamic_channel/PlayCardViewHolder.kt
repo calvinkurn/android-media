@@ -60,6 +60,29 @@ class PlayCardViewHolder(
         ImageHandler.loadImageRounded2(view.context, imgBanner, card.imageUrl, ROUNDED_RADIUS)
     }
 
+    override fun bind(element: PlayCardViewModel, payloads: MutableList<Any>) {
+        element.getPlayCardHome()?.let { viewModel ->
+            this.playCardHome = viewModel //flag to preventing re-hit
+
+            bindCard(viewModel.playGetCardHome.data.card)
+            container.show()
+
+            //impression tracker
+            HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
+
+            itemView.setOnClickListener {
+                val appLink = viewModel.playGetCardHome.data.card.applink
+                with(view.context) {
+                    //event click tracker
+                    HomePageTracking.eventClickPlayBanner(this, element.getChannel())
+
+                    //start applink
+                    startActivity(RouteManager.getIntent(this, appLink))
+                }
+            }
+        }
+    }
+
     private fun chipLive(card: PlayCard) {
         chipPlayLive.showWithCondition(card.isShowLive)
     }

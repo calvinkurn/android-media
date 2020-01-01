@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -18,11 +19,38 @@ class DynamicChannelViewModel : HomeVisitable {
     private var trackingDataForCombination: List<Any>? = null
     private var isCombined: Boolean = false
 
+    companion object {
+        val HOME_RV_BANNER_IMAGE_URL = "home_rv_banner_image_url"
+        val HOME_RV_SPRINT_BG_IMAGE_URL = "home_rv_sprint_bg_image_url"
+    }
+
     override fun equalsWith(b: Any?): Boolean {
         if (b is DynamicChannelViewModel) {
-            return channel == b.channel
+            if (channel?.grids?.size != b.channel?.grids?.size?:0) return false
+            channel?.grids?.let {
+                it.forEachIndexed() {position, grid->
+                    b.channel?.grids?.let {newGrid->
+                        if (grid.imageUrl != newGrid[position].imageUrl) return false
+                    }
+                }
+                return true
+            }
         }
         return false
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        val bundle = Bundle()
+        if (b is DynamicChannelViewModel) {
+            if (channel?.banner?.imageUrl != b.channel?.banner?.imageUrl?:"") {
+                bundle.putString(HOME_RV_BANNER_IMAGE_URL, b.channel?.banner?.imageUrl)
+            }
+
+            if (channel?.header?.backImage != b.channel?.header?.backImage?:"") {
+                bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
+            }
+        }
+        return bundle
     }
 
     override fun isCache(): Boolean {
@@ -30,7 +58,7 @@ class DynamicChannelViewModel : HomeVisitable {
     }
 
     override fun visitableId(): String {
-        return channel!!.hashCode().toString()
+        return "dcSection"
     }
 
     fun setCache(cache: Boolean) {

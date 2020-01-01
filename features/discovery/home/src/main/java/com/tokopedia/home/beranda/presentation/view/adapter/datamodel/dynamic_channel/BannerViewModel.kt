@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -22,6 +23,10 @@ class BannerViewModel : ImpressHolder(), HomeVisitable {
             return slides == b.slides
         }
         return false
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 
     override fun isCache(): Boolean {

@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
@@ -109,9 +110,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+
 import javax.inject.Inject;
 import kotlin.Unit;
+import kotlin.coroutines.CoroutineContext;
 import kotlin.jvm.functions.Function1;
+import kotlinx.coroutines.CoroutineScope;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -284,6 +289,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeMainToolbar = view.findViewById(R.id.toolbar);
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         homeRecyclerView = view.findViewById(R.id.list);
+        homeRecyclerView.setHasFixedSize(true);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         stickyLoginView = view.findViewById(R.id.sticky_login_text);
@@ -660,9 +666,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this,
                 this,
-                this
+                this,
+                homeRecyclerView.getRecycledViewPool()
         );
-        adapter = new HomeRecycleAdapter(new HomeVisitableDiffUtil(), adapterFactory, new ArrayList<Visitable>());
+        AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
+                new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
+                .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
+                .build();
+        adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<Visitable>());
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -868,6 +879,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
+        layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
         removeNetworkError();
@@ -875,6 +887,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (presenter != null) {
             presenter.searchHint();
             presenter.refreshHomeData();
+            presenter.getStickyContent();
+        }
+
+        if (getActivity() instanceof RefreshNotificationListener) {
+            ((RefreshNotificationListener) getActivity()).onRefreshNotification();
+        }
+        loadEggData();
+        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
+    }
+
+    public void onNetworkRetry() {
+        //onrefresh most likely we already lay out many view, then we can reduce
+        //animation to keep our performance
+        homeRecyclerView.setItemAnimator(null);
+        layoutManager.setExtraLayoutSpace(0);
+
+        resetFeedState();
+        removeNetworkError();
+        homeRecyclerView.setEnabled(false);
+        if (presenter != null) {
+            presenter.searchHint();
+            presenter.onHomeNetworkRetry();
             presenter.getStickyContent();
         }
 
@@ -1057,7 +1091,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (messageSnackbar == null) {
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
                             getActivity(), getString(R.string.msg_network_error),
-                            () -> onRefresh()
+                            () -> onNetworkRetry()
                     );
                 }
                 messageSnackbar.showRetrySnackbar();

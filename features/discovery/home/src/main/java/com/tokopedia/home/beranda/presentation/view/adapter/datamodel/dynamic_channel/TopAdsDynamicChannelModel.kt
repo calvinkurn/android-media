@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -67,5 +68,9 @@ class TopAdsDynamicChannelModel : HomeVisitable {
 
     override fun setTrackingCombined(isCombined: Boolean) {
         this.isCombined = isCombined
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 }

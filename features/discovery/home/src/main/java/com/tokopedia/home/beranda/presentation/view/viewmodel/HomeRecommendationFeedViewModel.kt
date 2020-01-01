@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.viewmodel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -53,5 +54,9 @@ class HomeRecommendationFeedViewModel : HomeVisitable {
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 }

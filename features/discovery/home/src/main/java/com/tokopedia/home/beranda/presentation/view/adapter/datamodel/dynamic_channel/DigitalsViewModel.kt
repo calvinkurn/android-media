@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
@@ -18,6 +19,10 @@ class DigitalsViewModel(var title: String?, var sectionId: Int) : HomeVisitable 
             return sectionId == b.sectionId
         }
         return false
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 
     override fun isCache(): Boolean {

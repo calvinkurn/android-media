@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,13 +31,10 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
 
     protected List<Visitable> visitables;
     private F adapterTypeFactory;
-    protected LoadingModel loadingModel = new LoadingModel();
-    protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
-    protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
 
-    protected HomeBaseAdapter(DiffUtil.ItemCallback<HomeVisitable> diffCallback,
+    protected HomeBaseAdapter(AsyncDifferConfig<HomeVisitable> asyncDifferConfig,
                               F adapterTypeFactory, List<Visitable> visitables) {
-        super(diffCallback);
+        super(asyncDifferConfig);
         this.adapterTypeFactory = adapterTypeFactory;
         this.visitables = visitables;
     }
@@ -62,7 +60,7 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
                                  @NonNull List<Object> payloads) {
         if (!payloads.isEmpty()) {
-            holder.bind(visitables.get(position), payloads);
+            holder.bind(getItem(position), payloads);
         } else {
             super.onBindViewHolder(holder, position, payloads);
         }
@@ -82,158 +80,5 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
         super.onViewRecycled(holder);
         holder.onViewRecycled();
     }
-//
-//    public boolean isLoading() {
-//        int lastIndex = getLastIndex();
-//        if (lastIndex > -1) {
-//            return visitables.get(lastIndex) instanceof LoadingModel ||
-//                    visitables.get(lastIndex) instanceof LoadingMoreModel;
-//        } else {
-//            return false;
-//        }
-//    }
-//
-//    public void showLoading() {
-//        if (!isLoading()) {
-//            if (isShowLoadingMore()) {
-//                visitables.add(loadingMoreModel);
-//            } else {
-//                visitables.add(loadingModel);
-//            }
-//            notifyItemInserted(visitables.size());
-//        }
-//    }
-//
-//    protected boolean isShowLoadingMore() {
-//        return visitables.size() > 0;
-//    }
-//
-//    public int getFirstIndex() {
-//        int size = visitables.size();
-//        if (size > 0) {
-//            return 0;
-//        }
-//        return -1;
-//    }
-//
-//    public int getLastIndex() {
-//        int size = visitables.size();
-//        if (size > 0) {
-//            return size - 1;
-//        }
-//        return -1;
-//    }
-//
-//    public void hideLoading() {
-//        if (isLoading()) {
-//            int lastIndex = getLastIndex();
-//            visitables.remove(getLastIndex());
-//            notifyItemRemoved(lastIndex);
-//        }
-//    }
-//
-//    public void clearElement(Visitable visitable) {
-//        int index = visitables.indexOf(visitable);
-//        if (index != -1) {
-//            visitables.remove(index);
-//            notifyItemRemoved(index);
-//        }
-//    }
-//
-//    public void showErrorNetwork() {
-//        visitables.clear();
-//        visitables.add(errorNetworkModel);
-//        notifyDataSetChanged();
-//    }
-//
-//    public ErrorNetworkModel getErrorNetworkModel() {
-//        return errorNetworkModel;
-//    }
-//
-//    public void setErrorNetworkModel(ErrorNetworkModel errorNetworkModel) {
-//        this.errorNetworkModel = errorNetworkModel;
-//    }
-//
-//    public void showErrorNetwork(String message, ErrorNetworkModel.OnRetryListener onRetryListener) {
-//        errorNetworkModel.setErrorMessage(message);
-//        errorNetworkModel.setOnRetryListener(onRetryListener);
-//        showErrorNetwork();
-//    }
-//
-//    public void removeErrorNetwork() {
-//        visitables.remove(errorNetworkModel);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void addElement(List<? extends Visitable> visitables) {
-//        this.visitables.addAll(visitables);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void setVisitables(List<Visitable> visitables) {
-//        this.visitables = visitables;
-//        notifyDataSetChanged();
-//    }
-//
-//    public void setElement(int position, Visitable element) {
-//        visitables.set(position, element);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void setElements(List<Visitable> data) {
-//        visitables = data;
-//        notifyDataSetChanged();
-//    }
-//
-//    public void addElement(int position, Visitable element) {
-//        visitables.add(position, element);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void addElement(Visitable element) {
-//        visitables.add(element);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void setElement(List<? extends Visitable> data) {
-//        visitables.addAll(data);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void setElement(Visitable data) {
-//        List<Visitable> buffer = new ArrayList<>();
-//        buffer.add(data);
-//        visitables = buffer;
-//        notifyDataSetChanged();
-//    }
-//
-//    public void clearAllElements() {
-//        visitables.clear();
-//        notifyDataSetChanged();
-//    }
-//
-//    public void softClear() {
-//        visitables = new ArrayList<>();
-//    }
-//
-//    public void addMoreData(List<? extends Visitable> data) {
-//        final int positionStart = visitables.size();
-//        visitables.addAll(data);
-//        if (positionStart == 0) {
-//            notifyDataSetChanged();
-//        } else {
-//            notifyItemRangeInserted(positionStart, data.size());
-//        }
-//    }
-//
-//
-//    public void removeElement(Visitable visitable) {
-//        visitables.remove(visitable);
-//        notifyDataSetChanged();
-//    }
-//
-//    public void setLoadingModel(LoadingModel loadingModel) {
-//        this.loadingModel = loadingModel;
-//    }
 }
 

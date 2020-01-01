@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -74,5 +75,9 @@ class PlayCardViewModel: HomeVisitable {
 
     override fun setTrackingCombined(isCombined: Boolean) {
         this.isCombined = isCombined
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 }

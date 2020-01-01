@@ -1,8 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -23,6 +26,7 @@ class SeeMoreBannerMixViewHolder(view: View,
     private val container: View by lazy { view.findViewById<View>(R.id.container_banner_mix_more) }
     private val bannerBackgroundImage: ImageView by lazy { view.findViewById<ImageView>(R.id.background_banner_mix_more)}
     private val seeMoreText: Typography by lazy { view.findViewById<Typography>(R.id.tv_dc_mix_see_more)}
+    private val cardBannerSeeMore: CardView by lazy { view.findViewById<CardView>(R.id.card_see_more_banner_mix) }
 
     override fun bind(seeMoreBannerMixDataModel: SeeMoreBannerMixDataModel) {
         val channel = seeMoreBannerMixDataModel.channel

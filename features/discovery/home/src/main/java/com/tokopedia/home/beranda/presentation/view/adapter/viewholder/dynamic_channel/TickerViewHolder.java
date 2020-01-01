@@ -6,10 +6,14 @@ import android.graphics.Color;
 import androidx.annotation.LayoutRes;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -45,6 +49,8 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     private View view;
     private String tickerId = "";
     private TimerTask tickerTimerTask;
+    private int tickerContainerMaxLines = 0;
+    private View tickerContainer;
 
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -52,6 +58,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
         this.timer = new Timer();
         this.context = itemView.getContext();
         this.view = itemView;
+        this.tickerContainer = itemView.findViewById(R.id.ticker_frame_layout);
         textMessage = itemView.findViewById(R.id.ticker_message);
         btnClose = itemView.findViewById(R.id.btn_close);
         btnClose.setOnClickListener(this);
@@ -59,17 +66,43 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
 
     @Override
     public void bind(TickerViewModel element) {
+        if (tickerContainerMaxLines == 0) {
+            tickerContainerMaxLines = calculateMaxLinesTicker(element);
+            textMessage.setLines(tickerContainerMaxLines);
+        }
+
         Ticker.Tickers ticker = element.getTickers().get(0);
         textMessage.setText(ticker.getMessage());
         textMessage.setMovementMethod(new TickerLinkMovementMethod(
                 ticker.getId()
         ));
+
         StripedUnderlineUtil.stripUnderlines(textMessage);
         ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
         if (!hasStarted) {
             tickerTimerTask = new SwitchTicker(element.getTickers());
             timer.scheduleAtFixedRate(tickerTimerTask, 0, SLIDE_DELAY);
         }
+    }
+
+    private int calculateMaxLinesTicker(TickerViewModel element) {
+        if (element.getTickers() == null) return 0;
+        tickerContainer.measure(
+                View.MeasureSpec.makeMeasureSpec(listener.getWindowWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.UNSPECIFIED);
+        String maxString = "";
+        for (Ticker.Tickers tickerData: element.getTickers()){
+            if (tickerData.getMessage().toString().length()>maxString.length()) {
+                maxString = tickerData.getMessage().toString();
+            }
+        }
+
+        final Rect bounds = new Rect();
+        final Paint paint = new Paint();
+        paint.setTextSize(textMessage.getTextSize());
+        paint.getTextBounds(maxString, 0, maxString.length(), bounds);
+
+        return (int) Math.ceil((float) bounds.width() / textMessage.getMeasuredWidth());
     }
 
     @Override

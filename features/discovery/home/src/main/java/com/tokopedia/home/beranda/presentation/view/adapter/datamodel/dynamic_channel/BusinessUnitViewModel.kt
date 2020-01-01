@@ -1,27 +1,27 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import java.util.concurrent.TimeUnit
 
-class BusinessUnitViewModel(var title: String?, var position: Int, val updatedTime: Long) : HomeVisitable {
+class BusinessUnitViewModel(var title: String?, var position: Int, var forceRefresh: Boolean = false, var updatedTime: Long = 0) : HomeVisitable {
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var trackingDataForCombination: List<Any>? = null
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is BusinessUnitViewModel) {
-            return updatedTime == b.updatedTime
-        }
-        return false
+        return !forceRefresh
     }
-
     override fun isCache(): Boolean {
         return isCache
     }
-
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
+    }
     override fun visitableId(): String? {
-        return "buSection"
+        return "dcSection"
     }
 
     fun setCache(cache: Boolean) {

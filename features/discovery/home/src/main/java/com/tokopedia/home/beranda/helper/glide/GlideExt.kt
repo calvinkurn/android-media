@@ -72,12 +72,14 @@ fun ImageView.loadImageCrop(url: String){
             .into(this)
 }
 
-fun ImageView.loadImageRounded(url: String){
+fun ImageView.loadImageRounded(url: String, roundedRadius: Int){
     Glide.with(context)
             .load(url)
             .format(DecodeFormat.PREFER_ARGB_8888)
+            .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(RoundedCorners(10))
+            .skipMemoryCache(true)
+            .transform(RoundedCorners(roundedRadius))
             .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(R.drawable.loading_page)
             .into(this)
@@ -135,7 +137,6 @@ fun ImageView.loadGif(url: String){
             .asGif()
             .load(url)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .transform(RoundedCorners(10))
             .into(this)
 }

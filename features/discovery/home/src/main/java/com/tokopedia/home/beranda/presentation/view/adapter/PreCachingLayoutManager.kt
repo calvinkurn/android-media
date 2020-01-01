@@ -28,7 +28,7 @@ class PreCachingLayoutManager : LinearLayoutManager {
     override fun getExtraLayoutSpace(state: RecyclerView.State): Int {
         return if (extraLayoutSpace > 0) {
             extraLayoutSpace
-        } else defaultExtraLayoutSpace
+        } else return super.getExtraLayoutSpace(state)
     }
 
     override fun findLastVisibleItemPosition(): Int {

@@ -627,10 +627,16 @@ class HomePresenter(private val userSession: UserSessionInterface,
         compositeSubscription = CompositeSubscription()
         subscription = Subscriptions.empty()
         initHeaderViewModelData()
-        launchCatchError(coroutineContext,  block = {
+        initFlow()
+        refreshHomeData()
+    }
+
+    private fun initFlow() {
+        launchCatchError(coroutineContext, block = {
             homeFlowData.collect {
-                val homeData = evaluateGeolocationComponent(it)
+                var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
+                    homeData = evaluateBuWidgetData(homeData)
                     _homeLiveData.value = evaluateRecommendationSection(homeData)
                     getHeaderData()
                     getPlayData()
@@ -643,7 +649,54 @@ class HomePresenter(private val userSession: UserSessionInterface,
             Timber.tag(HomePresenter::class.java.name).e(it)
             _updateNetworkLiveData.value = Resource.error(Throwable(), null)
         }
-        refreshHomeData()
+    }
+
+    private fun evaluateBuWidgetData(homeViewModel: HomeViewModel?): HomeViewModel? {
+        homeViewModel?.let {
+            val findBuWidgetViewModel =
+                    _homeLiveData.value?.list?.find { visitable -> visitable is BusinessUnitViewModel }
+            findBuWidgetViewModel?.let { findBu->
+                if (findBu is BusinessUnitViewModel) {
+                    val shouldForceRefresh = TimeUnit.MILLISECONDS.toMinutes(
+                            (System.currentTimeMillis()-findBu.updatedTime)) >= 3
+                    findBu.forceRefresh = shouldForceRefresh
+                    if (!shouldForceRefresh) {
+                        if (findBu.updatedTime == 0L) findBu.updatedTime = System.currentTimeMillis()
+                    } else {
+                        findBu.updatedTime = System.currentTimeMillis()
+                    }
+                }
+
+                val currentList = homeViewModel.list.toMutableList()
+
+                currentList.let {list ->
+                    val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
+                    list[buwidgetIndex] = findBu
+                    val newHomeViewModel = homeViewModel.copy(list = list)
+                    return newHomeViewModel
+                }
+            }
+
+            if (findBuWidgetViewModel == null) {
+                val findCurrentBuWidgetViewModel =
+                        homeViewModel.list.find { visitable -> visitable is BusinessUnitViewModel }
+                findCurrentBuWidgetViewModel?.let {
+                    if (findCurrentBuWidgetViewModel is BusinessUnitViewModel) {
+                        findCurrentBuWidgetViewModel.forceRefresh = false
+                        findCurrentBuWidgetViewModel.updatedTime = System.currentTimeMillis()
+                    }
+                    val currentList = homeViewModel.list.toMutableList()
+
+                    currentList.let {list ->
+                        val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
+                        list[buwidgetIndex] = findCurrentBuWidgetViewModel
+                        val newHomeViewModel = homeViewModel.copy(list = list)
+                        return newHomeViewModel
+                    }
+                }
+            }
+        }
+        return homeViewModel
     }
 
     private fun getPlayData() {
@@ -689,4 +742,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun getRecommendationFeedSectionPosition() = (_homeLiveData.value?.list?.size?:0)-1
+
+    override fun onHomeNetworkRetry() {
+        initFlow()
+    }
 }

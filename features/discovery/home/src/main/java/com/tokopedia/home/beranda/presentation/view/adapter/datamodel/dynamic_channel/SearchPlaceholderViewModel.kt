@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -54,4 +55,8 @@ class SearchPlaceholderViewModel : HomeVisitable {
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int = typeFactory.type(this)
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
+    }
 }
