@@ -74,7 +74,7 @@
     
     <fragment
       android:id="@+id/floating_egg_fragment"
-      android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
+      android:name="com.tokopedia.core_gamification.floating.view.fragment.FloatingEggButtonFragment"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:tag="floating_egg"

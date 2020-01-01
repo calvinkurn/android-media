@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.gamification.GamificationRouter;
+import com.tokopedia.core_gamification.GamificationRouter;
+import com.tokopedia.core_gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.taptap.fragment.TapTapTokenFragment;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 

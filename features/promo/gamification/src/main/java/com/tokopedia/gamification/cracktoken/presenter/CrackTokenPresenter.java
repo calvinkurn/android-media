@@ -88,6 +88,77 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     @Override
     public void crackToken(String tokenUserId, int campaignId) {
+        if(true){
+            String res = "{\n" +
+                    "      \"crackResult\": {\n" +
+                    "        \"resultStatus\": {\n" +
+                    "          \"code\": \"200\",\n" +
+                    "          \"message\": [\n" +
+                    "            \"success\"\n" +
+                    "          ],\n" +
+                    "          \"status\": \"\"\n" +
+                    "        },\n" +
+                    "        \"imageUrl\": \"https://ecs7.tokopedia.net/assets/images/gamification/benefit/points-loyalty.png\",\n" +
+                    "        \"benefitType\": \"loyalty_reward_point\",\n" +
+                    "        \"benefits\": [\n" +
+                    "          {\n" +
+                    "            \"text\": \"+14 Points\",\n" +
+                    "            \"color\": \"#FFDC00\",\n" +
+                    "            \"size\": \"large\",\n" +
+                    "            \"benefitType\": \"reward_point\",\n" +
+                    "            \"templateText\": \"+\\u003cvalue\\u003e Points\",\n" +
+                    "            \"animationType\": \"increasing\",\n" +
+                    "            \"valueBefore\": 12,\n" +
+                    "            \"valueAfter\": 14,\n" +
+                    "            \"tierInformation\": \"Gold\",\n" +
+                    "            \"multiplier\": \"1.1\"\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"text\": \"+3 Loyalty\",\n" +
+                    "            \"color\": \"#FFDC00\",\n" +
+                    "            \"size\": \"small\",\n" +
+                    "            \"benefitType\": \"loyalty_point\",\n" +
+                    "            \"templateText\": \"\",\n" +
+                    "            \"animationType\": \"\",\n" +
+                    "            \"valueBefore\": 0,\n" +
+                    "            \"valueAfter\": 3,\n" +
+                    "            \"tierInformation\": \"\",\n" +
+                    "            \"multiplier\": \"\"\n" +
+                    "          }\n" +
+                    "        ],\n" +
+                    "        \"ctaButton\": {\n" +
+                    "          \"title\": \"Cek TokoPoints Anda\",\n" +
+                    "          \"url\": \"https://www.tokopedia.com/tokopoints\",\n" +
+                    "          \"applink\": \"tokopedia://tokopoints\",\n" +
+                    "          \"type\": \"redirect\"\n" +
+                    "        },\n" +
+                    "        \"returnButton\": {\n" +
+                    "          \"title\": \"Pecahkan Lucky Egg Lain\",\n" +
+                    "          \"url\": \"\",\n" +
+                    "          \"applink\": \"\",\n" +
+                    "          \"type\": \"dismiss\"\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "    }";
+            ResponseCrackResultEntity responseCrackResultEntity = new Gson().fromJson(res, ResponseCrackResultEntity.class);
+            if (responseCrackResultEntity != null && responseCrackResultEntity.getCrackResultEntity() != null) {
+                CrackResultEntity crackResult = responseCrackResultEntity.getCrackResultEntity();
+                crackResult.setBenefitLabel(getView().getSuccessRewardLabel());
+                if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
+                    getView().onSuccessCrackToken(crackResult);
+                } else if (crackResult.isCrackTokenExpired()) {
+                    CrackResultEntity expiredCrackResult = createExpiredCrackResult(
+                            crackResult.getResultStatus());
+                    getView().onErrorCrackToken(expiredCrackResult);
+                } else {
+                    CrackResultEntity errorCrackResult = createGeneralErrorCrackResult();
+                    getView().onErrorCrackToken(errorCrackResult);
+                    getView().onFinishCrackToken();
+                }
+            }
+            return;
+        }
+
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID_STR, tokenUserId);
         queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
@@ -141,7 +212,49 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         return new GeneralErrorCrackResult(getView().getContext());
     }
 
+    //todo Rahul remove
     public void getRewardsCount() {
+
+        if(true){
+            String res = "{\n" +
+                    "      \"tokopoints\": {\n" +
+                    "        \"resultStatus\": {\n" +
+                    "          \"code\": \"200\"\n" +
+                    "        },\n" +
+                    "        \"status\": {\n" +
+                    "          \"tier\": {\n" +
+                    "            \"nameDesc\": \"Gold Member\",\n" +
+                    "            \"eggImageURL\": \"https://ecs7.tokopedia.net/tokopointsimprovement/TokopointsTiering/gold.png\"\n" +
+                    "          },\n" +
+                    "          \"points\": {\n" +
+                    "            \"reward\": 1254,\n" +
+                    "            \"rewardStr\": \"1.254 Points\",\n" +
+                    "            \"loyalty\": 340,\n" +
+                    "            \"loyaltyStr\": \"340 Loyalty\"\n" +
+                    "          }\n" +
+                    "        }\n" +
+                    "      }";
+            GamificationSumCouponOuter gamificationSumCouponOuter = new Gson().fromJson(res, GamificationSumCouponOuter.class);
+
+            String res2 ="{\n" +
+                    "      \"tokopointsSumCoupon\": {\n" +
+                    "        \"sumCoupon\": 136,\n" +
+                    "        \"sumCouponStr\": \"99+\"\n" +
+                    "      }\n" +
+                    "    }";
+            TokoPointDetailEntity tokoPointDetailEntity = new Gson().fromJson(res2, TokoPointDetailEntity.class);
+            int points = 0;
+            int loyalty = 0;
+            int coupons = 0;
+            if (gamificationSumCouponOuter != null && gamificationSumCouponOuter.getTokopointsSumCoupon() != null)
+                coupons = gamificationSumCouponOuter.getTokopointsSumCoupon().getSumCoupon();
+            if (tokoPointDetailEntity != null && tokoPointDetailEntity.getTokoPoints() != null && tokoPointDetailEntity.getTokoPoints().getStatus() != null && tokoPointDetailEntity.getTokoPoints().getStatus().getPoints() != null) {
+                loyalty = tokoPointDetailEntity.getTokoPoints().getStatus().getPoints().getLoyalty();
+                points = tokoPointDetailEntity.getTokoPoints().getStatus().getPoints().getReward();
+            }
+            getView().updateRewards(points, coupons, loyalty);
+            return;
+        }
         getRewardsUseCase.clearRequest();
         GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_sum_coupon),
                 GamificationSumCouponOuter.class, false);
@@ -179,8 +292,125 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     }
 
+    //todo Rahul fake
     @Override
     public void getGetTokenTokopoints() {
+
+        if(true){
+            String res = "{\n" +
+                    "      \"tokopointsToken\": {\n" +
+                    "        \"resultStatus\": {\n" +
+                    "          \"code\": \"200\",\n" +
+                    "          \"message\": [\n" +
+                    "            \"success\"\n" +
+                    "          ],\n" +
+                    "          \"status\": \"\"\n" +
+                    "        },\n" +
+                    "        \"offFlag\": false,\n" +
+                    "        \"sumToken\": 4,\n" +
+                    "        \"sumTokenStr\": \"4\",\n" +
+                    "        \"tokenUnit\": \"Lucky Egg\",\n" +
+                    "        \"floating\": {\n" +
+                    "          \"tokenId\": 4,\n" +
+                    "          \"pageUrl\": \"https://www.tokopedia.com/tokopoints/hadiah\",\n" +
+                    "          \"applink\": \"tokopedia://gamification\",\n" +
+                    "          \"timeRemainingSeconds\": 4606541,\n" +
+                    "          \"isShowTime\": false,\n" +
+                    "          \"unixTimestamp\": 1575883459,\n" +
+                    "          \"tokenAsset\": {\n" +
+                    "            \"name\": \"gold\",\n" +
+                    "            \"version\": 25,\n" +
+                    "            \"floatingImgUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/10/btsfltier03.gif\"\n" +
+                    "          }\n" +
+                    "        },\n" +
+                    "        \"home\": {\n" +
+                    "          \"emptyState\": {\n" +
+                    "            \"title\": \"Dapatkan Lucky Egg dengan bertransaksi di Tokopedia\",\n" +
+                    "            \"buttonText\": \"Belanja Sekarang\",\n" +
+                    "            \"buttonURL\": \"https://www.tokopedia.com\",\n" +
+                    "            \"buttonApplink\": \"tokopedia://home\",\n" +
+                    "            \"backgroundImgUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/10/btsbg07.jpg\",\n" +
+                    "            \"seamlessImgUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/10/btssl07.jpg\",\n" +
+                    "            \"imageUrl\": \"https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/02/emptyegg.png\",\n" +
+                    "            \"version\": 2\n" +
+                    "          },\n" +
+                    "          \"countingMessage\": [\n" +
+                    "            \"Tersisa\",\n" +
+                    "            \"4 Lucky Egg\",\n" +
+                    "            \"untuk dipecahkan\"\n" +
+                    "          ],\n" +
+                    "          \"tokenSourceMessage\": [\n" +
+                    "            \"Lucky Egg ini Anda dapatkan dari\",\n" +
+                    "            \"Pembelian Tiket Event\"\n" +
+                    "          ],\n" +
+                    "          \"tokensUser\": {\n" +
+                    "            \"tokenUserIDstr\": \"2884188134\",\n" +
+                    "            \"campaignID\": 1,\n" +
+                    "            \"title\": \"Pecahkan Lucky Egg sekarang!\",\n" +
+                    "            \"unixTimestampFetch\": 1575883459,\n" +
+                    "            \"timeRemainingSeconds\": 4606541,\n" +
+                    "            \"isShowTime\": false,\n" +
+                    "            \"backgroundAsset\": {\n" +
+                    "              \"name\": \"regular\",\n" +
+                    "              \"version\": 25,\n" +
+                    "              \"backgroundImgUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/10/btsbg07.jpg\",\n" +
+                    "              \"seamlessImgUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/10/btssl07.jpg\"\n" +
+                    "            },\n" +
+                    "            \"tokenAsset\": {\n" +
+                    "              \"name\": \"gold\",\n" +
+                    "              \"version\": 25,\n" +
+                    "              \"floatingImgUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/10/btsfltier03.gif\",\n" +
+                    "              \"smallImgUrl\": \"https://ecs7.tokopedia.net/assets/images/gamification/remainder/egg/gold.png\",\n" +
+                    "              \"smallImgv2Url\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/gold.png\",\n" +
+                    "              \"spriteUrl\": \"https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/02/gold-sprites.png\",\n" +
+                    "              \"imageUrls\": [\n" +
+                    "                \"https://ecs7.tokopedia.net/assets/images/gamification/heroes/egg-icon/gold/1.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/assets/images/gamification/heroes/egg-icon/gold/2.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/assets/images/gamification/heroes/egg-icon/gold/3.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/assets/images/gamification/heroes/egg-icon/gold/4.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/assets/images/gamification/heroes/egg-icon/gold/5.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/assets/images/gamification/heroes/egg-icon/gold/kiri.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/assets/images/gamification/heroes/egg-icon/gold/kanan.png\"\n" +
+                    "              ],\n" +
+                    "              \"imagev2Urls\": [\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/14.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/23.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/33.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/43.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/53.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/63.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/73.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/83.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/93.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/103.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/kiri3.png\",\n" +
+                    "                \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/kanan3.png\"\n" +
+                    "              ],\n" +
+                    "              \"tokenSourceUrl\": \"https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/02/tokensource.png\"\n" +
+                    "            }\n" +
+                    "          },\n" +
+                    "          \"homeActionButton\": [\n" +
+                    "            {\n" +
+                    "              \"backgroundColor\": \"green\",\n" +
+                    "              \"text\": \"Main Games Lainnya\",\n" +
+                    "              \"appLink\": \"tokopedia://webview?titlebar\\u003dfalse\\u0026url\\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fseru%2F%3Fflag_app\",\n" +
+                    "              \"url\": \"https://www.tokopedia.com/seru/\",\n" +
+                    "              \"type\": \"redirect\"\n" +
+                    "            }\n" +
+                    "          ],\n" +
+                    "          \"homeSmallButton\": {\n" +
+                    "            \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/09/daily-prize.png\",\n" +
+                    "            \"appLink\": \"tokopedia://webview?titlebar\\u003dfalse\\u0026url\\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fseru%2F%3Fflag_app\",\n" +
+                    "            \"url\": \"https://www.tokopedia.com/seru\"\n" +
+                    "          }\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "  }";
+            ResponseTokenTokopointEntity responseTokenTokopointEntity = new Gson().fromJson(res, ResponseTokenTokopointEntity.class);
+            getView().onSuccessGetToken(responseTokenTokopointEntity.getTokopointsToken());
+
+            return;
+        }
         getView().showLoading();
         getRewardsCount();
         getTokenTokopointsUseCase.clearRequest();

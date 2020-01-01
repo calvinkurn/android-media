@@ -8,9 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core_gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.compoundview.WidgetSummaryTapTap;

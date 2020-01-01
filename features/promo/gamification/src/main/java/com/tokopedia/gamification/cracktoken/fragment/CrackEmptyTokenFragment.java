@@ -23,9 +23,9 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core_gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResult;
 import com.tokopedia.gamification.cracktoken.contract.CrackEmptyTokenContract;
@@ -177,7 +177,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         return result;
     }
 
-    private int getScreenHeightWithoutStatusBar(){
+    private int getScreenHeightWithoutStatusBar() {
         int statusBarHeight = getStatusBarHeight();
         return getActivity().getResources().getDisplayMetrics().heightPixels - statusBarHeight;
     }

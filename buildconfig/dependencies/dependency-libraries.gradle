@@ -65,6 +65,7 @@ ext {
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
             promotionsTarget        : ":libraries:promotions_target",
+            coreGamification        : ":libraries:core_gamification",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",

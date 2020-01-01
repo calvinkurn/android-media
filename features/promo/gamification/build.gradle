@@ -52,6 +52,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.libraries.coreGamification)
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler

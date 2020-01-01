@@ -62,7 +62,7 @@ import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.dynamicbanner.entity.PlayCardHome;
-import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
+import com.tokopedia.core_gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;

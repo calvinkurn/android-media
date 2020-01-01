@@ -34,7 +34,7 @@ dependencies {
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.libraries.coreGamification)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
