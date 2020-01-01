@@ -618,7 +618,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (categoryId > 0
                 && operatorId > 0
                 && productId.isNotEmpty()) {
-            checkoutPassData = DigitalCheckoutPassData.Builder()
+            var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
                     .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                     .categoryId(categoryId.toString())
                     .instantCheckout("0")
@@ -632,7 +632,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                     .voucherCodeCopied("")
-                    .build()
+            if (inputData.containsKey(PARAM_CLIENT_NUMBER)) {
+                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(inputData[PARAM_CLIENT_NUMBER]!!)
+            }
+            if (inputData.containsKey(PARAM_ZONE_ID)) {
+                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(inputData[PARAM_ZONE_ID]!!)
+            }
+
+            checkoutPassData = checkoutPassDataBuilder.build()
 
             processToCart()
         }
@@ -682,6 +689,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val INPUT_TYPE_ENQUIRY_INFO = "enquiry"
 
         const val PARAM_CLIENT_NUMBER = "client_number"
+        const val PARAM_ZONE_ID = "zone_id"
 
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 
