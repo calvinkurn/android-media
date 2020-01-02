@@ -93,7 +93,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
             it?.run { renderList(this) }
         })
 
-        umrahHomepageViewModel.isAllError.observe(this, Observer {
+        umrahHomepageViewModel.isError.observe(this, Observer {
             it?.let {
                 if (it) {
                     resetIsRequested()

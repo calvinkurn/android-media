@@ -32,15 +32,15 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
     val homePageModel: LiveData<List<UmrahHomepageModel>>
         get() = _homePageModel
 
-    private val _isAllError = MutableLiveData<Boolean>()
-    val isAllError: LiveData<Boolean>
-        get() = _isAllError
+    private val _isError = MutableLiveData<Boolean>()
+    val isError: LiveData<Boolean>
+        get() = _isError
 
 
     fun getIntialList(isLoadFromCloud: Boolean) {
         val list: List<UmrahHomepageModel> = getEmptyData.requestEmptyViewModels(isLoadFromCloud)
         _homePageModel.value = list
-        _isAllError.value = false
+        _isError.value = false
 
     }
 
@@ -64,7 +64,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                         updatedList[SEARCH_PARAM_ORDER].isLoaded = false
                         updatedList[SEARCH_PARAM_ORDER].isSuccess = false
                         _homePageModel.value = updatedList
-                        checkIfAllError()
+                        _isError.value = true
                     }
                 }
             }
@@ -88,9 +88,9 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                     homePageModel.value?.let {
                         val updatedList = it.toMutableList()
                         updatedList[DREAM_FUND_ORDER].isLoaded = true
-                        updatedList[DREAM_FUND_ORDER].isSuccess = true
+                        updatedList[DREAM_FUND_ORDER].isSuccess = false
                         _homePageModel.value = updatedList
-                        checkIfAllError()
+                       // _isError.value = true
                     }
                 }
             }
@@ -117,7 +117,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                         updatedList[CATEGORY_ORDER].isLoaded = true
                         updatedList[CATEGORY_ORDER].isSuccess = false
                         _homePageModel.value = updatedList
-                        checkIfAllError()
+                        _isError.value = true
                     }
                 }
             }
@@ -143,25 +143,8 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                         updatedList[CATEGORY_FEATURED_ORDER].isLoaded = true
                         updatedList[CATEGORY_FEATURED_ORDER].isSuccess = false
                         _homePageModel.value = updatedList
-                        checkIfAllError()
+                        _isError.value = true
                     }
-                }
-            }
-        }
-    }
-
-    fun checkIfAllError() {
-        var n = 0
-        homePageModel.value?.let {
-            var isSuccess = false
-            for (item in it) {
-                if (n != DREAM_FUND_ORDER) {
-                    if (item.isSuccess && item.isLoaded) {
-                        isSuccess = true
-                        break
-                    }
-                    n++
-                    if (!isSuccess) _isAllError.value = true
                 }
             }
         }
