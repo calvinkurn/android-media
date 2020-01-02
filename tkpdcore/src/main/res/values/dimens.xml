@@ -128,4 +128,7 @@
     <dimen name="keyboard_min_height">200dp</dimen>
     <dimen name="item_revamp_category">175dp</dimen>
     <dimen name="text_item_revamp_category">28sp</dimen>
+
+    <dimen name="checked_indicator_msg">100dp</dimen>
+    <dimen name="message_width">300dp</dimen>
 </resources>
