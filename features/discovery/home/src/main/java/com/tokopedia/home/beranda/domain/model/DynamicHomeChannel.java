@@ -195,6 +195,14 @@ public class DynamicHomeChannel {
             this.persona = persona;
         }
 
+        public String getCategoryPersona() {
+            return categoryPersona;
+        }
+
+        public void setCategoryPersona(String categoryPersona) {
+            this.categoryPersona = categoryPersona;
+        }
+
         public String getBrandId() {
             return brandId;
         }
