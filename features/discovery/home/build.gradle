@@ -104,7 +104,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.viewDependencies.appIntro
+
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.exoPlayer

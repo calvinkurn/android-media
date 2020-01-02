@@ -349,9 +349,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
     implementation project(rootProject.ext.libraries.analytics)
 
     implementation(rootProject.ext.analyticsDependencies.moengage) 
@@ -402,7 +399,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.viewDependencies.appIntro
+    
 
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'

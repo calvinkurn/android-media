@@ -2,8 +2,6 @@ package com.tokopedia.v2.home.data.repository
 
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
-import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.v2.home.base.HomeRepository
@@ -15,6 +13,7 @@ import com.tokopedia.v2.home.model.pojo.home.HomeData
 import com.tokopedia.v2.home.model.pojo.home.PlayCard
 import com.tokopedia.v2.home.model.vo.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class HomeRepositoryImpl(
         private val homeDao: HomeDao,
@@ -63,7 +62,7 @@ class HomeRepositoryImpl(
 
     override suspend fun getPendingCashbackData() = walletRemoteDataSource.getPendingCashback()
 
-    override fun getPlayCard(): Flow<PlayCard> {
-        return null
+    override suspend fun getPlayCard(): Flow<PlayCard> = flow {
+
     }
 }

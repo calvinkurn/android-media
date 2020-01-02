@@ -66,14 +66,14 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void registerShake(String screenName,Activity activity) {
-        if (!screenName.equals(ShakeDetectCampaignActivity.SCREEN_NAME)) {
-            mOpenedActivity = screenName;
-            this.activity = activity;
-        }
         initSettingConfig();
         if (isShakeShakeEnable()) {
             sd.registerListener(this);
             sd.start(sensorManager);
+            if (!screenName.equals(ShakeDetectCampaignActivity.SCREEN_NAME)) {
+                mOpenedActivity = screenName;
+                this.activity = activity;
+            }
         }
 
     }
@@ -227,7 +227,11 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         }
     };
 
-    public void onDestroy() {
+    public void onDestroy(String screenName,Activity activity) {
+        if (!screenName.equals(mOpenedActivity) && activity.equals(this.activity)) {
+            mOpenedActivity = null;
+            this.activity = null;
+        }
         sd.unregisterListener(this);
         sd.stop();
     }

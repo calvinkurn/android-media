@@ -1,7 +1,6 @@
 package com.tokopedia.core.network.apiservices.user.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.entity.home.FavoriteSendData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
@@ -22,8 +21,4 @@ public interface FaveShopActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_FAVE_SHOP)
     Observable<Response<TkpdResponse>> faveShop(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_FAVE_SHOP)
-    Observable<FavoriteSendData> faveShop2(@FieldMap Map<String, String> params);
 }

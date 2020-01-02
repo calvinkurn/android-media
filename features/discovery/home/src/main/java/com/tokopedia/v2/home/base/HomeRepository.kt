@@ -15,5 +15,5 @@ interface HomeRepository {
     suspend fun getWalletData(): WalletDataModel.WalletAction
     suspend fun getTokopointData(): WalletDataModel.TokopointAction
     suspend fun getPendingCashbackData(): PendingCashback
-    fun getPlayCard(): Flow<PlayCard>
+    suspend fun getPlayCard(): Flow<PlayCard>
 }
