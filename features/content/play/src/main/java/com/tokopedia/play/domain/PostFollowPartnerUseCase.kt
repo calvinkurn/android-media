@@ -1,6 +1,5 @@
 package com.tokopedia.play.domain
 
-import com.google.gson.JsonObject
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -8,9 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.FollowShop
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import java.util.*
 import javax.inject.Inject
 
 
@@ -18,18 +15,12 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-10.
  */
 
-class PostFollowShopUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
+class PostFollowPartnerUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
 
-    var params: RequestParams = RequestParams.EMPTY
+    var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): Boolean {
-        val variables = HashMap<String, Any>()
-        val input = JsonObject()
-        input.addProperty(SHOP_ID, params.getString(SHOP_ID, ""))
-        input.addProperty(ACTION, params.getString(ACTION, ""))
-        variables[INPUT] = input
-
-        val gqlRequest = GraphqlRequest(query, FollowShop.Response::class.java, variables)
+        val gqlRequest = GraphqlRequest(query, FollowShop.Response::class.java, params)
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
@@ -42,14 +33,13 @@ class PostFollowShopUseCase @Inject constructor(private val gqlUseCase: MultiReq
         } else {
             throw MessageErrorException(response.followShop.message)
         }
-
     }
 
     companion object {
 
-        const val SHOP_ID = "shopID"
-        const val ACTION = "action"
-        const val INPUT = "input"
+        private const val SHOP_ID = "shopID"
+        private const val ACTION = "action"
+        private const val INPUT = "input"
 
         private val query = getQuery()
 
@@ -66,11 +56,13 @@ class PostFollowShopUseCase @Inject constructor(private val gqlUseCase: MultiReq
             """.trimIndent()
         }
 
-        fun createParam(shopId: String, action: PartnerFollowAction): RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putString(SHOP_ID, shopId)
-            requestParams.putString(ACTION, action.value)
-            return requestParams
+        fun createParam(shopId: String, action: PartnerFollowAction): HashMap<String, Any> {
+            return hashMapOf(
+                    INPUT to hashMapOf(
+                            SHOP_ID to shopId,
+                            ACTION to action.value
+                    )
+            )
         }
     }
 }
