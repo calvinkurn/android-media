@@ -2,24 +2,17 @@ package com.tokopedia.age_restriction
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argumentCaptor
-import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.age_restriction.data.UserDOBUpdateData
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
-import com.tokopedia.graphql.CommonUtils
-import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tradein_common.repository.BaseRepository
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -29,14 +22,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.io.File
-import java.lang.reflect.Type
 
 @ExperimentalCoroutinesApi
 class VerifyDOBViewModelTest {
 
-    var repository: BaseRepository = mockk()
-    var requestParams: HashMap<String, Any> = mockk()
-    var application: Application = mockk()
+    private var repository: BaseRepository = mockk()
+    private var requestParams: HashMap<String, Any> = mockk()
+    private var application: Application = mockk()
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -102,9 +94,4 @@ class VerifyDOBViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun getJsonFromFile(path: String): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(path)
-        val file = File(uri.path)
-        return String(file.readBytes())
-    }
 }

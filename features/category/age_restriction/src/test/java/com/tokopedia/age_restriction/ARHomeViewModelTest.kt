@@ -29,8 +29,8 @@ class ARHomeViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    var application: Application = mockk()
-    var repository: BaseRepository = mockk()
+    private var application: Application = mockk()
+    private var repository: BaseRepository = mockk()
     private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
 
     @RelaxedMockK
