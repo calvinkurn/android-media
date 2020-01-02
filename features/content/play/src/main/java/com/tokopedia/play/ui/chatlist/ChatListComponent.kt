@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.ui.chatlist.interaction.ChatListInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -17,11 +18,13 @@ import kotlinx.coroutines.launch
  */
 class ChatListComponent(
         container: ViewGroup,
-        bus: EventBusFactory,
+        private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
-) : UIComponent<Unit>, CoroutineScope by coroutineScope {
+) : UIComponent<ChatListInteractionEvent>, CoroutineScope by coroutineScope {
 
     private val uiView = initView(container)
+
+    private var estimatedYPos: Int = -1
 
     init {
         uiView.hide()
@@ -33,6 +36,7 @@ class ChatListComponent(
                             is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) sendPosYEvent()
                         }
                     }
         }
@@ -42,8 +46,8 @@ class ChatListComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): Flow<Unit> {
-        return emptyFlow()
+    override fun getUserInteractionEvents(): Flow<ChatListInteractionEvent> {
+        return bus.getSafeManagedFlow(ChatListInteractionEvent::class.java)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -53,4 +57,13 @@ class ChatListComponent(
 
     private fun initView(container: ViewGroup): ChatListView =
             ChatListView(container)
+
+    private fun sendPosYEvent() {
+        if (estimatedYPos == -1) {
+            estimatedYPos = uiView.getEstimatedYPos()
+        }
+        launch {
+            bus.emit(ChatListInteractionEvent::class.java, ChatListInteractionEvent.PositionYCalculated(estimatedYPos))
+        }
+    }
 }

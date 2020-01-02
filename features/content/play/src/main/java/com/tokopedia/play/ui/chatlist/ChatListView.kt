@@ -94,6 +94,10 @@ class ChatListView(
         chatAdapter.unregisterAdapterDataObserver(adapterObserver)
     }
 
+    fun getEstimatedYPos(): Int {
+        return view.y.toInt()
+    }
+
     private val RecyclerView.canScrollDown: Boolean
         get() = canScrollVertically(1)
 }

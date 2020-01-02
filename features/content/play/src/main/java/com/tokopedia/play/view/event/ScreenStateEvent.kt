@@ -22,4 +22,6 @@ sealed class ScreenStateEvent : ComponentEvent {
     object ShowOneTapOnboarding : ScreenStateEvent()
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
+
+    data class KeyboardStateChanged(val isShown: Boolean) : ScreenStateEvent()
 }

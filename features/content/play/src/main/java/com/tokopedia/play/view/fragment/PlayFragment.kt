@@ -1,9 +1,13 @@
 package com.tokopedia.play.view.fragment
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.ScaleAnimation
+import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,18 +16,23 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment() {
+class PlayFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
         fun newInstance(channelId: String): PlayFragment {
@@ -33,6 +42,10 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
     // TODO available channelId: 1543 > VOD, 1591, 1387
     private var channelId = ""
 
@@ -40,6 +53,9 @@ class PlayFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var playViewModel: PlayViewModel
+
+    private lateinit var flVideo: FrameLayout
+    private lateinit var flInteraction: FrameLayout
 
     override fun getScreenName(): String = "Play"
 
@@ -67,13 +83,28 @@ class PlayFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupScreen(view)
 
-        childFragmentManager.beginTransaction()
-                .replace(R.id.fl_video, PlayVideoFragment.newInstance())
-                .commit()
+        flVideo = view.findViewById(R.id.fl_video)
 
         childFragmentManager.beginTransaction()
-                .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance(channelId))
+                .replace(flVideo.id, PlayVideoFragment.newInstance())
                 .commit()
+
+        flInteraction = view.findViewById(R.id.fl_interaction)
+
+        childFragmentManager.beginTransaction()
+                .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId))
+                .commit()
+
+        launch {
+            delay(2000)
+            playViewModel.showKeyboard(true)
+            flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+            delay(5000)
+            playViewModel.showKeyboard(false)
+            flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            onKeyboardHidden()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -139,5 +170,33 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onDestroy() {
         super.onDestroy()
         playViewModel.destroy()
+    }
+
+    fun onKeyboardShown(chatListYPos: Int) {
+        val currentHeight = flVideo.height
+        val destHeight = chatListYPos.toFloat()
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,1.0f , destHeight / currentHeight);
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,1.0f , 0.5f);
+        animatorY.duration = 300
+        animatorX.duration = 300
+
+        flVideo.pivotX = (flVideo.width / 2).toFloat()
+        flVideo.pivotY = 0f
+        AnimatorSet().apply {
+            playTogether(animatorX, animatorY)
+        }.start()
+    }
+
+    fun onKeyboardHidden() {
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY , 1.0f);
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,flVideo.scaleX , 1.0f);
+        animatorY.duration = 300
+        animatorX.duration = 300
+
+        flVideo.pivotX = (flVideo.width / 2).toFloat()
+        flVideo.pivotY = 0f
+        AnimatorSet().apply {
+            playTogether(animatorX, animatorY)
+        }.start()
     }
 }

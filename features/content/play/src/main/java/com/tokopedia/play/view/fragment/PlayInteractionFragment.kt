@@ -20,6 +20,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
+import com.tokopedia.play.ui.chatlist.interaction.ChatListInteractionEvent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
 import com.tokopedia.play.ui.like.LikeComponent
@@ -47,11 +48,8 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -164,6 +162,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeChatList()
         observePinnedMessage()
         observeFollowShop()
+        observeKeyboardState()
 
         observeLoggedInInteractionEvent()
     }
@@ -232,6 +231,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.observableFollowShop.observe(this, Observer {
             if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
+            }
+        })
+    }
+
+    private fun observeKeyboardState() {
+        playViewModel.observableKeyboardState.observe(this, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
             }
         })
     }
@@ -325,9 +333,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
 
-    private fun initChatListComponent(container: ViewGroup): UIComponent<Unit> {
-        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    private fun initChatListComponent(container: ViewGroup): UIComponent<ChatListInteractionEvent> {
+        val chatListComponent = ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
+
+        launch {
+            chatListComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is ChatListInteractionEvent.PositionYCalculated -> (requireParentFragment() as PlayFragment).onKeyboardShown(it.yPos)
+                        }
+                    }
+        }
+
+        return chatListComponent
     }
 
     private fun initVideoControlComponent(container: ViewGroup): UIComponent<Unit> {
