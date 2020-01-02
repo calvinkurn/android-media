@@ -18,21 +18,21 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
     var params = HashMap<String, Any>()
 
     override suspend fun executeOnBackground(): Boolean {
-        val gqlRequest = GraphqlRequest(query, LikeContent.DataResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(query, LikeContent.Response::class.java, params)
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
-        val response = gqlResponse.getData<LikeContent.DataResponse>(LikeContent.DataResponse::class.java)
-        if (response.response.doLikeKolPost.error.isEmpty())  {
-            response.response.doLikeKolPost.data?.let {
+        val response = gqlResponse.getData<LikeContent.Response>(LikeContent.Response::class.java)
+        if (response.doLikeKolPost.error.isEmpty())  {
+            response.doLikeKolPost.data?.let {
                 return it.success == PLAY_FEED_SUCCESS
             }
             return false
         } else {
-            throw MessageErrorException(response.response.doLikeKolPost.error)
+            throw MessageErrorException(response.doLikeKolPost.error)
         }
     }
 

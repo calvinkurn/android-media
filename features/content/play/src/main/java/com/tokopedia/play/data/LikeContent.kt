@@ -21,10 +21,4 @@ data class LikeContent(
             @SerializedName("do_like_kol_post")
             val doLikeKolPost: LikeContent = LikeContent()
     )
-
-    data class DataResponse(
-            @SerializedName("data")
-            val response: Response = Response()
-    )
-
 }
