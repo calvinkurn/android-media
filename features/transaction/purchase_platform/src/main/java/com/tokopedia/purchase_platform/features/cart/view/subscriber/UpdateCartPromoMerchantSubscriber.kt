@@ -30,6 +30,7 @@ class UpdateCartPromoMerchantSubscriber(private val view: ICartListView?,
                 errorMessage = ErrorHandler.getErrorMessage(it.getActivityObject(), e)
             }
             it.showToastMessageRed(errorMessage ?: "")
+            // Todo : Remove this
             presenter?.processInitialGetCartData(it.getCartId(), cartListData == null, false)
         }
     }

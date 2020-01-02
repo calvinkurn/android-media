@@ -302,7 +302,72 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf())
             }
 
-            Then("should render success") {
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
+                }
+            }
+        }
+
+    }
+
+    Feature("update cart list for promo merchant") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), any())
+            }
+
+            Then("should render success and show promo merchant bottomsheet") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showMerchantVoucherListBottomsheet()
+                }
+            }
+        }
+
+        Scenario("failed update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = false
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf())
+            }
+
+            Then("should show error") {
                 verify {
                     view.hideProgressLoading()
                     view.showToastMessageRed(any())
