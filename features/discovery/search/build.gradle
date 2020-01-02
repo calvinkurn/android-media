@@ -93,8 +93,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

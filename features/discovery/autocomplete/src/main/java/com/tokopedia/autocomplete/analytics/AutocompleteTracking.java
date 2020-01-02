@@ -184,12 +184,14 @@ public class AutocompleteTracking {
     }
 
     public static void eventClickSubmit(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH,
-                EVENTCATEGORY_TOP_NAV,
-                CLICK_SEARCH,
-                label
-        );
+        // Disabled for C2S tracking
+        // C2S tracking now included in ProductListFragment.sendTrackingGTMEventSearchAttempt
+//        TrackApp.getInstance().getGTM().sendGeneralEvent(
+//                EVENT_CLICK_SEARCH,
+//                EVENTCATEGORY_TOP_NAV,
+//                CLICK_SEARCH,
+//                label
+//        );
     }
 
     public static void eventClickRecentView(Context context,

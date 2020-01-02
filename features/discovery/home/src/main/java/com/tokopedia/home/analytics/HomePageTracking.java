@@ -40,7 +40,7 @@ public class HomePageTracking {
     private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
     private static final String ACTION_CLICK_POINT = "click point & tier status";
 
-    private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
+    private static final String EVENT_CLICK_HOME_PAGE = "clickHomepage";
     private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
@@ -148,6 +148,7 @@ public class HomePageTracking {
     public static final String FIELD_BRAND = "brand";
     public static final String FIELD_CATEGORY = "category";
     public static final String FIELD_VARIANT = "variant";
+    public static final String FIELD_DIMENSION_84 = "dimension84";
     public static final String PRODUCT_VIEW_IRIS = "productViewIris";
     public static final String EVENT_ACTION_IMPRESSION_ON_LEGO_PRODUCT = "impression on lego product";
     public static final String NONE_OTHER = "none / other";
@@ -1389,7 +1390,7 @@ public class HomePageTracking {
 
     public static HashMap<String, Object> getEnhanceImpressionProductChannelMix(DynamicHomeChannel.Channels channel,
                                                                      String type){
-        List<Object> list = convertProductEnhanceProductMixDataLayer(channel.getGrids(), channel.getHeader().getName(), type);
+        List<Object> list = convertProductEnhanceProductMixDataLayer(channel.getGrids(), channel.getHeader().getName(), type, channel.getId());
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW_IRIS,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
@@ -1434,7 +1435,7 @@ public class HomePageTracking {
         );
     }
 
-    private static List<Object> convertProductEnhanceProductMixDataLayer(DynamicHomeChannel.Grid[] grids, String headerName, String type) {
+    private static List<Object> convertProductEnhanceProductMixDataLayer(DynamicHomeChannel.Grid[] grids, String headerName, String type, String channelId) {
         List<Object> list = new ArrayList<>();
 
         if (grids != null) {
@@ -1451,7 +1452,8 @@ public class HomePageTracking {
                                 FIELD_CATEGORY, NONE_OTHER,
                                 FIELD_VARIANT, NONE_OTHER,
                                 LIST, "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
-                                FIELD_POSITION, String.valueOf(i + 1)
+                                FIELD_POSITION, String.valueOf(i + 1),
+                                FIELD_DIMENSION_84, channelId
                         )
                 );
             }
@@ -1545,14 +1547,14 @@ public class HomePageTracking {
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_3_IMAGE_IMPRESSION,
                 EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channelId,
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         list.toArray(new Object[list.size()])
                                 )
                         )
-                ),
-                CHANNEL_ID, channelId
+                )
         );
     }
 

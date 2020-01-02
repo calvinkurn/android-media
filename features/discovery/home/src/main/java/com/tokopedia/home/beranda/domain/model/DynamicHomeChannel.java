@@ -207,15 +207,7 @@ public class DynamicHomeChannel {
             this.showPromoBadge = showPromoBadge;
         }
 
-        public String getCategoryPersona() {
-            return categoryPersona;
-        }
-
-        public void setCategoryPersona(String categoryPersona) {
-            this.categoryPersona = categoryPersona;
-        }
-
-        private List<Object> convertProductEnhanceProductMixDataLayer(Grid[] grids, String headerName, String type) {
+        private List<Object> convertProductEnhanceProductMixDataLayer(String channelId, Grid[] grids, String headerName, String type) {
             List<Object> list = new ArrayList<>();
 
             if (grids != null) {
@@ -233,7 +225,8 @@ public class DynamicHomeChannel {
                                     "variant", "none / other",
                                     "list", "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
                                     "position", String.valueOf(i + 1),
-                                    "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other"
+                                    "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other",
+                                    "dimension84", channelId
                             )
                     );
                 }
@@ -351,7 +344,7 @@ public class DynamicHomeChannel {
                     Grid grid = grids[i];
                     list.add(
                             DataLayer.mapOf(
-                                    "id", grid.getId(),
+                                    "id", channelId + "-" + grid.getId(),
                                     "name", getPromoName(),
                                     "creative", grid.getAttribution(),
                                     "creative_url", grid.getImageUrl(),
@@ -525,6 +518,54 @@ public class DynamicHomeChannel {
             );
         }
 
+        public Map<String, Object> getEnhanceClickLegoBannerHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner click",
+                    channelId, id,
+                    "eventLabel", grid.getAttribution(),
+                    "attribution", getHomeAttribution(position, grid.getAttribution()),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getAttribution(),
+                                                    "creative_url", grid.getImageUrl(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner 3 image click",
+                    "eventLabel", grid.getAttribution(),
+                    channelId, id,
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getAttribution(),
+                                                    "creative_url", grid.getImageUrl(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    ),
+                    "attribution", getHomeAttribution(position, grid.getAttribution())
+            );
+        }
+
         public Map<String, Object> getEnhanceClickProductChannelMix(int gridPosition, boolean isFreeOngkir) {
             return DataLayer.mapOf(
                     "event", "productClick",
@@ -548,7 +589,8 @@ public class DynamicHomeChannel {
                                                     "variant", "none / other",
                                                     "position", String.valueOf(gridPosition+1),
                                                     "attribution", getHomeAttribution(gridPosition + 1, getGrids()[gridPosition].getId()),
-                                                    "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other"
+                                                    "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other",
+                                                    "dimension84", id
                                             )
                                     )
                             )
@@ -562,7 +604,7 @@ public class DynamicHomeChannel {
             } else if (layout.equals(LAYOUT_BANNER_CAROUSEL)) {
                 type = "carousel";
             }
-            List<Object> list = convertProductEnhanceProductMixDataLayer(getGrids(), getHeader().name, type);
+            List<Object> list = convertProductEnhanceProductMixDataLayer(id, getGrids(), getHeader().name, type);
             return DataLayer.mapOf(
                     "event", "productView",
                     "eventCategory", "homepage",
