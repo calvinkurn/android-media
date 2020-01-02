@@ -28,9 +28,9 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -40,7 +40,6 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.ProductPriceInfoView;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
@@ -61,6 +60,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
 
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 1001;
     private static final int REQUEST_CODE_LOGIN = 1002;
+    private static final int REQUEST_CODE_CART_DIGITAL = 1003;
     private TextView tvBalance;
     private TextView tvPhoneNumber;
     private TextView tvOperatorName;
@@ -98,7 +98,6 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     private UssdProductDigitalPresenter presenter;
     private UserSession userSession;
     private DigitalAnalytics digitalAnalytics;
-    private DigitalModuleRouter digitalModuleRouter;
 
     public static DigitalUssdFragment newInstance(PulsaBalance pulsaBalance, Operator selectedOperator,
                                                   List<Validation> validationListData, String categoryId,
@@ -152,9 +151,6 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         userSession = new UserSession(getActivity());
         if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
             digitalAnalytics = new DigitalAnalytics();
-        }
-        if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
-            digitalModuleRouter = (DigitalModuleRouter) getActivity().getApplicationContext();
         }
 
         if (getArguments() != null) {
@@ -357,16 +353,15 @@ public class DigitalUssdFragment extends BaseDaggerFragment
 
                 }
                 break;
-
-        }
-
-        if (DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL() == requestCode)
-            if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
-                if (!TextUtils.isEmpty(message)) {
-                    showToastMessage(message);
+            case REQUEST_CODE_CART_DIGITAL:
+                if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                    String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
+                    if (!TextUtils.isEmpty(message)) {
+                        showToastMessage(message);
+                    }
                 }
-            }
+                break;
+        }
     }
 
     @Override
@@ -399,6 +394,13 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
+    }
+
+    @Override
+    public void navigateToCart(DigitalCheckoutPassData digitalCheckoutPassData) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassDataState);
+        startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
     }
 
     @Override
@@ -502,7 +504,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
 
     @Override
     public void onProductLinkClicked(String url) {
-        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), url);
+        RouteManager.route(getActivity(), url);
     }
 
     private void setBottomSheetDialog() {

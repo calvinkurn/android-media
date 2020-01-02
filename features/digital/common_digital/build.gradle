@@ -24,6 +24,7 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
@@ -36,16 +37,20 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.unifyDependencies.icon
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.playServicesDependencies.analytics
+
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 }
 
 project.ext {

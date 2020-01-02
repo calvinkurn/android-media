@@ -38,7 +38,6 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
@@ -46,6 +45,7 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -337,20 +337,17 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         } else if (requestCode == PaymentConstant.REQUEST_CODE) {
             switch (resultCode) {
                 case PaymentConstant.PAYMENT_SUCCESS:
-                    if (getActivity() != null && getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
+                    if (getActivity() != null) {
                         FragmentManager manager = getActivity().getSupportFragmentManager();
 
-                        ((DigitalModuleRouter) getActivity().getApplicationContext())
-                                .showAppFeedbackRatingDialog(
-                                        manager,
-                                        getContext(),
-                                        () -> {
-                                            if (getActivity() != null) {
-                                                getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
-                                                closeView();
-                                            }
-                                        }
-                                );
+                        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+                        rating.setDialogDismissListener(() -> {
+                            if (getActivity() != null) {
+                                getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
+                                closeView();
+                            }
+                        });
+                        rating.showDialog(manager, getContext());
                     }
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
                     break;

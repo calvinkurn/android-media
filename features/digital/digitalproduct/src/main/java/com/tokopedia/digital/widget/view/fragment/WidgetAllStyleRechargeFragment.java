@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -34,7 +35,6 @@ import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
@@ -66,6 +66,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 1002;
     private static final int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 1003;
     private static final int REQUEST_CODE_CONTACT_PICKER = 1004;
+    private static final int REQUEST_CODE_CART_DIGITAL = 1005;
     private LinearLayout holderProductDetail;
     private ProgressBar pbMainLoading;
 
@@ -93,8 +94,6 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     DigitalWidgetCategoryCategoryPresenter presenter;
     @Inject
     DigitalAnalytics digitalAnalytics;
-    @Inject
-    DigitalModuleRouter digitalModuleRouter;
 
     public static WidgetAllStyleRechargeFragment newInstance(Category category, int position) {
         WidgetAllStyleRechargeFragment fragment = new WidgetAllStyleRechargeFragment();
@@ -188,17 +187,16 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                 userSession.getUserId());
 
         if (userSession.isLoggedIn()) {
-            if (getActivity().getApplication() instanceof DigitalRouter) {
-                DigitalRouter digitalModuleRouter =
-                        (DigitalRouter) getActivity().getApplication();
-                navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
-                );
-            }
+            navigateToCart(digitalCheckoutPassData);
         } else {
             interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
+    }
+
+    private void navigateToCart(DigitalCheckoutPassData digitalCheckoutPassData) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
+        startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
     }
 
     private void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
@@ -359,14 +357,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CODE_LOGIN:
                 if (userSession.isLoggedIn() && digitalCheckoutPassDataState != null) {
-                    if (getActivity().getApplication() instanceof DigitalRouter) {
-                        DigitalRouter digitalModuleRouter =
-                                (DigitalRouter) getActivity().getApplication();
-                        navigateToActivityRequest(
-                                digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
-                        );
-                    }
+                    navigateToCart(digitalCheckoutPassDataState);
                 }
                 break;
             case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
@@ -386,16 +377,16 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
                     );
                 }
                 break;
-        }
-        if (requestCode == DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                    String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
-                    if (!TextUtils.isEmpty(message)) {
-                        showToastMessage(message);
+            case REQUEST_CODE_CART_DIGITAL:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
+                        if (!TextUtils.isEmpty(message)) {
+                            showToastMessage(message);
+                        }
                     }
                 }
-            }
+                break;
         }
     }
 

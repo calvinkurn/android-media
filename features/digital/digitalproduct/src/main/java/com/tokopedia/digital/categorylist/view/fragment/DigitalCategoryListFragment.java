@@ -6,6 +6,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Layout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -13,11 +19,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.text.Layout;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -30,7 +31,6 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.digital.R;
@@ -44,11 +44,10 @@ import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemDataErro
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemHeader;
 import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPresenter;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -56,8 +55,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -91,7 +88,6 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
     private LinearLayout terminateAnnouncementLayout;
     private View separatorForTicker;
 
-    private CompositeSubscription compositeSubscription;
     private DigitalCategoryListAdapter adapter;
     private RefreshHandler refreshHandler;
     private GridLayoutManager gridLayoutManager;
@@ -102,13 +98,10 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
     private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
     private RemoteConfig remoteConfig;
 
-
     @Inject
     DigitalCategoryListPresenter presenter;
     @Inject
     UserSession userSession;
-    @Inject
-    DigitalModuleRouter digitalModuleRouter;
     @Inject
     DigitalAnalytics digitalAnalytics;
 
@@ -266,7 +259,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
             );
             isCouponApplied = savedInstanceState.getInt(PARAM_IS_COUPON_ACTIVE);
         }
-        if (getArguments() != null){
+        if (getArguments() != null) {
             setupArguments(getArguments());
         }
         if (digitalCategoryListDataState == null || digitalCategoryListDataState.isEmpty())
@@ -280,7 +273,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
         refreshHandler.finishRefresh();
         rvDigitalCategoryList.setLayoutManager(gridLayoutManager);
         adapter.addAllDataList(digitalCategoryListDataState);
-        if (GlobalConfig.isSellerApp()){
+        if (GlobalConfig.isSellerApp()) {
             renderTerminateTicker();
         }
     }
@@ -391,21 +384,12 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
-    }
-
-    @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
         digitalAnalytics.eventClickProductOnDigitalHomepage(itemData.getName().toLowerCase());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
                 )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {
-            digitalModuleRouter.goToTokoCash(
-                    tokoCashBalanceData.getAction().getmAppLinks(), getActivity()
-            );
+            RouteManager.route(getActivity(), tokoCashBalanceData.getAction().getmAppLinks());
         } else {
             if (RouteManager
                     .isSupportApplink(getActivity(), itemData.getAppLinks())) {
@@ -426,7 +410,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
                 if (redirectValueUrl != null && redirectValueUrl.length() > 0) {
                     String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
                             Uri.encode(redirectValueUrl), userSession.getDeviceId(), userSession.getUserId());
-                    navigateToActivity(digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), resultGenerateUrl));
+                    RouteManager.route(getActivity(), resultGenerateUrl);
                 }
             }
         }
@@ -473,7 +457,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
                     break;
                 }
             default:
-                startActivity(digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), data.getSiteUrl()));
+                RouteManager.route(getActivity(), data.getSiteUrl());
                 break;
         }
     }
@@ -522,7 +506,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
         return null;
     }
 
-    private void renderTerminateTicker(){
+    private void renderTerminateTicker() {
         terminateAnnouncementLayout.setVisibility(View.VISIBLE);
         terminateAnnouncementTicker.setDescription(getString(R.string.digital_terminate_announcement));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

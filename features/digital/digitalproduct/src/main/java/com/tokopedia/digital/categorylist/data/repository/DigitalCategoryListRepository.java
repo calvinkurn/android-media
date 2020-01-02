@@ -3,7 +3,7 @@ package com.tokopedia.digital.categorylist.data.repository;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.cloud.entity.HomeCategoryMenuItem;
@@ -27,16 +27,13 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
     public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
 
     private DigitalCategoryListApi digitalApi;
-    private final CacheManager globalCacheManager;
     private final ICategoryDigitalListDataMapper digitalListDataMapper;
     private final UserSession sessionHandler;
 
     public DigitalCategoryListRepository(DigitalCategoryListApi digitalApi,
-                                         CacheManager globalCacheManager,
                                          ICategoryDigitalListDataMapper digitalListDataMapper,
                                          UserSession sessionHandler) {
         this.digitalApi = digitalApi;
-        this.globalCacheManager = globalCacheManager;
         this.digitalListDataMapper = digitalListDataMapper;
         this.sessionHandler = sessionHandler;
     }
@@ -44,7 +41,7 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
     @Override
     public Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList(String deviceVersion) {
         return Observable.just(
-                globalCacheManager.get(DIGITAL_CATEGORY_ITEM_LIST)
+                PersistentCacheManager.instance.getString(DIGITAL_CATEGORY_ITEM_LIST)
         ).flatMap(getFuncObservableDigitalCategoryListDataFromCache())
                 .onErrorResumeNext(getResumeFunctionObservableDigitalCategoryListDataFromNetwork(deviceVersion));
     }
@@ -67,7 +64,7 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
             @Override
             public Observable<List<DigitalCategoryItemData>> call(String s) {
                 HomeCategoryMenuItem homeCategoryMenuItem = new Gson()
-                        .fromJson(globalCacheManager.get(
+                        .fromJson(PersistentCacheManager.instance.getString(
                                 DIGITAL_CATEGORY_ITEM_LIST),
                                 HomeCategoryMenuItem.class
                         );
@@ -109,7 +106,7 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
                             );
                     if (homeCategoryMenuItem != null && homeCategoryMenuItem.getData() != null
                             && !homeCategoryMenuItem.getData().getLayoutSections().isEmpty()) {
-                        globalCacheManager.save(DIGITAL_CATEGORY_ITEM_LIST, stringResponse.body(), 0);
+                        PersistentCacheManager.instance.put(DIGITAL_CATEGORY_ITEM_LIST, stringResponse.body(), 0);
                     }
                     return digitalListDataMapper.transformDigitalCategoryItemDataList(
                             homeCategoryMenuItem

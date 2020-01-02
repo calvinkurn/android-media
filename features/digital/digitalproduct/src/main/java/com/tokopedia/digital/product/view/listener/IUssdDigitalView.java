@@ -24,4 +24,6 @@ public interface IUssdDigitalView extends IBaseView {
 
     Activity getActivity();
 
+    void navigateToCart(DigitalCheckoutPassData digitalCheckoutPassData);
+
 }

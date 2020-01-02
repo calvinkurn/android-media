@@ -1,12 +1,10 @@
 package com.tokopedia.digital.product.additionalfeature.etoll.view.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
@@ -17,27 +15,22 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.di.DigitalComponentInstance;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
 import com.tokopedia.digital.product.additionalfeature.etoll.di.DaggerDigitalETollComponent;
 import com.tokopedia.digital.product.additionalfeature.etoll.di.DigitalETollComponent;
@@ -58,8 +51,6 @@ import javax.inject.Inject;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 

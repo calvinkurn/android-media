@@ -4,20 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
+
+import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.Objects;
 
@@ -55,7 +54,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         if (extras.getBoolean(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), false)) {
-            Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
+            Intent homeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApplinkConst.HOME));
             taskStackBuilder.addNextIntent(homeIntent);
         }
         boolean isFromWidget = false;

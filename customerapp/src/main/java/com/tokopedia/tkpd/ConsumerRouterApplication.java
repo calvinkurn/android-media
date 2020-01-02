@@ -89,7 +89,6 @@ import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.events.EventModuleRouter;
@@ -275,7 +274,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LogisticRouter,
         IHomeRouter,
         DiscoveryRouter,
-        DigitalModuleRouter,
         ApplinkRouter,
         ShopModuleRouter,
         LoyaltyModuleRouter,
@@ -679,11 +677,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getRegisterIntent(Context context) {
         Intent intent = RegisterInitialActivity.getCallingIntent(context);
         return intent;
-    }
-
-    @Override
-    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        return DigitalCartActivity.newInstance(this, passData);
     }
 
     public Intent getHomeIntent(Context context) {
@@ -1291,18 +1284,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToTokoCash(String appLinkBalance, Activity activity) {
-        WalletRouterUtil.navigateWallet(
-                activity.getApplication(),
-                activity,
-                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                appLinkBalance,
-                "",
-                new Bundle()
-        );
-    }
-
-    @Override
     public void goToSaldo(Context context) {
 
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
@@ -1399,11 +1380,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         mIris.setUserId("");
         setTetraUserId("");
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
     }
 
     @Override

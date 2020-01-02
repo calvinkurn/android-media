@@ -10,7 +10,6 @@ import com.tokopedia.digital.categorylist.data.cloud.exception.SessionExpiredExc
 import com.tokopedia.digital.categorylist.domain.interactor.IDigitalCategoryListInteractor;
 import com.tokopedia.digital.categorylist.view.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.net.ConnectException;
@@ -29,14 +28,11 @@ import rx.Subscriber;
 public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCategoryListView> implements IDigitalCategoryListPresenter {
 
     private final IDigitalCategoryListInteractor digitalCategoryListInteractor;
-    private DigitalModuleRouter digitalModuleRouter;
 
     @Inject
     public DigitalCategoryListPresenter(
-            IDigitalCategoryListInteractor digitalCategoryListInteractor,
-            DigitalModuleRouter digitalModuleRouter) {
+            IDigitalCategoryListInteractor digitalCategoryListInteractor) {
         this.digitalCategoryListInteractor = digitalCategoryListInteractor;
-        this.digitalModuleRouter = digitalModuleRouter;
     }
 
     @Override

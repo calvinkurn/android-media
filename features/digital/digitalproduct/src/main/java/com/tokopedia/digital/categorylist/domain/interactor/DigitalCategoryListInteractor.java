@@ -4,7 +4,6 @@ import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
 import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -22,16 +21,13 @@ import rx.subscriptions.CompositeSubscription;
 public class DigitalCategoryListInteractor implements IDigitalCategoryListInteractor {
     private final CompositeSubscription compositeSubscription;
     private final IDigitalCategoryListRepository digitalCategoryListRepository;
-    private DigitalModuleRouter digitalModuleRouter;
     private GetWalletBalanceUseCase getWalletBalanceUseCase;
 
     public DigitalCategoryListInteractor(CompositeSubscription compositeSubscription,
                                          IDigitalCategoryListRepository digitalCategoryListRepository,
-                                         GetWalletBalanceUseCase getWalletBalanceUseCase,
-                                         DigitalModuleRouter digitalModuleRouter) {
+                                         GetWalletBalanceUseCase getWalletBalanceUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.digitalCategoryListRepository = digitalCategoryListRepository;
-        this.digitalModuleRouter = digitalModuleRouter;
         this.getWalletBalanceUseCase = getWalletBalanceUseCase;
     }
 

@@ -11,8 +11,6 @@ import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParamet
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
@@ -41,7 +39,6 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                         DigitalAnalytics digitalAnalytics,
                                         RechargeAnalytics rechargeAnalytics,
-                                        DigitalModuleRouter digitalModuleRouter,
                                         ICartDigitalInteractor cartDigitalInteractor,
                                         UserSession userSession,
                                         DigitalCheckoutUseCase digitalCheckoutUseCase,
@@ -49,7 +46,6 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
                 rechargeAnalytics,
-                digitalModuleRouter,
                 cartDigitalInteractor,
                 userSession,
                 digitalCheckoutUseCase,

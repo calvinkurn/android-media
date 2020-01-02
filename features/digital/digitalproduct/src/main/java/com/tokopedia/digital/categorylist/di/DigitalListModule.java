@@ -4,26 +4,24 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.repository.DigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.domain.interactor.DigitalCategoryListInteractor;
 import com.tokopedia.digital.categorylist.domain.interactor.IDigitalCategoryListInteractor;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -98,13 +96,11 @@ public class DigitalListModule {
     @Provides
     IDigitalCategoryListRepository provideIDigitalCategoryListRepository(
             DigitalCategoryListApi digitalCategoryListApi,
-            CacheManager cacheManager,
             CategoryDigitalListDataMapper categoryDigitalListDataMapper,
             UserSession userSession
     ) {
         return new DigitalCategoryListRepository(
                 digitalCategoryListApi,
-                cacheManager,
                 categoryDigitalListDataMapper,
                 userSession
         );
@@ -113,10 +109,9 @@ public class DigitalListModule {
     @Provides
     IDigitalCategoryListInteractor provideDigitalCategoryListInteractor(
             IDigitalCategoryListRepository digitalCategoryListRepository,
-            GetWalletBalanceUseCase getWalletBalanceUseCase,
-            DigitalModuleRouter digitalModuleRouter) {
+            GetWalletBalanceUseCase getWalletBalanceUseCase) {
         return new DigitalCategoryListInteractor(compositeSubscription, digitalCategoryListRepository,
-                getWalletBalanceUseCase, digitalModuleRouter);
+                getWalletBalanceUseCase);
     }
 
     @Provides

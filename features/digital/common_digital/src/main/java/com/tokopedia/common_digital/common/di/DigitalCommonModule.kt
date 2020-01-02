@@ -3,6 +3,7 @@ package com.tokopedia.common_digital.common.di
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
@@ -32,6 +33,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -56,14 +58,21 @@ class DigitalCommonModule {
 
     @DigitalCommonScope
     @Provides
+    @DigitalCommonChuckQualifier
+    fun provideChuckInterceptory(@ApplicationContext context: Context): Interceptor {
+        return ChuckInterceptor(context)
+    }
+
+    @DigitalCommonScope
+    @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
 
     @Provides
     @DigitalCommonScope
-     fun provideDigitalInterceptor(@ApplicationContext context: Context,
-                                           networkRouter: AbstractionRouter): DigitalInterceptor {
+    fun provideDigitalInterceptor(@ApplicationContext context: Context,
+                                  networkRouter: AbstractionRouter): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter)
     }
 
@@ -80,10 +89,10 @@ class DigitalCommonModule {
     @DigitalCommonScope
     @DigitalRestApiClient
     fun provideDigitalRestApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                                          digitalRouter: DigitalRouter,
                                           digitalInterceptor: DigitalInterceptor,
                                           networkRouter: NetworkRouter,
-                                          userSession: UserSession): OkHttpClient {
+                                          userSession: UserSession,
+                                          @DigitalCommonChuckQualifier chuckInterceptor: Interceptor): OkHttpClient {
         val retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
         val builder = OkHttpClient.Builder()
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -95,7 +104,7 @@ class DigitalCommonModule {
         builder.addInterceptor(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(digitalRouter.chuckInterceptor)
+                    .addInterceptor(chuckInterceptor)
         }
 
         return builder.build()
@@ -139,7 +148,7 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-     fun provideCartMapperData(): ICartMapperData {
+    fun provideCartMapperData(): ICartMapperData {
         return CartMapperData()
     }
 
@@ -153,7 +162,7 @@ class DigitalCommonModule {
     @Provides
     @DigitalCommonScope
     fun provideDigitalInstantCheckoutDataSource(digitalRestApi: DigitalRestApi,
-                                                         cartMapperData: ICartMapperData): DigitalInstantCheckoutDataSource {
+                                                cartMapperData: ICartMapperData): DigitalInstantCheckoutDataSource {
         return DigitalInstantCheckoutDataSource(digitalRestApi, cartMapperData)
     }
 

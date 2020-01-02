@@ -28,7 +28,6 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -61,7 +60,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private final int COUPON_ACTIVE = 1;
     private DigitalAnalytics digitalAnalytics;
     private RechargeAnalytics rechargeAnalytics;
-    private DigitalModuleRouter digitalModuleRouter;
     private ICartDigitalInteractor cartDigitalInteractor;
     private UserSession userSession;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
@@ -74,7 +72,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
                                     RechargeAnalytics rechargeAnalytics,
-                                    DigitalModuleRouter digitalModuleRouter,
                                     ICartDigitalInteractor cartDigitalInteractor,
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
@@ -82,7 +79,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;
-        this.digitalModuleRouter = digitalModuleRouter;
         this.cartDigitalInteractor = cartDigitalInteractor;
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
