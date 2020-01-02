@@ -8,7 +8,6 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -37,20 +36,28 @@ class PlayCardViewHolder(
     private var mVideoUrl: String = ""
 
     private val videoPlayer = view.findViewById<TokopediaPlayView>(R.id.video_player)
+    private var playCardViewModel: PlayCardViewModel ?= null
 
     override fun bind(element: PlayCardViewModel) {
-        mVideoUrl = element.url
-        mThumbUrl = element.thumbnailUrl
-        volumeContainer.setOnClickListener {
-            helper?.updateVideoMuted()
-            volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
+
+        element.getPlayCardHome()?.let { model ->
+            mVideoUrl = model.playGetCardHome.data.card.imageUrl
+            mThumbUrl = model.playGetCardHome.data.card.imageUrl
+            volumeContainer.setOnClickListener {
+                helper?.updateVideoMuted()
+                volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
+            }
+            play.setOnClickListener { _ ->
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it) }
+            }
         }
-        play.setOnClickListener {
-            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it) }
-        }
+
+        if(playCardViewModel == null) listener.onGetPlayBanner(adapterPosition)
     }
 
     fun createHelper() {
+        if(playCardViewModel == null) return
+
         if(helper == null) {
             helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
                     .setAutoPlayOn(false)
@@ -59,6 +66,7 @@ class PlayCardViewHolder(
                     .setExoPlayerEventsListener(this)
                     .setThumbImageViewEnabled(this)
                     .setRepeatModeOn(true)
+                    .setMutedVolume()
                     .create()
         }
 

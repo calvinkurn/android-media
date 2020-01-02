@@ -196,6 +196,11 @@ class TokopediaPlayerHelper(
             return this
         }
 
+        fun setMutedVolume(): Builder{
+            mExoPlayerHelper.setMuted()
+            return this
+        }
+
         fun setAutoPlayOn(isAutoPlayOn: Boolean): Builder {
             mExoPlayerHelper.isAutoPlayOn = isAutoPlayOn
             return this
@@ -462,6 +467,11 @@ class TokopediaPlayerHelper(
         } else {
             mPlayer?.volume = mTempCurrentVolume
         }
+    }
+
+    fun setMuted() {
+        isVideoMuted = true
+        mPlayer?.volume = 0f
     }
 
     override fun isPlayerVideoMuted(): Boolean {

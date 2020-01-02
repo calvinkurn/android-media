@@ -410,7 +410,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             statusBarBackground.setVisibility(View.GONE);
         }
 
-//        initEggDragListener();
+        initEggDragListener();
 
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
@@ -1612,12 +1612,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showNotAllowedGeolocationSnackbar() {
         getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG)
-                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        HomePageTracking.eventClickOnAtur(getActivity());
-                        goToApplicationDetailActivity();
-                    }
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), view -> {
+                    HomePageTracking.eventClickOnAtur(getActivity());
+                    goToApplicationDetailActivity();
                 }).show();
     }
 
