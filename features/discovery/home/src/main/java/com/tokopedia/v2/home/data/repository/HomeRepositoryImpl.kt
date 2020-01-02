@@ -12,7 +12,9 @@ import com.tokopedia.v2.home.data.datasource.local.dao.HomeDao
 import com.tokopedia.v2.home.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.v2.home.data.datasource.remote.WalletRemoteDataSource
 import com.tokopedia.v2.home.model.pojo.home.HomeData
+import com.tokopedia.v2.home.model.pojo.home.PlayCard
 import com.tokopedia.v2.home.model.vo.Resource
+import kotlinx.coroutines.flow.Flow
 
 class HomeRepositoryImpl(
         private val homeDao: HomeDao,
@@ -60,4 +62,8 @@ class HomeRepositoryImpl(
     override suspend fun getTokopointData() = walletRemoteDataSource.getTokopoint()
 
     override suspend fun getPendingCashbackData() = walletRemoteDataSource.getPendingCashback()
+
+    override fun getPlayCard(): Flow<PlayCard> {
+        return null
+    }
 }
