@@ -18,7 +18,7 @@ import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickLi
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageAdapterTypeFactory(private val onBindListener: OnItemBindListener, private val onItemClickListener: OnItemClickListener) : BaseAdapterTypeFactory(), TravelHomepageTypeFactory {
+open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemBindListener, private val onItemClickListener: OnItemClickListener) : BaseAdapterTypeFactory(), TravelHomepageTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {

@@ -1,13 +1,15 @@
 package com.tokopedia.travelhomepage.destination.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
+import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 
 /**
- * @author by jessica on 2019-12-30
+ * @author by jessica on 2019-08-09
  */
 
 abstract class TravelDestinationItemModel(var isLoaded: Boolean = false,
-                                       var isSuccess: Boolean = false)
-//    : Visitable<TravelDestinationAdapterTypeFactory> {
-//    abstract override fun type(typeFactory: TravelDestinationAdapterTypeFactory): Int
-//}
+                                          var isSuccess: Boolean = false,
+                                          var isLoadFromCloud: Boolean = true): Visitable<TravelDestinationAdapterTypeFactory> {
+    abstract override fun type(typeFactory: TravelDestinationAdapterTypeFactory): Int
+}

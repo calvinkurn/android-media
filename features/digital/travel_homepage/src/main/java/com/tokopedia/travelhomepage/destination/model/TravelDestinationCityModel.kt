@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * @author by jessica on 2019-12-23
  */
 
-data class TravelDestinationCityData (
+data class TravelDestinationCityModel (
         @SerializedName("CityID")
         @Expose
         val cityId: String = "",
@@ -19,6 +19,6 @@ data class TravelDestinationCityData (
     data class Response(
             @SerializedName("TravelDestinationCityData")
             @Expose
-            val response: TravelDestinationCityData = TravelDestinationCityData()
+            val response: TravelDestinationCityModel = TravelDestinationCityModel()
     )
 }

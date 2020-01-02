@@ -83,10 +83,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <FrameLayout
+                    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                        android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
-                        android:layout_height="2000dp"
-                        android:background="@drawable/bg_white_travel_destination_content" />
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_white_travel_destination_content"/>
 
                 </LinearLayout>
 

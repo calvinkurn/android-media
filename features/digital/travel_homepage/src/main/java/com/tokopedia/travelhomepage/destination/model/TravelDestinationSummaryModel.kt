@@ -2,12 +2,14 @@ package com.tokopedia.travelhomepage.destination.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
+import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
 
 /**
  * @author by jessica on 2019-12-23
  */
 
-data class TravelDestinationSummary (
+data class TravelDestinationSummaryModel (
         @SerializedName("title")
         @Expose
         val title: String = "",
@@ -19,11 +21,13 @@ data class TravelDestinationSummary (
         @SerializedName("description")
         @Expose
         val description: String = ""
-) {
+): TravelDestinationItemModel() {
+    override fun type(typeFactory: TravelDestinationAdapterTypeFactory): Int = typeFactory.type(this)
+
     data class Response(
-            @SerializedName("TravelDestinatinoSummary")
+            @SerializedName("TravelDestinationSummary")
             @Expose
-            val response: TravelDestinationSummary = TravelDestinationSummary()
+            val response: TravelDestinationSummaryModel = TravelDestinationSummaryModel()
     )
 
     data class Images(

@@ -33,7 +33,7 @@
         tools:text="Tiket Pesawat"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/dp_2" />
+        android:layout_marginBottom="@dimen/dp_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_travel_destination_recommendation_item_title"
@@ -59,7 +59,7 @@
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl1"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintBottom_toTopOf="@id/tv_travel_destination_recommendation_item_title"
+        app:layout_constraintBottom_toTopOf="@id/tv_travel_destination_recommendation_item_desc_title"
         app:layout_constraintRight_toLeftOf="@id/iv_travel_destination_recommendation_item_arrow"
         app:layout_constraintEnd_toStartOf="@id/iv_travel_destination_recommendation_item_arrow"
         app:layout_constraintTop_toTopOf="parent"

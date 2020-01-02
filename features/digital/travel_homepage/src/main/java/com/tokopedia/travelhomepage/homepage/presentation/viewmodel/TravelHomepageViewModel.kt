@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.PARAM_CITY_ID
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyViewModelsUseCase
@@ -149,7 +150,8 @@ class TravelHomepageViewModel @Inject constructor(
     fun getRecommendation(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecommendationModel.Response::class.java)
+                val param = mapOf(PARAM_PRODUCT to "ALL")
+                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecommendationModel.Response::class.java, param)
                 var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
@@ -224,6 +226,7 @@ class TravelHomepageViewModel @Inject constructor(
         val PARAM_PAGE = "page"
         val PARAM_PER_PAGE = "perPage"
         val PARAM_FILTER_STATUS = "filterStatus"
+        val PARAM_PRODUCT = "product"
     }
 
 }

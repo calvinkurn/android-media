@@ -20,7 +20,7 @@ class TravelDestinationActivity : BaseSimpleActivity(), HasComponent<TravelDesti
         return travelDestinationComponent
     }
 
-    override fun getNewFragment(): Fragment = TravelDestinationFragment()
+    override fun getNewFragment(): Fragment = TravelDestinationFragment.getInstance("https://m.tokopedia.com/travel-entertainment/bandung/")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,5 +32,9 @@ class TravelDestinationActivity : BaseSimpleActivity(), HasComponent<TravelDesti
 
     private fun initInjector() {
         component.inject(this)
+    }
+
+    companion object {
+        const val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
     }
 }
