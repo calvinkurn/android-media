@@ -3,6 +3,7 @@ package com.tokopedia.plugin
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashSet
@@ -17,10 +18,13 @@ open class VersionTask : DefaultTask() {
     val versionArtifactToProjectList = hashMapOf<String, String>()
 
     lateinit var latestReleaseDate:Date
+    val versionConfigMap = mutableMapOf<String, Int>()
 
     companion object {
         const val TOKOPEDIA = "tokopedia"
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+        const val LIBRARIES_PATH = "../../buildconfig/dependencies/dependency-libraries.gradle"
+        const val CONFIG_VERSION_FILE_PATH = "tools/version/config_version.txt"
     }
 
     @TaskAction
@@ -31,6 +35,8 @@ open class VersionTask : DefaultTask() {
         val queue = mutableListOf<Project>(project)
 
         val dependenciesHashSetTemp = HashSet<Pair<String, String>>()
+
+        readVersionConfig()
 
         //BFS to get all projects
         while (queue.isNotEmpty()) {
@@ -76,6 +82,64 @@ open class VersionTask : DefaultTask() {
             }
         }
 
+        // this is to update all possible candidate version increase
+        // for example, the change of global config will also
+        // increase the version of the project that dependent on it
+        calibratingCandidateList(dependenciesHashSetTemp)
+
+        // artifact version calibrating
+        // dependency-libraries version and version defined in project extension might be different
+        // if it is different, take the maximum between those 2
+        calibratingVersion()
+    }
+
+    // this function is get the correct current version between
+    // 1. version in dependencies-libraries, or
+    // 2. version in project.ext for each module
+    // and take the maximum between 2
+    private fun calibratingVersion(){
+        try {
+            val file = File(LIBRARIES_PATH)
+            file.forEachLine {
+                val str = it.trim().replace("\\s".toRegex(), "")
+                if (!str.startsWith("//")) {
+                    val strSplit = str.split(":".toPattern(), 2)
+                    if (strSplit.size == 2) {
+                        val strProject = strSplit[1].substring(strSplit[1].indexOf("\""),strSplit[1].lastIndexOf("\""))
+                        val projectSplit = strProject.split(":".toPattern(), 3)
+                        if (projectSplit.size == 3 && projectSplit[0].contains(TOKOPEDIA)){
+                            val artifactId = projectSplit[1]
+                            val version = projectSplit[2]
+                            versionProjectToArtifactList.forEach { artifactItem ->
+//                                if (artifactItem.value.artifactId == artifactId) {
+//                                    artifactItem.value.versionName = if (version.toIntegerTruncated() > )
+//                                }
+                            }
+                            println("$artifactId $version")
+                        }
+                    }
+                }
+            }
+        } catch (ignored:Exception){
+            // do nothing, assumed no calibration for version.
+        }
+    }
+
+    fun readVersionConfig(){
+        val file = File(CONFIG_VERSION_FILE_PATH)
+        file.forEachLine {line ->
+            if(line.isNotEmpty() &&!line.startsWith("//")){
+                val splits = line.split("=")
+                versionConfigMap[splits[0]] = splits[1].toInt()
+            }
+        }
+    }
+
+    // dependencies hash set is collection of dependencies [graphql-config;network-config;...]
+    // this function is to look up for the hashset to update the candidate list
+    // for example, the change of global config will also
+    // increase the version of the project that dependent on it
+    private fun calibratingCandidateList(dependenciesHashSetTemp: HashSet<Pair<String, String>>){
         val cloneDepHashSet: HashSet<Pair<String, String>> = hashSetOf()
         dependenciesHashSetTemp.forEach {
             val projectDependant = versionArtifactToProjectList[it.second] ?: ""
@@ -83,9 +147,6 @@ open class VersionTask : DefaultTask() {
             cloneDepHashSet.add(it.first to projectDependant)
         }
 
-        // this is to update all possible candidate version increase
-        // for example, the change of global config will also
-        // increase the version of the project that dependent on it
         var isDepCandidateChanged = true
         while (isDepCandidateChanged && cloneDepHashSet.isNotEmpty()) {
             isDepCandidateChanged = false

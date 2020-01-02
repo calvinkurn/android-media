@@ -22,12 +22,9 @@ open class PublishCompositeTask : DefaultTask() {
     lateinit var latestReleaseDate: Date
     lateinit var sortedDependency:List<String>
 
-    val versionConfigMap = mutableMapOf<String, Int>()
-
     companion object {
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val LOG_FILE_PATH = "tools/version/log.txt"
-        const val CONFIG_VERSION_FILE_PATH = "tools/version/config_version.txt"
     }
 
     @TaskAction
@@ -44,8 +41,6 @@ open class PublishCompositeTask : DefaultTask() {
         sortedDependency = sortGraph().reversed()
         println("After Topological Sort $sortedDependency")
 
-        readVersionConfig()
-
         publishToArtifactory()
     }
 
@@ -59,16 +54,6 @@ open class PublishCompositeTask : DefaultTask() {
         }
         graph.topologicalSort()
         return graph.listTop
-    }
-
-    fun readVersionConfig(){
-        val file = File(CONFIG_VERSION_FILE_PATH)
-        file.forEachLine {line ->
-            if(line.isNotEmpty() &&!line.startsWith("//")){
-                val splits = line.split("=")
-                versionConfigMap[splits[0]] = splits[1].toInt()
-            }
-        }
     }
 
     fun publishToArtifactory(){
