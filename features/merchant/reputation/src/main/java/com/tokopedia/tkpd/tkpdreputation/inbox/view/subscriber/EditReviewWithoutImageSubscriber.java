@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
@@ -33,7 +33,7 @@ public class EditReviewWithoutImageSubscriber extends Subscriber<SendReviewValid
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingProgress();
-        viewListener.onErrorEditReview(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorEditReview(ErrorHandler.getErrorMessage(MainApplication.getAppContext(), e));
     }
 
     @Override

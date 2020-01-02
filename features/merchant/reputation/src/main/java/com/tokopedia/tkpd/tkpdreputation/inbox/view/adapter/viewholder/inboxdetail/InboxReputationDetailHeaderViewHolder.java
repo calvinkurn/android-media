@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.reputation.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;

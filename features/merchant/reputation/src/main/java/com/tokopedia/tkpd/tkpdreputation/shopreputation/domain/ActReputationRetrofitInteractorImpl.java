@@ -4,17 +4,19 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.network.apiservices.product.ReviewActService;
-import com.tokopedia.core.network.apiservices.shop.ReputationActService;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
+import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo.ActResult;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -44,25 +46,27 @@ public class ActReputationRetrofitInteractorImpl implements
     private static final String PARAM_REPORT_MESSAGE = "text_message";
 
     private final CompositeSubscription compositeSubscription;
-    private final ReputationActService reputationActService;
-    private final ReviewActService reviewActService;
+
+    @Inject
+    ReputationActService reputationActService;
+
+    @Inject
+    ReviewActService reviewActService;
 
     private boolean isRequesting = false;
 
     public ActReputationRetrofitInteractorImpl() {
-        this.reputationActService = new ReputationActService();
         this.compositeSubscription = new CompositeSubscription();
-        this.reviewActService = new ReviewActService();
     }
 
     @Override
     public void postComment(@NonNull final Context context, @NonNull final Map<String, String> params,
                             @NonNull final ActReputationListener listener) {
 
-        Observable<Response<TkpdResponse>> observable = reputationActService.getApi()
+        Observable<Response<TokopediaWsV4Response>> observable = reputationActService.getApi()
                 .insertRepReviewResponse(AuthUtil.generateParams(context, params));
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
             }
@@ -81,7 +85,7 @@ public class ActReputationRetrofitInteractorImpl implements
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
@@ -133,10 +137,10 @@ public class ActReputationRetrofitInteractorImpl implements
     public void deleteComment(@NonNull final Context context, @NonNull final Map<String, String> params,
                               @NonNull final ActReputationListener listener) {
 
-        Observable<Response<TkpdResponse>> observable = reputationActService.getApi()
+        Observable<Response<TokopediaWsV4Response>> observable = reputationActService.getApi()
                 .deleteRepReviewResponse(AuthUtil.generateParams(context, params));
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
             }
@@ -155,7 +159,7 @@ public class ActReputationRetrofitInteractorImpl implements
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
@@ -206,10 +210,10 @@ public class ActReputationRetrofitInteractorImpl implements
     @Override
     public void postReport(@NonNull final Context context, @NonNull final Map<String, String> params, @NonNull final ActReputationListener listener) {
 
-        Observable<Response<TkpdResponse>> observable = reviewActService.getApi()
+        Observable<Response<TokopediaWsV4Response>> observable = reviewActService.getApi()
                 .reportReview(AuthUtil.generateParams(context, params));
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
             }
@@ -228,7 +232,7 @@ public class ActReputationRetrofitInteractorImpl implements
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
@@ -279,10 +283,10 @@ public class ActReputationRetrofitInteractorImpl implements
     @Override
     public void likeDislikeReview(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final ActReputationListener listener) {
 
-        Observable<Response<TkpdResponse>> observable = reviewActService.getApi()
+        Observable<Response<TokopediaWsV4Response>> observable = reviewActService.getApi()
                 .likeDislikeReview(AuthUtil.generateParams(context, params));
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
             }
@@ -301,7 +305,7 @@ public class ActReputationRetrofitInteractorImpl implements
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));

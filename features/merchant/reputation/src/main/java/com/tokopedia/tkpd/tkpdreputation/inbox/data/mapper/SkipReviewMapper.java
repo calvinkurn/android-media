@@ -3,13 +3,9 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.SkipReviewPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -37,7 +33,7 @@ public class SkipReviewMapper implements Func1<Response<TokopediaWsV4Response>, 
                 }
             }
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = response.body().getErrorMessageJoined();
             if (!TextUtils.isEmpty(messageError)) {
                 throw new ErrorMessageException(messageError);
             } else {

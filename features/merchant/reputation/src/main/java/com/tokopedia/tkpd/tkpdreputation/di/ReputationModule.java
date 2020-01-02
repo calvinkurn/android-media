@@ -50,7 +50,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.Send
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
+import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
 import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
@@ -59,6 +61,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetL
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractorImpl;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
@@ -192,6 +195,26 @@ public class ReputationModule {
     @Provides
     ReputationService provideReputationService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new ReputationService(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
+    ReputationActService provideReputationActService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReputationActService(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
+    ReviewActService provideReviewActService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReviewActService(
                 context,
                 networkRouter,
                 userSession

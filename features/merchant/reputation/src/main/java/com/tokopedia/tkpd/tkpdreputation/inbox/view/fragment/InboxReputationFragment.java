@@ -25,6 +25,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -227,16 +228,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetFirstTimeInboxReputation(String errorMessage) {
+    public void onErrorGetFirstTimeInboxReputation(Throwable throwable) {
         if (getActivity() != null & getView() != null) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
-                    NetworkErrorHelper
-                            .RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.getFirstTimeInboxReputation(getTab());
-                        }
-                    });
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
+                    () -> presenter.getFirstTimeInboxReputation(getTab()));
         }
     }
 
@@ -255,17 +250,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetNextPage(String errorMessage) {
+    public void onErrorGetNextPage(Throwable throwable) {
         adapter.removeLoading();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new
-                NetworkErrorHelper
-                        .RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getFirstTimeInboxReputation(getTab());
-                    }
-                })
-                .showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                ErrorHandler.getErrorMessage(getContext(), throwable),
+                () -> presenter.getFirstTimeInboxReputation(getTab())).showRetrySnackbar();
     }
 
     @Override
@@ -276,15 +265,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorRefresh(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
-                NetworkErrorHelper
-                        .RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab());
-                    }
-                });
+    public void onErrorRefresh(Throwable throwable) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
+                () -> presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab()));
     }
 
     @Override
@@ -370,13 +353,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetFilteredInboxReputation(String errorMessage) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab());
-            }
-        }).showRetrySnackbar();
+    public void onErrorGetFilteredInboxReputation(Throwable throwable) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable),
+                () -> presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab())).showRetrySnackbar();
     }
 
     @Override

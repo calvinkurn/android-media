@@ -15,16 +15,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -235,7 +231,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onErrorDeleteReview(Throwable e) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override
@@ -246,7 +242,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus) {
         ((ReviewProductAdapter) getAdapter()).updateLikeStatusError(reviewId, likeStatus);
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override

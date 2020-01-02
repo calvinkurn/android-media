@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
@@ -27,7 +27,7 @@ public class DeleteReviewResponseSubscriber extends Subscriber<DeleteReviewRespo
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingDialog();
-        viewListener.onErrorDeleteReviewResponse(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorDeleteReviewResponse(ErrorHandler.getErrorMessage(MainApplication.getAppContext(), e));
     }
 
     @Override

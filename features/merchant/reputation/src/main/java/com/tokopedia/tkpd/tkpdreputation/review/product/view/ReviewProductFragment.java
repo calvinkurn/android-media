@@ -19,13 +19,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView;
-import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -391,7 +390,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     @Override
     public void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus) {
         ((ReviewProductAdapter) getAdapter()).updateLikeStatusError(reviewId, likeStatus);
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override
@@ -401,7 +400,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onErrorDeleteReview(Throwable e) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override

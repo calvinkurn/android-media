@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
@@ -27,7 +27,7 @@ public class ReplyReviewSubscriber extends Subscriber<SendReplyReviewDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingDialog();
-        viewListener.onErrorReplyReview(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorReplyReview(ErrorHandler.getErrorMessage(MainApplication.getAppContext(), e));
     }
 
     @Override

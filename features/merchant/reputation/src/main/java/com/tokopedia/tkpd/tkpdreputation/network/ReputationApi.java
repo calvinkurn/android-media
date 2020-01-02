@@ -59,7 +59,7 @@ public interface ReputationApi {
     Observable<Response<TokopediaWsV4Response>> insertReviewResponse(@FieldMap Map<String, String> params);
 
     @GET(ReputationBaseURL.PATH_GET_LIKE_DISLIKE_REVIEW)
-    Observable<Response<TkpdResponse>> getLikeDislikeReview(@QueryMap Map<String, Object>
+    Observable<Response<TokopediaWsV4Response>> getLikeDislikeReview(@QueryMap Map<String, Object>
                                                                     parameters);
 
     @POST(ReputationBaseURL.PATH_LIKE_DISLIKE_REVIEW)

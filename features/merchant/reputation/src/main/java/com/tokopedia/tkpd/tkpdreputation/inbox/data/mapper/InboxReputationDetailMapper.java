@@ -3,11 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.InboxReputationDetailPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ProductData;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inboxdetail.ReputationBadge;
@@ -36,6 +31,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopData
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.UserDataDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.UserReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +63,10 @@ public class InboxReputationDetailMapper implements Func1<Response<TokopediaWsV4
                 }
             }
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = "";
+            if (response.body() != null) {
+                messageError = response.body().getErrorMessageJoined();
+            }
             if (!TextUtils.isEmpty(messageError)) {
                 throw new ErrorMessageException(messageError);
             } else {

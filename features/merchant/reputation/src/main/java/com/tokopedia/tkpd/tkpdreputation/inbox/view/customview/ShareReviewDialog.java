@@ -9,7 +9,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,11 +23,11 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.widgets.ShareItem;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ShareAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
+import com.tokopedia.tkpd.tkpdreputation.utils.ClipboardHandler;
 
 /**
  * Created by stevenfredian on 2/20/17.

@@ -40,7 +40,7 @@ public interface InboxReputationDetail {
 
         void showRefresh();
 
-        void onErrorRefreshInboxDetail(String errorMessage);
+        void onErrorRefreshInboxDetail(Throwable throwable);
 
         void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
                                             List<Visitable> visitables);

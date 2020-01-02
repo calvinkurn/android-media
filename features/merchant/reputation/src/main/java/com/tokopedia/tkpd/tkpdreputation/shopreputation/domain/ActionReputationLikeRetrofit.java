@@ -3,12 +3,13 @@ package com.tokopedia.tkpd.tkpdreputation.shopreputation.domain;
 import android.content.Context;
 import androidx.collection.ArrayMap;
 
-import com.tokopedia.core.network.apiservices.product.ReviewActService;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
 
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -34,8 +35,8 @@ public class ActionReputationLikeRetrofit {
     private String shopId;
     private String shopDomain;
 
-    private ActionService actionService;
-    private ReviewActService actionReview;
+    @Inject
+    ReviewActService actionReview;
 
     private OnLikeDislikeReviewListener onLikeDislikeReviewListener;
 
@@ -45,21 +46,10 @@ public class ActionReputationLikeRetrofit {
         this.context = context;
         this.shopId = shopId;
         this.shopDomain = shopDomain;
-        actionService = new ActionService();
-        actionReview = new ReviewActService();
     }
 
-    public void setOnLikeDislikeReviewListener(OnLikeDislikeReviewListener listener) {
-        this.onLikeDislikeReviewListener = listener;
-    }
-
-    public void actionReputationLikeDislike(String prodId, String reviewId, String status) {
-        Observable<Response<TkpdResponse>> observable = actionService.getApi().actionLikeDislikeReview(AuthUtil.generateParams(context, paramShopTalk(prodId, reviewId, status)));
-        onLikeDislikeReviewSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onActionLikeDislike());
-    }
-
-    private Observer<Response<TkpdResponse>> onActionLikeDislike() {
-        return new Observer<Response<TkpdResponse>>() {
+    private Observer<Response<TokopediaWsV4Response>> onActionLikeDislike() {
+        return new Observer<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
 
@@ -71,7 +61,7 @@ public class ActionReputationLikeRetrofit {
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+            public void onNext(Response<TokopediaWsV4Response> tkpdResponseResponse) {
                 if (tkpdResponseResponse.isSuccessful())
                     onLikeDislikeReviewListener.onSuccess();
                 else
@@ -93,7 +83,7 @@ public class ActionReputationLikeRetrofit {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void actionReportReview(String reviewId, String message) {
-        Observable<Response<TkpdResponse>> observable = actionReview.getApi().reportReview(AuthUtil.generateParams(context, paramReportReview(reviewId, message)));
+        Observable<Response<TokopediaWsV4Response>> observable = actionReview.getApi().reportReview(AuthUtil.generateParams(context, paramReportReview(reviewId, message)));
         observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onActionLikeDislike());
     }
 

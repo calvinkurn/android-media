@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;

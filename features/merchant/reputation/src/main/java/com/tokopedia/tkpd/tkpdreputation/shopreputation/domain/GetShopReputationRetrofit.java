@@ -6,7 +6,7 @@ import androidx.collection.ArrayMap;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ReputationModel;
 

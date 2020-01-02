@@ -29,17 +29,17 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.apiservices.product.ReviewActService;
-import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.util.LabelUtils;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.StarGenerator;
 import com.tokopedia.core.util.ToolTipUtils;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
+import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.factory.ReputationProductDataFactory;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper.ActResultMapper;
@@ -72,6 +72,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Created by hangnadi on 8/19/15.
@@ -111,6 +113,12 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
     private UserSessionInterface userSession;
 
+    @Inject
+    ReputationActService reputationActService;
+
+    @Inject
+    ReviewActService reviewActService;
+
     public static ReputationProductFragment createInstance(String ProductID, String ShopID, ReviewProductModel Model) {
         ReputationProductFragment fragment = new ReputationProductFragment();
         Bundle bundle = new Bundle();
@@ -128,8 +136,8 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
 
         reputationProductDataFactory = new ReputationProductDataFactory(getActivity(),
                 new ShopService(),
-                new ReviewActService(),
-                new ReputationActService(),
+                reviewActService,
+                reputationActService,
                 likeDislikeDomainMapper,
                 actResultMapper);
 

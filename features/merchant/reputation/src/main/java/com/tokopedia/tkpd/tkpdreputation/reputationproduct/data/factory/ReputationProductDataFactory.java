@@ -2,9 +2,9 @@ package com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.product.ReviewActService;
-import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
+import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.source.CloudActResultDataSource;
@@ -53,13 +53,11 @@ public class ReputationProductDataFactory {
         return new CloudPostReportDataSource(context,
                 reviewActService,
                 actResultMapper);
-
     }
 
     public CloudDeleteCommentDataSource getDeleteCommentDataSource() {
         return new CloudDeleteCommentDataSource(context,
                 reputationActService,
                 actResultMapper);
-
     }
 }

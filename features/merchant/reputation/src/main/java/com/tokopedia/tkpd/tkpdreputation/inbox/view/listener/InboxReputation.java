@@ -13,17 +13,17 @@ public interface InboxReputation {
     interface View extends CustomerView {
         void showLoadingFull();
 
-        void onErrorGetFirstTimeInboxReputation(String errorMessage);
+        void onErrorGetFirstTimeInboxReputation(Throwable throwable);
 
         void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel);
 
         void finishLoadingFull();
 
-        void onErrorGetNextPage(String errorMessage);
+        void onErrorGetNextPage(Throwable throwable);
 
         void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel);
 
-        void onErrorRefresh(String errorMessage);
+        void onErrorRefresh(Throwable throwable);
 
         void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel);
 
@@ -40,7 +40,7 @@ public interface InboxReputation {
 
         void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel);
 
-        void onErrorGetFilteredInboxReputation(String errorMessage);
+        void onErrorGetFilteredInboxReputation(Throwable throwable);
 
         void finishRefresh();
 

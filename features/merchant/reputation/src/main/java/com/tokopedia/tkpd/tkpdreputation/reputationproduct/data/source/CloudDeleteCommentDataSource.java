@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
 

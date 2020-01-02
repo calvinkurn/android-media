@@ -308,9 +308,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorRefreshInboxDetail(String errorMessage) {
-        if (getActivity() != null)
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    public void onErrorRefreshInboxDetail(Throwable throwable) {
+        if(getActivity() != null)
+            NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable));
     }
 
     @Override

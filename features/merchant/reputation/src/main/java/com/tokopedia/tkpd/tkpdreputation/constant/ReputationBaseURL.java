@@ -48,4 +48,15 @@ public class ReputationBaseURL {
     public static final String PATH_FAVE_SHOP = "fav_shop.pl";
     public static final String URL_FAVE_SHOP_ACTION = BASE_DOMAIN + "v4/action/favorite-shop/";
 
+    // shop
+    public static final String PATH_DELETE_REP_REVIEW_RESPONSE = "delete_reputation_review_response.pl";
+    public static final String PATH_INSERT_REP_REVIEW_RESPONSE = "insert_reputation_review_response.pl";
+    public static final String URL_REPUTATION_ACTION = BASE_DOMAIN + "v4/action/reputation/";
+
+
+    // product
+    public static final String PATH_LIKE_DISLIKE_REVIEW_PRODUCT = "like_dislike_review.pl";
+    public static final String PATH_REPORT_REVIEW_PRODUCT = "report_review.pl";
+    public static final String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
+
 }
