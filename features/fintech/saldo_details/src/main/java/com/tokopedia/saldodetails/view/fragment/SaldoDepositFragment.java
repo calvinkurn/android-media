@@ -733,7 +733,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         }
         getChildFragmentManager()
                 .beginTransaction()
-                .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
+                .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.Companion.newInstance(bundle))
                 .commit();
     }
 

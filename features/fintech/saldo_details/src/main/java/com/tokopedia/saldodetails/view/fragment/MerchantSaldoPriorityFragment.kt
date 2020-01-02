@@ -255,9 +255,9 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
                 }
 
                 anchorLabel.setOnClickListener { v ->
-                    if (gqlAnchorListResponse != null && !TextUtils.isEmpty(gqlAnchorListResponse.url)) {
-                        saldoDetailsAnalytics!!.eventAnchorLabelClick(anchorLabel.text.toString())
-                        startActivity(SaldoWebViewActivity.getWebViewIntent(context, gqlAnchorListResponse.url))
+                    if (gqlAnchorListResponse != null && !TextUtils.isEmpty(gqlAnchorListResponse.url) && context != null) {
+                        saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.text.toString())
+                        startActivity(SaldoWebViewActivity.getWebViewIntent(context!!, gqlAnchorListResponse.url))
                     }
                 }
                 spActionListLinearLayout!!.addView(view)

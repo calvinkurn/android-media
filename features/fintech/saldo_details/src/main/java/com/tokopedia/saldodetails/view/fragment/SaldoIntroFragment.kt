@@ -73,7 +73,9 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
     }
 
     private fun startWebView(url: String) {
-        startActivity(SaldoWebViewActivity.getWebViewIntent(context, url))
+        context?.let {
+            startActivity(SaldoWebViewActivity.getWebViewIntent(it, url))
+        }
     }
 
     companion object {

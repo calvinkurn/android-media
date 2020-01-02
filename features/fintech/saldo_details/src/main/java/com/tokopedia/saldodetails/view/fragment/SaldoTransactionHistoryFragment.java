@@ -74,22 +74,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     private SaldoHistoryTabItem buyerSaldoHistoryTabItem;
     private SaldoHistoryTabItem sellerSaldoHistoryTabItem;
 
-    public static SaldoTransactionHistoryFragment createInstance() {
-        SaldoTransactionHistoryFragment saldoDepositFragment = new SaldoTransactionHistoryFragment();
-        Bundle bundle = new Bundle();
-        saldoDepositFragment.setArguments(bundle);
-        return saldoDepositFragment;
-    }
-
-    public static SaldoTransactionHistoryFragment createInstance(String type, boolean isSellerEnabled) {
-        SaldoTransactionHistoryFragment saldoDepositFragment = new SaldoTransactionHistoryFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(TRANSACTION_TYPE, type);
-        bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled);
-        saldoDepositFragment.setArguments(bundle);
-        return saldoDepositFragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -144,35 +128,25 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         datePicker = new SaldoDatePickerUtil(getActivity());
     }
 
-    private void loadOneTabItem() {
-        saldoTabItems.clear();
-        singleTabItem = new SaldoHistoryTabItem();
-        singleTabItem.setTitle("");
-        singleTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryPresenter));
-        saldoTabItems.add(singleTabItem);
-        depositHistoryTabLayout.setVisibility(View.GONE);
-        tabSeparator.setVisibility(View.GONE);
-    }
-
     private void loadMultipleTabItem() {
 
         saldoTabItems.clear();
 
         allSaldoHistoryTabItem = new SaldoHistoryTabItem();
         allSaldoHistoryTabItem.setTitle("Semua");
-        allSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryPresenter));
+        allSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.Companion.createInstance(FOR_ALL, saldoHistoryPresenter));
 
         saldoTabItems.add(allSaldoHistoryTabItem);
 
         buyerSaldoHistoryTabItem = new SaldoHistoryTabItem();
         buyerSaldoHistoryTabItem.setTitle("Refund");
-        buyerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryPresenter));
+        buyerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.Companion.createInstance(FOR_BUYER, saldoHistoryPresenter));
 
         saldoTabItems.add(buyerSaldoHistoryTabItem);
 
         sellerSaldoHistoryTabItem = new SaldoHistoryTabItem();
         sellerSaldoHistoryTabItem.setTitle("Penghasilan");
-        sellerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryPresenter));
+        sellerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.Companion.createInstance(FOR_SELLER, saldoHistoryPresenter));
 
         saldoTabItems.add(sellerSaldoHistoryTabItem);
 
