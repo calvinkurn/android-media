@@ -452,7 +452,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, spotlightItemViewModel.getId(),
+                                                FIELD_ID, spotlightItemViewModel.getChanneldId()+"_"+spotlightItemViewModel.getId(),
                                                 FIELD_NAME, spotlightItemViewModel.getPromoName(),
                                                 FIELD_POSITION, String.valueOf((position + 1)),
                                                 FIELD_CREATIVE, spotlightItemViewModel.getTitle(),
