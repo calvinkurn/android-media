@@ -91,6 +91,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String dealType = "";
     private int homePosition;
     List<ProductItem> itemsForGA = new ArrayList<>();
+    private String fromApplink;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -109,6 +110,27 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         this.toActivityRequest = toActivityRequest;
         this.pageType = pageType;
+
+    }
+
+    public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, String fromApplink, Boolean... layoutType) {
+        if (categoryItems == null)
+            this.categoryItems = new ArrayList<>();
+        else
+            this.categoryItems = categoryItems;
+        if (layoutType.length > 0) {
+            if (layoutType[0] != null) {
+                this.shortLayout = layoutType[0];
+            }
+        }
+        if (layoutType.length > 1) {
+            if (layoutType[1] != null) {
+                brandPageCard = layoutType[1];
+            }
+        }
+        this.toActivityRequest = toActivityRequest;
+        this.pageType = pageType;
+        this.fromApplink = fromApplink;
 
     }
 
@@ -918,12 +940,16 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         void bindData(final String headerText, int count) {
             tvExpandableDesc.setText(headerText);
-            Location location = Utils.getSingletonInstance().getLocation(getActivity());
-            if (location != null) {
-                tvCityName.setText(String.format(context.getResources().getString(com.tokopedia.digital_deals.R.string.deals_brand_detail_location), location.getName()));
-
-            } else {
+            if (!TextUtils.isEmpty(fromApplink)) {
                 tvCityName.setText(context.getResources().getString(com.tokopedia.digital_deals.R.string.text_deals));
+            } else {
+                Location location = Utils.getSingletonInstance().getLocation(getActivity());
+                if (location != null) {
+                    tvCityName.setText(String.format(context.getResources().getString(com.tokopedia.digital_deals.R.string.deals_brand_detail_location), location.getName()));
+
+                } else {
+                    tvCityName.setText(context.getResources().getString(com.tokopedia.digital_deals.R.string.text_deals));
+                }
             }
             tvDealsCount.setText(String.format(context.getResources().getString(com.tokopedia.digital_deals.R.string.number_of_items), count));
             tvSeeMoreBtn.setOnClickListener(this);

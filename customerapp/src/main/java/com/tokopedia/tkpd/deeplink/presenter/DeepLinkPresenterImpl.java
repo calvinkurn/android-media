@@ -297,6 +297,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     RouteManager.route(context,bundle,ApplinkConst.ORDER_LIST_WEBVIEW);
                     screenName = "";
                     break;
+                case DeepLinkChecker.DEALS:
+                    prepareOpenWebView(uriData);
+                    screenName = AppScreen.DEALS_PAGE;
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;

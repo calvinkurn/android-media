@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,7 +81,8 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
         this.searchText = getArguments().getString(AllBrandsActivity.SEARCH_TEXT);
         permissionCheckerHelper = new PermissionCheckerHelper();
-        checkForCurrentLocation();
+//        checkForCurrentLocation();
+        Log.d("Naveen", "Create Fragment");
         currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
         setHasOptionsMenu(true);
 
@@ -325,6 +327,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void setCurrentLocation(List<Location> locations) {
         Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        updateLocation.updateLocationName(currentLocation.getName());
         mPresenter.getAllBrands();
     }
 
@@ -356,10 +359,11 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     public void reloadIfLocationUpdated(){
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        Log.d("Naveen", "Location Name is " + location.getName());
         if(location!=null) {
-            if (!location.equals(currentLocation)){
+//            if (!location.equals(currentLocation)){
                 onLocationUpdated();
-            }
+//            }
         }
 
     }
@@ -391,5 +395,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     public interface UpdateLocation {
         void startLocationFragment(List<Location> locations);
+        void updateLocationName(String locationName);
     }
 }
