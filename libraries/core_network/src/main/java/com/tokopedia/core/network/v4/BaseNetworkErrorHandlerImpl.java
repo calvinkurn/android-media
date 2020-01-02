@@ -47,9 +47,4 @@ public class BaseNetworkErrorHandlerImpl extends BaseNetworkErrorHandler {
     public void showEmptyState(Context context, View rootview) {
         NetworkErrorHelper.showEmptyState(context, rootview, listener);
     }
-
-    @Override
-    public void showDialogCustomMSG(Context context, String message) {
-        NetworkErrorHelper.showDialogCustomMSG(context, listener, message);
-    }
 }

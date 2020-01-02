@@ -22,19 +22,6 @@ public class ShareActivity extends TActivity {
         return intent;
     }
 
-    public static Intent createIntent(Context context, LinkerData shareData,boolean isAddingProduct) {
-        Intent intent = new Intent(context, ShareActivity.class);
-        intent.putExtra(LinkerData.TAG, shareData);
-        intent.putExtra(ProductDetailRouter.IS_ADDING_PRODUCT,isAddingProduct);
-        return intent;
-    }
-
-    public static Intent getCallingRideIntent(Context activity, LinkerData shareData) {
-        Intent intent = new Intent(activity, ShareActivity.class);
-        intent.putExtra(LinkerData.TAG, shareData);
-        return intent;
-    }
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_SHARE;

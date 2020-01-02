@@ -26,6 +26,8 @@
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
 
+    <string name="opportunity_title">Peluang</string>
+
     <string name="user_identification_common_title">Verifikasi Data Diri</string>
 
 </resources>

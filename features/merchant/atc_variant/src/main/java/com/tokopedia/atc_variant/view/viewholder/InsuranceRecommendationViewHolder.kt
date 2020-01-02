@@ -19,7 +19,7 @@ import com.tokopedia.purchase_platform.common.view.model.InsuranceApplicationVal
 import com.tokopedia.purchase_platform.common.view.model.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.transaction.insurance.utils.*
+import com.tokopedia.purchase_platform.common.insurance.utils.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*
 

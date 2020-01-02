@@ -16,6 +16,8 @@ import com.tokopedia.core2.R;
  */
 public class ShopStatisticDetailFragment extends V2BaseFragment {
 
+    public static final String EXTRA_SHOP_INFO = "shop_info";
+
     private ShopStatisticSatisfaction shopStatisticSatisfaction;
     private ShopStatisticResponse shopStatisticResponse;
     private ShopStatisticTransaction shopStatisticTransaction;
@@ -27,7 +29,7 @@ public class ShopStatisticDetailFragment extends V2BaseFragment {
     public static ShopStatisticDetailFragment createInstance(String shop_info) {
         ShopStatisticDetailFragment fragment = new ShopStatisticDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopStatisticDetail.EXTRA_SHOP_INFO, shop_info);
+        bundle.putString(EXTRA_SHOP_INFO, shop_info);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -73,7 +75,7 @@ public class ShopStatisticDetailFragment extends V2BaseFragment {
     }
 
     private void initVar() {
-        shopInfo = getArguments().getString(ShopStatisticDetail.EXTRA_SHOP_INFO);
+        shopInfo = getArguments().getString(EXTRA_SHOP_INFO);
         facade = FacadeShopStatistic.createInstance(shopInfo);
         model = new Model();
     }

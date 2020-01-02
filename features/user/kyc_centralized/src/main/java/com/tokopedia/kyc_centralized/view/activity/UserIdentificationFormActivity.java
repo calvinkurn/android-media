@@ -3,10 +3,11 @@ package com.tokopedia.kyc_centralized.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
@@ -17,6 +18,8 @@ import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFra
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFragment;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
+import com.tokopedia.kyc_centralized.KYCConstant;
+import com.tokopedia.kyc_centralized.view.fragment.NotFoundFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,17 +47,22 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        try {
+            projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+        } catch (NumberFormatException | NullPointerException e) {
+            projectId = KYCConstant.STATUS_DEFAULT;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA);
         } else {
             stepperModel = createNewStepperModel();
         }
-        try {
-            projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -70,14 +78,20 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     @NonNull
     @Override
     protected List<Fragment> getListFragment() {
-        if (fragmentList == null) {
-            fragmentList = new ArrayList<>();
-            fragmentList.add(UserIdentificationFormKtpFragment.createInstance());
-            fragmentList.add(UserIdentificationFormFaceFragment.createInstance());
-            fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId));
-            return fragmentList;
-        } else {
-            return fragmentList;
+        if(projectId == KYCConstant.STATUS_DEFAULT){
+            ArrayList<Fragment> notFoundList = new ArrayList<>();
+            notFoundList.add(NotFoundFragment.Companion.createInstance());
+            return notFoundList;
+        }else {
+            if (fragmentList == null) {
+                fragmentList = new ArrayList<>();
+                fragmentList.add(UserIdentificationFormKtpFragment.createInstance());
+                fragmentList.add(UserIdentificationFormFaceFragment.createInstance());
+                fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId));
+                return fragmentList;
+            } else {
+                return fragmentList;
+            }
         }
     }
 

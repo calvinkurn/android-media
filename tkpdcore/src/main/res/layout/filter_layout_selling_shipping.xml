@@ -46,18 +46,6 @@
                     android:layout_weight=".50"
                     android:entries="@array/shipping_type" />
 
-                <!-- <TextView -->
-                <!-- android:shopId="@+shopId/search_button" -->
-                <!-- android:layout_width="@dimen/tx_list_search_btn" -->
-                <!-- android:layout_height="@dimen/tx_list_search_btn_h" -->
-                <!-- android:layout_gravity="center" -->
-                <!-- android:background="@drawable/button_buy_from_cart" -->
-                <!-- android:gravity="center" -->
-                <!-- android:padding="@dimen/padding_vs" -->
-                <!-- android:text="@string/hint_search_message" -->
-                <!-- android:textColor="@color/white" -->
-                <!-- android:textSize="@dimen/fonts" -->
-                <!-- android:textStyle="bold" /> -->
             </LinearLayout>
         </LinearLayout>
 
