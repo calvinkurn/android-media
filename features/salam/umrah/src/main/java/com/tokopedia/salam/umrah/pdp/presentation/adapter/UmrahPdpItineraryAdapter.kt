@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_umrah_pdp_itinerary.view.*
  * @author by M on 22/10/2019
  */
 class UmrahPdpItineraryAdapter : RecyclerView.Adapter<UmrahPdpItineraryAdapter.UmrahPdpItineraryViewHolder>() {
-    private val _item: MutableList<UmrahPdpItineraryModel> = mutableListOf()
+    private val item: MutableList<UmrahPdpItineraryModel> = mutableListOf()
     private var isLast = false
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): UmrahPdpItineraryViewHolder {
@@ -21,16 +21,16 @@ class UmrahPdpItineraryAdapter : RecyclerView.Adapter<UmrahPdpItineraryAdapter.U
     }
 
     fun updateItems(items: List<UmrahPdpItineraryModel>) {
-        _item.clear()
-        _item.addAll(items)
+        item.clear()
+        item.addAll(items)
         notifyDataSetChanged()
     }
 
-    override fun getItemCount(): Int = _item.size
+    override fun getItemCount(): Int = item.size
 
     override fun onBindViewHolder(holder: UmrahPdpItineraryViewHolder, position: Int) {
-        isLast = position == _item.size - 1
-        holder.bindItem(_item[position])
+        isLast = position == item.size - 1
+        holder.bindItem(item[position])
     }
 
     inner class UmrahPdpItineraryViewHolder(view: View) : RecyclerView.ViewHolder(view) {

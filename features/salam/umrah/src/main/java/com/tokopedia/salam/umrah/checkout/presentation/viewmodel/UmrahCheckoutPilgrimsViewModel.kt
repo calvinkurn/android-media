@@ -15,16 +15,16 @@ import javax.inject.Inject
 
 class UmrahCheckoutPilgrimsViewModel @Inject constructor(val getContactListUseCase: GetContactListUseCase, coroutineDispatcher: UmrahDispatchersProvider)
     : BaseViewModel(coroutineDispatcher.Main) {
-    private val _contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
+    private val contactListResultMutable = MutableLiveData<List<TravelContactListModel.Contact>>()
     val contactListResult: LiveData<List<TravelContactListModel.Contact>>
-        get() = _contactListResult
+        get() = contactListResultMutable
 
     fun getContactList(query: String, type: String = "ADULT") {
         launch {
             var contacts = getContactListUseCase.execute(query = query,
                     filterType = type,
                     product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
-            _contactListResult.value = contacts.map {
+            contactListResultMutable.value = contacts.map {
                 if (it.fullName.isBlank()) {
                     it.fullName = "${it.firstName} ${it.lastName}"
                 }

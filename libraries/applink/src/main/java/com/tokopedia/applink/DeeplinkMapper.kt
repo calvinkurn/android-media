@@ -73,9 +73,9 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
                         getRegisteredNavigationForFintech(deeplink)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH,true) ->
-                        getRegisteredNavigationSalamUmrah(deeplink)
+                        getRegisteredNavigationSalamUmrah(deeplink, context)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL,true) ->
-                        getRegisteredNavigationSalamUmrahOrderDetail(deeplink)
+                        getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){

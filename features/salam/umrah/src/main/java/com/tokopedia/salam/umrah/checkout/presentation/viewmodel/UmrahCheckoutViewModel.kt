@@ -29,13 +29,13 @@ class UmrahCheckoutViewModel @Inject constructor(val umrahCheckoutGetDataUseCase
                                                  coroutineDispatcher: UmrahDispatchersProvider)
     : BaseViewModel(coroutineDispatcher.Main) {
 
-    private val _checkoutMapped = MutableLiveData<Result<UmrahCheckoutMapperEntity>>()
+    private val checkoutMappedMutable = MutableLiveData<Result<UmrahCheckoutMapperEntity>>()
     val checkoutMapped: LiveData<Result<UmrahCheckoutMapperEntity>>
-        get() = _checkoutMapped
+        get() = checkoutMappedMutable
 
-    private val _checkoutResult = MutableLiveData<Result<UmrahCheckoutResultEntity>>()
+    private val checkoutResultMutable = MutableLiveData<Result<UmrahCheckoutResultEntity>>()
     val checkoutResult: LiveData<Result<UmrahCheckoutResultEntity>>
-        get() = _checkoutResult
+        get() = checkoutResultMutable
 
     fun execute(rawQueryPDP: String, rawQuerySummaryPayment: String, rawQueryOptionPayment: String,
                 rawQueryTermCondition: String, slugName: String, variantId: String,
@@ -45,7 +45,7 @@ class UmrahCheckoutViewModel @Inject constructor(val umrahCheckoutGetDataUseCase
                     rawQueryPDP, rawQuerySummaryPayment, rawQueryOptionPayment,
                     rawQueryTermCondition, slugName, variantId, pilgrimsCount,
                     price, departDate, idTermCondition,downPaymentPrice)
-            _checkoutMapped.value = result
+            checkoutMappedMutable.value = result
 
         }
     }
@@ -53,7 +53,7 @@ class UmrahCheckoutViewModel @Inject constructor(val umrahCheckoutGetDataUseCase
     fun executeCheckout(rawQuery: String, umrahCheckoutResultParams: UmrahCheckoutResultParams){
         launch {
             val result = umrahCheckoutResultUseCase.execute(rawQuery, umrahCheckoutResultParams)
-            _checkoutResult.value = result
+            checkoutResultMutable.value = result
         }
     }
 

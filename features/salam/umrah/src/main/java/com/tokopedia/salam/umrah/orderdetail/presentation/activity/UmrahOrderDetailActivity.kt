@@ -20,7 +20,6 @@ class UmrahOrderDetailActivity : BaseSimpleActivity(), HasComponent<UmrahOrderDe
     private lateinit var orderId: String
 
     lateinit var userSession: UserSessionInterface
-        @Inject set
 
     @Inject
     lateinit var trackingUmrahUtil: UmrahTrackingAnalytics
