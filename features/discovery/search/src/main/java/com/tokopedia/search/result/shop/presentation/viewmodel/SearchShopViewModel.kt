@@ -21,7 +21,6 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
@@ -30,6 +29,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewMod
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 
 internal class SearchShopViewModel(
@@ -121,25 +121,15 @@ internal class SearchShopViewModel(
     }
 
     private fun searchShop() {
-        launchCatchError(block = {
-            trySearchShop()
-        }, onError = {
-            catchSearchShopException(it)
-        })
-    }
-
-    private suspend fun trySearchShop() {
         startSearchShopFirstPagePerformanceMonitoring()
 
         updateSearchShopLiveDataStateToLoading()
 
-        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
+        setSearchParameterStartRow(START_ROW_FIRST_TIME_LOAD)
 
-        processSearchShopFirstPageSuccess(searchShopModel)
+        val requestParams = createSearchShopParam()
 
-        endSearchShopFirstPagePerformanceMonitoring()
-
-        getDynamicFilter()
+        searchShopFirstPageUseCase.execute(this::onSearchShopSuccess, this::catchSearchShopException, requestParams)
     }
 
     private fun startSearchShopFirstPagePerformanceMonitoring() {
@@ -150,16 +140,16 @@ internal class SearchShopViewModel(
         searchShopLiveData.postValue(Loading())
     }
 
-    private suspend fun requestSearchShopModel(startRow: Int, searchShopUseCase: UseCase<SearchShopModel>): SearchShopModel? {
-        setSearchParameterStartRow(startRow)
+    private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
+        processSearchShopFirstPageSuccess(searchShopModel)
 
-        val requestParams = createSearchShopParam()
+        endSearchShopFirstPagePerformanceMonitoring()
 
-        return searchShopUseCase.execute(requestParams)
+        getDynamicFilter()
     }
 
-    private fun createSearchShopParam(): Map<String, Any> {
-        val requestParams = mutableMapOf<String, Any>()
+    private fun createSearchShopParam(): RequestParams {
+        val requestParams = RequestParams.create()
 
         putRequestParamsParameters(requestParams)
         requestParams.putAll(searchParameter)
@@ -167,13 +157,13 @@ internal class SearchShopViewModel(
         return requestParams
     }
 
-    private fun putRequestParamsParameters(requestParams: MutableMap<String, Any>) {
-        requestParams[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
-        requestParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
-        requestParams[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
-        requestParams[SearchApiConst.ROWS] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS
-        requestParams[SearchApiConst.IMAGE_SIZE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE
-        requestParams[SearchApiConst.IMAGE_SQUARE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE
+    private fun putRequestParamsParameters(requestParams: RequestParams) {
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+        requestParams.putString(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+        requestParams.putString(SearchApiConst.ROWS, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS)
+        requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE)
+        requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
     }
 
     private fun processSearchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
@@ -351,41 +341,36 @@ internal class SearchShopViewModel(
     }
 
     private fun getDynamicFilter() {
-        launchCatchError(block = {
-            tryGetDynamicFilter()
-        }, onError = {
-            catchGetDynamicFilterException(it)
-        })
-    }
-
-    private suspend fun tryGetDynamicFilter() {
         val requestParams = createGetDynamicFilterParams()
 
-        val dynamicFilterModel = getDynamicFilterUseCase.execute(requestParams)
+        getDynamicFilterUseCase.execute(this::onGetDynamicFilterSuccess, this::catchGetDynamicFilterException, requestParams)
+    }
+
+    private fun onGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
         dynamicFilterEventLiveData.postValue(Event(true))
 
-        isFilterDataAvailable = dynamicFilterModel.data?.filter?.size ?: 0 > 0
+        isFilterDataAvailable = dynamicFilterModel.data.filter.isNotEmpty()
 
         saveDynamicFilterModel(dynamicFilterModel)
         processFilterData(dynamicFilterModel)
     }
 
-    private fun createGetDynamicFilterParams(): Map<String, Any> {
-        val requestParams = mutableMapOf<String, Any>()
+    private fun createGetDynamicFilterParams(): RequestParams {
+        val requestParams = RequestParams.create()
 
         requestParams.putAll(searchParameter)
-        requestParams.putAll(generateParamsNetwork(requestParams))
-        requestParams[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP
-        requestParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+        requestParams.putAll(generateParamsNetwork())
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP)
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
 
         return requestParams
     }
 
-    private fun generateParamsNetwork(requestParams: MutableMap<String, Any>): Map<String, String> {
+    private fun generateParamsNetwork(): Map<String, String> {
         return AuthHelper.generateParamsNetwork(
                 userSession.userId,
                 userSession.deviceId,
-                requestParams.convertValuesToString().toMutableMap())
+                mutableMapOf())
     }
 
     private fun saveDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
@@ -429,24 +414,18 @@ internal class SearchShopViewModel(
     }
 
     private fun searchMoreShop() {
-        launchCatchError(block = {
-            trySearchMoreShop()
-        }, onError = {
-            catchSearchShopException(it)
-        })
-    }
+        setSearchParameterStartRow(getTotalShopItemCount())
 
-    private suspend fun trySearchMoreShop() {
-        val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreUseCase)
+        val requestParams = createSearchShopParam()
 
-        processSearchMoreShopSuccess(searchShopModel)
+        searchShopLoadMoreUseCase.execute(this::onSearchMoreShopSuccess, this::catchSearchShopException, requestParams)
     }
 
     private fun getTotalShopItemCount(): Int {
         return searchShopMutableList.count { it is ShopViewModel.ShopItem }
     }
 
-    private fun processSearchMoreShopSuccess(searchShopModel: SearchShopModel?) {
+    private fun onSearchMoreShopSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
         updateIsHasNextPage(searchShopModel)
@@ -471,19 +450,11 @@ internal class SearchShopViewModel(
     }
 
     fun onViewClickRetry() {
-        launchCatchError(block = {
-            tryRetrySearchShop()
-        }, onError = {
-            catchSearchShopException(it)
-        })
-    }
-
-    private suspend fun tryRetrySearchShop() {
         if (isSearchShopLiveDataEmpty()) {
-            trySearchShop()
+            searchShop()
         }
         else {
-            trySearchMoreShop()
+            searchMoreShop()
         }
     }
 
@@ -492,17 +463,8 @@ internal class SearchShopViewModel(
     }
 
     fun onViewReloadData() {
-        launchCatchError(block = {
-            tryReloadSearchShop()
-        }, onError = {
-            catchSearchShopException(it)
-        })
-    }
-
-    private suspend fun tryReloadSearchShop() {
         clearDataBeforeReload()
-
-        trySearchShop()
+        searchShop()
     }
 
     private fun clearDataBeforeReload() {
