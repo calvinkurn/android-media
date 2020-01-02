@@ -83,7 +83,6 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -153,6 +152,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String CLICK_HOMEPAGE_OCR = "clickHomepage";
     private static final String CATEGORY_OCR = "digital - native";
     private static final String ACTION_OCR = "click camera icon";
+
+    public static final String PATH_TRANSACTION_LIST = "order-list/";
+    public static final String PATH_PRODUCT_LIST = "products/";
+    public static final String PATH_SUBSCRIPTIONS = "subscribe/";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -1020,7 +1023,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             navigateToActivity(
                     digitalModuleRouter.getWebviewActivityWithIntent(
                             getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
+                                    + PATH_PRODUCT_LIST
                     )
             );
             return true;
@@ -1028,7 +1031,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             navigateToActivity(
                     digitalModuleRouter.getWebviewActivityWithIntent(
                             getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                    + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
+                                    + PATH_SUBSCRIPTIONS
                     )
             );
             return true;
@@ -1039,7 +1042,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             if (GlobalConfig.isSellerApp()) {
                 navigateToActivity(
                         digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
+                                + PATH_TRANSACTION_LIST)
                 );
             } else {
                 RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);

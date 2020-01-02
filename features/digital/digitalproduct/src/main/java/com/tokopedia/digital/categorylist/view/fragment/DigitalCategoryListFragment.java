@@ -467,8 +467,8 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
                     if (GlobalConfig.isCustomerApp()) {
                         RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
                     } else {
-                        startActivity(((DigitalModuleRouter) getActivity().getApplication()).
-                                getOrderListIntent(getActivity()));
+                        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.Transaction.ORDER_LIST);
+                        startActivity(intent);
                     }
                     break;
                 }

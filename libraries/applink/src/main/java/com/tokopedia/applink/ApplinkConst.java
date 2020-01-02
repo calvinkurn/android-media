@@ -412,5 +412,7 @@ public interface ApplinkConst {
         String EXTRA_PRODUCT_PRICE = "product_price";
         String EXTRA_PRODUCT_CONDITION = "product_condition";
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
+
+        String ORDER_LIST = "tokopedia-android-internal://transaction/order-list";
     }
 }
