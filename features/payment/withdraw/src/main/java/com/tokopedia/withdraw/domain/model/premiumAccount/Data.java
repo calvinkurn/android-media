@@ -34,7 +34,7 @@ public class Data  {
     private long wdPoints;
     @SerializedName("statusInt")
     @Expose
-    private long statusInt;
+    private int statusInt;
 
     public boolean isIsPowerWD() {
         return isPowerWD;
@@ -108,11 +108,11 @@ public class Data  {
         this.wdPoints = wdPoints;
     }
 
-    public long getStatusInt() {
+    public int getStatusInt() {
         return statusInt;
     }
 
-    public void setStatusInt(long statusInt) {
+    public void setStatusInt(int statusInt) {
         this.statusInt = statusInt;
     }
 

@@ -84,7 +84,7 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
-    String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
+    String OFFICIAL_STORE_CATEGORY = "tokopedia://official-store/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";

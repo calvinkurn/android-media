@@ -41,5 +41,6 @@
     <string name="gf_network_error_title">Nggak ada koneksi internet</string>
     <string name="gf_network_connection_fail_description">Pastikan ada jaringan internet di tempatmu atau cek paket data / WiFi</string>
     <string name="gf_crack_token_response_error">Terjadi kendala pada server,  \nsilakan coba lagi ya</string>
+    <string name="gf_placeholder_text">+%s</string>
 
 </resources>
