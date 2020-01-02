@@ -18,8 +18,8 @@ import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFra
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFragment;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
-import com.tokopedia.kyc_centralized.KYCConstant;
-import com.tokopedia.kyc_centralized.view.fragment.NotFoundFragment;
+import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.user_identification_common.view.fragment.NotFoundFragment;
 
 import java.util.ArrayList;
 import java.util.List;
