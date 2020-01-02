@@ -28,7 +28,7 @@ class ProductManageListViewHolder(view: View, checkableListener: CheckableIntera
     }
 
     private val productImageView: ImageView = view.findViewById(com.tokopedia.product.manage.list.R.id.image_view_product)
-    private val titleTextView: TextView = view.findViewById(com.tokopedia.design.R.id.text_view_title);
+    private val titleTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_title);
     private val stockTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_stock);
     private val priceTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_price);
     private val featuredImageView: ImageView = view.findViewById(com.tokopedia.product.manage.list.R.id.image_view_featured);

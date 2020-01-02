@@ -1,13 +1,14 @@
 package com.tokopedia.flight.cancellation.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
@@ -20,9 +21,9 @@ import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.CHILDREN;
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFANT;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.ADULT;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.CHILDREN;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.INFANT;
 
 /**
  * @author by furqan on 29/03/18.

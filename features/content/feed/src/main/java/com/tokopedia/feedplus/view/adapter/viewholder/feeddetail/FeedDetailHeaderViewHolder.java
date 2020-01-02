@@ -68,6 +68,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
             @Override
             public void onClick(View view) {
                 viewListener.onGoToShopDetail(
+                        viewModel.getActivityId(),
                         viewModel.getShopId());
             }
 
@@ -107,9 +108,9 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         shopSlogan.setText(TimeConverter.generateTime(shopSlogan.getContext(), viewModel.getTime
                 ()));
 
-        shopAvatar.setOnClickListener(v -> viewListener.onGoToShopDetail(viewModel.getShopId()));
+        shopAvatar.setOnClickListener(v -> viewListener.onGoToShopDetail(viewModel.getActivityId(), viewModel.getShopId()));
 
-        itemView.setOnClickListener(view -> viewListener.onGoToShopDetail(viewModel.getShopId()));
+        itemView.setOnClickListener(view -> viewListener.onGoToShopDetail(viewModel.getActivityId(), viewModel.getShopId()));
     }
 
     private void setSpan(SpannableString actionSpanString, Object object,

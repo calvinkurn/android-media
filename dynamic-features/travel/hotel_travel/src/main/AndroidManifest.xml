@@ -3,7 +3,6 @@
     package="com.tokopedia.hotel_travel">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_hotel_travel">
         <dist:fusing dist:include="true" />

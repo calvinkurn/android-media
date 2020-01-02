@@ -51,6 +51,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -76,6 +77,7 @@ import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
@@ -98,8 +100,14 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  * Created by meta on 19/06/18.
  */
 public class MainParentActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener, RefreshNotificationListener, MainParentStatusBarListener {
+        NavigationView.OnNavigationItemSelectedListener,
+        HasComponent,
+        MainParentView,
+        ShowCaseListener,
+        CartNotifyListener,
+        RefreshNotificationListener,
+        MainParentStatusBarListener,
+        HomePerformanceMonitoringListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -123,6 +131,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_SHOP_ID = "Jual";
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
+    private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+
     @Inject
     UserSessionInterface userSession;
     @Inject
@@ -133,9 +143,9 @@ public class MainParentActivity extends BaseActivity implements
     ApplicationUpdate appUpdate;
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
-    private List<Fragment> fragmentList;
+    List<Fragment> fragmentList;
     private Notification notification;
-    private Fragment currentFragment;
+    Fragment currentFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
@@ -143,6 +153,9 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
+
+    private PerformanceMonitoring homePerformanceMonitoring;
+
 
     // animate icon OS
     private MenuItem osMenu;
@@ -171,10 +184,11 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE})
+    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE, ApplinkConst.OFFICIAL_STORE_CATEGORY})
     public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -204,6 +218,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startHomePerformanceMonitoring();
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
@@ -1021,6 +1036,19 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
+    public void startHomePerformanceMonitoring() {
+        homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
+    }
+
+    @Override
+    public void stopHomePerformanceMonitoring() {
+        if (homePerformanceMonitoring != null) {
+            homePerformanceMonitoring.stopTrace();
+            homePerformanceMonitoring = null;
+        }
+    }
+         
+    @Override
     public void requestStatusBarDark() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.getWindow().getDecorView().setSystemUiVisibility(
@@ -1041,5 +1069,4 @@ public class MainParentActivity extends BaseActivity implements
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
     }
-
 }

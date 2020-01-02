@@ -29,9 +29,9 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
@@ -71,7 +71,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
+
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -112,6 +113,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private String cartIds;
     private int lastServiceId;
     private String blackboxInfo;
+    private boolean sendInsuranceImpressionEvent = false;
+    private String insuranceProductId = "";
+    private String insuranceTitle = "";
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -259,6 +263,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         super.onViewRecycled(holder);
         if (holder instanceof ShipmentItemViewHolder) {
             ((ShipmentItemViewHolder) holder).unsubscribeDebouncer();
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if(holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
+            sendInsuranceImpressionEvent = true;
+            insuranceItemActionlistener.sendEventInsuranceImpressionForShipment(((InsuranceCartShopViewHolder) holder).getProductTitle());
         }
     }
 
@@ -964,6 +977,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                     for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                         for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+
+                            insuranceTitle = insuranceCartDigitalProduct.getProductInfo().getTitle();
+                            insuranceProductId = insuranceCartDigitalProduct.getProductId();
                             if (!insuranceCartDigitalProduct.isProductLevel()) {
                                 totalItem += 1;
                                 macroInsurancLabel = insuranceCartDigitalProduct.getProductInfo().getTitle();
@@ -1347,6 +1363,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public PromoStackingData getPromoGlobalStackData() {
         return promoGlobalStackData;
+    }
+
+
+    public String getInsuranceProductId() {
+        return insuranceProductId;
+    }
+
+    public String getInsuranceTitle() {
+        return insuranceTitle;
     }
 
     public void addInsuranceDataList(InsuranceCartShops insuranceCartShops) {

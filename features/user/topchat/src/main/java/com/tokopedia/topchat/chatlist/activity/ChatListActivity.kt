@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
@@ -95,11 +96,19 @@ class ChatListActivity : BaseTabActivity()
         initInjector()
         initTabList()
         super.onCreate(savedInstanceState)
+        useLightNotificationBar()
         setupViewModel()
         initTabLayout()
         setObserver()
         initData()
         initOnBoarding()
+    }
+
+    private fun useLightNotificationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.WHITE
+        }
     }
 
     private fun initTabList() {

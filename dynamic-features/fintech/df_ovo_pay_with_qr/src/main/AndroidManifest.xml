@@ -3,7 +3,6 @@
     package="com.tokopedia.dynamicovo">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/df_ovo_pay_with_qr_title">
         <dist:fusing dist:include="true" />

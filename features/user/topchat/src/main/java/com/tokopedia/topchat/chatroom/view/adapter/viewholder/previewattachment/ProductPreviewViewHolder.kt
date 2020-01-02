@@ -6,18 +6,21 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 
 class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener)
-    : AttachmentPreviewViewHolder<ProductPreviewViewModel>(itemView, attachmentItemPreviewListener) {
+    : AttachmentPreviewViewHolder<SendableProductPreview>(itemView, attachmentItemPreviewListener) {
 
     private val productImage = itemView.findViewById<ImageView>(com.tokopedia.topchat.R.id.iv_product)
     private val productName = itemView.findViewById<TextView>(com.tokopedia.topchat.R.id.tv_product_name)
@@ -34,34 +37,29 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         return itemView.findViewById(com.tokopedia.topchat.R.id.iv_close)
     }
 
-    override fun bind(model: ProductPreviewViewModel, position: Int) {
-        super.bind(model, position)
+    override fun bind(model: SendableProductPreview) {
+        val productPreview = model.productPreview
 
-        ImageHandler.loadImageRounded(productImage?.context, productImage, model.imageUrl, toDp(3))
-        productName?.text = model.name
-        productPrice?.text = model.price
+        ImageHandler.loadImageRounded(productImage?.context, productImage, productPreview.imageUrl, toDp(3))
+        productName?.text = productPreview.name
+        productPrice?.text = productPreview.price
 
-        if (model.doesNotHaveVariant()) {
-            hideVariantLayout()
-            return
-        }
+        productVariantContainer?.showWithCondition(model.hasVariant())
 
         if (model.hasColorVariant()) {
-            val backgroundDrawable = getBackgroundDrawable(model.colorHexVariant)
+            productColorVariant.show()
+            val backgroundDrawable = getBackgroundDrawable(productPreview.colorHexVariant)
             productColorVariantHex?.background = backgroundDrawable
-            productColorVariantValue?.text = model.colorVariant
+            productColorVariantValue?.text = productPreview.colorVariant
         } else {
             productColorVariant?.hide()
         }
 
         val productHasSizeVariant = model.hasSizeVariant()
         productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
-            productSizeVariantValue?.text = model.sizeVariant
+            productSizeVariantValue?.text = productPreview.sizeVariant
         }
-    }
-
-    private fun hideVariantLayout() {
-        productVariantContainer?.hide()
+        super.bind(model)
     }
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {

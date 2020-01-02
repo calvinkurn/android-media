@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.*
 import android.graphics.drawable.GradientDrawable
@@ -18,10 +17,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.Transformation
-import com.bumptech.glide.load.engine.Resource
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
-import com.bumptech.glide.load.resource.bitmap.BitmapResource
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -35,7 +31,6 @@ import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
-import java.security.MessageDigest
 import kotlin.math.roundToInt
 
 /**
@@ -74,9 +69,9 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
 
-        Glide.with(itemView.context)
+        Glide.with(itemView.context.applicationContext)
                 .load(BG_CONTAINER_URL)
-                .transform(RoundedRightCornerTransformation(context, radius))
+                .transform(RoundedCorners(radius))
                 .into(imgNonLogin)
 
         container.setOnClickListener {
@@ -324,44 +319,6 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             }
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
-        }
-    }
-
-    inner class RoundedRightCornerTransformation(private val mBitmapPool: BitmapPool, private val mRadius: Int) : Transformation<Bitmap> {
-        override fun transform(context: Context, resource: Resource<Bitmap>, outWidth: Int, outHeight: Int): Resource<Bitmap> {
-            val source = resource.get()
-
-            val width = source.width
-            val height = source.height
-
-            var bitmap: Bitmap? = mBitmapPool.get(width, height, Bitmap.Config.ARGB_8888)
-            if (bitmap == null) {
-                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            }
-
-            val canvas = Canvas(bitmap!!)
-            val paint = Paint()
-            paint.isAntiAlias = true
-            paint.shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
-            drawRoundRect(canvas, paint, width.toFloat(), height.toFloat())
-            return BitmapResource.obtain(bitmap, mBitmapPool)!!
-        }
-
-        override fun updateDiskCacheKey(messageDigest: MessageDigest) {
-
-        }
-
-        private val mDiameter: Int = mRadius * 2
-
-        constructor(context: Context, radius: Int) : this(Glide.get(context).bitmapPool, radius)
-
-        private fun drawRoundRect(canvas: Canvas, paint: Paint, width: Float, height: Float) {
-            val right = width - 0
-            val bottom = height - 0
-
-            canvas.drawRoundRect(RectF(right - mDiameter, 0f, right, bottom), mRadius.toFloat(), mRadius.toFloat(),
-                    paint)
-            canvas.drawRect(RectF(0f, 0f, right - mRadius, bottom), paint)
         }
     }
 }

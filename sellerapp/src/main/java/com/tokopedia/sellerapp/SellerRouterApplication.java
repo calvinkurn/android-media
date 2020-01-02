@@ -168,7 +168,6 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.user.session.UserSession;
@@ -673,10 +672,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
     }
 
-    @Override
-    public void invalidateCategoryMenuData() {
-
-    }
 
     @Override
     public Intent getResolutionCenterIntentSeller(Context context) {
@@ -965,7 +960,6 @@ public abstract class SellerRouterApplication extends MainApplication
             notif.dismissAllActivedNotifications();
             NotificationModHandler.clearCacheAllNotification(activity);
 
-            invalidateCategoryMenuData();
             onLogout(getApplicationComponent());
 
             Intent intent = getHomeIntent(activity);

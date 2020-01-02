@@ -1,16 +1,13 @@
 package com.tokopedia.topchat.chatroom.view.customview
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,7 +19,8 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.topchat.R
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -30,13 +28,14 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * @author : Steven 29/11/18
@@ -58,7 +57,7 @@ class TopChatViewStateImpl(
     private var templateRecyclerView: RecyclerView = view.findViewById(com.tokopedia.chat_common.R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(com.tokopedia.chat_common.R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(com.tokopedia.chat_common.R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: ConstraintLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
+    private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
@@ -90,7 +89,7 @@ class TopChatViewStateImpl(
         templateRecyclerView.setHasFixedSize(true)
         templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         templateRecyclerView.adapter = templateAdapter
-        templateRecyclerView.visibility = View.GONE
+        templateRecyclerView.hide()
 
         initProductPreviewLayout()
     }
@@ -110,16 +109,26 @@ class TopChatViewStateImpl(
     }
 
     private fun hideProductPreviewLayout() {
-        attachmentPreviewContainer.animate()
-                .translationY(attachmentPreviewContainer.height.toFloat())
-                .setDuration(300)
-                .alpha(0f)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        attachmentPreviewContainer.visibility = View.GONE
-                    }
-                })
+        attachmentPreviewContainer.hide()
+        setChatTemplatesBottomPadding(0)
+    }
+
+    private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
+        if (!templateRecyclerView.isVisible) return
+        addBottomPaddingTemplateChat(bottomPadding)
+    }
+
+    private fun addBottomPaddingTemplateChat(bottomPadding: Int) {
+        templateRecyclerView.post {
+            with(templateRecyclerView) {
+                setPadding(
+                        paddingLeft,
+                        paddingTop,
+                        paddingRight,
+                        bottomPadding
+                )
+            }
+        }
     }
 
     override fun onSetCustomMessage(customMessage: String) {
@@ -150,7 +159,6 @@ class TopChatViewStateImpl(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
-        checkShowQuickReply(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
                 .blockedStatus, onUnblockChatClicked)
 
@@ -348,9 +356,8 @@ class TopChatViewStateImpl(
         updateChatroomBlockedStatus(it)
 
         showReplyBox(chatRoomViewModel.replyable)
-        templateRecyclerView.visibility = View.VISIBLE
+        templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
         chatBlockLayout.visibility = View.GONE
-
     }
 
     private fun transform(item: BaseChatViewModel): Parcelable? {
@@ -383,14 +390,14 @@ class TopChatViewStateImpl(
         }
     }
 
-    private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
-    }
-
     fun setTemplate(listTemplate: List<Visitable<Any>>?) {
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            templateRecyclerView.visibility = View.VISIBLE
+            templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
+            if (attachmentPreviewContainer.isVisible) {
+                addBottomPaddingTemplateChat(8.toPx())
+            }
         }
     }
 
@@ -407,13 +414,9 @@ class TopChatViewStateImpl(
         getAdapter().showRetryFor(it, retry)
     }
 
-    fun onSendProductAttachment(item: ProductAttachmentViewModel) {
-        getAdapter().addElement(item)
-        scrollDownWhenInBottom()
-    }
-
-    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         attachmentPreviewContainer.show()
+        setChatTemplatesBottomPadding(8.toPx())
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }
 

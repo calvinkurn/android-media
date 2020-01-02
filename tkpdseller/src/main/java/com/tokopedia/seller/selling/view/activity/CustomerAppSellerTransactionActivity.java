@@ -42,14 +42,15 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+//import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.view.fragment.FragmentOpportunity;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingDelivered;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipped;
@@ -84,6 +85,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
 
     public static final String EXTRA_TAB_ACTIVE = "tab_active";
+    public static final String EXTRA_TAB_STATUS = "tab_status";
+    public static final String STATUS_DELIVERED = "delivered";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
@@ -157,7 +160,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
         if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.DELIVERED)
-                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING)
+                    .putExtra(EXTRA_TAB_STATUS, STATUS_DELIVERED);
         } else {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, CustomerAppSellerTransactionActivity.class)
@@ -329,7 +333,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         if (getIntent().hasExtra(EXTRA_QUERY)) {
             query = getIntent().getStringExtra(EXTRA_QUERY);
         }
-        fragmentList.add(OpportunityListFragment.newInstance(query));
+        fragmentList.add(FragmentOpportunity.newInstance());
         fragmentList.add(FragmentSellingNewOrder.createInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingShipped.newInstance());

@@ -1,0 +1,5 @@
+<resources>
+    <string name="attachinvoice_title">Lampirkan Invoice</string>
+    <string name="attachinvoice_button_attach">Lampirkan</string>
+    <string name="title_attachinvoice_empty_state">Belum ada transaksi</string>
+</resources>

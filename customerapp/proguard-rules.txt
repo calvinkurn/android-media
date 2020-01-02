@@ -16,10 +16,7 @@
 -dontwarn com.facebook.**
 -dontwarn com.tokopedia.tkpd.analytics.**
 -dontwarn okio.**
--dontwarn com.drew.metadata.xmp.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
--dontwarn butterknife.internal.**
--dontwarn com.raizlabs.**
 
 -keep class com.android.support.** { *; }
 -keepclasseswithmembers class * {
@@ -174,19 +171,6 @@
     @twitter4j.** *;
 }
 
-# this is butterknife 
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
-
 #recharge
 -keep class com.tokopedia.core.recharge.model.** { *; }
 
@@ -194,7 +178,6 @@
 -keepattributes *Annotation*,EnclosingMethod,Signature
 
 -dontwarn com.squareup.okhttp.**
-# this is butterknife
 
 # this is retrofit 
 -dontwarn retrofit2.**
@@ -231,27 +214,11 @@
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.google.gson.examples.android.model.** { *; }
 
--keep class com.drew.** {*;}
--keep interface com.drew.** {*;}
--keep enum com.drew.** {*;}
-
 -keepattributes *Annotation*
 
 -keepattributes Signature
 
 -keepattributes InnerClasses
-
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-  @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-  @butterknife.* <methods>;
-}
 
 -keep class com.activeandroid.**{ *; }
 
@@ -266,9 +233,6 @@
 -keep class com.tokopedia.core.discovery.model.**{ *; }
 -keep class com.tokopedia.core.dynamicfilter.model.** { *; }
 -keep class com.tokopedia.core.dynamicfilter.adapter.** { *; }
-
-# add exception for dbflow
--keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class com.tokopedia.core.database.model.** { *; }
 -keep class com.tokopedia.core.database.recharge.** { *; }
 
@@ -402,9 +366,12 @@
 -dontwarn org.junit.**
 
 -keep public class com.google.android.material.bottomnavigation.** { *; }
+-keep class com.google.android.material.bottomsheet.BottomSheetBehavior { *** findScrollingChild(...); }
 
 -keepclassmembers public class com.google.android.material.bottomsheet.BottomSheetDialog {
     private <fields>;
 }
 
 -keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
+
+-dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**

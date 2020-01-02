@@ -12,9 +12,8 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
-import com.tokopedia.flight.banner.data.source.BannerDataSource;
-import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
+import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
@@ -29,15 +28,12 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.country.data.FlightCountryListDbSource;
 import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
-import com.tokopedia.flight.passenger.data.db.FlightPassengerDao;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
@@ -118,22 +114,19 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightRepository provideFlightRepository(BannerDataSource bannerDataSource,
-                                                    FlightCountryListDbSource flightCountryListDbSource,
-                                                    FlightClassesDataSource getFlightClassesUseCase,
+    public FlightRepository provideFlightRepository(FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                                     FlightBookingDataSource flightBookingDataSource,
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
-                                                    FlightPassengerFactorySource flightPassengerFactorySource,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
                                                     FlightCancelVoucherDataSource flightCancelVoucherDataSource,
                                                     FlightBookingCartDataSource flightBookingCartDataSource) {
-        return new FlightRepositoryImpl(bannerDataSource, flightCountryListDbSource,
-                getFlightClassesUseCase, flightCartDataSource, flightCheckVoucheCodeDataSource,
-                flightBookingDataSource, flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource,
-                flightCancelVoucherDataSource, flightBookingCartDataSource);
+        return new FlightRepositoryImpl(getFlightClassesUseCase, flightCartDataSource,
+                flightCheckVoucheCodeDataSource, flightBookingDataSource, flightOrderDataSource,
+                flightOrderMapper, flightCancellationCloudDataSource, flightCancelVoucherDataSource,
+                flightBookingCartDataSource);
     }
 
     @Provides
@@ -214,11 +207,6 @@ public class FlightModule {
     @Provides
     FlightAirportCountryDao provideFlightAirportCountryDao(FlightRoomDb flightRoomDb) {
         return flightRoomDb.flightAirportCountryDao();
-    }
-
-    @Provides
-    FlightPassengerDao provideFlightPassengerDao(FlightRoomDb flightRoomDb) {
-        return flightRoomDb.flightPassengerDao();
     }
 
     @FlightScope
