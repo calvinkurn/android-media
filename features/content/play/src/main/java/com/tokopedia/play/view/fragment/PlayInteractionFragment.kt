@@ -165,6 +165,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeChatList()
         observePinnedMessage()
         observeFollowShop()
+        observeLikeContent()
 
         observeLoggedInInteractionEvent()
     }
@@ -198,9 +199,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 is  Success -> {
                     setTotalLikes(it.data.totalClick)
                 }
-                is Fail -> {
-                    showToast("don't forget to handle when get total likes return error ")
-                }
             }
         })
     }
@@ -230,8 +228,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeFollowShop() {
-        viewModel.observableFollowShop.observe(this, Observer {
-            if (it is Fail) {
+        viewModel.observableFollowPartner.observe(this, Observer {
+            if (it is Fail && !it.throwable.message.isNullOrEmpty()) {
+                showToast(it.throwable.message.orEmpty())
+            }
+        })
+    }
+
+    private fun observeLikeContent() {
+        viewModel.observableLikeContent.observe(this, Observer {
+            if (it is Fail && !it.throwable.message.isNullOrEmpty()) {
                 showToast(it.throwable.message.orEmpty())
             }
         })
@@ -719,7 +725,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
-        viewModel.doLikeUnlike(shouldLike)
+        viewModel.doLikeUnlike(channelId, shouldLike)
     }
 
     private fun openLoginPage() {

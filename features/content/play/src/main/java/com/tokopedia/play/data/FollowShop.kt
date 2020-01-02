@@ -14,10 +14,6 @@ data class FollowShop(
         @SerializedName("isFirstTime")
         val isFirstTime: Boolean = false
 ) {
-    data class Data(
-            @SerializedName("data")
-            val data: Response = Response()
-    )
 
     data class Response(
             @SerializedName("followShop")
