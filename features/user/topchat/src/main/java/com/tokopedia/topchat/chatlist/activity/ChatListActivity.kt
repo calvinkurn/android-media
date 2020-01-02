@@ -1,23 +1,22 @@
 package com.tokopedia.topchat.chatlist.activity
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.airbnb.deeplinkdispatch.DeepLink
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -29,6 +28,7 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
@@ -146,7 +146,7 @@ class ChatListActivity : BaseTabActivity()
     private fun initOnBoarding() {
         if (!userSession.hasShop()) return
         tabLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            if (!isOnBoardingAlreadyShown())  {
+            if (!isOnBoardingAlreadyShown()) {
                 showOnBoarding()
             }
         }
@@ -204,7 +204,7 @@ class ChatListActivity : BaseTabActivity()
                     when (result) {
                         is Success -> {
                             tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                            if(tabList.size > 1) {
+                            if (tabList.size > 1) {
                                 tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
                             }
                             setNotificationCounterOnTab()

@@ -558,7 +558,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
         return View.OnClickListener {
             analytics.eventClickSeeButtonOnAtcSuccessToaster()
-            goToCart()
         }
     }
 
