@@ -1,20 +1,22 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.model.ProductInfoP2General
-import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.roundToLong
 
 class DynamicProductDetailHashMap(private val context: Context, private val mapOfData: Map<String, DynamicPDPDataModel>) {
 
@@ -119,6 +121,26 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
+    fun updateDataTradein(tradeinResponse: ValidateTradeInPDP) {
+        productTradeinMap?.run {
+            snapShotMap.shouldShowTradein = true
+            data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
+                context.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+            } else {
+                context.getString(R.string.trade_in_exchange)
+            }
+        }
+    }
+
+    fun updateDataInstallment(financingData: PDPInstallmentRecommendationResponse, isOs: Boolean) {
+        productInstallmentInfoMap?.run {
+            data.first().subtitle = String.format(context.getString(R.string.new_installment_template),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            (if (isOs) financingData.response.data.osMonthlyPrice
+                            else financingData.response.data.monthlyPrice).roundToLong(), false))
+        }
+    }
+
     fun updateDataP2Shop(dataP2: ProductInfoP2ShopData?) {
         dataP2?.let {
             shopInfoMap?.run {
@@ -140,6 +162,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             productInfoMap?.run {
                 shopName = it.shopInfo?.shopCore?.name ?: ""
             }
+        }
+    }
+
+    fun updateDataP2Login(it: ProductInfoP2Login) {
+        snapShotMap.apply {
+            isWishlisted = it.isWishlisted
         }
     }
 
@@ -181,6 +209,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 voucherData = ArrayList(it.vouchers)
             }
 
+        }
+    }
+
+    fun updateDataP3(it: ProductInfoP3) {
+        productShipingInfoMap?.run {
+            data.first().subtitle = " ${context.getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size
+                    ?: 0)}${context.getString(R.string.ongkir_pattern_string, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")}"
         }
     }
 

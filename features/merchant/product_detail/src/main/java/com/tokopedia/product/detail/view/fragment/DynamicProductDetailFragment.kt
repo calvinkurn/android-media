@@ -49,12 +49,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.carouselproductcard.common.CarouselProductPool
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
@@ -74,6 +72,9 @@ import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.ValidateTradeInPDP
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
@@ -123,7 +124,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -132,7 +132,6 @@ import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.roundToLong
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
@@ -366,202 +365,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.productLayout.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    context?.let { context ->
-                        pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
-                    }
-                    viewModel.getDynamicProductInfoP1?.let { productInfo ->
-                        pdpHashMapUtil.updateDataP1(productInfo)
-                        // if when first time and the product is actually a variant product, then select the default variant
-                        if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
-                            userInputVariant = productId
-                        }
-                        shouldShowCodP1 = productInfo.data.isCOD
-                        actionButtonView.isLeasing = productInfo.basic.isLeasing
-                        actionButtonView.renderData(!productInfo.basic.isActive(),
-                                (viewModel.isShopOwner(productInfo.basic.getShopId())
-                                        || viewModel.shopInfo?.allowManage == true),
-                                productInfo.data.preOrder)
-
-                        if (productInfo.basic.category.isAdult) {
-                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId
-                                    ?: "")
-                        }
-                    }
-
-                    actionButtonView.visibility = !isAffiliate
-                    if (affiliateString.hasValue()) {
-                        viewModel.hitAffiliateTracker(affiliateString
-                                ?: "", viewModel.deviceId)
-                    }
-
-                    activity?.invalidateOptionsMenu()
-                    renderList(it.data)
-                }
-                is Fail -> {
-                    renderPageError(it.throwable)
-                }
-            }
-        })
-
-        viewModel.loadTopAdsProduct.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    pdpHashMapUtil.updateRecomData(it.data)
-                    dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
-                }
-                is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
-            }
-        })
-
-        viewModel.p2Login.observe(this, Observer {
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringP2Login.stopTrace()
-
-            it.pdpAffiliate?.let { renderAffiliate(it) }
-            pdpHashMapUtil.snapShotMap.apply {
-                isWishlisted = it.isWishlisted
-            }
-
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-        })
-
-        viewModel.p2ShopDataResp.observe(this, Observer {
-            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-
-            performanceMonitoringP2.stopTrace()
-
-            shouldShowCodP2Shop = it.shopCod
-
-            viewModel.getDynamicProductInfoP1?.let { p1 ->
-                actionButtonView.renderData(!p1.basic.isActive(),
-                        (viewModel.isShopOwner(p1.basic.getShopId())
-                                || it.shopInfo?.allowManage ?: false),
-                        p1.data.preOrder)
-                actionButtonView.visibility = !isAffiliate && it.shopInfo?.statusInfo?.shopStatus == 1
-            }
-
-            viewModel.getDynamicProductInfoP1?.let { data ->
-                pdpHashMapUtil.getShopInfo.shopInfo?.let { shopInfo ->
-                    dynamicProductDetailTracking.sendMoEngageOpenProduct(data, shopInfo.shopCore.name)
-                    dynamicProductDetailTracking.eventAppsFylerOpenProduct(data)
-
-                    dynamicProductDetailTracking.sendScreen(
-                            shopInfo.shopCore.shopID,
-                            shopInfo.goldOS.shopTypeString,
-                            productId ?: "")
-                }
-            }
-
-            if (!it.nearestWarehouse.warehouseInfo.isFulfillment) {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productFullfilmentMap)
-            }
-
-            val tradeinResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
-
-            if (!tradeinResponse.isEligible) {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
-            } else {
-                pdpHashMapUtil.productTradeinMap?.run {
-                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
-                    data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
-                        getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
-                    } else {
-                        getString(R.string.trade_in_exchange)
-                    }
-                }
-            }
-
-            trackProductView(viewModel.tradeInParams.isEligible == 1)
-
-            pdpHashMapUtil.updateDataP2Shop(it)
-            adapter.notifyDataSetChanged()
-        })
-
-        viewModel.p2General.observe(this, Observer {
-            performanceMonitoringP2General.stopTrace()
-            viewModel.installmentData = it.productFinancingCalculationData
-            if (it.latestTalk.id.isEmpty()) {
-                dynamicAdapter.removeDiscussionSection(pdpHashMapUtil.productDiscussionMap)
-            }
-
-            if (it.helpfulReviews.isEmpty() && it.rating.totalRating == 0) {
-                dynamicAdapter.removeMostHelpfulReviewSection(pdpHashMapUtil.productMostHelpfulMap)
-            }
-
-            if (!it.shopCommitment.isNowActive) {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.orderPriorityMap)
-            }
-
-            if (it.productPurchaseProtectionInfo.ppItemDetailPage?.isProtectionAvailable == false) {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productProtectionMap)
-            }
-
-            it.productFinancingRecommendationData.let { financingData ->
-                if (financingData.response.data.partnerCode.isNotBlank()) {
-                    pdpHashMapUtil.productInstallmentInfoMap?.run {
-                        data.first().subtitle = String.format(getString(R.string.new_installment_template),
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                        (if (viewModel.getDynamicProductInfoP1?.data?.isOS == true) financingData.response.data.osMonthlyPrice
-                                        else financingData.response.data.monthlyPrice).roundToLong(), false))
-                    }
-                } else {
-                    dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productInstallmentInfoMap)
-                }
-            }
-
-            onSuccessGetProductVariantInfo(it.variantResp)
-
-            pdpHashMapUtil.updateDataP2General(it)
-
-            viewModel.getDynamicProductInfoP1?.run {
-                dynamicProductDetailTracking.eventBranchItemView(this, viewModel.userId, pdpHashMapUtil.productInfoMap?.data?.find { content ->
-                    content.row == "bottom"
-                }?.listOfContent?.firstOrNull()?.subtitle ?: "")
-            }
-
-            adapter.notifyDataSetChanged()
-        })
-
-        viewModel.productInfoP3resp.observe(this, Observer {
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-
-            pdpHashMapUtil.productShipingInfoMap?.run {
-                data.first().subtitle = " ${getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size
-                        ?: 0)}${getString(R.string.ongkir_pattern_string, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")}"
-                dynamicAdapter.notifyShipingInfo(this)
-            }
-
-            shouldShowCodP3 = it.userCod
-            pdpHashMapUtil.snapShotMap.shouldShowCod =
-                    shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_COD)
-        })
-
-        viewModel.toggleFavoriteResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessFavoriteShop(it.data)
-                is Fail -> onFailFavoriteShop(it.throwable)
-            }
-        })
-
-        viewModel.moveToWarehouseResult.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessWarehouseProduct()
-                is Fail -> onErrorWarehouseProduct(it.throwable)
-            }
-        })
-
-        viewModel.moveToEtalaseResult.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessMoveToEtalase()
-                is Fail -> onErrorMoveToEtalase(it.throwable)
-            }
-        })
+        observeData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -649,8 +453,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 if (resultCode == Constant.RESULT_CODE_ERROR && data != null) {
                     val message = data.getStringExtra(Constant.EXTRA_MESSAGES_ERROR)
                     if (message != null && message.isNotEmpty()) {
-                        ToasterError.make(view, data.getStringExtra(Constant.EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
-                                .show()
+                        showToasterError(data.getStringExtra(Constant.EXTRA_MESSAGES_ERROR))
                     } else {
                         errorBottomsheets.setData(
                                 getString(R.string.bottomsheet_title_global_error),
@@ -751,7 +554,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 startActivity(ProductYoutubePlayerActivity.createIntent(it, videos.map { it.url }, index))
             } else {
                 startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://www.youtube.com/watch?v=" + videos[index].url)))
+                        Uri.parse(ProductDetailConstant.URL_YOUTUBE + videos[index].url)))
             }
         }
     }
@@ -1103,6 +906,199 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         bottomSheet.show(fragmentManager, "pdp_bs")
     }
 
+    private fun observeData() {
+        viewModel.productLayout.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    context?.let { context ->
+                        pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
+                        onSuccessGetDataP1(it.data)
+                    }
+                }
+                is Fail -> {
+                    renderPageError(it.throwable)
+                }
+            }
+        })
+
+        viewModel.loadTopAdsProduct.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    pdpHashMapUtil.updateRecomData(it.data)
+                    dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
+                }
+                is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
+            }
+        })
+
+        viewModel.p2Login.observe(this, Observer {
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringP2Login.stopTrace()
+
+            it.pdpAffiliate?.let { renderAffiliate(it) }
+            pdpHashMapUtil.updateDataP2Login(it)
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+        })
+
+        viewModel.p2ShopDataResp.observe(this, Observer {
+            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
+
+            performanceMonitoringP2.stopTrace()
+            onSuccessGetDataP2Shop(it)
+        })
+
+        viewModel.p2General.observe(this, Observer {
+            performanceMonitoringP2General.stopTrace()
+            onSuccessGetDataP2General(it)
+        })
+
+        viewModel.productInfoP3resp.observe(this, Observer {
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
+
+            onSuccessGetDataP3Resp(it)
+        })
+
+        viewModel.toggleFavoriteResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessFavoriteShop(it.data)
+                is Fail -> onFailFavoriteShop(it.throwable)
+            }
+        })
+
+        viewModel.moveToWarehouseResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessWarehouseProduct()
+                is Fail -> onErrorWarehouseProduct(it.throwable)
+            }
+        })
+
+        viewModel.moveToEtalaseResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessMoveToEtalase()
+                is Fail -> onErrorMoveToEtalase(it.throwable)
+            }
+        })
+    }
+
+    private fun onSuccessGetDataP1(data: List<DynamicPDPDataModel>) {
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            pdpHashMapUtil.updateDataP1(productInfo)
+            // if when first time and the product is actually a variant product, then select the default variant
+            if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
+                userInputVariant = productId
+            }
+            shouldShowCodP1 = productInfo.data.isCOD
+            actionButtonView.isLeasing = productInfo.basic.isLeasing
+            actionButtonView.renderData(!productInfo.basic.isActive(),
+                    (viewModel.isShopOwner(productInfo.basic.getShopId())
+                            || viewModel.shopInfo?.allowManage == true),
+                    productInfo.data.preOrder)
+
+            if (productInfo.basic.category.isAdult) {
+                AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId
+                        ?: "")
+            }
+
+            actionButtonView.visibility = !isAffiliate
+            if (affiliateString.hasValue()) {
+                viewModel.hitAffiliateTracker(affiliateString
+                        ?: "", viewModel.deviceId)
+            }
+
+            activity?.invalidateOptionsMenu()
+            renderList(data)
+        }
+    }
+
+    private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
+        shouldShowCodP2Shop = it.shopCod
+
+        viewModel.getDynamicProductInfoP1?.let { p1 ->
+            actionButtonView.renderData(!p1.basic.isActive(),
+                    (viewModel.isShopOwner(p1.basic.getShopId())
+                            || it.shopInfo?.allowManage ?: false),
+                    p1.data.preOrder)
+            actionButtonView.visibility = !isAffiliate && it.shopInfo?.statusInfo?.shopStatus == 1
+
+            pdpHashMapUtil.getShopInfo.shopInfo?.let { shopInfo ->
+                dynamicProductDetailTracking.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
+                dynamicProductDetailTracking.eventAppsFylerOpenProduct(p1)
+
+                dynamicProductDetailTracking.sendScreen(
+                        shopInfo.shopCore.shopID,
+                        shopInfo.goldOS.shopTypeString,
+                        productId ?: "")
+            }
+        }
+
+        if (!it.nearestWarehouse.warehouseInfo.isFulfillment) {
+            dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productFullfilmentMap)
+        }
+
+        val tradeinResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+
+        if (!tradeinResponse.isEligible) {
+            dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
+        } else {
+            pdpHashMapUtil.updateDataTradein(tradeinResponse)
+        }
+
+        trackProductView(viewModel.tradeInParams.isEligible == 1)
+        pdpHashMapUtil.updateDataP2Shop(it)
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun onSuccessGetDataP2General(it: ProductInfoP2General) {
+        viewModel.installmentData = it.productFinancingCalculationData
+        if (it.latestTalk.id.isEmpty()) {
+            dynamicAdapter.removeDiscussionSection(pdpHashMapUtil.productDiscussionMap)
+        }
+
+        if (it.helpfulReviews.isEmpty() && it.rating.totalRating == 0) {
+            dynamicAdapter.removeMostHelpfulReviewSection(pdpHashMapUtil.productMostHelpfulMap)
+        }
+
+        if (!it.shopCommitment.isNowActive) {
+            dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.orderPriorityMap)
+        }
+
+        if (it.productPurchaseProtectionInfo.ppItemDetailPage?.isProtectionAvailable == false) {
+            dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productProtectionMap)
+        }
+
+        it.productFinancingRecommendationData.let { financingData ->
+            if (financingData.response.data.partnerCode.isNotBlank()) {
+                pdpHashMapUtil.updateDataInstallment(financingData,viewModel.getDynamicProductInfoP1?.data?.isOS == true)
+            } else {
+                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productInstallmentInfoMap)
+            }
+        }
+
+        onSuccessGetProductVariantInfo(it.variantResp)
+        pdpHashMapUtil.updateDataP2General(it)
+        viewModel.getDynamicProductInfoP1?.run {
+            dynamicProductDetailTracking.eventBranchItemView(this, viewModel.userId, pdpHashMapUtil.productInfoMap?.data?.find { content ->
+                content.row == "bottom"
+            }?.listOfContent?.firstOrNull()?.subtitle ?: "")
+        }
+
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun onSuccessGetDataP3Resp(it: ProductInfoP3) {
+        shouldShowCodP3 = it.userCod
+        pdpHashMapUtil.productShipingInfoMap?.let { productShippingInfoMap ->
+            pdpHashMapUtil.updateDataP3(it)
+            dynamicAdapter.notifyShipingInfo(productShippingInfoMap)
+        }
+
+        pdpHashMapUtil.snapShotMap.shouldShowCod =
+                shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_COD)
+    }
+
     private fun renderPageError(t: Throwable) {
         context?.let { ctx ->
             dynamicAdapter.clearAllElements()
@@ -1206,7 +1202,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun onErrorSubmitHelpTicket(e: Throwable?) {
         hideProgressDialog()
         view?.also {
-            Toaster.showError(it, ErrorHandler.getErrorMessage(context, e), BaseToaster.LENGTH_SHORT)
+            showToasterError(ErrorHandler.getErrorMessage(context, e))
         }
     }
 
@@ -1227,7 +1223,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             }
         } else {
             view?.also {
-                Toaster.showError(it, result.message, BaseToaster.LENGTH_SHORT)
+                showToasterError(result.message)
             }
         }
     }

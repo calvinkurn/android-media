@@ -36,6 +36,7 @@ object ProductDetailConstant {
     const val URL_VALUE_PROPOSITION_ORI = "https://www.tokopedia.com/help/article/a-1938"
     const val URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS = "https://www.tokopedia.com/help/article/a-1939"
     const val URL_VALUE_PROPOSITION_GUARANTEE = "https://www.tokopedia.com/help/article/a-1940"
+    const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
 
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
