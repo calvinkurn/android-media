@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -37,6 +38,9 @@ import kotlin.coroutines.CoroutineContext
 class PlayFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
+        private const val ANIMATION_DURATION = 300L
+        private const val FULL_SCALE_FACTOR = 1.0f
+
         fun newInstance(channelId: String): PlayFragment {
             return PlayFragment().apply {
                 arguments?.putString(PLAY_KEY_CHANNEL_ID, channelId)
@@ -187,29 +191,29 @@ class PlayFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     fun onKeyboardShown(chatListYPos: Int) {
+        val statusBarHeight = getStatusBarHeight(requireContext()).toFloat()
+        val theTopSpace = 1.5f * statusBarHeight
         val currentHeight = flVideo.height
-        val destHeight = chatListYPos.toFloat()
+        val destHeight = chatListYPos.toFloat() - theTopSpace
         val scaleFactor = destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,1.0f , scaleFactor);
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,1.0f , scaleFactor);
-        animatorY.duration = 300
-        animatorX.duration = 300
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor);
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor);
+        animatorY.duration = ANIMATION_DURATION
+        animatorX.duration = ANIMATION_DURATION
 
         flVideo.pivotX = (flVideo.width / 2).toFloat()
-        flVideo.pivotY = 0f
+        flVideo.pivotY = theTopSpace
         AnimatorSet().apply {
             playTogether(animatorX, animatorY)
         }.start()
     }
 
     fun onKeyboardHidden() {
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY , 1.0f);
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,flVideo.scaleX , 1.0f);
-        animatorY.duration = 300
-        animatorX.duration = 300
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR);
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR);
+        animatorY.duration = ANIMATION_DURATION
+        animatorX.duration = ANIMATION_DURATION
 
-        flVideo.pivotX = (flVideo.width / 2).toFloat()
-        flVideo.pivotY = 0f
         AnimatorSet().apply {
             playTogether(animatorX, animatorY)
         }.start()

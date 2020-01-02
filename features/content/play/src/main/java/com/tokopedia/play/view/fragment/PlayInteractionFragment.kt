@@ -85,8 +85,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
+    
+    private lateinit var sendChatComponent: UIComponent<*>
+    private lateinit var likeComponent: UIComponent<*>
+    private lateinit var statsComponent: UIComponent<*>
+    private lateinit var pinnedComponent: UIComponent<*>
+    private lateinit var chatListComponent: UIComponent<*>
+    private lateinit var immersiveBoxComponent: UIComponent<*>
+    private lateinit var videoControlComponent: UIComponent<*>
+    private lateinit var toolbarComponent: UIComponent<*>
+    private lateinit var quickReplyComponent: UIComponent<*>
+    private lateinit var playButtonComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
+
+    private var interactionHeightOnKeyboardShown = -1
 
     private var channelId: String = ""
 
@@ -240,6 +253,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+
+                if (it.isShown) calculateInteractionHeightOnKeyboardShown()
             }
         })
     }
@@ -267,17 +282,17 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        val sendChatComponent: UIComponent<*> = initSendChatComponent(container)
-        val likeComponent: UIComponent<*> = initLikeComponent(container)
-        val statsComponent: UIComponent<*> = initStatsComponent(container)
-        val pinnedComponent: UIComponent<*> = initPinnedComponent(container)
-        val chatListComponent: UIComponent<*> = initChatListComponent(container)
-        val immersiveBoxComponent: UIComponent<*> = initImmersiveBoxComponent(container)
-        val videoControlComponent: UIComponent<*> = initVideoControlComponent(container)
-        val toolbarComponent: UIComponent<*> = initToolbarComponent(container)
-        val quickReplyComponent: UIComponent<*> = initQuickReplyComponent(container)
+        sendChatComponent = initSendChatComponent(container)
+        likeComponent = initLikeComponent(container)
+        statsComponent = initStatsComponent(container)
+        pinnedComponent = initPinnedComponent(container)
+        chatListComponent = initChatListComponent(container)
+        immersiveBoxComponent = initImmersiveBoxComponent(container)
+        videoControlComponent = initVideoControlComponent(container)
+        toolbarComponent = initToolbarComponent(container)
+        quickReplyComponent = initQuickReplyComponent(container)
         //play button should be on top of other component so it can be clicked
-        val playButtonComponent: UIComponent<*> = initPlayButtonComponent(container)
+        playButtonComponent = initPlayButtonComponent(container)
 
         layoutView(
                 container = container,
@@ -741,5 +756,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 //        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
 //        startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
         RouteManager.route(context, ApplinkConst.LOGIN)
+    }
+
+    private fun calculateInteractionHeightOnKeyboardShown() {
+        if (interactionHeightOnKeyboardShown == -1) {
+            interactionHeightOnKeyboardShown = requireView().findViewById<View>(statsComponent.getContainerId()).y.toInt()
+        }
+        (requireParentFragment() as PlayFragment).onKeyboardShown(interactionHeightOnKeyboardShown.toInt())
     }
 }

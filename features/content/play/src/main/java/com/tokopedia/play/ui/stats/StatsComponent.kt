@@ -32,6 +32,7 @@ class StatsComponent(
                         when (it) {
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
                             is ScreenStateEvent.SetTotalLikes -> uiView.setTotalLikes(it.totalLikes)
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                         }
                     }
         }

@@ -24,8 +24,6 @@ class ChatListComponent(
 
     private val uiView = initView(container)
 
-    private var estimatedYPos: Int = -1
-
     init {
         uiView.hide()
 
@@ -36,7 +34,6 @@ class ChatListComponent(
                             is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) sendPosYEvent()
                         }
                     }
         }
@@ -57,13 +54,4 @@ class ChatListComponent(
 
     private fun initView(container: ViewGroup): ChatListView =
             ChatListView(container)
-
-    private fun sendPosYEvent() {
-        if (estimatedYPos == -1) {
-            estimatedYPos = uiView.getEstimatedYPos()
-        }
-        launch {
-            bus.emit(ChatListInteractionEvent::class.java, ChatListInteractionEvent.PositionYCalculated(estimatedYPos))
-        }
-    }
 }
