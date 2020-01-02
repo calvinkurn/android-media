@@ -8,7 +8,7 @@ ext {
             graphql                 : "com.tokopedia.graphql:graphql:1.0.20",
             network                 : "com.tokopedia.network:network:1.0.13",
             url                     : "com.tokopedia.url:url:1.0.2",
-            usecase                 : "com.tokopedia.usecase:usecase:1.0.2",
+            usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6",
             akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.7-test",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2"
