@@ -44,6 +44,7 @@ class CategoryPageAnalytics {
     val KEY_PRODUCT_GROUP_ID = "productGroupId"
     val KEY_SUBCATEGORY = "subcategory"
     val KEY_SUBCATEGORY_ID = "subcategoryId"
+    val KEY_DIMENSION = "dimension61"
 
     val EVENT_NAME_VALUE = "clickCategory"
     val EVENT_CATEGORY_VALUE = "category page"
@@ -212,7 +213,8 @@ class CategoryPageAnalytics {
                               price: Int,
                               position: Int,
                               categoryNamePath: String,
-                              pathList: String) {
+                              pathList: String,
+                              dimension: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, "productClick",
@@ -233,8 +235,9 @@ class CategoryPageAnalytics {
                 KEY_VARIANT, "",
                 KEY_LIST, pathList,
                 KEY_POSITION, position,
-                KEY_ATTRIBUTION, ""))))
-        )
+                KEY_ATTRIBUTION, "",
+                KEY_DIMENSION, if (dimension.isNotEmpty()) dimension else "ob=23"))
+        )))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
@@ -264,6 +267,7 @@ class CategoryPageAnalytics {
             map[KEY_VARIANT] = ""
             map[KEY_LIST] = getProductItemPath(item.categoryBreadcrumb ?: "", departmentId)
             map[KEY_POSITION] = item.adapter_position
+            map[KEY_DIMENSION] = item.dimension ?: ""
             list.add(map)
         }
 
@@ -443,7 +447,7 @@ class CategoryPageAnalytics {
             "general"
         }
     }
-  
+
     fun createOpenScreenEventMap(parentId: String?,
                                  parentName: String?,
                                  categoryId: String,
