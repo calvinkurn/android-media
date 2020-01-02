@@ -444,7 +444,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
