@@ -12,6 +12,7 @@ import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigati
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
+import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
@@ -69,10 +70,12 @@ object DeeplinkMapper {
                         getRegisteredNavigationMoneyIn(deeplink)
                     deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
                         getRegisteredNavigationForFintech(deeplink)
+                    deeplink.startsWith(ApplinkConst.Gamification.CRACK) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
-                        if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
-                            getRegisteredCategoryNavigation(getSegments(deeplink),deeplink)
+                        if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
+                            getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
                         } else if (query?.isNotEmpty() == true) {
                             val tempDL = if (deeplink.contains('?')) {
                                 deeplink.substring(0, deeplink.indexOf('?'))
@@ -144,9 +147,9 @@ object DeeplinkMapper {
             ApplinkConst.FLIGHT -> return ApplinkConstInternalTravel.DASHBOARD_FLIGHT
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
-             ApplinkConst.AFFILIATE_EDUCATION -> return ApplinkConstInternalContent.AFFILIATE_EDUCATION
-             ApplinkConst.AFFILIATE_DASHBOARD -> return ApplinkConstInternalContent.AFFILIATE_DASHBOARD
-             ApplinkConst.AFFILIATE_EXPLORE -> return ApplinkConstInternalContent.AFFILIATE_EXPLORE
+            ApplinkConst.AFFILIATE_EDUCATION -> return ApplinkConstInternalContent.AFFILIATE_EDUCATION
+            ApplinkConst.AFFILIATE_DASHBOARD -> return ApplinkConstInternalContent.AFFILIATE_DASHBOARD
+            ApplinkConst.AFFILIATE_EXPLORE -> return ApplinkConstInternalContent.AFFILIATE_EXPLORE
             ApplinkConst.INBOX_TICKET -> return ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
             ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
             ApplinkConst.INSTANT_LOAN_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
@@ -179,7 +182,7 @@ object DeeplinkMapper {
     private fun getCreateReviewInternal(deeplink: String): String {
         val parsedUri = Uri.parse(deeplink)
         val segments = parsedUri.pathSegments
-        val rating = parsedUri.getQueryParameter("rating")?: "5"
+        val rating = parsedUri.getQueryParameter("rating") ?: "5"
 
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()

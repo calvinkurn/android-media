@@ -18,9 +18,8 @@ public class ApplinkUtil {
     public static void navigateToAssociatedPage(Activity activity, String applink, String url,
                                                 Class<?> defaultClassToNavigate) {
 
-        if (!TextUtils.isEmpty(applink) && ((GamificationRouter) activity.getApplicationContext())
-                .isSupportedDelegateDeepLink(applink)) {
-            RouteManager.route(activity, applink);
+        if (!TextUtils.isEmpty(applink) && RouteManager.route(activity, applink)) {
+            //Do nothing
         } else if (!TextUtils.isEmpty(url) && URLUtil.isNetworkUrl(url)) {
             String defaultTitle = activity.getResources().getString(R.string.core_gami_toko_points_title);
             Intent intent = ((GamificationRouter) activity.getApplicationContext())

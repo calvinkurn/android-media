@@ -411,9 +411,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onClick(View v) {
 
-                RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION,null);
+                RouteManager.route(getActivity(), appLink,null);
                 //todo Rahul check last argument of clazz
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, null);
+//                ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, null);
                 trackingEggClick(tokenData.getId(), tokenData.getName());
             }
         });
