@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -18,10 +19,12 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
@@ -89,6 +92,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private ImageView mEmptyBtn;
     private LinearLayout mSearchTopBar;
     private LinearLayout mSearchContainer;
+    private View editTextContainer;
     private CharSequence mOldQueryText;
     private CharSequence mUserQuery;
 
@@ -268,6 +272,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mImageSearchButton = mSearchLayout.findViewById(R.id.action_image_search_btn);
         mEmptyBtn = mSearchLayout.findViewById(R.id.action_empty_btn);
         mTintView = mSearchLayout.findViewById(R.id.transparent_view);
+        editTextContainer = findViewById(R.id.edit_text_container);
         mSuggestionView = (RelativeLayout) mSearchLayout.findViewById(R.id.search_suggestion_container);
         mSearchSrcTextView.setOnClickListener(mOnClickListener);
         mBackBtn.setOnClickListener(mOnClickListener);
@@ -657,7 +662,21 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mVoiceBtn.setVisibility(VISIBLE);
         } else {
             mVoiceBtn.setVisibility(GONE);
+            setMargin(editTextContainer, convertDpToPx(8), 0, convertDpToPx(16), 0);
         }
+    }
+
+    private void setMargin(View view, int left, int top, int right, int bottom){
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            view.requestLayout();
+        }
+    }
+
+    private int convertDpToPx(int dp){
+        Resources r = mContext.getResources();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
 
     public void showImageSearch(boolean show) {
