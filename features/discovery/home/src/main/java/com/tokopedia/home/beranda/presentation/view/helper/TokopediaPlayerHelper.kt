@@ -19,7 +19,6 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
@@ -27,6 +26,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
+import com.tokopedia.home.util.ConnectionUtils
+import com.tokopedia.home.util.DimensionUtils
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import timber.log.Timber
 import java.io.IOException
@@ -39,12 +40,6 @@ class TokopediaPlayerHelper(
         ExoPlayerControl,
         ExoPlayerStatus,
         Player.EventListener {
-
-    companion object {
-        const val PARAM_AUTO_PLAY = "PARAM_AUTO_PLAY"
-        const val PARAM_WINDOW = "PARAM_WINDOW"
-        const val PARAM_POSITION = "PARAM_POSITION"
-    }
 
     private var mPlayer: SimpleExoPlayer? = null
     private var mDataSourceFactory: DataSource.Factory? = null
@@ -182,6 +177,10 @@ class TokopediaPlayerHelper(
         setProgressVisible(false)
     }
 
+    private fun isDeviceHasRequirementAutoPlay(): Boolean{
+        return DimensionUtils.getDensityMetrix(context) >= 1.5f
+    }
+
     @SuppressLint("SyntheticAccessor")
     class Builder(context: Context, tokopediaPlayView: TokopediaPlayView) {
         private val mExoPlayerHelper: TokopediaPlayerHelper = TokopediaPlayerHelper(context, tokopediaPlayView)
@@ -197,7 +196,7 @@ class TokopediaPlayerHelper(
         }
 
         fun setMutedVolume(): Builder{
-            mExoPlayerHelper.setMuted()
+            mExoPlayerHelper.setPlayerMuted()
             return this
         }
 
@@ -398,7 +397,6 @@ class TokopediaPlayerHelper(
     override fun releasePlayer() {
         isPlayerPrepared = false
         mExoPlayerListener?.releaseExoPlayerCalled()
-
         if (mPlayer != null) {
             updateResumePosition()
             removeThumbImageView()
@@ -416,7 +414,10 @@ class TokopediaPlayerHelper(
     }
 
     override fun playerPlay() {
-        mPlayer?.playWhenReady = true
+        if(ConnectionUtils.isWifiConnected(context)){
+            Thread.sleep(3000)
+            mPlayer?.playWhenReady = true
+        }
     }
 
     override fun seekTo(windowIndex: Int, positionMs: Long) {
@@ -469,7 +470,7 @@ class TokopediaPlayerHelper(
         }
     }
 
-    fun setMuted() {
+    override fun setPlayerMuted() {
         isVideoMuted = true
         mPlayer?.volume = 0f
     }

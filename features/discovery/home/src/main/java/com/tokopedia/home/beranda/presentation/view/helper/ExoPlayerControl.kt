@@ -7,6 +7,8 @@ interface ExoPlayerControl {
     fun releasePlayer()
     fun playerPause()
     fun playerPlay()
+    fun setPlayerMuted()
+    fun updateVideoMuted()
     fun seekTo(windowIndex: Int, positionMs: Long)
     fun seekToDefaultPosition()
     fun setExoPlayerEventsListener(pExoPlayerListenerListener: ExoPlayerListener?)

@@ -36,7 +36,7 @@ interface HomeCategoryListener {
 
     fun openShop()
 
-    fun onOpenPlayActivity(videoPlayer: android.view.View)
+    fun onOpenPlayActivity(videoPlayer: android.view.View, channelId: String)
 
     fun actionAppLinkWalletHeader(appLinkBalance: String)
 

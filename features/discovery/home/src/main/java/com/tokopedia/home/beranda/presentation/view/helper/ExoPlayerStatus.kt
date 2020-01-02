@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
 interface ExoPlayerStatus {
-    fun updateVideoMuted()
     fun isPlayerVideoMuted(): Boolean
     fun currentWindowIndex(): Int
     fun currentPosition(): Long

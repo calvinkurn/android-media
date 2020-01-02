@@ -30,6 +30,14 @@ class PlayCardViewHolder(
     private val play = view.findViewById<ImageView>(R.id.play)
     private val volumeAsset = view.findViewById<ImageView>(R.id.volume_asset)
     private val errorMessage = view.findViewById<TextView>(R.id.error_message)
+
+    private val viewer = view.findViewById<TextView>(R.id.viewer)
+    private val live = view.findViewById<TextView>(R.id.live)
+    private val titlePlay = view.findViewById<TextView>(R.id.title_play)
+    private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
+    private val title = view.findViewById<TextView>(R.id.title)
+    private val description = view.findViewById<TextView>(R.id.description)
+
     var helper: TokopediaPlayerHelper? = null
 
     private var mThumbUrl: String = ""
@@ -43,12 +51,21 @@ class PlayCardViewHolder(
         element.getPlayCardHome()?.let { model ->
             mVideoUrl = model.playGetCardHome.data.card.imageUrl
             mThumbUrl = model.playGetCardHome.data.card.imageUrl
+
+            title.text = model.playGetCardHome.data.card.ogTitle
+            description.text = model.playGetCardHome.data.card.description
+            broadcasterName.text = model.playGetCardHome.data.card.broadcasterName
+            titlePlay.text = model.playGetCardHome.data.card.title
+            viewer.text = model.playGetCardHome.data.card.totalView
+            if(model.playGetCardHome.data.card.isShowLive) live.show()
+            else live.hide()
+
             volumeContainer.setOnClickListener {
                 helper?.updateVideoMuted()
                 volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
             }
             play.setOnClickListener { _ ->
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it) }
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.playGetCardHome.data.card.channelId) }
             }
         }
 
