@@ -1,9 +1,10 @@
 package com.tokopedia.topchat.chattemplate.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -35,7 +36,7 @@ public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateCh
     public void bind(final TemplateChatModel element) {
         if (element.size() >= 5) {
             imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), com.tokopedia.topchat.R.drawable.ic_plus_grey));
-            textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.core2.R.color.add_template_disabled));
+            textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.topchat.R.color.add_template_disabled));
         } else {
             imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), com.tokopedia.topchat.R.drawable.ic_plus_green));
             textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.design.R.color.medium_green));

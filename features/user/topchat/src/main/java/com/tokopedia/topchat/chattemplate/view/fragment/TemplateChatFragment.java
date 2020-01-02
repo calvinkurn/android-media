@@ -4,18 +4,19 @@ package com.tokopedia.topchat.chattemplate.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -90,7 +91,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
         typeFactory = new TemplateChatSettingTypeFactoryImpl(this);
 
         loading = rootView.findViewById(com.tokopedia.topchat.R.id.loading_search);
-        content = rootView.findViewById(com.tokopedia.core2.R.id.content);
+        content = rootView.findViewById(com.tokopedia.topchat.R.id.content);
         recyclerView = rootView.findViewById(com.tokopedia.design.R.id.recycler_view);
         info = rootView.findViewById(com.tokopedia.topchat.R.id.template_list_info);
         switchTemplate = rootView.findViewById(com.tokopedia.topchat.R.id.switch_chat_template);

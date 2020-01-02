@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -26,11 +27,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
+import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
 import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.common.util.Events;
 
 import java.util.List;
@@ -154,8 +155,8 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         View rootView = inflater.inflate(com.tokopedia.topchat.R.layout.fragment_edit_template_chat, container, false);
 
         counter = rootView.findViewById(com.tokopedia.topchat.R.id.counter);
-        error = rootView.findViewById(com.tokopedia.core2.R.id.error);
-        submit = rootView.findViewById(com.tokopedia.core2.R.id.submit);
+        error = rootView.findViewById(com.tokopedia.topchat.R.id.error);
+        submit = rootView.findViewById(com.tokopedia.topchat.R.id.submit);
         editText = rootView.findViewById(com.tokopedia.topchat.R.id.edittext);
 
         presenter.attachView(this);

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.library.ui.view.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
