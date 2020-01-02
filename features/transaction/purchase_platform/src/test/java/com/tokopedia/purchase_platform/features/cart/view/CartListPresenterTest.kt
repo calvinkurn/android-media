@@ -3,6 +3,8 @@ package com.tokopedia.purchase_platform.features.cart.view
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.R
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -543,6 +545,81 @@ class CartListPresenterTest : Spek({
                 }
             }
         }
+    }
+
+    Feature("add to cart") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success add to cart") {
+
+            val addToCartDataModel = AddToCartDataModel()
+
+            Given("add to cart data") {
+                val dataModel = DataModel()
+                val messages = arrayListOf()
+                messages.add("Success message")
+                dataModel.message = messages
+                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
+                addToCartDataModel.data = dataModel
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(any())
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess()
+                    view.processInitialGetCartData()
+                    view.showToastMessageGreen(addToCartDataModel.data.message[0])
+                }
+            }
+        }
+
+        Scenario("failed add to cart") {
+
+            val addToCartDataModel = AddToCartDataModel()
+
+            Given("add to cart data") {
+                val errorMessages = arrayListOf()
+                errorMessages.add("Error message")
+                addToCartDataModel.errorMessage = errorMessages
+                addToCartDataModel.status = AddToCartDataModel.STATUS_ERROR
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(any())
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(addToCartDataModel.errorMessage[0])
+                }
+            }
+        }
+
     }
 
     Feature("calculate subtotal") {
