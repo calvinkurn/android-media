@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.settingbank.banklist.v2.di.QUERY_GET_USER_BANK_ACCOUNTS
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccountListResponse
+import com.tokopedia.settingbank.banklist.v2.domain.UserInfo
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -48,25 +49,15 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
             } else {
                 getBankListState.value = NoBankAccountAdded(toastMessage ?: "")
             }
-            updateNewBankAccountState(it)
+            updateAddNewBankAccountState(it,bankAccountListResponse.getBankAccount.data.userInfo)
         }
     }
 
-    private fun updateNewBankAccountState(bankAccountList: List<BankAccount>) {
+    private fun updateAddNewBankAccountState(bankAccountList: List<BankAccount>,userInfo: UserInfo) {
         if (bankAccountList.isNotEmpty()) {
             launchCatchError(block = {
                 val isEnable = withContext(Dispatchers.IO) {
-                    var activeAccount = 0
-                    var pendingRejectedAccount = 0
-                    bankAccountList.forEach { account ->
-                        when (account.statusFraud) {
-                            in 0..1, 4 -> activeAccount++
-                            else -> pendingRejectedAccount++
-                        }
-                    }
-                    if (activeAccount >= 3) {
-                        return@withContext false
-                    } else return@withContext pendingRejectedAccount < 8
+                    return@withContext userInfo.isVerified
                 }
                 addNewBankAccountState.value = isEnable
             }) {
