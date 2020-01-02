@@ -234,7 +234,7 @@ class SaldoDetailsPresenter @Inject constructor() :
         view.hideUserFinancialStatusLayout()
     }
 
-    override fun showSaldoPrioritasFragment(sellerDetails: GqlDetailsResponse) {
+    override fun showSaldoPrioritasFragment(sellerDetails: GqlDetailsResponse?) {
         if (!isViewAttached) {
             return
         }
@@ -248,7 +248,7 @@ class SaldoDetailsPresenter @Inject constructor() :
         view.hideMerchantCreditLineFragment()
     }
 
-    override fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse) {
+    override fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
         if (!isViewAttached) {
             return
         }
@@ -257,6 +257,7 @@ class SaldoDetailsPresenter @Inject constructor() :
 
     companion object {
 
+        @JvmField
         val REQUEST_WITHDRAW_CODE = 1
         private val IS_SELLER = "is_seller"
         private val IS_WITHDRAW_LOCK = "is_lock"

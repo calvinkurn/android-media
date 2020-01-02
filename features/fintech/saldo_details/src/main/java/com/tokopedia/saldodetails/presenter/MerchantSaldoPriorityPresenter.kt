@@ -1,8 +1,8 @@
 package com.tokopedia.saldodetails.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract
 import com.tokopedia.saldodetails.response.model.GqlSetMerchantSaldoStatus
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus
@@ -35,7 +35,7 @@ constructor() : BaseDaggerPresenter<MerchantSaldoPriorityContract.View>(), Merch
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.hideProgressLoading()
-                    view.onSaldoStatusUpdateError(ErrorHandler.getErrorMessage(view.context, e))
+                    view.onSaldoStatusUpdateError(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
             }
 

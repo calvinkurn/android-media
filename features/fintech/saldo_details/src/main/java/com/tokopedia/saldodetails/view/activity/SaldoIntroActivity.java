@@ -17,7 +17,7 @@ public class SaldoIntroActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return SaldoIntroFragment.newInstance();
+        return SaldoIntroFragment.Companion.newInstance();
     }
 
     @Override

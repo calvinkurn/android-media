@@ -132,6 +132,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private FirebaseRemoteConfigImpl remoteConfig;
     private SaveInstanceCacheManager saveInstanceCacheManager;
     public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id";
+    public static final String BUNDLE_PARAM_SELLER_DETAILS_ID = "bundle_param_seller_details_id";
+
 
     public SaldoDepositFragment() {
     }
@@ -693,22 +695,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
-        if (sellerDetails != null &&
-                sellerDetails.isEligible()) {
-            merchantStatusLL.setVisibility(View.VISIBLE);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(BUNDLE_PARAM_SELLER_DETAILS, sellerDetails);
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .replace(com.tokopedia.saldodetails.R.id.saldo_prioritas_widget, MerchantSaldoPriorityFragment.newInstance(bundle))
-                    .commit();
-        } else {
-            hideSaldoPrioritasFragment();
-        }
-    }
-
-    @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
         if (response != null && response.isEligible()) {
             statusWithDrawLock = response.getStatus();
@@ -751,6 +737,26 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                 .commit();
     }
 
+    @Override
+    public void showSaldoPrioritasFragment(GqlDetailsResponse gqlDetailsResponse) {
+        if (gqlDetailsResponse != null &&
+                gqlDetailsResponse.isEligible()) {
+            merchantStatusLL.setVisibility(View.VISIBLE);
+            Bundle bundle = new Bundle();
+            saveInstanceCacheManager = new SaveInstanceCacheManager(context, true);
+            saveInstanceCacheManager.put(BUNDLE_PARAM_SELLER_DETAILS, gqlDetailsResponse);
+            if (saveInstanceCacheManager.getId() != null) {
+                bundle.putInt(BUNDLE_PARAM_SELLER_DETAILS_ID, Integer.parseInt(saveInstanceCacheManager.getId()));
+            }
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(com.tokopedia.saldodetails.R.id.saldo_prioritas_widget,
+                            MerchantSaldoPriorityFragment.Companion.newInstance(bundle))
+                    .commit();
+        } else {
+            hideSaldoPrioritasFragment();
+        }
+    }
 
     @Override
     public void hideWarning() {

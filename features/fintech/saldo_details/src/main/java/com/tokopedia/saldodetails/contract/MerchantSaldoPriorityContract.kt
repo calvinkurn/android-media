@@ -9,7 +9,7 @@ interface MerchantSaldoPriorityContract {
 
     interface View : CustomerView {
 
-        val context: Context
+        fun getContext(): Context?
         fun showProgressLoading()
 
         fun hideProgressLoading()

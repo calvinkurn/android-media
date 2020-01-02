@@ -2,7 +2,7 @@ package com.tokopedia.saldodetails.response.model
 
 import com.google.gson.annotations.SerializedName
 
-class GqlSaldoBalanceResponse(
+data class GqlSaldoBalanceResponse(
         @SerializedName("balance")
         var saldo: Saldo? = null
 )

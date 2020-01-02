@@ -3,7 +3,7 @@ package com.tokopedia.saldodetails.response.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class GqlSetMerchantSaldoStatus(
+data class GqlSetMerchantSaldoStatus(
         @SerializedName("sp_togglesaldoprioritas")
         @Expose
         var merchantSaldoStatus: MerchantSaldoStatus? = null

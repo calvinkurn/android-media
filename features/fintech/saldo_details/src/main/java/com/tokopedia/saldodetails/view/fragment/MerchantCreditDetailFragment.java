@@ -5,10 +5,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.cardview.widget.CardView;
+
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -27,7 +29,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
@@ -62,7 +63,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     private int saveInstanceCachemanagerId;
 
     @Inject
-    SaldoDetailsAnalytics saldoDetailsAnalytics;
+    public SaldoDetailsAnalytics saldoDetailsAnalytics;
 
     @Nullable
     @Override
@@ -70,9 +71,9 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false);
         Bundle bundle = getArguments();
-        saveInstanceCachemanagerId = bundle != null ? bundle.getInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID):0;
-        saveInstanceCacheManager=new SaveInstanceCacheManager(context,String.valueOf(saveInstanceCachemanagerId));
-        merchantCreditDetails=saveInstanceCacheManager.get(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS,GqlMerchantCreditResponse.class);
+        saveInstanceCachemanagerId = bundle != null ? bundle.getInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID) : 0;
+        saveInstanceCacheManager = new SaveInstanceCacheManager(context, String.valueOf(saveInstanceCachemanagerId));
+        merchantCreditDetails = saveInstanceCacheManager.get(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, GqlMerchantCreditResponse.class);
         initViews(view);
         if (merchantCreditDetails != null) {
             saldoDetailsAnalytics.eventMCLImpression(String.valueOf(merchantCreditDetails.getStatus()));

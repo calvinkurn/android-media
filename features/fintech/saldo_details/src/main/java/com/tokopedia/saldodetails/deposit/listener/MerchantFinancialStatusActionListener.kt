@@ -7,11 +7,11 @@ interface MerchantFinancialStatusActionListener {
 
     fun hideMerchantCreditLineFragment()
 
-    fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse)
+    fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?)
 
     fun hideSaldoPrioritasFragment()
 
     fun hideUserFinancialStatusLayout()
 
-    fun showSaldoPrioritasFragment(sellerDetails: GqlDetailsResponse)
+    fun showSaldoPrioritasFragment(sellerDetails: GqlDetailsResponse?)
 }
