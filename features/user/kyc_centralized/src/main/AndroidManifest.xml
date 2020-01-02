@@ -19,7 +19,7 @@
 
         <activity
             android:name=".view.activity.UserIdentificationFormActivity"
-            android:label="@string/title_upload_kyc_centralized"
+            android:label="@string/title_kyc_form_upload"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
