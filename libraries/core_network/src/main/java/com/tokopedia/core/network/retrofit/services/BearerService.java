@@ -11,7 +11,7 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public abstract class BearerService<T> extends BaseService<T>{
-    protected T mApi;
+
     protected String mToken;
 
     public BearerService(String mToken) {
