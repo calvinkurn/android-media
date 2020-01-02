@@ -178,7 +178,7 @@ class TokopediaPlayerHelper(
     }
 
     private fun isDeviceHasRequirementAutoPlay(): Boolean{
-        return DimensionUtils.getDensityMetrix(context) >= 1.5f
+        return DimensionUtils.getDensityMatrix(context) >= 1.5f
     }
 
     @SuppressLint("SyntheticAccessor")

@@ -38,7 +38,7 @@ public class DimensionUtils {
         return dp;
     }
 
-    public static float getDensityMetrix(Context context){
+    public static float getDensityMatrix(Context context){
         return context.getResources().getDisplayMetrics().density;
     }
 }
