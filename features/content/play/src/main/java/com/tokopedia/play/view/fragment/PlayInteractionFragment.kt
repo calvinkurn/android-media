@@ -295,7 +295,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             SendChatInteractionEvent.FormClicked -> doClickChatBox()
-                            is SendChatInteractionEvent.SendClicked -> doSendChat("${it.message} from Pixel 2 API 29")
+                            is SendChatInteractionEvent.SendClicked -> doSendChat(it.message)
                         }
                     }
         }
