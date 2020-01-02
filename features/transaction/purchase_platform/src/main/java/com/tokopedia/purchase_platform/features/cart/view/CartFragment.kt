@@ -184,7 +184,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val CART_ALL_TRACE = "mp_cart_all"
         private val CART_PAGE = "cart"
         private val NAVIGATION_PDP = 64728
-        private val GO_TO_DETAIL = 2
+        val GO_TO_DETAIL = 2
         val GO_TO_LIST = 1
 
         @JvmStatic

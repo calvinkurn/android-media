@@ -222,6 +222,96 @@ class CartListPresenterTest : Spek({
 
     }
 
+    Feature("update cart list for promo global") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success update and redirect to coupon list") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), any(), CartFragment.GO_TO_LIST)
+            }
+
+            Then("should render success and redirect to coupon list") {
+                verify {
+                    view.hideProgressLoading()
+                    view.goToCouponList()
+                }
+            }
+        }
+
+        Scenario("success update and redirect to coupon detail") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), any(), CartFragment.GO_TO_DETAIL)
+            }
+
+            Then("should render success and redirect to coupon list") {
+                verify {
+                    view.hideProgressLoading()
+                    view.goToDetailPromoStacking()
+                }
+            }
+        }
+
+        Scenario("failed update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = false
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf())
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
+                }
+            }
+        }
+
+    }
+
     Feature("update and reload cart list") {
 
         val cartListPresenter by memoized {
