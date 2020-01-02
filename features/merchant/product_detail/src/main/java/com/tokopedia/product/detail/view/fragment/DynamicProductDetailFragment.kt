@@ -634,7 +634,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     }
                     //refresh variant
                     viewModel.p2General.value?.variantResp?.run {
-                        viewModel
                         onSuccessGetProductVariantInfo(this)
                     }
                     userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)

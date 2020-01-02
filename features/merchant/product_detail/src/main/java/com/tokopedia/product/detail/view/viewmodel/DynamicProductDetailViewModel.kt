@@ -75,14 +75,37 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                              private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
-    val productLayout = MutableLiveData<Result<List<DynamicPDPDataModel>>>()
-    val p2ShopDataResp = MutableLiveData<ProductInfoP2ShopData>()
-    val p2Login = MutableLiveData<ProductInfoP2Login>()
-    val p2General = MutableLiveData<ProductInfoP2General>()
-    val productInfoP3resp = MutableLiveData<ProductInfoP3>()
-    val loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
-    val moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
-    val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
+    private val _productLayout = MutableLiveData<Result<List<DynamicPDPDataModel>>>()
+    val productLayout: LiveData<Result<List<DynamicPDPDataModel>>>
+        get() = _productLayout
+
+    private val _p2ShopDataResp = MutableLiveData<ProductInfoP2ShopData>()
+    val p2ShopDataResp: LiveData<ProductInfoP2ShopData>
+        get() = _p2ShopDataResp
+
+    private val _p2Login = MutableLiveData<ProductInfoP2Login>()
+    val p2Login: LiveData<ProductInfoP2Login>
+        get() = _p2Login
+
+    private val _p2General = MutableLiveData<ProductInfoP2General>()
+    val p2General: LiveData<ProductInfoP2General>
+        get() = _p2General
+
+    private val _productInfoP3resp = MutableLiveData<ProductInfoP3>()
+    val productInfoP3resp: LiveData<ProductInfoP3>
+        get() = _productInfoP3resp
+
+    private val _loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
+    val loadTopAdsProduct: LiveData<Result<List<RecommendationWidget>>>
+        get() = _loadTopAdsProduct
+
+    private val _moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
+    val moveToWarehouseResult: LiveData<Result<Boolean>>
+        get() = _moveToWarehouseResult
+
+    private val _moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
+    val moveToEtalaseResult: LiveData<Result<Boolean>>
+        get() = _moveToEtalaseResult
 
     private val _toggleFavoriteResult = MutableLiveData<Result<Boolean>>()
     val toggleFavoriteResult: LiveData<Result<Boolean>>
@@ -149,22 +172,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getProductP1(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
-            val productData = getPdpLayout(productParams.productId ?: "", productParams.shopDomain
-                    ?: "", productParams.productName ?: "", forceRefresh)
-            val initialLayoutData = productData.listOfLayout
-            getDynamicProductInfoP1 = productData.layoutData
+            getPdpLayout(productParams.productId ?: "", productParams.shopDomain
+                    ?: "", productParams.productName ?: "", forceRefresh).also {
+                getDynamicProductInfoP1 = it.layoutData
+                //Remove any unused component based on P1 / PdpLayout
+                removeDynamicComponent(it.listOfLayout)
+                //Render initial data first
+                _productLayout.value = Success(it.listOfLayout)
 
-            //Remove any unused component based on P1 / PdpLayout
-            removeDynamicComponent(initialLayoutData)
-
-            //Render initial data first
-            productLayout.value = Success(initialLayoutData)
-
+            }
             // Then update the following, it will not throw anything when error
             getProductP2(forceRefresh, productParams.warehouseId)
             getProductP3(productParams.shopDomain, forceRefresh)
         }) {
-            productLayout.value = Fail(it)
+            _productLayout.value = Fail(it)
         }
     }
 
@@ -207,7 +228,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     it.getProductName,
                     categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder, forceRefresh)
 
-            p2ShopDataResp.value = p2ShopDeferred.await().also {
+            _p2ShopDataResp.value = p2ShopDeferred.await().also {
                 shopInfo = it.shopInfo
                 val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
                 tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
@@ -216,23 +237,23 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
             }
 
-            p2General.value = p2GeneralAsync.await()
+            _p2General.value = p2GeneralAsync.await()
             p2LoginDeferred?.let {
-                p2Login.value = it.await()
+                _p2Login.value = it.await()
             }
         }
     }
 
     private suspend fun getProductP3(shopDomain: String?, forceRefresh: Boolean) {
         getDynamicProductInfoP1?.run {
-            p2ShopDataResp.value?.let { p2Shop ->
+            _p2ShopDataResp.value?.let { p2Shop ->
                 multiOrigin = p2Shop.nearestWarehouse.warehouseInfo
                 val domain = shopDomain ?: p2Shop.shopInfo?.shopCore?.domain
                 ?: return@run
 
                 if (isUserSessionActive) {
                     val origin = if (multiOrigin.isFulfillment) multiOrigin.origin else null
-                    productInfoP3resp.value = getProductInfoP3(basic.getWeightUnit(), domain, forceRefresh,
+                    _productInfoP3resp.value = getProductInfoP3(basic.getWeightUnit(), domain, forceRefresh,
                             shouldShowCod, origin)
                 }
             }
@@ -368,10 +389,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
                                         ?: "")
                         )).toBlocking()
-                        loadTopAdsProduct.postValue(Success(recomData.first() ?: emptyList()))
+                        _loadTopAdsProduct.postValue(Success(recomData.first() ?: emptyList()))
                     }
                 } catch (e: Throwable) {
-                    loadTopAdsProduct.value = Fail(e)
+                    _loadTopAdsProduct.value = Fail(e)
                 }
             }
         }
@@ -380,18 +401,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun moveProductToWareHouse(productId: String) {
         launchCatchError(block = {
             moveProductToWarehouseUseCase.createParams(productId, userId, deviceId)
-            moveToWarehouseResult.value = Success(moveProductToWarehouseUseCase.executeOnBackground().getIsSuccess())
+            _moveToWarehouseResult.value = Success(moveProductToWarehouseUseCase.executeOnBackground().getIsSuccess())
         }) {
-            moveToWarehouseResult.value = Fail(it)
+            _moveToWarehouseResult.value = Fail(it)
         }
     }
 
     fun moveProductToEtalase(productId: String, selectedEtalaseId: String, selectedEtalaseName: String) {
         launchCatchError(block = {
             moveProductToEtalaseUseCase.createParams(productId, selectedEtalaseId, selectedEtalaseName, userId, deviceId)
-            moveToEtalaseResult.value = Success(moveProductToEtalaseUseCase.executeOnBackground().getIsSuccess())
+            _moveToEtalaseResult.value = Success(moveProductToEtalaseUseCase.executeOnBackground().getIsSuccess())
         }) {
-            moveToEtalaseResult.value = Fail(it)
+            _moveToEtalaseResult.value = Fail(it)
         }
     }
 
