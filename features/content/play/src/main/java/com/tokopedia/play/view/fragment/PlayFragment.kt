@@ -17,11 +17,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -95,16 +97,28 @@ class PlayFragment : BaseDaggerFragment(), CoroutineScope {
                 .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId))
                 .commit()
 
-        launch {
-            delay(2000)
-            playViewModel.showKeyboard(true)
-            flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+//        launch {
+//            delay(2000)
+//            playViewModel.showKeyboard(true)
+//            flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+//
+//            delay(5000)
+//            playViewModel.showKeyboard(false)
+//            flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+//            onKeyboardHidden()
+//        }
+        KeyboardWatcher().listen(view, object : KeyboardWatcher.Listener {
+            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                playViewModel.showKeyboard(true)
+                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
 
-            delay(5000)
-            playViewModel.showKeyboard(false)
-            flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            onKeyboardHidden()
-        }
+            override fun onKeyboardHidden() {
+                playViewModel.showKeyboard(false)
+                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                this@PlayFragment.onKeyboardHidden()
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -175,8 +189,9 @@ class PlayFragment : BaseDaggerFragment(), CoroutineScope {
     fun onKeyboardShown(chatListYPos: Int) {
         val currentHeight = flVideo.height
         val destHeight = chatListYPos.toFloat()
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,1.0f , destHeight / currentHeight);
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,1.0f , 0.5f);
+        val scaleFactor = destHeight / currentHeight
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,1.0f , scaleFactor);
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,1.0f , scaleFactor);
         animatorY.duration = 300
         animatorX.duration = 300
 
