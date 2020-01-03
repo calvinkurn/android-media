@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
 import android.widget.EditText
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import kotlin.math.abs
 
 
@@ -30,11 +31,6 @@ import kotlin.math.abs
  * Created by fwidjaja on 2019-06-22.
  */
 object AddNewAddressUtils {
-
-    @JvmField
-    val MONAS_LAT: Double = -6.175794
-    @JvmField
-    val MONAS_LONG: Double = 106.826457
 
     @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
@@ -114,8 +110,8 @@ object AddNewAddressUtils {
 
     fun hasDefaultCoordinate(lat: Double, long: Double, exact: Boolean = false): Boolean {
         val threshold = 0.00001
-        val diffLat = lat - MONAS_LAT
-        val diffLong = long - MONAS_LONG
+        val diffLat = lat - AddressConstants.DEFAULT_LAT
+        val diffLong = long - AddressConstants.DEFAULT_LONG
 
         return if (exact) (diffLat == 0.0 && diffLong == 0.0)
         else (abs(diffLat) < threshold && abs(diffLong) < threshold)
