@@ -57,7 +57,7 @@
                     android:paddingEnd="@dimen/dp_6"
                     android:paddingRight="@dimen/dp_6"
                     android:paddingBottom="@dimen/dp_8"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="@dimen/sp_14"
                     android:inputType="none"
                     android:focusable="false"
                     android:enabled="true"

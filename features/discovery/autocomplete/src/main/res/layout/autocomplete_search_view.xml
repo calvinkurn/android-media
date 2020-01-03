@@ -59,9 +59,9 @@
                         android:imeOptions="actionSearch"
                         android:inputType="textNoSuggestions"
                         android:lines="1"
-                        android:textColor="#ae31353b"
-                        android:textColorHint="#7031353b"
-                        android:textSize="14sp"/>
+                        android:textColor="@color/edit_text_color"
+                        android:textColorHint="@color/edit_text_color_hint"
+                        android:textSize="@dimen/sp_14"/>
 
                     <ImageView
                         android:layout_width="wrap_content"
