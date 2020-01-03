@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.PARTNER_NAME_ADMIN
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -90,8 +89,14 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    var isLive: Boolean = false
+
     fun startCurrentVideo() {
         playManager.resumeCurrentVideo()
+    }
+
+    fun getDurationCurrentVideo(): Long {
+        return playManager.getDurationVideo()
     }
 
     fun getChannelInfo(channelId: String) {
@@ -108,7 +113,8 @@ class PlayViewModel @Inject constructor(
             /**
              * If Live => start web socket
              */
-            getPartnerInfo(PartnerType.getTypeByValue(channel.partnerType), channel.partnerId)
+            getPartnerInfo(channel)
+            setStateLiveOrVod(channel)
             if (videoStream.isLive) startWebSocket(channelId, channel.gcToken, channel.settings)
             playVideoStream(videoStream)
 
@@ -141,13 +147,15 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun getPartnerInfo(partnerType: PartnerType, partnerId: Long) {
+    private fun getPartnerInfo(channel: Channel) {
+        val partnerType = PartnerType.getTypeByValue(channel.partnerType)
+        val partnerId = channel.partnerId
         if (partnerType == PartnerType.SHOP) getShopPartnerInfo(partnerId)
 
         if (partnerType == PartnerType.ADMIN) {
             _observablePartnerInfo.value = PartnerInfoUiModel(
                     id = partnerId,
-                    name = PARTNER_NAME_ADMIN,
+                    name = channel.moderatorName,
                     type = partnerType,
                     isFollowed = true
             )
@@ -234,6 +242,10 @@ class PlayViewModel @Inject constructor(
         if (videoStream.isActive) {
             startVideoWithUrlString(videoStream.androidStreamHd, videoStream.isLive)
         }
+    }
+
+    private fun setStateLiveOrVod(channel: Channel) {
+        isLive = channel.endTime < System.currentTimeMillis()
     }
 
     private fun createCompleteInfoModel(channel: Channel, videoStream: VideoStream) = PlayCompleteInfoUiModel(

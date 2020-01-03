@@ -40,6 +40,15 @@ data class Channel(
         @SerializedName("is_freeze")
         val isFreeze: String = "",
 
+        @SerializedName("moderator_id")
+        val moderatorId: String = "",
+
+        @SerializedName("moderator_name")
+        val moderatorName: String = "",
+
+        @SerializedName("moderator_thumb_url")
+        val moderatorThumbUrl: String = "",
+
         @SerializedName("gc_token")
         val gcToken: String = "",
 
