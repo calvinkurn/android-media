@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.design.dialog.AccessRequestFragmentDialog;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -18,7 +19,7 @@ import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
 import com.tokopedia.common_tradein.model.ValidateTradePDP;
 import com.tokopedia.common_tradein.customviews.TradeInTextView;
-import com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment;
+
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -44,11 +45,11 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
             FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
             FragmentActivity activity = activityWeakReference.get();
 
-            AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
+            AccessRequestFragmentDialog accessDialog = AccessRequestFragmentDialog.newInstance();
             accessDialog.setBodyText(activity.getString(R.string.tradein_text_permission_description));
             accessDialog.setTitle(activity.getString(R.string.tradein_text_request_access));
             accessDialog.setNegativeButton("");
-            accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+            accessDialog.show(fragmentManager, AccessRequestFragmentDialog.getTAG());
         }
     }
 

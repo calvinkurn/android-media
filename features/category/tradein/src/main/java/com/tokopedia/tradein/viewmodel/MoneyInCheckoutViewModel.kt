@@ -3,6 +3,7 @@ package com.tokopedia.tradein.viewmodel
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein.model.MoneyInCheckoutMutationResponse.ResponseData.CheckoutGeneral.CheckoutData
@@ -18,7 +19,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 
-class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
+class MoneyInCheckoutViewModel() : BaseTradeInViewModel(), CoroutineScope {
 
     private val pickupScheduleOptionLiveData = MutableLiveData<Result<GetPickupScheduleOption>>()
     private val courierRatesLiveData = MutableLiveData<Result<RatesV4.Data>>()
@@ -37,7 +38,7 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
         launchCatchError(block = {
             val request = HashMap<String, String>()
 
-            val response = repository?.getGQLData(query, MoneyInScheduleOptionResponse.ResponseData::class.java, request) as MoneyInScheduleOptionResponse.ResponseData
+            val response = getMYRepository().getGQLData(query, MoneyInScheduleOptionResponse.ResponseData::class.java, request) as MoneyInScheduleOptionResponse.ResponseData
             pickupScheduleOptionLiveData.value = Success(response.getPickupScheduleOption)
         }, onError = {
             it.printStackTrace()
@@ -57,7 +58,7 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
             input["lang"] = "en"
             request["input"] = input
 
-            val response = repository?.getGQLData(query, MoneyInCourierResponse.ResponseData::class.java, request) as MoneyInCourierResponse.ResponseData
+            val response = getMYRepository().getGQLData(query, MoneyInCourierResponse.ResponseData::class.java, request) as MoneyInCourierResponse.ResponseData
             courierRatesLiveData.value = Success(response.ratesV4.data)
         }, onError = {
             it.printStackTrace()
@@ -104,7 +105,7 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
 
             request["params"] = params
 
-            val response = repository?.getGQLData(query, MoneyInCheckoutMutationResponse.ResponseData::class.java, request) as MoneyInCheckoutMutationResponse.ResponseData
+            val response = getMYRepository().getGQLData(query, MoneyInCheckoutMutationResponse.ResponseData::class.java, request) as MoneyInCheckoutMutationResponse.ResponseData
             if (response.checkoutGeneral.data.success == SUCCESS) {
                 checkoutDataLiveData.value = Success(response.checkoutGeneral.data.data)
             } else {

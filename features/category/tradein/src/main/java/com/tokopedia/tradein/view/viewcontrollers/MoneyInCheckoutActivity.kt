@@ -29,16 +29,13 @@ import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
-import com.tokopedia.tradein.viewmodel.CourierPriceError
-import com.tokopedia.tradein.viewmodel.MoneyInCheckoutViewModel
-import com.tokopedia.tradein.viewmodel.MutationCheckoutError
-import com.tokopedia.tradein.viewmodel.ScheduleTimeError
+import com.tokopedia.tradein.viewmodel.*
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
 
-class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
+class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
     private lateinit var scheduleTime: ScheduleDate.ScheduleTime
@@ -404,7 +401,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         return MoneyInCheckoutViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel?) {
+    override fun setViewModel(viewModel: BaseViewModel) {
         moneyInCheckoutViewModel = viewModel as MoneyInCheckoutViewModel
     }
 
@@ -414,14 +411,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     override fun getTncFragmentInstance(TncResId: Int): Fragment? {
         return TnCFragment.getInstance(TncResId)
-    }
-
-    override fun getBottomSheetLayoutRes(): Int {
-        return -1
-    }
-
-    override fun doNeedReattach(): Boolean {
-        return false
     }
 
     override fun getNewFragment(): Fragment? {
