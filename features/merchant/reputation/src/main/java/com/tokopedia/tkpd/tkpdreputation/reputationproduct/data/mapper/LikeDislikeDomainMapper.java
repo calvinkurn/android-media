@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.TotalLikeDislikeDomain;

@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.network;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.constant.ReputationBaseURL;
 
 import java.util.Map;

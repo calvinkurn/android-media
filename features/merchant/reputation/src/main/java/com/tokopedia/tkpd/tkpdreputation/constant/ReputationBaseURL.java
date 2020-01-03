@@ -68,4 +68,9 @@ public class ReputationBaseURL {
     public static final String PATH_REPORT_REVIEW_PRODUCT = "report_review.pl";
     public static final String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
 
+    // upload
+    public static final String V4_ACTION_GENERATE_HOST = "v4/action/generate-host/";
+    public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + V4_ACTION_GENERATE_HOST;
+    public static final String PATH_GENERATE_HOST = "generate_host.pl";
+
 }

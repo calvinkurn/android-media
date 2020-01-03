@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -55,6 +54,7 @@ import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.ShopService;
 import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
+import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.GenerateHostActService;
 import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
@@ -243,6 +243,16 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
+    GenerateHostActService provideGenerateHostActService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new GenerateHostActService(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
     TomeService provideTomeService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new TomeService(
                 context,
@@ -379,13 +389,6 @@ public class ReputationModule {
                 generateHostMapper,
                 uploadImageMapper,
                 userSession);
-    }
-
-    @ReputationScope
-    @Provides
-    GenerateHostActService
-    provideGenerateHostActService() {
-        return new GenerateHostActService();
     }
 
     @ReputationScope
