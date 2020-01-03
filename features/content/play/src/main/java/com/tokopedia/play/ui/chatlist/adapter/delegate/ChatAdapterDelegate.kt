@@ -2,7 +2,7 @@ package com.tokopedia.play.ui.chatlist.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.adapter_delegate.TypedAdapterDelegate
+import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.chatlist.viewholder.ChatViewHolder

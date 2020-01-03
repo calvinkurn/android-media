@@ -34,10 +34,6 @@ class FlightPassengerModule {
     @FlightPassengerScope
     @Provides
     fun provideTravelPassengerRoomDb(@ApplicationContext context: Context)
-        : CommonTravelRoomDb = CommonTravelRoomDb.getDatabase(context)
-
-    @FlightPassengerScope
-    @Provides
-    fun provideCountryPhoneCodeDao(commonTravelRoomDb: CommonTravelRoomDb) = commonTravelRoomDb.countryPhoneCodeDao()
+            : CommonTravelRoomDb = CommonTravelRoomDb.getDatabase(context)
 
 }

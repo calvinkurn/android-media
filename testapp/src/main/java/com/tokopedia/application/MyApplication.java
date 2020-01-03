@@ -376,4 +376,8 @@ public class MyApplication extends BaseMainApplication
         return null;
     }
 
+    @Override
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+
+    }
 }
