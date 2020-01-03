@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -30,8 +29,6 @@ public class GlideErrorLogHelper {
         if (GlobalConfig.VERSION_CODE < traceRouteMinVersion) {
             return;
         }
-
-        Toast.makeText(context, "traceroute called", Toast.LENGTH_SHORT).show();
 
         if (!isNetworkAvailable(context)) {
             Timber.w("P2#Load image error network not available");
