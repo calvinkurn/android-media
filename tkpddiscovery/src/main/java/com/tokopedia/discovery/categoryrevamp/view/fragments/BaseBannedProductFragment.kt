@@ -4,16 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
@@ -25,74 +21,98 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_banned_product.*
 import javax.inject.Inject
 
-private const val BANNED_PRODUCT = "banned_product"
 private const val KEY_ADVERTISING_ID = "KEY_ADVERTISINGID"
 private const val ADVERTISING_ID = "ADVERTISINGID"
 private const val QUERY_APP_CLIENT_ID = "?appClientId="
 
-class BannedProductFragment : Fragment() {
-    private var bannedProduct: Data? = null
+abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
+    protected var categoryName: String = ""
     private var listenerBanned: OnBannedFragmentInteractionListener? = null
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var bannedProdNavViewModel: BannedProdNavViewModel
     private lateinit var categoryNavComponent: CategoryNavComponent
 
+    @Inject
+    lateinit var baseViewModelFactory: ViewModelProvider.Factory
+    private lateinit var bannedProdNavViewModel: BannedProdNavViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getDataFromArguments()
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            bannedProduct = it.getParcelable(BANNED_PRODUCT)
-        }
-        initInjector()
+        initInjectForBaseBannedFragment()
+        initBannedProductViewModel()
     }
 
-    private fun initInjector() {
+    private fun initInjectForBaseBannedFragment() {
         categoryNavComponent = DaggerCategoryNavComponent.builder()
                 .baseAppComponent((activity?.applicationContext as BaseMainApplication)
                         .baseAppComponent).build()
+        categoryNavComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_banned_product, container, false)
+    private fun observeBannedProduct() {
+        bannedProdNavViewModel.getBannedProductLiveData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    addBannedProductScreen()
+                    showBannedProductScreen(it.data)
+                }
+
+                is Fail -> {
+                    addFragmentView()
+                    initFragmentView()
+                }
+            }
+        })
+    }
+
+    abstract fun addFragmentView()
+
+    abstract fun initFragmentView()
+
+    abstract fun getDataFromArguments()
+
+    abstract fun hideFragmentView()
+
+    private fun addBannedProductScreen() {
+        hideFragmentView()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        categoryNavComponent.inject(this)
-        initViewModel()
+        observeBannedProduct()
         observeSeamlessLogin()
-        showBannedProductScreen()
     }
 
-    private fun showBannedProductScreen() {
-        bannedProduct.let {
-            if (bannedProduct?.displayButton == true) {
+    private fun showBannedProductScreen(bannedProductData: Data) {
+        bannedProductData.let {
+            if (bannedProductData.displayButton) {
                 category_btn_banned_navigation.show()
                 category_btn_banned_navigation.setOnClickListener {
-                    onButtonPressed(bannedProduct!!)
+                    onButtonPressed(bannedProductData)
                     val localCacheHandler = LocalCacheHandler(activity, ADVERTISING_ID)
                     val adsId = localCacheHandler.getString(KEY_ADVERTISING_ID)
-                    var url = Uri.parse(bannedProduct?.appRedirection).toString()
+                    var url = Uri.parse(bannedProductData.appRedirection).toString()
                     if (adsId != null && adsId.trim().isNotEmpty()) {
                         url = url.plus(QUERY_APP_CLIENT_ID + adsId)
                         bannedProdNavViewModel.openBrowserSeamlessly(url)
                     }
                 }
             }
-            txt_header.text = bannedProduct?.bannedMsgHeader
-            txt_sub_header.text = bannedProduct?.bannedMessage
+            onShowBanned()
+            txt_header.text = bannedProductData.bannedMsgHeader
+            txt_sub_header.text = bannedProductData.bannedMessage
         }
     }
 
-    private fun initViewModel() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+    private fun initBannedProductViewModel() {
+        val viewModelProvider = ViewModelProviders.of(this, baseViewModelFactory)
         bannedProdNavViewModel = viewModelProvider.get(BannedProdNavViewModel::class.java)
+        lifecycle.addObserver(bannedProdNavViewModel)
+        bannedProdNavViewModel.categoryName = getDepartMentId()
     }
 
     private fun observeSeamlessLogin() {
-        bannedProdNavViewModel.mSeamlessLogin.observe(this, Observer {
+        bannedProdNavViewModel.getSeamlessLoginLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     openUrlSeamlessly(it.data)
@@ -119,7 +139,11 @@ class BannedProductFragment : Fragment() {
         listenerBanned?.onButtonClicked(bannedProduct)
     }
 
-    override fun onAttach(context: Context) {
+    private fun onShowBanned() {
+        listenerBanned?.onBannedFragmentAttached()
+    }
+
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is OnBannedFragmentInteractionListener) {
             listenerBanned = context
@@ -135,15 +159,6 @@ class BannedProductFragment : Fragment() {
 
     interface OnBannedFragmentInteractionListener {
         fun onButtonClicked(bannedProduct: Data)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(bannedProduct: Data) =
-                BannedProductFragment().apply {
-                    arguments = Bundle().apply {
-                        putParcelable(BANNED_PRODUCT, bannedProduct)
-                    }
-                }
+        fun onBannedFragmentAttached()
     }
 }
