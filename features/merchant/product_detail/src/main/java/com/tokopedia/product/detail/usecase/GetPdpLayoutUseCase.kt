@@ -53,6 +53,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         } else if (error != null && error.isNotEmpty()) {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
         } else if (data.data.basicInfo.isBlacklisted) {
+            gqlUseCase.clearCache()
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
         }
 

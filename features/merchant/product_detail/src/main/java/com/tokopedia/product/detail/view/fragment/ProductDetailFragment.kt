@@ -1619,7 +1619,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             ProductMediaDataModel(it.type, it.url300, it.urlOriginal, it.urlThumbnail, it.mediaDescription, it.videoUrl, it.isAutoPlay)
         }
         varPictureImage.renderData(mediaViewModel, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager)
-        productStatsView.renderData(data.stats.countView, data.stats.countReview, this::onReviewClicked, this::onDiscussionClicked)
+        productStatsView.renderData(data.stats.countReview, data.stats.countTalk, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data.stats.countView, data.txStats)
         txt_last_update.text = getString(R.string.template_last_update_price, data.basic.lastUpdatePrice)
