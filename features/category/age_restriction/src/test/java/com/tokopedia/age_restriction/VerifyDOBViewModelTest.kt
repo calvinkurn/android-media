@@ -8,20 +8,17 @@ import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
 import com.tokopedia.tradein_common.repository.BaseRepository
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
-import java.io.File
 
-@ExperimentalCoroutinesApi
 class VerifyDOBViewModelTest {
 
     private var repository: BaseRepository = mockk()

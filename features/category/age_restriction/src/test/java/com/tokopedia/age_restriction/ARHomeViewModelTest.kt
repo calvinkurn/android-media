@@ -12,9 +12,8 @@ import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -23,7 +22,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class ARHomeViewModelTest {
 
     @get:Rule
