@@ -101,25 +101,13 @@ class PlayFragment : BaseDaggerFragment(), CoroutineScope {
                 .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId))
                 .commit()
 
-//        launch {
-//            delay(2000)
-//            playViewModel.showKeyboard(true)
-//            flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-//
-//            delay(5000)
-//            playViewModel.showKeyboard(false)
-//            flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-//            onKeyboardHidden()
-//        }
         KeyboardWatcher().listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.showKeyboard(true)
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
 
             override fun onKeyboardHidden() {
                 playViewModel.showKeyboard(false)
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 this@PlayFragment.onKeyboardHidden()
             }
         })

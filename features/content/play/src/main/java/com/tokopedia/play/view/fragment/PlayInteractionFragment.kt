@@ -20,7 +20,6 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
-import com.tokopedia.play.ui.chatlist.interaction.ChatListInteractionEvent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
 import com.tokopedia.play.ui.like.LikeComponent
@@ -369,20 +368,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return pinnedComponent
     }
 
-    private fun initChatListComponent(container: ViewGroup): UIComponent<ChatListInteractionEvent> {
-        val chatListComponent = ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    private fun initChatListComponent(container: ViewGroup): UIComponent<Unit> {
+        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
-
-        launch {
-            chatListComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is ChatListInteractionEvent.PositionYCalculated -> (requireParentFragment() as PlayFragment).onKeyboardShown(it.yPos)
-                        }
-                    }
-        }
-
-        return chatListComponent
     }
 
     private fun initVideoControlComponent(container: ViewGroup): UIComponent<Unit> {

@@ -78,6 +78,15 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        observeVOD()
+        observeVideoProperty()
+        observeOneTapOnboarding()
+        observeKeyboardState()
+    }
+
+    //region observe
+    private fun observeVOD() {
         playViewModel.observableVOD.observe(this, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -87,6 +96,9 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                         )
             }
         })
+    }
+
+    private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(this, Observer {
             if (it.state is TokopediaPlayVideoState.Error)
                 view?.let { fragmentView ->
@@ -102,8 +114,21 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 }
             else delegateVideoProperty(it)
         })
+    }
+
+    private fun observeOneTapOnboarding() {
         viewModel.observableOneTapOnboarding.observe(this, EventObserver { showOneTapOnboarding() })
     }
+
+    private fun observeKeyboardState() {
+        playViewModel.observableKeyboardState.observe(this, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+            }
+        })
+    }
+    //endregion
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {

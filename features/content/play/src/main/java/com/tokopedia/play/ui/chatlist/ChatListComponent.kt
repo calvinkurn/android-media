@@ -5,7 +5,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.ui.chatlist.interaction.ChatListInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +19,7 @@ class ChatListComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
-) : UIComponent<ChatListInteractionEvent>, CoroutineScope by coroutineScope {
+) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
     private val uiView = initView(container)
 
@@ -43,8 +42,8 @@ class ChatListComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): Flow<ChatListInteractionEvent> {
-        return bus.getSafeManagedFlow(ChatListInteractionEvent::class.java)
+    override fun getUserInteractionEvents(): Flow<Unit> {
+        return emptyFlow()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
