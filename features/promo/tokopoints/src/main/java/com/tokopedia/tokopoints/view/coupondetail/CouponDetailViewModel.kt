@@ -1,31 +1,22 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.View
+
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import rx.Observable
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import java.lang.Error
+
 import java.lang.NullPointerException
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
 @TokoPointScope
-class CouponDetailViewModel @Inject constructor(private val bundle: Bundle, private val repository: CouponDetailRepository) : BaseViewModel(Dispatchers.Main) {
+class CouponDetailViewModel @Inject constructor( bundle: Bundle, private val repository: CouponDetailRepository) : BaseViewModel(Dispatchers.Main) {
 
 
     val detailLiveData = MutableLiveData<Resources<CouponValueEntity>>()
@@ -40,8 +31,11 @@ class CouponDetailViewModel @Inject constructor(private val bundle: Bundle, priv
     lateinit var couponCode: String
 
     init {
-        if (TextUtils.isEmpty(bundle.getString(CommonConstant.EXTRA_COUPON_CODE))) {
-           finish.value = Unit
+        val code = bundle.getString(CommonConstant.EXTRA_COUPON_CODE)
+        val checkCode  : Boolean = code?.isEmpty() ?: true
+        if (checkCode){
+            detailLiveData.postValue(Loading())
+           finish.postValue(Unit)
         } else {
             couponCode = bundle.getString(CommonConstant.EXTRA_COUPON_CODE) as String
             getCouponDetail()
