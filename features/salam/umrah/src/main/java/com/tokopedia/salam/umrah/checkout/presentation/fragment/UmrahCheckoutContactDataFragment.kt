@@ -24,6 +24,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.ContactUser
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
+import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity.Companion.EXTRA_INITIAL_CONTACT_DATA
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
 import com.tokopedia.salam.umrah.common.util.UmrahPhoneTransform
@@ -49,9 +50,9 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            contactData = it.getParcelable(UmrahCheckoutContactDataActivity.EXTRA_INITIAL_CONTACT_DATA)
+        val args = savedInstanceState ?: arguments
+        args?.let {
+            contactData = it.getParcelable(EXTRA_INITIAL_CONTACT_DATA)
                     ?: ContactUser()
         }
     }
@@ -66,7 +67,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
+        outState.putParcelable(EXTRA_INITIAL_CONTACT_DATA,contactData)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =

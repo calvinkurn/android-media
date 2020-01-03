@@ -104,17 +104,14 @@
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutPilgrimsActivity"
             android:label="@string/umrah_checkout_pilgrims_title_activity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutInstallmentActivity"
             android:label="@string/umrah_checkout_installment_title_activity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutContactDataActivity"
             android:label="@string/umrah_checkout_contact_title_activity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
 
