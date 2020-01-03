@@ -77,7 +77,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
     private static final int MAX_SIM_COUNT = 2;
     //private String currentMobileNumber;
-    private final static String simSlotName[] = {
+    private final static String[] simSlotName = {
             "extra_asus_dial_use_dualsim",
             "com.android.phone.extra.slot",
             "slot",

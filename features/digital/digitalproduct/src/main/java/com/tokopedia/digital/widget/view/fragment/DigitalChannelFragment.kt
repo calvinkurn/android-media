@@ -25,10 +25,10 @@ import com.tokopedia.digital.widget.view.presenter.DigitalChannelPresenter
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.track.interfaces.ContextAnalytics
 
 /**
  * Created by Rizky on 15/11/18.
@@ -96,7 +96,7 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn) {
             digitalChannelPresenter.getRecommendationList(5)
         } else {
             fetchCategoryList()

@@ -87,7 +87,6 @@
                 android:id="@+id/check_balance_progressbar"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_below="@+id/tv_check_balance"
                 android:visibility="visible" />
             <TextView
                 android:id="@+id/tv_loading"

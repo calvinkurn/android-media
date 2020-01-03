@@ -125,13 +125,13 @@ public class OperatorVerificationDialog extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.ac_number);
-        btnClear = (ImageView) view.findViewById(R.id.btn_clear_number);
-        imgOperator = (ImageView) view.findViewById(R.id.iv_pic_operator);
-        btnCancel = (TextView) view.findViewById(R.id.btn_cancel);
-        btnOk = (TextView) view.findViewById(R.id.btn_ok);
-        tvErrorNumber = (TextView) view.findViewById(R.id.tv_error_number);
-        tvUssdDesc = (TextView) view.findViewById(R.id.tv_ussd_desc);
+        autoCompleteTextView = view.findViewById(R.id.ac_number);
+        btnClear = view.findViewById(R.id.btn_clear_number);
+        imgOperator = view.findViewById(R.id.iv_pic_operator);
+        btnCancel = view.findViewById(R.id.btn_cancel);
+        btnOk = view.findViewById(R.id.btn_ok);
+        tvErrorNumber = view.findViewById(R.id.tv_error_number);
+        tvUssdDesc = view.findViewById(R.id.tv_ussd_desc);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             tvUssdDesc.setText(Html.fromHtml(getMessageToShow(), Html.FROM_HTML_MODE_LEGACY));
         } else {

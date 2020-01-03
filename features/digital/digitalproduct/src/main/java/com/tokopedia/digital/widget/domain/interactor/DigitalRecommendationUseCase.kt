@@ -27,23 +27,23 @@ class DigitalRecommendationUseCase(private val graphqlUseCase: GraphqlUseCase, @
         return graphqlUseCase.createObservable(requestParams)
                 .map { graphqlResponse ->
                     val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
-                    entity.rechargeFavoriteRecommendationList?.recommendationItemEntityList?.map {
-                                with(it) {
-                                    Recommendation(
-                                            iconUrl,
-                                            title,
-                                            clientNumber,
-                                            applink,
-                                            webLink,
-                                            categoryId,
-                                            categoryName,
-                                            productId,
-                                            productName,
-                                            type,
-                                            position
-                                    )
-                                }
-                            }
+                    entity.rechargeFavoriteRecommendationList.recommendationItemEntityList.map {
+                        with(it) {
+                            Recommendation(
+                                    iconUrl,
+                                    title,
+                                    clientNumber,
+                                    applink,
+                                    webLink,
+                                    categoryId,
+                                    categoryName,
+                                    productId,
+                                    productName,
+                                    type,
+                                    position
+                            )
+                        }
+                    }
                 }
     }
 

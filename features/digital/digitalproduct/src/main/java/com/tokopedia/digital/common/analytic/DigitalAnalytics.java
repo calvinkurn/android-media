@@ -182,7 +182,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
                 DigitalEventTracking.Action.ADD_DEAL_OFFER,
-                String.valueOf(label).toLowerCase()
+                label.toLowerCase()
         ));
     }
 
@@ -193,7 +193,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
                 DigitalEventTracking.Action.REMOVE_DEAL_OFFER,
-                String.valueOf(label).toLowerCase()
+                label.toLowerCase()
         ));
     }
 

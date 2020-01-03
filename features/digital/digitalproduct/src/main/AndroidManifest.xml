@@ -3,6 +3,7 @@
     package="com.tokopedia.digital">
 
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -24,25 +25,6 @@
             android:name=".product.view.activity.DigitalChooserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
-
-        <activity
-            android:name=".categorylist.view.activity.DigitalCategoryListActivity"
-            android:label="@string/title_activity_category_list_digital_module"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" >
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_digital"
-                    android:path="@string/path_digital_category"
-                    android:scheme="@string/tokopedia_scheme" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".product.view.activity.DigitalProductActivity"

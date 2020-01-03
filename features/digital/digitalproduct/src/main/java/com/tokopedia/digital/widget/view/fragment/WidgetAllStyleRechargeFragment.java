@@ -363,7 +363,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
             case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackProductChooser(
-                            (Product) data.getParcelableExtra(
+                            data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
                             )
                     );
@@ -371,7 +371,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
             case REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     handleCallBackOperatorChooser(
-                            (Operator) data.getParcelableExtra(
+                            data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
                             )
                     );

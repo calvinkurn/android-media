@@ -201,10 +201,7 @@ public class DeviceUtil {
         if ("Tri".equalsIgnoreCase(selectedOperatorName.trim()) && "3".equalsIgnoreCase(simOperatorName.trim())) {
             return true;
         }
-        if (simOperatorName.trim().equalsIgnoreCase(selectedOperatorName.trim())) {
-            return true;
-        }
-        return false;
+        return simOperatorName.trim().equalsIgnoreCase(selectedOperatorName.trim());
 
 
     }
@@ -243,9 +240,7 @@ public class DeviceUtil {
             return false;
         }
         if (validateNumber(validationList, number) == null) {
-            if (matchOperatorAndNumber(operator, number)) {
-                return true;
-            }
+            return matchOperatorAndNumber(operator, number);
         }
         return false;
     }

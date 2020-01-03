@@ -20,8 +20,6 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_category_name"
             style="@style/TextView.Title.Bold"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="end"
             android:lines="1"

@@ -63,8 +63,8 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
 
         ItemHolder(View itemView) {
             super(itemView);
-            number = (TextView) itemView.findViewById(R.id.text_name);
-            name = (TextView) itemView.findViewById(R.id.text_number);
+            number = itemView.findViewById(R.id.text_name);
+            name = itemView.findViewById(R.id.text_number);
             itemView.setOnClickListener(this);
         }
 

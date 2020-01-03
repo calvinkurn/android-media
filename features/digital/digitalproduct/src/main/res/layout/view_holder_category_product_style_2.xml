@@ -96,7 +96,6 @@
     <TextView
         android:id="@+id/btn_buy_digital"
         style="@style/Button.Submit.Orange"
-        android:layout_height="@dimen/dp_44"
         android:layout_marginBottom="@dimen/digital_padding_16"
         android:layout_marginTop="@dimen/digital_padding_16"
         android:layout_weight="0.40"
