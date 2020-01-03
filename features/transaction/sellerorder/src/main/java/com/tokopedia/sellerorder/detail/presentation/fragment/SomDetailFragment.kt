@@ -302,6 +302,17 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun renderDetail() {
+        renderHeader()
+        renderProducts()
+        renderShipment()
+        renderPayment()
+        renderButtons()
+
+        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
+        somDetailAdapter.notifyDataSetChanged()
+    }
+
+    private fun renderHeader() {
         // header
         val dataHeader = SomDetailHeader(
                 detailResponse.statusId,
@@ -323,9 +334,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.onlineBooking.state,
                 detailResponse.bookingInfo.onlineBooking.barcodeType)
 
+        listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
+    }
+
+    private fun renderProducts() {
         // products
         val dataProducts = SomDetailProducts(detailResponse.listProduct)
+        listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
+    }
 
+    private fun renderShipment() {
         // shipping
         val receiverStreet = detailResponse.receiver.street
         var notesValue = ""
@@ -349,11 +367,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
-                notesValue,
                 detailResponse.flagOrderMeta.flagFreeShipping,
                 detailResponse.bookingInfo.driver.photo,
                 detailResponse.bookingInfo.driver.name,
                 detailResponse.bookingInfo.driver.phone,
+                detailResponse.dropshipper.name,
+                detailResponse.dropshipper.phone,
                 detailResponse.bookingInfo.driver.licenseNumber,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
                 detailResponse.bookingInfo.onlineBooking.state,
@@ -362,6 +381,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
                 isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
 
+        listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
+    }
+
+    private fun renderPayment() {
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,
                 detailResponse.paymentSummary.totalItem,
@@ -373,14 +396,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.paymentSummary.additionalPriceText,
                 detailResponse.paymentSummary.totalPriceText)
 
-        listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
-        listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
-        listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
+    }
 
-        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
-        somDetailAdapter.notifyDataSetChanged()
-
+    private fun renderButtons() {
         // buttons
         if (detailResponse.button.isNotEmpty()) {
             rl_btn_detail?.visibility = View.VISIBLE
