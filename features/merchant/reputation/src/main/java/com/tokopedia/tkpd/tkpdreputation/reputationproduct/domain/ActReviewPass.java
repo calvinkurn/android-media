@@ -3,8 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.pojo.GeneratedHost;
 import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;

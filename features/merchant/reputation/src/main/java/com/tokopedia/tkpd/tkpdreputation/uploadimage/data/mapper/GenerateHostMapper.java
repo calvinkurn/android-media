@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.GenerateHostDomain;
@@ -14,9 +14,9 @@ import rx.functions.Func1;
  * @author by nisie on 9/5/17.
  */
 
-public class GenerateHostMapper implements Func1<Response<TkpdResponse>, GenerateHostDomain> {
+public class GenerateHostMapper implements Func1<Response<TokopediaWsV4Response>, GenerateHostDomain> {
     @Override
-    public GenerateHostDomain call(Response<TkpdResponse> response) {
+    public GenerateHostDomain call(Response<TokopediaWsV4Response> response) {
 
         if (response.isSuccessful()) {
             if (!response.body().isNullData()) {

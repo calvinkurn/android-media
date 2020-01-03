@@ -6,8 +6,7 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo.ActResult;
@@ -101,34 +100,9 @@ public class ActReputationRetrofitInteractorImpl implements
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("Network Forbidden Error!");
-                            listener.onFailAuth();
-                        }
-                    }, response.code());
+                    ErrorHandler.getErrorMessage(context, new RuntimeException(
+                            String.valueOf(response.code())
+                    ));
                 }
             }
         };
@@ -179,34 +153,9 @@ public class ActReputationRetrofitInteractorImpl implements
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("Network Forbidden Error!");
-                            listener.onFailAuth();
-                        }
-                    }, response.code());
+                    ErrorHandler.getErrorMessage(context, new RuntimeException(
+                            String.valueOf(response.code())
+                    ));
                 }
             }
         };
@@ -256,34 +205,9 @@ public class ActReputationRetrofitInteractorImpl implements
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("Network Forbidden Error!");
-                            listener.onFailAuth();
-                        }
-                    }, response.code());
+                    ErrorHandler.getErrorMessage(context, new RuntimeException(
+                            String.valueOf(response.code())
+                    ));
                 }
             }
         };
@@ -333,34 +257,9 @@ public class ActReputationRetrofitInteractorImpl implements
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("Network Forbidden Error!");
-                            listener.onFailAuth();
-                        }
-                    }, response.code());
+                    ErrorHandler.getErrorMessage(context, new RuntimeException(
+                            String.valueOf(response.code())
+                    ));
                 }
             }
         };
