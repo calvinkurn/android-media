@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.GlideException;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -76,7 +75,6 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.helper.Resource;
 import com.tokopedia.home.beranda.helper.ViewHelper;
-import com.tokopedia.home.beranda.helper.glide.GlideErrorLogHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
@@ -444,7 +442,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         stickyLoginView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GlideErrorLogHelper.logError(getActivity(), new GlideException("tes glide error production"), "https://ecs7.tokopedia.net/");
+                stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
+                onGoToLogin();
             }
         });
         stickyLoginView.setOnDismissListener(new View.OnClickListener() {
