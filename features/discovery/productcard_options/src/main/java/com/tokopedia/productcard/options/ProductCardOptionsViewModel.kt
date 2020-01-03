@@ -26,8 +26,7 @@ internal class ProductCardOptionsViewModel(
     private val routeToSimilarProductsEventLiveData = MutableLiveData<Event<Boolean>>()
     private val closeProductCardOptionsEventLiveData = MutableLiveData<Event<Boolean>>()
     private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val addWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val removeWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val wishlistEventLiveData = MutableLiveData<Event<Boolean>>()
     private val trackingWishlistEventLiveData = MutableLiveData<Event<WishlistTrackingModel>>()
     private val trackingSeeSimilarProductEventLiveData = MutableLiveData<Event<Boolean>>()
 
@@ -106,46 +105,91 @@ internal class ProductCardOptionsViewModel(
     private fun createWishlistActionListener(): WishListActionListener {
         return object: WishListActionListener {
             override fun onSuccessRemoveWishlist(productId: String?) {
-                trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(false)))
-                removeWishlistEventLiveData.postValue(Event(true))
+                onSuccessRemoveWishlist()
             }
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                removeWishlistEventLiveData.postValue(Event(false))
+                onErrorRemoveWishlist()
             }
 
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                addWishlistEventLiveData.postValue(Event(false))
+                onErrorAddWishlist()
             }
 
             override fun onSuccessAddWishlist(productId: String?) {
-                trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(true)))
-                addWishlistEventLiveData.postValue(Event(true))
+                onSuccessAddWishlist()
             }
         }
+    }
+
+    private fun onSuccessRemoveWishlist() {
+        trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(false)))
+        wishlistEventLiveData.postValue(Event(true))
+        productCardOptionsModel?.wishlistResult = createWishlistResult(isSuccess = true, isAddWishlist = false)
+    }
+
+    private fun onErrorRemoveWishlist() {
+        wishlistEventLiveData.postValue(Event(true))
+        productCardOptionsModel?.wishlistResult = createWishlistResult(isSuccess = false, isAddWishlist = false)
+    }
+
+    private fun onErrorAddWishlist() {
+        wishlistEventLiveData.postValue(Event(true))
+        productCardOptionsModel?.wishlistResult = createWishlistResult(isSuccess = false, isAddWishlist = true)
+    }
+
+    private fun onSuccessAddWishlist() {
+        trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(true)))
+        wishlistEventLiveData.postValue(Event(true))
+        productCardOptionsModel?.wishlistResult = createWishlistResult(isSuccess = true, isAddWishlist = true)
+    }
+
+    private fun createWishlistResult(isSuccess: Boolean, isAddWishlist: Boolean): ProductCardOptionsModel.WishlistResult {
+        return ProductCardOptionsModel.WishlistResult(
+                isSuccess = isSuccess,
+                isAddWishlist = isAddWishlist
+        )
     }
 
     private fun addWishlist(wishListActionListener: WishListActionListener) {
         try {
-            addWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
+            tryAddWishlist(wishListActionListener)
         }
         catch(throwable: Throwable) {
-            throwable.printStackTrace()
-            addWishlistEventLiveData.postValue(Event(false))
+            catchAddWishlistError(throwable)
         }
     }
 
-    private fun removeWishlist(wishListActionListener: WishListActionListener) {
-        try {
-            removeWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
-        }
-        catch(throwable: Throwable) {
-            throwable.printStackTrace()
-            removeWishlistEventLiveData.postValue(Event(false))
-        }
+    private fun tryAddWishlist(wishListActionListener: WishListActionListener) {
+        addWishListUseCase.unsubscribe()
+        addWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
+    }
+
+    private fun catchAddWishlistError(throwable: Throwable) {
+        throwable.printStackTrace()
+        onErrorAddWishlist()
     }
 
     private fun getProductId() = productCardOptionsModel?.productId ?: "0"
+
+    private fun removeWishlist(wishListActionListener: WishListActionListener) {
+        try {
+            tryRemoveWishlist(wishListActionListener)
+        }
+        catch(throwable: Throwable) {
+            catchRemoveWishlistError(throwable)
+        }
+    }
+
+    private fun tryRemoveWishlist(wishListActionListener: WishListActionListener) {
+        removeWishListUseCase.unsubscribe()
+        removeWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
+    }
+
+    private fun catchRemoveWishlistError(throwable: Throwable) {
+        throwable.printStackTrace()
+        onErrorRemoveWishlist()
+    }
 
     private fun postOptionListLiveData() {
         productCardOptionsItemListLiveData.postValue(productCardOptionsItemList)
@@ -159,9 +203,7 @@ internal class ProductCardOptionsViewModel(
 
     fun getRouteToLoginPageEventLiveData(): LiveData<Event<Boolean>> = routeToLoginPageEventLiveData
 
-    fun getAddWishlistEventLiveData(): LiveData<Event<Boolean>> = addWishlistEventLiveData
-
-    fun getRemoveWishlistEventLiveData(): LiveData<Event<Boolean>> = removeWishlistEventLiveData
+    fun getWishlistEventLiveData(): LiveData<Event<Boolean>> = wishlistEventLiveData
 
     fun getTrackingWishlistEventLiveData(): LiveData<Event<WishlistTrackingModel>> = trackingWishlistEventLiveData
 

@@ -16,9 +16,6 @@ internal class ToggleWishlistOptionsTest: Spek({
 
     InstantTaskExecutorRuleSpek(this)
 
-    val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
-    val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
-
     Feature("Click save to wishlist") {
         createTestInstance()
 
@@ -28,6 +25,7 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+                val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelNotWishlisted)
             }
 
@@ -64,6 +62,14 @@ internal class ToggleWishlistOptionsTest: Spek({
 
                 closeProductCardOptionsEvent?.getContentIfNotHandled() shouldBe true
             }
+
+            Then("assert product card options model wishlist result is null") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult
+
+                wishlistResult.shouldBe(null,
+                        "Wishlist result should be null"
+                )
+            }
         }
 
         Scenario("Add Wishlist Product Success") {
@@ -74,6 +80,8 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+
+                val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelNotWishlisted)
             }
 
@@ -116,12 +124,26 @@ internal class ToggleWishlistOptionsTest: Spek({
                 trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
             }
 
-            Then("assert add wishlist event is true") {
-                val addWishlistEventLiveData = productCardOptionsViewModel.getAddWishlistEventLiveData().value
+            Then("assert wishlist event is true") {
+                val wishlistEventLiveData = productCardOptionsViewModel.getWishlistEventLiveData().value
 
-                addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                wishlistEventLiveData?.getContentIfNotHandled().shouldBe(
                         true,
-                        "Add wishlist event should be true"
+                        "Wishlist event should be true"
+                )
+            }
+
+            Then("assert product card options model has wishlist result with isAddWishlist = true and isSuccess = true") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
+
+                wishlistResult.isSuccess.shouldBe(
+                        true,
+                        "Wishlist result isSuccess should be true"
+                )
+
+                wishlistResult.isAddWishlist.shouldBe(
+                        true,
+                        "Wishlist result isAddWishlist should be true"
                 )
             }
         }
@@ -134,6 +156,7 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+                val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelNotWishlisted)
             }
 
@@ -169,12 +192,26 @@ internal class ToggleWishlistOptionsTest: Spek({
                 trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
             }
 
-            Then("assert add wishlist event is false") {
-                val addWishlistEventLiveData = productCardOptionsViewModel.getAddWishlistEventLiveData().value
+            Then("assert wishlist event is true") {
+                val wishlistEventLiveData = productCardOptionsViewModel.getWishlistEventLiveData().value
 
-                addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                wishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                        true,
+                        "Wishlist event should be true"
+                )
+            }
+
+            Then("assert product card options model has wishlist result with isAddWishlist = true and isSuccess = false") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
+
+                wishlistResult.isSuccess.shouldBe(
                         false,
-                        "Add wishlist event should be false"
+                        "Wishlist result isSuccess should be false"
+                )
+
+                wishlistResult.isAddWishlist.shouldBe(
+                        true,
+                        "Wishlist result isAddWishlist should be true"
                 )
             }
         }
@@ -188,6 +225,7 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+                val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelNotWishlisted)
             }
 
@@ -226,12 +264,26 @@ internal class ToggleWishlistOptionsTest: Spek({
                 trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
             }
 
-            Then("assert add wishlist event is false") {
-                val addWishlistEventLiveData = productCardOptionsViewModel.getAddWishlistEventLiveData().value
+            Then("assert wishlist event is true") {
+                val wishlistEventLiveData = productCardOptionsViewModel.getWishlistEventLiveData().value
 
-                addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                wishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                        true,
+                        "Wishlist event should be true"
+                )
+            }
+
+            Then("assert product card options model has wishlist result with isAddWishlist = true and isSuccess = false") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
+
+                wishlistResult.isSuccess.shouldBe(
                         false,
-                        "Add wishlist event should be false"
+                        "Wishlist result isSuccess should be false"
+                )
+
+                wishlistResult.isAddWishlist.shouldBe(
+                        true,
+                        "Wishlist result isAddWishlist should be true"
                 )
             }
         }
@@ -246,6 +298,7 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+                val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelWishlisted)
             }
 
@@ -282,6 +335,14 @@ internal class ToggleWishlistOptionsTest: Spek({
 
                 closeProductCardOptionsEvent?.getContentIfNotHandled() shouldBe true
             }
+
+            Then("assert product card options model wishlist result is null") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult
+
+                wishlistResult.shouldBe(null,
+                        "Wishlist result should be null"
+                )
+            }
         }
 
         Scenario("Delete Wishlist Product Success") {
@@ -292,6 +353,7 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+                val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelWishlisted)
             }
 
@@ -334,17 +396,31 @@ internal class ToggleWishlistOptionsTest: Spek({
                         "Route to login page should be null")
             }
 
-            Then("assert remove wishlist event is true") {
-                val removeWishlistEventLiveData = productCardOptionsViewModel.getRemoveWishlistEventLiveData().value
+            Then("assert wishlist event is true") {
+                val wishlistEventLiveData = productCardOptionsViewModel.getWishlistEventLiveData().value
 
-                removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                wishlistEventLiveData?.getContentIfNotHandled().shouldBe(
                         true,
-                        "Remove wishlist event should be true"
+                        "Wishlist event should be true"
+                )
+            }
+
+            Then("assert product card options model has wishlist result with isAddWishlist = false and isSuccess = true") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
+
+                wishlistResult.isSuccess.shouldBe(
+                        true,
+                        "Wishlist result isSuccess should be true"
+                )
+
+                wishlistResult.isAddWishlist.shouldBe(
+                        false,
+                        "Wishlist result isAddWishlist should be false"
                 )
             }
         }
 
-        Scenario("Delete Wishlist Product Failed") {
+        Scenario("Delete Wishlist Product Failed and handled in onErrorRemoveWishlist") {
             val userId = "123456"
             val removeWishListUseCase by memoized<RemoveWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
@@ -352,6 +428,7 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+                val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelWishlisted)
             }
 
@@ -387,12 +464,26 @@ internal class ToggleWishlistOptionsTest: Spek({
                         "Route to login page should be null")
             }
 
-            Then("assert remove wishlist event is false") {
-                val removeWishlistEventLiveData = productCardOptionsViewModel.getRemoveWishlistEventLiveData().value
+            Then("assert wishlist event is true") {
+                val wishlistEventLiveData = productCardOptionsViewModel.getWishlistEventLiveData().value
 
-                removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                wishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                        true,
+                        "Wishlist event should be true"
+                )
+            }
+
+            Then("assert product card options model has wishlist result with isAddWishlist = false and isSuccess = false") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
+
+                wishlistResult.isSuccess.shouldBe(
                         false,
-                        "Remove wishlist event should be false"
+                        "Wishlist result isSuccess should be false"
+                )
+
+                wishlistResult.isAddWishlist.shouldBe(
+                        false,
+                        "Wishlist result isAddWishlist should be false"
                 )
             }
         }
@@ -406,6 +497,7 @@ internal class ToggleWishlistOptionsTest: Spek({
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
             Given("Product Card Options View Model") {
+                val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
                 productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelWishlisted)
             }
 
@@ -444,12 +536,26 @@ internal class ToggleWishlistOptionsTest: Spek({
                         "Route to login page should be null")
             }
 
-            Then("assert remove wishlist event is false") {
-                val removeWishlistEventLiveData = productCardOptionsViewModel.getRemoveWishlistEventLiveData().value
+            Then("assert wishlist event is true") {
+                val wishlistEventLiveData = productCardOptionsViewModel.getWishlistEventLiveData().value
 
-                removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                wishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+                        true,
+                        "Wishlist event should be true"
+                )
+            }
+
+            Then("assert product card options model has wishlist result with isAddWishlist = false and isSuccess = false") {
+                val wishlistResult = productCardOptionsViewModel.productCardOptionsModel?.wishlistResult!!
+
+                wishlistResult.isSuccess.shouldBe(
                         false,
-                        "Remove wishlist event should be false"
+                        "Wishlist result isSuccess should be false"
+                )
+
+                wishlistResult.isAddWishlist.shouldBe(
+                        false,
+                        "Wishlist result isAddWishlist should be false"
                 )
             }
         }

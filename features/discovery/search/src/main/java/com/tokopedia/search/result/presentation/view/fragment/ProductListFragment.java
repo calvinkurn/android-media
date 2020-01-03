@@ -486,16 +486,22 @@ public class ProductListFragment
         }
     }
 
-    private void handleWishlistAction(boolean isAddWishlist, boolean isSuccess, ProductCardOptionsModel productCardOptionsModel) {
-        if (isSuccess) {
-            handleSuccessWishlistAction(isAddWishlist, productCardOptionsModel);
+    private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (productCardOptionsModel == null || productCardOptionsModel.getWishlistResult() == null) return;
+
+        if (productCardOptionsModel.getWishlistResult().isSuccess()) {
+            handleSuccessWishlistAction(productCardOptionsModel);
         }
         else {
-            handleFailedWishlistAction(isAddWishlist);
+            handleFailedWishlistAction(productCardOptionsModel);
         }
     }
 
-    private void handleSuccessWishlistAction(boolean isAddWishlist, ProductCardOptionsModel productCardOptionsModel) {
+    private void handleSuccessWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (productCardOptionsModel.getWishlistResult() == null) return;
+
+        boolean isAddWishlist = productCardOptionsModel.getWishlistResult().isAddWishlist();
+
         adapter.updateWishlistStatus(productCardOptionsModel.getProductId(), isAddWishlist);
 
         if (isAddWishlist) {
@@ -505,8 +511,10 @@ public class ProductListFragment
         }
     }
 
-    private void handleFailedWishlistAction(boolean isAddWishlist) {
-        if (isAddWishlist) {
+    private void handleFailedWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (productCardOptionsModel.getWishlistResult() == null) return;
+
+        if (productCardOptionsModel.getWishlistResult().isAddWishlist()) {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));

@@ -14,6 +14,8 @@ data class ProductCardOptionsModel(
         var seeSimilarProductEvent: String = ""
 ): Parcelable {
 
+    var wishlistResult: WishlistResult? = null
+
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
@@ -33,6 +35,7 @@ data class ProductCardOptionsModel(
         parcel.writeByte(if (isTopAds) 1 else 0)
         parcel.writeString(screenName)
         parcel.writeString(seeSimilarProductEvent)
+        parcel.writeParcelable(wishlistResult, flags)
     }
 
     override fun describeContents(): Int {
@@ -41,11 +44,41 @@ data class ProductCardOptionsModel(
 
     companion object CREATOR : Parcelable.Creator<ProductCardOptionsModel> {
         override fun createFromParcel(parcel: Parcel): ProductCardOptionsModel {
-            return ProductCardOptionsModel(parcel)
+            return ProductCardOptionsModel(parcel).also {
+                it.wishlistResult = parcel.readParcelable(WishlistResult::class.java.classLoader)
+            }
         }
 
         override fun newArray(size: Int): Array<ProductCardOptionsModel?> {
             return arrayOfNulls(size)
+        }
+    }
+
+    data class WishlistResult(
+            var isSuccess: Boolean = false,
+            var isAddWishlist: Boolean = false
+    ): Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readByte() != 0.toByte(),
+                parcel.readByte() != 0.toByte())
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeByte(if (isSuccess) 1 else 0)
+            parcel.writeByte(if (isAddWishlist) 1 else 0)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<WishlistResult> {
+            override fun createFromParcel(parcel: Parcel): WishlistResult {
+                return WishlistResult(parcel)
+            }
+
+            override fun newArray(size: Int): Array<WishlistResult?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 }

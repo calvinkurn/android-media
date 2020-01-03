@@ -14,8 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
-import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_IS_ADD_WISHLIST
-import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_IS_SUCCESS
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.manager.startSimilarSearch
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
@@ -53,7 +51,6 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeCloseProductCardOptionsEventLiveData()
         observeRouteToLoginPageEventLiveData()
         observeAddWishlistEventLiveData()
-        observeRemoveWishlistEventLiveData()
         observeTrackingWishlistEventLiveData()
         observeTrackingSeeSimilarProductsEventLiveData()
     }
@@ -129,28 +126,20 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun observeAddWishlistEventLiveData() {
-        productCardOptionsViewModel?.getAddWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccess ->
-            setResultWishlistEvent(true, isSuccess)
+        productCardOptionsViewModel?.getWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccess ->
+            setResultWishlistEvent()
         })
     }
 
-    private fun setResultWishlistEvent(isAddWishlist: Boolean, isSuccess: Boolean) {
-        activity?.setResult(Activity.RESULT_OK, createWishlistResultIntent(isAddWishlist, isSuccess))
+    private fun setResultWishlistEvent() {
+        activity?.setResult(Activity.RESULT_OK, createWishlistResultIntent())
         activity?.finish()
     }
 
-    private fun createWishlistResultIntent(isAddWishlist: Boolean, isSuccess: Boolean): Intent {
+    private fun createWishlistResultIntent(): Intent {
         return Intent().also {
-            it.putExtra(PRODUCT_CARD_OPTION_RESULT_IS_ADD_WISHLIST, isAddWishlist)
-            it.putExtra(PRODUCT_CARD_OPTION_RESULT_IS_SUCCESS, isSuccess)
             it.putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, productCardOptionsViewModel?.productCardOptionsModel)
         }
-    }
-
-    private fun observeRemoveWishlistEventLiveData() {
-        productCardOptionsViewModel?.getRemoveWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccess ->
-            setResultWishlistEvent(false, isSuccess)
-        })
     }
 
     private fun observeTrackingWishlistEventLiveData() {
