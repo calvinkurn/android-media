@@ -160,7 +160,12 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun renderMyBillsEgoldView(data: FintechProduct?) {
         if (data != null) {
             with(data) {
-                mybillEgold.getSubscriptionCheckbox().visibility = if (checkBoxDisabled) View.GONE else View.VISIBLE
+                if (checkBoxDisabled) {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.GONE
+                } else {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.VISIBLE
+                    mybillEgold.setChecked(data.optIn)
+                }
                 mybillEgold.hasMoreInfo(true)
                 info?.title?.let { title -> mybillEgold.setHeaderTitle(title) }
                 info?.subtitle?.let { desc -> mybillEgold.setDescription(desc) }
@@ -196,7 +201,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
             moreInfoBottomSheet.setCloseClickListener {
                 moreInfoBottomSheet.dismiss()
             }
-            moreInfoBottomSheet.show(fragmentManager,"E-gold more info bottom sheet")
+            fragmentManager?.run { moreInfoBottomSheet.show(this,"E-gold more info bottom sheet") }
         }
     }
 
