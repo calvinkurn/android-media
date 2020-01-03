@@ -15,13 +15,32 @@ class PlayRemoteDataSource(
         private val graphqlRepository: GraphqlRepository,
         @Named("dispatchersIO") private val dispatchers: CoroutineDispatcher
 ) {
-    suspend fun getPlayData() = withContext(dispatchers) {
+    companion object{
+        private const val PARAM_PAGE = "page"
+        private const val PARAM_SOURCE = "source"
+        private const val PARAM_LIMIT = "limit"
+        private const val PARAM_DEVICE = "device"
+        private const val DEFAULT_SOURCE = "homepage"
+        private const val DEFAULT_LIMIT = 1
+        private const val DEFAULT_PAGE = 1
+        private const val DEFAULT_DEVICE = "android"
+    }
+    suspend fun getPlayData(
+            source: String = DEFAULT_SOURCE, page: Int = DEFAULT_PAGE, limit: Int = DEFAULT_LIMIT
+    ) = withContext(dispatchers) {
         val cacheStrategy =
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
+        val params = mapOf(
+                PARAM_SOURCE to source,
+                PARAM_PAGE to page,
+                PARAM_LIMIT to limit,
+                PARAM_DEVICE to DEFAULT_DEVICE
+        )
         val gqlRecommendationRequest = GraphqlRequest(
                 PlayLiveDynamicChannelQuery.getQuery(),
-                PlayLiveDynamicChannelEntity::class.java
+                PlayLiveDynamicChannelEntity::class.java,
+                params
         )
         val response = graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
         val errors = response.getError(PlayLiveDynamicChannelEntity::class.java)
