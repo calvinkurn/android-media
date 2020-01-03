@@ -27,7 +27,7 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     private var categoryDetail = MutableLiveData<Result<Data>>()
     private var redirectionUrl = MutableLiveData<Result<String>>()
-    private var adultProduct = MutableLiveData<Result<Boolean>>()
+    private var adultProduct = MutableLiveData<Result<String>>()
 
     fun fetchCategoryDetail(departmentId: String) {
         launchCatchError(block = {
@@ -46,7 +46,7 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
                 handleForRedirectionIfEnabled(it.appRedirectionURL)
             }
             checkIfAdult(it.isAdult) -> {
-                handleForAdultProduct()
+                handleForAdultProduct(it)
             }
             else -> {
                 handleForCategoryDetail(it)
@@ -58,8 +58,8 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         categoryDetail.value = Success(data)
     }
 
-    private fun handleForAdultProduct() {
-        adultProduct.value = Success(true)
+    private fun handleForAdultProduct(data: Data) {
+        adultProduct.value = Success(data.name.toString())
     }
 
     private fun handleForRedirectionIfEnabled(appRedirection: String?) {
@@ -87,7 +87,7 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return redirectionUrl
     }
 
-    fun getAdultProductLiveData(): LiveData<Result<Boolean>> {
+    fun getAdultProductLiveData(): MutableLiveData<Result<String>> {
         return adultProduct
     }
 }
