@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter
@@ -113,7 +114,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         isSeller = userSession.hasShop() || userSession.isAffiliate
         val saldoHelp = findViewById<TextView>(com.tokopedia.saldodetails.R.id.toolbar_saldo_help)
 
-        saldoHelp.visibility = View.VISIBLE
+        saldoHelp.show()
         saldoHelp.setOnClickListener { v -> RouteManager.route(this, ApplinkConstInternalGlobal.SALDO_INTRO) }
     }
 

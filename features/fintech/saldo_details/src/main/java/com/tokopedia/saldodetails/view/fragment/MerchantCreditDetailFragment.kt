@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
@@ -85,7 +87,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         if (merchantCreditDetails != null) {
 
             if (!TextUtils.isEmpty(merchantCreditDetails!!.logoURL)) {
-                mclLogoIV!!.visibility = View.VISIBLE
+                mclLogoIV!!.show()
                 ImageHandler.loadImage(context, mclLogoIV, merchantCreditDetails!!.logoURL, com.tokopedia.design.R.drawable.ic_modal_toko)
             } else {
                 mclLogoIV!!.setImageDrawable(resources.getDrawable(com.tokopedia.design.R.drawable.ic_modal_toko))
@@ -100,28 +102,28 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
             if (merchantCreditDetails!!.anchorList != null) {
                 populateAnchorListData()
             } else {
-                mclActionItemTV!!.visibility = View.GONE
+                mclActionItemTV!!.gone()
             }
 
             if (!TextUtils.isEmpty(merchantCreditDetails!!.bodyDesc)) {
                 mclDescTV!!.text = merchantCreditDetails!!.bodyDesc
-                mclDescTV!!.visibility = View.VISIBLE
+                mclDescTV!!.show()
             } else {
-                mclDescTV!!.visibility = View.GONE
+                mclDescTV!!.gone()
             }
 
             if (merchantCreditDetails!!.infoList != null && merchantCreditDetails!!.infoList.size > 0) {
-                mclInfoListLL!!.visibility = View.VISIBLE
+                mclInfoListLL!!.show()
                 populateInfolistData()
             } else {
-                mclInfoListLL!!.visibility = View.GONE
+                mclInfoListLL!!.gone()
             }
 
             if (merchantCreditDetails!!.isShowBox && merchantCreditDetails!!.boxInfo != null) {
-                mclBoxLayout!!.visibility = View.VISIBLE
+                mclBoxLayout!!.show()
                 populateBoxData()
             } else {
-                mclBoxLayout!!.visibility = View.GONE
+                mclBoxLayout!!.gone()
             }
 
             mclParentCardView!!.setOnClickListener { v ->
@@ -141,14 +143,14 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         mclBoxLayout!!.background = drawable
 
         if (!TextUtils.isEmpty(merchantCreditDetails!!.boxInfo!!.boxTitle)) {
-            mclboxTitleTV!!.visibility = View.VISIBLE
+            mclboxTitleTV!!.show()
             mclboxTitleTV!!.text = merchantCreditDetails!!.boxInfo!!.boxTitle
         } else {
-            mclboxTitleTV!!.visibility = View.GONE
+            mclboxTitleTV!!.gone()
         }
 
         if (!TextUtils.isEmpty(merchantCreditDetails!!.boxInfo!!.boxDesc)) {
-            mclBoxDescTV!!.visibility = View.VISIBLE
+            mclBoxDescTV!!.show()
             var descText = merchantCreditDetails!!.boxInfo!!.boxDesc
             if (!TextUtils.isEmpty(merchantCreditDetails!!.boxInfo!!.linkText)) {
                 val linkText = merchantCreditDetails!!.boxInfo!!.linkText
@@ -186,7 +188,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
             }
 
         } else {
-            mclBoxDescTV!!.visibility = View.GONE
+            mclBoxDescTV!!.gone()
         }
     }
 
@@ -243,7 +245,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
-        mclActionItemTV!!.visibility = View.VISIBLE
+        mclActionItemTV!!.show()
     }
 
     override fun initInjector() {

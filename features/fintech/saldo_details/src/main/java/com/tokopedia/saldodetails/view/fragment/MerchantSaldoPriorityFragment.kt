@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
@@ -153,12 +155,12 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
     private fun populateData() {
 
         if (sellerDetails!!.isShowToggle) {
-            spEnableSwitchCompat!!.visibility = View.VISIBLE
+            spEnableSwitchCompat!!.show()
             spEnableSwitchCompat!!.isChecked = sellerDetails!!.isEnabled
             spEnableSwitchCompat!!.isClickable = true
             originalSwitchState = sellerDetails!!.isEnabled
         } else {
-            spEnableSwitchCompat!!.visibility = View.GONE
+            spEnableSwitchCompat!!.gone()
         }
 
         if (!TextUtils.isEmpty(sellerDetails!!.title)) {
@@ -168,38 +170,38 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
         }
 
         if (sellerDetails!!.isShowNewLogo) {
-            spNewTitle!!.visibility = View.VISIBLE
+            spNewTitle!!.show()
         } else {
-            spNewTitle!!.visibility = View.GONE
+            spNewTitle!!.gone()
         }
 
         if (!TextUtils.isEmpty(sellerDetails!!.description)) {
             spDescription!!.text = Html.fromHtml(sellerDetails!!.description)
-            spDescription!!.visibility = View.VISIBLE
+            spDescription!!.show()
         } else {
-            spDescription!!.visibility = View.GONE
+            spDescription!!.gone() //visibility = View.GONE
         }
 
         if (!TextUtils.isEmpty(sellerDetails!!.boxTitle)) {
-            spKYCStatusLayout!!.visibility = View.VISIBLE
-            spKYCShortDesc!!.visibility = View.VISIBLE
+            spKYCStatusLayout!!.show() //visibility = View.VISIBLE
+            spKYCShortDesc!!.show() //visibility = View.VISIBLE
             spKYCShortDesc!!.text = Html.fromHtml(sellerDetails!!.boxTitle)
 
             if (!TextUtils.isEmpty(sellerDetails!!.boxDesc)) {
-                spKYCLongDesc!!.visibility = View.VISIBLE
+                spKYCLongDesc!!.show() //visibility = View.VISIBLE
                 spKYCLongDesc!!.text = Html.fromHtml(sellerDetails!!.boxDesc)
             } else {
-                spKYCLongDesc!!.visibility = View.GONE
+                spKYCLongDesc!!.gone() //visibility = View.GONE
             }
 
             if (sellerDetails!!.isShowRightArrow) {
-                spRightArrow!!.visibility = View.VISIBLE
+                spRightArrow!!.show() //visibility = View.VISIBLE
             } else {
-                spRightArrow!!.visibility = View.GONE
+                spRightArrow!!.gone() //visibility = View.GONE
             }
             setBoxBackground()
         } else {
-            spKYCStatusLayout!!.visibility = View.GONE
+            spKYCStatusLayout!!.gone() //visibility = View.GONE
         }
 
 
@@ -216,7 +218,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
     private fun setBoxBackground() {
         val boxType = sellerDetails!!.boxType
         if (boxType!!.equals(NONE, ignoreCase = true)) {
-            spStatusInfoIcon!!.visibility = View.GONE
+            spStatusInfoIcon!!.gone() //visibility = View.GONE
         } else if (boxType.equals(DEFAULT, ignoreCase = true)) {
 
             spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_green))
