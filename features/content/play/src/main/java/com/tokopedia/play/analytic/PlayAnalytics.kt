@@ -24,14 +24,15 @@ object PlayAnalytics {
     }
 
     fun sendScreen(channelId: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/group-chat-room/$channelId")
     }
 
     fun clickLeaveRoom(channelId: String, duration: Long, isLive: Boolean) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_BACK,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "leave room",
+                "$channelId - $duration - ${getLiveOrVod(isLive)}"
         )
     }
 
@@ -39,8 +40,8 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK - shop",
+                "$shopId - $channelId - ${getLiveOrVod(isLive)}"
         )
     }
 
@@ -48,8 +49,8 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK follow shop",
+                "$channelId - $shopId - ${getLiveOrVod(isLive)}"
         )
     }
 
@@ -57,8 +58,8 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK watch area",
+                "$channelId - ${getLiveOrVod(isLive)}"
         )
     }
 
@@ -66,17 +67,18 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK on admin pinned message",
+                "$channelId - $message - ${getLiveOrVod(isLive)}"
         )
     }
 
     fun clickLike(channelId: String, isLike: Boolean, isLive: Boolean) {
+        val action = if(isLike) "like" else "unlike"
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK $action",
+                "$channelId - ${getLiveOrVod(isLive)}"
         )
     }
 
@@ -84,8 +86,8 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_VIEW_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "error state",
+                "$channelId - $errorMessage - ${getLiveOrVod(isLive)}"
         )
     }
 
@@ -93,8 +95,8 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK on quick reply component",
+                channelId
         )
     }
 
@@ -102,8 +104,8 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK on button send",
+                channelId
         )
     }
 
@@ -111,8 +113,8 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "",
-                ""
+                "$KEY_TRACK_CLICK watch mode option",
+                "$channelId - ${getLiveOrVod(isLive)}"
         )
     }
 }
