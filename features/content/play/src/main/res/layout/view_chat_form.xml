@@ -27,6 +27,7 @@
             android:textColor="@color/Neutral_N0"
             android:textColorHint="@color/play_chat_text"
             android:textSize="@dimen/sp_12"
+            android:inputType="textVisiblePassword"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_send"
             app:layout_constraintStart_toStartOf="parent"
