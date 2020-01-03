@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ZOOM_LEVEL_THRESHOLD
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
@@ -45,7 +46,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     }
 
     fun autofill(lat: Double, long: Double, zoom: Float) {
-        if (AddNewAddressUtils.hasDefaultCoordinate(lat, long) || zoom < 14f) {
+        if (AddNewAddressUtils.hasDefaultCoordinate(lat, long) || zoom < ZOOM_LEVEL_THRESHOLD) {
             view.showUndetectedDialog()
             return
         }
