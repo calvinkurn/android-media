@@ -18,7 +18,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String, String>,
+open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String, String>,
                                               private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
 
     companion object {

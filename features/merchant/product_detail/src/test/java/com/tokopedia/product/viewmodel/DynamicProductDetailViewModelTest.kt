@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.product.TestDispatcherProvider
+import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
@@ -170,8 +170,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.productInfoP3resp.value?.rateEstSummarizeText)
         Assert.assertNotNull(viewModel.productInfoP3resp.value?.ratesModel)
         Assert.assertEquals(viewModel.productInfoP3resp.value?.userCod, anyBoolean())
-        print(viewModel.productLayout.value)
-
     }
 
     @Test

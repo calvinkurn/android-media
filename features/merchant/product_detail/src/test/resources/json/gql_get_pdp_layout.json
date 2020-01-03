@@ -1,0 +1,423 @@
+{
+  "data": {
+    "pdpGetLayout": {
+      "name": "Default Layout",
+      "basicInfo": {
+        "productID": "569576426",
+        "category": {
+          "id": "65",
+          "name": "Handphone & Tablet",
+          "title": "Handphone & Tablet",
+          "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet",
+          "isAdult": false,
+          "detail": []
+        },
+        "menu": {
+          "id": "21570545",
+          "name": "iPhone 11 Pro Max",
+          "url": "https://www.tokopedia.com/putragroup/etalase/iphone-11-pro-max"
+        },
+        "shopID": "1265115",
+        "weight": 1,
+        "weightUnit": "KILOGRAM",
+        "condition": "NEW",
+        "alias": "dual-sim-iphone-256gb-256-11-pro-max-gold-green-silver-grey-gray-grey",
+        "minOrder": 1,
+        "maxOrder": 0,
+        "status": "ACTIVE",
+        "url": "https://www.tokopedia.com/putragroup/dual-sim-iphone-256gb-256-11-pro-max-gold-green-silver-grey-gray-grey",
+        "sku": "",
+        "gtin": "",
+        "isMustInsurance": false,
+        "catalogID": "0",
+        "needPrescription": false,
+        "isLeasing": false,
+        "isBlacklisted": false,
+        "blacklistMessage": {
+          "title": "",
+          "description": "",
+          "button": "",
+          "url": ""
+        }
+      },
+      "components": [
+        {
+          "name": "product_snapshot",
+          "type": "product_snapshot",
+          "data": [
+            {
+              "name": "(DUAL SIM) iPhone 256GB / 256 11 Pro Max Gold Green Silver Grey / Gray - Grey",
+              "media": [
+                {
+                  "type": "image",
+                  "URLOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/20/10122977/10122977_0471f09f-7582-4257-8c1f-b7c39f40e184_700_700",
+                  "URLThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/20/10122977/10122977_0471f09f-7582-4257-8c1f-b7c39f40e184_700_700",
+                  "URL300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/20/10122977/10122977_0471f09f-7582-4257-8c1f-b7c39f40e184_700_700",
+                  "description": "",
+                  "videoURLAndroid": "",
+                  "videoURLIOS": "",
+                  "isAutoplay": false
+                },
+                {
+                  "type": "image",
+                  "URLOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_5126a20a-ce22-41ef-b8e2-f7eff8231205_700_700",
+                  "URLThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/23/10122977/10122977_5126a20a-ce22-41ef-b8e2-f7eff8231205_700_700",
+                  "URL300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/23/10122977/10122977_5126a20a-ce22-41ef-b8e2-f7eff8231205_700_700",
+                  "description": "",
+                  "videoURLAndroid": "",
+                  "videoURLIOS": "",
+                  "isAutoplay": false
+                },
+                {
+                  "type": "image",
+                  "URLOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_8709f859-e213-4fc3-908b-acad99dea4df_700_700",
+                  "URLThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/23/10122977/10122977_8709f859-e213-4fc3-908b-acad99dea4df_700_700",
+                  "URL300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/23/10122977/10122977_8709f859-e213-4fc3-908b-acad99dea4df_700_700",
+                  "description": "",
+                  "videoURLAndroid": "",
+                  "videoURLIOS": "",
+                  "isAutoplay": false
+                },
+                {
+                  "type": "image",
+                  "URLOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_7cda1bcf-7201-4e85-b689-568afedbda0f_700_700",
+                  "URLThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/23/10122977/10122977_7cda1bcf-7201-4e85-b689-568afedbda0f_700_700",
+                  "URL300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/23/10122977/10122977_7cda1bcf-7201-4e85-b689-568afedbda0f_700_700",
+                  "description": "",
+                  "videoURLAndroid": "",
+                  "videoURLIOS": "",
+                  "isAutoplay": false
+                }
+              ],
+              "pictures": [
+                {
+                  "picID": "1490537013",
+                  "description": "",
+                  "filePath": "product-1/2019/9/20/10122977",
+                  "fileName": "10122977_0471f09f-7582-4257-8c1f-b7c39f40e184_700_700",
+                  "width": 700,
+                  "height": 700,
+                  "isFromIG": false,
+                  "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/20/10122977/10122977_0471f09f-7582-4257-8c1f-b7c39f40e184_700_700",
+                  "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/20/10122977/10122977_0471f09f-7582-4257-8c1f-b7c39f40e184_700_700",
+                  "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/20/10122977/10122977_0471f09f-7582-4257-8c1f-b7c39f40e184_700_700",
+                  "Status": 2
+                },
+                {
+                  "picID": "1490537014",
+                  "description": "",
+                  "filePath": "product-1/2019/9/23/10122977",
+                  "fileName": "10122977_5126a20a-ce22-41ef-b8e2-f7eff8231205_700_700",
+                  "width": 700,
+                  "height": 700,
+                  "isFromIG": false,
+                  "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_5126a20a-ce22-41ef-b8e2-f7eff8231205_700_700",
+                  "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_5126a20a-ce22-41ef-b8e2-f7eff8231205_700_700",
+                  "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/23/10122977/10122977_5126a20a-ce22-41ef-b8e2-f7eff8231205_700_700",
+                  "Status": 1
+                },
+                {
+                  "picID": "1490537015",
+                  "description": "",
+                  "filePath": "product-1/2019/9/23/10122977",
+                  "fileName": "10122977_8709f859-e213-4fc3-908b-acad99dea4df_700_700",
+                  "width": 700,
+                  "height": 700,
+                  "isFromIG": false,
+                  "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_8709f859-e213-4fc3-908b-acad99dea4df_700_700",
+                  "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_8709f859-e213-4fc3-908b-acad99dea4df_700_700",
+                  "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/23/10122977/10122977_8709f859-e213-4fc3-908b-acad99dea4df_700_700",
+                  "Status": 1
+                },
+                {
+                  "picID": "1490537016",
+                  "description": "",
+                  "filePath": "product-1/2019/9/23/10122977",
+                  "fileName": "10122977_7cda1bcf-7201-4e85-b689-568afedbda0f_700_700",
+                  "width": 700,
+                  "height": 700,
+                  "isFromIG": false,
+                  "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_7cda1bcf-7201-4e85-b689-568afedbda0f_700_700",
+                  "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/23/10122977/10122977_7cda1bcf-7201-4e85-b689-568afedbda0f_700_700",
+                  "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/23/10122977/10122977_7cda1bcf-7201-4e85-b689-568afedbda0f_700_700",
+                  "Status": 1
+                }
+              ],
+              "preorder": {
+                "duration": 0,
+                "timeUnit": "UNKNOWN",
+                "isActive": false
+              },
+              "videos": [
+                {
+                  "source": "youtube",
+                  "url": "xK-gWtjf4AM"
+                },
+                {
+                  "source": "youtube",
+                  "url": "Z29tLQEvp-s"
+                },
+                {
+                  "source": "youtube",
+                  "url": "cVEemOmHw9Y"
+                }
+              ],
+              "price": {
+                "value": 20990000,
+                "currency": "IDR",
+                "lastUpdateUnix": "1578023475"
+              },
+              "campaign": {
+                "campaignID": "0",
+                "campaignType": "0",
+                "campaignTypeName": "",
+                "percentageAmount": 0,
+                "originalPrice": 0,
+                "discountedPrice": 0,
+                "stock": 0,
+                "startDate": "0001-01-01T00:00:00Z",
+                "endDate": "0001-01-01T00:00:00Z",
+                "endDateUnix": "-62135622000",
+                "appLinks": "",
+                "isAppsOnly": false,
+                "isActive": false,
+                "hideGimmick": false
+              },
+              "stock": {
+                "useStock": true,
+                "value": "8",
+                "stockWording": "<b>Stok hampir habis!</b> Tersisa &lt;10"
+              },
+              "variant": {
+                "isVariant": true,
+                "parentID": "556486708"
+              },
+              "wholesale": [],
+              "isCashback": {
+                "percentage": 0
+              },
+              "isFreeOngkir": {
+                "isActive": false,
+                "imageURL": ""
+              },
+              "isTradeIn": false,
+              "isOS": false,
+              "isPowerMerchant": true,
+              "isWishlist": false,
+              "isCOD": false
+            }
+          ]
+        },
+        {
+          "name": "social_proof",
+          "type": "social_proof",
+          "data": []
+        },
+        {
+          "name": "value_prop",
+          "type": "value_prop",
+          "data": []
+        },
+        {
+          "name": "separator",
+          "type": "separator",
+          "data": []
+        },
+        {
+          "name": "shop_voucher",
+          "type": "shop_voucher",
+          "data": []
+        },
+        {
+          "name": "variant",
+          "type": "info",
+          "data": [
+            {
+              "title": "Variant Product",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "wholesale",
+          "type": "info",
+          "data": [
+            {
+              "title": "Harga Grosir",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "installment",
+          "type": "info",
+          "data": [
+            {
+              "title": "Cicilan",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "shipping",
+          "type": "info",
+          "data": [
+            {
+              "title": "Kurir",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "tradein",
+          "type": "info",
+          "data": [
+            {
+              "title": "Tukar Tambah Sekarang",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "fulfillment",
+          "type": "info",
+          "data": [
+            {
+              "title": "Dilayani oleh Tokopedia",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "protection",
+          "type": "info",
+          "data": [
+            {
+              "title": "Proteksi Gadget",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "order_prio",
+          "type": "info",
+          "data": [
+            {
+              "title": "Order Prioritas",
+              "applink": "",
+              "content": []
+            }
+          ]
+        },
+        {
+          "name": "separator",
+          "type": "separator",
+          "data": []
+        },
+        {
+          "name": "product_info",
+          "type": "product_info",
+          "data": [
+            {
+              "row": "top",
+              "content": [
+                {
+                  "title": "Berat",
+                  "subtitle": "1 Kg",
+                  "applink": ""
+                },
+                {
+                  "title": "Kondisi",
+                  "subtitle": "Baru",
+                  "applink": ""
+                },
+                {
+                  "title": "Pemesanan Min",
+                  "subtitle": "1 Buah",
+                  "applink": ""
+                },
+                {
+                  "title": "Kategori",
+                  "subtitle": "Handphone & Tablet",
+                  "applink": "https://www.tokopedia.com/p/handphone-tablet"
+                },
+                {
+                  "title": "Etalase",
+                  "subtitle": "iPhone 11 Pro Max",
+                  "applink": "https://www.tokopedia.com/putragroup/etalase/iphone-11-pro-max"
+                }
+              ]
+            },
+            {
+              "row": "bottom",
+              "content": [
+                {
+                  "title": "Deskripsi",
+                  "subtitle": "READY STOCK - TANPA PO - TANPA DP\nANDA ORDER - KAMI ANTAR\nMOHON KONFIRMASI WARNA & SIZE - STOK TERBATAS\n\nMAU SPLIT TRANSAKSI PAKE KARTU KREDIT / PAKE 2 KUPON CASHBACK?\n\nFAST RESPONSE :\nWA / SMS / TELP : 081282871080 / 082234908637\nLINE : @putragroup ( pakai @ ya )\nIG : @putragroup•id\n\n**PENTING SEBELUM DI ORDER**\n\nDUAL SIM ( Nano + Esim )\nDUAL SIM ( Nano + Nano ) - HK SET\n\nMohon pilih variant sesuai keinginan anda !\nSemua bisa claim di Indonesia tanpa terkecuali ! \n\nMemori : 64 GB - 256 GB - 512 GB\nWarna : Green - Gold - Grey - Silver\n\nCek tipe lain nya disini ya:\nhttps://www.tokopedia.com/putragroup/etalase/iphone-11-pro-max\n\nMasih ragu? Cek ulasan pembeli lain nya disini :\nhttps://www.tokopedia.com/putragroup/review\n\nAlasan utama ANDA belanja di Putra Group !\n\n1) Semua Unit dipastikan sudah FACTORY UNLOCKED ( Bisa masuk semua SIM CARD di Indonesia dan secara International )\n\n2) Garansi 1 tahun Apple Service International ( DIBANTU CLAIM SECARA FREE - HATI2 DILUAR SANA BANYAK SELLER YANG MEMUNGUT BIAYA KETIKA CLAIM GARANSI :D dan Claim nya sangat lama bisa sampai 2- 3 bulan )\n\n3) UNIT DAN AKSESORIS MASIH SEGEL DAN ORIGINAL 100 % ( HATI2 GUYS banyak seller nakal yg tukar2 AKSESORIS yang tidak Original )\n\n4) TRUSTED SELLER yang sudah menjual ribuan produk di semua marketplace di Indonesia sejak 2012 . Badge Gold Merchant juga menandakan bahwa kami adalah salah satu TRUSTED SELLER dengan rata2 akurasi dan kualitas produk 4,9 dari 5 alias ( 99 % )\n\nSo smart people, apa yang kalian tunggu ? Kami tunggu orderan Anda di Tokopedia ( Marketplace nomor 1 di Indonesia )\n\nTHANK YOU ! KAMI SENANG MELAYANI ANDA :)",
+                  "applink": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "separator",
+          "type": "separator",
+          "data": []
+        },
+        {
+          "name": "pdp_1",
+          "type": "product_list",
+          "data": []
+        },
+        {
+          "name": "separator",
+          "type": "separator",
+          "data": []
+        },
+        {
+          "name": "shop_info",
+          "type": "shop_info",
+          "data": []
+        },
+        {
+          "name": "separator",
+          "type": "separator",
+          "data": []
+        },
+        {
+          "name": "pdp_2",
+          "type": "product_list",
+          "data": []
+        },
+        {
+          "name": "most_helpful_review",
+          "type": "most_helpful_review",
+          "data": []
+        },
+        {
+          "name": "discussion",
+          "type": "discussion",
+          "data": []
+        },
+        {
+          "name": "pdp_3",
+          "type": "product_list",
+          "data": []
+        },
+        {
+          "name": "pdp_4",
+          "type": "product_list",
+          "data": []
+        }
+      ]
+    }
+  }
+}

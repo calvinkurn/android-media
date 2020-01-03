@@ -1,4 +1,4 @@
-package com.tokopedia.product
+package com.tokopedia.product.util
 
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
