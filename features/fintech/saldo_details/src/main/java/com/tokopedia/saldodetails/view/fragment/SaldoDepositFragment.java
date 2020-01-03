@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -69,6 +70,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
     public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details";
+    public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id";
+
     private final long animation_duration = 300;
 
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
@@ -133,6 +136,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private static final String IS_SELLER = "is_seller";
     private boolean showMclBlockTickerFirebaseFlag = false;
     private FirebaseRemoteConfigImpl remoteConfig;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
     public SaldoDepositFragment() {
     }
@@ -741,7 +745,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showMerchantCreditLineWidget(GqlMerchantCreditResponse response) {
         merchantStatusLL.setVisibility(View.VISIBLE);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+        saveInstanceCacheManager=new SaveInstanceCacheManager(context,true);
+        saveInstanceCacheManager.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+        if (saveInstanceCacheManager.getId()!=null) {
+            bundle.putInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, Integer.parseInt(saveInstanceCacheManager.getId()));
+        }
         getChildFragmentManager()
                 .beginTransaction()
                 .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
