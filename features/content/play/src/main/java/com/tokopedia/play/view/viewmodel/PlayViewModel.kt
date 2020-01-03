@@ -143,8 +143,9 @@ class PlayViewModel @Inject constructor(
         if (!userSessionInterface.isLoggedIn)
             return
 
-        playSocket.send(message, onSuccess = {
-            _observableChatList.value = PlayChat("", "", message,
+        val cleanMessage = message.trimMultipleNewlines()
+        playSocket.send(cleanMessage, onSuccess = {
+            _observableChatList.value = PlayChat("", "", cleanMessage,
                     PlayChat.UserData(userSessionInterface.userId, userSessionInterface.name, userSessionInterface.profilePicture))
         })
     }
@@ -299,4 +300,6 @@ class PlayViewModel @Inject constructor(
                 freezeButtonTitle = channel.freezeChannelState.btnTitle,
                 freezeButtonUrl = channel.freezeChannelState.btnAppLink
         )
+
+    private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
 }

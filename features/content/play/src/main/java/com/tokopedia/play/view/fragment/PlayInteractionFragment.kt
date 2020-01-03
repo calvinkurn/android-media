@@ -26,6 +26,7 @@ import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEve
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
+import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.quickreply.QuickReplyComponent
@@ -48,8 +49,11 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -85,7 +89,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
-    
+
     private lateinit var sendChatComponent: UIComponent<*>
     private lateinit var likeComponent: UIComponent<*>
     private lateinit var statsComponent: UIComponent<*>
@@ -175,6 +179,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeChatList()
         observePinnedMessage()
         observeFollowShop()
+        observeLikeContent()
         observeKeyboardState()
 
         observeLoggedInInteractionEvent()
@@ -209,9 +214,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 is  Success -> {
                     setTotalLikes(it.data.totalClick)
                 }
-                is Fail -> {
-                    showToast("don't forget to handle when get total likes return error ")
-                }
             }
         })
     }
@@ -241,8 +243,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeFollowShop() {
-        viewModel.observableFollowShop.observe(this, Observer {
-            if (it is Fail) {
+        viewModel.observableFollowPartner.observe(this, Observer {
+            if (it is Fail && !it.throwable.message.isNullOrEmpty()) {
+                showToast(it.throwable.message.orEmpty())
+            }
+        })
+    }
+
+    private fun observeLikeContent() {
+        viewModel.observableLikeContent.observe(this, Observer {
+            if (it is Fail && !it.throwable.message.isNullOrEmpty()) {
                 showToast(it.throwable.message.orEmpty())
             }
         })
@@ -317,7 +327,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             SendChatInteractionEvent.FormClicked -> doClickChatBox()
-                            is SendChatInteractionEvent.SendClicked -> doSendChat("${it.message} from Pixel 2 API 29")
+                            is SendChatInteractionEvent.SendClicked -> doSendChat(it.message)
                         }
                     }
         }
@@ -344,8 +354,19 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return StatsComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
 
-    private fun initPinnedComponent(container: ViewGroup): UIComponent<Unit> {
-        return PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    private fun initPinnedComponent(container: ViewGroup): UIComponent<PinnedInteractionEvent> {
+        val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+
+        launch {
+            pinnedComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is PinnedInteractionEvent.PinnedActionClicked -> openPageByApplink(it.applink)
+                        }
+                    }
+        }
+
+        return pinnedComponent
     }
 
     private fun initChatListComponent(container: ViewGroup): UIComponent<ChatListInteractionEvent> {
@@ -697,19 +718,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openShopPage(partnerId: Long) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConst.SHOP,
-                partnerId.toString()
-        )
+        openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
     }
 
     private fun openProfilePage(partnerId: Long) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConst.PROFILE,
-                partnerId.toString()
-        )
+        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString())
     }
 
     private fun doClickChatBox() {
@@ -749,13 +762,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
-        viewModel.doLikeUnlike(shouldLike)
+        viewModel.doLikeUnlike(channelId, shouldLike)
     }
 
     private fun openLoginPage() {
 //        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
 //        startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
-        RouteManager.route(context, ApplinkConst.LOGIN)
+        openPageByApplink(ApplinkConst.LOGIN)
+    }
+
+    private fun openPageByApplink(applink: String, vararg params: String) {
+        RouteManager.route(context, applink, *params)
+        activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
     }
 
     private fun calculateInteractionHeightOnKeyboardShown() {
