@@ -68,7 +68,7 @@
     <string name="validation_resend_email">Tidak menerima kode? Kirim ulang</string>
     <string name="validation_text"><![CDATA[Kode verifikasi telah dikirimkan melalui email ke <b>{email}</b>.]]></string>
     <string name="param_email_validation_text">{email}</string>
-    <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
+    <string name="message_resend_email_to"><![CDATA[Apakah anda ingin kirim ulang email ke <b>%s</b>]]></string>
     <string name="resend_activation_email">Kirim Ulang Email</string>
     <string name="button_change_email">Ubah Email</string>
     <string name="change_email_error_condition">change email</string>
@@ -76,4 +76,5 @@
     <string name="cancel_dialog_change_email">Batal</string>
     <string name="job_was_cancelled">Job was cancelled</string>
     <string name="no_network_connection">Tidak ada koneksi, periksa koneksi internet anda</string>
+    <string name="validator_coundown_text"><![CDATA[Mohon tunggu dalam <b>%d detik</b> untuk kirim ulang.]]></string>
 </resources>

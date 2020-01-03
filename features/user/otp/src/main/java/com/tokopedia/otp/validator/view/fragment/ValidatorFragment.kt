@@ -167,6 +167,11 @@ class ValidatorFragment: BaseDaggerFragment(){
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
+    }
+
     private fun prepareView(){
         activity?.let {
             initVar()
@@ -368,39 +373,21 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun resendDialog(email: String) {
-        val dialogMessage = getString(R.string.message_resend_email_to) + " <b>" + email + "</b>"
+        val dialogMessage = String.format(getString(R.string.message_resend_email_to), email)
         activity?.let {
             AlertDialog.Builder(it)
                     .setTitle(R.string.resend_activation_email)
                     .setMessage(MethodChecker.fromHtml(dialogMessage))
-                    .setPositiveButton(android.R.string.yes) { dialog, which ->
+                    .setPositiveButton(android.R.string.yes) { _, _ ->
                         analytics.trackClickOkResendButton()
                         requestCode(true)
                     }
-                    .setNegativeButton(R.string.cancel_dialog_change_email){ dialog, which ->
+                    .setNegativeButton(R.string.cancel_dialog_change_email){ dialog, _ ->
                         analytics.trackFailedClickResendButton(
                                 it.getString(R.string.change_email_error_condition))
                         dialog.dismiss()
                     }
                     .show()
-        }
-    }
-
-    private fun setActivateText(email: String){
-        activity?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
-                        getString(R.string.param_email_validation_text),
-                        email, false
-                ), Html.FROM_HTML_MODE_COMPACT)
-            } else {
-                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
-                        getString(R.string.param_email_validation_text),
-                        email, false
-                ))
-            }
-
-            inputVerifyCode.requestFocus()
         }
     }
 
@@ -423,12 +410,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
         countDownText?.setTextColor(MethodChecker.getColor(activity, R.color.font_black_disabled_38))
         countDownText?.isEnabled = false
-        val text = String.format("%s <b> %d %s</b> %s",
-                activity?.getString(R.string.please_wait_in),
-                countdown,
-                activity?.getString(R.string.second),
-                activity?.getString(R.string.to_resend_otp))
-
+        val text = String.format(activity?.getString(R.string.validator_coundown_text) as String, countdown)
         countDownText?.text = MethodChecker.fromHtml(text)
     }
 
