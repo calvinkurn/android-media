@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.pojo.NotificationsPojo
 import dagger.Module
@@ -25,7 +26,7 @@ class ChatNotificationsQueryModule {
     @IntoMap
     @StringKey(ChatListQueriesConstant.QUERY_CHAT_NOTIFICATION)
     fun provideRawQueryGetChatNotif(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.topchat.R.raw.query_get_chat_notification)
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_notification)
 
 
     @Provides

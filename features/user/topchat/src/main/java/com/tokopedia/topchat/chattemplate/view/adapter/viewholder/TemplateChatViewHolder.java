@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.ChipsUnify;
 public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel> {
 
     @LayoutRes
-    public static final int LAYOUT = com.tokopedia.topchat.R.layout.item_template_chat_layout;
+    public static final int LAYOUT = R.layout.item_template_chat_layout;
 
     ChatTemplateListener viewListener;
     ChipsUnify textHolder;

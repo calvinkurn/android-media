@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
+
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.fragment.BroadcastMessageAttachProductFragment;
 
 import java.util.ArrayList;
@@ -27,9 +29,9 @@ public class BroadcastMessageAttachProductActivity extends AttachProductActivity
 
     public static Intent createInstance(Context context, String shopId, String shopName, boolean isSeller) {
         Intent intent = new Intent(context, BroadcastMessageAttachProductActivity.class);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY,shopId);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,isSeller);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY,shopName);
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId);
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller);
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName);
         return intent;
     }
 
@@ -46,15 +48,15 @@ public class BroadcastMessageAttachProductActivity extends AttachProductActivity
         super.setupLayout(savedInstanceState);
         String subtitle = toolbar.getSubtitle().toString();
         if (!TextUtils.isEmpty(subtitle))
-            toolbar.setSubtitle(getString(com.tokopedia.topchat.R.string.template_subtitle_attach_product, subtitle));
+            toolbar.setSubtitle(getString(R.string.template_subtitle_attach_product, subtitle));
     }
 
     @Override
     protected Fragment getNewFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-        if(fragment != null){
+        if (fragment != null) {
             return fragment;
-        }else{
+        } else {
             fragment = BroadcastMessageAttachProductFragment.newInstance(this);
             return fragment;
         }
@@ -64,7 +66,7 @@ public class BroadcastMessageAttachProductActivity extends AttachProductActivity
     public void finishActivityWithResult(ArrayList<ResultProduct> products) {
         Intent data = new Intent();
         ArrayList<HashMap<String, String>> results = new ArrayList<>();
-        for (ResultProduct product : products){
+        for (ResultProduct product : products) {
             HashMap<String, String> item = new HashMap<>();
             item.put(PARAM_PRODUCT_ID, product.getProductId().toString());
             item.put(PARAM_PRODUCT_NAME, product.getName());
@@ -74,7 +76,7 @@ public class BroadcastMessageAttachProductActivity extends AttachProductActivity
             results.add(item);
         }
 
-        data.putExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY,results);
+        data.putExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, results);
         setResult(Activity.RESULT_OK, data);
         finish();
     }

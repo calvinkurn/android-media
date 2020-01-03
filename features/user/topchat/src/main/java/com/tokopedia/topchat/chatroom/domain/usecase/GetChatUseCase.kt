@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.topchat.R
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class GetChatUseCase @Inject constructor(
 ) {
 
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, com.tokopedia.topchat.R.raw.query_get_topchat_replies)
+        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_topchat_replies)
         val graphqlRequest = GraphqlRequest(query,
                 GetExistingChatPojo::class.java, requestParams, false)
 

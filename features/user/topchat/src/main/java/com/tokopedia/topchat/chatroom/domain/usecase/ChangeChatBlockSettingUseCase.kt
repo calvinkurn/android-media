@@ -6,6 +6,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.ChangeChatBlockPojo
 import rx.Subscriber
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class ChangeChatBlockSettingUseCase @Inject constructor(
 ) {
 
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, com.tokopedia.topchat.R.raw.chatsettings)
+        val query = GraphqlHelper.loadRawString(resources, R.raw.chatsettings)
         val graphqlRequest = GraphqlRequest(query,
                 ChangeChatBlockPojo::class.java, requestParams, false)
 

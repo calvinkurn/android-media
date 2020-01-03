@@ -11,16 +11,17 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.topchat.R
 import com.tokopedia.unifycomponents.Label
 
 class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailListener: InvoiceThumbnailListener) : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
 
-    private val container: RelativeLayout? = itemView.findViewById(com.tokopedia.topchat.R.id.rl_container)
-    private val chatBubble: ConstraintLayout? = itemView.findViewById(com.tokopedia.topchat.R.id.cl_chat_bubble)
-    private val thumbnail: ImageView? = itemView.findViewById(com.tokopedia.topchat.R.id.iv_thumbnail)
-    private val status: Label? = itemView.findViewById(com.tokopedia.topchat.R.id.tv_status)
-    private val invoiceId: TextView? = itemView.findViewById(com.tokopedia.topchat.R.id.tv_invoice_id)
-    private val price: TextView? = itemView.findViewById(com.tokopedia.topchat.R.id.tv_price)
+    private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
+    private val chatBubble: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
+    private val thumbnail: ImageView? = itemView.findViewById(R.id.iv_thumbnail)
+    private val status: Label? = itemView.findViewById(R.id.tv_status)
+    private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
+    private val price: TextView? = itemView.findViewById(R.id.tv_price)
 
     interface InvoiceThumbnailListener {
         fun onClickInvoiceThumbnail(url: String, id: String)
@@ -85,6 +86,6 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.topchat.R.layout.item_attach_invoice
+        val LAYOUT = R.layout.item_attach_invoice
     }
 }

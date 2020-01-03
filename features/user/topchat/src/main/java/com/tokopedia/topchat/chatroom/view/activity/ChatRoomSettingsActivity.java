@@ -3,10 +3,12 @@ package com.tokopedia.topchat.chatroom.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomSettingsFragment;
 import com.tokopedia.topchat.common.InboxChatConstant;
@@ -30,7 +32,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(getString(com.tokopedia.topchat.R.string.chat_incoming_settings) + " "
+        updateTitle(getString(R.string.chat_incoming_settings) + " "
                 + getIntent().getStringExtra(InboxChatConstant.SENDER_NAME));
     }
 

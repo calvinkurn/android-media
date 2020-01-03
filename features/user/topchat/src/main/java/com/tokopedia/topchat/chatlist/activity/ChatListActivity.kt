@@ -74,7 +74,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     override fun getLayoutRes(): Int {
-        return com.tokopedia.topchat.R.layout.activity_chat_list
+        return R.layout.activity_chat_list
     }
 
     override fun getScreenName(): String {
@@ -162,13 +162,13 @@ class ChatListActivity : BaseTabActivity()
         val tutorials = arrayListOf(
                 CoachMarkItem(
                         sellerTab,
-                        getString(com.tokopedia.topchat.R.string.coach_tab_title_seller),
-                        getString(com.tokopedia.topchat.R.string.coach_tab_description_seller)
+                        getString(R.string.coach_tab_title_seller),
+                        getString(R.string.coach_tab_description_seller)
                 ),
                 CoachMarkItem(
                         buyerTab,
-                        getString(com.tokopedia.topchat.R.string.coach_tab_title_buyer),
-                        getString(com.tokopedia.topchat.R.string.coach_tab_description_buyer)
+                        getString(R.string.coach_tab_title_buyer),
+                        getString(R.string.coach_tab_description_buyer)
                 )
         )
         CoachMark().show(this@ChatListActivity, TAG_ONBOARDING, tutorials)
@@ -223,19 +223,19 @@ class ChatListActivity : BaseTabActivity()
     }
 
     override fun increaseUserNotificationCounter() {
-        increaseNotificationCounter(com.tokopedia.topchat.R.drawable.ic_chat_icon_account)
+        increaseNotificationCounter(R.drawable.ic_chat_icon_account)
     }
 
     override fun increaseSellerNotificationCounter() {
-        increaseNotificationCounter(com.tokopedia.topchat.R.drawable.ic_chat_icon_shop)
+        increaseNotificationCounter(R.drawable.ic_chat_icon_shop)
     }
 
     override fun decreaseUserNotificationCounter() {
-        decreaseNotificationCounter(com.tokopedia.topchat.R.drawable.ic_chat_icon_account)
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_account)
     }
 
     override fun decreaseSellerNotificationCounter() {
-        decreaseNotificationCounter(com.tokopedia.topchat.R.drawable.ic_chat_icon_shop)
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
     }
 
     private fun decreaseNotificationCounter(iconId: Int) {
@@ -395,9 +395,9 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun createCustomView(title: String, icon: Int, counter: String): View? {
-        val customView = LayoutInflater.from(this).inflate(com.tokopedia.topchat.R.layout.item_chat_tab, null)
+        val customView = LayoutInflater.from(this).inflate(R.layout.item_chat_tab, null)
         val titleView = customView.findViewById<TextView>(com.tokopedia.design.R.id.title)
-        val iconView = customView.findViewById<ImageView>(com.tokopedia.topchat.R.id.icon)
+        val iconView = customView.findViewById<ImageView>(R.id.icon)
         titleView.text = setTitleTab(title, counter)
         iconView.setImageDrawable(MethodChecker.getDrawable(this, icon))
         return customView
@@ -425,23 +425,23 @@ class ChatListActivity : BaseTabActivity()
 
     private fun setTabSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(com.tokopedia.design.R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, com.tokopedia.topchat.R.color.Green_G500))
+        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Green_G500))
 
-        val icon = customView?.findViewById<ImageView>(com.tokopedia.topchat.R.id.icon)?.drawable
+        val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
         icon?.let {
             val wrappedDrawable = DrawableCompat.wrap(it)
-            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, com.tokopedia.topchat.R.color.Green_G500))
+            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, R.color.Green_G500))
         }
     }
 
     private fun setTabUnSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(com.tokopedia.design.R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, com.tokopedia.topchat.R.color.Neutral_N200))
+        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Neutral_N200))
 
-        val icon = customView?.findViewById<ImageView>(com.tokopedia.topchat.R.id.icon)?.drawable
+        val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
         icon?.let {
             val wrappedDrawable = DrawableCompat.wrap(it)
-            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, com.tokopedia.topchat.R.color.Neutral_N200))
+            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, R.color.Neutral_N200))
         }
     }
 

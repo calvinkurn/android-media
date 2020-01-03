@@ -3,9 +3,11 @@ package com.tokopedia.topchat.chattemplate.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.view.fragment.EditTemplateChatFragment;
 import com.tokopedia.topchat.common.InboxMessageConstant;
@@ -22,7 +24,7 @@ public class EditTemplateChatActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getIntent()!= null && getIntent().getExtras()!= null) {
+        if (getIntent() != null && getIntent().getExtras() != null) {
             String message = getIntent().getExtras().getString(InboxMessageConstant.PARAM_MESSAGE);
             setToolbarTitle(message == null);
         }
@@ -35,9 +37,9 @@ public class EditTemplateChatActivity extends BaseSimpleActivity {
 
     private void setToolbarTitle(boolean isAdd) {
         if (isAdd) {
-            toolbar.setTitle(getString(com.tokopedia.topchat.R.string.add_template_chat_title));
+            toolbar.setTitle(getString(R.string.add_template_chat_title));
         } else {
-            toolbar.setTitle(getString(com.tokopedia.topchat.R.string.edit_template_chat_title));
+            toolbar.setTitle(getString(R.string.edit_template_chat_title));
         }
     }
 

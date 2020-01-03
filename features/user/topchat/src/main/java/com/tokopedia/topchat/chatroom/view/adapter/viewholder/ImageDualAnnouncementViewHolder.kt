@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
 
@@ -21,8 +22,8 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
 
 
     init {
-        top = itemView.findViewById(com.tokopedia.topchat.R.id.dual_image_top)
-        bottom = itemView.findViewById(com.tokopedia.topchat.R.id.dual_image_bottom)
+        top = itemView.findViewById(R.id.dual_image_top)
+        bottom = itemView.findViewById(R.id.dual_image_bottom)
     }
 
     override fun bind(viewModel: ImageDualAnnouncementViewModel) {
@@ -54,6 +55,6 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.topchat.R.layout.item_announcement_dual_image
+        val LAYOUT = R.layout.item_announcement_dual_image
     }
 }

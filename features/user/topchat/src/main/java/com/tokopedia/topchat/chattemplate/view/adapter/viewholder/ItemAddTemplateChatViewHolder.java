@@ -8,6 +8,7 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
@@ -18,7 +19,7 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel> {
 
     @LayoutRes
-    public static final int LAYOUT = com.tokopedia.topchat.R.layout.item_add_template_chat_settings;
+    public static final int LAYOUT = R.layout.item_add_template_chat_settings;
     TemplateChatContract.View viewListener;
     View view;
     TextView textView;
@@ -27,18 +28,18 @@ public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateCh
     public ItemAddTemplateChatViewHolder(View itemView, TemplateChatContract.View viewListener) {
         super(itemView);
         view = itemView;
-        imageView = itemView.findViewById(com.tokopedia.topchat.R.id.setting);
-        textView = itemView.findViewById(com.tokopedia.topchat.R.id.caption);
+        imageView = itemView.findViewById(R.id.setting);
+        textView = itemView.findViewById(R.id.caption);
         this.viewListener = viewListener;
     }
 
     @Override
     public void bind(final TemplateChatModel element) {
         if (element.size() >= 5) {
-            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), com.tokopedia.topchat.R.drawable.ic_plus_grey));
-            textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.topchat.R.color.add_template_disabled));
+            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_grey));
+            textView.setTextColor(MethodChecker.getColor(view.getContext(), R.color.add_template_disabled));
         } else {
-            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), com.tokopedia.topchat.R.drawable.ic_plus_green));
+            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_green));
             textView.setTextColor(MethodChecker.getColor(view.getContext(), com.tokopedia.design.R.color.medium_green));
         }
 

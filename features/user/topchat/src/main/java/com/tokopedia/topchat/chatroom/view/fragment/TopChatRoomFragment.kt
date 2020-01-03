@@ -53,6 +53,7 @@ import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -70,7 +71,6 @@ import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
-import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.REQUEST_CODE_USER_LOGIN_CART
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
@@ -297,8 +297,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onRetrySendImage(element: ImageUploadViewModel) {
         val bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
-        bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, com.tokopedia.topchat.R.string.resend, null)
-        bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, com.tokopedia.topchat.R.string.delete, null)
+        bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, R.string.resend, null)
+        bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, R.string.delete, null)
         bottomSheetBuilder.expandOnStart(true).setItemClickListener {
             when (it.itemId) {
                 InboxMessageConstant.RESEND -> {
@@ -491,7 +491,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun pickImageToUpload() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(com.tokopedia.topchat.R.string.choose_image),
+            val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true, null, null)
             val intent = ImagePickerActivity.getIntent(context, builder)
@@ -549,7 +549,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
-                    getString(com.tokopedia.topchat.R.string.chat_check_cart),
+                    getString(R.string.chat_check_cart),
                     onClickSeeButtonOnAtcSuccessToaster()
             )
         }

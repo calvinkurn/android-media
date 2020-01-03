@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
@@ -93,13 +94,13 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(com.tokopedia.topchat.R.menu.delete_template, menu);
+        inflater.inflate(R.menu.delete_template, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(com.tokopedia.topchat.R.id.action_organize);
+        MenuItem item = menu.findItem(R.id.action_organize);
         if (getArguments().getInt(InboxMessageConstant.PARAM_NAV) == 1) {
             allowDelete = DISABLE_DELETE;
             item.getIcon().setAlpha(DISABLE_DELETE);
@@ -112,12 +113,12 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == com.tokopedia.topchat.R.id.action_organize) {
+        if (i == R.id.action_organize) {
             if (allowDelete == ENABLE_DELETE) {
                 analytics.trackDeleteTemplateChat();
                 showDialogDelete();
             } else {
-                showError(new MessageErrorException(getActivity().getString(com.tokopedia.topchat.R.string
+                showError(new MessageErrorException(getActivity().getString(R.string
                         .minimum_template_chat_warning)));
             }
 
@@ -129,9 +130,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     private void showDialogDelete() {
         new AlertDialog.Builder(getActivity())
-                .setTitle(com.tokopedia.topchat.R.string.delete_chat_template)
-                .setMessage(com.tokopedia.topchat.R.string.forever_deleted_template)
-                .setPositiveButton(com.tokopedia.topchat.R.string.delete, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.delete_chat_template)
+                .setMessage(R.string.forever_deleted_template)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         analytics.trackConfirmDeleteTemplateChat();
@@ -152,12 +153,12 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(com.tokopedia.topchat.R.layout.fragment_edit_template_chat, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_edit_template_chat, container, false);
 
-        counter = rootView.findViewById(com.tokopedia.topchat.R.id.counter);
-        error = rootView.findViewById(com.tokopedia.topchat.R.id.error);
-        submit = rootView.findViewById(com.tokopedia.topchat.R.id.submit);
-        editText = rootView.findViewById(com.tokopedia.topchat.R.id.edittext);
+        counter = rootView.findViewById(R.id.counter);
+        error = rootView.findViewById(R.id.error);
+        submit = rootView.findViewById(R.id.submit);
+        editText = rootView.findViewById(R.id.edittext);
 
         presenter.attachView(this);
         presenter.setMode(isSeller);
@@ -220,11 +221,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         if (integer == 0) {
             canProceed(false, proceed);
         } else if (integer > 0 && integer < 5) {
-            error.setText(getActivity().getString(com.tokopedia.topchat.R.string.minimal_char_template));
+            error.setText(getActivity().getString(R.string.minimal_char_template));
             error.setVisibility(View.VISIBLE);
             canProceed(false, proceed);
         } else if (integer > MAX_CHAR) {
-            error.setText(getActivity().getString(com.tokopedia.topchat.R.string.maximal_char_template, MAX_CHAR));
+            error.setText(getActivity().getString(R.string.maximal_char_template, MAX_CHAR));
             error.setVisibility(View.VISIBLE);
             canProceed(false, proceed);
         } else {

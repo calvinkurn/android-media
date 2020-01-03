@@ -3,10 +3,11 @@ package com.tokopedia.topchat.attachproduct.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapter;
@@ -14,6 +15,7 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFact
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
         super.onActivityCreated(savedInstanceState);
         Activity activity = getActivity();
         try {
-            if (activity != null && activity.getIntent() != null){
+            if (activity != null && activity.getIntent() != null) {
                 Intent intent = activity.getIntent();
                 String shopName = intent.getStringExtra(BroadcastMessageAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY);
                 List<Integer> ids = intent.getIntegerArrayListExtra(BroadcastMessageAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_IDS_KEY);
@@ -49,7 +51,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
 
                 productIds.addAll(ids);
                 updateButtonBasedOnChecked(productIds.size());
-                for (HashMap<String, String> product: products){
+                for (HashMap<String, String> product : products) {
                     checkedList.add(new AttachProductItemViewModel(
                             product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_URL),
                             product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_NAME),
@@ -60,7 +62,8 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
                             shopName));
                 }
             }
-        } catch (Throwable t){}
+        } catch (Throwable t) {
+        }
     }
 
     @Override
@@ -81,7 +84,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
     public void updateButtonBasedOnChecked(int checkedCount) {
         super.updateButtonBasedOnChecked(checkedCount);
         if (chooseButton != null)
-            chooseButton.setText(getString(com.tokopedia.topchat.R.string.string_attach_product_choose_button_text,String.valueOf(checkedCount),
-                String.valueOf(MAX_CHECKED)));
+            chooseButton.setText(getString(R.string.string_attach_product_choose_button_text, String.valueOf(checkedCount),
+                    String.valueOf(MAX_CHECKED)));
     }
 }

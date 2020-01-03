@@ -20,7 +20,7 @@ class InvoicePreviewViewHolder(
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
 
     override fun getButtonView(itemView: View): ImageView? {
-        return itemView.findViewById(com.tokopedia.topchat.R.id.iv_close)
+        return itemView.findViewById(R.id.iv_close)
     }
 
     override fun bind(model: InvoicePreviewViewModel) {
@@ -47,6 +47,6 @@ class InvoicePreviewViewHolder(
     }
 
     companion object {
-        val LAYOUT = com.tokopedia.topchat.R.layout.item_invoice_preview
+        val LAYOUT = R.layout.item_invoice_preview
     }
 }
