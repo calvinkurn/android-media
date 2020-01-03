@@ -1,6 +1,4 @@
 <resources>
-    <string name="path_product_card_options">/product-card-options</string>
-
     <string name="title_product_card_options">Product Card Options</string>
 
     <string name="bottom_sheet_show">BottomSheet Show</string>
