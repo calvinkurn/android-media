@@ -9,7 +9,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_variant.R
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
-import com.tokopedia.tradein_common.IAccessRequestListener
+import com.tokopedia.track.TrackApp
+import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.common_tradein.model.TradeInParams
 
 /**
@@ -109,13 +110,22 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
     }
 
     override fun clickAccept() {
+        sendGeneralEvent("setuju")
         normalCheckoutFragment?.run {
             this.goToTradeInHome()
         }
     }
 
     override fun clickDeny() {
+        sendGeneralEvent("batal")
+    }
 
+    private fun sendGeneralEvent(label: String) {
+        val trackApp = TrackApp.getInstance()
+        trackApp.gtm.sendGeneralEvent("clickPDP",
+                "product detail page",
+                "click - asking permission trade in",
+                label)
     }
 
 }
