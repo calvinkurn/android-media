@@ -3,10 +3,9 @@ package com.tokopedia.affiliate.feature.dashboard.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
-import com.airbnb.deeplinkdispatch.DeepLink
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
