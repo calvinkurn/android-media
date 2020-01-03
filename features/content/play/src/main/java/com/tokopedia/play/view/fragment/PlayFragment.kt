@@ -56,8 +56,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PlayAnalytics.sendScreen(channelId)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID)?:"1865" // TODO remove default value, handle channel_id not found
+        PlayAnalytics.sendScreen(channelId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
