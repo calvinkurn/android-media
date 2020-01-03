@@ -139,7 +139,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
 
     private fun observeData() {
 
-        catalogNavViewModel.mCatalog.observe(this, Observer {
+        catalogNavViewModel.mCatalog.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
 
@@ -167,7 +167,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
             }
         })
 
-        catalogNavViewModel.mCatalogCount.observe(this@CatalogNavFragment, Observer {
+        catalogNavViewModel.mCatalogCount.observe(viewLifecycleOwner, Observer {
 
             it?.let {
                 if (it.toInt() > 0) {
@@ -179,7 +179,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
             }
         })
 
-        catalogNavViewModel.mDynamicFilterModel.observe(this@CatalogNavFragment, Observer {
+        catalogNavViewModel.mDynamicFilterModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderDynamicFilter(it.data.data)

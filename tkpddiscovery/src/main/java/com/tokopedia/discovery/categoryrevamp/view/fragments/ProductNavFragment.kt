@@ -305,7 +305,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun observeData() {
-        productNavViewModel.mProductList.observe(this, Observer {
+        productNavViewModel.mProductList.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -340,7 +340,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             }
         })
 
-        productNavViewModel.mProductCount.observe(this, Observer {
+        productNavViewModel.mProductCount.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.countText != null)
                     setTotalSearchResultCount(it.countText)
@@ -353,7 +353,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             }
         })
 
-        productNavViewModel.mSubCategoryList.observe(this, Observer {
+        productNavViewModel.mSubCategoryList.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -374,7 +374,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
         })
 
-        productNavViewModel.getDynamicFilterData().observe(this, Observer {
+        productNavViewModel.getDynamicFilterData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderDynamicFilter(it.data.data)
@@ -383,7 +383,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         })
 
 
-        productNavViewModel.mQuickFilterModel.observe(this, Observer {
+        productNavViewModel.mQuickFilterModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     initQuickFilter(it.data as ArrayList)
@@ -443,7 +443,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun observeSeamlessLogin() {
-        productNavViewModel.mSeamlessLogin.observe(this, Observer {
+        productNavViewModel.mSeamlessLogin.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     openUrlSeamlessly(it.data)
