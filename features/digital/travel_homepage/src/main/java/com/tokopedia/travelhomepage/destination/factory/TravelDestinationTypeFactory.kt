@@ -1,6 +1,7 @@
 package com.tokopedia.travelhomepage.homepage.presentation.adapter.factory
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
 import com.tokopedia.travelhomepage.homepage.data.*
@@ -14,4 +15,6 @@ interface TravelDestinationTypeFactory : AdapterTypeFactory {
     fun type(viewModel: TravelDestinationSummaryModel): Int
 
     fun type(viewModel: TravelDestinationSectionViewModel): Int
+
+    fun type(viewModel: TravelArticleModel): Int
 }

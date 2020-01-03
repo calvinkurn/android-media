@@ -1,0 +1,18 @@
+query TravelArticle($cityID: Int!){
+  TravelArticle(cityID: $cityID) {
+    items {
+      tag
+      title
+      publishedDate
+      webURL
+      appURL
+      imageURL
+    }
+    meta {
+      title
+      URLTitle
+      webURL
+      appURL
+    }
+  }
+}

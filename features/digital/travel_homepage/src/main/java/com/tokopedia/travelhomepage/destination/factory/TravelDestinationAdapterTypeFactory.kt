@@ -4,8 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
+import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationArticleViewHolder
 import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationCityRecommendationViewHolder
 import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationSectionViewHolder
 import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationSummaryViewHolder
@@ -26,6 +28,7 @@ open class TravelDestinationAdapterTypeFactory(private val onBindListener: OnIte
             TravelDestinationSummaryViewHolder.LAYOUT -> return TravelDestinationSummaryViewHolder(parent)
             TravelDestinationCityRecommendationViewHolder.LAYOUT -> return TravelDestinationCityRecommendationViewHolder(parent, onBindListener, onItemClickListener)
             TravelDestinationSectionViewHolder.LAYOUT -> return TravelDestinationSectionViewHolder(parent, onBindListener, onItemClickListener)
+            TravelDestinationArticleViewHolder.LAYOUT -> return TravelDestinationArticleViewHolder(parent, onBindListener, onItemClickListener)
         }
         return super.createViewHolder(parent, type)
     }
@@ -35,4 +38,6 @@ open class TravelDestinationAdapterTypeFactory(private val onBindListener: OnIte
         return if (viewModel.type == CITY_RECOMMENDATION_ORDER) TravelDestinationCityRecommendationViewHolder.LAYOUT
         else TravelDestinationSectionViewHolder.LAYOUT
     }
+
+    override fun type(viewModel: TravelArticleModel): Int = TravelDestinationArticleViewHolder.LAYOUT
 }

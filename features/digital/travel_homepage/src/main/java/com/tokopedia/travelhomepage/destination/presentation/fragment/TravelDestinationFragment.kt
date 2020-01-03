@@ -63,6 +63,7 @@ OnItemBindListener{
                     destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), it.data.cityId)
                     destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), it.data.cityId)
                     destinationViewModel.getCityDeals(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), it.data.cityId)
+                    destinationViewModel.getCityArticles(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article), it.data.cityId)
                 }
             }
         })

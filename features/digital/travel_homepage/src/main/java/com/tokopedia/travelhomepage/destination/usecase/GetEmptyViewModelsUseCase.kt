@@ -1,5 +1,6 @@
 package com.tokopedia.travelhomepage.destination.usecase
 
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
@@ -16,6 +17,7 @@ class GetEmptyViewModelsUseCase {
     fun requestEmptyViewModels(): List<TravelDestinationItemModel> {
         return listOf(TravelDestinationSummaryModel(),
                 TravelDestinationSectionViewModel(type = CITY_RECOMMENDATION_ORDER),
-                TravelDestinationSectionViewModel(type = CITY_DEALS_ORDER))
+                TravelDestinationSectionViewModel(type = CITY_DEALS_ORDER),
+                TravelArticleModel())
     }
 }

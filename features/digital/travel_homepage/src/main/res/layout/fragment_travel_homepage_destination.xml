@@ -87,7 +87,8 @@
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/bg_white_travel_destination_content"/>
+                        android:background="@drawable/bg_white_travel_destination_content"
+                        android:paddingBottom="@dimen/dp_32"/>
 
                 </LinearLayout>
 

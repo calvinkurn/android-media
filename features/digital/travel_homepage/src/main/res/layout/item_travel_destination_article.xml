@@ -14,12 +14,15 @@
         app:cardCornerRadius="@dimen/layout_lvl1">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_article"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Green_G500" />
+            android:background="@color/Green_G500"
+            android:scaleType="fitXY"/>
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_article_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
@@ -28,6 +31,7 @@
         tools:text="5 Des 2019" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_article_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"

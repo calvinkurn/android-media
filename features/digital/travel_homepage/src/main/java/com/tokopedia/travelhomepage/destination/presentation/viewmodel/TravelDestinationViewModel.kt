@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationCityModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
@@ -124,6 +125,27 @@ class TravelDestinationViewModel  @Inject constructor(
         }
     }
 
+    fun getCityArticles(query: String, cityId: String) {
+        launchCatchError(block ={
+            val data = withContext(Dispatchers.Default) {
+                val param = mapOf(PARAM_CITY_ID to cityId.toInt())
+                val graphqlRequest = GraphqlRequest(query, TravelArticleModel.Response::class.java, param)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TravelArticleModel.Response>()
+
+            travelDestinationItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[CITY_ARTICLE_ORDER] = data.response
+                updatedList[CITY_ARTICLE_ORDER].isLoaded = true
+                updatedList[CITY_ARTICLE_ORDER].isSuccess = true
+                _travelDestinationItemList.postValue(updatedList)
+            }
+
+        }) {
+
+        }
+    }
+
     companion object {
         const val PARAM_WEBURLS = "webURLs"
         const val PARAM_CITY_ID = "cityID"
@@ -131,5 +153,6 @@ class TravelDestinationViewModel  @Inject constructor(
         val SUMMARY_ORDER = 0
         val CITY_RECOMMENDATION_ORDER = 1
         val CITY_DEALS_ORDER = 2
+        val CITY_ARTICLE_ORDER = 3
     }
 }

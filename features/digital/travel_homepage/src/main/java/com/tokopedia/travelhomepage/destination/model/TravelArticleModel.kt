@@ -17,15 +17,12 @@ data class TravelArticleModel (
         @SerializedName("meta")
         @Expose
         val meta: Meta = Meta()
-)//: TravelHomepageItemModel()
+): TravelDestinationItemModel()
 {
-
-//    override fun type(typeFactory: TravelDestinationAdapterTypeFactory): Int {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
+    override fun type(typeFactory: TravelDestinationAdapterTypeFactory): Int = typeFactory.type(this)
 
     data class Response(
-        @SerializedName("TravelArticleModel")
+        @SerializedName("TravelArticle")
         @Expose
         val response: TravelArticleModel = TravelArticleModel()
     )

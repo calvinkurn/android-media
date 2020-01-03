@@ -55,12 +55,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="170dp"
-                android:scaleType="fitCenter"
+                android:scaleType="fitXY"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@color/grey_500" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_travel_destination_article_item_title"
+                android:id="@+id/tv_travel_destination_article_item_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
@@ -69,12 +69,12 @@
                 android:layout_marginRight="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_4"
                 android:textColor="@color/Neutral_N0"
-                app:layout_constraintBottom_toTopOf="@id/tv_travel_destination_article_item_subtitle"
+                app:layout_constraintBottom_toTopOf="@id/tv_travel_destination_article_item_title"
                 app:typographyType="body_3"
                 tools:text="25 Des 2019" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_travel_destination_article_item_subtitle"
+                android:id="@+id/tv_travel_destination_article_item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
@@ -93,7 +93,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_travel_destinatino_article_item"
+        android:id="@+id/rv_travel_destination_article_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
