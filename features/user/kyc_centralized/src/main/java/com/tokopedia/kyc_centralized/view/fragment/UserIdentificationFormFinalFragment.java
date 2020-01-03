@@ -253,7 +253,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
             }
         };
 
