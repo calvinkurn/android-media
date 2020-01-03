@@ -8,28 +8,28 @@ package com.tokopedia.otp.common.analytics
 object TrackingValidatorConstant{
 
     object Screen{
-        val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
+        const val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
     }
 
     object Event{
-        val EVENT_CLICK_ACTIVATION = "clickActivation"
+        const val EVENT_CLICK_ACTIVATION = "clickActivation"
     }
 
     object Category{
-        val CATEGORY_ACTIVATION_PAGE = "activation page"
+        const val CATEGORY_ACTIVATION_PAGE = "activation page"
     }
 
     object Action{
-        val ACTION_CLICK_ON_BUTTON_AKTIVASI = "click on button aktivasi"
-        val ACTION_CLICK_KIRIM_ULANG = "click kirim ulang"
-        val ACTION_CLICK_OK_KIRIM_ULANG = "click ok (kirim ulang email)"
-        val ACTION_CLICK_UBAH_EMAIL_ACTIVATION = "click ubah email"
+        const val ACTION_CLICK_ON_BUTTON_AKTIVASI = "click on button aktivasi"
+        const val ACTION_CLICK_KIRIM_ULANG = "click kirim ulang"
+        const val ACTION_CLICK_OK_KIRIM_ULANG = "click ok (kirim ulang email)"
+        const val ACTION_CLICK_UBAH_EMAIL_ACTIVATION = "click ubah email"
     }
 
     object Label{
-        val LABEL_EMPTY = ""
-        val LABEL_CLICK = "click"
-        val LABEL_SUCCESS = "success"
-        val LABEL_FAILED = "failed - "
+        const val LABEL_EMPTY = ""
+        const val LABEL_CLICK = "click"
+        const val LABEL_SUCCESS = "success"
+        const val LABEL_FAILED = "failed - "
     }
 }

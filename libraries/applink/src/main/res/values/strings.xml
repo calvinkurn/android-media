@@ -17,7 +17,7 @@
     <string name="title_image_search" >Pencarian Gambar</string>
     <string name="title_similar_search" >Pencarian Serupa</string>
     <string name="title_autocomplete" >Pencarian</string>
-    <string name="title_search_result" >Hasil Pencarian</string>
+    <string name="title_search_result" >Pencarian</string>
     <string name="title_digital_deals" >Deals</string>
 
     <string name="title_applink_pm_subscribe">Power Merchant</string>
@@ -25,4 +25,6 @@
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
+
+    <string name="opportunity_title">Peluang</string>
 </resources>

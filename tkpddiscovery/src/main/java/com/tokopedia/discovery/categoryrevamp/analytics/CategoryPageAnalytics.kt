@@ -282,18 +282,23 @@ class CategoryPageAnalytics {
 
     // 13
 
-    fun eventWishistClicked(category_id: String, product_id: String, isWishlisted: Boolean) {
+    fun eventWishistClicked(category_id: String,
+                            product_id: String,
+                            isWishlisted: Boolean,
+                            isLoggedIn: Boolean,
+                            isTopAds: Boolean) {
         val tracker = getTracker()
-        val eventAction: String = if (isWishlisted) {
-            "add wishlist"
+        var eventAction: String = if (isWishlisted) {
+            "add wishlist - other - "
         } else {
-            "remove wishlist"
+            "remove wishlist - other - "
         }
+        eventAction += getLoginType(isLoggedIn)
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_NAME_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
                 KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, product_id,
+                KEY_EVENT_LABEL, product_id + " - " + getProductType(isTopAds),
                 KEY_CATEGORY_ID, category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
@@ -423,6 +428,22 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    private fun getLoginType(isUserLoggedIn: Boolean): String {
+        return if (isUserLoggedIn) {
+            "login"
+        } else {
+            "nonlogin"
+        }
+    }
+
+    private fun getProductType(isTopAds: Boolean): String {
+        return if (isTopAds) {
+            "topads"
+        } else {
+            "general"
+        }
+    }
+  
     fun createOpenScreenEventMap(parentId: String?,
                                  parentName: String?,
                                  categoryId: String,
