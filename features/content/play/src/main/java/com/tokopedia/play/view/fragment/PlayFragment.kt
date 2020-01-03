@@ -30,9 +30,6 @@ import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
 /**
@@ -98,7 +95,7 @@ class PlayFragment : BaseDaggerFragment() {
         setupScreen(view)
 
         childFragmentManager.beginTransaction()
-                .replace(flVideo.id, PlayVideoFragment.newInstance())
+                .replace(flVideo.id, PlayVideoFragment.newInstance(channelId))
                 .commit()
 
         childFragmentManager.beginTransaction()
