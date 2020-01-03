@@ -9,6 +9,7 @@ ext {
     kotlinVersion = "1.3.50"
 
     lifeCycleVersion = "2.0.0-rc01"
+    workManagerVersion = "1.0.1"
 
     supportLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
@@ -214,9 +215,10 @@ ext {
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.4",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.5",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
+            workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion"
     ]
 
     testDependencies = [
