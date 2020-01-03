@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;

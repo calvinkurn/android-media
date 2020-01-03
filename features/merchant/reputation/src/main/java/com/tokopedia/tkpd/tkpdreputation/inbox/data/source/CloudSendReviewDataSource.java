@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;

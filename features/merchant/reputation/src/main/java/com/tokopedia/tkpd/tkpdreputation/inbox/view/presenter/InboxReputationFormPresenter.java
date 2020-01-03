@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
@@ -45,7 +44,6 @@ public class InboxReputationFormPresenter
     private final EditReviewUseCase editReviewUseCase;
     private final EditReviewValidateUseCase editReviewValidateUseCase;
     private InboxReputationForm.View viewListener;
-    private ImageUploadHandler imageUploadHandler;
     private String cameraFileLoc;
 
     @Inject
@@ -71,8 +69,6 @@ public class InboxReputationFormPresenter
     public void attachView(InboxReputationForm.View view) {
         super.attachView(view);
         this.viewListener = view;
-        imageUploadHandler = ImageUploadHandler.createInstance(viewListener.getActivity());
-
     }
 
     @Override
