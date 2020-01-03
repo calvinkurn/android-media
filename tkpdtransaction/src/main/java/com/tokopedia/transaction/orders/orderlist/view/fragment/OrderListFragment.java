@@ -797,7 +797,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private void showDatePicker(String title) {
         String[] result = split(customStartDate);
         Calendar minDate = new GregorianCalendar(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
-        Calendar maxDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        Calendar maxDate = new Calendar.getInstance();
+        maxDate.add(Calendar.YEAR, 100);
         Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
         datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
             @Override
