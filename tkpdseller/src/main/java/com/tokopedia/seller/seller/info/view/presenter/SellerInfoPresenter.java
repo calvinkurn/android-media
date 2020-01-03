@@ -76,7 +76,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
         sellerInfoModel.setCreateTimeUnix(list.getCreateTimeUnix());
         sellerInfoModel.setTitle(list.getTitle());
         sellerInfoModel.setInfoThumbnailUrl(list.getDataNotification().getInfoThumbnailUrl());
-        sellerInfoModel.setExternalLink(list.getDataNotification().getDesktopLink());
+        sellerInfoModel.setExternalLink(list.getDataNotification().getAppLink());
         sellerInfoModel.setRead(list.getReadStatusInfo());
         sellerInfoModel.setStatus(list.getStatus());
         sellerInfoModel.setNotifId(list.getNotifId());
