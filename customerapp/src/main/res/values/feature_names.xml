@@ -42,7 +42,6 @@
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="title_groupchat">Groupchat</string>
     <string name="groupchat_app_name">Play</string>
 
     <!--    Change Phone Number-->
