@@ -1,16 +1,12 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein.model.MoneyInCheckoutMutationResponse.ResponseData.CheckoutGeneral.CheckoutData
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope

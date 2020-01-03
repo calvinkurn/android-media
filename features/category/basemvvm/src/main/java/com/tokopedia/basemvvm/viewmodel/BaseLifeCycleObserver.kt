@@ -1,4 +1,4 @@
-package com.tokopedia.tradein_common.viewmodel
+package com.tokopedia.basemvvm.viewmodel
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver

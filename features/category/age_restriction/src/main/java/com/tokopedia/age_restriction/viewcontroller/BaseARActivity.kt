@@ -17,7 +17,7 @@ import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.di.ARComponent
 import com.tokopedia.age_restriction.di.DaggerARComponent
 import com.tokopedia.age_restriction.viewmodel.BaseARViewModel
-import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() {

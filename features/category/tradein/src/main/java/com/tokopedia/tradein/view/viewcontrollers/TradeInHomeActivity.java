@@ -37,7 +37,7 @@ import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein.Constants;
 
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

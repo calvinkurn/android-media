@@ -30,7 +30,7 @@ import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
 import com.tokopedia.tradein.viewmodel.*
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 

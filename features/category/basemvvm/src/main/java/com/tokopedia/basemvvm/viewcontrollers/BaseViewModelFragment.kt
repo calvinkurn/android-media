@@ -1,11 +1,11 @@
-package com.tokopedia.tradein_common.viewcontrollers
+package com.tokopedia.basemvvm.viewcontrollers
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.tradein_common.BaseActivityFragmentInterface
-import com.tokopedia.tradein_common.viewmodel.BaseLifeCycleObserver
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.basemvvm.BaseActivityFragmentInterface
+import com.tokopedia.basemvvm.viewmodel.BaseLifeCycleObserver
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
 abstract class BaseViewModelFragment< T : BaseViewModel>: TkpdBaseV4Fragment(),BaseActivityFragmentInterface<T> {
 

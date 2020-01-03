@@ -28,8 +28,8 @@ import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.viewmodel.BaseTradeInViewModel;
 import com.tokopedia.tradein.viewmodel.TradeInVMFactory;
-import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity;
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity;
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 import com.tokopedia.unifycomponents.Toaster;
 
 import org.jetbrains.annotations.NotNull;

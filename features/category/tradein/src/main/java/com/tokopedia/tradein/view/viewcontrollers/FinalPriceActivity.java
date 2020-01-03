@@ -30,7 +30,7 @@ import com.tokopedia.tradein.model.DeviceAttr;
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel;
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

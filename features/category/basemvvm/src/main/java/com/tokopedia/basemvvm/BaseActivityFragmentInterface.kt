@@ -1,6 +1,6 @@
-package com.tokopedia.tradein_common
+package com.tokopedia.basemvvm
 
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
 interface BaseActivityFragmentInterface<T : BaseViewModel> {
 

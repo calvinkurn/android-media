@@ -14,7 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.design.dialog.AccessRequestFragmentDialog
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.track.TrackApp
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 import javax.inject.Inject
 

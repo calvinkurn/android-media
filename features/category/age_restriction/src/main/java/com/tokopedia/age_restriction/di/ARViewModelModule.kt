@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
-import com.tokopedia.tradein_common.viewmodel.ViewModelKey
-import com.tokopedia.tradein_common.viewmodel.ViewModelProviderFactory
+import com.tokopedia.basemvvm.viewmodel.ViewModelKey
+import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

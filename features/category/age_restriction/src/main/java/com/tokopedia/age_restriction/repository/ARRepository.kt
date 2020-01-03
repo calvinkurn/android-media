@@ -1,6 +1,6 @@
 package com.tokopedia.age_restriction.repository
 
-import com.tokopedia.tradein_common.repository.BaseRepository
+import com.tokopedia.basemvvm.repository.BaseRepository
 import javax.inject.Inject
 
 

@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
 import com.tokopedia.track.TrackApp
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.main.layout_activity_dob.*
 import java.text.SimpleDateFormat

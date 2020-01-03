@@ -1,4 +1,4 @@
-package com.tokopedia.tradein_common.repository
+package com.tokopedia.basemvvm.repository
 
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository

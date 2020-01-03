@@ -3,7 +3,7 @@ package com.tokopedia.tradein.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.tradein.TradeInRepository
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
 open class BaseTradeInViewModel() : BaseViewModel() {
     protected var progBarVisibility = MutableLiveData<Boolean>()

@@ -1,6 +1,5 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -17,7 +16,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
