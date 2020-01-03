@@ -9,7 +9,6 @@ import android.os.Build;
 import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.stetho.Stetho;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -83,7 +82,6 @@ public abstract class MainApplication extends MainRouterApplication{
         instance = this;
         init();
         initCrashlytics();
-        initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -144,10 +142,6 @@ public abstract class MainApplication extends MainRouterApplication{
 
     public void setAppComponent(AppComponent appComponent) {
         this.appComponent = appComponent;
-    }
-
-    public void initStetho() {
-        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
     }
 
     private void initBranch() {
