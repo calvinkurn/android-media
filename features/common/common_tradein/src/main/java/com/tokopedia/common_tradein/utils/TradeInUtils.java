@@ -1,13 +1,13 @@
-package tradein_common;
+package com.tokopedia.common_tradein.utils;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.telephony.TelephonyManager;
+
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.user.session.UserSession;
 
