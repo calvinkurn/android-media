@@ -152,7 +152,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-        presenter.autofill(currentLat, currentLong)
+
+        val zoom = googleMap?.cameraPosition?.zoom ?: 0f
+        presenter.autofill(currentLat, currentLong, zoom)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -271,11 +273,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private fun getAutofill() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
+            val zoomLevel = this.googleMap?.cameraPosition?.zoom ?: 0f
             val latTarget = target?.latitude ?: 0.0
             val longTarget = target?.longitude ?: 0.0
 
             presenter.clearCacheAutofill()
-            presenter.autofill(latTarget, longTarget)
+            presenter.autofill(latTarget, longTarget, zoomLevel)
         } else {
             whole_loading_container?.visibility = View.GONE
             invalid_container?.visibility = View.GONE
@@ -291,20 +294,22 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }, 500)
         }
 
+        var zoomLevel = 16f
         if (lat == 0.0 && long == 0.0) {
             currentLat = DEFAULT_LAT
             currentLong = DEFAULT_LONG
+            zoomLevel = 5f
         } else {
             currentLat = lat
             currentLong = long
         }
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), zoomLevel)
     }
 
-    private fun moveMap(latLng: LatLng) {
+    private fun moveMap(latLng: LatLng, zoomLevel: Float = 16f) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
-                .zoom(16f)
+                .zoom(zoomLevel)
                 .build()
 
         googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))

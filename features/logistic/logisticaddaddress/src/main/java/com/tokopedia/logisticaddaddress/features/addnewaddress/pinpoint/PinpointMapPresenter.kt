@@ -44,8 +44,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         getDistrictUseCase.execute(RequestParams.create(), GetDistrictSubscriber(view, getDistrictMapper))
     }
 
-    fun autofill(lat: Double, long: Double) {
-        if (AddNewAddressUtils.hasDefaultCoordinate(lat, long)) {
+    fun autofill(lat: Double, long: Double, zoom: Float) {
+        if (AddNewAddressUtils.hasDefaultCoordinate(lat, long) || zoom < 14f) {
             view.showUndetectedDialog()
             return
         }
