@@ -47,7 +47,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
-import kotlinx.android.synthetic.main.activity_category_nav.layout_no_data
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
@@ -244,6 +243,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             progressBar.hide()
             when (it) {
                 is Success -> {
+                    updateToolBarHeading(it.data)
                     openAdultPage()
                 }
             }
@@ -253,17 +253,22 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             progressBar.hide()
             when (it) {
                 is Success -> {
-                    showBottomNavigation()
-                    initViewPager()
-                    loadSection(it.data)
-                    initSwitchButton()
-                    initBottomSheetListener()
+                    updateToolBarHeading(it.data.name ?: "")
+                    handleCategoryDetailSuccess()
                 }
                 is Fail -> {
                     setErrorPage()
                 }
             }
         })
+    }
+
+    private fun handleCategoryDetailSuccess() {
+        showBottomNavigation()
+        initViewPager()
+        loadSection()
+        initSwitchButton()
+        initBottomSheetListener()
     }
 
     private fun openAdultPage() {
@@ -358,9 +363,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         }
     }
 
-    private fun loadSection(data: Data) {
-        departmentName = data.name ?: ""
-        updateToolBarHeading(data.name ?: "")
+    private fun loadSection() {
         populateTab(categorySectionItemList)
         categorySectionPagerAdapter = CategoryNavigationPagerAdapter(supportFragmentManager)
         categorySectionPagerAdapter?.setData(categorySectionItemList)
@@ -438,6 +441,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun updateToolBarHeading(header: String) {
+        departmentName = header
         et_search.text = header
     }
 
@@ -472,7 +476,20 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        AdultManager.handleActivityResult(this, requestCode, resultCode, data)
+        AdultManager.handleActivityResult(this, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+
+            }
+
+            override fun onVerificationSuccess(message: String?) {
+                handleCategoryDetailSuccess()
+            }
+
+            override fun onLoginPreverified() {
+                handleCategoryDetailSuccess()
+            }
+
+        })
         handleDefaultActivityResult(requestCode, resultCode, data)
     }
 
