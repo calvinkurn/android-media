@@ -744,8 +744,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun setRefresh() {
-        isForceRefresh = true
+    fun clearCache() {
+        presenter.clearCache()
     }
 
 }
