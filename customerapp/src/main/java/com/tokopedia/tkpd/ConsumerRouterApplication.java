@@ -248,7 +248,7 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
-import com.tokopedia.common_tradein.TradeInUtils;
+import com.tokopedia.common_tradein.utils.TradeInUtils;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
