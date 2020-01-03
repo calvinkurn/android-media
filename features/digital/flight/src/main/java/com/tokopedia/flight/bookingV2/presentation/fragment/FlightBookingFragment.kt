@@ -20,7 +20,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.bookingV2.presentation.adapter.*
@@ -45,6 +44,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewMo
 import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataActivity
 import com.tokopedia.travel.passenger.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_flight_booking.*

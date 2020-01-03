@@ -26,7 +26,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
@@ -63,6 +62,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataActivity
 import com.tokopedia.travel.passenger.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
