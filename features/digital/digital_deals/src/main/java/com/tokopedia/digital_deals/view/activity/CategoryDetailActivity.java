@@ -33,7 +33,6 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     private String categoryName;
     private boolean isLocationUpdated;
     private CategoryDetailHomeFragment categoryDetailHomeFragment;
-    private PermissionCheckerHelper permissionCheckerHelper;
 
     public Bundle getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
 
@@ -66,7 +65,6 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     protected Fragment getNewFragment() {
         toolbar.setVisibility(View.GONE);
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
-        permissionCheckerHelper = new PermissionCheckerHelper();
         if (TextUtils.isEmpty(categoryName))
             categoryName = getString(com.tokopedia.digital_deals.R.string.text_deals);
         if (getIntent().getExtras() != null) {
@@ -109,6 +107,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
 
 
     private void checkForCurrentLocation() {
+        PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
             @Override
             public void onPermissionDenied(String permissionText) {

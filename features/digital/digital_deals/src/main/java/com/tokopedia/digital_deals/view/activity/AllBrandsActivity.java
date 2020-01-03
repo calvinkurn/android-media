@@ -85,7 +85,6 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     AllCategoryPresenter mPresenter;
     private boolean isLocationUpdated;
     SelectLocationBottomSheet selectLocationFragment;
-    PermissionCheckerHelper permissionCheckerHelper;
     String fromVoucher;
 
     @Override
@@ -101,7 +100,6 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         if (uri != null) {
             List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS, uri, true);
             fromVoucher = params.get(0);
-            permissionCheckerHelper = new PermissionCheckerHelper();
             checkForCurrentLocation();
         }
         userSession = new UserSession(this);
@@ -406,6 +404,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     }
 
     private void checkForCurrentLocation() {
+        PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
             @Override
             public void onPermissionDenied(String permissionText) {

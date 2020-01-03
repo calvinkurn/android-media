@@ -81,29 +81,9 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
         this.searchText = getArguments().getString(AllBrandsActivity.SEARCH_TEXT);
         permissionCheckerHelper = new PermissionCheckerHelper();
-//        checkForCurrentLocation();
-        Log.d("Naveen", "Create Fragment");
         currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
         setHasOptionsMenu(true);
 
-    }
-
-    private void checkForCurrentLocation() {
-        permissionCheckerHelper.checkPermission(AllBrandsFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
-            @Override
-            public void onPermissionDenied(String permissionText) {
-                mPresenter.getAllBrands();
-            }
-
-            @Override
-            public void onNeverAskAgain(String permissionText) {
-            }
-
-            @Override
-            public void onPermissionGranted() {
-                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
-            }
-        }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
     }
 
     @Override
@@ -357,15 +337,11 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         }
     }
 
-    public void reloadIfLocationUpdated(){
+    public void reloadIfLocationUpdated() {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        Log.d("Naveen", "Location Name is " + location.getName());
         if(location!=null) {
-//            if (!location.equals(currentLocation)){
                 onLocationUpdated();
-//            }
         }
-
     }
 
     @Override

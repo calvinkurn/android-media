@@ -114,45 +114,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, String fromApplink, Boolean... layoutType) {
-        if (categoryItems == null)
-            this.categoryItems = new ArrayList<>();
-        else
-            this.categoryItems = categoryItems;
-        if (layoutType.length > 0) {
-            if (layoutType[0] != null) {
-                this.shortLayout = layoutType[0];
-            }
-        }
-        if (layoutType.length > 1) {
-            if (layoutType[1] != null) {
-                brandPageCard = layoutType[1];
-            }
-        }
-        this.toActivityRequest = toActivityRequest;
-        this.pageType = pageType;
-        this.fromApplink = fromApplink;
-
-    }
-
-    public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, int itemViewType, Boolean... layoutType) {
-        if (categoryItems == null)
-            this.categoryItems = new ArrayList<>();
-        else
-            this.categoryItems = categoryItems;
-        if (layoutType.length > 0) {
-            if (layoutType[0] != null) {
-                this.shortLayout = layoutType[0];
-            }
-        }
-        if (layoutType.length > 1) {
-            if (layoutType[1] != null) {
-                brandPageCard = layoutType[1];
-            }
-        }
-        this.toActivityRequest = toActivityRequest;
-        this.pageType = pageType;
-        this.itemViewType = itemViewType;
-
+     this( categoryItems,  pageType,  toActivityRequest,  layoutType);
+     this.fromApplink = fromApplink;
     }
 
     public void setTopDealsLayout(boolean isTopDealsLayout) {
