@@ -25,8 +25,8 @@ import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse
 import com.tokopedia.saldodetails.response.model.GqlSpAnchorListResponse
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
-import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_SELLER_DETAILS
-import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_SELLER_DETAILS_ID
+import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS
+import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS_ID
 import javax.inject.Inject
 
 class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorityContract.View {
@@ -124,7 +124,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
 
             dialog.setOnOkClickListener { v ->
                 dialog.dismiss()
-                saldoDetailsPresenter!!.updateSellerSaldoStatus(isChecked)
+                saldoDetailsPresenter.updateSellerSaldoStatus(isChecked)
             }
 
             dialog.setBtnCancel(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_cancel))
@@ -230,7 +230,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
         }
     }
 
-    private fun populateAnchorListData(anchorList: List<GqlSpAnchorListResponse>?) {
+    private fun populateAnchorListData(anchorList: List<GqlSpAnchorListResponse?>?) {
         val layoutInflater = layoutInflater
         spActionListLinearLayout!!.removeAllViews()
 
@@ -255,7 +255,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
                 }
 
                 anchorLabel.setOnClickListener { v ->
-                    if (gqlAnchorListResponse != null && !TextUtils.isEmpty(gqlAnchorListResponse.url) && context != null) {
+                    if (!TextUtils.isEmpty(gqlAnchorListResponse.url) && context != null) {
                         saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.text.toString())
                         startActivity(SaldoWebViewActivity.getWebViewIntent(context!!, gqlAnchorListResponse.url))
                     }
@@ -325,7 +325,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
     }
 
     override fun onDestroy() {
-        saldoDetailsPresenter!!.onDestroyView()
+        saldoDetailsPresenter.onDestroyView()
         super.onDestroy()
     }
 

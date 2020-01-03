@@ -12,8 +12,6 @@ class SaldoListEmptyViewHolder(itemView: View) : AbstractViewHolder<EmptyModel>(
     }
 
     companion object {
-
-        @JvmField
         val LAYOUT = com.tokopedia.saldodetails.R.layout.saldo_transaction_list_empty
     }
 }

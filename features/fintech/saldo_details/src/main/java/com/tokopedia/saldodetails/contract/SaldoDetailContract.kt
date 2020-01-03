@@ -11,15 +11,15 @@ import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
 
 interface SaldoDetailContract {
     interface View : CustomerView {
-        val context: Context
+        fun getContext(): Context?
 
-        val activity: Activity
+        fun getActivity(): Activity?
 
-        val sellerSaldoBalance: Long
+        fun getSellerSaldoBalance(): Long
 
-        val buyerSaldoBalance: Long
+        fun getBuyerSaldoBalance(): Long
 
-        val isSellerEnabled: Boolean
+        fun isUserSeller(): Boolean
 
         fun showErrorMessage(s: String)
 

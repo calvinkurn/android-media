@@ -32,8 +32,9 @@ import rx.Subscriber
 
 import android.content.ContentValues.TAG
 
-class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Context) :
+class SaldoHistoryPresenter @Inject constructor() :
         BaseDaggerPresenter<SaldoHistoryContract.View>(), SaldoHistoryContract.Presenter {
+
     @Inject
     internal lateinit var getDepositSummaryUseCase: GetDepositSummaryUseCase
     @Inject
@@ -95,86 +96,86 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
         cal.add(Calendar.DAY_OF_MONTH, -1)
         val startDate = dateFormat.format(cal.time)
         val endDate = dateFormat.format(date)
-        view.startDate = startDate
-        view.endDate = endDate
+        view.setStartDate(startDate)
+        view.setEndDate(endDate)
         paramStartDate = startDate
         paramEndDate = endDate
     }
 
     override fun onSearchClicked() {
-        paramStartDate = view.startDate
-        paramEndDate = view.endDate
+        paramStartDate = view.getStartDate()
+        paramEndDate = view.getEndDate()
         getSummaryDeposit()
     }
 
     private fun setData(data: GqlAllDepositSummaryResponse?) {
-        if (!isViewAttached || view.adapter == null || data == null) {
+        if (!isViewAttached || view.getAdapter() == null || data == null) {
             return
         }
 
 
-        view.allHistoryAdapter.addElement(data.allDepositHistory!!.depositHistoryList)
-        (view.allSaldoHistoryTabItem.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.allDepositHistory!!.isHaveNextPage)
-        if (view.allHistoryAdapter.itemCount == 0) {
-            view.allHistoryAdapter.addElement(view.defaultEmptyViewModel)
+        view.getAllHistoryAdapter()?.addElement(data.allDepositHistory!!.depositHistoryList)
+        (view.getAllSaldoHistoryTabItem()?.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.allDepositHistory!!.isHaveNextPage)
+        if (view.getAllHistoryAdapter()?.itemCount == 0) {
+            view.getAllHistoryAdapter()?.addElement(view.getDefaultEmptyViewModel())
         }
 
-        view.buyerHistoryAdapter.addElement(data.buyerDepositHistory!!.depositHistoryList)
-        (view.buyerSaldoHistoryTabItem.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.buyerDepositHistory!!.isHaveNextPage)
-        if (view.buyerHistoryAdapter.itemCount == 0) {
-            view.buyerHistoryAdapter.addElement(view.defaultEmptyViewModel)
+        view.getBuyerHistoryAdapter()?.addElement(data.buyerDepositHistory!!.depositHistoryList)
+        (view.getBuyerSaldoHistoryTabItem()?.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.buyerDepositHistory!!.isHaveNextPage)
+        if (view.getBuyerHistoryAdapter()?.itemCount == 0) {
+            view.getBuyerHistoryAdapter()?.addElement(view.getDefaultEmptyViewModel())
         }
 
-        view.sellerHistoryAdapter.addElement(data.sellerDepositHistory!!.depositHistoryList)
-        (view.sellerSaldoHistoryTabItem.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.sellerDepositHistory!!.isHaveNextPage)
-        if (view.sellerHistoryAdapter.itemCount == 0) {
-            view.sellerHistoryAdapter.addElement(view.defaultEmptyViewModel)
+        view.getSellerHistoryAdapter()?.addElement(data.sellerDepositHistory!!.depositHistoryList)
+        (view.getSellerSaldoHistoryTabItem()?.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.sellerDepositHistory!!.isHaveNextPage)
+        if (view.getSellerHistoryAdapter()?.itemCount == 0) {
+            view.getSellerHistoryAdapter()?.addElement(view.getDefaultEmptyViewModel())
         }
 
     }
 
     private fun setData(data: GqlCompleteTransactionResponse?) {
-        if (!isViewAttached || view.allHistoryAdapter == null || data == null) {
+        if (!isViewAttached || data == null || view.getAllHistoryAdapter() == null) {
             return
         }
 
-        view.allHistoryAdapter.addElement(data.allDepositHistory!!.depositHistoryList)
-        (view.allSaldoHistoryTabItem.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.allDepositHistory!!.isHaveNextPage)
-        if (view.allHistoryAdapter.itemCount == 0) {
-            view.allHistoryAdapter.addElement(view.defaultEmptyViewModel)
+        view.getAllHistoryAdapter()?.addElement(data.allDepositHistory!!.depositHistoryList)
+        (view.getAllSaldoHistoryTabItem()?.fragment as BaseListFragment<*, *>).updateScrollListenerState(data.allDepositHistory!!.isHaveNextPage)
+        if (view.getAllHistoryAdapter()?.itemCount == 0) {
+            view.getAllHistoryAdapter()?.addElement(view.getDefaultEmptyViewModel())
         }
 
     }
 
     private fun showLoading() {
-        if (isViewAttached && view.adapter != null) {
-            view.adapter.showLoading()
+        if (isViewAttached && view.getAdapter() != null) {
+            view.getAdapter()?.showLoading()
         }
     }
 
     private fun hideLoading() {
-        if (isViewAttached && view.adapter != null) {
-            view.adapter.hideLoading()
+        if (isViewAttached && view.getAdapter() != null) {
+            view.getAdapter()?.hideLoading()
             view.finishLoading()
         }
     }
 
     override fun onEndDateClicked(datePicker: SaldoDatePickerUtil) {
-        val date = dateFormatter(view.endDate)
+        val date = dateFormatter(view.getEndDate())
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
         datePicker.DatePickerCalendar { year, month, day ->
             val selectedDate = this@SaldoHistoryPresenter.getDate(year, month, day)
-            this@SaldoHistoryPresenter.view.endDate = selectedDate
+            this@SaldoHistoryPresenter.view.setEndDate(selectedDate)
             android.os.Handler().postDelayed({ this@SaldoHistoryPresenter.onSearchClicked() }, SEARCH_DELAY)
         }
     }
 
     override fun onStartDateClicked(datePicker: SaldoDatePickerUtil) {
-        val date = dateFormatter(view.startDate)
+        val date = dateFormatter(view.getStartDate())
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
         datePicker.DatePickerCalendar { year, month, day ->
             val selectedDate = getDate(year, month, day)
-            view.startDate = selectedDate
+            view.setStartDate(selectedDate)
             android.os.Handler().postDelayed({ this.onSearchClicked() }, SEARCH_DELAY)
 
         }
@@ -206,7 +207,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
         return Integer.parseInt(day)
     }
 
-    private fun dateFormatter(date: String): String {
+    private fun dateFormatter(date: String?): String {
 
         val sdf = SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US)
         val sdf_ws = SimpleDateFormat("dd/MM/yyyy", Locale.US)
@@ -261,9 +262,9 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                         return
                     }
                     hideLoading()
-                    ErrorHandler.getErrorMessage(view.context, e)
+                    ErrorHandler.getErrorMessage(view.getContext(), e)
                     if (e is UnknownHostException || e is SocketTimeoutException) {
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState()
                         } else {
                             view.setRetry()
@@ -271,7 +272,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
 
                     } else {
                         view.setActionsEnabled(true)
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
                         } else {
                             view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
@@ -303,14 +304,14 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
             if (gqlDepositSummaryResponse != null && !gqlDepositSummaryResponse.allDepositHistory!!.isHaveError) {
 
                 if (paging.page == 1) {
-                    view.allHistoryAdapter.clearAllElements()
-                    view.buyerHistoryAdapter.clearAllElements()
-                    view.sellerHistoryAdapter.clearAllElements()
+                    view.getAllHistoryAdapter()?.clearAllElements()
+                    view.getBuyerHistoryAdapter()?.clearAllElements()
+                    view.getSellerHistoryAdapter()?.clearAllElements()
                 }
                 setData(gqlDepositSummaryResponse)
             } else {
                 if (gqlDepositSummaryResponse?.allDepositHistory != null) {
-                    if (view.allHistoryAdapter.itemCount == 0) {
+                    if (view.getAllHistoryAdapter()?.itemCount == 0) {
                         view.showEmptyState(gqlDepositSummaryResponse.allDepositHistory!!.message!!)
                     } else {
                         view.setRetry(gqlDepositSummaryResponse.allDepositHistory!!.message!!)
@@ -318,7 +319,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                 }
 
                 if (gqlDepositSummaryResponse?.buyerDepositHistory != null) {
-                    if (view.buyerHistoryAdapter.itemCount == 0) {
+                    if (view.getBuyerHistoryAdapter()?.itemCount == 0) {
                         view.showEmptyState(gqlDepositSummaryResponse.buyerDepositHistory!!.message!!)
                     } else {
                         view.setRetry(gqlDepositSummaryResponse.buyerDepositHistory!!.message!!)
@@ -326,7 +327,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                 }
 
                 if (gqlDepositSummaryResponse?.sellerDepositHistory != null) {
-                    if (view.sellerHistoryAdapter.itemCount == 0) {
+                    if (view.getSellerHistoryAdapter()?.itemCount == 0) {
                         view.showEmptyState(gqlDepositSummaryResponse.sellerDepositHistory!!.message!!)
                     } else {
                         view.setRetry(gqlDepositSummaryResponse.sellerDepositHistory!!.message!!)
@@ -335,7 +336,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
             }
 
         } else {
-            if (view.adapter != null && view.adapter.itemCount == 0) {
+            if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                 view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
             } else {
                 view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
@@ -412,9 +413,9 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                         return
                     }
                     hideLoading()
-                    ErrorHandler.getErrorMessage(view.context, e)
+                    ErrorHandler.getErrorMessage(view.getContext(), e)
                     if (e is UnknownHostException || e is SocketTimeoutException) {
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState()
                         } else {
                             view.setRetry()
@@ -422,7 +423,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
 
                     } else {
                         view.setActionsEnabled(true)
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
                         } else {
                             view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
@@ -457,7 +458,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                 setData(gqlCompleteTransactionResponse)
             } else {
                 if (gqlCompleteTransactionResponse?.allDepositHistory != null) {
-                    if (view.allHistoryAdapter.itemCount == 0) {
+                    if (view.getAllHistoryAdapter()?.itemCount == 0) {
                         view.showEmptyState(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
                     } else {
                         view.setRetry(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
@@ -465,7 +466,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                 }
             }
         } else {
-            if (view.adapter != null && view.adapter.itemCount == 0) {
+            if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                 view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
             } else {
                 view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
@@ -496,9 +497,9 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                         return
                     }
                     hideLoading()
-                    ErrorHandler.getErrorMessage(view.context, e)
+                    ErrorHandler.getErrorMessage(view.getContext(), e)
                     if (e is UnknownHostException || e is SocketTimeoutException) {
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState()
                         } else {
                             view.setRetry()
@@ -506,7 +507,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
 
                     } else {
                         view.setActionsEnabled(true)
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
                         } else {
                             view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
@@ -526,20 +527,20 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                         val gqlCompleteTransactionResponse = graphqlResponse.getData<GqlCompleteTransactionResponse>(GqlCompleteTransactionResponse::class.java)
 
                         if (gqlCompleteTransactionResponse != null && !gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
-                            if (!isViewAttached || view.sellerHistoryAdapter == null) {
+                            if (!isViewAttached || view.getSellerHistoryAdapter() == null) {
                                 return
                             }
 
-                            (view.sellerSaldoHistoryTabItem.fragment as BaseListFragment<*, *>).updateScrollListenerState(gqlCompleteTransactionResponse.allDepositHistory!!.isHaveNextPage)
+                            (view.getSellerSaldoHistoryTabItem()?.fragment as BaseListFragment<*, *>).updateScrollListenerState(gqlCompleteTransactionResponse.allDepositHistory!!.isHaveNextPage)
 
-                            view.sellerHistoryAdapter.addElement(
+                            view.getSellerHistoryAdapter()?.addElement(
                                     gqlCompleteTransactionResponse.allDepositHistory!!.depositHistoryList)
-                            if (view.sellerHistoryAdapter.itemCount == 0) {
-                                view.sellerHistoryAdapter.addElement(view.defaultEmptyViewModel)
+                            if (view.getSellerHistoryAdapter()?.itemCount == 0) {
+                                view.getSellerHistoryAdapter()?.addElement(view.getDefaultEmptyViewModel())
                             }
                         } else {
                             if (gqlCompleteTransactionResponse?.allDepositHistory != null) {
-                                if (view.sellerHistoryAdapter.itemCount == 0) {
+                                if (view.getSellerHistoryAdapter()?.itemCount == 0) {
                                     view.showEmptyState(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
                                 } else {
                                     view.setRetry(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
@@ -547,7 +548,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                             }
                         }
                     } else {
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
                         } else {
                             view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
@@ -585,9 +586,9 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                         return
                     }
                     hideLoading()
-                    ErrorHandler.getErrorMessage(view.context, e)
+                    ErrorHandler.getErrorMessage(view.getContext(), e)
                     if (e is UnknownHostException || e is SocketTimeoutException) {
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState()
                         } else {
                             view.setRetry()
@@ -595,7 +596,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
 
                     } else {
                         view.setActionsEnabled(true)
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
                         } else {
                             view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
@@ -615,21 +616,21 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                         val gqlCompleteTransactionResponse = graphqlResponse.getData<GqlCompleteTransactionResponse>(GqlCompleteTransactionResponse::class.java)
 
                         if (gqlCompleteTransactionResponse != null && !gqlCompleteTransactionResponse.allDepositHistory!!.isHaveError) {
-                            if (!isViewAttached || view.buyerHistoryAdapter == null) {
+                            if (!isViewAttached || view.getBuyerHistoryAdapter() == null) {
                                 return
                             }
 
-                            view.buyerHistoryAdapter.addElement(
+                            view.getBuyerHistoryAdapter()?.addElement(
                                     gqlCompleteTransactionResponse.allDepositHistory!!.depositHistoryList)
 
-                            (view.buyerSaldoHistoryTabItem.fragment as BaseListFragment<*, *>).updateScrollListenerState(gqlCompleteTransactionResponse.allDepositHistory!!.isHaveNextPage)
+                            (view.getBuyerSaldoHistoryTabItem()?.fragment as BaseListFragment<*, *>).updateScrollListenerState(gqlCompleteTransactionResponse.allDepositHistory!!.isHaveNextPage)
 
-                            if (view.buyerHistoryAdapter.itemCount == 0) {
-                                view.buyerHistoryAdapter.addElement(view.defaultEmptyViewModel)
+                            if (view.getBuyerHistoryAdapter()?.itemCount == 0) {
+                                view.getBuyerHistoryAdapter()?.addElement(view.getDefaultEmptyViewModel())
                             }
                         } else {
                             if (gqlCompleteTransactionResponse?.allDepositHistory != null) {
-                                if (view.buyerHistoryAdapter.itemCount == 0) {
+                                if (view.getBuyerHistoryAdapter()?.itemCount == 0) {
                                     view.showEmptyState(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
                                 } else {
                                     view.setRetry(gqlCompleteTransactionResponse.allDepositHistory!!.message!!)
@@ -637,7 +638,7 @@ class SaldoHistoryPresenter @Inject constructor(@ApplicationContext context: Con
                             }
                         }
                     } else {
-                        if (view.adapter != null && view.adapter.itemCount == 0) {
+                        if (view.getAdapter() != null && view.getAdapter()?.itemCount == 0) {
                             view.showEmptyState(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
                         } else {
                             view.setRetry(view.getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))

@@ -15,11 +15,11 @@ import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
+import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_ALL
+import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_BUYER
+import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_SELLER
+import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.TRANSACTION_TYPE
 
-import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.FOR_ALL
-import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.FOR_BUYER
-import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.FOR_SELLER
-import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.TRANSACTION_TYPE
 
 class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>() {
     private var recyclerView: RecyclerView? = null

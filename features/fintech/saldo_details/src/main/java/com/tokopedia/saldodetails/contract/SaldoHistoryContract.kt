@@ -13,33 +13,31 @@ import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 class SaldoHistoryContract {
 
     interface View : CustomerView {
-        val context: Context
+        fun getContext(): Context?
 
-        var startDate: String
+        fun getStartDate(): String?
 
-        var endDate: String
+        fun getEndDate(): String?
 
-        val defaultEmptyViewModel: Visitable<*>
+        fun getDefaultEmptyViewModel(): Visitable<*>?
 
-        val activity: Activity
+        fun getActivity(): Activity?
 
-        val sellerSaldoHistoryTabItem: SaldoHistoryTabItem
+        fun getSellerSaldoHistoryTabItem(): SaldoHistoryTabItem?
 
-        val adapter: SaldoDepositAdapter
+        fun getAdapter(): SaldoDepositAdapter?
 
-        val singleHistoryTabItem: SaldoHistoryTabItem
+        fun getAllHistoryAdapter(): SaldoDepositAdapter?
 
-        val allHistoryAdapter: SaldoDepositAdapter
+        fun getAllSaldoHistoryTabItem(): SaldoHistoryTabItem?
 
-        val allSaldoHistoryTabItem: SaldoHistoryTabItem
+        fun getBuyerHistoryAdapter(): SaldoDepositAdapter?
 
-        val buyerHistoryAdapter: SaldoDepositAdapter
+        fun getBuyerSaldoHistoryTabItem(): SaldoHistoryTabItem?
 
-        val buyerSaldoHistoryTabItem: SaldoHistoryTabItem
+        fun getSellerHistoryAdapter(): SaldoDepositAdapter?
 
-        val sellerHistoryAdapter: SaldoDepositAdapter
-
-        val singleTabAdapter: SaldoDepositAdapter
+        fun getSingleTabAdapter(): SaldoDepositAdapter?
 
         fun finishLoading()
 
@@ -64,6 +62,8 @@ class SaldoHistoryContract {
         fun showEmptyState(error: String)
 
         fun setRetry(error: String)
+        fun setStartDate(date: String)
+        fun setEndDate(date: String)
 
     }
 

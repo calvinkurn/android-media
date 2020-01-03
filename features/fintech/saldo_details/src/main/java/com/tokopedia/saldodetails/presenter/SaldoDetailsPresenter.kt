@@ -13,8 +13,8 @@ import com.tokopedia.saldodetails.subscriber.GetMerchantCreditDetailsSubscriber
 import com.tokopedia.saldodetails.subscriber.GetMerchantFinancialStatusSubscriber
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber
 import com.tokopedia.saldodetails.usecase.*
-import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT
-import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT
+import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT
+import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import java.net.SocketTimeoutException
@@ -190,12 +190,12 @@ class SaldoDetailsPresenter @Inject constructor() :
         if (!isViewAttached) {
             return
         }
-        val context = view.context
+        val context = view.getContext()
         val userSession = UserSession(context)
         if (userSession.hasPassword()) {
 
-            val sellerBalance = view.sellerSaldoBalance
-            val buyerBalance = view.buyerSaldoBalance
+            val sellerBalance = view.getSellerSaldoBalance()
+            val buyerBalance = view.getBuyerSaldoBalance()
 
             val minSaldoLimit: Long = 10000
             if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
@@ -205,8 +205,8 @@ class SaldoDetailsPresenter @Inject constructor() :
                 withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock)
                 withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount)
                 withdrawActivityBundle.putBoolean(IS_SELLER, isSeller)
-                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, view.buyerSaldoBalance)
-                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, view.sellerSaldoBalance)
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, view.getBuyerSaldoBalance())
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, view.getSellerSaldoBalance())
                 launchWithdrawActivity(intent)
             }
         } else {
@@ -217,7 +217,7 @@ class SaldoDetailsPresenter @Inject constructor() :
 
     private fun launchWithdrawActivity(intent: Intent) {
         intent.putExtras(withdrawActivityBundle)
-        view.activity.startActivityForResult(intent, REQUEST_WITHDRAW_CODE)
+        view.getActivity()?.startActivityForResult(intent, REQUEST_WITHDRAW_CODE)
     }
 
     override fun hideSaldoPrioritasFragment() {
