@@ -22,12 +22,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_marginLeft="@dimen/dp_12"
         android:text="@string/apa_itu_group_iklan"
+        android:textColor="@color/black"
+        app:typographyType="heading_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
         app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ic1"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <ImageView
         android:id="@+id/ic2"
@@ -78,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ic1"
         app:layout_constraintTop_toBottomOf="@+id/subtitle1"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <ImageView
         android:id="@+id/ic3"
@@ -102,5 +103,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ic3"
         app:layout_constraintTop_toBottomOf="@+id/subtitle2"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

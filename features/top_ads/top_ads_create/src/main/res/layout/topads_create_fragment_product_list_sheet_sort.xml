@@ -23,12 +23,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography30"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="center_vertical"
         android:text="@string/urutkan"
+        app:typographyType="heading_3"
         app:layout_constraintBottom_toBottomOf="@+id/btn_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close" />

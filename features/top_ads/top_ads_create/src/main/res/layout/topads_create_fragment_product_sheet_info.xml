@@ -20,13 +20,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography31"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:gravity="center_vertical"
         android:text="@string/tip_memilih_produk"
+        android:textColor="@color/black"
+        app:typographyType="heading_3"
         app:layout_constraintBottom_toBottomOf="@+id/btn_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
@@ -45,10 +46,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography32"
-        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="top"
+        android:textColor="@color/topads_heading_color"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/pilih_produk_dengan_ulasan_terbanyak"
@@ -69,11 +70,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography33"
-        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_12"
+        android:textColor="@color/topads_heading_color"
         android:text="@string/pilih_produk_terpopuler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView6"

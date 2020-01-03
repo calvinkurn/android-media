@@ -9,11 +9,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/group_title"
-        style="@style/TextView.Small.Bold"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textAllCaps="true"
+        android:textColor="@color/topads_heading_color"
         app:typographyType="heading_6"
         android:gravity="center_vertical"
         tools:text="@tools:sample/lorem" />

@@ -9,11 +9,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography24"
-        style="@style/TextView.Small.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:text="@string/biaya_per_klik"
+        android:textColor="@color/topads_heading_color"
+        android:textStyle="bold"
+        app:typographyType="heading_6"
         app:layout_constraintBottom_toBottomOf="@+id/btn_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_info" />
@@ -61,11 +63,11 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/subtitle"
-                style="@style/TextView.Micro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_5"
                 android:text="@string/biaya_per_klik"
+                android:textColor="@color/topads_heading_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
@@ -87,12 +89,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography27"
-        style="@style/TextView.Small.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="20dp"
         android:text="Kata Kunci (3)"
+        android:textStyle="bold"
+        android:textColor="@color/topads_heading_color"
+        app:typographyType="heading_6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card1" />
 

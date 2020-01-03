@@ -24,25 +24,25 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
-            style="@style/TextView.SubHeadline.Bold"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:gravity="center"
             android:paddingTop="@dimen/dp_20"
             android:text="@string/yuk_iklankan_produkmu"
+            android:textColor="@color/black"
+            app:typographyType="heading_2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
-            style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="789dp"
             android:gravity="center"
             android:paddingBottom="@dimen/dp_20"
             android:text="@string/pilih_cara_beriklan_yang_sesuai_kebutuhanmu"
+            android:textColor="#AD31353B"
             app:typographyType="body_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,18 +73,18 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography4"
-                    style="@style/TextView.SubHeadline.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="left"
                     android:text="@string/iklan_otomatis"
+                    android:textColor="@color/black"
+                    app:typographyType="heading_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography8"
-                    style="@style/TextView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="left"
@@ -115,13 +115,14 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography"
-                    style="@style/TextView.Title.Bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="@dimen/dp_16"
                     android:gravity="left"
                     android:text="@string/beriklan_jadi_mudah"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/icon2"
                     app:layout_constraintTop_toBottomOf="@+id/typography8"
@@ -140,7 +141,8 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography2"
-                    style="@style/TextView.Title.Bold"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_12"
@@ -189,7 +191,8 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography3"
-                    style="@style/TextView.Title.Bold"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_12"
@@ -263,6 +266,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="left"
                     android:text="@string/iklan_manual"
+                    android:textColor="@color/black"
+                    app:typographyType="heading_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -301,7 +306,8 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography11"
-                    style="@style/TextView.Title.Bold"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_12"
@@ -311,7 +317,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/icon6"
                     app:layout_constraintTop_toBottomOf="@+id/typography10"
-                    app:typographyType="heading_5" />
+                    app:typographyType="heading_6" />
 
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -329,7 +335,8 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography13"
-                    style="@style/TextView.Title.Bold"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
@@ -353,7 +360,8 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography15"
-                    style="@style/TextView.Title.Bold"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_12"

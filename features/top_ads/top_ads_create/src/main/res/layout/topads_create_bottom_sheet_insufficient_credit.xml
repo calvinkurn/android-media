@@ -27,12 +27,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/yuk_isi_kredit_sekarang"
+        android:textColor="@color/topads_heading_color"
+        app:typographyType="heading_2"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -51,7 +52,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_topup"

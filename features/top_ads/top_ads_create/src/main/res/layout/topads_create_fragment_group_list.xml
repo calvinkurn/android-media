@@ -9,26 +9,27 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography12"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:text="@string/group_iklan"
+        android:textColor="@color/topads_heading_color"
+        app:typographyType="heading_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography18"
-        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_marginTop="@dimen/dp_4"
+        android:textColor="#F540454C"
         android:text="@string/atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typography12"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -44,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:imeOptions="actionSend"
+            android:imeOptions="actionSearch"
             android:hint="@string/ketik_nama_group_iklan"
             android:singleLine="true" />
 
@@ -53,9 +54,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography19"
-        style="@style/TextView.Micro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textColor="#AD31353B"
         android:text="@string/contoh_spatu_lari_bando_wanita_gaun_pesta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

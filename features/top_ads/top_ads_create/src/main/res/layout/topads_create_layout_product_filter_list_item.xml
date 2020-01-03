@@ -12,7 +12,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        style="@style/TextView.Small.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
@@ -21,12 +20,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_5"
+        android:textColor="@color/black"
         tools:text="@tools:sample/lorem" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtitle"
-        style="@style/TextView.Micro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

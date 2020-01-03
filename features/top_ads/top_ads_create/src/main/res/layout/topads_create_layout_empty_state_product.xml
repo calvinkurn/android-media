@@ -19,15 +19,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography34"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/oops_produk_ntidak_ditemukan"
+        android:textColor="@color/topads_heading_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ilustration"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

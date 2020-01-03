@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordViewHolder
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
-import com.tokopedia.topads.data.response.ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data
+import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
+import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordGroupViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 
 /**
@@ -36,12 +37,28 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
         holder.bind(items[position])
     }
 
-    fun getSelectedItems(): List<Data> {
-        var selected = mutableListOf<Data>()
-        items.forEachIndexed { index, keywordViewModel ->
-            if((keywordViewModel is KeywordItemViewModel) && keywordViewModel.isChecked)
-            selected.add(keywordViewModel.data)
+    fun getSelectedItems(): List<KeywordViewModel> {
+        var selected = mutableListOf<KeywordViewModel>()
+        items.forEachIndexed { index, model ->
+            if((model is KeywordItemViewModel) && model.isChecked) {
+                selected.add(model)
+            }
         }
         return selected
     }
+
+    fun addNewKeyword(it: KeywordViewModel) {
+        if(items.get(0) is KeywordEmptyViewModel){
+            items.clear()
+            items.add(0, KeywordGroupViewModel("Kata Kunci Pilihan"))
+            items.add(1, it)
+        } else if (items.get(0) is KeywordGroupViewModel && (items.get(0) as KeywordGroupViewModel).title.equals("Kata Kunci Pilihan")){
+            items.add(1, it)
+        } else {
+            items.add(0, KeywordGroupViewModel("Kata Kunci Pilihan"))
+            items.add(1, it)
+        }
+        notifyDataSetChanged()
+    }
+
 }

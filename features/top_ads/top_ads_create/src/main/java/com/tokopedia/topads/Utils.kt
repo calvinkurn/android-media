@@ -1,5 +1,8 @@
 package com.tokopedia.topads
 
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import java.util.TreeMap
 
 /**
@@ -27,5 +30,11 @@ object Utils {
         val truncated = value / (divideBy!! / 10) //the number part of the output times 10
         val hasDecimal = truncated < 100 && truncated / 10.0 != (truncated / 10).toDouble()
         return if (hasDecimal) (truncated / 10.0).toString() + suffix else (truncated / 10).toString() + suffix
+    }
+
+    fun dismissKeyboard(context: Context?, view: View?) {
+        val inputMethodManager = context?.getSystemService( Context.INPUT_METHOD_SERVICE ) as InputMethodManager
+        if( inputMethodManager.isAcceptingText )
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken,0)
     }
 }

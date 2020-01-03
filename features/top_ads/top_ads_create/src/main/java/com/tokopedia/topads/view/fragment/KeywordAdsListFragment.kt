@@ -3,14 +3,19 @@ package com.tokopedia.topads.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.topads.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
@@ -51,6 +56,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
         keywordListAdapter = KeywordListAdapter(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
+
+        viewModel.selectedKeywordList.observe(this@KeywordAdsListFragment, Observer {
+            keywordListAdapter.addNewKeyword(it)
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -58,7 +67,9 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         viewModel.getSugestionKeyword("293178758,293182872", 100, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
 
         //Dummy data
-        onEmptySuggestion()
+        keywordListAdapter.items = getDummyKeywordList()
+        keywordListAdapter.notifyDataSetChanged()
+//        onEmptySuggestion()
     }
 
     private fun getDummyKeywordList(): MutableList<KeywordViewModel> {
@@ -117,7 +128,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun getSelectedKeyword(): MutableList<String> {
         var list = mutableListOf<String>()
         keywordListAdapter.getSelectedItems().forEach {
-            list.add(it.keyword)
+            list.add((it as KeywordItemViewModel).data.keyword)
         }
         return list
     }
@@ -141,8 +152,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onViewCreated(view, savedInstanceState)
         add_btn.isEnabled = false
         add_btn.setOnClickListener {
-            keywordListAdapter.items = mutableListOf(KeywordEmptyViewModel())
-            keywordListAdapter.notifyDataSetChanged()
+            viewModel.addNewKeyword(editText.text.toString())
         }
         btn_next.setOnClickListener { gotoNextPage() }
         tip_btn.setOnClickListener { TipSheetKeywordList.newInstance(view.context).show() }
@@ -156,8 +166,6 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                     error_text.text = text
                 } else {
                     error_text.visibility = View.INVISIBLE
-                    keywordListAdapter.items = getDummyKeywordList()
-                    keywordListAdapter.notifyDataSetChanged()
                 }
             }
 
@@ -170,6 +178,15 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+        })
+        editText.setOnEditorActionListener(object: TextView.OnEditorActionListener{
+            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                when(actionId){
+                    EditorInfo.IME_ACTION_DONE -> viewModel.addNewKeyword(editText.text.toString())
+                }
+                Utils.dismissKeyboard(context, v)
+                return true
             }
         })
     }

@@ -28,11 +28,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
-            style="@style/TextView.Micro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_5"
             android:text="@string/biaya_per_klik"
+            android:textColor="@color/topads_heading_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5" />
