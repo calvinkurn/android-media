@@ -144,9 +144,9 @@ object DeeplinkMapper {
             ApplinkConst.FLIGHT -> return ApplinkConstInternalTravel.DASHBOARD_FLIGHT
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
-             ApplinkConst.AFFILIATE_EDUCATION -> return ApplinkConstInternalContent.AFFILIATE_EDUCATION
-             ApplinkConst.AFFILIATE_DASHBOARD -> return ApplinkConstInternalContent.AFFILIATE_DASHBOARD
-             ApplinkConst.AFFILIATE_EXPLORE -> return ApplinkConstInternalContent.AFFILIATE_EXPLORE
+            ApplinkConst.AFFILIATE_EDUCATION -> return ApplinkConstInternalContent.AFFILIATE_EDUCATION
+            ApplinkConst.AFFILIATE_DASHBOARD -> return ApplinkConstInternalContent.AFFILIATE_DASHBOARD
+            ApplinkConst.AFFILIATE_EXPLORE -> return ApplinkConstInternalContent.AFFILIATE_EXPLORE
             ApplinkConst.INBOX_TICKET -> return ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
             ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
             ApplinkConst.INSTANT_LOAN_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
@@ -155,6 +155,7 @@ object DeeplinkMapper {
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+            ApplinkConst.NOTIFICATION -> return ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
             else -> ""
         }
         when {
@@ -179,7 +180,8 @@ object DeeplinkMapper {
     private fun getCreateReviewInternal(deeplink: String): String {
         val parsedUri = Uri.parse(deeplink)
         val segments = parsedUri.pathSegments
-        val rating = parsedUri.getQueryParameter("rating") ?: "5"
+        val rating = parsedUri.getQueryParameter("rating")?: "5"
+
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating)

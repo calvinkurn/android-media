@@ -19,76 +19,19 @@ import rx.Observable;
 public interface PeopleActApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_ADD_ADDRESS)
-    Observable<Response<TkpdResponse>> addAddress(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_ADD_BANK_ACCOUNT)
-    Observable<Response<TkpdResponse>> addBankAccount(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_CONFIRM_NEW_EMAIL)
-    Observable<Response<TkpdResponse>> confirmNewEmail(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_DELETE_ADDRESS)
     Observable<Response<TkpdResponse>> deleteAddress(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_DELETE_BANK_ACCOUNT)
-    Observable<Response<TkpdResponse>> deleteBankAccount(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_EDIT_ADDRESS)
     Observable<Response<TkpdResponse>> editAddress(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_BANK_ACCOUNT)
-    Observable<Response<TkpdResponse>> editBankAccount(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_BIODATA)
-    Observable<Response<TkpdResponse>> editBiodata(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_CONTACT)
-    Observable<Response<TkpdResponse>> editContact(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_EDIT_DEFAULT_ADDRESS)
     Observable<Response<TkpdResponse>> editDefaultAddress(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_DEFAULT_BANK_ACCOUNT)
-    Observable<Response<TkpdResponse>> editDefaultBankAccount(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_EMAIL)
-    Observable<Response<TkpdResponse>> editEmail(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_EDIT_NOTIFICATION)
     Observable<Response<TkpdResponse>> editNotification(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_PASSWORD)
-    Observable<Response<TkpdResponse>> editPassword(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_PRIVACY)
-    Observable<Response<TkpdResponse>> editPrivacy(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_PROFILE)
-    Observable<Response<TkpdResponse>> editProfile(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_SEND_OTP_EDIT_EMAIL)
-    Observable<Response<TkpdResponse>> sendOTPEditEmail(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_UPLOAD_PROFILE_PICTURE)
-    Observable<Response<TkpdResponse>> uploadProfilePic(@FieldMap Map<String, String> params);
-
 
 }

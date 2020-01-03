@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -23,7 +23,7 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FeedOnboardingViewModel::class)
-    internal abstract fun feedOnboardingViewModel(viewModel: FeedOnboardingViewModel): ViewModel
+    @ViewModelKey(FeedViewModel::class)
+    internal abstract fun feedViewModel(viewModel: FeedViewModel): ViewModel
 
 }

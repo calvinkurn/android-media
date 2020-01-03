@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="pure_transparent">#00ffffff</color>
+    <color name="tkpd_main_green_70">#b342b549</color>
 </resources>

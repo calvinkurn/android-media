@@ -2,7 +2,6 @@ package com.tokopedia.core.router.loyaltytokopoint;
 
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 
 import com.tokopedia.loyalty.common.PopUpNotif;
 
@@ -18,5 +17,4 @@ public interface ILoyaltyRouter {
 
     BroadcastReceiver getTokoPointBroadcastReceiver();
 
-    void openTokoPoint(Context context, String url);
 }
