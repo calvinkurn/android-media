@@ -789,8 +789,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun calculateInteractionHeightOnKeyboardShown() {
         if (interactionHeightOnKeyboardShown == -1) {
-            interactionHeightOnKeyboardShown = requireView().findViewById<View>(statsComponent.getContainerId()).y.toInt()
+            interactionHeightOnKeyboardShown = view?.findViewById<View>(statsComponent.getContainerId())?.y?.toInt() ?: -1
         }
-        (requireParentFragment() as PlayFragment).onKeyboardShown(interactionHeightOnKeyboardShown)
+
+        if (interactionHeightOnKeyboardShown != -1) (parentFragment as? PlayFragment)?.onKeyboardShown(interactionHeightOnKeyboardShown)
     }
 }
