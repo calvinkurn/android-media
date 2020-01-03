@@ -247,6 +247,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //endregion
 
     private fun setupView(view: View) {
+        PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
         view.setOnClickListener {
             triggerImmersive(
                     view = view,
