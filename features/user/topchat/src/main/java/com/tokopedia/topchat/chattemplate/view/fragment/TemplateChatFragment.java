@@ -93,7 +93,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
         loading = rootView.findViewById(R.id.loading_search);
         content = rootView.findViewById(R.id.content);
-        recyclerView = rootView.findViewById(com.tokopedia.design.R.id.recycler_view);
+        recyclerView = rootView.findViewById(R.id.recycler_view);
         info = rootView.findViewById(R.id.template_list_info);
         switchTemplate = rootView.findViewById(R.id.switch_chat_template);
         templateContainer = rootView.findViewById(R.id.template_container);
