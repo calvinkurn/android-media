@@ -5,7 +5,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.wandroid.traceroute.TraceRoute;
 import com.wandroid.traceroute.TraceRouteCallback;
 import com.wandroid.traceroute.TraceRouteResult;
@@ -19,6 +24,14 @@ import timber.log.Timber;
 public class GlideErrorLogHelper {
 
     public static void logError(Context context, GlideException e, String url) {
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        long traceRouteMinVersion = remoteConfig.getLong(RemoteConfigKey.ENABLE_TRACEROUTE_MIN_VERSION, 999999999);
+        if (GlobalConfig.VERSION_CODE < traceRouteMinVersion) {
+            return;
+        }
+
+        Toast.makeText(context, "traceroute called", Toast.LENGTH_SHORT).show();
 
         if (!isNetworkAvailable(context)) {
             Timber.w("P2#Load image error network not available");
