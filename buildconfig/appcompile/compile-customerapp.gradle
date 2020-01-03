@@ -38,6 +38,7 @@ include "features:digital:hotel"
 include "features:digital:imagepreviewslider"
 include "features:digital:travel_homepage"
 include "features:digital:travel_country_code"
+include "features:digital:travel_passenger"
 include ":features:digital:digital_emoney"
 include "features:digital:digital_homepage"
 

@@ -2,10 +2,6 @@ package com.tokopedia.hotel.booking.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
-import com.tokopedia.common.travel.domain.GetContactListUseCase
-import com.tokopedia.common.travel.domain.UpsertContactListUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -15,6 +11,10 @@ import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
+import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
+import com.tokopedia.travel.passenger.domain.GetContactListUseCase
+import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

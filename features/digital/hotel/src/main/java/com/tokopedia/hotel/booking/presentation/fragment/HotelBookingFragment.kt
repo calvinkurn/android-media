@@ -29,9 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.model.TravelContactData
-import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -52,6 +49,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataActivity
+import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*

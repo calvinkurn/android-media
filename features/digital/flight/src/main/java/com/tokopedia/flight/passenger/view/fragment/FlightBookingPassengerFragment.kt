@@ -20,10 +20,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.common.travel.data.entity.TravelContactIdCard
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
-import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
@@ -55,6 +51,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.passenger.data.entity.TravelContactIdCard
+import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
+import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
+import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*

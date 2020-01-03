@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.common.travel.presentation.viewmodel.TravelContactDataViewModel
+import com.tokopedia.travel.passenger.presentation.viewmodel.TravelContactDataViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

@@ -1,10 +1,5 @@
 package com.tokopedia.common.travel.di;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.common.travel.database.CommonTravelRoomDb;
-import com.tokopedia.common.travel.database.TravelPassengerDao;
 import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.domain.provider.TravelScheduler;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
@@ -21,16 +16,6 @@ import kotlinx.coroutines.Dispatchers;
  */
 @Module
 public class CommonTravelModule {
-
-    @Provides
-    CommonTravelRoomDb provideTravelPassengerRoomDb(@ApplicationContext Context context) {
-        return CommonTravelRoomDb.getDatabase(context);
-    }
-
-    @Provides
-    TravelPassengerDao provideTravelPassengerDao(CommonTravelRoomDb commonTravelRoomDb) {
-        return commonTravelRoomDb.travelPassengerDao();
-    }
 
     @Provides
     TravelProvider provideTravelProvider() {

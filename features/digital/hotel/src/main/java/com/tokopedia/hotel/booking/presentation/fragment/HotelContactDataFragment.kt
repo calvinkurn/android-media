@@ -14,20 +14,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
-import com.tokopedia.common.travel.presentation.model.TravelContactData
-import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
+import com.tokopedia.common.travel.R
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
+import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
+import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
 
-class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
+class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,7 +51,8 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         }
 
         arguments?.let {
-            contactData = it.getParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA) ?: TravelContactData()
+            contactData = it.getParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA)
+                    ?: TravelContactData()
         }
     }
 
@@ -69,7 +71,7 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         super.onActivityCreated(savedInstanceState)
 
         bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
-            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
+            contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
     }
@@ -80,7 +82,8 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         when (requestCode) {
             REQUEST_CODE_PHONE_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE) ?: TravelCountryPhoneCode()
+                    val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                            ?: TravelCountryPhoneCode()
                     contactData.phoneCode = countryPhoneCode.countryPhoneCode
 
                     spinnerData.clear()
@@ -95,10 +98,10 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         til_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
 
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, R.layout.layout_travel_autocompletetv, arrayListOf(), this)
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
-            (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id ->  autofillView(travelContactArrayAdapter.getItem(position)) }
+            (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
 
         }
 
@@ -115,7 +118,7 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         val initialPhoneCode = getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
         spinnerData += initialPhoneCode
         context?.run {
-            spinnerAdapter =  ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
+            spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
         sp_contact_phone_code.adapter = spinnerAdapter
@@ -153,7 +156,7 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
 
             bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
-                    phoneCountryCode = contactData.phoneCode))
+                            phoneCountryCode = contactData.phoneCode))
 
             activity?.run {
                 val intent = Intent()
@@ -201,10 +204,10 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         const val MIN_PHONE_NUMBER_DIGIT = 9
 
         fun getInstance(contactData: TravelContactData): HotelContactDataFragment =
-            HotelContactDataFragment().also {
-                it.arguments = Bundle().apply {
-                    putParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
+                HotelContactDataFragment().also {
+                    it.arguments = Bundle().apply {
+                        putParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
+                    }
                 }
-            }
     }
 }
