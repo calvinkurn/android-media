@@ -1,11 +1,11 @@
 package com.tokopedia.topchat.chattemplate.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 import com.tokopedia.unifycomponents.ChipsUnify;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
 
@@ -23,7 +24,7 @@ public class TemplateChatActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setTitle(getString(com.tokopedia.core2.R.string.title_template_chat));
+        toolbar.setTitle(getString(R.string.title_template_chat));
     }
 
     @Override
