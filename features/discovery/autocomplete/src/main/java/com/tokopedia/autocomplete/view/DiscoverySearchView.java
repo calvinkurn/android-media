@@ -665,7 +665,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mVoiceBtn.setVisibility(VISIBLE);
         } else {
             mVoiceBtn.setVisibility(GONE);
-            setMargin(editTextContainer, convertDpToPx(8), 0, convertDpToPx(12), 0);
+            if( !isVoiceAvailable() ){
+                setMargin(editTextContainer, convertDpToPx(8), 0, convertDpToPx(16), 0);
+            }
         }
     }
 

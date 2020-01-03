@@ -107,6 +107,7 @@
                 android:text="@string/search_cancel_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:textColor="@color/unify_G500"
                 android:visibility="gone"
