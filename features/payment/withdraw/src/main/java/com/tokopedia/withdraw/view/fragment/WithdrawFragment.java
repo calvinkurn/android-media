@@ -735,10 +735,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
                         .setText(copyWriting.getTitle());
                 setProgramStatus(copyWriting.getSubtitle(),copyWriting.getCta());
-                premiumAccountView.setTag(copyWriting);
+                premiumAccountView.findViewById(R.id.tv_briProgramButton).setTag(copyWriting);
             } else {
                 premiumAccountView.setVisibility(View.GONE);
             }
+
             premiumAccountView.findViewById(R.id.tv_briProgramButton)
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
