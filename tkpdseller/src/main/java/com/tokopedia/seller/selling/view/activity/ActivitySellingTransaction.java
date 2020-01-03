@@ -119,17 +119,16 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
                     .putExtras(extras);
         } else {
-            // TOOGLE IS TURNED OFF FOR TESTING ONLY
-            /*RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-            if (enable) {*/
+            if (enable) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_NEW_ORDER);
-            /*} else {
+            } else {
                 return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
-            }*/
+            }
 
         }
     }
@@ -143,16 +142,15 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
                     .putExtras(extras);
         } else {
-            // TOOGLE IS TURNED OFF FOR TESTING ONLY
-            /*RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {*/
+            if (enable) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
-            /*} else {
+            } else {
                 return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
-            }*/
+            }
 
         }
     }
@@ -166,16 +164,15 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS)
                     .putExtras(extras);
         } else {
-            // TOOGLE IS TURNED OFF FOR TESTING ONLY
-            /*RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {*/
+            if (enable) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
-            /*} else {
+            } else {
                 return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
-            }*/
+            }
 
         }
     }

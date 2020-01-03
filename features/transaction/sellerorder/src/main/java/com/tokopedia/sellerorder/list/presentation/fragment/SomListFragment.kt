@@ -292,10 +292,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         paramOrder.statusList = it.orderStatusIdList
                     }
                 }
-            }  /*else {
-                filterItem.setColorBorder(com.tokopedia.design.R.color.gray_background)
-                filterItem.isSelected = false
-            }*/
+            }
             refreshHandler?.startRefresh()
 
             listQuickFilter.add(filterItem)
