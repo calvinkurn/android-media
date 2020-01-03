@@ -1,23 +1,20 @@
 package com.tokopedia.age_restriction.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.age_restriction.usecase.FetchUserDobUseCase
 import com.tokopedia.age_restriction.data.UserDOBResponse
-import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
+class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: FetchUserDobUseCase,
+                                          private val userSession: UserSessionInterface) : BaseARViewModel(), CoroutineScope {
 
-    private var userDetailLiveData: UserDOBResponse? = null
     private val askUserLogin = MutableLiveData<Int>()
     private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
     val notAdult = MutableLiveData<Int>()
@@ -27,38 +24,19 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
 
     override fun doOnCreate() {
         super.doOnCreate()
-        repository?.let {
-            if (!it.getUserLoginState()?.isLoggedIn)
-                askUserLogin.value = 1
-            else {
-                fetchUserDOB()
-            }
+        if (!userSession.isLoggedIn)
+            askUserLogin.value = 1
+        else {
+            fetchUserDOB()
         }
-    }
-
-    override fun doOnPause() {
-
-    }
-
-    override fun doOnStop() {
-
-    }
-
-    override fun doOnDestroy() {
-
     }
 
     fun fetchUserDOB() {
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = repository.getRestData(USER_DOB_PATH,
-                            object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
-                            RequestType.GET,
-                            RequestParams.EMPTY.parameters)
-                    val userDataResponse = response?.getData() as DataResponse<UserDOBResponse>
-                    userDetailLiveData = userDataResponse.data
-                    processUserDOB(userDetailLiveData)
+                    val response = fetchUserDobUseCase.getData(USER_DOB_PATH)
+                    processUserDOB(response.data)
                 },
                 onError = {
                     warningMessage.value = it.localizedMessage
