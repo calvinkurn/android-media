@@ -34,11 +34,12 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/travel_homepage_section_see_all"
-            android:textColor="@color/green_500"
+            android:textColor="@color/Green_G500"
             app:layout_constraintBottom_toBottomOf="@+id/section_title"
             android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="heading_6"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -6,6 +6,7 @@ package com.tokopedia.travelhomepage.destination.listener
 
 interface OnViewHolderBindListener {
     fun onCitySummaryVHBind()
+    fun onCitySummaryLoaded(imgUrls: List<String>)
     fun onCityRecommendationVHBind()
     fun onCityDealsVHBind()
     fun onCityArticleVHBind()

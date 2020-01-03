@@ -20,6 +20,11 @@ class TravelDestinationSummaryViewHolder(itemView: View, val onViewHolderBindLis
     override fun bind(element: TravelDestinationSummaryModel) {
         if (element.isLoaded) {
             with(itemView) {
+                var list = mutableListOf<String>()
+                for (img in element.images) {
+                    list.add(img.imageUrl)
+                }
+                onViewHolderBindListener.onCitySummaryLoaded(list)
                 destination_summary_title.text = Html.fromHtml(element.title)
                 destination_summary_description.text = element.description
             }
