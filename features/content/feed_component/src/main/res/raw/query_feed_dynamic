@@ -53,6 +53,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               viewURL
               type
               source
+              viewType
+              recomID
             }
           }
         }
@@ -86,6 +88,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 viewURL
                 type
                 source
+                viewType
+                recomID
               }
             }
           }
@@ -155,6 +159,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 	viewURL
                 	type
                 	source
+                    viewType
+                    recomID
               	}
               }
               isVoted
@@ -168,6 +174,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 viewURL
                 type
                 source
+                viewType
+                recomID
               }
               videos {
                 url
@@ -200,6 +208,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                   viewURL
                   type
                   source
+                  viewType
+                  recomID
                 }
                 tags {
                   linkType
@@ -233,6 +243,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 viewURL
                 type
                 source
+                viewType
+                recomID
               }
             }
             caption {
@@ -274,6 +286,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
             viewURL
             type
             source
+            viewType
+            recomID
           }
         }
         cardhighlight {
@@ -339,6 +353,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               viewURL
               type
               source
+              viewType
+              recomID
             }
           }
         }

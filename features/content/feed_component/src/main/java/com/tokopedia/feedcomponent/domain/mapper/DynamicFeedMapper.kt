@@ -307,6 +307,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val mediaUrl = media?.thumbnail ?: ""
         val tagsType = media?.tags?.firstOrNull()?.linkType ?: ""
         val authorId = feed.content.cardpost.header.followCta.authorID
+        val recomId = feed.content.cardpost.tracking[0].recomID
 
         return TrackingPostModel(
                 feed.type,
@@ -318,7 +319,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 feed.content.cardpost.footer.buttonCta.appLink,
                 authorId,
                 feed.id,
-                feed.content.cardpost.body.media.size
+                feed.content.cardpost.body.media.size,
+                recomId
         )
     }
 

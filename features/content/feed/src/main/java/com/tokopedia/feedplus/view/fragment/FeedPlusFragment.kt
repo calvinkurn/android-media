@@ -1906,7 +1906,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     trackingPostModel.totalContent,
                     trackingPostModel.postId,
                     userId,
-                    feedPosition
+                    feedPosition,
+                    trackingPostModel.recomId
             )
         }
     }
