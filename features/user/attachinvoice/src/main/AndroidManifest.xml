@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.attachinvoice">
 
-    <application android:label="@string/attachinvoice_title">
+    <application>
         <activity
             android:name=".view.activity.AttachInvoiceActivity"
+            android:label="@string/attachinvoice_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
