@@ -31,11 +31,11 @@
             <enum name="overshoot" value="10" />
         </attr>
     </declare-styleable>
-    <declare-styleable name="FilterView">
-        <attr name="filter_text" format="string"/>
-        <attr name="ic_expand" format="reference"/>
-        <attr name="ic_collapse" format="reference"/>
-    </declare-styleable>
+<!--    <declare-styleable name="FilterView">-->
+<!--        <attr name="filter_text" format="string"/>-->
+<!--        <attr name="ic_expand" format="reference"/>-->
+<!--        <attr name="ic_collapse" format="reference"/>-->
+<!--    </declare-styleable>-->
 
 
     <declare-styleable name="ExpandableLayout">

@@ -639,7 +639,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                 Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
                         context, categoryItems.get(getIndex()).getDisplayName(),
-                        categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getDesktopUrl());
+                        categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getWebUrl());
             } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_wish_list) {
                 ProductItem item = categoryItems.get(getIndex());
                 boolean isLoggedIn = mPresenter.setDealLike(item.getId(), item.isLiked(), getIndex(), item.getLikes());

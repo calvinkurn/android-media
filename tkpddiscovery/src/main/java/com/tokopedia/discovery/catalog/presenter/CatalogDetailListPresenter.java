@@ -1,13 +1,12 @@
 package com.tokopedia.discovery.catalog.presenter;
 
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;

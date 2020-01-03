@@ -1,11 +1,30 @@
 package com.tokopedia.age_restriction.viewcontroller
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import android.text.TextUtils
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.age_restriction.R
+import com.tokopedia.age_restriction.di.ARComponent
+import com.tokopedia.age_restriction.di.DaggerARComponent
+import com.tokopedia.age_restriction.viewmodel.BaseARViewModel
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
+import com.tokopedia.unifycomponents.Toaster
 
-abstract class BaseARActivity<T : BaseViewModel> : BaseViewModelActivity<T>() {
+abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() {
+
+    protected var isTncShowing = false
+    protected lateinit var arVM: T
+
 
     companion object {
         val LOGIN_REQUEST = 514
@@ -31,12 +50,18 @@ abstract class BaseARActivity<T : BaseViewModel> : BaseViewModelActivity<T>() {
 
     }
 
-    override fun getVMFactory(): ViewModelProvider.AndroidViewModelFactory {
-        return ViewModelProvider.AndroidViewModelFactory(this.application)
-    }
+    protected abstract fun getMenuRes(): Int
+
+    protected abstract fun showProgressBar()
+
+    protected abstract fun hideProgressBar()
+
+
+    abstract override fun getViewModelType(): Class<T>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arVM = ViewModelProviders.of(this,getVMFactory()).get(getViewModelType())
         origin = intent.getIntExtra("ORIGIN", 1)
         destinationUrlGtm = intent.getStringExtra("DESTINATION_GTM")
         when (origin) {
@@ -57,5 +82,107 @@ abstract class BaseARActivity<T : BaseViewModel> : BaseViewModelActivity<T>() {
                 eventClick = CLICKSEARCH
             }
         }
+
+
+
+
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_icon_back_black)
+        arVM.getProgressBarVisibility().observe(this, Observer<Boolean> { visibility ->
+            if (visibility != null) {
+                if (visibility)
+                    showProgressBar()
+                else
+                    hideProgressBar()
+            }
+        })
+
+        arVM.getWarningmessage().observe(this,Observer<String> { message ->
+            hideProgressBar()
+            if (!TextUtils.isEmpty(message)) {
+                try {
+                    Toaster.showError(this.findViewById(android.R.id.content),
+                            message,
+                            Snackbar.LENGTH_LONG)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        })
+        arVM.getErrormessage().observe(this, Observer<String> { message ->
+            hideProgressBar()
+            if (!TextUtils.isEmpty(message)) {
+                try {
+                    Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
+                            message,
+                            Snackbar.LENGTH_LONG, getButtonStringOnError(), View.OnClickListener { })
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        })
+
+    }
+
+    private fun getButtonStringOnError(): String {
+        return getString(R.string.close)
+    }
+
+    override fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.white)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        if (getMenuRes() != -1) {
+            menuInflater.inflate(getMenuRes(), menu)
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (isTncShowing) {
+            if (supportActionBar != null) {
+                supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_icon_back_black)
+                supportActionBar!!.title = title
+            }
+            isTncShowing = false
+        }
+        return super.onOptionsItemSelected(item)
+
+    }
+
+    protected fun showMessage(message: String) {
+        Toaster.showError(this.findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG)
+    }
+
+    protected fun navigateToActivityRequest(intent: Intent, requestCode: Int) {
+        startActivityForResult(intent, requestCode)
+    }
+
+    fun getComponent(): ARComponent =
+            DaggerARComponent
+                    .builder()
+                    .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                    .build()
+
+
+    override fun onBackPressed() {
+        if (isTncShowing) {
+            if (supportActionBar != null) {
+                supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_icon_back_black)
+                supportActionBar!!.setTitle(title)
+            }
+            isTncShowing = false
+        }
+        super.onBackPressed()
     }
 }

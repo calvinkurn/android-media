@@ -49,6 +49,9 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
         }
+        catch (NullPointerException | NumberFormatException ex) {
+            projectId = KYCConstant.STATUS_DEFAULT;
+        }
         catch (Exception e) {
             e.printStackTrace();
         }

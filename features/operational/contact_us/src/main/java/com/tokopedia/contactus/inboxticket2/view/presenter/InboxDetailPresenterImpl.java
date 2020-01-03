@@ -508,22 +508,22 @@ public class InboxDetailPresenterImpl
 
     @Override
     public void clickRate(int id, String commentID) {
-        rateCommentID = commentID;
-        if (id == com.tokopedia.inbox.R.id.btn_yes) {
-            String YES = "YES";
-            postRatingUseCase.setQueryMap(rateCommentID, YES, 0, 0, "");
-            mView.showProgressBar();
-            sendRating();
-        } else {
-            if (mTicketDetail.isShowBadCSATReason()) {
-                mView.showBottomFragment();
-            } else {
-                postRatingUseCase.setQueryMap(rateCommentID, NO, 0, 0, "");
-                mView.showProgressBar();
-                mView.toggleTextToolbar(View.VISIBLE);
-                sendRating();
-            }
-        }
+//        rateCommentID = commentID;
+//        if (id == com.tokopedia.inbox.R.id.btn_yes) {
+//            String YES = "YES";
+//            postRatingUseCase.setQueryMap(rateCommentID, YES, 0, 0, "");
+//            mView.showProgressBar();
+//            sendRating();
+//        } else {
+//            if (mTicketDetail.isShowBadCSATReason()) {
+//                mView.showBottomFragment();
+//            } else {
+//                postRatingUseCase.setQueryMap(rateCommentID, NO, 0, 0, "");
+//                mView.showProgressBar();
+//                mView.toggleTextToolbar(View.VISIBLE);
+//                sendRating();
+//            }
+//        }
 
     }
 
