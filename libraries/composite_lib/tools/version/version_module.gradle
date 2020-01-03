@@ -1,5 +1,6 @@
 import com.tokopedia.plugin.ScanReleaseDateTask
-import com.tokopedia.plugin.VersionTask
+import com.tokopedia.plugin.ReadVersionConfigTask
+import com.tokopedia.plugin.ScanProjectTask
 import com.tokopedia.plugin.PublishCompositeTask
 
 // jadi cara `ini` store semua variable diantara task
@@ -14,9 +15,6 @@ import com.tokopedia.plugin.PublishCompositeTask
 //        moduleVersionUpdate()
 //    }
 //}
-
-// scan semua subproject dan simpan dalam list `listModule`
-//task scanProject(type: ScanProjectTask){}
 
 task scanReleaseDate(type: ScanReleaseDateTask){
     doFirst {
@@ -39,24 +37,36 @@ task scanReleaseDate(type: ScanReleaseDateTask){
 ////    finalizedBy readGradlefile
 //}
 
-task listingVersionTask(type: VersionTask, dependsOn: scanReleaseDate) {
+task readVersionConfigTask(type: ReadVersionConfigTask) {
+    doFirst {
+        println("[READ VERSION CONFIG TASK START]")
+    }
+    doLast {
+        println("[READ VERSION CONFIG TASK END]")
+    }
+}
+
+task scanProjectTask(type: ScanProjectTask) {
+    dependsOn 'scanReleaseDate'
+    dependsOn 'readVersionConfigTask'
     doFirst {
         println("[VERSION TASK START]")
-        latestReleaseDateString = scanReleaseDate.latestReleaseDate
+        versionConfigMap = readVersionConfigTask.versionConfigMap
+        latestReleaseDate = scanReleaseDate.latestReleaseDate
     }
     doLast {
         println("[VERSION TASK END]")
     }
 }
 
-task versionDependency(type: PublishCompositeTask, dependsOn: listingVersionTask){
+task versionDependency(type: PublishCompositeTask, dependsOn: scanProjectTask){
     doFirst {
         println("[PUBLISH COMPOSITE TASK START]")
-        latestReleaseDateString = listingVersionTask.latestReleaseDateString
-        dependenciesHashSet = listingVersionTask.dependenciesHashSet
-        candidateModuleListToUpdate = listingVersionTask.candidateModuleListToUpdate
-        versionProjectToArtifactList = listingVersionTask.versionProjectToArtifactList
-        versionArtifactToProjectList = listingVersionTask.versionArtifactToProjectList
+        latestReleaseDate = scanProjectTask.latestReleaseDate
+        dependenciesHashSet = scanProjectTask.dependenciesHashSet
+        candidateModuleListToUpdate = scanProjectTask.candidateModuleListToUpdate
+        versionProjectToArtifactList = scanProjectTask.versionProjectToArtifactList
+        versionArtifactToProjectList = scanProjectTask.versionArtifactToProjectList
     }
     doLast{
         println("[PUBLISH COMPOSITE TASK FINISHED]")

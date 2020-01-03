@@ -8,35 +8,29 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashSet
 
-open class VersionTask : DefaultTask() {
+open class ScanProjectTask : DefaultTask() {
 
-    var latestReleaseDateString: String = ""
+    var latestReleaseDate: Date = Date()
     val candidateModuleListToUpdate = hashSetOf<String>()
     val dependenciesHashSet = HashSet<Pair<String, String>>()
     val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
     val versionProjectToArtifactList = hashMapOf<String, VersionModelB>()
     val versionArtifactToProjectList = hashMapOf<String, String>()
-
-    lateinit var latestReleaseDate:Date
-    val versionConfigMap = mutableMapOf<String, Int>()
+    var versionConfigMap = mutableMapOf<String, Int>()
 
     companion object {
         const val TOKOPEDIA = "tokopedia"
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val LIBRARIES_PATH = "../../buildconfig/dependencies/dependency-libraries.gradle"
-        const val CONFIG_VERSION_FILE_PATH = "tools/version/config_version.txt"
     }
 
     @TaskAction
     fun run() {
-        latestReleaseDate = dateFormatter.parse(latestReleaseDateString)
 
         val flattenedAllSubProjects = mutableListOf<Project>()
         val queue = mutableListOf<Project>(project)
 
         val dependenciesHashSetTemp = HashSet<Pair<String, String>>()
-
-        readVersionConfig()
 
         //BFS to get all projects
         while (queue.isNotEmpty()) {
@@ -122,16 +116,6 @@ open class VersionTask : DefaultTask() {
             }
         } catch (ignored:Exception){
             // do nothing, assumed no calibration for version.
-        }
-    }
-
-    fun readVersionConfig(){
-        val file = File(CONFIG_VERSION_FILE_PATH)
-        file.forEachLine {line ->
-            if(line.isNotEmpty() &&!line.startsWith("//")){
-                val splits = line.split("=")
-                versionConfigMap[splits[0]] = splits[1].toInt()
-            }
         }
     }
 

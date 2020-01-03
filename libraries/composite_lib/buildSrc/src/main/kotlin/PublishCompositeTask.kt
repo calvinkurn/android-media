@@ -11,15 +11,13 @@ import kotlin.collections.HashSet
 open class PublishCompositeTask : DefaultTask() {
 
     // this will be populated from previous tasks
-    var latestReleaseDateString: String = ""
+    var latestReleaseDate: Date = Date()
     var candidateModuleListToUpdate = hashSetOf<String>()
     var dependenciesHashSet = HashSet<Pair<String, String>>()
     var versionProjectToArtifactList = hashMapOf<String, VersionModelB>()
     var versionArtifactToProjectList = hashMapOf<String, String>()
 
     val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
-
-    lateinit var latestReleaseDate: Date
     lateinit var sortedDependency:List<String>
 
     companion object {
@@ -29,9 +27,7 @@ open class PublishCompositeTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        latestReleaseDate = dateFormatter.parse(latestReleaseDateString)
-
-        println("Latest Release Date: $latestReleaseDateString")
+        println("Latest Release Date: $latestReleaseDate")
         println("Candidate: $candidateModuleListToUpdate")
         println("Dep Hash Set: $dependenciesHashSet")
         println("Project to Artifact: ${versionProjectToArtifactList.map { it.key + "-" + it.value.groupId + ":" + it.value.artifactId + ":" + it.value.versionName }}")

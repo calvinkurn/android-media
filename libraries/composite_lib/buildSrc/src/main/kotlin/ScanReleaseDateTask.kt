@@ -6,20 +6,28 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 open class ScanReleaseDateTask : DefaultTask() {
-    var latestReleaseDate = ""
+    var latestReleaseDate: Date = Date()
+    val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
 
     //@InputFile
-    val file = File ("tools/version/release_date.txt")
+    val file = File("tools/version/release_date.txt")
+
+    companion object {
+        const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+    }
 
     @TaskAction
     fun run() {
+        var latestReleaseDateString = ""
         file.forEachLine {
             if (it.isNotEmpty()) {
-                latestReleaseDate = it
+                latestReleaseDateString = it
             }
         }
-        println(latestReleaseDate)
+        latestReleaseDate = dateFormatter.parse(latestReleaseDateString)
     }
 }
