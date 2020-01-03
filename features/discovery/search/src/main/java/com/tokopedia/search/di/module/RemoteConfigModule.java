@@ -7,8 +7,6 @@ import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
-import java.util.Set;
-
 import dagger.Module;
 import dagger.Provides;
 
