@@ -11,7 +11,8 @@ import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 
-class BankTNCViewHolder (val view: View) : RecyclerView.ViewHolder(view) {
+class BankTNCViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
 
     fun bind(templateData: TemplateData?) {
         val context = view.context
@@ -19,7 +20,7 @@ class BankTNCViewHolder (val view: View) : RecyclerView.ViewHolder(view) {
         templateData?.let {
             ticker.tickerTitle = context?.getString(R.string.sbank_catatan)
             ticker.setHtmlDescription(templateData.template)
-            ticker.findViewById<TextView>(R.id.ticker_description).text =fromHtml(templateData.template)
+            ticker.findViewById<TextView>(R.id.ticker_description).text = fromHtml(templateData.template)
             ticker.findViewById<TextView>(R.id.ticker_description).setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_796))
         } ?: ticker.gone()
     }
@@ -41,6 +42,7 @@ class BankTNCViewHolder (val view: View) : RecyclerView.ViewHolder(view) {
         }
         return result
     }
+
 
 }
 

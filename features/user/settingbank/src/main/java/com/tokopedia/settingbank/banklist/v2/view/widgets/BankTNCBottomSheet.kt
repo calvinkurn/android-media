@@ -1,10 +1,9 @@
 package com.tokopedia.settingbank.banklist.v2.view.widgets
 
 import android.content.Context
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.webkit.WebView
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
@@ -28,8 +27,10 @@ class BankTNCBottomSheet(val context: Context) : CloseableBottomSheetDialog.Clos
 
     private fun createBottomSheetView() : View{
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_tnc, null)
-        if (::templateData.isInitialized)
-            view.findViewById<TextView>(R.id.tncDescription).text = Html.fromHtml(templateData.template)
+        if (::templateData.isInitialized) {
+            view.findViewById<WebView>(R.id.tncWebView).loadData( templateData.template,
+                    "text/html", "utf-8")
+        }
         return view
     }
 
