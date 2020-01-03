@@ -85,9 +85,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     lateinit var trackingUmrahUtil: UmrahTrackingAnalytics
 
     lateinit var progressDialog: ProgressDialog
-    lateinit var slugName: String
-    lateinit var variantId: String
-    lateinit var departDate: String
+    var slugName: String = ""
+    var variantId: String = ""
+    var departDate: String = ""
 
     private val umrahCheckoutPilgrimsListAdapter by lazy { UmrahCheckoutPilgrimsListAdapter(this, this) }
     private val umrahCheckoutSummaryAdapter by lazy { UmrahCheckoutSummaryListAdapter() }
@@ -104,13 +104,15 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        slugName = arguments!!.getString(EXTRA_SLUG_NAME, "")
-        variantId = arguments!!.getString(EXTRA_VARIANT, "")
-        pilgrimCount = arguments!!.getInt(EXTRA_TOTAL_PASSENGER, 0)
-        price = arguments!!.getInt(EXTRA_PRICE, 0)
-        departDate = arguments!!.getString(EXTRA_DEPART_DATE, "")
-        totalPrice = arguments!!.getInt(EXTRA_TOTAL_PRICE, 0)
-        downPaymentPrice = arguments!!.getInt(EXTRA_DOWN_PAYMENT_PRICE, 0)
+        arguments?.let{
+            slugName = it.getString(EXTRA_SLUG_NAME, "")
+            variantId = it.getString(EXTRA_VARIANT, "")
+            pilgrimCount = it.getInt(EXTRA_TOTAL_PASSENGER, 0)
+            price = it.getInt(EXTRA_PRICE, 0)
+            departDate = it.getString(EXTRA_DEPART_DATE, "")
+            totalPrice = it.getInt(EXTRA_TOTAL_PRICE, 0)
+            downPaymentPrice = it.getInt(EXTRA_DOWN_PAYMENT_PRICE, 0)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -146,8 +148,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     } else {
                         context?.run {
                             val taskStackBuilder = TaskStackBuilder.create(this)
-                            val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE)
-                            taskStackBuilder.addNextIntent(intentHotelHome)
+                            val intentHomeUmrah = RouteManager.getIntent(this, ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE)
+                            taskStackBuilder.addNextIntent(intentHomeUmrah)
 
                             val checkoutResultData = PaymentPassData()
                             checkoutResultData.queryString = it.data.checkoutGeneral.data.data.queryString
@@ -191,7 +193,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     }
 
     private fun requestData(){
-        umrahCheckoutViewModel.execute(
+        umrahCheckoutViewModel.getDataCheckout(
                 GraphqlHelper.loadRawString(resources,
                         R.raw.gql_query_umrah_pdp),
                 GraphqlHelper.loadRawString(resources,
@@ -231,19 +233,22 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             renderButtonCheckout()
         }
 
-        tg_umrah_checkout_agreement_condition.makeLinks(
-                Pair(getString(R.string.umrah_checkout_agreement_condition_click), View.OnClickListener {
-                    showBottomSheetTermCondition(context!!, data.termCondition.umrahTermsConditions)
-                })
-        )
+        context?.let {
+            tg_umrah_checkout_agreement_condition.makeLinks(
+                    Pair(getString(R.string.umrah_checkout_agreement_condition_click), View.OnClickListener {
+                        showBottomSheetTermCondition(it.context, data.termCondition.umrahTermsConditions)
+                    })
+            )
+            tg_umrah_checkout_order_description_pilgrims.makeLinks(
+                    Pair(getString(R.string.umrah_checkout_order_description_pilgrims_click), View.OnClickListener {
+                        trackingUmrahUtil.getListDetailPilgrimsCheckoutTracker()
+                        val mandatoryDocuments = mappingMandatoryDocument()
+                        showMandatoryDocument(it.context, mandatoryDocuments)
+                    })
+            )
+        }
 
-        tg_umrah_checkout_order_description_pilgrims.makeLinks(
-                Pair(getString(R.string.umrah_checkout_order_description_pilgrims_click), View.OnClickListener {
-                    trackingUmrahUtil.getListDetailPilgrimsCheckoutTracker()
-                    val mandatoryDocuments = mappingMandatoryDocument()
-                    showMandatoryDocument(context!!, mandatoryDocuments)
-                })
-        )
+
         container_widget_umrah_checkout_rect.setOnClickListener {
             trackingUmrahUtil.getContactCustomerCheckoutTracker()
             context?.run {
@@ -675,8 +680,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     override fun onPilgrimsClick(position: Int) {
         trackingUmrahUtil.getListPilgrimsCheckoutTracker()
-        startActivityForResult(UmrahCheckoutPilgrimsActivity.createIntent(context!!, listDataPilgrims.get(position))
-                , REQUEST_CODE_PILGRIMS)
+        context?.let {
+            startActivityForResult(UmrahCheckoutPilgrimsActivity.createIntent(it, listDataPilgrims.get(position))
+                    , REQUEST_CODE_PILGRIMS)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

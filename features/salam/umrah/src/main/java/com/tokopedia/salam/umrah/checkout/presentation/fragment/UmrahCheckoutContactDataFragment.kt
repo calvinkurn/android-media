@@ -39,7 +39,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
     @Inject
     lateinit var umrahCheckoutPilgrimsViewModel: UmrahCheckoutPilgrimsViewModel
 
-    lateinit var contactData: ContactUser
+    var contactData: ContactUser = ContactUser()
     var selectedContact = TravelContactListModel.Contact()
 
     lateinit var spinnerAdapter: ArrayAdapter<String>
@@ -62,6 +62,11 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         initView()
 
         umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =

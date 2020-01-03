@@ -37,7 +37,7 @@ class UmrahCheckoutViewModel @Inject constructor(val umrahCheckoutGetDataUseCase
     val checkoutResult: LiveData<Result<UmrahCheckoutResultEntity>>
         get() = checkoutResultMutable
 
-    fun execute(rawQueryPDP: String, rawQuerySummaryPayment: String, rawQueryOptionPayment: String,
+    fun getDataCheckout(rawQueryPDP: String, rawQuerySummaryPayment: String, rawQueryOptionPayment: String,
                 rawQueryTermCondition: String, slugName: String, variantId: String,
                 pilgrimsCount: Int, price: Int, departDate: String, idTermCondition: String,downPaymentPrice:Int) {
         launch {

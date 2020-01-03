@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="max_length_duration_input">20</integer>
+    <integer name="umrah_max_length_duration_input">20</integer>
+    <array name="umrah_pdp_list_image_facility">
+        <item>@drawable/umrah_ic_pdp_visa</item>
+        <item>@drawable/umrah_ic_pdp_insurance</item>
+        <item>@drawable/umrah_ic_pdp_zam_zam</item>
+        <item>@drawable/umrah_ic_pdp_food</item>
+        <item>@drawable/umrah_ic_pdp_bus</item>
+    </array>
 </resources>

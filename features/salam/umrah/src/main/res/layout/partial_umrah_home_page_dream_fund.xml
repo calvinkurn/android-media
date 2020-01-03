@@ -9,9 +9,10 @@
         android:layout_height="wrap_content"
         android:visibility="visible">
 
-        <com.tokopedia.salam.umrah.common.presentation.widget.UmrahDreamFundWidget
+        <include
             android:clickable="true"
             android:focusable="true"
+            layout="@layout/widget_umrah_dream_fund"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:id="@+id/dream_fund_umrah_home_page"
             android:layout_width="match_parent"

@@ -427,21 +427,14 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     }
 
     private fun getHardcodedData(): ArrayList<UmrahPdpFeaturedFacilityModel> {
-        val icons = listOf(R.drawable.umrah_ic_pdp_visa,
-                R.drawable.umrah_ic_pdp_insurance,
-                R.drawable.umrah_ic_pdp_zam_zam,
-                R.drawable.umrah_ic_pdp_food,
-                R.drawable.umrah_ic_pdp_bus)
-        val descriptions = listOf("Visa",
-                "Insurance",
-                "Air Zam-zam 5 Liter",
-                "Makanan",
-                "Bus")
+        val icons = resources.obtainTypedArray(R.array.umrah_pdp_list_image_facility)
+        val descriptions = resources.getStringArray(R.array.umrah_pdp_list_desc_facility).toMutableList()
         val featuredFacilities = arrayListOf<UmrahPdpFeaturedFacilityModel>()
         for (i in 0 until 5) {
-            val umrahPdpFeaturedFacilityModel = UmrahPdpFeaturedFacilityModel("", icons[i], descriptions[i])
+            val umrahPdpFeaturedFacilityModel = UmrahPdpFeaturedFacilityModel("", icons.getResourceId(i,0), descriptions[i])
             featuredFacilities.add(umrahPdpFeaturedFacilityModel)
         }
+        icons.recycle()
         return featuredFacilities
     }
 

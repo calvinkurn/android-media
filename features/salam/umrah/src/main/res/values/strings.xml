@@ -236,5 +236,11 @@
     <string name="umrah_pdp_empty_state_title">Paket Umroh Habis</string>
     <string name="umrah_search_empty_state_package_name">com.tokopedia.tkpd</string>
     <string name="umrah_pdp_hotel_stay_dates">Menginap %s</string>
-
+    <string-array name="umrah_pdp_list_desc_facility">
+        <item>Visa</item>
+        <item>Insurance</item>
+        <item>Air Zam-zam 5 Liter</item>
+        <item>Makanan</item>
+        <item>Bus</item>
+    </string-array>
 </resources>

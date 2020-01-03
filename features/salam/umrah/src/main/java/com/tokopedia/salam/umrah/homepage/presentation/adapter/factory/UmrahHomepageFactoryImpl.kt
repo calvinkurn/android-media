@@ -43,17 +43,23 @@ class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener, v
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
 
-        val adapterFeaturedCategory = UmrahHomepageCategoryFeaturedAdapter(onBindListener).also {
-            it.setHasStableIds(true)
-        }
-        val adapterChoosePacket = UmrahHomepageChoosePacketAdapter(onBindListener)
-        val adapterMyUmrah = UmrahHomepageMyUmrahAdapter(onBindListener)
 
         return when(type){
             UmrahHomepageSpinnerLikeViewHolder.LAYOUT -> UmrahHomepageSpinnerLikeViewHolder(view, onBindListener)
-            UmrahHomepageMyUmrahViewHolder.LAYOUT -> UmrahHomepageMyUmrahViewHolder(view, onBindListener, adapterMyUmrah, userSession)
-            UmrahHomepageCategoryViewHolder.LAYOUT -> UmrahHomepageCategoryViewHolder(view, onBindListener, adapterChoosePacket)
-            UmrahHomepageCategoryFeaturedViewHolder.LAYOUT -> UmrahHomepageCategoryFeaturedViewHolder(view, onBindListener, adapterFeaturedCategory)
+            UmrahHomepageMyUmrahViewHolder.LAYOUT -> {
+                val adapterMyUmrah = UmrahHomepageMyUmrahAdapter(onBindListener)
+                UmrahHomepageMyUmrahViewHolder(view, onBindListener, adapterMyUmrah, userSession)
+            }
+            UmrahHomepageCategoryViewHolder.LAYOUT -> {
+                val adapterChoosePacket = UmrahHomepageChoosePacketAdapter(onBindListener)
+                UmrahHomepageCategoryViewHolder(view, onBindListener, adapterChoosePacket)
+            }
+            UmrahHomepageCategoryFeaturedViewHolder.LAYOUT -> {
+                val adapterFeaturedCategory = UmrahHomepageCategoryFeaturedAdapter(onBindListener).also {
+                    it.setHasStableIds(true)
+                }
+                UmrahHomepageCategoryFeaturedViewHolder(view, onBindListener, adapterFeaturedCategory)
+            }
             else -> super.createViewHolder(view, type)
         }
     }

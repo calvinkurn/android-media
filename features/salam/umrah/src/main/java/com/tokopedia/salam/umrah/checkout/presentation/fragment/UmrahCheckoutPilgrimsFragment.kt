@@ -103,7 +103,9 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        initFirstNameAutoCompleteTv(context!!)
+        context?.let {
+            initFirstNameAutoCompleteTv(it)
+        }
         renderFilledUI()
         renderPilgrimsTitle()
         renderDatePicker()
@@ -128,14 +130,14 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderCheckForm(){
+    private fun renderCheckForm() {
         til_umrah_checkout_pilgrims_contact_first_name.editText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if(count>=0){
+                if (count >= 0) {
                     til_umrah_checkout_pilgrims_contact_first_name.error = ""
                 }
             }
@@ -152,7 +154,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if(count>=0){
+                if (count >= 0) {
                     til_umrah_checkout_pilgrims_contact_last_name.error = ""
                 }
             }
@@ -169,7 +171,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if(count>=0){
+                if (count >= 0) {
                     til_umrah_checkout_pilgrims_contact_date_birth.error = ""
                 }
             }
@@ -209,29 +211,31 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
         val now = Calendar.getInstance()
         dateBirth = pilgrimsData.dateBirth
 
-        val datePickerUnify = DatePickerUnify(context!!, getLastTime(), now, getCalendarTwoWeeksBefore())
-        datePickerUnify.setTitle(getString(R.string.umroh_checkout_birth_date))
-        datePickerUnify.clearClose(false)
-        til_umrah_checkout_pilgrims_contact_date_birth.editText.inputType = InputType.TYPE_NULL
-        til_umrah_checkout_pilgrims_contact_date_birth.editText.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        datePickerUnify.show(activity!!.supportFragmentManager, "")
+        context?.let {
+            val datePickerUnify = DatePickerUnify(it, getLastTime(), now, getCalendarTwoWeeksBefore())
+            datePickerUnify.setTitle(getString(R.string.umroh_checkout_birth_date))
+            datePickerUnify.clearClose(false)
+            til_umrah_checkout_pilgrims_contact_date_birth.editText.inputType = InputType.TYPE_NULL
+            til_umrah_checkout_pilgrims_contact_date_birth.editText.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    when (event?.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            datePickerUnify.show(activity!!.supportFragmentManager, "")
+                        }
                     }
+                    return v?.onTouchEvent(event) ?: true
                 }
-                return v?.onTouchEvent(event) ?: true
+            })
+
+            datePickerUnify.datePickerButton.setOnClickListener {
+                til_umrah_checkout_pilgrims_contact_date_birth.editText.setText(getDateGregorianID(datePickerUnify.getDate(), UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT))
+                dateBirth = getDateGregorian(datePickerUnify.getDate())
+                datePickerUnify.dismiss()
             }
-        })
 
-        datePickerUnify.datePickerButton.setOnClickListener {
-            til_umrah_checkout_pilgrims_contact_date_birth.editText.setText(getDateGregorianID(datePickerUnify.getDate(), UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT))
-            dateBirth = getDateGregorian(datePickerUnify.getDate())
-            datePickerUnify.dismiss()
-        }
-
-        datePickerUnify.setCloseClickListener {
-            datePickerUnify.dismiss()
+            datePickerUnify.setCloseClickListener {
+                datePickerUnify.dismiss()
+            }
         }
     }
 

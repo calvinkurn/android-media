@@ -136,7 +136,7 @@
                 app:driv_label_max="@string/umrah_search_filter_package_price_maximum"
                 app:driv_label_min="@string/umrah_search_filter_package_price_minimum"
                 app:driv_typable="false"
-                app:driv_value_max_length="@integer/max_length_duration_input"
+                app:driv_value_max_length="@integer/umrah_max_length_duration_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12" />
