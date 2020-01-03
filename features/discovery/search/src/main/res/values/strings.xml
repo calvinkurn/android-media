@@ -48,11 +48,17 @@
     <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
-    <string name="msg_empty_search_shop_title">Oops, toko tidak ditemukan :(</string>
+
+    <string name="msg_empty_search_shop_title">Oops, toko nggak ditemukan</string>
+    <string name="msg_empty_search_shop_content">Coba kata kunci lain untuk menemukan toko yang kamu inginkan.</string>
+    <string name="msg_empty_search_shop_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
+    <string name="msg_empty_search_shop_button">Ganti Kata Kunci</string>
+
     <string name="msg_empty_search_product_title">Oops, Produk Nggak Ditemukan</string>
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>
+
     <string name="post_count_value">%1$s post</string>
     <string name="btn_following_text">Following</string>
     <string name="btn_follow_text">Follow</string>
