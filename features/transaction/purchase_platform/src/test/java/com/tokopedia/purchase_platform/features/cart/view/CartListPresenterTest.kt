@@ -2,23 +2,24 @@ package com.tokopedia.purchase_platform.features.cart.view
 
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.R
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -214,7 +215,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.processToUpdateCartData(arrayListOf())
             }
 
-            Then("should render success") {
+            Then("should render error") {
                 verify {
                     view.hideProgressLoading()
                     view.renderErrorToShipmentForm(any())
@@ -251,7 +252,7 @@ class CartListPresenterTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), any(), CartFragment.GO_TO_LIST)
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), PromoStackingData(), CartFragment.GO_TO_LIST)
             }
 
             Then("should render success and redirect to coupon list") {
@@ -265,6 +266,7 @@ class CartListPresenterTest : Spek({
         Scenario("success update and redirect to coupon detail") {
 
             val updateCartData = UpdateCartData()
+            val promoStackingData = PromoStackingData()
 
             Given("update cart data") {
                 updateCartData.isSuccess = true
@@ -276,13 +278,13 @@ class CartListPresenterTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), any(), CartFragment.GO_TO_DETAIL)
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), promoStackingData, 0)
             }
 
             Then("should render success and redirect to coupon list") {
                 verify {
                     view.hideProgressLoading()
-                    view.goToDetailPromoStacking()
+                    view.goToDetailPromoStacking(promoStackingData)
                 }
             }
         }
@@ -301,7 +303,7 @@ class CartListPresenterTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf())
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), PromoStackingData(), 0)
             }
 
             Then("should show error") {
@@ -330,6 +332,7 @@ class CartListPresenterTest : Spek({
         Scenario("success update") {
 
             val updateCartData = UpdateCartData()
+            val shopGroupAvailableData = ShopGroupAvailableData()
 
             Given("update cart data") {
                 updateCartData.isSuccess = true
@@ -341,13 +344,13 @@ class CartListPresenterTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), any())
+                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), shopGroupAvailableData)
             }
 
             Then("should render success and show promo merchant bottomsheet") {
                 verify {
                     view.hideProgressLoading()
-                    view.showMerchantVoucherListBottomsheet()
+                    view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
                 }
             }
         }
@@ -366,7 +369,7 @@ class CartListPresenterTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf())
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), PromoStackingData(), 0)
             }
 
             Then("should show error") {
@@ -560,13 +563,83 @@ class CartListPresenterTest : Spek({
             )
         }
 
-        Scenario("success add to cart") {
+        Scenario("success add to cart wishlist item") {
+
+            val addToCartDataModel = AddToCartDataModel()
+            val productModel = CartWishlistItemHolderData(id = "0", shopId = "0")
+            val successMessage = "Success message add to cart"
+
+            Given("add to cart data") {
+                val dataModel = DataModel()
+                val messages = arrayListOf<String>()
+                messages.add(successMessage)
+                dataModel.message = messages
+                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
+                addToCartDataModel.data = dataModel
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(productModel)
+            }
+
+            Then("should render success add to cart wishlist item") {
+                verify {
+                    view.hideProgressLoading()
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), productModel)
+                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+                    view.showToastMessageGreen(successMessage)
+                }
+            }
+        }
+
+        Scenario("failed add to cart wishlist item") {
+
+            lateinit var addToCartDataModel: AddToCartDataModel
+            val errorMessage = "Add to cart error"
+
+            Given("add to cart data") {
+                addToCartDataModel = AddToCartDataModel().apply {
+                    this.status = AddToCartDataModel.STATUS_ERROR
+                    this.data = DataModel().let { dataModel ->
+                        dataModel.success = 1
+                        dataModel
+                    }
+                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
+                        errorMessages.add(errorMessage)
+                        errorMessages
+                    }
+                }
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartWishlistItemHolderData(id = "0", shopId = "0"))
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+
+        Scenario("success add to cart recent view item") {
 
             val addToCartDataModel = AddToCartDataModel()
 
             Given("add to cart data") {
                 val dataModel = DataModel()
-                val messages = arrayListOf()
+                val messages = arrayListOf<String>()
                 messages.add("Success message")
                 dataModel.message = messages
                 addToCartDataModel.status = AddToCartDataModel.STATUS_OK
@@ -579,28 +652,36 @@ class CartListPresenterTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processAddToCart(any())
+                cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
             }
 
             Then("should render success") {
                 verify {
                     view.hideProgressLoading()
-                    view.triggerSendEnhancedEcommerceAddToCartSuccess()
-                    view.processInitialGetCartData()
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
+                    cartListPresenter.processInitialGetCartData(any(), any(), any())
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
             }
         }
 
-        Scenario("failed add to cart") {
+        Scenario("failed add to cart recent view item") {
 
-            val addToCartDataModel = AddToCartDataModel()
+            lateinit var addToCartDataModel: AddToCartDataModel
+            val errorMessage = "Add to cart error"
 
             Given("add to cart data") {
-                val errorMessages = arrayListOf()
-                errorMessages.add("Error message")
-                addToCartDataModel.errorMessage = errorMessages
-                addToCartDataModel.status = AddToCartDataModel.STATUS_ERROR
+                addToCartDataModel = AddToCartDataModel().apply {
+                    this.status = AddToCartDataModel.STATUS_ERROR
+                    this.data = DataModel().let { dataModel ->
+                        dataModel.success = 1
+                        dataModel
+                    }
+                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
+                        errorMessages.add(errorMessage)
+                        errorMessages
+                    }
+                }
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
@@ -609,13 +690,81 @@ class CartListPresenterTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processAddToCart(any())
+                cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+
+        Scenario("success add to cart recommendation item") {
+
+            val addToCartDataModel = AddToCartDataModel()
+
+            Given("add to cart data") {
+                val dataModel = DataModel()
+                val messages = arrayListOf<String>()
+                messages.add("Success message")
+                dataModel.message = messages
+                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
+                addToCartDataModel.data = dataModel
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0)))
             }
 
             Then("should render success") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(addToCartDataModel.errorMessage[0])
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
+                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+                    view.showToastMessageGreen(addToCartDataModel.data.message[0])
+                }
+            }
+        }
+
+        Scenario("failed add to cart recommendation item") {
+
+            lateinit var addToCartDataModel: AddToCartDataModel
+            val errorMessage = "Add to cart error"
+
+            Given("add to cart data") {
+                addToCartDataModel = AddToCartDataModel().apply {
+                    this.status = AddToCartDataModel.STATUS_ERROR
+                    this.data = DataModel().let { dataModel ->
+                        dataModel.success = 1
+                        dataModel
+                    }
+                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
+                        errorMessages.add(errorMessage)
+                        errorMessages
+                    }
+                }
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0)))
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(errorMessage)
                 }
             }
         }
