@@ -10,11 +10,8 @@ ext {
 
     lifeCycleVersion = "2.1.0"
 
-    supportLibraryVersion = '1.1.0'
-    supportLegacyLibraryVersion = '1.0.0'
-    materialVersion = '1.0.0'
-    constraintLayoutVersion = '2.0.0-beta4'
-
+    supportLibraryVersion = '1.0.0'
+    constraintLayoutVersion = '1.2.2'
     playServiceVersion = '11.0.4'
     coroutineVersion = '1.3.3'
     retrofitVersion = '2.6.0'
@@ -71,8 +68,8 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     app = [
-        customerapp     : ":customerapp",
-        sellerapp       : ":sellerapp"
+            customerapp     : ":customerapp",
+            sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
@@ -87,8 +84,8 @@ ext {
     unifyGlobalErrorVersion = '1.0.1'
 
     gradlePlugin = [
-        crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
-        googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
+            crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
+            googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
     ]
 
     networkDependencies = [
@@ -110,11 +107,11 @@ ext {
 
     supportLibDependencies = [
             recyclerViewV7      : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
-            supportV4           : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
+            supportV4           : "androidx.legacy:legacy-support-v4:${supportLibraryVersion}",
             appCompactV7        : "androidx.appcompat:appcompat:${supportLibraryVersion}",
-            supportV13          : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
-            design              : "com.google.android.material:material:${materialVersion}",
-            cardViewV7          : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
+            supportV13          : "androidx.legacy:legacy-support-v13:${supportLibraryVersion}",
+            design              : "com.google.android.material:material:${supportLibraryVersion}",
+            cardViewV7          : "androidx.cardview:cardview:${supportLibraryVersion}",
             exifinterface       : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
             constraintLayout    : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
             preferenceV7        : "androidx.preference:preference:${supportLibraryVersion}",
@@ -217,8 +214,6 @@ ext {
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
-            archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
-            archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.5",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
@@ -283,15 +278,15 @@ ext {
     ]
 
     unifyDependencies = [
-       icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-       principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-       components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-       coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
-       calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
-       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
-       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
-       empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
-       global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
+            icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
+            principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
+            components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
+            coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
+            calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
+            banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+            dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+            datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+            empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+            global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
     ]
 }
