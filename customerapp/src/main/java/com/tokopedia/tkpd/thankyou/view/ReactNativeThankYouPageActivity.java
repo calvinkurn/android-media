@@ -1,10 +1,12 @@
 package com.tokopedia.tkpd.thankyou.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.view.KeyEvent;
 
@@ -15,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
