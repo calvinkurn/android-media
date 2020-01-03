@@ -3,7 +3,7 @@ package com.tokopedia.play.view.viewholder
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.adapter_delegate.BaseViewHolder
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 

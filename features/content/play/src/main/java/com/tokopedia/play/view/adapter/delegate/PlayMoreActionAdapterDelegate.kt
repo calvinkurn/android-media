@@ -2,7 +2,7 @@ package com.tokopedia.play.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.adapter_delegate.TypedAdapterDelegate
+import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 import com.tokopedia.play.view.viewholder.PlayMoreActionViewHolder
