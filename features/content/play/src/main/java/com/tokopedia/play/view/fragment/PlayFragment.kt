@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -17,18 +16,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
-import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -62,6 +59,9 @@ class PlayFragment : BaseDaggerFragment(), CoroutineScope {
 
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
+
+    private val onKeyboardShownAnimator = AnimatorSet()
+    private val onKeyboardHiddenAnimator = AnimatorSet()
 
     override fun getScreenName(): String = "Play"
 
@@ -188,33 +188,40 @@ class PlayFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         playViewModel.destroy()
+
+        onKeyboardShownAnimator.cancel()
+        onKeyboardHiddenAnimator.cancel()
     }
 
     fun onKeyboardShown(chatListYPos: Int) {
+        onKeyboardShownAnimator.cancel()
+
         val statusBarHeight = getStatusBarHeight(requireContext()).toFloat()
         val theTopSpace = 1.5f * statusBarHeight
         val currentHeight = flVideo.height
-        val destHeight = chatListYPos.toFloat() - theTopSpace
+        val destHeight = chatListYPos.toFloat() - statusBarHeight
         val scaleFactor = destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor);
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor);
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
 
         flVideo.pivotX = (flVideo.width / 2).toFloat()
         flVideo.pivotY = theTopSpace
-        AnimatorSet().apply {
+        onKeyboardShownAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
     }
 
     fun onKeyboardHidden() {
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR);
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR);
+        onKeyboardHiddenAnimator.cancel()
+
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
 
-        AnimatorSet().apply {
+        onKeyboardHiddenAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
     }

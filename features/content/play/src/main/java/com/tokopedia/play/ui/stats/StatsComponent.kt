@@ -21,10 +21,6 @@ class StatsComponent(
 
     private val uiView = initView(container)
 
-    override fun getContainerId(): Int {
-        return uiView.containerId
-    }
-
     init {
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
@@ -36,6 +32,10 @@ class StatsComponent(
                         }
                     }
         }
+    }
+
+    override fun getContainerId(): Int {
+        return uiView.containerId
     }
 
     override fun getUserInteractionEvents(): Flow<Unit> {
