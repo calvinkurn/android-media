@@ -5,7 +5,6 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -14,35 +13,22 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
-import kotlin.coroutines.CoroutineContext
 
 
-class BaseRepository private constructor() : CoroutineScope {
+open class BaseRepository {
     private val restRepository: RestRepository
     private val graphqlRepository: GraphqlRepository
-    private lateinit var userSession: UserSessionInterface
 
     init {
         restRepository = RestRequestInteractor.getInstance().restRepository
         graphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
     }
 
-
-    companion object {
-        val repositoryInstance: BaseRepository
-            get() {
-                return BaseRepository()
-            }
-    }
-
     suspend fun getRestData(url: String, typeOf: Type,
                             requestType: RequestType,
-                            queryMap: MutableMap<String, Any>): RestResponse? {
+                            queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters): RestResponse? {
         try {
             val restRequest = RestRequest.Builder(url, typeOf)
                     .setRequestType(requestType)
@@ -56,14 +42,16 @@ class BaseRepository private constructor() : CoroutineScope {
 
     suspend fun getGQLData(gqlQueryList: List<String>,
                            gqlResponseTypeList: List<Type>,
-                           gqlParamList: List<Map<String, Object>>): GraphqlResponse? {
+                           gqlParamList: List<Map<String, Any>>,
+                           cacheType: CacheType = CacheType.CLOUD_THEN_CACHE): GraphqlResponse? {
         try {
             val gqlUseCase = MultiRequestGraphqlUseCase(graphqlRepository)
             val gqlRequests = ArrayList<GraphqlRequest>()
             gqlQueryList.forEachIndexed { index, s ->
                 gqlRequests.add(GraphqlRequest(s, gqlResponseTypeList[index], gqlParamList[index], false))
             }
-            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
+            gqlUseCase.addRequests(gqlRequests)
+            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(cacheType).build())
             return gqlUseCase.executeOnBackground()
         } catch (t: Throwable) {
             throw t
@@ -73,26 +61,17 @@ class BaseRepository private constructor() : CoroutineScope {
 
     suspend fun <T : Any> getGQLData(gqlQuery: String,
                                      gqlResponseType: Class<T>,
-                                     gqlParams: Map<String, Any>): Any? {
+                                     gqlParams: Map<String, Any>, cacheType: CacheType = CacheType.CLOUD_THEN_CACHE): Any? {
         try {
             val gqlUseCase = GraphqlUseCase<T>(graphqlRepository)
             gqlUseCase.setTypeClass(gqlResponseType)
             gqlUseCase.setGraphqlQuery(gqlQuery)
             gqlUseCase.setRequestParams(gqlParams)
-            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
+            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(cacheType).build())
             return gqlUseCase.executeOnBackground()
         } catch (t: Throwable) {
             throw t
         }
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
-    fun getUserLoginState(): UserSessionInterface {
-        if (!(::userSession.isInitialized)) {
-            userSession = NetworkClient.getsUserSession()
-        }
-        return userSession
-    }
 }
