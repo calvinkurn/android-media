@@ -46,7 +46,7 @@ buildscript {
         classpath "io.fabric.tools:gradle:1.27.1"
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
-        classpath "com.gradle:build-scan-plugin:1.16"
+        classpath "com.gradle:gradle-enterprise-gradle-plugin:3.1.1"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
 }
 
