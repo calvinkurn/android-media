@@ -10,7 +10,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,7 +28,7 @@ import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import java.util.*
 import javax.inject.Inject
 
-class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContract.View/*, EmptyResultViewHolder.Callback*/ {
+class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContract.View, BaseEmptyViewHolder.Callback {
 
     private var startDateLayout: RelativeLayout? = null
     private var endDateLayout: RelativeLayout? = null
@@ -154,14 +154,14 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     }
 
-    /*override fun onEmptyContentItemTextClicked() {
+    override fun onEmptyContentItemTextClicked() {
 
     }
 
     override fun onEmptyButtonClicked() {
         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
         startActivity(intent)
-    }*/
+    }
 
     override fun setActionsEnabled(isEnabled: Boolean?) {
         if (!isAdded || startDateTV == null || endDateTV == null) {
