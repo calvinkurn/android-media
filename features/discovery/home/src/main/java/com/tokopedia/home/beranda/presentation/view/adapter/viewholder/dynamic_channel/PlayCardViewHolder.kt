@@ -49,15 +49,15 @@ class PlayCardViewHolder(
     override fun bind(element: PlayCardViewModel) {
 
         element.getPlayCardHome()?.let { model ->
-            mVideoUrl = model.playGetCardHome.data.card.imageUrl
-            mThumbUrl = model.playGetCardHome.data.card.imageUrl
+            mVideoUrl = model.videoStream.streamUrl
+            mThumbUrl = model.coverUrl
 
-            title.text = model.playGetCardHome.data.card.ogTitle
-            description.text = model.playGetCardHome.data.card.description
-            broadcasterName.text = model.playGetCardHome.data.card.broadcasterName
-            titlePlay.text = model.playGetCardHome.data.card.title
-            viewer.text = model.playGetCardHome.data.card.totalView
-            if(model.playGetCardHome.data.card.isShowLive) live.show()
+            title.text = model.title
+            description.text = model.description
+            broadcasterName.text = model.moderatorName
+            titlePlay.text = model.title
+            viewer.text = model.totalView
+            if(model.videoStream.isLive) live.show()
             else live.hide()
 
             volumeContainer.setOnClickListener {
@@ -65,7 +65,7 @@ class PlayCardViewHolder(
                 volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
             }
             play.setOnClickListener { _ ->
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.playGetCardHome.data.card.channelId) }
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.channelId) }
             }
         }
 

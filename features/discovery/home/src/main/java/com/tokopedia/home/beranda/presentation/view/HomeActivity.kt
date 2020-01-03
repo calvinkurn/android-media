@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.home.R
-import com.tokopedia.v2.home.ui.fragment.HomeFragment
 
 class HomeActivity : AppCompatActivity() {
 

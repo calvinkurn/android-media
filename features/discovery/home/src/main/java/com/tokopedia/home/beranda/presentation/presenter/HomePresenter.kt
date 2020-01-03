@@ -11,7 +11,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.data.usecase.PlayUseCase
+import com.tokopedia.home.beranda.data.usecase.PlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.subscriber.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
+import com.tokopedia.iris.util.launchCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
@@ -33,10 +34,8 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -54,7 +53,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                     private val coroutineDispatcher: CoroutineDispatcher,
                     private val homeUseCase: HomeUseCase,
-                    private val playUseCase: PlayUseCase,
                     private val homeDataMapper: HomeDataMapper) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
@@ -90,7 +88,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     lateinit var dismissHomeReviewUseCase: DismissHomeReviewUseCase
 
     @Inject
-    lateinit var playCardHomeUseCase: PlayCardHomeUseCase
+    lateinit var playCardHomeUseCase: PlayLiveDynamicUseCase
 
 
     private var isCache = true
@@ -463,14 +461,13 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
+    @InternalCoroutinesApi
     override fun getPlayBanner(adapterPosition: Int){
-        playCardHomeUseCase.execute(
-                onSuccess = {
-                    view?.setPlayContentBanner(it, adapterPosition)
-                },
-                onError = {}
-        )
-
+        launchCatchError(coroutineDispatcher, block = {
+            playCardHomeUseCase.execute().collect{
+                view?.setPlayContentBanner(it.first(), adapterPosition)
+            }
+        })
     }
 
     companion object {

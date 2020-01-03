@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
+import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
@@ -251,7 +252,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         listPlay.clear()
     }
 
-    fun setPlayData(playContentBanner: PlayCardHome?, adapterPosition: Int) {
+    fun setPlayData(playContentBanner: PlayChannel?, adapterPosition: Int) {
         if (visitables[adapterPosition] is PlayCardViewModel) {
             (visitables[adapterPosition] as PlayCardViewModel).setPlayCardHome(playContentBanner!!)
         }

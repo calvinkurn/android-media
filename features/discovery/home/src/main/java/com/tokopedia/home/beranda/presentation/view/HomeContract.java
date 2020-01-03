@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
+import com.tokopedia.home.beranda.data.model.PlayChannel;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
@@ -96,7 +97,7 @@ public interface HomeContract {
 
         void hideStickyLogin();
 
-        void setPlayContentBanner(PlayCardHome playContentBanner, int adapterPosition);
+        void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
