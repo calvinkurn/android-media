@@ -21,7 +21,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import java.util.Objects;
 
 import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_PRODUCT;
-import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
@@ -39,12 +38,6 @@ public class DigitalProductActivity extends BaseSimpleActivity
     public static Intent newInstance(Context context, DigitalCategoryDetailPassData passData) {
         return new Intent(context, DigitalProductActivity.class)
                 .putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData);
-    }
-
-    public static Intent newInstance(Context context, DigitalCategoryDetailPassData passData, int isCouponApplied) {
-        return new Intent(context, DigitalProductActivity.class)
-                .putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
-                .putExtra(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
     }
 
     @SuppressWarnings("unused")
