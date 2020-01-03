@@ -24,14 +24,25 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
     @LayoutRes
     public static final int LAYOUT = R.layout.related_search_layout;
 
-    RecyclerView recyclerView;
-    RelatedSearchAdapter adapter;
-    TextView relatedSearchTitle;
+    private RecyclerView recyclerView;
+    private RelatedSearchAdapter adapter;
+    private TextView relatedSearchTitle;
 
     public RelatedSearchViewHolder(View itemView, RelatedSearchListener relatedSearchListener) {
         super(itemView);
-        recyclerView = itemView.findViewById(com.tokopedia.design.R.id.recyclerView);
+
+        initViews();
+        initRecyclerView(relatedSearchListener);
+    }
+
+    private void initViews() {
+        recyclerView = itemView.findViewById(R.id.relatedSearchRecyclerView);
         relatedSearchTitle = itemView.findViewById(R.id.relatedSearchTitle);
+    }
+
+    private void initRecyclerView(RelatedSearchListener relatedSearchListener) {
+        if (recyclerView == null) return;
+
         adapter = new RelatedSearchAdapter(relatedSearchListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
@@ -43,14 +54,28 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
 
     @Override
     public void bind(RelatedSearchViewModel element) {
+        if (recyclerView == null || relatedSearchTitle == null || element == null) return;
+
+        bindRelatedSearchView(element);
+    }
+
+    private void bindRelatedSearchView(RelatedSearchViewModel element) {
         if (ListHelper.isContainItems(element.getOtherRelated())) {
-            recyclerView.setVisibility(View.VISIBLE);
-            relatedSearchTitle.setVisibility(View.VISIBLE);
-            adapter.setItemList(element.getOtherRelated());
+            showRelatedSearch(element);
         } else {
-            recyclerView.setVisibility(View.GONE);
-            relatedSearchTitle.setVisibility(View.GONE);
+            hideRelatedSearch();
         }
+    }
+
+    private void showRelatedSearch(RelatedSearchViewModel element) {
+        recyclerView.setVisibility(View.VISIBLE);
+        relatedSearchTitle.setVisibility(View.VISIBLE);
+        adapter.setItemList(element.getOtherRelated());
+    }
+
+    private void hideRelatedSearch() {
+        recyclerView.setVisibility(View.GONE);
+        relatedSearchTitle.setVisibility(View.GONE);
     }
 
     public static class RelatedSearchAdapter extends RecyclerView.Adapter<ViewHolder> {
