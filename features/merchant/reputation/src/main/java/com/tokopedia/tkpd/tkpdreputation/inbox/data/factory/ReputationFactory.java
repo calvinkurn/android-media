@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendSmileyReputa
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSkipReviewDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.LocalInboxReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
 import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
@@ -61,7 +62,7 @@ public class ReputationFactory {
     private final ReplyReviewMapper replyReviewMapper;
     private final GetLikeDislikeMapper getLikeDislikeMapper;
     private final LikeDislikeMapper likeDislikeMapper;
-    private final ReviewProductApi reputationReviewApi;
+    private final ReviewProductService reputationReviewApi;
     private final UserSessionInterface userSession;
 
     public ReputationFactory(TomeService tomeService,
@@ -80,7 +81,8 @@ public class ReputationFactory {
                              DeleteReviewResponseMapper deleteReviewResponseMapper,
                              ReplyReviewMapper replyReviewMapper,
                              GetLikeDislikeMapper getLikeDislikeMapper,
-                             LikeDislikeMapper likeDislikeMapper, ReviewProductApi reputationReviewApi,
+                             LikeDislikeMapper likeDislikeMapper,
+                             ReviewProductService reputationReviewApi,
                              UserSessionInterface userSession) {
         this.reputationService = reputationService;
         this.persistentCacheManager = persistentCacheManager;

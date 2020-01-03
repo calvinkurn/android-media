@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
@@ -50,6 +49,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetR
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
+import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.ShopService;
@@ -151,7 +151,7 @@ public class ReputationModule {
             ReplyReviewMapper replyReviewMapper,
             GetLikeDislikeMapper getLikeDislikeMapper,
             LikeDislikeMapper likeDislikeMapper,
-            ReviewProductApi reputationReviewApi,
+            ReviewProductService reviewProductService,
             UserSessionInterface userSession) {
         return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
@@ -165,16 +165,9 @@ public class ReputationModule {
                 replyReviewMapper,
                 getLikeDislikeMapper,
                 likeDislikeMapper,
-                reputationReviewApi,
+                reviewProductService,
                 userSession);
     }
-
-    @ReputationScope
-    @Provides
-    ReviewProductApi provideReputationReviewApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(ReviewProductApi.class);
-    }
-
 
     @ReputationScope
     @Provides
@@ -195,6 +188,16 @@ public class ReputationModule {
     @Provides
     ReputationService provideReputationService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new ReputationService(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
+    ReviewProductService provideReviewProductService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReviewProductService(
                 context,
                 networkRouter,
                 userSession
