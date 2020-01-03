@@ -674,10 +674,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return InboxChatActivity.getCallingIntent(context);
     }
 
-    @Override
-    public void invalidateCategoryMenuData() {
-
-    }
 
     @Override
     public Intent getResolutionCenterIntentSeller(Context context) {
@@ -966,7 +962,6 @@ public abstract class SellerRouterApplication extends MainApplication
             notif.dismissAllActivedNotifications();
             NotificationModHandler.clearCacheAllNotification(activity);
 
-            invalidateCategoryMenuData();
             onLogout(getApplicationComponent());
 
             Intent intent = getHomeIntent(activity);

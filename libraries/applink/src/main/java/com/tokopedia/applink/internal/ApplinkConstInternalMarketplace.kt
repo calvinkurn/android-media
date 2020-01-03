@@ -164,6 +164,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
+    // NotificationActivity
+    @JvmField
+    val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
+
     // PowerMerchantSubscribeActivity
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
