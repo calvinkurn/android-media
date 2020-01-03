@@ -102,7 +102,7 @@ okbuck {
 
     buildScan {
         // plugin configuration
-        server = "http://http://172.21.57.32"
+        server = "http://172.21.57.32"
         publishAlways()
     }
 
