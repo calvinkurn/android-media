@@ -108,7 +108,7 @@ class PlayViewModel @Inject constructor(
             /**
              * If Live => start web socket
              */
-            getPartnerInfo(PartnerType.getTypeByValue(channel.partnerType), channel.partnerId)
+            getPartnerInfo(channel)
             if (videoStream.isLive) startWebSocket(channelId, channel.gcToken, channel.settings)
             playVideoStream(videoStream)
 
@@ -141,13 +141,15 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun getPartnerInfo(partnerType: PartnerType, partnerId: Long) {
+    private fun getPartnerInfo(channel: Channel) {
+        val partnerType = PartnerType.getTypeByValue(channel.partnerType)
+        val partnerId = channel.partnerId
         if (partnerType == PartnerType.SHOP) getShopPartnerInfo(partnerId)
 
         if (partnerType == PartnerType.ADMIN) {
             _observablePartnerInfo.value = PartnerInfoUiModel(
                     id = partnerId,
-                    name = PARTNER_NAME_ADMIN,
+                    name = channel.moderatorName,
                     type = partnerType,
                     isFollowed = true
             )
