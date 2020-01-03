@@ -89,8 +89,14 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    var isLive: Boolean = false
+
     fun startCurrentVideo() {
         playManager.resumeCurrentVideo()
+    }
+
+    fun getDurationCurrentVideo(): Long {
+        return playManager.getDurationVideo()
     }
 
     fun getChannelInfo(channelId: String) {
@@ -108,6 +114,7 @@ class PlayViewModel @Inject constructor(
              * If Live => start web socket
              */
             getPartnerInfo(channel)
+            setStateLiveOrVod(channel)
             if (videoStream.isLive) startWebSocket(channelId, channel.gcToken, channel.settings)
             playVideoStream(videoStream)
 
@@ -235,6 +242,10 @@ class PlayViewModel @Inject constructor(
         if (videoStream.isActive) {
             startVideoWithUrlString(videoStream.androidStreamHd, videoStream.isLive)
         }
+    }
+
+    private fun setStateLiveOrVod(channel: Channel) {
+        isLive = channel.endTime < System.currentTimeMillis()
     }
 
     private fun createCompleteInfoModel(channel: Channel, videoStream: VideoStream) = PlayCompleteInfoUiModel(
