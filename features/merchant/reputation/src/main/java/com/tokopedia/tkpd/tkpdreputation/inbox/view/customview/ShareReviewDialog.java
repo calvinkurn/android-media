@@ -23,11 +23,11 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.widgets.ShareItem;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ShareAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.utils.ClipboardHandler;
+import com.tokopedia.tkpd.tkpdreputation.widgets.ShareItem;
 
 /**
  * Created by stevenfredian on 2/20/17.

@@ -5,12 +5,13 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
 import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo.ActResult;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -46,6 +47,7 @@ public class ActReputationRetrofitInteractorImpl implements
     private static final String PARAM_REPORT_MESSAGE = "text_message";
 
     private final CompositeSubscription compositeSubscription;
+    private UserSessionInterface userSession;
 
     @Inject
     ReputationActService reputationActService;
@@ -53,10 +55,9 @@ public class ActReputationRetrofitInteractorImpl implements
     @Inject
     ReviewActService reviewActService;
 
-    private boolean isRequesting = false;
-
-    public ActReputationRetrofitInteractorImpl() {
+    public ActReputationRetrofitInteractorImpl(UserSessionInterface userSessionInterface) {
         this.compositeSubscription = new CompositeSubscription();
+        this.userSession = userSessionInterface;
     }
 
     @Override
@@ -64,7 +65,11 @@ public class ActReputationRetrofitInteractorImpl implements
                             @NonNull final ActReputationListener listener) {
 
         Observable<Response<TokopediaWsV4Response>> observable = reputationActService.getApi()
-                .insertRepReviewResponse(AuthUtil.generateParams(context, params));
+                .insertRepReviewResponse(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        params
+                ));
 
         Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
@@ -138,7 +143,11 @@ public class ActReputationRetrofitInteractorImpl implements
                               @NonNull final ActReputationListener listener) {
 
         Observable<Response<TokopediaWsV4Response>> observable = reputationActService.getApi()
-                .deleteRepReviewResponse(AuthUtil.generateParams(context, params));
+                .deleteRepReviewResponse(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        params
+                ));
 
         Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
@@ -211,7 +220,11 @@ public class ActReputationRetrofitInteractorImpl implements
     public void postReport(@NonNull final Context context, @NonNull final Map<String, String> params, @NonNull final ActReputationListener listener) {
 
         Observable<Response<TokopediaWsV4Response>> observable = reviewActService.getApi()
-                .reportReview(AuthUtil.generateParams(context, params));
+                .reportReview(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        params
+                ));
 
         Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
@@ -284,7 +297,11 @@ public class ActReputationRetrofitInteractorImpl implements
     public void likeDislikeReview(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final ActReputationListener listener) {
 
         Observable<Response<TokopediaWsV4Response>> observable = reviewActService.getApi()
-                .likeDislikeReview(AuthUtil.generateParams(context, params));
+                .likeDislikeReview(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        params
+                ));
 
         Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override

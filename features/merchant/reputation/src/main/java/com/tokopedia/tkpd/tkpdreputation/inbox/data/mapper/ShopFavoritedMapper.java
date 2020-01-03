@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo.FavoriteCheckResult;
 
 import retrofit2.Response;

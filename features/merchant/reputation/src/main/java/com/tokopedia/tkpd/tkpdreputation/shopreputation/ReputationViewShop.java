@@ -54,8 +54,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 /**
  * Created by hangnadi on 8/12/15.
  */
@@ -170,7 +168,7 @@ public class ReputationViewShop extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_reputation_view_shop);
-        networkInteractor = new ActReputationRetrofitInteractorImpl();
+        networkInteractor = new ActReputationRetrofitInteractorImpl(userSession);
         model = getIntentModel();
         model.imageUploads = new ArrayList<>();
         model.imageUploads = getIntent().getParcelableArrayListExtra("data_images");

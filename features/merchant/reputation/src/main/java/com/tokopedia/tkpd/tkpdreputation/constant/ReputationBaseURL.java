@@ -52,6 +52,15 @@ public class ReputationBaseURL {
     public static final String PATH_DELETE_REP_REVIEW_RESPONSE = "delete_reputation_review_response.pl";
     public static final String PATH_INSERT_REP_REVIEW_RESPONSE = "insert_reputation_review_response.pl";
     public static final String URL_REPUTATION_ACTION = BASE_DOMAIN + "v4/action/reputation/";
+    public static final String PATH_GET_SHOP_ETALASE = "get_shop_etalase.pl";
+    public static final String PATH_GET_SHOP_INFO = "get_shop_info.pl";
+    public static final String PATH_GET_PEOPLE_FAV_MY_SHOP = "get_people_who_favorite_myshop.pl";
+    public static final String PATH_GET_SHOP_LOCATION = "get_shop_location.pl";
+    public static final String PATH_GET_SHOP_NOTES = "get_shop_notes.pl";
+    public static final String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
+    public static final String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
+    public static final String PATH_SHOP = "v4/shop/";
+    public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
 
 
     // product

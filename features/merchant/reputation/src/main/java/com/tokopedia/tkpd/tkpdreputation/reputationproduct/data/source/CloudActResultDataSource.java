@@ -2,11 +2,11 @@ package com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -18,21 +18,23 @@ import rx.Observable;
 
 public class CloudActResultDataSource {
 
-    private Context context;
     private ReviewActService reviewActService;
     private ActResultMapper actResultMapper;
+    private UserSessionInterface userSessionInterface;
 
-    public CloudActResultDataSource(Context context,
-                                    ReviewActService reviewActService,
-                                    ActResultMapper actResultMapper) {
-        this.context = context;
+    public CloudActResultDataSource(ReviewActService reviewActService,
+                                    ActResultMapper actResultMapper,
+                                    UserSessionInterface userSessionInterface) {
         this.reviewActService = reviewActService;
         this.actResultMapper = actResultMapper;
+        this.userSessionInterface = userSessionInterface;
     }
 
     public Observable<ActResultDomain> likeDislikeReviewCloudSource(Map<String, String> parameters) {
-        return reviewActService.getApi().likeDislikeReview(AuthUtil.generateParams
-                (MainApplication.getAppContext(), parameters))
-                .map(actResultMapper);
+        return reviewActService.getApi().likeDislikeReview(AuthHelper.generateParamsNetwork(
+                userSessionInterface.getUserId(),
+                userSessionInterface.getDeviceId(),
+                parameters
+        )).map(actResultMapper);
     }
 }

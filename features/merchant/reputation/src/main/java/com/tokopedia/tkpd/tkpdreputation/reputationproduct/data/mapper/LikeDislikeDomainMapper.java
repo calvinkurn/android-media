@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeReviewDomain;
@@ -18,9 +19,9 @@ import rx.functions.Func1;
  * Created by yoasfs on 18/07/17.
  */
 
-public class LikeDislikeDomainMapper implements Func1<Response<TkpdResponse>, LikeDislikeDomain> {
+public class LikeDislikeDomainMapper implements Func1<Response<TokopediaWsV4Response>, LikeDislikeDomain> {
     @Override
-    public LikeDislikeDomain call(Response<TkpdResponse> response) {
+    public LikeDislikeDomain call(Response<TokopediaWsV4Response> response) {
         LikeDislikeDomain likeDislikeDomain = new LikeDislikeDomain();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
@@ -37,7 +38,7 @@ public class LikeDislikeDomainMapper implements Func1<Response<TkpdResponse>, Li
         return likeDislikeDomain;
     }
 
-    private String generateMessageError(retrofit2.Response<TkpdResponse> response) {
+    private String generateMessageError(retrofit2.Response<TokopediaWsV4Response> response) {
         return response.body().getErrorMessageJoined();
     }
 

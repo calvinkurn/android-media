@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.pojo.GenerateHostPojo;
 
