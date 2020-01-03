@@ -2,8 +2,6 @@ package com.tokopedia.age_restriction
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.tokopedia.age_restriction.data.UserDOBUpdateData
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
@@ -72,8 +70,12 @@ class VerifyDOBViewModelTest {
 
     @Test
     fun `check whether response error is not null`() {
+        coEvery { repository.getGQLData(anyString(), UserDOBUpdateResponse::class.java, requestParams) } returns response
+        coEvery { viewModel.generateDOBRequestparam(anyString(), anyString(), anyString()) } returns requestParams
         coEvery { response.userDobUpdateData.error } returns "sadfasd"
-        viewModel.checkIfAdult(response)
+
+        viewModel.updateUserDoB(anyString(), anyString(), anyString(), anyString())
+
         assertFalse(viewModel.progBarVisibility.value ?: true)
         assertEquals(viewModel.warningMessage.value, response.userDobUpdateData.error)
         assertEquals(viewModel.userIsAdult.value, null)
@@ -83,10 +85,45 @@ class VerifyDOBViewModelTest {
     @Test
     fun `check for adult`() {
         // change response isDobVerified = true and age > 18
+        coEvery { repository.getGQLData(anyString(), UserDOBUpdateResponse::class.java, requestParams) } returns response
+        coEvery { viewModel.generateDOBRequestparam(anyString(), anyString(), anyString()) } returns requestParams
         coEvery { response.userDobUpdateData.isDobVerified } returns true
         coEvery { response.userDobUpdateData.age } returns 20
-        viewModel.checkIfAdult(response)
+
+
+        viewModel.updateUserDoB(anyString(), anyString(), anyString(), anyString())
+
+
+        //viewModel.checkIfAdult(response)
         assertEquals(viewModel.userIsAdult.value, true)
+        assertEquals(viewModel.userNotAdult.value, null)
+    }
+
+    @Test
+    fun `check for not adult`() {
+        // change response isDobVerified = true and age < 18
+        coEvery { repository.getGQLData(anyString(), UserDOBUpdateResponse::class.java, requestParams) } returns response
+        coEvery { viewModel.generateDOBRequestparam(anyString(), anyString(), anyString()) } returns requestParams
+        coEvery { response.userDobUpdateData.isDobVerified } returns true
+        coEvery { response.userDobUpdateData.age } returns 12
+
+
+        viewModel.updateUserDoB(anyString(), anyString(), anyString(), anyString())
+
+        assertNull(viewModel.userIsAdult.value)
+        assertEquals(viewModel.userNotAdult.value, true)
+    }
+
+    @Test
+    fun generateDOBRequestparamTest() {
+        val dobDD = "22"
+        val dobMM = "22"
+        val dobYY = "22"
+        val response = viewModel.generateDOBRequestparam(dobDD, dobMM, dobYY)
+
+        assertEquals(response.get("bdayDD"), dobDD)
+        assertEquals(response.get("bdayMM"), dobMM)
+        assertEquals(response.get("bdayYY"), dobYY)
     }
 
     @After

@@ -33,7 +33,7 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
         })
     }
 
-    fun checkIfAdult(userDOBUpdateResponse: UserDOBUpdateResponse) {
+    private fun checkIfAdult(userDOBUpdateResponse: UserDOBUpdateResponse) {
         userDOBUpdateResponse.userDobUpdateData.error.let {
             if (it.isNotEmpty()) {
                 progBarVisibility.value = false
