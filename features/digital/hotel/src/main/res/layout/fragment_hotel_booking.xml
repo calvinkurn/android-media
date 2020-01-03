@@ -289,7 +289,7 @@
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary" />
 
-                <com.tokopedia.common.travel.widget.TravellerInfoWidget
+                <com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
                     android:id="@+id/widget_traveller_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
