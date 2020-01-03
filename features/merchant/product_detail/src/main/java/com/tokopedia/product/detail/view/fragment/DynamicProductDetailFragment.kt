@@ -162,14 +162,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 }
     }
 
-    private var shouldShowCartAnimation = false
     @Inject
     lateinit var productDetailTracking: ProductDetailTracking
     @Inject
     lateinit var dynamicProductDetailTracking: DynamicProductDetailTracking
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
     }
@@ -205,16 +203,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
     private lateinit var pdpHashMapUtil: DynamicProductDetailHashMap
+    private var shouldShowCartAnimation = false
+    private var loadingProgressDialog: ProgressDialog? = null
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
-    private var loadingProgressDialog: ProgressDialog? = null
-
-    val errorBottomsheets: ErrorBottomsheets by lazy {
+    private val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
-
-    val carouselProductPool = CarouselProductPool()
+    private val carouselProductPool = CarouselProductPool()
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
