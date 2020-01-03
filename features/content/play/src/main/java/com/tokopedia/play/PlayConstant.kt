@@ -1,6 +1,5 @@
 package com.tokopedia.play
 
-
 /**
  * Created by mzennis on 2019-12-03.
  */
@@ -20,8 +19,6 @@ const val PLAY_GET_STICKY_COMPONENTS = "${PLAY_GET_CHANNEL_INFO_V3}/sticky_compo
 const val PLAY_GET_TOTAL_LIKES = "${PLAY_GET_CHANNEL_INFO_V3}/lope_lope"
 
 const val PLAY_POST_LIKE = "${PLAY_GET_CHANNEL_INFO_V3}/click_lope_lope"
-
-const val PARTNER_NAME_ADMIN = "Admin"
 
 const val PARAM_SEND_TYPE = "type"
 const val PARAM_SEND_DATA = "data"

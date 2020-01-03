@@ -54,11 +54,11 @@ class PinnedView(
 
         view.findViewById<TextView>(R.id.tv_pinned_action)
                 .setOnClickListener {
-                    listener.onPinnedActionClicked(this, pinnedMessage.applink)
+                    listener.onPinnedActionClicked(this, pinnedMessage.applink, tvPinnedMessage.text.toString())
                 }
     }
 
     interface Listener {
-        fun onPinnedActionClicked(view: PinnedView, applink: String)
+        fun onPinnedActionClicked(view: PinnedView, applink: String, message: String)
     }
 }

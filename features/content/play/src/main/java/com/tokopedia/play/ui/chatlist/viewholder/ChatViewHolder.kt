@@ -5,9 +5,8 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.adapter_delegate.BaseViewHolder
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 

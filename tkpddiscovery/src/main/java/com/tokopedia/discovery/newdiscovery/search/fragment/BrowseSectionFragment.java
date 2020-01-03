@@ -41,16 +41,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.tokopedia.core.home.helper.ProductFeedHelper.LANDSCAPE_COLUMN_MAIN;
-import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_MAIN;
-
 /**
  * Created by henrypriyono on 10/16/17.
  */
 
 public abstract class BrowseSectionFragment extends BaseDaggerFragment
         implements BrowseSectionFragmentView {
+
+    public static final int LANDSCAPE_COLUMN_MAIN = 3;
+    public static final int PORTRAIT_COLUMN_MAIN = 2;
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
 

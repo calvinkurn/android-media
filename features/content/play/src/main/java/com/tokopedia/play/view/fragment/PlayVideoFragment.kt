@@ -11,7 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
@@ -36,8 +38,12 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
 
-        fun newInstance(): PlayVideoFragment {
-            return PlayVideoFragment()
+        fun newInstance(channelId: String): PlayVideoFragment {
+            return PlayVideoFragment().apply {
+                val bundle = Bundle()
+                bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                arguments = bundle
+            }
         }
     }
 
@@ -52,6 +58,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayVideoViewModel
 
+    private var channelId: String = ""
+
     override fun getScreenName(): String = "Play Video"
 
     override fun initInjector() {
@@ -62,6 +70,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 )
                 .build()
                 .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -102,6 +115,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         playViewModel.observableVideoProperty.observe(this, Observer {
             if (it.state is TokopediaPlayVideoState.Error)
                 view?.let { fragmentView ->
+                    PlayAnalytics.errorState(channelId, it.state.error.localizedMessage, playViewModel.isLive)
                     Toaster.make(
                             fragmentView,
                             it.state.error.localizedMessage,
