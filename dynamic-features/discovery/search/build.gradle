@@ -52,4 +52,5 @@ dependencies {
 
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.productCardOptions)
 }

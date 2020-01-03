@@ -33,4 +33,7 @@ object ApplinkConstInternalDiscovery {
 
     @JvmField
     val SIMILAR_SEARCH_RESULT = "$SIMILAR_SEARCH_RESULT_BASE/{product_id}/"
+
+    @JvmField
+    val PRODUCT_CARD_OPTIONS = "$INTERNAL_DISCOVERY/product-card-options"
 }

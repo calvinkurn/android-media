@@ -23,8 +23,7 @@ fun showProductCardOptions(activity: Activity, productCardOptionsModel: ProductC
 }
 
 private fun getProductCardOptionsIntent(context: Context, productCardOptionsModel: ProductCardOptionsModel): Intent {
-    val productCardOptionsApplink = "${ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY}/product-card-options"
-    val intent = RouteManager.getIntent(context, productCardOptionsApplink)
+    val intent = RouteManager.getIntent(context, ApplinkConstInternalDiscovery.PRODUCT_CARD_OPTIONS)
 
     intent.putExtra(PRODUCT_CARD_OPTIONS_MODEL, productCardOptionsModel)
 

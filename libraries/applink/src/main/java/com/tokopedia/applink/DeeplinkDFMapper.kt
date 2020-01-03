@@ -45,6 +45,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.PRODUCT_CARD_OPTIONS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
@@ -150,7 +151,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(SEARCH_RESULT) || it.startsWith(AUTOCOMPLETE) }, DFM_SEARCH_RESULT, R.string.title_search_result))
+            add(DFP({ it.startsWith(SEARCH_RESULT) || it.startsWith(AUTOCOMPLETE) || it.startsWith(PRODUCT_CARD_OPTIONS) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
             add(DFP({it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
             add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
