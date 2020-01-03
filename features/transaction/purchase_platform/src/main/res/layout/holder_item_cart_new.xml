@@ -327,8 +327,6 @@
                     android:layout_marginLeft="@dimen/dp_minus4"
                     android:layout_marginRight="@dimen/dp_minus4"
                     android:fontFamily="sans-serif"
-                    android:imeActionLabel="@string/action_label_done"
-                    android:imeOptions="actionDone"
                     android:maxLines="3"
                     android:overScrollMode="always"
                     android:paddingBottom="@dimen/dp_16"

@@ -10,7 +10,7 @@ public class CartResponseErrorException extends ResponseErrorException {
 
     private static final long serialVersionUID = -3672249531132491023L;
 
-    CartResponseErrorException(String message) {
+    public CartResponseErrorException(String message) {
         super(message);
     }
 
