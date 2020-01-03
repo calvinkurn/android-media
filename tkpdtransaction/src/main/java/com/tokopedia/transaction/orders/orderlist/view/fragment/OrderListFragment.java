@@ -800,7 +800,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         Calendar maxDate = Calendar.getInstance();
         maxDate.add(Calendar.YEAR, 100);
         Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
-        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
+        datePickerUnify = new DatePickerUnify(getActivity(), defaultDate, defaultDate, maxDate, new OnDateChangedListener() {
             @Override
             public void onDateChanged(long l) {
                 //
