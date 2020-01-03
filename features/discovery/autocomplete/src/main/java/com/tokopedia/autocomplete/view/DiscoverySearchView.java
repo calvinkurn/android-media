@@ -17,6 +17,7 @@ import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -338,7 +339,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                for (UnderlineSpan span : s.getSpans(0, s.length(), UnderlineSpan.class)) {
+                    s.removeSpan(span);
+                }
             }
         });
 
@@ -662,7 +665,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mVoiceBtn.setVisibility(VISIBLE);
         } else {
             mVoiceBtn.setVisibility(GONE);
-            setMargin(editTextContainer, convertDpToPx(8), 0, convertDpToPx(16), 0);
+            setMargin(editTextContainer, convertDpToPx(8), 0, convertDpToPx(12), 0);
         }
     }
 

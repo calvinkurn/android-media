@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_12"
                 app:srcCompat="@drawable/autocomplete_ic_back"
-                android:foreground="?attr/selectableItemBackgroundBorderless"/>
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
             <RelativeLayout
                 android:id="@+id/edit_text_container"
@@ -40,7 +40,8 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/autocomplete_bg_input">
+                android:background="@drawable/autocomplete_bg_input"
+                android:animateLayoutChanges="true">
 
                     <com.tokopedia.design.component.EditTextCompat
                         android:id="@+id/searchTextView"
@@ -77,7 +78,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="@dimen/dp_4"
                         app:srcCompat="@drawable/autocomplete_ic_camera"
-                        android:foreground="?attr/selectableItemBackgroundBorderless" />
+                        android:background="?attr/selectableItemBackgroundBorderless" />
 
                     <ImageView
                         android:id="@+id/action_empty_btn"
@@ -88,7 +89,7 @@
                         android:layout_marginRight="@dimen/dp_4"
                         android:visibility="gone"
                         app:srcCompat="@drawable/autocomplete_ic_clear"
-                        android:foreground="?attr/selectableItemBackgroundBorderless" />
+                        android:background="?attr/selectableItemBackgroundBorderless" />
 
             </RelativeLayout>
 
@@ -99,20 +100,19 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_16"
                 app:srcCompat="@drawable/autocomplete_ic_audio"
-                android:foreground="?attr/selectableItemBackgroundBorderless" />
+                android:background="?attr/selectableItemBackgroundBorderless" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action_cancel_button"
                 android:text="@string/search_cancel_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:textColor="@color/unify_G500"
                 android:visibility="gone"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                android:foreground="?attr/selectableItemBackgroundBorderless"/>
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
         </LinearLayout>
 
