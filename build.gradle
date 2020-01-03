@@ -46,11 +46,13 @@ buildscript {
         classpath "io.fabric.tools:gradle:1.27.1"
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
+        classpath "com.gradle.enterprise:3.1.1"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
 }
 
 apply from: 'buildproj.gradle'
 apply plugin: 'com.uber.okbuck'
+apply plugin: 'com.gradle.enterprise'
 
 okbuck {
 
@@ -96,6 +98,13 @@ okbuck {
     }
 
     buckBinary = "com.github.tokopedia:buck:7c9bdd9e65d5c25eeb5c4c4e2542267b6b6c6900@pex"
+}
+
+gradleEnterprise {
+    buildScan {
+        // plugin configuration
+        server = "http://http://172.21.57.32"
+    }
 }
 
 idea.module {
