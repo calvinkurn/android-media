@@ -28,6 +28,8 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
+    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
+    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -71,7 +73,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     private void trackIrisEventForAppOpen() {
         Iris instance = IrisAnalytics.Companion.getInstance(this);
         Map<String, Object> map = new HashMap<>();
-        map.put("event", "appSiteOpen");
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
         instance.saveEvent(map);
     }
 

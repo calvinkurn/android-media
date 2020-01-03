@@ -316,6 +316,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
+    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
+    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1672,7 +1674,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendIrisInstallEvent() {
         Map<String, Object> map = new HashMap<>();
-        map.put("event", "appInstall");
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
         mIris.sendEvent(map);
     }
 }
