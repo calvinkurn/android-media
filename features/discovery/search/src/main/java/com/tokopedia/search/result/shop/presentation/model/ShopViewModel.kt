@@ -12,7 +12,8 @@ internal data class ShopViewModel(
         val searchUrl: String = "",
         val paging: Paging = Paging(),
         val tabName: String = "",
-        val shopItemList: List<ShopItem> = listOf()
+        val shopItemList: List<ShopItem> = listOf(),
+        val recommendationShopItemList: List<ShopItem> = listOf()
 ): Parcelable {
 
     val hasNextPage = paging.uriNext != ""
@@ -68,7 +69,8 @@ internal data class ShopViewModel(
             val reputationImageUri: String = "",
             val reputationScore: Int = 0,
             val isOfficial: Boolean = false,
-            val gaKey: String = ""
+            val gaKey: String = "",
+            val isRecommendation: Boolean = false
     ) : Parcelable, Visitable<ShopListTypeFactory> {
 
         var position: Int = 0
@@ -105,7 +107,8 @@ internal data class ShopViewModel(
                 val applink: String = "",
                 val price: Int = 0,
                 val priceFormat: String = "",
-                val imageUrl: String = ""
+                val imageUrl: String = "",
+                val isRecommendation: Boolean = false
         ) : Parcelable {
 
             var position: Int = 0

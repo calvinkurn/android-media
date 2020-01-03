@@ -8,7 +8,7 @@ import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFac
 internal data class ShopEmptySearchViewModel(
         val sectionTitle: String = "",
         val query: String = "",
-        val isFilterActive: Boolean = false
+        var isFilterActive: Boolean = false
 ): Parcelable, Visitable<ShopListTypeFactory> {
 
     constructor(parcel: Parcel) : this(

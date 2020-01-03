@@ -42,6 +42,11 @@ internal val aceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
         shopList = shopItemList
 )
 
+internal val aceSearchShopWithRecommendation = SearchShopModel.AceSearchShop(
+        paging = pagingWithoutNextPage,
+        topShopList = shopItemList
+)
+
 internal val moreAceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
         paging = pagingWithNextPage,
         shopList = moreShopItemList
@@ -60,6 +65,7 @@ internal val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWitho
 internal val searchShopModelWithoutCpm = SearchShopModel(aceSearchShopWithNextPage)
 internal val searchShopModelWithoutValidCpmShop = SearchShopModel(aceSearchShopWithNextPage, notCpmShopModel)
 internal val searchShopModelEmptyList = SearchShopModel()
+internal val searchShopModelEmptyWithRecommendation = SearchShopModel(aceSearchShopWithRecommendation)
 internal val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
 internal val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
 

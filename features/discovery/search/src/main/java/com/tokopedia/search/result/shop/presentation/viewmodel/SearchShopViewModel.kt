@@ -24,6 +24,7 @@ import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocal
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
@@ -191,17 +192,29 @@ internal class SearchShopViewModel(
 
     private fun createVisitableListFromModel(searchShopModel: SearchShopModel): List<Visitable<*>> {
         return if (isEmptySearchShop) {
-            createVisitableListWithEmptySearchViewModel(false)
+            val emptySearchVisitableList = mutableListOf<Visitable<*>>()
+
+            emptySearchVisitableList.addAll(createVisitableListWithEmptySearchViewModel())
+
+            if (searchShopModel.aceSearchShop.topShopList.isNotEmpty()) {
+                emptySearchVisitableList.add(ShopRecommendationTitleViewModel())
+
+                val searchShopViewModel = shopViewModelMapper.convert(searchShopModel)
+                setShopItemPositionWithStartPosition(0, searchShopViewModel.recommendationShopItemList)
+                emptySearchVisitableList.addAll(searchShopViewModel.recommendationShopItemList)
+            }
+
+            emptySearchVisitableList
         }
         else {
             createSearchShopListWithHeader(searchShopModel)
         }
     }
 
-    private fun createVisitableListWithEmptySearchViewModel(isFilterActive: Boolean): List<Visitable<*>> {
+    private fun createVisitableListWithEmptySearchViewModel(): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val emptySearchViewModel = ShopEmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), isFilterActive)
+        val emptySearchViewModel = ShopEmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), false)
 
         visitableList.add(emptySearchViewModel)
 
@@ -267,7 +280,11 @@ internal class SearchShopViewModel(
     }
 
     private fun setShopItemPosition(shopViewItemList: List<ShopViewModel.ShopItem>) {
-        var position = getSearchParameterStartRow()
+        setShopItemPositionWithStartPosition(getSearchParameterStartRow(), shopViewItemList)
+    }
+
+    private fun setShopItemPositionWithStartPosition(startPosition: Int, shopViewItemList: List<ShopViewModel.ShopItem>) {
+        var position = startPosition
         for (shopItem in shopViewItemList) {
             position++
             shopItem.position = position
@@ -385,7 +402,7 @@ internal class SearchShopViewModel(
     }
 
     private fun processFilterIntoFilterController(dynamicFilterModel: DynamicFilterModel) {
-        dynamicFilterModel.data?.filter?.let { filterList ->
+        dynamicFilterModel.data.filter.let { filterList ->
             val initializedFilterList = FilterHelper.initializeFilterList(filterList)
             filterController.initFilterController(searchParameter.convertValuesToString(), initializedFilterList)
         }
@@ -393,12 +410,15 @@ internal class SearchShopViewModel(
 
     private fun updateEmptySearchViewModelWithFilter() {
         if (filterController.isFilterActive()) {
-            searchShopMutableList.clear()
-
-            val visitableList = createVisitableListWithEmptySearchViewModel(filterController.isFilterActive())
-            updateSearchShopListWithNewData(visitableList)
+            updateEmptySearchInVisitableList()
             updateSearchShopLiveDataStateToSuccess()
         }
+    }
+
+    private fun updateEmptySearchInVisitableList() {
+        val shopEmptySearchViewModel = searchShopMutableList.find { it is ShopEmptySearchViewModel } as ShopEmptySearchViewModel
+
+        shopEmptySearchViewModel.isFilterActive = filterController.isFilterActive()
     }
 
     private fun catchGetDynamicFilterException(e: Throwable?) {

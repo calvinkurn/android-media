@@ -413,45 +413,6 @@ internal class HandleViewVisibilityChangedTest: Spek({
                 hasNextPage shouldBe false
             }
         }
-
-        Scenario("Search Shop with Empty Result") {
-            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
-            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
-
-            lateinit var searchShopViewModel: SearchShopViewModel
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            Given("search shop API will be successful and return empty search shop list") {
-                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList)
-                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
-            }
-
-            When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-            }
-
-            Then("assert search shop state is success and only contains empty search data") {
-                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
-
-                searchShopState.shouldBeInstanceOf<State.Success<*>>()
-                searchShopState.shouldOnlyHaveEmptySearchModel()
-            }
-
-            Then("should post empty search tracking event") {
-                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
-
-                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
-            }
-
-            Then("assert has next page is false") {
-                val hasNextPage = searchShopViewModel.getHasNextPage()
-
-                hasNextPage shouldBe false
-            }
-        }
     }
 
     Feature("Get Dynamic Filter After Search Shop First Page Successful") {
@@ -584,6 +545,53 @@ internal class HandleViewVisibilityChangedTest: Spek({
                 getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe false
             }
         }
+    }
+
+    Feature("Search Shop Empty Result") {
+        createTestInstance()
+
+        Scenario("Search Shop has Empty Result") {
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                val searchParameterWithoutFilter = mapOf(
+                        SearchApiConst.Q to "samsung"
+                )
+                searchShopViewModel = createSearchShopViewModel(searchParameterWithoutFilter)
+            }
+
+            Given("search shop API will be successful and return empty search shop list") {
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+            }
+
+            When("handle view is visible and added") {
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert search shop state is success and only contains empty search data") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<State.Success<*>>()
+                searchShopState.shouldOnlyHaveEmptySearchModel()
+                searchShopState.shouldHaveEmptySearchModelWithExpectedIsFilter(false)
+            }
+
+            Then("should post empty search tracking event") {
+                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
+
+                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
+            }
+
+            Then("assert has next page is false") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe false
+            }
+        }
 
         Scenario("Get Dynamic Filter Successful and Search Shop Has Empty Result") {
             val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
@@ -626,6 +634,94 @@ internal class HandleViewVisibilityChangedTest: Spek({
 
                 searchShopState.shouldBeInstanceOf<State.Success<*>>()
                 searchShopState.shouldOnlyHaveEmptySearchModel()
+                searchShopState.shouldHaveEmptySearchModelWithExpectedIsFilter(true)
+            }
+        }
+
+        Scenario("Search Shop has Empty Result with Shop Recommendation") {
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                val searchParameterWithoutFilter = mapOf(
+                        SearchApiConst.Q to "samsung"
+                )
+                searchShopViewModel = createSearchShopViewModel(searchParameterWithoutFilter)
+            }
+
+            Given("search shop API will be successful and return empty search shop with recommendation shop") {
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyWithRecommendation)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+            }
+
+            When("handle view is visible and added") {
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert search shop state is success, contains empty result view, recommendation title, and recommendation items") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<State.Success<*>>()
+                searchShopState.shouldHaveEmptySearchWithRecommendation()
+                searchShopState.shouldHaveEmptySearchModelWithExpectedIsFilter(false)
+            }
+
+            Then("should post empty search tracking event") {
+                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
+
+                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
+            }
+
+            Then("assert has next page is false") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe false
+            }
+        }
+
+        Scenario("Get Dynamic Filter Successful and Search Shop Has Empty Result with Recommendation") {
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Given("search shop API will be successful and return empty search shop with recommendation") {
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyWithRecommendation)
+            }
+
+            Given("dynamic filter API will be successful") {
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+            }
+
+            When("handle view is visible and added") {
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert save dynamic filter is executed") {
+                verify(exactly = 1) {
+                    searchLocalCacheHandler.saveDynamicFilterModelLocally(
+                            SearchShopViewModel.SCREEN_SEARCH_PAGE_SHOP_TAB, dynamicFilterModel)
+                }
+            }
+
+            Then("assert dynamic filter response event is success (true)") {
+                val getDynamicFilterResponseEvent = searchShopViewModel.getDynamicFilterEventLiveData().value
+
+                getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe true
+            }
+
+            Then("assert search shop state is success and have updated Empty Search Model with Filter Data") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<State.Success<*>>()
+                searchShopState.shouldHaveEmptySearchWithRecommendation()
                 searchShopState.shouldHaveEmptySearchModelWithExpectedIsFilter(true)
             }
         }

@@ -3,10 +3,7 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.search.result.common.State
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.shouldBe
 
 internal inline fun <reified T> Any?.shouldBeInstanceOf() {
@@ -123,6 +120,20 @@ internal fun State<List<Visitable<*>>>?.shouldOnlyHaveEmptySearchModel() {
     this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
 }
 
+internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendation() {
+    val lastIndex = this?.data?.lastIndex ?: 0
+
+    this.shouldNotBeNull()
+
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this.shouldHaveRecommendationTitle()
+    this.shouldHaveShopItemViewModel(2, lastIndex)
+}
+
+private fun State<List<Visitable<*>>>?.shouldHaveRecommendationTitle() {
+    this?.data?.get(1).shouldBeInstanceOf<ShopRecommendationTitleViewModel>()
+}
+
 internal fun List<*>.shouldHaveSize(expectedSize: Int) {
     if (this.size != expectedSize) {
         throw AssertionError("Size should be $expectedSize. Actual size: ${this.size}")
@@ -136,10 +147,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchModelWithExpectedIs
 
     this?.data?.forEach {
         if (it is ShopEmptySearchViewModel) {
-            if (it.isFilterActive != expectedIsFilterActive) {
-                throw AssertionError("ShopEmptySearchViewModel isFilterActive = ${it.isFilterActive}, expected = $expectedIsFilterActive")
-            }
-
+            it.isFilterActive shouldBe expectedIsFilterActive
             return
         }
     }
