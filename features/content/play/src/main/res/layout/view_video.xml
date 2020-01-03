@@ -3,13 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/pv_video"
+    <com.tokopedia.play.view.custom.RoundedFrameLayout
+        android:id="@+id/rfl_video_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Neutral_N700_96"
-        app:use_controller="false"
-        tools:parentTag="android.widget.FrameLayout"
-        />
+        >
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/pv_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Neutral_N700_96"
+            app:use_controller="false"
+            tools:parentTag="android.widget.FrameLayout"
+            />
+
+    </com.tokopedia.play.view.custom.RoundedFrameLayout>
 
 </merge>

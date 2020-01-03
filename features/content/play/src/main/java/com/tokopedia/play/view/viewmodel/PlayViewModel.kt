@@ -16,6 +16,8 @@ import com.tokopedia.play.domain.GetVideoStreamUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.type.PlayVideoType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
@@ -69,6 +71,9 @@ class PlayViewModel @Inject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
     val observableEvent: LiveData<EventUiModel> = _observableEvent
 
+    private val _observableKeyboardState = MutableLiveData<KeyboardState>()
+    val observableKeyboardState: LiveData<KeyboardState> = _observableKeyboardState
+
     private val _observablePinnedMessage = MediatorLiveData<PinnedMessageUiModel>().apply {
         addSource(observablePartnerInfo) {
             val currentValue = value
@@ -97,6 +102,10 @@ class PlayViewModel @Inject constructor(
 
     fun getDurationCurrentVideo(): Long {
         return playManager.getDurationVideo()
+    }
+
+    fun showKeyboard(isShown: Boolean) {
+        _observableKeyboardState.value = if (isShown) KeyboardState.Shown else KeyboardState.Hidden
     }
 
     fun getChannelInfo(channelId: String) {

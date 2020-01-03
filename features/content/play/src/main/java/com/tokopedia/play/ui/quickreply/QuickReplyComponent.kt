@@ -29,25 +29,11 @@ class QuickReplyComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.SetQuickReply -> uiView.setQuickReply(it.quickReply)
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.show() else uiView.hide()
                         }
                     }
         }
-
-//        uiView.setQuickReply(
-//                QuickReply(
-//                        listOf(
-//                                "Keren",
-//                                "Mantap",
-//                                "UUuuuuuuuuUUUUU",
-//                                "YEYEYEY",
-//                                "KEREN BANGET CUI",
-//                                "WOOOOOOSSSHHH"
-//                        )
-//                )
-//        )
     }
 
     override fun getContainerId(): Int {

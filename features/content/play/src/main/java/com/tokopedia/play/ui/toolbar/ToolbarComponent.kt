@@ -35,6 +35,7 @@ class ToolbarComponent(
                                 uiView.setPartnerInfo(it.partnerInfo)
                             is ScreenStateEvent.VideoStreamChanged ->
                                 uiView.setLiveBadgeVisibility(it.videoStream.videoType.isLive)
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                         }
                     }
         }
