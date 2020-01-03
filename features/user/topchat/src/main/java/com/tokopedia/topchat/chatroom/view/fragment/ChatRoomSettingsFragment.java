@@ -239,7 +239,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                 setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
             } else if (chatRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
-                layoutParams.setMargins(0, (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_24), 0, 0);
+                layoutParams.setMargins(0, (int) getResources().getDimension(R.dimen.spacing_lvl5), 0, 0);
                 chatPromotionalcardView.requestLayout();
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
                 chatPersonalCardView.setVisibility(View.VISIBLE);

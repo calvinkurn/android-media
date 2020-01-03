@@ -35,10 +35,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shadow_background_topchat"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_24"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_24">
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl5"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/spacing_lvl5">
 
                 <TextView
                     android:id="@+id/title_template"
@@ -55,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/title_template"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     android:lineSpacingExtra="1sp"
                     android:maxWidth="270dp"
                     android:text="@string/caption_switch_template"
@@ -78,7 +78,7 @@
 
             <androidx.legacy.widget.Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_24" />
+                android:layout_height="@dimen/spacing_lvl5" />
 
             <RelativeLayout
                 android:id="@+id/template_container"
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/shadow_background_topchat"
                 android:orientation="vertical"
-                android:paddingTop="@dimen/dp_16"
+                android:paddingTop="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -94,10 +94,10 @@
                     android:id="@+id/template_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginBottom="@dimen/spacing_lvl3"
                     android:fontFamily="sans-serif"
-                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingLeft="@dimen/spacing_lvl4"
                     android:text="Daftar Template"
                     android:textColor="@color/black_70"
                     android:textSize="16sp"

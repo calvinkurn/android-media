@@ -3,21 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/interactive_adapter_template_chat"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
+    android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12"
-    android:background="@drawable/interactive_adapter_template_chat">
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/dp_12">
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/thumbnail"
         android:layout_width="@dimen/dp_160"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/dp_12"
         tools:src="@drawable/empty_chat" />
 
 
@@ -25,37 +25,37 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:gravity="center"
+        android:paddingStart="@dimen/spacing_lvl5"
+        android:paddingEnd="@dimen/spacing_lvl5"
         android:text="@string/buyer_empty_chat_title"
+        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/thumbnail"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_24"
-        android:textColor="@color/Neutral_N700_96"
-        android:paddingStart="@dimen/dp_24"
-        android:paddingEnd="@dimen/dp_24"
         app:typographyType="heading_2"
-        app:typographyWeight="reguler"
-        android:gravity="center"/>
+        app:typographyWeight="reguler" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:gravity="center"
+        android:paddingStart="@dimen/spacing_lvl5"
+        android:paddingEnd="@dimen/spacing_lvl5"
         android:text="@string/seller_empty_chat_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_24"
-        android:paddingStart="@dimen/dp_24"
-        android:paddingEnd="@dimen/dp_24"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

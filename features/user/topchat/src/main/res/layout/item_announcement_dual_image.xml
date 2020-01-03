@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/sp_12"

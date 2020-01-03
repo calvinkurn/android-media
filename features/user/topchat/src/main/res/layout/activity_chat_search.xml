@@ -19,7 +19,7 @@
 
         <ImageView
             android:id="@+id/ivBack"
-            android:layout_width="@dimen/dp_48"
+            android:layout_width="@dimen/spacing_lvl8"
             android:layout_height="@dimen/dp_44"
             android:paddingStart="@dimen/dp_12"
             android:paddingTop="@dimen/dp_10"
@@ -30,10 +30,10 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
             android:layout_weight="1"
             android:background="@drawable/topchat_bg_search_action_background">
 
@@ -50,21 +50,21 @@
                 android:lines="1"
                 android:paddingStart="@dimen/dp_28"
                 android:paddingLeft="@dimen/dp_28"
-                android:paddingTop="@dimen/dp_8"
+                android:paddingTop="@dimen/spacing_lvl3"
                 android:paddingEnd="@dimen/dp_44"
                 android:paddingRight="@dimen/dp_44"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingBottom="@dimen/spacing_lvl3"
                 android:textColor="#fd31353b"
                 android:textColorHint="@color/Neutral_N700_44"
                 android:textSize="@dimen/sp_14" />
 
             <ImageView
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="@dimen/spacing_lvl5"
+                android:layout_height="@dimen/spacing_lvl5"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:padding="@dimen/dp_4"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:padding="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/topchat_ic_search_grey_disabled" />
 
             <ImageView

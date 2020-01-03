@@ -6,9 +6,9 @@
     android:background="@drawable/interactive_adapter_template_chat"
     android:minHeight="@dimen/dp_72"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
+    android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_16"
+    android:paddingRight="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/dp_10">
 
     <FrameLayout
@@ -28,8 +28,8 @@
 
         <ImageView
             android:id="@+id/ivPin"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
             android:layout_gravity="end|bottom"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_pinned_blue"
@@ -64,7 +64,7 @@
         android:id="@+id/message"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:marqueeRepeatLimit="marquee_forever"
@@ -84,8 +84,8 @@
         android:id="@+id/user_label"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_0"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:gravity="center_vertical"
         android:text="@string/title_official"
         android:visibility="gone"
