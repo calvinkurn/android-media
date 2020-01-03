@@ -29,7 +29,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
     private val bigListShimmerModel: BigListShimmerModel by lazy { BigListShimmerModel() }
 
     private var currentDimension: String = ""
-    private val defaultDimension = "ob=23"
+    private val defaultSortFilterMostAppropriate = "ob=23"
 
     val viewMap = HashMap<Int, Boolean>()
     var viewedProductList = ArrayList<Visitable<ProductTypeFactory>>()
@@ -169,7 +169,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
                 val item = visitables[position] as ProductsItem
-                item.dimension = if (currentDimension.isNotEmpty()) currentDimension else defaultDimension
+                item.dimension = if (currentDimension.isNotEmpty()) currentDimension else defaultSortFilterMostAppropriate
                 item.adapter_position = position
 
                 if (item.isTopAds) {
