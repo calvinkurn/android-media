@@ -1,26 +1,26 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
-import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.R
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -38,13 +38,11 @@ import rx.subscriptions.CompositeSubscription
 class CartListPresenterTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartListUseCase = mockk()
+    val deleteCartListUseCase: DeleteCartUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase = mockk()
     val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper = mockk()
-    val checkPromoCodeCartListUseCase: CheckPromoCodeCartListUseCase = mockk()
     val compositeSubscription = CompositeSubscription()
-    val cartApiRequestParamGenerator: CartApiRequestParamGenerator = mockk()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
@@ -65,11 +63,10 @@ class CartListPresenterTest : Spek({
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
@@ -133,7 +130,7 @@ class CartListPresenterTest : Spek({
 
         Scenario("error load") {
 
-            val context: Activity = mockk()
+            val context: FragmentActivity = mockk()
             val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
 
             Given("throw error") {
@@ -146,7 +143,7 @@ class CartListPresenterTest : Spek({
             }
 
             Given("attach view") {
-                every { view.activity } returns context
+                every { view.getActivityObject() } returns context
                 every { context.getString(R.string.default_request_error_internal_server) } returns errorMessage
                 cartListPresenter.attachView(view)
             }
@@ -163,23 +160,244 @@ class CartListPresenterTest : Spek({
         }
     }
 
+    Feature("update cart list") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processToUpdateCartData(arrayListOf())
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.renderToShipmentFormSuccess(any(), any(), any(), any())
+                }
+            }
+        }
+
+        Scenario("failed update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = false
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processToUpdateCartData(arrayListOf())
+            }
+
+            Then("should render error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.renderErrorToShipmentForm(any())
+                }
+            }
+        }
+
+    }
+
+    Feature("update cart list for promo global") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success update and redirect to coupon list") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), PromoStackingData(), CartFragment.GO_TO_LIST)
+            }
+
+            Then("should render success and redirect to coupon list") {
+                verify {
+                    view.hideProgressLoading()
+                    view.goToCouponList()
+                }
+            }
+        }
+
+        Scenario("success update and redirect to coupon detail") {
+
+            val updateCartData = UpdateCartData()
+            val promoStackingData = PromoStackingData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), promoStackingData, 0)
+            }
+
+            Then("should render success and redirect to coupon list") {
+                verify {
+                    view.hideProgressLoading()
+                    view.goToDetailPromoStacking(promoStackingData)
+                }
+            }
+        }
+
+        Scenario("failed update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = false
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), PromoStackingData(), 0)
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
+                }
+            }
+        }
+
+    }
+
+    Feature("update cart list for promo merchant") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success update") {
+
+            val updateCartData = UpdateCartData()
+            val shopGroupAvailableData = ShopGroupAvailableData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), shopGroupAvailableData)
+            }
+
+            Then("should render success and show promo merchant bottomsheet") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
+                }
+            }
+        }
+
+        Scenario("failed update") {
+
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = false
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartDataPromoStacking(arrayListOf(), PromoStackingData(), 0)
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
+                }
+            }
+        }
+
+    }
+
     Feature("update and reload cart list") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
 
         Scenario("success update and reload empty") {
 
-            val emptyCartListData = UpdateAndRefreshCartListData()
+            val emptyCartListData = UpdateAndReloadCartListData()
 
             Given("empty data") {
                 every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
@@ -187,12 +405,11 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } returns arrayListOf()
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+                every { view.getAllAvailableCartDataList() } returns arrayListOf()
             }
 
             When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData()
+                cartListPresenter.processToUpdateAndReloadCartData("0")
             }
 
             Then("should hide loading") {
@@ -204,7 +421,7 @@ class CartListPresenterTest : Spek({
 
         Scenario("success update and reload") {
 
-            val cartListData = UpdateAndRefreshCartListData()
+            val cartListData = UpdateAndReloadCartListData()
 
             Given("cart data") {
                 cartListData.cartListData = CartListData()
@@ -219,12 +436,11 @@ class CartListPresenterTest : Spek({
                 cartItemData.updatedData = updatedData
 
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } returns arrayListOf(cartItemData)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+                every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
             }
 
             When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData()
+                cartListPresenter.processToUpdateAndReloadCartData("0")
             }
 
             Then("should render success") {
@@ -240,11 +456,10 @@ class CartListPresenterTest : Spek({
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
@@ -254,9 +469,8 @@ class CartListPresenterTest : Spek({
             val emptyCartListData = CartListData()
 
             Given("success delete") {
-                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
-                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+                val deleteCartData = DeleteCartData(isSuccess = true)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("empty cart list data") {
@@ -265,7 +479,6 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
             When("process delete cart item") {
@@ -284,14 +497,12 @@ class CartListPresenterTest : Spek({
         Scenario("remove some cart data") {
 
             Given("success delete") {
-                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
-                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+                val deleteCartData = DeleteCartData(isSuccess = true)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
             When("process delete cart item") {
@@ -299,7 +510,7 @@ class CartListPresenterTest : Spek({
                 firstCartItemData.originData = CartItemData.OriginData()
                 val secondCartItemData = CartItemData()
                 secondCartItemData.originData = CartItemData.OriginData()
-                secondCartItemData.originData.cartId = 1
+                secondCartItemData.originData?.cartId = 1
 
                 cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
                         arrayListOf(firstCartItemData), arrayListOf(), false, false)
@@ -307,7 +518,7 @@ class CartListPresenterTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf(0))
+                    view.onDeleteCartDataSuccess(arrayListOf("0"))
                 }
             }
         }
@@ -317,14 +528,12 @@ class CartListPresenterTest : Spek({
             val errorMessage = "fail testing delete"
 
             Given("fail delete") {
-                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
-                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(false).message(errorMessage).build()
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+                val deleteCartData = DeleteCartData(isSuccess = false, message = errorMessage)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
             When("process delete cart item") {
@@ -341,16 +550,236 @@ class CartListPresenterTest : Spek({
         }
     }
 
+    Feature("add to cart") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+            )
+        }
+
+        Scenario("success add to cart wishlist item") {
+
+            val addToCartDataModel = AddToCartDataModel()
+            val productModel = CartWishlistItemHolderData(id = "0", shopId = "0")
+            val successMessage = "Success message add to cart"
+
+            Given("add to cart data") {
+                val dataModel = DataModel()
+                val messages = arrayListOf<String>()
+                messages.add(successMessage)
+                dataModel.message = messages
+                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
+                addToCartDataModel.data = dataModel
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(productModel)
+            }
+
+            Then("should render success add to cart wishlist item") {
+                verify {
+                    view.hideProgressLoading()
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), productModel)
+                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+                    view.showToastMessageGreen(successMessage)
+                }
+            }
+        }
+
+        Scenario("failed add to cart wishlist item") {
+
+            lateinit var addToCartDataModel: AddToCartDataModel
+            val errorMessage = "Add to cart error"
+
+            Given("add to cart data") {
+                addToCartDataModel = AddToCartDataModel().apply {
+                    this.status = AddToCartDataModel.STATUS_ERROR
+                    this.data = DataModel().let { dataModel ->
+                        dataModel.success = 1
+                        dataModel
+                    }
+                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
+                        errorMessages.add(errorMessage)
+                        errorMessages
+                    }
+                }
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartWishlistItemHolderData(id = "0", shopId = "0"))
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+
+        Scenario("success add to cart recent view item") {
+
+            val addToCartDataModel = AddToCartDataModel()
+
+            Given("add to cart data") {
+                val dataModel = DataModel()
+                val messages = arrayListOf<String>()
+                messages.add("Success message")
+                dataModel.message = messages
+                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
+                addToCartDataModel.data = dataModel
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
+                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+                    view.showToastMessageGreen(addToCartDataModel.data.message[0])
+                }
+            }
+        }
+
+        Scenario("failed add to cart recent view item") {
+
+            lateinit var addToCartDataModel: AddToCartDataModel
+            val errorMessage = "Add to cart error"
+
+            Given("add to cart data") {
+                addToCartDataModel = AddToCartDataModel().apply {
+                    this.status = AddToCartDataModel.STATUS_ERROR
+                    this.data = DataModel().let { dataModel ->
+                        dataModel.success = 1
+                        dataModel
+                    }
+                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
+                        errorMessages.add(errorMessage)
+                        errorMessages
+                    }
+                }
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+
+        Scenario("success add to cart recommendation item") {
+
+            val addToCartDataModel = AddToCartDataModel()
+
+            Given("add to cart data") {
+                val dataModel = DataModel()
+                val messages = arrayListOf<String>()
+                messages.add("Success message")
+                dataModel.message = messages
+                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
+                addToCartDataModel.data = dataModel
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0)))
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
+                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+                    view.showToastMessageGreen(addToCartDataModel.data.message[0])
+                }
+            }
+        }
+
+        Scenario("failed add to cart recommendation item") {
+
+            lateinit var addToCartDataModel: AddToCartDataModel
+            val errorMessage = "Add to cart error"
+
+            Given("add to cart data") {
+                addToCartDataModel = AddToCartDataModel().apply {
+                    this.status = AddToCartDataModel.STATUS_ERROR
+                    this.data = DataModel().let { dataModel ->
+                        dataModel.success = 1
+                        dataModel
+                    }
+                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
+                        errorMessages.add(errorMessage)
+                        errorMessages
+                    }
+                }
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processAddToCart(CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0)))
+            }
+
+            Then("should show error") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+
+    }
+
     Feature("calculate subtotal") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
-                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
                     removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
@@ -377,9 +806,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val firstItemFirst by memoized {
-            CartItemHolderData().apply {
-                cartItemData = firstItemFirstData
-            }
+            CartItemHolderData(cartItemData = firstItemFirstData)
         }
         //endregion
 
@@ -403,9 +830,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val firstItemSecond by memoized {
-            CartItemHolderData().apply {
-                cartItemData = firstItemSecondData
-            }
+            CartItemHolderData(cartItemData = firstItemSecondData)
         }
         //endregion
 
@@ -429,9 +854,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val secondItemFirst by memoized {
-            CartItemHolderData().apply {
-                cartItemData = secondItemFirstData
-            }
+            CartItemHolderData(cartItemData = secondItemFirstData)
         }
         //endregion
 
@@ -455,9 +878,7 @@ class CartListPresenterTest : Spek({
             }
         }
         val secondItemSecond by memoized {
-            CartItemHolderData().apply {
-                cartItemData = secondItemSecondData
-            }
+            CartItemHolderData(cartItemData = secondItemSecondData)
         }
         //endregion
 
@@ -493,8 +914,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -522,8 +947,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -551,8 +980,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -582,8 +1015,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -622,8 +1059,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -661,8 +1102,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -699,8 +1144,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -738,8 +1187,12 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers {
-                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                every { view.getAllAvailableCartDataList() } answers {
+                    cartShops.flatMap {
+                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                    }.map {
+                        it.cartItemData ?: CartItemData()
+                    }
                 }
             }
 
@@ -755,4 +1208,5 @@ class CartListPresenterTest : Spek({
             }
         }
     }
+
 })
