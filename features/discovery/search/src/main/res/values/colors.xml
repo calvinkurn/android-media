@@ -25,4 +25,6 @@
 
     <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
     <color name="free_ongkir_promo_show_case_title_color">#f531353b</color>
+
+    <color name="search_result_empty_divider_color">#f3f4f5</color>
 </resources>

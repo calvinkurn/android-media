@@ -53,6 +53,7 @@
     <string name="msg_empty_search_shop_content">Coba kata kunci lain untuk menemukan toko yang kamu inginkan.</string>
     <string name="msg_empty_search_shop_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_shop_button">Ganti Kata Kunci</string>
+    <string name="empty_search_shop_recommendation_title">Toko rekomendasi</string>
 
     <string name="msg_empty_search_product_title">Oops, Produk Nggak Ditemukan</string>
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
