@@ -86,16 +86,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        uploadImageviewModel.urlImage.observe(this, Observer {
-            if (it.isNotEmpty()) {
-                uploadImageviewModel.getResultOcr(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr), it)
-            } else {
-                hideLoading()
-                showCameraView()
-                Toaster.make(containerCamera, getString(R.string.ocr_error_card_unreadable), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
-            }
-        })
-
         uploadImageviewModel.resultDataOcr.observe(this, Observer { ocrData ->
             hideLoading()
             rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
@@ -112,10 +102,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             showCameraView()
             rechargeCameraAnalytics.scanIdCard(it)
             Toaster.make(containerCamera, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
-        })
-
-        uploadImageviewModel.imagePathCropped.observe(this, Observer {
-            uploadImageviewModel.uploadImageRecharge(it)
         })
     }
 
@@ -190,7 +176,9 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             ImageHandler.loadImageFromFile(context, fullImagePreview, cameraResultFile)
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
-            uploadImageviewModel.cropImage(imagePath, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA)
+            uploadImageviewModel.uploadImageRecharge(imagePath,
+                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA,
+                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr))
         } else {
             Toast.makeText(context, getString(R.string.ocr_default_error_message), Toast
                     .LENGTH_LONG).show()
