@@ -20,6 +20,7 @@ public class TravelDateUtil {
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
     public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";
     public static final String YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String YYYY_MM_DD_T_HH_MM_SS = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String VIEW_FORMAT_WITHOUT_YEAR = "dd MMM";
     public static final String YYYYMMDD = "yyyyMMdd";
     public static final String YYYY = "yyyy";

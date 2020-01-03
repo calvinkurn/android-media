@@ -18,8 +18,7 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.v
 
 class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSectionViewModel.Item>,
                                       private var type: Int,
-                                      private var categoryType: String,
-                                      var listener: OnItemClickListener) :
+                                      private var categoryType: String) :
         RecyclerView.Adapter<TravelDestinationSectionAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
@@ -29,7 +28,7 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position], position, listener, type, categoryType)
+        holder.bind(list[position], position, type, categoryType)
     }
 
     fun updateList(newList: List<TravelDestinationSectionViewModel.Item>) {
@@ -48,7 +47,7 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: TravelDestinationSectionViewModel.Item, position: Int, listener: OnItemClickListener, type: Int, categoryType: String) {
+        fun bind(item: TravelDestinationSectionViewModel.Item, position: Int, type: Int, categoryType: String) {
             with(itemView) {
                 image.loadImage(item.imageUrl)
                 title.text = item.title
@@ -59,9 +58,6 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
                     TravelDestinationSectionViewModel.PREFIX_STYLE_NORMAL -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_normal, item.prefix, item.value))
                     else -> resources.getString(R.string.travel_prefix_nostyle, item.prefix, item.value)
                 }
-            }
-            if (listener != null) itemView.setOnClickListener {
-                listener.onItemClick(item.appUrl)
             }
         }
 

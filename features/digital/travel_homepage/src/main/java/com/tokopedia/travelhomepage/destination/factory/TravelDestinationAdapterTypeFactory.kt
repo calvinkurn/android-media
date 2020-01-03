@@ -4,6 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
@@ -19,16 +21,16 @@ import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickLi
 /**
  * @author by furqan on 06/08/2019
  */
-open class TravelDestinationAdapterTypeFactory(private val onBindListener: OnItemBindListener,
-                                          private val onItemClickListener: OnItemClickListener)
+open class TravelDestinationAdapterTypeFactory(private val onBindListener: OnViewHolderBindListener,
+                                          private val onItemClickListener: OnClickListener)
     : BaseAdapterTypeFactory(), TravelDestinationTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            TravelDestinationSummaryViewHolder.LAYOUT -> return TravelDestinationSummaryViewHolder(parent)
-            TravelDestinationCityRecommendationViewHolder.LAYOUT -> return TravelDestinationCityRecommendationViewHolder(parent, onBindListener, onItemClickListener)
-            TravelDestinationSectionViewHolder.LAYOUT -> return TravelDestinationSectionViewHolder(parent, onBindListener, onItemClickListener)
-            TravelDestinationArticleViewHolder.LAYOUT -> return TravelDestinationArticleViewHolder(parent, onBindListener, onItemClickListener)
+            TravelDestinationSummaryViewHolder.LAYOUT -> return TravelDestinationSummaryViewHolder(parent, onBindListener)
+            TravelDestinationCityRecommendationViewHolder.LAYOUT -> return TravelDestinationCityRecommendationViewHolder(parent, onBindListener)
+            TravelDestinationSectionViewHolder.LAYOUT -> return TravelDestinationSectionViewHolder(parent, onBindListener)
+            TravelDestinationArticleViewHolder.LAYOUT -> return TravelDestinationArticleViewHolder(parent, onBindListener)
         }
         return super.createViewHolder(parent, type)
     }

@@ -14,8 +14,7 @@ import kotlinx.android.synthetic.main.item_travel_destination_recommendation.vie
  * @author by jessica on 2019-08-09
  */
 
-class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDestinationSectionViewModel.Item>,
-                                                 var listener: OnItemClickListener) :
+class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDestinationSectionViewModel.Item>) :
         RecyclerView.Adapter<TravelDestinationCityRecommendationAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
@@ -25,7 +24,7 @@ class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDe
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position], position, listener)
+        holder.bind(list[position], position)
     }
 
     fun updateList(newList: List<TravelDestinationSectionViewModel.Item>) {
@@ -35,7 +34,7 @@ class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDe
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: TravelDestinationSectionViewModel.Item, position: Int, listener: OnItemClickListener) {
+        fun bind(item: TravelDestinationSectionViewModel.Item, position: Int) {
             with(itemView) {
                 iv_travel_destination_recommendation_item_category.loadImage(item.imageUrl)
 
@@ -45,9 +44,6 @@ class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDe
                 tv_travel_destination_recommendation_item_title.text = item.title
                 tv_travel_destination_recommendation_item_desc_subtitle.text = item.prefix
                 tv_travel_destination_recommendation_item_desc_title.text = item.value
-            }
-            if (listener != null) itemView.setOnClickListener {
-                listener.onItemClick(item.appUrl)
             }
         }
 

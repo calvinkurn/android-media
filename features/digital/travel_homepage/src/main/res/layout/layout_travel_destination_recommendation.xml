@@ -23,6 +23,7 @@
         android:id="@+id/rv_destination_recommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4" />
+        android:layout_marginTop="@dimen/dp_4"
+        android:nestedScrollingEnabled="false"/>
 
 </LinearLayout>

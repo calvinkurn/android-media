@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
@@ -34,7 +35,7 @@ class TravelDestinationArticleAdapter(private var list: List<TravelArticleModel.
         fun bind(item: TravelArticleModel.Item, position: Int) {
             with(itemView) {
                 iv_article.loadImage(item.imageUrl)
-                tv_article_subtitle.text = item.publishedDate
+                tv_article_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, item.publishedDate))
                 tv_article_title.text = item.title
             }
         }

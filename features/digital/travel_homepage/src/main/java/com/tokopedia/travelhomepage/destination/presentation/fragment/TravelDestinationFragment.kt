@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.di.TravelDestinationComponent
 import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
+import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.EXTRA_DESTINATION_WEB_URL
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel
@@ -27,12 +29,14 @@ import javax.inject.Inject
  * @author by jessica on 2019-12-20
  */
 
-class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, TravelDestinationTypeFactory>(), OnItemClickListener,
-OnItemBindListener{
+class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, TravelDestinationTypeFactory>(), OnClickListener,
+OnViewHolderBindListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: TravelDestinationViewModel
+
+    var cityId: String = ""
 
     var webUrl: String = "https://m.tokopedia.com/travel-entertainment/bandung/"
 
@@ -59,11 +63,8 @@ OnItemBindListener{
         destinationViewModel.travelDestinationCityModel.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    cityId = it.data.cityId
                     destinationViewModel.getInitialList()
-                    destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), it.data.cityId)
-                    destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), it.data.cityId)
-                    destinationViewModel.getCityDeals(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), it.data.cityId)
-                    destinationViewModel.getCityArticles(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article), it.data.cityId)
                 }
             }
         })
@@ -93,56 +94,24 @@ OnItemBindListener{
 
     override fun loadData(page: Int) { /* do nothing */ }
 
-    override fun onTrackBannerImpression(banner: TravelHomepageBannerModel.Banner, position: Int) {
+    override fun clickAndRedirect(appUrl: String, webUrl: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onTrackBannerClick(banner: TravelHomepageBannerModel.Banner, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCitySummaryVHBind() {
+        destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), cityId)
     }
 
-    override fun onTrackCategoryClick(category: TravelHomepageCategoryListModel.Category, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCityRecommendationVHBind() {
+        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), cityId)
     }
 
-    override fun onTrackDealsClick(deal: TravelHomepageSectionViewModel.Item, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCityDealsVHBind() {
+        destinationViewModel.getCityDeals(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), cityId)
     }
 
-    override fun onTrackPopularDestinationClick(destination: TravelHomepageDestinationModel.Destination, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onTrackEventClick(type: Int, position: Int, categoryName: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onItemClick(appUrl: String, webUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onBannerVHItemBind(isFromCloud: Boolean?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onCategoryVHBind(isFromCloud: Boolean?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onDestinationVHBind(isFromCloud: Boolean?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onOrderListVHBind(isFromCloud: Boolean?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onRecentSearchVHBind(isFromCloud: Boolean?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onRecommendationVHBind(isFromCloud: Boolean?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCityArticleVHBind() {
+        destinationViewModel.getCityArticles(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article), cityId)
     }
 
     companion object {
