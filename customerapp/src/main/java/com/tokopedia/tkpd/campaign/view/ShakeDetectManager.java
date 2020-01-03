@@ -232,8 +232,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             mOpenedActivity = null;
             this.activity = null;
         }
-        sd.unregisterListener(this);
-        sd.stop();
+
     }
 
 }

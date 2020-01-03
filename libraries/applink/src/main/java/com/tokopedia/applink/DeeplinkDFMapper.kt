@@ -3,7 +3,6 @@ package com.tokopedia.applink
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
@@ -37,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTI
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_AUTOADS
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
@@ -80,9 +78,7 @@ object DeeplinkDFMapper {
     private val DFM_IMAGE_SEARCH = "image_search"
     private val DFM_SEARCH_RESULT = "search"
     private val DFM_HOMEPAGE_DIGITAL = "homepage_digital"
-    private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
-    val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
-    private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
+
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_FLIGHT_TRAVEL = "flight_travel"
     private val DFM_DIGITAL_TOPUP = "digital_topup"
@@ -92,12 +88,6 @@ object DeeplinkDFMapper {
     private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
     private val DFM_USER_SETTING_BANK = "settingbank"
     private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
-    private val DFM_CUSTOMER_TOPADS_DASHBOARD = "customer_topads_dashboard"
-    private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
-    private val DFM_CUSTOMER_TOPADS_AUTOADS = "customer_topads_autoads"
-    private val DFM_SELLER_TOPADS_AUTOADS = "seller_topads_autoads"
-    private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
-    private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private val DFM_TOKOPOINTS = "tokopoints"
     private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
@@ -114,14 +104,21 @@ object DeeplinkDFMapper {
     private val DFM_PROFILE = "profile"
     private val DFM_AFFILIATE = "affiliate"
     private val DFM_CHAT_BOT = "chatbot"
-    private val DFM_POWER_MERCHANT_SUBSCRIBE = "power_merchant_subscribe"
     private val DFM_SETTING_NOTIF = "settingnotif"
     private val DFM_PAYMENT_SETTING = "payment_setting"
-    private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
-    private val DFM_PRODUCT_MANAGE_CUSTOMER = "product_manage_customer"
+
+    @JvmField
+    val DFM_MERCHANT_SELLER_CUSTOMERAPP = "merchant_seller"
+    private val DFM_MERCHANT_BUYER = "merchant_buyer"
+    private val DFM_SHOP_OPEN_CUSTOMERAPP = "merchant_seller_shop_open"
+
+    //sellerapp
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
     private val DFM_USER_IDENTIFICATION_COMMON = "user_identification_common"
     private val DFM_OPPORTUNITY = "opportunity"
+    private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
+    private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
+
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
@@ -129,8 +126,8 @@ object DeeplinkDFMapper {
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
-            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) || it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
+            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) ||
+                it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
             add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
             add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))
@@ -145,52 +142,56 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_USER_CHANGE_PHONE_NUMBER, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
-            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
-            add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(SEARCH_RESULT) || it.startsWith(AUTOCOMPLETE) }, DFM_SEARCH_RESULT, R.string.title_search_result))
+            add(DFP({ it.startsWith(SEARCH_RESULT) ||
+                it.startsWith(AUTOCOMPLETE)}, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
-            add(DFP({it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
-            add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
-            add(DFP({it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
+            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
+            add(DFP({ it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
+            add(DFP({ it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
             add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_OVOP2P, R.string.title_ovop2p))
-            add(DFP({ it.startsWith(SALDO_DEPOSIT) }, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
-            add(DFP({ it.startsWith(SALDO_INTRO) }, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB)
-                    || it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB) ||
+                it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
             add(DFP({ it.startsWith(REFERRAL) }, DFM_REFERRAL, R.string.applink_title_im_referral))
-            add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
-            add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
+            add(DFP({ it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
+            add(DFP({ it.startsWith(CONTACT_US_NATIVE) ||
+                it.startsWith(CONTACT_US) ||
+                it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
             add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
             add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN_FINAL_PRICE, R.string.applink_harga_final))
             add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_MONEYIN, R.string.money_in))
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_AFFILIATE, R.string.applink_title_affiliate))
             add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
-            add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_POWER_MERCHANT_SUBSCRIBE, R.string.title_applink_pm_subscribe))
             add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
             add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_PRODUCT_MANAGE_CUSTOMER, R.string.title_applink_product_manage))
-            add(DFP({ it.startsWith(OPPORTUNITY) }, DFM_OPPORTUNITY, R.string.opportunity_title))
 
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_USER_IDENTIFICATION_COMMON, R.string.user_identification_common_title))
+
+            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) ||
+                it.startsWith(POWER_MERCHANT_SUBSCRIBE) ||
+                it.startsWith(SHOP_SETTINGS_BASE) ||
+                it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
+                it.startsWith(TOPADS_DASHBOARD_INTERNAL) ||
+                it.startsWith(OPPORTUNITY)
+            }, DFM_MERCHANT_SELLER_CUSTOMERAPP, R.string.merchant_seller))
+
+            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_MERCHANT_BUYER, R.string.applink_report_title))
+
+            add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
         }
     }
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title))
-            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING_SELLERAPP, R.string.payment_settings_title))
-            add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(REPORT_PRODUCT) }, DFM_SELLER_REPORT_PRODUCT, R.string.applink_report_title))
+            add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) ||
+                it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_PRODUCT_MANAGE_SELLER, R.string.title_applink_product_manage))
         }
     }
@@ -251,14 +252,8 @@ object DeeplinkDFMapper {
                                             imageUrl: String? = ""): String? {
         getSplitManager(context)?.let {
             if (it.installedModules.contains(moduleId)) {
-                if (!GlobalConfig.DEBUG) {
-                    Crashlytics.logException(Exception("Open module " + moduleId));
-                }
                 return null
             } else {
-                if (!GlobalConfig.DEBUG) {
-                    Crashlytics.logException(Exception("Install module " + moduleId));
-                }
                 return UriUtil.buildUri(
                         DYNAMIC_FEATURE_INSTALL,
                         moduleId,
