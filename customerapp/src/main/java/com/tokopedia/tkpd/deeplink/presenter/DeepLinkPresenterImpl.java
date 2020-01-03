@@ -291,6 +291,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openReview(uriData.toString(), defaultBundle);
                     screenName = "";
                     break;
+                case DeepLinkChecker.ORDER_LIST:
+                    Bundle bundle =  new Bundle();
+                    bundle.putString("url",uriData.toString());
+                    RouteManager.route(context,bundle,ApplinkConst.ORDER_LIST_WEBVIEW);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -380,7 +386,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openFlight(Bundle bundle) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.FLIGHT);
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalTravel.DASHBOARD_FLIGHT);
         intent.putExtras(bundle);
         viewListener.goToPage(intent);
     }

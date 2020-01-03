@@ -99,10 +99,10 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.Checko
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
 import com.tokopedia.purchase_platform.common.domain.model.TrackerData;
@@ -112,8 +112,11 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
+import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -135,9 +138,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.Shipment
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.transaction.common.dialog.UnifyDialog;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -224,6 +224,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CodAnalytics mTrackerCod;
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
+    @Inject
+    CheckoutAnalyticsMacroInsurance mTrackerMacroInsurance;
     @Inject
     CornerAnalytics mTrackerCorner;
     @Inject
@@ -869,19 +871,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
-        UnifyDialog createTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER);
+        DialogUnify createTicketDialog = new DialogUnify(getActivityContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         createTicketDialog.setTitle(checkoutData.getErrorReporter().getTexts().getSubmitTitle());
         createTicketDialog.setDescription(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
-        createTicketDialog.setSecondary(checkoutData.getErrorReporter().getTexts().getCancelButton());
-        createTicketDialog.setSecondaryOnClickListener(v -> {
+        createTicketDialog.setSecondaryCTAText(checkoutData.getErrorReporter().getTexts().getCancelButton());
+        createTicketDialog.setSecondaryCTAClickListener(() -> {
             checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
+            return Unit.INSTANCE;
         });
-        createTicketDialog.setOk(checkoutData.getErrorReporter().getTexts().getSubmitButton());
-        createTicketDialog.setOkOnClickListener(v -> {
+        createTicketDialog.setPrimaryCTAText(checkoutData.getErrorReporter().getTexts().getSubmitButton());
+        createTicketDialog.setPrimaryCTAClickListener(() -> {
             checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
             shipmentPresenter.processSubmitHelpTicket(checkoutData);
+            return Unit.INSTANCE;
         });
         createTicketDialog.show();
         checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
@@ -925,11 +929,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
-        UnifyDialog successTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER);
+        DialogUnify successTicketDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
         successTicketDialog.setTitle(submitTicketResult.getTexts().getSubmitTitle());
         successTicketDialog.setDescription(submitTicketResult.getTexts().getSubmitDescription());
-        successTicketDialog.setOk(submitTicketResult.getTexts().getSuccessButton());
-        successTicketDialog.setOkOnClickListener(v -> getActivity().finish());
+        successTicketDialog.setPrimaryCTAText(submitTicketResult.getTexts().getSuccessButton());
+        successTicketDialog.setPrimaryCTAClickListener(() -> {
+            getActivity().finish();
+            return Unit.INSTANCE;
+        });
         successTicketDialog.show();
     }
 
@@ -2092,6 +2099,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void doCheckout(int requestCode) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
+
+        if(hasInsurance) {
+            mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
+                    shipmentAdapter.getInsuranceTitle());
+        }
+
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
@@ -2217,6 +2230,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.updateDonation(checked);
         }
         if (checked) sendAnalyticsOnClickTopDonation();
+        checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
     }
 
     @Override
@@ -3039,6 +3053,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
+
+    }
+
+    @Override
+    public void sendEventDeleteInsurance(String title) {
+
+    }
+
+    @Override
     public void updateInsuranceProductData(@NotNull InsuranceCartShops insuranceCartShops, @NotNull ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
 
     }
@@ -3046,6 +3070,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onInsuranceSelectStateChanges() {
 
+    }
+
+    @Override
+    public void sendEventInsuranceImpression(String title) {
+
+    }
+
+    @Override
+    public void sendEventInsuranceImpressionForShipment(String title) {
+        mTrackerMacroInsurance.eventImpressionOfInsuranceProductOnCheckout(title);
     }
 
     @Override

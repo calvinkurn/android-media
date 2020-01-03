@@ -66,7 +66,7 @@ class ProductManageSortFragment : BaseDaggerFragment(), ProductManageSortViewHol
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_manage_sort, container, false)
+        return inflater.inflate(com.tokopedia.product.manage.list.R.layout.fragment_manage_sort, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -86,7 +86,7 @@ class ProductManageSortFragment : BaseDaggerFragment(), ProductManageSortViewHol
             }
         }
 
-        viewModel.getListSortManageProduct(resources.getStringArray(R.array.sort_option))
+        viewModel.getListSortManageProduct(resources.getStringArray(com.tokopedia.product.manage.list.R.array.sort_option))
     }
 
     private fun onSuccessGetListSort(productManageSortModels: List<ProductManageSortModel>) {

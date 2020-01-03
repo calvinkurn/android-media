@@ -44,8 +44,10 @@ include "libraries:linker"
 include "libraries:webview"
 include "libraries:collapsing_tab_layout"
 include "libraries:promotions_target"
-
+include "libraries:adapter_delegate"
 include "libraries:videouploader"
 include "libraries:translator"
+include "libraries:instrumentation_test"
+include "libraries:traceroute"
 
 

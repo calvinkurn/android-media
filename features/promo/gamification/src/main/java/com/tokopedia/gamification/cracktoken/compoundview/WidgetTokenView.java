@@ -13,6 +13,8 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -165,8 +167,9 @@ public class WidgetTokenView extends FrameLayout {
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
-        int imageMarginTop = imageMarginBottom - imageHeight;
+
+        int screenHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight();
+        int imageMarginTop = (int)(screenHeight - (screenHeight *TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) imageViewFull.getLayoutParams();
         ivFullLp.width = imageWidth;
@@ -197,6 +200,15 @@ public class WidgetTokenView extends FrameLayout {
         imageViewRight.requestLayout();
 
         setVisibility(View.VISIBLE);
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getContext().getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     public void setToken(TokenAssetEntity tokenAsset) {

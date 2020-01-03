@@ -15,6 +15,7 @@ import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationsItem;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
@@ -81,6 +82,7 @@ public class OrderListAnalytics {
     private static final String BRAND = "brand";
     private static final String VARIANT = "variant";
     private static final String SHIPPING = "shipping";
+    private static final String CATEGORY = "category";
     private static final String TAX = "tax";
     private static final String COUPON_CODE = "coupon";
     private static final String KEY_PRODUCTS = "products";
@@ -424,19 +426,71 @@ public class OrderListAnalytics {
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, item.getName(),
+                                        LIST, item.getName()
+                                ),
+                                PRODUCTS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                NAME, item.getName(),
+                                                ID, item.getId(),
+                                                PRICE, item.getPrice(),
+                                                LIST, item.getName(),
+                                                POSITION, position + 1
+                                        )
+                                )
+                        )
+
+                )
+
+        ));
+    }
+    public static void eventRecommendationClick(@NotNull RecommendationsItem item, int position) {
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_CATEGORY, "my purchase list - " + item.getCategoryName(),
+                EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
+                EVENT_LABEL, "historical - " + item.getCategoryName() + " - " + (1 + position),
+                ECOMMERCE, DataLayer.mapOf(
+                        CLICK, DataLayer.mapOf(
+                                ACTION_FIELD, DataLayer.mapOf(
+                                        LIST, item.getCategoryName(),
                                         PRODUCTS, DataLayer.listOf(
                                                 DataLayer.mapOf(
-                                                        NAME, item.getName(),
-                                                        ID, item.getId(),
-                                                        PRICE, item.getPrice(),
-                                                        LIST, item.getName(),
+                                                        NAME, item.getProductName(),
+                                                        ID, item.getProductId(),
+                                                        PRICE, item.getProductPrice(),
+                                                        BRAND,"none",
+                                                        CATEGORY , item.getCategoryName(),
+                                                        LIST, item.getCategoryName(),
                                                         POSITION, position + 1
                                                 )
                                         )
                                 )
                         )
 
+                )
+
+        ));
+    }
+
+    public static void eventRecommendationListView(@NotNull RecommendationsItem recommendationsItem, int position) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, "my purchase list - " + recommendationsItem.getProductName(),
+                EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
+                EVENT_LABEL, "historical - " + recommendationsItem.getCategoryName() + " - " + (1 + position),
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
+                                NAME, recommendationsItem.getCategoryName(),
+                                ID, recommendationsItem.getProductId(),
+                                PRICE, recommendationsItem.getProductPrice(),
+                                BRAND, "none",
+                                CATEGORY, recommendationsItem.getCategoryName(),
+                                LIST, recommendationsItem.getCategoryName(),
+                                POSITION, position + 1
+                                )
+                        )
                 )
 
         ));
@@ -496,5 +550,6 @@ public class OrderListAnalytics {
                                                         VARIANT, NONE,
                                                         POSITION, position + 1
                                                 )))))));
+
     }
 }
