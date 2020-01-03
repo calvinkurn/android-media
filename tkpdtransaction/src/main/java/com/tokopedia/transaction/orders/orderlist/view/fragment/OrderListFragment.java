@@ -797,6 +797,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private void showDatePicker(String title) {
         String[] result = split(customStartDate);
         Calendar minDate = Calendar.getInstance();
+        minDate.add(Calendar.YEAR, -3);
         Calendar maxDate = Calendar.getInstance();
         maxDate.add(Calendar.YEAR, 100);
         Calendar defaultDate = Calendar.getInstance();
