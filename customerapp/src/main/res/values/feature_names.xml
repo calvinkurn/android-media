@@ -88,6 +88,7 @@
     <string name="title_search_result" >Pencarian</string>
     <string name="title_search_result_module_name" >Pencarian</string>
     <string name="search_result_app_name">search</string>
+    <string name="title_product_card_options">Product Card Options</string>
 
     <!--TopAds Dashboard-->
     <string name="title_module_top_ads_dashboard">TopAds Module</string>
