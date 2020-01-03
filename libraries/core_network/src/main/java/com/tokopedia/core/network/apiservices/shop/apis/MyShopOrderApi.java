@@ -37,8 +37,4 @@ public interface MyShopOrderApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_GET_ORDER_STATUS)
     Observable<Response<TkpdResponse>> getOrderStatus(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_PROCEED_SHIPPING_FORM)
-    Observable<Response<TkpdResponse>> getProcessShippingForm(@FieldMap Map<String, String> params);
 }

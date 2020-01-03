@@ -259,7 +259,7 @@
         <activity
             android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_header_saldo_intro"
+            android:label="@string/saldo_detail_title_header_saldo_intro"
             android:theme="@style/Theme.White.PopupTransparent"
             android:launchMode="singleTask"/>
 

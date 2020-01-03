@@ -31,7 +31,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewH
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
-import com.tokopedia.feedplus.view.listener.FeedPlus
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
@@ -48,7 +47,6 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
                               private val interestPickItemListener: OnboardingAdapter.InterestPickItemListener) :
         BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
-    private val viewListener: FeedPlus.View
     private val kolPostListener: KolPostViewHolderListener
     private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener
     private val bannerListener: BannerAdapter.BannerItemListener
@@ -62,9 +60,11 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
     private val videoViewListener: VideoViewHolder.VideoViewListener
     private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener
     private val highlightListener: HighlightAdapter.HighlightListener
+    private val emptyFeedBeforeLoginListener: EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener
+    private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
+    private val emptyFeedViewHolderListener: EmptyFeedViewHolder.EmptyFeedListener
 
     init {
-        this.viewListener = context
         this.kolPostListener = context
         this.dynamicPostListener = context
         this.bannerListener = context
@@ -78,6 +78,9 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         this.videoViewListener = context
         this.feedMultipleImageViewListener = context
         this.highlightListener = context
+        this.emptyFeedBeforeLoginListener = context
+        this.retryViewHolderListener = context
+        this.emptyFeedViewHolderListener = context
     }
 
     override fun type(emptyModel: EmptyModel): Int {
@@ -121,11 +124,11 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         val viewHolder: AbstractViewHolder<*>
 
         if (type == EmptyFeedViewHolder.LAYOUT)
-            viewHolder = EmptyFeedViewHolder(view, viewListener)
+            viewHolder = EmptyFeedViewHolder(view, emptyFeedViewHolderListener)
         else if (type == RetryViewHolder.LAYOUT)
-            viewHolder = RetryViewHolder(view, viewListener)
+            viewHolder = RetryViewHolder(view, retryViewHolderListener)
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
-            viewHolder = EmptyFeedBeforeLoginViewHolder(view, viewListener)
+            viewHolder = EmptyFeedBeforeLoginViewHolder(view, emptyFeedBeforeLoginListener)
         else if (type == DynamicPostViewHolder.LAYOUT) {
             viewHolder = DynamicPostViewHolder(
                     view,

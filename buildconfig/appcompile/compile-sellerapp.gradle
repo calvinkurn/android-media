@@ -7,6 +7,9 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
+include "features:common:common_tradein"
+
+include "features:home:navigation-common"
 
 include "features:communication:broadcast_message"
 //include "features:communication:broadcast_message_no_op"
@@ -31,9 +34,11 @@ include 'features:discovery:productcard'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
+include "features:discovery:carousel_productcard"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
+include "features:fintech:common_wallet"
 
 include "features:im:common_promo"
 include "features:im:referral"
@@ -98,11 +103,11 @@ include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 include "features:transaction:purchase_platform_common"
+include "features:transaction:opportunity"
 
 include "features:user:attachproduct"
 include "features:user:chat_common"
 include "features:user:chatbot"
-//include "features:user:chatbot_no_op"
 include "features:user:changepassword"
 //include "features:user:changepassword_no_op"
 include "features:user:changephonenumber"
@@ -125,6 +130,7 @@ include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:user:profilecompletion"
 include "features:user:stickylogin"
+include "features:user:seamless_login"
 
 include "features:category:basemvvm"
 include "features:category:tradein"
