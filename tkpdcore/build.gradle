@@ -103,7 +103,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
-    implementation rootProject.ext.debugToolsDependencies.stetho
+    debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation (rootProject.ext.serviceDependencies.crashlytics) {

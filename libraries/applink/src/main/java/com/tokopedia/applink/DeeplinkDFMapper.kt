@@ -73,37 +73,20 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
-    private val DFM_GROUPCHAT = "groupchat"
-    private val DFM_IMAGE_SEARCH = "image_search"
-    private val DFM_SEARCH_RESULT = "search"
-    private val DFM_HOMEPAGE_DIGITAL = "homepage_digital"
 
-    private val DFM_HOTEL_TRAVEL = "hotel_travel"
-    private val DFM_FLIGHT_TRAVEL = "flight_travel"
-    private val DFM_DIGITAL_TOPUP = "digital_topup"
-    private val DFM_VOUCHER_GAME = "voucher_game"
+    private val DFM_CONTENT = "df_content"
+    private val DFM_DIGITAL = "df_digital"
+    private val DFM_DISCOVERY = "df_discovery"
+    private val DFM_FINTECH = "df_fintech"
+    private val DFM_OPERATIONAL = "df_operational"
+    private val DFM_TRAVEL = "df_travel"
+    private val DFM_USER = "df_user"
+
     private val DFM_DIGITAL_DEALS = "digital_deals"
-    private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
-    private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
-    private val DFM_USER_SETTING_BANK = "settingbank"
-    private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private val DFM_TOKOPOINTS = "tokopoints"
-    private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
-    private val DFM_CONTACT_US = "contact_us"
-    private val DFM_SALDO_DEPOSIT = "saldo_deposit"
-    private val DFM_OVOP2P = "ovop2p"
-    private val DFM_SALDO_INTRO = "saldo_deposit"
-    private val DFM_OVO_PAY_WITH_QR = "df_ovo_pay_with_qr"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_TRADEIN = "tradein"
-    private val DFM_TRADEIN_FINAL_PRICE = "tradein"
-    private val DFM_MONEYIN = "tradein"
-    private val DFM_WALLET = "fintech_wallet"
-    private val DFM_PROFILE = "profile"
-    private val DFM_AFFILIATE = "affiliate"
-    private val DFM_CHAT_BOT = "chatbot"
-    private val DFM_SETTING_NOTIF = "settingnotif"
     private val DFM_PAYMENT_SETTING = "payment_setting"
 
     @JvmField
@@ -116,72 +99,93 @@ object DeeplinkDFMapper {
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
 
-    private val DFM_SELLER_ORDER_MANAGEMENT = "sellerorder"
-
     @JvmField
     val DFM_ONBOARDING = "onboarding"
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) ||
-                it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
-            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
-            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))
-            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_GROUPCHAT, R.string.title_groupchat))
-            add(DFP({ it.startsWith(FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
-            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
-            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
-            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
-            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_VOUCHER_GAME, R.string.title_voucher_game))
+            // Base
+
+            // Category
+            add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
+            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN, R.string.applink_harga_final))
+            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_TRADEIN, R.string.money_in))
+
+            add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
+
+            // Content
+            add(DFP({ it.startsWithPattern(PROFILE) }, DFM_CONTENT, R.string.applink_title_profile))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_CONTENT, R.string.applink_title_affiliate))
+
+            // Digital
+            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_DIGITAL, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL, R.string.digital_topup_title))
+            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_DIGITAL, R.string.title_voucher_game))
+
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
-            add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_USER_CHANGE_PHONE_NUMBER, R.string.applink_change_phone_number))
-            add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
+
+            // Discovery
+            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) ||
+                    it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_DISCOVERY, R.string.title_image_search))
             add(DFP({ it.startsWith(SEARCH_RESULT) ||
-                it.startsWith(AUTOCOMPLETE)}, DFM_SEARCH_RESULT, R.string.title_search_result))
-            add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
-            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
-            add(DFP({ it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
-            add(DFP({ it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
-            add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_OVOP2P, R.string.title_ovop2p))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+                    it.startsWith(AUTOCOMPLETE)}, DFM_DISCOVERY, R.string.title_search_result))
+
+            // Fintech
+            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_FINTECH, R.string.ovo_pay_with_qr_title))
+            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_FINTECH, R.string.ovo_pay_with_qr_title))
+            add(DFP({ it.startsWith(OVO_WALLET)}, DFM_FINTECH, R.string.applink_wallet_title))
+            add(DFP({ it.startsWith(SALDO_DEPOSIT)}, DFM_FINTECH, R.string.applink_saldo_deposit_title))
+            add(DFP({ it.startsWith(SALDO_INTRO)}, DFM_FINTECH, R.string.applink_saldo_intro_title))
+            add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_FINTECH, R.string.title_ovop2p))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_FINTECH, R.string.instant_loan_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB) ||
-                it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+                    it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_FINTECH, R.string.instant_loan_title))
+
+            // IM
             add(DFP({ it.startsWith(REFERRAL) }, DFM_REFERRAL, R.string.applink_title_im_referral))
-            add(DFP({ it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
-            add(DFP({ it.startsWith(CONTACT_US_NATIVE) ||
-                it.startsWith(CONTACT_US) ||
-                it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
-            add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
-            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN_FINAL_PRICE, R.string.applink_harga_final))
-            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_MONEYIN, R.string.money_in))
-            add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_AFFILIATE, R.string.applink_title_affiliate))
-            add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
-            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
-            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
 
-            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
-            add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))
-
+            // Merchant
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) ||
-                it.startsWith(POWER_MERCHANT_SUBSCRIBE) ||
-                it.startsWith(SHOP_SETTINGS_BASE) ||
-                it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
-                it.startsWith(TOPADS_DASHBOARD_INTERNAL) ||
-                it.startsWith(OPPORTUNITY)
+                    it.startsWith(POWER_MERCHANT_SUBSCRIBE) ||
+                    it.startsWith(SHOP_SETTINGS_BASE) ||
+                    it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
+                    it.startsWith(TOPADS_DASHBOARD_INTERNAL) ||
+                    it.startsWith(OPPORTUNITY) ||
+                    it.startsWith(SELLER_TRANSACTION)
             }, DFM_MERCHANT_SELLER_CUSTOMERAPP, R.string.merchant_seller))
-
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_MERCHANT_BUYER, R.string.applink_report_title))
-
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
-            add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DFM_SELLER_ORDER_MANAGEMENT, R.string.som_title))
+
+            // Operational
+            add(DFP({ it.startsWith(CONTACT_US_NATIVE) ||
+                    it.startsWith(CONTACT_US) ||
+                    it.startsWithPattern(TICKET_DETAIL) }, DFM_OPERATIONAL, R.string.applink_title_contact_us))
+            add(DFP({it.startsWith(CHAT_BOT)}, DFM_OPERATIONAL, R.string.title_applink_chatbot))
+
+            // Payment
+            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
+
+            // Promo
+            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
+
+            // Travel
+            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_TRAVEL, R.string.title_travel_homepage))
+            add(DFP({ it.startsWith(FLIGHT) }, DFM_TRAVEL, R.string.title_flight))
+            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_TRAVEL, R.string.title_flight))
+            add(DFP({ it.startsWith(HOTEL) }, DFM_TRAVEL, R.string.title_hotel))
+
+            // User
+            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_USER, R.string.title_groupchat))
+            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_USER, R.string.title_groupchat))
+            add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER, R.string.applink_profile_completion_title))
+            add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_USER, R.string.applink_change_phone_number))
+            add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER, R.string.applink_setting_bank_title))
+            add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_USER, R.string.notif_settings_title))
         }
     }
 
