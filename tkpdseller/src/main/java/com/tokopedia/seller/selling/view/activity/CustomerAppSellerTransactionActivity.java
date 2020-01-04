@@ -124,16 +124,16 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     public static Intent getIntentReadyToShip(Context context, Bundle extras) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-        if (enable) {
+        // if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.READY_TO_SHIP)
                     .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
-        } else {
+        /*} else {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, CustomerAppSellerTransactionActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_READY_TO_SHIP)
                     .putExtras(extras);
-        }
+        }*/
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_SHIPPED)
@@ -141,16 +141,16 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-        if (enable) {
+        // if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.SHIPPED)
                     .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
-        } else {
+        /*} else {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, CustomerAppSellerTransactionActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SHIPPED)
                     .putExtras(extras);
-        }
+        }*/
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_DELIVERED)
@@ -158,17 +158,17 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-        if (enable) {
+        // if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.DELIVERED)
                     .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING)
                     .putExtra(EXTRA_TAB_STATUS, STATUS_DELIVERED);
-        } else {
+        /*} else {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, CustomerAppSellerTransactionActivity.class)
                     .setData(uri.build())
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_DELIVERED)
                     .putExtras(extras);
-        }
+        }*/
     }
 
     public static Intent getIntentAllTransaction(Context context, Bundle extras) {

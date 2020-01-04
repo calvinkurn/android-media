@@ -123,12 +123,12 @@ public class ActivitySellingTransaction extends TkpdActivity
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-            if (enable) {
+            // if (enable) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_NEW_ORDER);
-            } else {
+            /*} else {
                 return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
-            }
+            }*/
 
         }
     }
@@ -145,12 +145,12 @@ public class ActivitySellingTransaction extends TkpdActivity
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
+            // if (enable) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
-            } else {
+            /*} else {
                 return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
-            }
+            }*/
 
         }
     }
@@ -167,12 +167,12 @@ public class ActivitySellingTransaction extends TkpdActivity
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
+            // if (enable) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
-            } else {
+            /*} else {
                 return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
-            }
+            }*/
 
         }
     }
@@ -189,12 +189,12 @@ public class ActivitySellingTransaction extends TkpdActivity
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
+            // if (enable) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.HISTORY)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_ALL_ORDER);
-            } else {
+            /*} else {
                 return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
-            }
+            }*/
         }
     }
 
