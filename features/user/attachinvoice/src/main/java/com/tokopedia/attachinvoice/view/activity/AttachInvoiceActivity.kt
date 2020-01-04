@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
 import com.tokopedia.attachinvoice.di.DaggerAttachInvoiceComponent
 import com.tokopedia.attachinvoice.view.fragment.AttachInvoiceFragment
@@ -38,6 +39,7 @@ class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceCo
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 0f
         }
+        supportActionBar?.setTitle(R.string.title_attachinvoice)
     }
 
     private fun useLightNotificationBar() {
