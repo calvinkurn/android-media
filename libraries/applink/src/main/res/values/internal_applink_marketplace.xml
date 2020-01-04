@@ -55,8 +55,10 @@
 
     <string name="path_chat_search">/chat-search</string>
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>
+    <string name="path_notification">/notification</string>
 
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
+    <string name="path_user_attach_invoice" translatable="false">/user-attach-invoice</string>
     <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>

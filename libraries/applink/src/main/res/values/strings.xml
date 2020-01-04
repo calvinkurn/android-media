@@ -11,6 +11,9 @@
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
+    <!--Merchant Seller-->
+    <string name="merchant_seller">Penjualan</string>
+
     <!--Digital Topup-->
     <string name="instant_loan_title">Dana Instan</string>
     <string name="digital_topup_title">Digital Topup</string>
@@ -25,4 +28,7 @@
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
+
+    <string name="opportunity_title">Peluang</string>
+    <string name="title_module_attachinvoice">Lampirkan Invoice</string>
 </resources>

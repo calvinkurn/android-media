@@ -120,7 +120,13 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            String screenName = getScreenName();
+            if (screenName == null) {
+                screenName = this.getClass().getSimpleName();
+            }
+            ((AbstractionRouter) getApplication()).onActivityDestroyed(screenName, this);
+        }
         sessionHandler = null;
         gcmHandler = null;
         globalCacheManager = null;

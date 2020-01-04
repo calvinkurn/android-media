@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.bookingV2.presentation.adapter.FlightBookingPassengerTypeFactory;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
     private int passengerTitleId;
     private String passportNumber;
     private String passportExpiredDate;
-    private CountryPhoneCode passportNationality;
-    private CountryPhoneCode passportIssuerCountry;
+    private TravelCountryPhoneCode passportNationality;
+    private TravelCountryPhoneCode passportIssuerCountry;
 
     public FlightBookingPassengerViewModel() {
     }
@@ -47,8 +47,8 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         passengerTitleId = in.readInt();
         passportNumber = in.readString();
         passportExpiredDate = in.readString();
-        passportNationality = in.readParcelable(CountryPhoneCode.class.getClassLoader());
-        passportIssuerCountry = in.readParcelable(CountryPhoneCode.class.getClassLoader());
+        passportNationality = in.readParcelable(TravelCountryPhoneCode.class.getClassLoader());
+        passportIssuerCountry = in.readParcelable(TravelCountryPhoneCode.class.getClassLoader());
     }
 
     @Override
@@ -204,19 +204,19 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         this.passportExpiredDate = passportExpiredDate;
     }
 
-    public CountryPhoneCode getPassportNationality() {
+    public TravelCountryPhoneCode getPassportNationality() {
         return passportNationality;
     }
 
-    public void setPassportNationality(CountryPhoneCode passportNationality) {
+    public void setPassportNationality(TravelCountryPhoneCode passportNationality) {
         this.passportNationality = passportNationality;
     }
 
-    public CountryPhoneCode getPassportIssuerCountry() {
+    public TravelCountryPhoneCode getPassportIssuerCountry() {
         return passportIssuerCountry;
     }
 
-    public void setPassportIssuerCountry(CountryPhoneCode passportIssuerCountry) {
+    public void setPassportIssuerCountry(TravelCountryPhoneCode passportIssuerCountry) {
         this.passportIssuerCountry = passportIssuerCountry;
     }
 
