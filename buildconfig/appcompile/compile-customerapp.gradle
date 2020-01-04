@@ -145,6 +145,7 @@ include "features:transaction:sellerorder"
 include "features:transaction:opportunity"
 
 include "features:user:attachproduct"
+include "features:user:attachinvoice"
 include "features:user:chat_common"
 include "features:user:chatbot"
 include "features:user:changepassword"

@@ -3,11 +3,11 @@ package com.tokopedia.topchat.chatroom.view.customview
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -56,7 +56,7 @@ class TopChatViewStateImpl(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: ConstraintLayout = view.findViewById(R.id.cl_attachment_preview)
+    private var attachmentPreviewContainer: FrameLayout = view.findViewById(R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
@@ -114,6 +114,10 @@ class TopChatViewStateImpl(
 
     private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
         if (!templateRecyclerView.isVisible) return
+        addBottomPaddingTemplateChat(bottomPadding)
+    }
+
+    private fun addBottomPaddingTemplateChat(bottomPadding: Int) {
         templateRecyclerView.post {
             with(templateRecyclerView) {
                 setPadding(
@@ -390,6 +394,9 @@ class TopChatViewStateImpl(
         listTemplate?.let {
             templateAdapter.list = listTemplate
             templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
+            if (attachmentPreviewContainer.isVisible) {
+                addBottomPaddingTemplateChat(8.toPx())
+            }
         }
     }
 
