@@ -30,4 +30,5 @@
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
 
     <string name="opportunity_title">Peluang</string>
+    <string name="title_module_attachinvoice">Lampirkan Invoice</string>
 </resources>
