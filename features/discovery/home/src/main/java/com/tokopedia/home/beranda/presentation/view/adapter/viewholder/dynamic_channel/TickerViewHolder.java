@@ -79,7 +79,8 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
 
         StripedUnderlineUtil.stripUnderlines(textMessage);
         ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
-        if (!hasStarted) {
+        if (!hasStarted && element.getTickers().size()>1) {
+            if (tickerTimerTask != null) tickerTimerTask.cancel();
             tickerTimerTask = new SwitchTicker(element.getTickers());
             timer.scheduleAtFixedRate(tickerTimerTask, 0, SLIDE_DELAY);
         }
@@ -108,7 +109,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     @Override
     public void onViewRecycled() {
         super.onViewRecycled();
-        tickerTimerTask.cancel();
+        if (tickerTimerTask != null) tickerTimerTask.cancel();
         hasStarted = false;
     }
 
