@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply from: "$rootProject.projectDir/appcompile/df-enable-customerapp.gradle"
+apply from: "$rootProject.projectDir/buildconfig/appcompile/df-enable-customerapp.gradle"
 
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
