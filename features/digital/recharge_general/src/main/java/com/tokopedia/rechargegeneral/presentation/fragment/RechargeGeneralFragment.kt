@@ -21,11 +21,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
@@ -119,6 +118,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.operatorCluster.observe(this, Observer {
             when(it) {
                 is Success -> {
+                    loading_view.hide()
                     renderOperators(it.data)
 //                    trackSearchResultCategories(it.data)
 
@@ -224,6 +224,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (cluster.operatorGroups.size == 1) {
             operator_cluster_select.hide()
         } else if (cluster.operatorGroups.size > 1) {
+            operator_cluster_select.show()
             // TODO: Get operator cluster label from backend
             operator_cluster_select.setLabel("Pilih Operator Cluster")
 //            operator_cluster_select.setLabel(cluster.text)
@@ -255,6 +256,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             operator_select.hide()
             adapter.showLoading()
         } else if (operatorGroup.operators.size > 1) {
+            operator_select.show()
             operator_select.setLabel(label)
             operator_select.setHint("")
             operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
@@ -475,8 +477,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 })
 
                 // Hide widget title
-                recentTransactionFragment?.run { toggleTitleVisibility(false) }
-                promoListFragment?.run { toggleTitleVisibility(false) }
+                recentTransactionFragment?.run { hideTitle(false) }
+                promoListFragment?.run { hideTitle(false) }
             }
             product_view_pager.show()
         } else {
@@ -500,17 +502,31 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun showGetListError(e: Throwable) {
-        operator_cluster_select.hide()
-        operator_select.hide()
-        enquiry_button.hide()
+        loading_view.hide()
+        hideInputView()
+        hideFooterView()
         adapter.showGetListError(e)
     }
 
+    private fun hideInputView() {
+        operator_cluster_select.hide()
+        operator_select.hide()
+        enquiry_button.hide()
+    }
+
+    private fun hideFooterView() {
+        tab_layout.hide()
+        separator.hide()
+        product_view_pager.hide()
+    }
+
     override fun loadData() {
+        enquiry_button.show()
+        loading_view.show()
+
         getMenuDetail(menuId)
         getFavoriteNumbers(categoryId)
         getOperatorCluster(menuId)
-        enquiry_button.show()
     }
 
     private fun getOperatorCluster(menuId: Int) {
@@ -626,7 +642,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 //                    .isPromo(if (selectedProduct.attributes.promo != null) "1" else "0")
                     .isPromo("1")
                     .operatorId(operatorId.toString())
-                    .productId(productId.toString())
+                    .productId(productId)
                     .utmCampaign(categoryId.toString())
                     .utmContent(GlobalConfig.VERSION_NAME)
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
@@ -638,7 +654,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (inputData.containsKey(PARAM_ZONE_ID)) {
                 checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(inputData[PARAM_ZONE_ID]!!)
             }
-
             checkoutPassData = checkoutPassDataBuilder.build()
 
             processToCart()
@@ -656,15 +671,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
         }
         return ""
-    }
-
-    private fun getOperatorFromCluster(cluster: RechargeGeneralOperatorCluster, operatorId: Int): CatalogOperator? {
-        cluster.operatorGroups.forEach { group ->
-            group.operators.forEach { operator ->
-                if (operator.id == operatorId) return operator
-            }
-        }
-        return null
     }
 
     override fun getScreenName(): String {

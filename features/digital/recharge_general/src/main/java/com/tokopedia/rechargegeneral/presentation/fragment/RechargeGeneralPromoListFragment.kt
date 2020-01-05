@@ -54,7 +54,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
 
         with(promo_list_widget) {
             setListener(this@RechargeGeneralPromoListFragment)
-            if (::promoList.isInitialized && promoList.isNotEmpty()) setPromoList(promoList, false)
+            if (::promoList.isInitialized && promoList.isNotEmpty()) setPromoList(promoList)
         }
     }
 
@@ -87,8 +87,8 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
         }
     }
 
-    fun toggleTitleVisibility(value: Boolean) {
-        promo_list_widget.toggleTitleVisibility(value)
+    fun hideTitle(value: Boolean) {
+        promo_list_widget.hideTitle(value)
     }
 
     override fun getScreenName(): String {

@@ -39,14 +39,8 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         this.listener = listener
     }
 
-    fun setPromoList(promoList: List<TopupBillsPromo>, showTitle: Boolean = true) {
-        if (showTitle) {
-            titleWidget.show()
-            titleWidget.text = context.getString(R.string.title_promo)
-        } else {
-            titleWidget.hide()
-        }
-
+    fun setPromoList(promoList: List<TopupBillsPromo>) {
+        titleWidget.text = context.getString(R.string.title_promo)
         topupBillsPromoListAdapter = TopupBillsPromoListAdapter(promoList)
         recyclerView.adapter = topupBillsPromoListAdapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -100,7 +94,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         }
     }
 
-    fun toggleTitleVisibility(value: Boolean) {
+    fun hideTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
 

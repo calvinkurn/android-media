@@ -43,14 +43,8 @@ class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
         this.listener = listener
     }
 
-    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>, showTitle: Boolean = false) {
-        if (showTitle) {
-            titleWidget.show()
-            titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
-        } else {
-            titleWidget.hide()
-        }
-
+    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>) {
+        titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
         topupBillsRecentNumbersAdapter.setListener(object : TopupBillsRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
                 listener.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
@@ -93,7 +87,7 @@ class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
         }
     }
 
-    fun toggleTitleVisibility(value: Boolean) {
+    fun hideTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
 

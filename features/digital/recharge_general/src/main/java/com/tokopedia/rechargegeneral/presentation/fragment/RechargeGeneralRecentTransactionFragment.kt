@@ -47,7 +47,7 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
 
         with(recent_transaction_widget) {
             setListener(this@RechargeGeneralRecentTransactionFragment)
-            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) setRecentNumbers(recommendationList, false)
+            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) setRecentNumbers(recommendationList)
         }
     }
 
@@ -60,8 +60,8 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
         // TODO: Add tracking
     }
 
-    fun toggleTitleVisibility(value: Boolean) {
-        recent_transaction_widget.toggleTitleVisibility(value)
+    fun hideTitle(value: Boolean) {
+        recent_transaction_widget.hideTitle(value)
     }
 
     override fun getScreenName(): String {
