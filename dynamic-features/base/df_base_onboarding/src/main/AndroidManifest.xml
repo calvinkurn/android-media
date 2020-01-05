@@ -1,10 +1,10 @@
 <manifest xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.df.user">
+    package="com.tokopedia.df.base.onboarding">
 
     <dist:module
         dist:onDemand="false"
-        dist:title="@string/change_phone_number_app_module_name">
+        dist:title="@string/onboarding_app_name">
         <dist:fusing dist:include="true" />
     </dist:module>
 
