@@ -97,4 +97,6 @@
     <string name="related_search">Pencarian Terkait</string>
     <string name="banned_product">Produk dibatasi di Android</string>
     <string name="title_tokopedia">Tokopedia</string>
+    <string name="find_data_updated_text">Data diperbaharui pada %s</string>
+    <string name="find_price_header_text">Daftar harga %s terbaru %s</string>
 </resources>

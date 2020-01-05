@@ -79,7 +79,6 @@
                     android:paddingEnd="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:textColorHint="@android:color/black"
-                    android:textSize="@dimen/sp_16"
                     app:layout_constraintEnd_toStartOf="@+id/search_button"
                     app:layout_constraintStart_toEndOf="@+id/action_up_btn"
                     app:layout_constraintTop_toTopOf="parent"
@@ -96,14 +95,14 @@
                     android:layout_marginLeft="@dimen/dp_8"
                     android:padding="@dimen/dp_4"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/img_display_button"
+                    app:layout_constraintEnd_toStartOf="@+id/imageDisplayButton"
                     app:layout_constraintStart_toEndOf="@+id/et_search"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5"
                     app:srcCompat="@drawable/ic_category_filter" />
 
                 <ImageButton
-                    android:id="@+id/img_display_button"
+                    android:id="@+id/imageDisplayButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"

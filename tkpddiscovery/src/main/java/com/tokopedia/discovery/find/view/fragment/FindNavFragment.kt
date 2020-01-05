@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.find.view.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -27,11 +26,10 @@ import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
+import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -71,7 +69,7 @@ private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 private const val REQUEST_PRODUCT_ITEM_CLICK = 1002
 private const val FIND_SHARE_URI = "https://www.tokopedia.com/find/"
 
-class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
+class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener, WishListActionListener {
 
@@ -96,7 +94,6 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
     private var pageCount = 0
     private var rows = 10
     private var isPagingAllowed: Boolean = true
-    private var bannedProductFoundListener: OnBannedProductFoundListener? = null
 
     private lateinit var findSearchParam: String
 
@@ -111,24 +108,40 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+        component.inject(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.find_nav_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        component.inject(this)
-        arguments?.let {
-            findSearchParam = it.getString(EXTRA_FIND_PARAM, "")
-            getFindNavScreenName()
-        }
+    override fun addFragmentView() {
+        view?.findViewById<View>(R.id.swipe_refresh_layout)?.show()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.hide()
+    }
+
+    override fun initFragmentView() {
+        getFindNavScreenName()
         setUpVisibleFragmentListener()
         setUpNavigation()
         initViewModel()
         init()
         observeData()
         setUpAdapter()
+    }
+
+    override fun getDataFromArguments() {
+        arguments?.let {
+            findSearchParam = it.getString(EXTRA_FIND_PARAM, "")
+        }
+    }
+
+    override fun hideFragmentView() {
+        view?.findViewById<View>(R.id.swipe_refresh_layout)?.hide()
     }
 
     private fun getFindNavScreenName() {
@@ -150,35 +163,18 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
     }
 
     private fun observeData() {
-        findNavViewModel.mProductList.observe(this, Observer {
+        findNavViewModel.getProductListLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (productNavListAdapter?.isShimmerRunning() == true) {
-                        productNavListAdapter?.removeShimmer()
-                    }
-
-                    if (it.data.isNotEmpty()) {
-                        showNoDataScreen(false)
-                        productList.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
-                        productNavListAdapter?.removeLoading()
-                        product_recyclerview.adapter?.notifyDataSetChanged()
-                        isPagingAllowed = true
-                    } else {
-                        if (productList.isEmpty()) {
-                            if (findNavViewModel.mBannedData.isEmpty()) {
-                                showNoDataScreen(true)
-                            } else {
-                                showBannedDataScreen()
-                            }
-                        }
-                    }
+                    removeShimmerIfRunning()
+                    handleForProductsData(it.data)
                     showProductPriceSection(it.data as ArrayList<ProductsItem>)
                     hideRefreshLayout()
                     reloadFilter()
                 }
 
                 is Fail -> {
-                    productNavListAdapter?.removeLoading()
+                    removeLoadingFromAdapter()
                     hideRefreshLayout()
                     if (productList.isEmpty()) {
                         showNoDataScreen(true)
@@ -189,18 +185,14 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
             }
         })
 
-        findNavViewModel.mProductCount.observe(this, Observer {
+        findNavViewModel.getProductCountLiveData().observe(viewLifecycleOwner, Observer {
             it?.let {
                 setTotalSearchResultCount(it)
-                if (!TextUtils.isEmpty(it)) {
-                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it))
-                } else {
-                    setQuickFilterAdapter("")
-                }
+                setQuickFilterAdapter(it)
             }
         })
 
-        findNavViewModel.mQuickFilterModel.observe(this, Observer {
+        findNavViewModel.getQuickFilterListListLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     loadQuickFilters(it.data as ArrayList)
@@ -208,7 +200,7 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
             }
         })
 
-        findNavViewModel.mDynamicFilterModel.observe(this, Observer {
+        findNavViewModel.getDynamicFilterListLiveData().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -217,7 +209,7 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
             }
         })
 
-        findNavViewModel.mRelatedLinkList.observe(this, Observer {
+        findNavViewModel.getRelatedLinkListLiveData().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -228,6 +220,28 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
                 }
             }
         })
+    }
+
+    private fun removeLoadingFromAdapter() {
+        productNavListAdapter?.removeLoading()
+    }
+
+    private fun handleForProductsData(list: List<ProductsItem>) {
+        if (list.isNotEmpty()) {
+            showNoDataScreen(false)
+            productList.addAll(list as ArrayList<Visitable<ProductTypeFactory>>)
+            removeLoadingFromAdapter()
+            product_recyclerview.adapter?.notifyDataSetChanged()
+            isPagingAllowed = true
+        } else {
+            showNoDataScreen(true)
+        }
+    }
+
+    private fun removeShimmerIfRunning() {
+        if (productNavListAdapter?.isShimmerRunning() == true) {
+            productNavListAdapter?.removeShimmer()
+        }
     }
 
     private fun showProductPriceSection(productList: ArrayList<ProductsItem>) {
@@ -256,8 +270,8 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
         data_updated_header.show()
         val calendar = Calendar.getInstance()
         val currentMonthYear = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale("in", "ID")) + " ${calendar?.get(Calendar.YEAR)}"
-        val dateUpdatedText = "Data diperbaharui pada " + calendar.time.toFormattedString("DD/MM/YYYY")
-        val priceHeaderText = "Daftar harga $findNavScreenName terbaru $currentMonthYear"
+        val dateUpdatedText = getString(R.string.find_data_updated_text, calendar.time.toFormattedString("DD/MM/YYYY"))
+        val priceHeaderText = getString(R.string.find_price_header_text, findNavScreenName, currentMonthYear)
         price_list_header.text = priceHeaderText
         data_updated_header.text = dateUpdatedText
     }
@@ -334,7 +348,12 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
     }
 
     private fun setQuickFilterAdapter(productCount: String) {
-        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
+        val count = if (!TextUtils.isEmpty(productCount)) {
+            getString(R.string.result_count_template_text, productCount)
+        } else {
+            ""
+        }
+        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, count)
         quickfilter_recyclerview.adapter = quickFilterAdapter
         quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
                 RecyclerView.HORIZONTAL, false)
@@ -563,28 +582,5 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
             layout_related.show()
             btn_load_more.show()
         }
-    }
-
-    private fun showBannedDataScreen() {
-        val bannedProduct = Data()
-        bannedProduct.bannedMsgHeader = getString(R.string.banned_product)
-        bannedProduct.bannedMessage = findNavViewModel.mBannedData[0]
-        bannedProduct.appRedirection = findNavViewModel.mBannedData[1]
-        bannedProduct.displayButton = findNavViewModel.mBannedData[1].isNotEmpty()
-        bannedProductFoundListener?.onBannedProductFound(bannedProduct)
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnBannedProductFoundListener) {
-            bannedProductFoundListener = context
-        } else {
-            throw RuntimeException("$context must implement OnBannedProductFoundListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        bannedProductFoundListener = null
     }
 }

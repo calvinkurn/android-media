@@ -424,10 +424,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         fun onSortApplied(showTick: Boolean)
     }
 
-    interface OnBannedProductFoundListener {
-        fun onBannedProductFound(bannedProduct: Data)
-    }
-
     fun resetSortTick() {
         sortAppliedListener?.onSortApplied(showSortTickIfSelected())
     }

@@ -2,9 +2,7 @@ package com.tokopedia.discovery.find.view.activity
 
 import android.os.Bundle
 import android.widget.ImageButton
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -12,7 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BannedProductFragment
+import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.find.view.fragment.FindNavFragment
@@ -24,6 +22,7 @@ import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.android.synthetic.main.activity_find_nav.*
 import java.util.*
 
 private const val STATE_GRID = 1
@@ -33,8 +32,7 @@ private const val ORDER_BY = "ob"
 
 class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         BottomSheetListener, SearchNavigationView.SearchNavClickListener,
-        BaseCategorySectionFragment.SortAppliedListener, BannedProductFragment.OnBannedFragmentInteractionListener,
-        BaseCategorySectionFragment.OnBannedProductFoundListener {
+        BaseCategorySectionFragment.SortAppliedListener, BaseBannedProductFragment.OnBannedFragmentInteractionListener {
 
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var searchNavContainer: SearchNavigationView? = null
@@ -81,12 +79,12 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun initToolbar() {
-        findViewById<ImageView>(R.id.action_up_btn).setOnClickListener {
+        action_up_btn.setOnClickListener {
             onBackPressed()
         }
-        findViewById<AppCompatTextView>(R.id.et_search).text = findNavScreenName
+        et_search.text = findNavScreenName
 
-        findViewById<ImageView>(R.id.search_button).setOnClickListener {
+        search_button.setOnClickListener {
             moveToAutoCompleteActivity(findNavScreenName)
         }
     }
@@ -155,7 +153,6 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.search_nav_container)
         searchNavContainer?.setSearchNavListener(this)
-        val imageDisplayButton: ImageButton = findViewById(R.id.img_display_button)
         imageDisplayButton.tag = STATE_GRID
 
         imageDisplayButton.setOnClickListener {
@@ -232,11 +229,9 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         //To handle Analytics
     }
 
-    override fun onBannedProductFound(bannedProduct: Data) {
+    override fun onBannedFragmentAttached() {
         hideBottomNavigation()
         findViewById<ImageButton>(R.id.img_display_button).invisible()
-        val fragment = BannedProductFragment.newInstance(bannedProduct)
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
-                fragment).commit()
+
     }
 }

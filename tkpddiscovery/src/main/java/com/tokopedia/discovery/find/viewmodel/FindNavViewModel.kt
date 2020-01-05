@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.find.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
@@ -105,5 +106,29 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     override fun onCleared() {
         jobs.cancel()
         super.onCleared()
+    }
+
+    fun getProductListLiveData(): LiveData<Result<List<ProductsItem>>> {
+        return mProductList
+    }
+
+    fun getProductCountLiveData(): LiveData<String> {
+        return mProductCount
+    }
+
+    fun getBannedLiveData(): ArrayList<String> {
+        return mBannedData
+    }
+
+    fun getQuickFilterListListLiveData(): LiveData<Result<List<Filter>>> {
+        return mQuickFilterModel
+    }
+
+    fun getDynamicFilterListLiveData(): LiveData<Result<DynamicFilterModel>> {
+        return mDynamicFilterModel
+    }
+
+    fun getRelatedLinkListLiveData(): LiveData<Result<List<RelatedLinkData>>> {
+        return mRelatedLinkList
     }
 }

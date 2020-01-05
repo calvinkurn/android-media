@@ -14,6 +14,7 @@ class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var
 
     companion object {
         const val VIEW_PRICE = 0
+        const val VIEW_SHIMMER = 1
         const val SHIMMER_LAYOUT_COUNT = 4
         const val PRICE_COUNT = 10
     }
@@ -53,6 +54,14 @@ class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var
             VIEW_PRICE -> setRelatedLinkData(holder as PriceViewHolder, position)
             else -> {
             }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (productList.size > 0) {
+            VIEW_PRICE
+        } else {
+            VIEW_SHIMMER
         }
     }
 

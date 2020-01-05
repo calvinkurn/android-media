@@ -15,6 +15,7 @@ class FindRelatedLinkAdapter(var context: Context, private var relatedLinkList: 
 
     companion object {
         const val VIEW_RELATED_LINK = 0
+        const val VIEW_SHIMMER = 0
         const val SHIMMER_LAYOUT_COUNT = 4
     }
 
@@ -52,6 +53,14 @@ class FindRelatedLinkAdapter(var context: Context, private var relatedLinkList: 
             VIEW_RELATED_LINK -> setRelatedLinkData(holder as RelatedLinkViewHolder, position)
             else -> {
             }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (relatedLinkList.size > 0) {
+            VIEW_RELATED_LINK
+        } else {
+            VIEW_SHIMMER
         }
     }
 

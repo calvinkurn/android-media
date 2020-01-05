@@ -3,7 +3,7 @@ package com.tokopedia.discovery.find.data.model
 import com.google.gson.annotations.SerializedName
 
 data class RelatedLinkData(
-        @SerializedName("id") var id : Int,
-        @SerializedName("url") var url : String,
-        @SerializedName("text") var text : String
+        @SerializedName("id") val id : Int,
+        @SerializedName("url") val url : String,
+        @SerializedName("text") val text : String
 )
