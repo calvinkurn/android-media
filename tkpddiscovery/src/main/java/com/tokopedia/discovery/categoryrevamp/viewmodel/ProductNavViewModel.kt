@@ -1,8 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import android.util.Log
+import androidx.lifecycle.*
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
@@ -10,6 +8,8 @@ import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryI
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,11 +17,11 @@ import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
 import javax.inject.Inject
 
-class ProductNavViewModel @Inject constructor(var categoryProductUseCase: CategoryProductUseCase,
-                                              var subCategoryUseCaseV3: SubCategoryV3UseCase,
+class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCategoryV3UseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
-                                              var getProductListUseCase: GetProductListUseCase) : ViewModel() {
+                                              var getProductListUseCase: GetProductListUseCase,
+                                              var seamlessLoginUsecase: SeamlessLoginUsecase?) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -29,13 +29,14 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
     val mSubCategoryList = MutableLiveData<Result<List<SubCategoryItem>>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
+    val mSeamlessLogin: MutableLiveData<Result<String>> by lazy { MutableLiveData<Result<String>>() }
 
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
-                        searchProduct.products?.let { productList ->
+                        searchProduct.products.let { productList ->
                             mProductList.value = Success((productList) as List<ProductsItem>)
                         }
 
@@ -60,7 +61,12 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
                     val subCategoryList = it.child
                     subCategoryList?.let {
                         if (subCategoryList.isNotEmpty()) {
-                            mSubCategoryList.value = Success(it as List<SubCategoryItem>)
+                            val mSubCategoryArrayList = it as ArrayList<SubCategoryItem>
+                            val item = SubCategoryItem()
+                            item.name = "Semua"
+                            item.is_default = true
+                            mSubCategoryArrayList.add(0, item)
+                            mSubCategoryList.value = Success(mSubCategoryArrayList)
                         } else {
                             mSubCategoryList.value = Fail(Throwable("no data"))
                         }
@@ -113,12 +119,27 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
         return mDynamicFilterModel
     }
 
+    fun openBrowserSeamlessly(url: String) {
+        seamlessLoginUsecase?.generateSeamlessUrl(url, seamlessLoginSubscriber)
+    }
 
-    fun onDetach() {
+    val seamlessLoginSubscriber: SeamlessLoginSubscriber? = object : SeamlessLoginSubscriber {
+        override fun onUrlGenerated(url: String) {
+            mSeamlessLogin.value = Success(url)
+        }
+
+        override fun onError(msg: String) {
+            mSeamlessLogin.value = Fail(Throwable(msg))
+        }
+
+    }
+
+    override fun onCleared() {
+        super.onCleared()
         subCategoryUseCaseV3.unsubscribe()
         dynamicFilterUseCase.unsubscribe()
         quickFilterUseCase.unsubscribe()
         getProductListUseCase.unsubscribe()
+        seamlessLoginUsecase = null
     }
-
 }

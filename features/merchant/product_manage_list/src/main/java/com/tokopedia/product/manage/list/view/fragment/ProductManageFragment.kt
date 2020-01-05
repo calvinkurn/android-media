@@ -224,7 +224,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (!isListEmpty) {
-                adapter.data.forEachIndexed { index, _ ->
+                adapter.data.forEachIndexed { index, productManageViewModel ->
                     if (!isChecked || !productManageListAdapter.isChecked(index)) {
                         productManageListAdapter.updateListByCheck(isChecked, index)
                     }
@@ -849,7 +849,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun onSetCashbackClicked(productManageViewModel: ProductManageViewModel) {
         activity?.let {
             if (!GlobalConfig.isSellerApp()) {
-                RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
+                RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
                 return
             }
             showOptionCashback(productManageViewModel.productId, productManageViewModel.productPricePlain,

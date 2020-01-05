@@ -19,7 +19,7 @@
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:background="@drawable/feed_container_rounded_corners_border"
-        tools:src="@drawable/ic_check_green_24dp" />
+        tools:src="@drawable/feed_ic_check_green_24dp" />
 
     <com.tokopedia.gm.resource.GMImageView
         android:id="@+id/gold_merchant"
@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/dp_3"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/dp_12"
         android:visibility="gone"
         tools:visibility="gone" />
 
@@ -45,7 +45,7 @@
         android:layout_marginTop="@dimen/dp_3"
         android:layout_toEndOf="@+id/shop_avatar"
         android:layout_toRightOf="@+id/shop_avatar"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_official"
         tools:visibility="visible" />
@@ -63,7 +63,7 @@
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="4sp"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         tools:text="      Marowiajjfawioi saya adalah anak manusia wkwk ubah 1 produk " />
 
@@ -79,7 +79,7 @@
         android:layout_toRightOf="@id/shop_avatar"
         android:fontFamily="sans-serif"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/fontvvs"
+        android:textSize="@dimen/sp_10"
         android:textStyle="normal"
         tools:text="Milik tanah air bangsa" />
 

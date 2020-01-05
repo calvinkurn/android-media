@@ -40,7 +40,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.discoveryCommon)

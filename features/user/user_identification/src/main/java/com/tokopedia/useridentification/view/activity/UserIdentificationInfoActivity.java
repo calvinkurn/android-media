@@ -17,8 +17,6 @@ import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFrag
 public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     boolean isSourceSeller;
-
-
     private int projectId = -1;
     public interface Listener {
         void onTrackBackPressed();
@@ -50,7 +48,8 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId);

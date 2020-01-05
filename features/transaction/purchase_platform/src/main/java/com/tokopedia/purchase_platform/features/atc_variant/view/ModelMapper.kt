@@ -285,9 +285,8 @@ object ModelMapper {
         quantityViewModel.isStateError = false
         quantityViewModel.stockFromWarehouse = multiorigin?.stock ?: 0
         quantityViewModel.stockWordingFromWarehouse = multiorigin?.stockWording ?: ""
+        quantityViewModel.maxOrderQuantity = getMaxOrderQuantityNew(multiorigin, productInfo)
 
-        val listOfStocks = getListOfStocks(quantityViewModel.stockFromWarehouse, productInfo)
-        quantityViewModel.maxOrderQuantity = getMaxOrderQuantity(listOfStocks)
         quantityViewModel.minOrderQuantity = if (productInfo.basic.minOrder > 0) productInfo.basic.minOrder else 1
         quantityViewModel.orderQuantity = if (quantity > 0) quantity else quantityViewModel.minOrderQuantity
         quantityViewModel.stockWording = productInfo.stock.stockWording
@@ -310,6 +309,18 @@ object ModelMapper {
             return listOfStocks[0]
         } else {
             return DEFAULT_MAX_ORDER
+        }
+    }
+
+    private fun getMaxOrderQuantityNew(multiorigin: MultiOriginWarehouse? = null, productInfo: ProductInfo): Int {
+        if (multiorigin?.warehouseInfo?.isFulfillment == true) {
+            return multiorigin.stock
+        } else {
+
+            val stockFromWarehouse = multiorigin?.stock ?: 0
+            val listOfStocks = getListOfStocks(stockFromWarehouse, productInfo)
+            val maxStockOrder = getMaxOrderQuantity(listOfStocks)
+            return maxStockOrder
         }
     }
 

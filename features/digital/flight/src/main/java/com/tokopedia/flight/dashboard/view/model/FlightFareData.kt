@@ -6,20 +6,29 @@ import com.google.gson.annotations.SerializedName
 class FlightFareData(
         @SerializedName("flightFare")
         @Expose
-        val flightFare: FlightFare)
+        val flightFare: FlightFare = FlightFare())
 
 class FlightFare(
         @SerializedName("id")
         @Expose
-        val idFlight: String,
+        val idFlight: String = "",
         @SerializedName("attributes")
         @Expose
-        val attributesList: List<FlightFareAttributes>)
+        val attributesList: List<FlightFareAttributes> = arrayListOf())
 
 class FlightFareAttributes(
         @SerializedName("date")
         @Expose
-        val dateFare: String,
+        val dateFare: String = "",
         @SerializedName("cheapestPriceNumeric")
         @Expose
-        val cheapestPriceNumeric: Long)
+        val cheapestPriceNumeric: Long = 0,
+        @SerializedName("cheapestPrice")
+        @Expose
+        val cheapestPrice: String = "",
+        @SerializedName("displayedFare")
+        @Expose
+        val displayedFare: String = "",
+        @SerializedName("isLowestFare")
+        @Expose
+        val isLowestFare: Boolean = false)

@@ -33,7 +33,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?,
         list?.let {list->
             holder.itemView.addOnImpressionListener(list[position], object: ViewHintListener {
                 override fun onViewHint() {
-                    if (!viewMap.containsKey(position)) {
+                    if (!viewMap.containsKey(position) && list.size > position) {
                         viewMap[position] = true
                         trackingQueue?.let {trackingQueue->
                             CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(trackingQueue, list[position], position)

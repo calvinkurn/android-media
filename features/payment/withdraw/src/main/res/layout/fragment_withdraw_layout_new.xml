@@ -80,7 +80,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_12"
-            app:drawableLeftCompat="@drawable/ic_add_round"
             android:drawablePadding="@dimen/dp_12"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/sp_11"
@@ -88,6 +87,7 @@
             android:text="Tambah Rekening"
             android:textSize="@dimen/sp_14"
             android:visibility="gone"
+            app:drawableLeftCompat="@drawable/ic_add_round"
             app:layout_constraintStart_toStartOf="@+id/saldo_title"
             app:layout_constraintTop_toBottomOf="@+id/recycler_view_bank" />
 
