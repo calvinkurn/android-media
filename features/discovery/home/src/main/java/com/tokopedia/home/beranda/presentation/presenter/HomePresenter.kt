@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
@@ -98,8 +99,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     val homeLiveData: LiveData<HomeViewModel>
     get() = _homeLiveData
-
     val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
+
+    val trackingLiveData: LiveData<Event<List<Visitable<*>>>>
+        get() = _trackingLiveData
+    val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
 
     private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
     val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
@@ -184,15 +188,13 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun refreshHomeData() {
-        initHeaderViewModelData()
-
         lastRequestTimeHomeData = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
-            _updateNetworkLiveData.value = resource
+            _updateNetworkLiveData.setValue(resource)
         }){
             Timber.tag(HomePresenter::class.java.name).e(it)
-            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
+            _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
     }
 
@@ -311,7 +313,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     val newHomeViewModel = _homeLiveData.value?.copy(
                             list = it
                     )
-                    _homeLiveData.value = newHomeViewModel
+                    _homeLiveData.setValue(newHomeViewModel)
                 }
             }
         }
@@ -435,22 +437,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun getFeedTabData() {
-        val currentData = _homeLiveData.value
-        val visitableMutableList: MutableList<Visitable<*>> = currentData?.list?.toMutableList()?: mutableListOf()
-        val findRetryModel = _homeLiveData.value?.list?.find {
-            visitable -> visitable is HomeRetryModel
-        }
-        val findLoadingModel = _homeLiveData.value?.list?.find {
-            visitable -> visitable is HomeLoadingMoreModel
-        }
-        visitableMutableList.remove(findLoadingModel)
-        visitableMutableList.remove(findRetryModel)
-        visitableMutableList.add(HomeLoadingMoreModel())
-        val newHomeViewModel = currentData?.copy(
-                list = visitableMutableList)
-
-        _homeLiveData.value = newHomeViewModel
-
         getFeedTabUseCase.execute(object: Subscriber<List<FeedTabModel>>() {
             override fun onNext(t: List<FeedTabModel>?) {
                 val currentData = _homeLiveData.value
@@ -473,7 +459,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = currentData?.copy(
                         list = visitableMutableList)
 
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.setValue(newHomeViewModel)
             }
 
             override fun onCompleted() {
@@ -498,7 +484,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = currentData?.copy(
                         list = visitableMutableList)
 
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.setValue(newHomeViewModel)
             }
 
         })
@@ -544,7 +530,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
             visitableMutableList[indexOfPlayCardModel] = findPlayCardModel
             val newHomeViewModel = currentData?.copy(
                     list = visitableMutableList)
-            _homeLiveData.value = newHomeViewModel
+            _homeLiveData.setValue(newHomeViewModel)
         }
     }
 
@@ -570,9 +556,27 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.setValue(newHomeViewModel)
             }
         }
+    }
+
+    fun removeSuggestedReview(homeViewModel: HomeViewModel?): HomeViewModel? {
+        homeViewModel?.let { it->
+            val findReviewViewModel =
+                    it.list.find { visitable -> visitable is ReviewViewModel }
+            val currentList = it.list.toMutableList()
+            currentList.let { list->
+                if (findReviewViewModel is ReviewViewModel) {
+                    list.remove(findReviewViewModel)
+                    val newHomeViewModel =it.copy(
+                            list = list
+                    )
+                    return newHomeViewModel
+                }
+            }
+        }
+        return homeViewModel
     }
 
     fun removeSuggestedReview() {
@@ -585,7 +589,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val newHomeViewModel = _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.value = newHomeViewModel
+                _homeLiveData.setValue(newHomeViewModel)
             }
         }
     }
@@ -596,6 +600,17 @@ class HomePresenter(private val userSession: UserSessionInterface,
         } else {
             getSuggestedReview()
         }
+    }
+
+    private fun evaluateAvailableComponent(homeViewModel: HomeViewModel?): HomeViewModel? {
+        homeViewModel?.let {
+            var newHomeViewModel = homeViewModel
+            if(viewNeedToShowGeolocationComponent()) newHomeViewModel = removeSuggestedReview(it)
+            newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
+            newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            return newHomeViewModel
+        }
+        return homeViewModel
     }
 
     private fun evaluateGeolocationComponent(homeViewModel: HomeViewModel?): HomeViewModel? {
@@ -628,7 +643,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         subscription = Subscriptions.empty()
         initHeaderViewModelData()
         initFlow()
-        refreshHomeData()
     }
 
     private fun initFlow() {
@@ -636,23 +650,26 @@ class HomePresenter(private val userSession: UserSessionInterface,
             homeFlowData.collect {
                 var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
-                    homeData = evaluateBuWidgetData(homeData)
-                    _homeLiveData.value = evaluateRecommendationSection(homeData)
+                    homeData = evaluateAvailableComponent(homeData)
+                    _homeLiveData.setValue(homeData)
                     getHeaderData()
                     getPlayData()
                     getReviewData()
+
+                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf()))
                 } else {
-                    _homeLiveData.value = homeData
+                    _homeLiveData.setValue(homeData)
+                    refreshHomeData()
                 }
             }
         }) {
             Timber.tag(HomePresenter::class.java.name).e(it)
-            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
+            _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
     }
 
     private fun evaluateBuWidgetData(homeViewModel: HomeViewModel?): HomeViewModel? {
-        homeViewModel?.let {
+        homeViewModel?.let {homeViewModel->
             val findBuWidgetViewModel =
                     _homeLiveData.value?.list?.find { visitable -> visitable is BusinessUnitViewModel }
             findBuWidgetViewModel?.let { findBu->
@@ -715,9 +732,24 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val currentList = homeViewModel.list.toMutableList()
                 currentList.add(detectHomeRecom)
                 return homeViewModel.copy(list = currentList)
+            } else {
+                val currentData = homeViewModel
+                val visitableMutableList: MutableList<Visitable<*>> = currentData?.list?.toMutableList()?: mutableListOf()
+                val findRetryModel = homeViewModel.list?.find {
+                    visitable -> visitable is HomeRetryModel
+                }
+                val findLoadingModel = homeViewModel.list?.find {
+                    visitable -> visitable is HomeLoadingMoreModel
+                }
+                visitableMutableList.remove(findLoadingModel)
+                visitableMutableList.remove(findRetryModel)
+                visitableMutableList.add(HomeLoadingMoreModel())
+                val newHomeViewModel = currentData?.copy(
+                        list = visitableMutableList)
+                getFeedTabData()
+                return newHomeViewModel
             }
         }
-        getFeedTabData()
         return homeViewModel
     }
 
@@ -727,7 +759,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         detectGeolocation?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.value = homeViewModel.copy(list = currentList)
+            _homeLiveData.setValue(homeViewModel.copy(list = currentList))
         }
     }
 
@@ -737,7 +769,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         detectTicker?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.value = homeViewModel.copy(list = currentList)
+            _homeLiveData.setValue(homeViewModel.copy(list = currentList))
         }
     }
 

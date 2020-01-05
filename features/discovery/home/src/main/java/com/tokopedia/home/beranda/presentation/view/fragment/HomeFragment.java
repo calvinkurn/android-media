@@ -532,12 +532,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         });
 
+        presenter.getTrackingLiveData().observe(this, trackingData-> {
+            addImpressionToTrackingQueue(new ArrayList(trackingData.getContentIfNotHandled()));
+        });
+
         presenter.getUpdateNetworkLiveData().observe(this, resource -> {
             if(resource.getStatus() == Resource.Status.SUCCESS){
                 hideLoading();
-                if(presenter.getHomeLiveData().getValue() != null && !presenter.getHomeLiveData().getValue().getList().isEmpty()) {
-                    addImpressionToTrackingQueue(new ArrayList(presenter.getHomeLiveData().getValue().getList()));
-                }
             } else if(resource.getStatus() == Resource.Status.ERROR){
                 hideLoading();
                 showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(resource.getError()));
@@ -883,7 +884,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         resetFeedState();
         removeNetworkError();
-        homeRecyclerView.setEnabled(false);
         if (presenter != null) {
             presenter.searchHint();
             presenter.refreshHomeData();
@@ -1068,19 +1068,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void addImpressionToTrackingQueue(List<Visitable> visitables) {
-        List<Object> combinedTracking = new ArrayList<>();
-        for (Visitable visitable : visitables) {
-            if(visitable instanceof HomeVisitable) {
-                HomeVisitable homeVisitable = (HomeVisitable) visitable;
-                if (homeVisitable.isTrackingCombined() && homeVisitable.getTrackingDataForCombination() != null) {
-                    combinedTracking.addAll(homeVisitable.getTrackingDataForCombination());
-                } else if (!homeVisitable.isTrackingCombined() && homeVisitable.getTrackingData() != null) {
-                    HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.getTrackingData());
+        if (visitables != null) {
+            List<Object> combinedTracking = new ArrayList<>();
+            for (Visitable visitable : visitables) {
+                if(visitable instanceof HomeVisitable) {
+                    HomeVisitable homeVisitable = (HomeVisitable) visitable;
+                    if (homeVisitable.isTrackingCombined() && homeVisitable.getTrackingDataForCombination() != null) {
+                        combinedTracking.addAll(homeVisitable.getTrackingDataForCombination());
+                    } else if (!homeVisitable.isTrackingCombined() && homeVisitable.getTrackingData() != null) {
+                        HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.getTrackingData());
+                    }
                 }
             }
-        }
-        if (!combinedTracking.isEmpty()) {
-            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
+            if (!combinedTracking.isEmpty()) {
+                HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
+            }
         }
     }
 
