@@ -31,4 +31,7 @@
 
     <string name="opportunity_title">Peluang</string>
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
+
+    <!--Seller Order Management-->
+    <string name="som_title">Seller Order Management</string>
 </resources>

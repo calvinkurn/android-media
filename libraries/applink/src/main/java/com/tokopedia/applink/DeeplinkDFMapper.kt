@@ -100,7 +100,6 @@ object DeeplinkDFMapper {
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
 
-
     @JvmField
     val DFM_ONBOARDING = "onboarding"
 
@@ -157,7 +156,8 @@ object DeeplinkDFMapper {
                     it.startsWith(SHOP_SETTINGS_BASE) ||
                     it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL) ||
-                    it.startsWith(OPPORTUNITY)
+                    it.startsWith(OPPORTUNITY) ||
+                    it.startsWith(SELLER_TRANSACTION)
             }, DFM_MERCHANT_SELLER_CUSTOMERAPP, R.string.merchant_seller))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_MERCHANT_BUYER, R.string.applink_report_title))
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
