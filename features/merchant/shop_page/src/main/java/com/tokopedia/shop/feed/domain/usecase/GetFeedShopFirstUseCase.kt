@@ -107,4 +107,8 @@ class GetFeedShopFirstUseCase
                 .setSessionIncluded(true)
                 .build()
     }
+
+    fun clearFeedFirstCache() {
+        getDynamicFeedUseCase.clearCache()
+    }
 }

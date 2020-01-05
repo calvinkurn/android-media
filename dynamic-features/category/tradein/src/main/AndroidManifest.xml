@@ -3,7 +3,7 @@
     package="com.tokopedia.tradein.customerapp">
 
     <dist:module
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/title_trade_in">
         <dist:fusing dist:include="true" />
     </dist:module>
