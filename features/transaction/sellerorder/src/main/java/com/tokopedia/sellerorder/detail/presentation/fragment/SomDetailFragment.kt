@@ -189,7 +189,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         observingAcceptOrder()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.chat_menu, menu)
     }
 
@@ -270,7 +270,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
                     bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
                     bottomSheetUnify.setChild(viewBottomSheet)
-                    bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+                    fragmentManager?.let{
+                        bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+                    }
                     bottomSheetUnify.setTitle(TITLE_PILIH_PENOLAKAN)
 
                     somBottomSheetRejectReasonsAdapter.listRejectReasons = rejectReasonResponse.toMutableList()
@@ -457,7 +459,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         viewBottomSheet.tf_extra_notes?.visibility = View.GONE
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
     }
 
     override fun onBottomSheetItemClick(key: String) {
@@ -518,7 +522,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setFullPage(false)
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         bottomSheetUnify.setTitle(TITLE_BATALKAN_PESANAN)
 
         viewBottomSheet?.btn_cancel_order_canceled?.setOnClickListener { bottomSheetUnify.dismiss() }
@@ -559,7 +565,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setFullPage(false)
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         bottomSheetUnify.setTitle(TITLE_UBAH_RESI)
 
         viewBottomSheet?.btn_cancel_order_canceled?.setOnClickListener { bottomSheetUnify.dismiss() }
@@ -617,7 +625,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             setCloseClickListener { this.dismiss() }
             setChild(childView)
         }
-        bottomSheetUnify.show(fragmentManager, "")
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, "")
+        }
     }
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
@@ -682,7 +692,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setFullPage(true)
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
         somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
         somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
@@ -724,7 +736,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setFullPage(true)
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         bottomSheetUnify.setTitle(TITLE_ATUR_TOKO_TUTUP)
 
         viewBottomSheet.btn_reject_shop_closed?.setOnClickListener {
@@ -788,7 +802,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setFullPage(true)
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
         somBottomSheetCourierProblemsAdapter.listChildCourierProblems = listChild.toMutableList()
         somBottomSheetCourierProblemsAdapter.notifyDataSetChanged()
@@ -828,7 +844,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             setChild(viewBottomSheet)
             setTitle(VALUE_REASON_BUYER_NO_RESPONSE)
         }
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
     }
 
     private fun setOtherReason(reasonCode: String) {
@@ -865,7 +883,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             setChild(viewBottomSheet)
             setTitle(VALUE_REASON_OTHER)
         }
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
     }
 
     override fun onChooseOptionCourierProblem(optionCourierProblem: SomReasonRejectData.Data.SomRejectReason.Child) {
@@ -930,7 +950,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
             val datePicker = DatePickerUnify(context, dateNow, dateNow, maxDate)
             datePicker.setTitle(getString(R.string.end_shop_closed_label))
-            datePicker.show(fragmentManager, "")
+            fragmentManager?.let{
+                datePicker.show(it, "")
+            }
             datePicker.datePickerButton.setOnClickListener {
                 val resultDate = datePicker.getDate()
                 tfEndShopClosed.textFieldInput.setText("${resultDate[0]}/${resultDate[1]+1}/${resultDate[2]}")

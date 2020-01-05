@@ -165,7 +165,9 @@ class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomS
                 Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
-        hotelCalendarDialog.show(fragmentManager, TAG_RANGE_DATE_CALENDAR)
+        fragmentManager?.let{
+            hotelCalendarDialog.show(it, TAG_RANGE_DATE_CALENDAR)
+        }
     }
 
     private fun onCheckAvailabilityClicked() {
