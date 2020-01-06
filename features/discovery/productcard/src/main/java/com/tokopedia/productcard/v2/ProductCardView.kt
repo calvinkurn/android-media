@@ -337,7 +337,7 @@ abstract class ProductCardView: BaseCustomView {
         realignLayout()
     }
 
-    private fun initProductImage(productImageUrl: String) {
+    internal fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
             ImageHandler.loadImageRounded2(context, it, productImageUrl)
         }
