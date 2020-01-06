@@ -63,10 +63,11 @@ task versionDependency(type: PublishCompositeTask, dependsOn: scanProjectTask){
     doFirst {
         println("[PUBLISH COMPOSITE TASK START]")
         latestReleaseDate = scanProjectTask.latestReleaseDate
-        dependenciesHashSet = scanProjectTask.dependenciesHashSet
+        dependenciesProjectNameHashSet = scanProjectTask.dependenciesProjectNameHashSet
         candidateModuleListToUpdate = scanProjectTask.candidateModuleListToUpdate
-        versionProjectToArtifactList = scanProjectTask.versionProjectToArtifactList
-        versionArtifactToProjectList = scanProjectTask.versionArtifactToProjectList
+        projectToArtifactInfoList = scanProjectTask.projectToArtifactInfoList
+        artifactIdToProjectNameList = scanProjectTask.artifactIdToProjectNameList
+        versionConfigMap = scanProjectTask.versionConfigMap
     }
     doLast{
         println("[PUBLISH COMPOSITE TASK FINISHED]")

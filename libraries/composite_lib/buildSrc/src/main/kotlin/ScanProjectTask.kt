@@ -3,6 +3,7 @@ package com.tokopedia.plugin
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
+import versionToInt
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,10 +13,10 @@ open class ScanProjectTask : DefaultTask() {
 
     var latestReleaseDate: Date = Date()
     val candidateModuleListToUpdate = hashSetOf<String>()
-    val dependenciesHashSet = HashSet<Pair<String, String>>()
+    val dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
     val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
-    val versionProjectToArtifactList = hashMapOf<String, VersionModelB>()
-    val versionArtifactToProjectList = hashMapOf<String, String>()
+    val projectToArtifactInfoList = hashMapOf<String, ArtifactInfo>()
+    val artifactIdToProjectNameList = hashMapOf<String, String>()
     var versionConfigMap = mutableMapOf<String, Int>()
 
     companion object {
@@ -52,8 +53,8 @@ open class ScanProjectTask : DefaultTask() {
                 val groupId = projectItem.properties["groupId"].toString()
                 val artifactName = projectItem.properties["artifactName"].toString()
                 val versionName = projectItem.properties["versionName"].toString()
-                versionProjectToArtifactList[projectName] = VersionModelB(projectName, groupId, artifactId, artifactName, versionName)
-                versionArtifactToProjectList[artifactId] = projectName
+                projectToArtifactInfoList[projectName] = ArtifactInfo(projectName, groupId, artifactId, artifactName, versionName)
+                artifactIdToProjectNameList[artifactId] = projectName
             }
 
             projectItem.configurations.all { conf ->
@@ -76,10 +77,12 @@ open class ScanProjectTask : DefaultTask() {
             }
         }
 
+        mapDependencyArtifactIdToProjectName(dependenciesHashSetTemp)
+
         // this is to update all possible candidate version increase
         // for example, the change of global config will also
         // increase the version of the project that dependent on it
-        calibratingCandidateList(dependenciesHashSetTemp)
+        calibratingCandidateList()
 
         // artifact version calibrating
         // dependency-libraries version and version defined in project extension might be different
@@ -92,6 +95,7 @@ open class ScanProjectTask : DefaultTask() {
     // 2. version in project.ext for each module
     // and take the maximum between 2
     private fun calibratingVersion(){
+        val rootArtifactVersionMap = hashMapOf<String, String>()
         try {
             val file = File(LIBRARIES_PATH)
             file.forEachLine {
@@ -104,11 +108,7 @@ open class ScanProjectTask : DefaultTask() {
                         if (projectSplit.size == 3 && projectSplit[0].contains(TOKOPEDIA)){
                             val artifactId = projectSplit[1]
                             val version = projectSplit[2]
-                            versionProjectToArtifactList.forEach { artifactItem ->
-//                                if (artifactItem.value.artifactId == artifactId) {
-//                                    artifactItem.value.versionName = if (version.toIntegerTruncated() > )
-//                                }
-                            }
+                            rootArtifactVersionMap[artifactId] = version
                             println("$artifactId $version")
                         }
                     }
@@ -117,18 +117,46 @@ open class ScanProjectTask : DefaultTask() {
         } catch (ignored:Exception){
             // do nothing, assumed no calibration for version.
         }
+
+        try {
+            projectToArtifactInfoList.forEach { artifactItem ->
+                //check if there is the library in root project
+                if (rootArtifactVersionMap.containsKey(artifactItem.value.artifactId)) {
+                    //compare artifact on the each compositelib project.ext to artifact in dependencies-libraries in the root proj
+                    //if found, will update the value to the maximum between 2
+                    val version = rootArtifactVersionMap.get(artifactItem.value.artifactId) ?: "1"
+                    val versionInCompositeLib = artifactItem.value.versionName.versionToInt(versionConfigMap)
+                    val versionInRoot = version.versionToInt(versionConfigMap)
+                    val chosenVersion = if (versionInRoot.first > versionInCompositeLib.first) {
+                        versionInRoot
+                    } else {
+                        versionInCompositeLib
+                    }
+                    artifactItem.value.maxCurrentVersionName = chosenVersion.second
+                } else {
+                    artifactItem.value.maxCurrentVersionName = artifactItem.value.versionName
+                }
+            }
+        }catch (ignored:Exception) {
+
+        }
+    }
+
+    private fun mapDependencyArtifactIdToProjectName(dependenciesHashSetTemp: HashSet<Pair<String, String>>) {
+        dependenciesHashSetTemp.forEach {
+            val projectDependant = artifactIdToProjectNameList[it.second] ?: ""
+            dependenciesProjectNameHashSet.add(it.first to projectDependant)
+        }
     }
 
     // dependencies hash set is collection of dependencies [graphql-config;network-config;...]
     // this function is to look up for the hashset to update the candidate list
     // for example, the change of global config will also
     // increase the version of the project that dependent on it
-    private fun calibratingCandidateList(dependenciesHashSetTemp: HashSet<Pair<String, String>>){
+    private fun calibratingCandidateList(){
         val cloneDepHashSet: HashSet<Pair<String, String>> = hashSetOf()
-        dependenciesHashSetTemp.forEach {
-            val projectDependant = versionArtifactToProjectList[it.second] ?: ""
-            dependenciesHashSet.add(it.first to projectDependant)
-            cloneDepHashSet.add(it.first to projectDependant)
+        dependenciesProjectNameHashSet.forEach {
+            cloneDepHashSet.add(it.first to it.second)
         }
 
         var isDepCandidateChanged = true
