@@ -24,7 +24,7 @@
         android:lineSpacingExtra="@dimen/sp_4"
         android:maxLines="1"
         android:textColor="@color/Neutral_N300"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/fontSize_lvl3"
         android:textStyle="bold"
         tools:text="Update (99+)" />
 

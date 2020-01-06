@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/fontSize_lvl2"
         tools:text="13:16 wib" />
 
     <com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/chat_status"
             android:textColor="@color/time_color"
-            android:textSize="@dimen/sp_10"
+            android:textSize="@dimen/fontSize_lvl1"
             tools:text="testtest" />
     </RelativeLayout>
 

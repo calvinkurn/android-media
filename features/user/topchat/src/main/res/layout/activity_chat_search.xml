@@ -56,7 +56,7 @@
                 android:paddingBottom="@dimen/spacing_lvl3"
                 android:textColor="#fd31353b"
                 android:textColorHint="@color/Neutral_N700_44"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/fontSize_lvl3" />
 
             <ImageView
                 android:layout_width="@dimen/spacing_lvl5"

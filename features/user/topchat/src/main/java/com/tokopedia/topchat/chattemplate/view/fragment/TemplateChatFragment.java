@@ -111,8 +111,8 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     private void setBottomSheetDialog() {
         bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.setTitleTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_14));
-        bottomSheetView.setBodyTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_14));
+        bottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.fontSize_lvl3));
+        bottomSheetView.setBodyTextSize(getResources().getDimension(R.dimen.fontSize_lvl3));
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
                 .setTitle(getActivity().getString(R.string.title_info_list_template))

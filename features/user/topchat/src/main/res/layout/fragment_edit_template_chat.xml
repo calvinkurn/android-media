@@ -61,6 +61,6 @@
         android:gravity="top"
         android:hint="@string/hint_template_chat"
         android:textColorHint="#2e000000"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/fontSize_lvl4" />
 
 </RelativeLayout>
