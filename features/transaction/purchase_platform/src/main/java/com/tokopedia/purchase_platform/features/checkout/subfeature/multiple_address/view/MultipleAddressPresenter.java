@@ -8,19 +8,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
+import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.ChangeShippingAddressUseCase;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.usecase.GetCartMultipleAddressListUseCase;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
-import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -38,7 +37,6 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase;
-    private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final UserSessionInterface userSessionInterface;
 
     private CartListData cartListData;
@@ -47,11 +45,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     public MultipleAddressPresenter(GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
                                     ChangeShippingAddressUseCase changeShippingAddressUseCase,
-                                    CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                     UserSessionInterface userSessionInterface) {
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.getCartMultipleAddressListUseCase = getCartMultipleAddressListUseCase;
-        this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.userSessionInterface = userSessionInterface;
     }
 
@@ -81,10 +77,11 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     public void processGetCartList(String cartIds) {
         view.showInitialLoading();
 
-        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramsTmp =
-                cartApiRequestParamGenerator.generateParamMapGetCartList(cartIds);
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.putAll(paramsTmp);
+        params.put(GetCartMultipleAddressListUseCase.PARAM_KEY_LANG, GetCartMultipleAddressListUseCase.PARAM_VALUE_LANG_ID);
+        if (cartIds != null) {
+            params.put(GetCartMultipleAddressListUseCase.PARAM_CART_IDS, cartIds);
+        }
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
                 GetCartMultipleAddressListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
@@ -215,8 +212,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setProductQty(String.valueOf(updatedData.getQuantity()));
         addressData.setProductWeightFmt(String.valueOf(originData.getWeightFormatted()));
         addressData.setProductNotes(updatedData.getRemark());
-        addressData.setMaxQuantity(originData.getInvenageValue() != 0 ? originData.getInvenageValue() : updatedData.getMaxQuantity());
-        addressData.setMinQuantity(originData.getMinimalQtyOrder());
+        addressData.setMaxQuantity(originData.getMaxOrder());
+        addressData.setMinQuantity(originData.getMinOrder());
         addressData.setErrorCheckoutPriceLimit(messageErrorData.getErrorCheckoutPriceLimit());
         addressData.setErrorFieldBetween(messageErrorData.getErrorFieldBetween());
         addressData.setErrorFieldMaxChar(messageErrorData.getErrorFieldMaxChar());

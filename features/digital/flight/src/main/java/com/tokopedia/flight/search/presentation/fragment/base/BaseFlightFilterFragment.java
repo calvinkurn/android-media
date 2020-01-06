@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.presentation.fragment.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.presentation.fragment.OnFlightFilterListener;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
@@ -57,6 +58,11 @@ public abstract class BaseFlightFilterFragment<T extends Visitable, F extends Ba
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_filter_general, container, false);
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 
     @Override

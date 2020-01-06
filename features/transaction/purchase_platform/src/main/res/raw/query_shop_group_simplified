@@ -1,5 +1,5 @@
-query shop_group_simplified{
-  shop_group_simplified(lang:"id"){
+query shop_group_simplified($lang: String, $selected_cart_id: String) {
+  shop_group_simplified(lang: $lang, selected_cart_id: $selected_cart_id) {
     status
     error_message
     data {
@@ -81,7 +81,7 @@ query shop_group_simplified{
           clash_message
           clash_reason
           is_clashed_promos
-          options{
+          options {
             voucher_orders {
               cart_id
               code
@@ -131,7 +131,6 @@ query shop_group_simplified{
         page
       }
       default_promo_dialog_tab
-      total_product_price
       total_product_count
       total_product_error
       global_checkbox_state
@@ -141,7 +140,6 @@ query shop_group_simplified{
         user_address_id
         cart_string
         total_cart_details_error
-        total_cart_price
         sort_key
         is_fulfillment_service
         has_promo_list

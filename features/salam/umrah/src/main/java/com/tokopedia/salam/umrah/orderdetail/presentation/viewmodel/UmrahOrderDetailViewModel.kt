@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.UmrahValueLabelEntity
-import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
@@ -28,7 +28,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
     : BaseViewModel(dispatcher) {
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
-    val myWidgetData = MutableLiveData<Result<MyUmrahWidgetModel>>()
+    val myWidgetData = MutableLiveData<Result<UmrahMyUmrahWidgetModel>>()
 
     fun getOrderDetail(rawQuery: String, orderId: String) {
         val params = mapOf(PARAM_ORDER_ID to orderId,
@@ -114,8 +114,8 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         return data
     }
 
-    private fun transformToMyUmrahWidgetModel(data: MyUmrahEntity): MyUmrahWidgetModel =
-            MyUmrahWidgetModel(data.header, data.subHeader, data.nextActionText, data.mainButton.text, data.mainButton.link)
+    private fun transformToMyUmrahWidgetModel(data: MyUmrahEntity): UmrahMyUmrahWidgetModel =
+            UmrahMyUmrahWidgetModel(data.header, data.subHeader, data.nextActionText, data.mainButton.text, data.mainButton.link)
 
     companion object {
         const val PARAM_ORDER_ID = "orderId"

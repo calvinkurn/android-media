@@ -140,7 +140,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         collapsingToolbarLayout.setTitle(" ");
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
-        dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.BRAND_PAGE, this, !isShortLayout, true);
+        dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.BRAND_PAGE, this, getArguments().getString("fromApplink"),!isShortLayout, true);
         dealsAdapter.setDealType(DealsAnalytics.BRAND_DEALS);
         recyclerViewDeals.setAdapter(dealsAdapter);
 
@@ -249,13 +249,15 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public RequestParams getParams() {
-        Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location != null) {
-            if (!TextUtils.isEmpty(location.getCoordinates())) {
-                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        if (getArguments() != null) {
+            Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
+            requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
+            Location location = Utils.getSingletonInstance().getLocation(getActivity());
+            if (location != null) {
+                if (!TextUtils.isEmpty(location.getCoordinates())) {
+                    requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+                }
             }
         }
         return requestParams;

@@ -42,7 +42,8 @@ class CategoryNavViewModel
         })
     }
 
-    fun onDetach() {
+    override fun onCleared() {
+        super.onCleared()
         subCategoryV3UseCase.unsubscribe()
     }
 

@@ -17,6 +17,7 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.analytics)
@@ -78,7 +79,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
-    implementation rootProject.ext.debugToolsDependencies.stetho
+    debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.debugToolsDependencies.chuck
 }
 

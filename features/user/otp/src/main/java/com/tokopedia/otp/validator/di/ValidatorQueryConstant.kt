@@ -11,8 +11,10 @@ object ValidatorQueryConstant{
     const val QUERY_OTP_VALIDATE = "otp_validate"
 
     const val PARAM_OTP_TYPE = "otpType"
+    const val PARAM_USER_ID = "userId"
     const val PARAM_EMAIL = "email"
     const val PARAM_MSISDN = "msisdn"
     const val PARAM_CODE = "code"
     const val PARAM_MODE = "mode"
+    const val PARAM_OTP_DIGIT = "otpDigit"
 }

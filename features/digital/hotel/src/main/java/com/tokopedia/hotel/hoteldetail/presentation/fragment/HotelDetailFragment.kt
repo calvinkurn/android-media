@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -22,6 +23,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
@@ -37,7 +39,8 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailV
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,6 +67,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var hotelId: Int = 0
     private var roomPrice: String = "0"
     private var roomPriceAmount: String = ""
+    private var isDirectPayment: Boolean = true
 
     private val thumbnailImageList = mutableListOf<String>()
     private val imageList = mutableListOf<String>()
@@ -91,6 +95,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
+                hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
+                hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE,
+                        HotelHomepageActivity.TYPE_PROPERTY)
+                isDirectPayment = it.getBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, true)
             }
             isButtonEnabled = hotelHomepageModel.checkInDate.isNotEmpty()
         }
@@ -295,7 +303,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_first_photo_preview.setOnClickListener {
                         onPhotoClicked()
-                        openImagePreview(imageIndex)
+                        openImagePreview(imageList, imageIndex, iv_first_photo_preview)
                     }
                     imageCounter++
                 }
@@ -303,7 +311,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_second_photo_preview.setOnClickListener {
                         onPhotoClicked()
-                        openImagePreview(imageIndex)
+                        openImagePreview(imageList, imageIndex, iv_second_photo_preview)
                     }
                     imageCounter++
                 }
@@ -311,7 +319,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_third_photo_preview.setOnClickListener {
                         onPhotoClicked()
-                        openImagePreview(imageIndex)
+                        openImagePreview(imageList, imageIndex, iv_third_photo_preview)
                     }
                     imageCounter++
                 }
@@ -320,7 +328,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                 iv_main_photo_preview.setOnClickListener {
                     onPhotoClicked()
-                    openImagePreview(imageIndex)
+                    openImagePreview(imageList, imageIndex, iv_main_photo_preview)
                 }
                 imageCounter++
             }
@@ -454,33 +462,35 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupPriceButton(data: List<HotelRoom>) {
         hideLoadingContainerBottom()
 
+        var isAvailable = false
         if (data.isNotEmpty()) {
             showRoomAvailableContainerBottom()
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
-
             tv_hotel_price.text = roomPrice
 
-            if (data[0].additionalPropertyInfo.isDirectPayment) {
-                btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
-                btn_see_room.isEnabled = false
-                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
-            } else {
+            if (data[0].additionalPropertyInfo.isEnabled) {
+                isAvailable = true
+
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
                 btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
-                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
+                    trackingHotelUtil.hotelChooseViewRoom(hotelHomepageModel, hotelId, hotelName)
                     context?.run {
                         startActivityForResult(HotelRoomListActivity.createInstance(this, hotelHomepageModel.locId, hotelName,
                                 hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
-                                hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+                                hotelHomepageModel.roomCount, hotelHomepageModel.locType, hotelHomepageModel.locName), RESULT_ROOM_LIST)
                     }
                 }
+            } else {
+                btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
+                btn_see_room.isEnabled = false
+                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", data.first().additionalPropertyInfo.isDirectPayment)
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, "0", false)
             showRoomNotAvailableContainerBottom()
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", isDirectPayment)
         }
 
         if (!isButtonEnabled) {
@@ -493,17 +503,21 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun setupGlobalSearchWidget() {
         // setup hotel global search widget
-        widget_hotel_global_search.title = hotelName
-        widget_hotel_global_search.globalSearchListener = this
-        widget_hotel_global_search.setPreferencesData(hotelHomepageModel.checkInDate,
-                hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, hotelHomepageModel.roomCount)
-        widget_hotel_global_search.buildView()
+        // add condition if checkin date & checkout date isNotEmpty, to prevent crash access hotel detail from applink
+        if (hotelHomepageModel.checkInDate.isNotEmpty() &&
+                hotelHomepageModel.checkOutDate.isNotEmpty()) {
+            widget_hotel_global_search.title = hotelName
+            widget_hotel_global_search.globalSearchListener = this
+            widget_hotel_global_search.setPreferencesData(hotelHomepageModel.checkInDate,
+                    hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, hotelHomepageModel.roomCount)
+            widget_hotel_global_search.buildView()
+        } else {
+            widget_hotel_global_search.hide()
+        }
     }
 
-    private fun openImagePreview(index: Int) {
-        context?.run {
-            startActivity(ImagePreviewSliderActivity.getCallingIntent(this, hotelName, imageList, thumbnailImageList, index))
-        }
+    private fun openImagePreview(imageList: MutableList<String>, index: Int, imageViewTransitionFrom: ImageView?) {
+        ImagePreviewSlider.instance.start(context, hotelName, imageList, thumbnailImageList, index, imageViewTransitionFrom)
     }
 
     override fun onErrorRetryClicked() {
@@ -557,7 +571,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                        adultCount: Int): HotelDetailFragment =
+                        adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -565,6 +579,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         putInt(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
                         putInt(HotelDetailActivity.EXTRA_ROOM_COUNT, roomCount)
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
+                        putString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, destinationType)
+                        putString(HotelDetailActivity.EXTRA_DESTINATION_NAME, destinationName)
+                        putBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, isDirectPayment)
                     }
                 }
 

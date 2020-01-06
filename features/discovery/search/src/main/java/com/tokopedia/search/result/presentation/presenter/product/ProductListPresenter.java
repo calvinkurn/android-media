@@ -1,8 +1,10 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
@@ -55,6 +57,8 @@ import javax.inject.Named;
 
 import rx.Subscriber;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.APP_CLIENT_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.KEY_ADVERTISING_ID;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
@@ -62,7 +66,7 @@ final class ProductListPresenter
         implements ProductListSectionContract.Presenter {
 
     private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
-    private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "search_not_found";
+    private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
 
     @Inject
@@ -86,6 +90,9 @@ final class ProductListPresenter
     UserSessionInterface userSession;
     @Inject
     RemoteConfig remoteConfig;
+    @Inject
+    @Named(SearchConstant.Advertising.ADVERTISING_LOCAL_CACHE)
+    LocalCacheHandler advertisingLocalCache;
 
     private boolean enableGlobalNavWidget;
     private boolean changeParamRow;
@@ -819,6 +826,7 @@ final class ProductListPresenter
         if (!getView().isTickerHasDismissed()
                 && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
+            getView().trackEventImpressionSortPriceMinTicker();
         }
 
         if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
@@ -946,12 +954,26 @@ final class ProductListPresenter
 
     @Override
     public void onBannedProductsGoToBrowserClick(String liteUrl) {
+        String liteUrlWithParameters = appendUrlWithParameters(liteUrl);
+
         if (userSession.isLoggedIn()) {
-            generateSeamlessLoginUrlForLoggedInUser(liteUrl);
+            generateSeamlessLoginUrlForLoggedInUser(liteUrlWithParameters);
         }
         else {
-            getViewToRedirectToBrowser(liteUrl);
+            getViewToRedirectToBrowser(liteUrlWithParameters);
         }
+    }
+
+    private String appendUrlWithParameters(String liteUrl) {
+        Uri liteUrlUri = Uri.parse(liteUrl);
+        Uri.Builder liteUrlWithParametersUriBuilder = liteUrlUri.buildUpon();
+
+        String appClientId = advertisingLocalCache.getString(KEY_ADVERTISING_ID);
+        if (appClientId != null && !appClientId.isEmpty()) {
+            liteUrlWithParametersUriBuilder.appendQueryParameter(APP_CLIENT_ID, appClientId);
+        }
+
+        return liteUrlWithParametersUriBuilder.toString();
     }
 
     private void generateSeamlessLoginUrlForLoggedInUser(String liteUrl) {

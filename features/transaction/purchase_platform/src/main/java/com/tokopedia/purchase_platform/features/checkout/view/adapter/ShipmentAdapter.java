@@ -29,19 +29,17 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackModel;
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.TickerAnnouncementViewHolder;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment;
@@ -71,7 +69,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
+
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -93,7 +92,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
     private PromoStackingData promoGlobalStackData;
     private List<PromoStackingData.Builder> listPromoStackingMerchantData;
-    private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
     private ShipmentCostModel shipmentCostModel;
@@ -112,6 +110,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private String cartIds;
     private int lastServiceId;
     private String blackboxInfo;
+    private boolean sendInsuranceImpressionEvent = false;
+    private String insuranceProductId = "";
+    private String insuranceTitle = "";
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -144,8 +145,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD;
         } else if (item instanceof PromoStackingData) {
             return PromoGlobalViewHolder.TYPE_VIEW_PROMO;
-        } else if (item instanceof CartPromoSuggestionHolderData) {
-            return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
         } else if (item instanceof RecipientAddressModel) {
             return ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS;
         } else if (item instanceof ShipmentCartItemModel) {
@@ -179,8 +178,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentNotifierViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == PromoGlobalViewHolder.TYPE_VIEW_PROMO) {
             return new PromoGlobalViewHolder(view, promoActionListener);
-        } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
-            return new CartPromoSuggestionViewHolder(view, promoActionListener);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
@@ -214,8 +211,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentNotifierViewHolder) holder).bind((ShipmentNotifierModel) data);
         } else if (viewType == PromoGlobalViewHolder.TYPE_VIEW_PROMO) {
             ((PromoGlobalViewHolder) holder).bindData((PromoStackingData) data, position);
-        } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
-            ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestionHolderData) data, position);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
                     showCaseObjectList, cartIds);
@@ -262,6 +257,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if(holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
+            sendInsuranceImpressionEvent = true;
+            insuranceItemActionlistener.sendEventInsuranceImpressionForShipment(((InsuranceCartShopViewHolder) holder).getProductTitle());
+        }
+    }
+
     private void setShowCase(Context context) {
         if (!hasShownShowCase && isShowOnboarding) {
             hasShownShowCase = true;
@@ -295,7 +299,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void clearData() {
         shipmentDataList.clear();
         promoGlobalStackData = null;
-        cartPromoSuggestionHolderData = null;
         shipmentCartItemModelList = null;
         recipientAddressModel = null;
         shipmentCostModel = null;
@@ -342,13 +345,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (promoStackingData != null) {
             this.promoGlobalStackData = promoStackingData;
             shipmentDataList.add(promoStackingData);
-        }
-    }
-
-    public void addPromoSuggestionData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData) {
-        if (cartPromoSuggestionHolderData != null && !TextUtils.isEmpty(cartPromoSuggestionHolderData.getPromoCode())) {
-            this.cartPromoSuggestionHolderData = cartPromoSuggestionHolderData;
-            shipmentDataList.add(cartPromoSuggestionHolderData);
         }
     }
 
@@ -964,6 +960,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                     for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                         for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+
+                            insuranceTitle = insuranceCartDigitalProduct.getProductInfo().getTitle();
+                            insuranceProductId = insuranceCartDigitalProduct.getProductId();
                             if (!insuranceCartDigitalProduct.isProductLevel()) {
                                 totalItem += 1;
                                 macroInsurancLabel = insuranceCartDigitalProduct.getProductInfo().getTitle();
@@ -1030,9 +1029,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Object object = shipmentDataList.get(i);
             if (object instanceof PromoStackingData) {
                 shipmentDataList.set(i, promoStackingData);
-                notifyItemChanged(i);
-            } else if (object instanceof CartPromoSuggestionHolderData) {
-                ((CartPromoSuggestionHolderData) object).setVisible(false);
                 notifyItemChanged(i);
             }
         }
@@ -1121,10 +1117,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                     for (int i = 0; i < shipmentDataList.size(); i++) {
                         Object itemAdapter = shipmentDataList.get(i);
-                        if (itemAdapter instanceof CartPromoSuggestionHolderData) {
-                            ((CartPromoSuggestionHolderData) itemAdapter).setVisible(false);
-                            notifyItemChanged(i);
-                        } else if (itemAdapter instanceof RecipientAddressModel) {
+                        if (itemAdapter instanceof RecipientAddressModel) {
                             ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
                             notifyItemChanged(i);
                         } else if (itemAdapter instanceof ShipmentCartItemModel) {
@@ -1139,9 +1132,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         if (itemAdapter instanceof PromoStackingData) {
                             ((PromoStackingData) itemAdapter).setState(TickerPromoStackingCheckoutView.State.EMPTY);
                             ((PromoStackingData) itemAdapter).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-                            notifyItemChanged(i);
-                        } else if (itemAdapter instanceof CartPromoSuggestionHolderData) {
-                            ((CartPromoSuggestionHolderData) itemAdapter).setVisible(true);
                             notifyItemChanged(i);
                         } else if (itemAdapter instanceof RecipientAddressModel) {
                             ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
@@ -1208,9 +1198,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 promoGlobalStackData.setCounterLabelDefault(((PromoStackingData) shipmentData).getCounterLabelDefault());
                 checkDataForCheckout();
                 notifyItemChanged(i);
-            } else if (shipmentData instanceof CartPromoSuggestionHolderData) {
-                ((CartPromoSuggestionHolderData) shipmentData).setVisible(false);
-                notifyItemChanged(i);
             }
         }
         notifyItemChanged(getShipmentCostPosition());
@@ -1226,9 +1213,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else {
                     ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
                 }
-                notifyItemChanged(i);
-            } else if (shipmentData instanceof CartPromoSuggestionHolderData) {
-                ((CartPromoSuggestionHolderData) shipmentData).setVisible(true);
                 notifyItemChanged(i);
             }
         }
@@ -1349,6 +1333,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return promoGlobalStackData;
     }
 
+
+    public String getInsuranceProductId() {
+        return insuranceProductId;
+    }
+
+    public String getInsuranceTitle() {
+        return insuranceTitle;
+    }
+
     public void addInsuranceDataList(InsuranceCartShops insuranceCartShops) {
 
         insuranceCartList.clear();
@@ -1359,7 +1352,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (Object item : shipmentDataList) {
             if (item instanceof ShipmentNotifierModel ||
                     item instanceof PromoStackingData ||
-                    item instanceof CartPromoSuggestionHolderData ||
                     item instanceof ShipmentCartItemModel ||
                     item instanceof ShipmentSellerCashbackModel) {
                 insuranceIndex = shipmentDataList.indexOf(item);

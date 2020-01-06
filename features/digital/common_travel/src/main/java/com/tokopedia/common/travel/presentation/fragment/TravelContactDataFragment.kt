@@ -1,8 +1,6 @@
 package com.tokopedia.common.travel.presentation.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -12,23 +10,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.travel.R
-import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
-import com.tokopedia.common.travel.presentation.model.TravelContactData
-import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
-import javax.inject.Inject
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.di.CommonTravelComponent
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.presentation.viewmodel.TravelContactDataViewModel
+import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
+import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
+import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import kotlinx.android.synthetic.main.fragment_travel_contact_data.*
+import javax.inject.Inject
 
 
-class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
+class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 
 
     @Inject
@@ -53,7 +55,8 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         }
 
         arguments?.let {
-            contactData = it.getParcelable(TravelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA) ?: TravelContactData()
+            contactData = it.getParcelable(TravelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA)
+                    ?: TravelContactData()
             travelProduct = it.getString(TravelContactDataActivity.EXTRA_TRAVEL_PRODUCT) ?: ""
         }
     }
@@ -73,7 +76,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         super.onActivityCreated(savedInstanceState)
 
         contactViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
-            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
+            contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
     }
@@ -84,8 +87,10 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         when (requestCode) {
             REQUEST_CODE_PHONE_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE) ?: CountryPhoneCode()
+                    val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                            ?: TravelCountryPhoneCode()
                     contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
+                    contactData.phoneCountry = countryPhoneCode.countryId
 
                     spinnerData.clear()
                     spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
@@ -102,7 +107,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
-            (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id ->  autofillView(travelContactArrayAdapter.getItem(position)) }
+            (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
 
         }
 
@@ -120,19 +125,28 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         if (contactData.phoneCode != 0) spinnerData += initialPhoneCode
         else spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, DEFAULT_PHONE_CODE_NUMBER_ID)
         context?.run {
-            spinnerAdapter =  ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
+            spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
         sp_contact_phone_code.adapter = spinnerAdapter
         sp_contact_phone_code.setSelection(0)
         sp_contact_phone_code.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(activity), REQUEST_CODE_PHONE_CODE)
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
             }
             true
         }
 
         contact_data_button.setOnClickListener { onSaveButtonClicked() }
+
+        layout_fragment.setOnTouchListener { view, motionEvent ->
+            clearAllKeyboardFocus()
+            true
+        }
+    }
+
+    fun clearAllKeyboardFocus() {
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     private fun autofillView(contact: TravelContactListModel.Contact?) {
@@ -159,7 +173,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
 
             contactViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
-                    phoneCountryCode = contactData.phoneCode))
+                            phoneCountryCode = contactData.phoneCode))
 
             activity?.run {
                 val intent = Intent()
@@ -194,7 +208,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
     private fun isNotAplhabetOrSpaceOnly(string: String): Boolean {
         return !string.matches(Regex("^[a-zA-Z\\s]*$"))
     }
-    
+
     private fun resetEditTextError() {
         til_contact_email.error = ""
         til_contact_name.error = ""
@@ -222,11 +236,11 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         const val DEFAULT_PHONE_CODE_NUMBER_ID = 62
 
         fun getInstance(contactData: TravelContactData, travelProduct: String): TravelContactDataFragment =
-            TravelContactDataFragment().also {
-                it.arguments = Bundle().apply {
-                    putParcelable(TravelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
-                    putString(TravelContactDataActivity.EXTRA_TRAVEL_PRODUCT, travelProduct)
+                TravelContactDataFragment().also {
+                    it.arguments = Bundle().apply {
+                        putParcelable(TravelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
+                        putString(TravelContactDataActivity.EXTRA_TRAVEL_PRODUCT, travelProduct)
+                    }
                 }
-            }
     }
 }

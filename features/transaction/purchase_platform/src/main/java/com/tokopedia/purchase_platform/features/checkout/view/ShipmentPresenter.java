@@ -56,6 +56,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException;
 import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl;
+import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.EgoldData;
@@ -64,11 +65,13 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoR
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.RatesFeature;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ShopProductCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.TokopediaCornerData;
+import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest;
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartGqlResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
+import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest;
@@ -104,10 +107,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTie
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest;
-import com.tokopedia.transaction.common.sharedata.EditAddressParam;
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
-import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -156,7 +155,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
     private RecipientAddressModel recipientAddressModel;
-    private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
@@ -272,16 +270,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
         this.shipmentCartItemModelList = recipientCartItemList;
-    }
-
-    @Override
-    public CartPromoSuggestionHolderData getCartPromoSuggestionHolderData() {
-        return cartPromoSuggestionHolderData;
-    }
-
-    @Override
-    public void setCartPromoSuggestionHolderData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData) {
-        this.cartPromoSuggestionHolderData = cartPromoSuggestionHolderData;
     }
 
     @Override
@@ -617,10 +605,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         getView().setPromoStackingData(cartShipmentAddressFormData);
 
-        if (cartShipmentAddressFormData.getCartPromoSuggestionHolderData() != null) {
-            setCartPromoSuggestionHolderData(cartShipmentAddressFormData.getCartPromoSuggestionHolderData());
-        }
-
         setShipmentCartItemModelList(getView().getShipmentDataConverter().getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
         );
@@ -646,12 +630,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processReloadCheckoutPageFromMultipleAddress(PromoStackingData oldPromoData,
-                                                             CartPromoSuggestionHolderData oldCartPromoSuggestionHolderData,
-                                                             RecipientAddressModel oldRecipientAddressModel,
-                                                             ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels,
-                                                             ShipmentCostModel oldShipmentCostModel,
-                                                             ShipmentDonationModel oldShipmentDonationModel) {
+    public void processReloadCheckoutPageFromMultipleAddress(RecipientAddressModel oldRecipientAddressModel,
+                                                             ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels) {
         getView().showLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");

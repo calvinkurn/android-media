@@ -2,15 +2,13 @@ package com.tokopedia.tkpd
 
 import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.readystatesoftware.chuck.Chuck
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -48,113 +46,113 @@ class MainActivity : AppCompatActivity() {
 
             } else {
                 DataSource.getLoginService(application as MyApplication).getToken(hashMapOf(
-                    "username" to userName,
-                    "password" to password,
-                    "grant_type" to "password"))
-                    .map { tokenModel ->
-                        if (tokenModel == null || tokenModel.accessToken.isNullOrEmpty()) {
-                            throw (RuntimeException("Error user pass"))
-                        } else {
-                            tokenModel
+                        "username" to userName,
+                        "password" to password,
+                        "grant_type" to "password"))
+                        .map { tokenModel ->
+                            if (tokenModel == null || tokenModel.accessToken.isNullOrEmpty()) {
+                                throw (RuntimeException("Error user pass"))
+                            } else {
+                                tokenModel
+                            }
                         }
-                    }
-                    .doOnNext {
-                        userSession.setToken(
-                            it.accessToken,
-                            it.tokenType,
-                            EncoderDecoder.Encrypt(it.refreshToken,
-                                userSession.refreshTokenIV))
-                    }
-                    .flatMap {
-                        DataSource.getAccountService(application as MyApplication).info.asObservable()
-                    }
-                    .map { userInfoData ->
-                        if (userInfoData == null || userInfoData.userId.toString().isEmpty()) {
-                            throw (RuntimeException("Error get user data"))
-                        } else {
-                            userInfoData
+                        .doOnNext {
+                            userSession.setToken(
+                                    it.accessToken,
+                                    it.tokenType,
+                                    EncoderDecoder.Encrypt(it.refreshToken,
+                                            userSession.refreshTokenIV))
                         }
-                    }
-                    .doOnNext {
-                        if (!userSession.isLoggedIn) {
-                            userSession.setTempUserId(it.userId.toString())
-                            userSession.tempPhoneNumber = it.phone
-                            userSession.setTempLoginName(it.fullName)
-                            userSession.setTempLoginEmail(it.email)
+                        .flatMap {
+                            DataSource.getAccountService(application as MyApplication).info.asObservable()
                         }
-                        userSession.setHasPassword(it.isCreatedPassword)
-                        userSession.profilePicture = it.profilePicture
-                        userSession.setIsMSISDNVerified(it.isPhoneVerified)
-                    }
-                    .flatMap {
-                        val map = mapOf(
-                            "user_id" to it.userId.toString(),
-                            "device_id" to DataSource.MOCK_DEVICE_ID,
-                            "hash" to AuthHelper.getMD5Hash(it.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
-                            "os_type" to "1",
-                            "device_time" to (Date().time / 1000).toString()
-                        )
-                        DataSource.getWsService(application as MyApplication).makeLogin(map)
-                    }
-                    .map { makeLoginPojo ->
-                        if (makeLoginPojo == null || makeLoginPojo.data == null) {
-                            throw (RuntimeException("Error get make login"))
-                        } else {
-                            makeLoginPojo
+                        .map { userInfoData ->
+                            if (userInfoData == null || userInfoData.userId.toString().isEmpty()) {
+                                throw (RuntimeException("Error get user data"))
+                            } else {
+                                userInfoData
+                            }
                         }
-                    }
-                    .map { makeLoginPojo ->
-                        makeLoginPojo.data
-                    }
-                    .doOnNext { makeLoginPojo ->
-                        // bypass sec pojo
-                        userSession.setLoginSession(true,
-                            makeLoginPojo.userId.toString(),
-                            makeLoginPojo.fullName,
-                            makeLoginPojo.shopId.toString(),
-                            true,
-                            makeLoginPojo.shopName,
-                            userSession.tempEmail,
-                            makeLoginPojo.shopIsGold == 1,
-                            userSession.tempPhoneNumber)
-                        val cache = applicationContext.getSharedPreferences("GCM_STORAGE", Context.MODE_PRIVATE)
-                        cache.edit().putString("gcm_id", DataSource.MOCK_DEVICE_ID).apply()
-                        if (makeLoginPojo.securityPojo.allowLogin != 1) {
-                            throw (RuntimeException("security Pojo fail"))
+                        .doOnNext {
+                            if (!userSession.isLoggedIn) {
+                                userSession.setTempUserId(it.userId.toString())
+                                userSession.tempPhoneNumber = it.phone
+                                userSession.setTempLoginName(it.fullName)
+                                userSession.setTempLoginEmail(it.email)
+                            }
+                            userSession.setHasPassword(it.isCreatedPassword)
+                            userSession.profilePicture = it.profilePicture
+                            userSession.setIsMSISDNVerified(it.isPhoneVerified)
                         }
-                    }
-                    .flatMap {
-                        Observable.just(true)
-                    }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<Boolean> {
-                        override fun onError(e: Throwable?) {
-                            Toast.makeText(this@MainActivity, e?.message, Toast.LENGTH_LONG).show()
+                        .flatMap {
+                            val map = mapOf(
+                                    "user_id" to it.userId.toString(),
+                                    "device_id" to DataSource.MOCK_DEVICE_ID,
+                                    "hash" to AuthHelper.getMD5Hash(it.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
+                                    "os_type" to "1",
+                                    "device_time" to (Date().time / 1000).toString()
+                            )
+                            DataSource.getWsService(application as MyApplication).makeLogin(map)
                         }
+                        .map { makeLoginPojo ->
+                            if (makeLoginPojo == null || makeLoginPojo.data == null) {
+                                throw (RuntimeException("Error get make login"))
+                            } else {
+                                makeLoginPojo
+                            }
+                        }
+                        .map { makeLoginPojo ->
+                            makeLoginPojo.data
+                        }
+                        .doOnNext { makeLoginPojo ->
+                            // bypass sec pojo
+                            userSession.setLoginSession(true,
+                                    makeLoginPojo.userId.toString(),
+                                    makeLoginPojo.fullName,
+                                    makeLoginPojo.shopId.toString(),
+                                    true,
+                                    makeLoginPojo.shopName,
+                                    userSession.tempEmail,
+                                    makeLoginPojo.shopIsGold == 1,
+                                    userSession.tempPhoneNumber)
+                            val cache = applicationContext.getSharedPreferences("GCM_STORAGE", Context.MODE_PRIVATE)
+                            cache.edit().putString("gcm_id", DataSource.MOCK_DEVICE_ID).apply()
+                            if (makeLoginPojo.securityPojo.allowLogin != 1) {
+                                throw (RuntimeException("security Pojo fail"))
+                            }
+                        }
+                        .flatMap {
+                            Observable.just(true)
+                        }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Observer<Boolean> {
+                            override fun onError(e: Throwable?) {
+                                Toast.makeText(this@MainActivity, e?.message, Toast.LENGTH_LONG).show()
+                            }
 
-                        override fun onNext(t: Boolean?) {
-                            Toast.makeText(this@MainActivity, "success login", Toast.LENGTH_LONG).show()
-                            goTo()
-                        }
+                            override fun onNext(t: Boolean?) {
+                                Toast.makeText(this@MainActivity, "success login", Toast.LENGTH_LONG).show()
+                                goTo()
+                            }
 
-                        override fun onCompleted() {
+                            override fun onCompleted() {
 
-                        }
-                    })
+                            }
+                        })
             }
         }
         // simplify logout process
         logoutButton.setOnClickListener {
             val userSession = UserSession(application)
             DataSource.getWsLogoutService(application as MyApplication).logout(
-                mapOf(
-                    "user_id" to userSession.userId.toString(),
-                    "device_id" to DataSource.MOCK_DEVICE_ID,
-                    "hash" to AuthHelper.getMD5Hash(userSession.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
-                    "os_type" to "1",
-                    "device_time" to (Date().time / 1000).toString()
-                )
+                    mapOf(
+                            "user_id" to userSession.userId.toString(),
+                            "device_id" to DataSource.MOCK_DEVICE_ID,
+                            "hash" to AuthHelper.getMD5Hash(userSession.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
+                            "os_type" to "1",
+                            "device_time" to (Date().time / 1000).toString()
+                    )
             ).map { logoutPojo ->
                 if (logoutPojo?.data == null) {
                     throw (RuntimeException("Error logout"))
@@ -165,25 +163,27 @@ class MainActivity : AppCompatActivity() {
                 userSession.logoutSession()
                 PersistentCacheManager.instance.delete()
             }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<LogoutPojo> {
-                    override fun onError(e: Throwable?) {
-                        Toast.makeText(this@MainActivity, e?.message, Toast.LENGTH_LONG).show()
-                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<LogoutPojo> {
+                        override fun onError(e: Throwable?) {
+                            Toast.makeText(this@MainActivity, e?.message, Toast.LENGTH_LONG).show()
+                        }
 
-                    override fun onNext(t: LogoutPojo?) {
-                        Toast.makeText(this@MainActivity, "success logout", Toast.LENGTH_LONG).show()
-                    }
+                        override fun onNext(t: LogoutPojo?) {
+                            Toast.makeText(this@MainActivity, "success logout", Toast.LENGTH_LONG).show()
+                        }
 
-                    override fun onCompleted() {
+                        override fun onCompleted() {
 
-                    }
-                })
+                        }
+                    })
 
         }
 
         val button = findViewById<Button>(R.id.button)
+        val chuckButton = findViewById<Button>(R.id.chuckButton)
 
+        chuckButton.setOnClickListener { startActivity(Chuck.getLaunchIntent(this)) }
         button.setOnClickListener {
             goTo()
         }
@@ -194,7 +194,6 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
     }
 
 }

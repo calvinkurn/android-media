@@ -6,6 +6,7 @@ import com.tokopedia.applink.DeepLinkChecker.BROWSE
 import com.tokopedia.applink.DeepLinkChecker.CATALOG
 import com.tokopedia.applink.DeepLinkChecker.CATEGORY
 import com.tokopedia.applink.DeepLinkChecker.CONTENT
+import com.tokopedia.applink.DeepLinkChecker.DEALS
 import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
@@ -84,7 +85,9 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)
-            add(Pattern(EQ, 2, mapOf(0 to "myshop", 1 to "power-merchant")) to OTHER)
+            add(Pattern(GT, 1, mapOf(0 to "myshop")) to OTHER)
+            add(Pattern(EQ, 1, mapOf(0 to "my-shop")) to OTHER)
+            add(Pattern(GT, 0, mapOf(0 to "deals")) to DEALS)
             add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)

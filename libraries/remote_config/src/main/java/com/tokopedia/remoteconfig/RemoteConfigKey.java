@@ -129,6 +129,9 @@ public class RemoteConfigKey {
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
 
     public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
+
+    public static final String RC_ENABLE_REVAMP_SOM = "android_enable_revamp_som";
+
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
     public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
@@ -177,7 +180,10 @@ public class RemoteConfigKey {
     public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
-    public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
+
+    public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
+
+    public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
 }

@@ -1,11 +1,7 @@
 package com.tokopedia.core.network.entity.discovery;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.discovery.model.ObjContainer;
 
 /**
  * Created by brilliant.oka on 12/05/17.
@@ -13,9 +9,6 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 
 @Deprecated
 public class BannerOfficialStoreModel {
-    @SerializedName("banner_url")
-    @Expose
-    private String bannerUrl;
 
     @SerializedName("process-time ")
     @Expose
@@ -30,14 +23,6 @@ public class BannerOfficialStoreModel {
     private String status;
 
     private String keyword;
-
-    public String getBannerUrl() {
-        return bannerUrl;
-    }
-
-    public void setBannerUrl(String bannerUrl) {
-        this.bannerUrl = bannerUrl;
-    }
 
     public String getProcessTime() {
         return processTime;
@@ -69,22 +54,5 @@ public class BannerOfficialStoreModel {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
-    }
-
-    /**
-     * use this for listener
-     */
-    public static final class BannerOfficialStoreContainer implements ObjContainer<BannerOfficialStoreModel> {
-
-        BannerOfficialStoreModel model;
-
-        public BannerOfficialStoreContainer(BannerOfficialStoreModel model) {
-            this.model = model;
-        }
-
-        @Override
-        public BannerOfficialStoreModel body() {
-            return model;
-        }
     }
 }

@@ -61,6 +61,7 @@ import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
@@ -330,9 +331,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
+        adapter.list.removeAt(rowNumber)
+        adapter.notifyItemRemoved(rowNumber)
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+        view?.let {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                presenter.deletePost(id, rowNumber)
+            })
+        }
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
@@ -425,8 +433,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String, activityType: String) {
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
-
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
@@ -563,7 +570,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
     }
 
-    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
+    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String, postType: String, authorId: String) {
         onGoToLink(redirectLink)
     }
 
@@ -745,8 +752,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun setRefresh() {
-        isForceRefresh = true
+    fun clearCache() {
+        presenter.clearCache()
     }
 
 }

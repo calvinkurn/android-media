@@ -152,7 +152,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         setHasOptionsMenu(true);
         setViewIds(view);
 
-        checkForCurrentLocation();
+//        checkForCurrentLocation();
         if (userSession.isLoggedIn()) {
             mPresenter.sendNSQEvent(userSession.getUserId(), "category-page");
         }
@@ -209,7 +209,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.CATEGORY_PAGE, this, !IS_SHORT_LAYOUT);
         dealsAdapter.setCategoryName(categoriesModel.getTitle());
         recyclerViewDeals.setAdapter(dealsAdapter);
-        searchText = getArguments().getString(SEARCH_TEXT);
+        if (getArguments() != null)
+            searchText = getArguments().getString(SEARCH_TEXT);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (getActivity(), com.tokopedia.digital_deals.R.drawable.ic_search_deal), null, null , null);
         if (!TextUtils.isEmpty(searchText)) {
@@ -423,8 +424,11 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public String getCategoryUrl() {
+        String url;
         if (categoriesModel != null && !TextUtils.isEmpty(categoriesModel.getCategoryUrl())) {
-            return categoriesModel.getCategoryUrl();
+            String[] urls = categoriesModel.getCategoryUrl().split("\\?");
+            url = urls[0];
+            return url;
         } else {
             return "";
         }

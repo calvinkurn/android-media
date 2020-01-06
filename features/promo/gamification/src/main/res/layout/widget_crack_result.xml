@@ -2,8 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fm_widget_crack"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <View
         android:id="@+id/background_view_reward"
@@ -12,6 +15,7 @@
         tools:background="@color/font_black_primary_70" />
 
     <LinearLayout
+        android:id="@+id/llReward"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
@@ -21,6 +25,7 @@
         android:weightSum="2">
 
         <FrameLayout
+            android:id="@+id/fmReward"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -52,7 +57,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="top|center"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="bottom|center"
             android:orientation="vertical"
             android:paddingTop="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_16"
@@ -64,57 +71,84 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/sp_16"
+                android:textSize="@dimen/sp_14"
                 tools:text="Selamat anda mendapatkan" />
 
 
             <FrameLayout
                 android:id="@+id/view_list_reward_parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
                 <LinearLayout
                     android:id="@+id/view_list_reward_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    tools:layout_height="@dimen/dp_52" />
             </FrameLayout>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/button_return"
-                style="@style/Button.Submit.Green.Rounded"
+            <LinearLayout
+                android:id="@+id/ll_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_64"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                app:typographyWeight="bold"
-                app:typographyType="body_2"
-                tools:text="Cek dan Gunakan Hadiah Anda" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/button_cta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Button.Submit.GreyRounded"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
                 android:gravity="center"
-                android:textColor="@color/black_40"
-                app:typographyWeight="bold"
-                app:typographyType="body_2"
-                tools:text="Cek dan Gunakan Hadiah Anda" />
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/button_return"
+                    style="@style/Button.Submit.Green.Rounded"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginLeft="@dimen/dp_24"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Cek dan Gunakan " />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/button_cta"
+                    style="@style/Button.Submit.GreyRounded"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_24"
+                    android:layout_marginRight="@dimen/dp_24"
+                    android:layout_weight="1"
+                    android:textColor="@color/black_40"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Cek dan as as as as as" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvRewardsTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:alpha="0"
+        android:background="@drawable/gamification_tooltip"
+        android:gravity="center_horizontal"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        tools:text="Hello world asdsadasda" />
 
 </FrameLayout>

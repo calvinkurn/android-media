@@ -416,4 +416,17 @@ public class AccountAnalytics {
             );
         }
     }
+
+    public void eventTrackingNotifCenter() {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataNotifCenter());
+    }
+
+    private Map<String, Object> dataNotifCenter() {
+        Map<String, Object> trackerMap = new HashMap<>();
+        trackerMap.put(EVENT, AccountConstants.Analytics.CLICK_NOTIF_CENTER);
+        trackerMap.put(EVENT_CATEGORY, AccountConstants.Analytics.NOTIF_CENTER);
+        trackerMap.put(EVENT_ACTION, AccountConstants.Analytics.NOTIF_CENTER_ACTION);
+        trackerMap.put(EVENT_LABEL, "");
+        return trackerMap;
+    }
 }

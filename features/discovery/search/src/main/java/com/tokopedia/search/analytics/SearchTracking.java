@@ -133,15 +133,15 @@ public class SearchTracking {
         );
     }
 
-    public static void eventSearchResultShopItemClick(Object shopItem, String keyword) {
+    public static void eventSearchResultShopItemClick(Object shopItem, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop",
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
-                                        "promotions", shopItem
+                                        "promotions", DataLayer.listOf(shopItem)
                                 )
                         )
                 )
@@ -179,15 +179,15 @@ public class SearchTracking {
         );
     }
 
-    public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String keyword) {
+    public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop - inactive",
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
-                                        "promotions", shopItemClosed
+                                        "promotions", DataLayer.listOf(shopItemClosed)
                                 )
                         )
                 )
@@ -582,6 +582,24 @@ public class SearchTracking {
                 SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
                 SearchEventTracking.Category.SEARCH_RESULT,
                 SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_RELATED,
+                keyword
+        );
+    }
+
+    public static void trackEventImpressionSortPriceMinTicker(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.IMPRESSION_SORT_PRICE_MIN_TICKER,
+                keyword
+        );
+    }
+
+    public static void trackEventClickSortPriceMinTicker(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_SORT_PRICE_MIN_TICKER,
                 keyword
         );
     }

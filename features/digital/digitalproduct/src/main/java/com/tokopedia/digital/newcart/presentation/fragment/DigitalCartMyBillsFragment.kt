@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
+import com.tokopedia.common_digital.cart.view.model.cart.FintechProduct
 import com.tokopedia.digital.R
 import com.tokopedia.digital.newcart.di.DigitalCartComponent
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView
@@ -156,16 +157,28 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
         })
     }
 
-    override fun renderMyBillsEgoldView(headerTitle: String?, description: String?, isCheckboxDisabled: Boolean) {
-        mybillEgold.getSubscriptionCheckbox().visibility = if (isCheckboxDisabled) View.GONE else View.VISIBLE
-        mybillEgold.hasMoreInfo(true)
-        headerTitle?.let { title -> mybillEgold.setHeaderTitle(title) }
-        description?.let { desc -> mybillEgold.setDescription(desc) }
-        mybillEgold.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
-            run {
-                presenter.onEgoldCheckedListener(isChecked)
+    override fun renderMyBillsEgoldView(data: FintechProduct?) {
+        if (data != null) {
+            with(data) {
+                if (checkBoxDisabled) {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.GONE
+                } else {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.VISIBLE
+                    mybillEgold.setChecked(data.optIn)
+                }
+                mybillEgold.hasMoreInfo(true)
+                info?.title?.let { title -> mybillEgold.setHeaderTitle(title) }
+                info?.subtitle?.let { desc -> mybillEgold.setDescription(desc) }
+                mybillEgold.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+                    run {
+                        presenter.onEgoldCheckedListener(isChecked)
+                    }
+                })
             }
-        })
+            mybillEgold.visibility = View.VISIBLE
+        } else {
+            mybillEgold.visibility = View.GONE
+        }
     }
 
     override fun onMoreInfoClicked() {
@@ -185,7 +198,10 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
             moreInfoBottomSheet.setFullPage(false)
             moreInfoBottomSheet.setChild(moreInfoView)
             moreInfoBottomSheet.clearAction()
-            moreInfoBottomSheet.show(fragmentManager,"E-gold more info bottom sheet")
+            moreInfoBottomSheet.setCloseClickListener {
+                moreInfoBottomSheet.dismiss()
+            }
+            fragmentManager?.run { moreInfoBottomSheet.show(this,"E-gold more info bottom sheet") }
         }
     }
 

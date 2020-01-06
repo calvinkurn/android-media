@@ -1,8 +1,7 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
-import android.os.Bundle;
-
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.Map;
 
@@ -97,12 +96,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartClickShopName(String shopName) {
+    public void eventClickAtcCartClickShop(String shopId, String shopName) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_SHOP_NAME,
-                shopName
+                EventAction.CLICK_SHOP,
+                shopId + " - " + shopName
         );
     }
 
@@ -378,51 +377,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
             sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
         }
         flushEnhancedECommerce();
-    }
-
-    // GTM v5 EE Step 1
-    private void sendEnhancedECommerce(Bundle eCommerceBundle, String eventLabel) {
-
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
-        }
     }
 
     //PHASE 2
@@ -958,6 +912,51 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_DELETE,
+                String.format("cart page - %s", insuranceTitle)
+        );
+    }
+
+    public void sendEventInsuranceImpression(String title) {
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_IMPRESSION,
+                String.format("cart - %s", title)
+        );
+    }
+
+    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
+        String eventLabel = "";
+        if (isChecked) {
+            eventLabel = String.format("cart page - tick %s", title);
+        } else {
+            eventLabel = String.format("cart page - untick %s", title);
+        }
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_STATE_CHANGE,
+                eventLabel
+        );
+    }
+
+    public void sendEventPurchaseInsurance(String userID, String productId, String title) {
+        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CLICK_BUY,
+                String.format("cart page - %s", title)
+        );
+        mapEvent.put("userId", userID);
+        mapEvent.put("productId", productId);
+        sendGeneralEvent(mapEvent);
+    }
     public void eventClickBrowseButtonOnTickerProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
