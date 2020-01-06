@@ -58,7 +58,6 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
                 productInfoP3.ratesModel = ratesEstModel?.rates
             }
 
-
             if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true) {
                 productInfoP3.userCod = response.getData<UserCodStatus.Response>(UserCodStatus.Response::class.java)
                         .result.userCodStatus.isCod

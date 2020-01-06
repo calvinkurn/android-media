@@ -49,7 +49,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -68,7 +67,6 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -219,7 +217,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
     private var shouldShowCod = false
-    private lateinit var tradeInParams: TradeInParams
+//    private lateinit var tradeInParams: TradeInParams
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -711,9 +709,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
                     putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, isLeasing)
                 }
-                if (::tradeInParams.isInitialized) {
-                    intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
-                }
+                intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, productInfoViewModel.tradeInParams)
                 startActivityForResult(intent,
                         REQUEST_CODE_NORMAL_CHECKOUT)
             }
@@ -1441,10 +1437,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productId ?: "")
 
             val tradeinResponse = p2ShopData.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
-            tradeInParams.isEligible = if (tradeinResponse.isEligible) 1 else 0
-            tradeInParams.usedPrice = tradeinResponse.usedPrice
-            tradeInParams.remainingPrice = tradeinResponse.remainingPrice
-            tradeInParams.isUseKyc = if (tradeinResponse.useKyc) 1 else 0
+            productInfoViewModel.tradeInParams.isEligible = if (tradeinResponse.isEligible) 1 else 0
+            productInfoViewModel.tradeInParams.usedPrice = tradeinResponse.usedPrice
+            productInfoViewModel.tradeInParams.remainingPrice = tradeinResponse.remainingPrice
+            productInfoViewModel.tradeInParams.isUseKyc = if (tradeinResponse.useKyc) 1 else 0
 
             if (tradeinResponse.isEligible) {
                 if (tv_trade_in_promo != null) {
@@ -1464,7 +1460,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
 
 
-            trackProductView(tradeInParams.isEligible == 1)
+            trackProductView(productInfoViewModel.tradeInParams.isEligible == 1)
 
             productDetailTracking.sendMoEngageOpenProduct(data,
                     shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.name)
@@ -1672,27 +1668,27 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
             }
         }
-        tradeInParams = TradeInParams()
-        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
-        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
-        tradeInParams.userId = if (productInfoViewModel.userId.isNotEmpty())
-            productInfoViewModel.userId.toIntOrZero()
-        else
-            0
-        tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
-        tradeInParams.productId = productInfoP1.productInfo.basic.id
-        tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
-        tradeInParams.productName = productInfoP1.productInfo.basic.name
-        val preorderstatus = productInfoP1.productInfo.isPreorderActive
-        if (preorderstatus)
-            tradeInParams.isPreorder = preorderstatus
-        else
-            tradeInParams.isPreorder = false
-        tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
+//        tradeInParams = TradeInParams()
+//        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
+//        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
+//        tradeInParams.userId = if (productInfoViewModel.userId.isNotEmpty())
+//            productInfoViewModel.userId.toIntOrZero()
+//        else
+//            0
+//        tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
+//        tradeInParams.productId = productInfoP1.productInfo.basic.id
+//        tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
+//        tradeInParams.productName = productInfoP1.productInfo.basic.name
+//        val preorderstatus = productInfoP1.productInfo.isPreorderActive
+//        if (preorderstatus)
+//            tradeInParams.isPreorder = preorderstatus
+//        else
+//            tradeInParams.isPreorder = false
+//        tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
         baseTradein.setOnClickListener {
             goToNormalCheckout(TRADEIN_BUY)
-            tradeInParams?.let {
-                if (tradeInParams.usedPrice > 0)
+            productInfoViewModel.tradeInParams.let {
+                if (it.usedPrice > 0)
                     productDetailTracking.sendGeneralEvent(" clickPDP",
                             "product detail page",
                             "click trade in widget",
@@ -2240,7 +2236,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (productInfo != null && shopInfo != null) {
 
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                    isElligible, tradeInParams.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment, deeplinkUrl)
+                    isElligible, productInfoViewModel.tradeInParams.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment, deeplinkUrl)
         } else if (shopInfo == null) {
             delegateTradeInTracking = true
         }

@@ -17,6 +17,10 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 
 /**
@@ -35,6 +39,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var trackerListName: String? = null
     private var affiliateString: String? = null
     private var deeplinkUrl: String? = null
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(applicationContext)
+    }
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -93,10 +101,17 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment =
-            DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-                    productKey, isFromDeeplink,
-                    isFromAffiliate, trackerAttribution,
-                    trackerListName, affiliateString, deeplinkUrl)
+            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP, false)) {
+                ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+                        productKey, isFromDeeplink,
+                        isFromAffiliate, trackerAttribution,
+                        trackerListName, affiliateString, deeplinkUrl)
+            } else {
+                DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+                        productKey, isFromDeeplink,
+                        isFromAffiliate, trackerAttribution,
+                        trackerListName, affiliateString, deeplinkUrl)
+            }
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()

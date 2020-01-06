@@ -169,13 +169,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         productInfoP1.productInfo.basic.shopID, forceRefresh)
             } else null
 
-            p2ShopDataResp.value = p2ShopDeferred.await().also {
-                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
-                tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
-                tradeInParams.usedPrice = tradeInResponse.usedPrice
-                tradeInParams.remainingPrice = tradeInResponse.remainingPrice
-                tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
-            }
+            p2ShopDataResp.value = p2ShopDeferred.await()
             p2General.value = p2GeneralDeferred.await()
             p2LoginDeferred?.let { p2Login.value = it.await() }
 
@@ -240,7 +234,23 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
                     ShopCodStatus.Response::class.java, shopCodParam)
 
-            val pdpTradeinParam = mapOf(ProductDetailCommonConstant.PARAMS to tradeinParam)
+            val tradeinRequestMap = mapOf("CategoryId" to tradeinParam.categoryId,
+                    "DeviceId" to tradeinParam.deviceId,
+                    "isEligible" to tradeinParam.isEligible,
+                    "IsOnCampaign" to tradeinParam.isOnCampaign,
+                    "IsPreOrder" to tradeinParam.isPreorder,
+                    "ModelId" to tradeinParam.modelID,
+                    "NewPrice" to tradeinParam.newPrice,
+                    "ProductId" to tradeinParam.productId,
+                    "productName" to tradeinParam.productName,
+                    "remainingPrice" to tradeinParam.remainingPrice,
+                    "ShopId" to tradeinParam.shopId,
+                    "TradeInType" to tradeinParam.tradeInType,
+                    "useKyc" to tradeinParam.isUseKyc,
+                    "usedPrice" to tradeinParam.usedPrice,
+                    "UserId" to tradeinParam.userId)
+
+            val pdpTradeinParam = mapOf(ProductDetailCommonConstant.PARAMS to tradeinRequestMap)
             val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
                     TradeinResponse::class.java, pdpTradeinParam)
 

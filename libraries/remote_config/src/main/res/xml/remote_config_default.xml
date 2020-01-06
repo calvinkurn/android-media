@@ -357,4 +357,8 @@
         <key>app_hotlist_nav_enable</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_main_app_enabled_old_pdp</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

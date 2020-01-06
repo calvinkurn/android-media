@@ -59,8 +59,26 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
                 ShopCodStatus.Response::class.java, shopCodParam)
 
-
-        val pdpTradeinParam = mapOf(ProductDetailCommonConstant.PARAMS to tradeInParams)
+        /*
+         * Since GraphqlRepository doesn't support caching Pojo parameter,
+         * it has to create map instead of passing object itself
+         */
+        val tradeinRequestMap = mapOf("CategoryId" to tradeInParams.categoryId,
+                "DeviceId" to tradeInParams.deviceId,
+                "isEligible" to tradeInParams.isEligible,
+                "IsOnCampaign" to tradeInParams.isOnCampaign,
+                "IsPreOrder" to tradeInParams.isPreorder,
+                "ModelId" to tradeInParams.modelID,
+                "NewPrice" to tradeInParams.newPrice,
+                "ProductId" to tradeInParams.productId,
+                "productName" to tradeInParams.productName,
+                "remainingPrice" to tradeInParams.remainingPrice,
+                "ShopId" to tradeInParams.shopId,
+                "TradeInType" to tradeInParams.tradeInType,
+                "useKyc" to tradeInParams.isUseKyc,
+                "usedPrice" to tradeInParams.usedPrice,
+                "UserId" to tradeInParams.userId)
+        val pdpTradeinParam = mapOf(ProductDetailCommonConstant.PARAMS to tradeinRequestMap)
         val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
                 TradeinResponse::class.java, pdpTradeinParam)
 

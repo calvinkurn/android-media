@@ -19,13 +19,18 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     override fun bind(element: ProductGeneralInfoDataModel) {
-        hideLoading()
+        if (element.data.first().subtitle.isEmpty()) {
+            showLoading()
+        } else {
+            hideLoading()
+        }
+
         element.data.run {
             view.rv_general_info.adapter = ProductGeneralItemAdapter(this)
         }
 
         view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
-        view.setOnClickListener {
+        view.general_info_container.setOnClickListener {
             listener.onInfoClicked(element.name)
         }
 
@@ -44,6 +49,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     private fun hideLoading() {
+        view.rv_general_info.show()
         view.pdp_info_title.show()
         view.titleShimmering.hide()
         view.descShimmering.hide()
@@ -51,6 +57,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
     private fun showLoading() {
         view.pdp_info_title.hide()
+        view.rv_general_info.hide()
         view.titleShimmering.show()
         view.descShimmering.show()
     }

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/general_info_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -31,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
         android:visibility="invisible"
-        tools:visibility="visible"
+        tools:visibility="invisible"
         app:srcCompat="@drawable/ic_arrow_right_info" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -48,7 +49,7 @@
         android:visibility="invisible"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        tools:visibility="visible"
+        tools:visibility="gone"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -63,7 +64,8 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="@dimen/dp_5" />
+        android:layout_marginEnd="@dimen/dp_5"
+        android:visibility="gone"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/titleShimmering"
@@ -71,12 +73,10 @@
         android:layout_height="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
-        app:layout_constraintBottom_toBottomOf="@+id/pdp_info_title"
-        app:layout_constraintStart_toStartOf="@+id/pdp_info_title"
-        app:layout_constraintEnd_toEndOf="@+id/pdp_info_title"
-        app:width_weight="0.8"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:width_weight="0.8"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/descShimmering"
@@ -84,10 +84,10 @@
         android:layout_height="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintBottom_toBottomOf="@+id/pdp_info_desc"
-        app:layout_constraintStart_toStartOf="@+id/pdp_info_desc"
-        app:layout_constraintEnd_toEndOf="@+id/pdp_info_desc"
         app:width_weight="0.6"
-        android:visibility="gone"/>
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@+id/titleShimmering"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

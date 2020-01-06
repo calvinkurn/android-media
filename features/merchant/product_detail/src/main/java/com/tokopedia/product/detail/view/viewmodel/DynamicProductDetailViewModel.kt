@@ -179,7 +179,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 removeDynamicComponent(it.listOfLayout)
                 //Render initial data first
                 _productLayout.value = Success(it.listOfLayout)
-
             }
             // Then update the following, it will not throw anything when error
             getProductP2(forceRefresh, productParams.warehouseId)
@@ -189,7 +188,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun renderTradein(productInfoP1: DynamicProductInfoP1?, deviceId: String?): TradeInParams {
+    private fun createTradeinParam(productInfoP1: DynamicProductInfoP1?, deviceId: String?): TradeInParams {
         productInfoP1?.let {
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
             tradeInParams.deviceId = deviceId ?: ""
@@ -503,7 +502,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                           warehouseId: String,
                                           forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async {
-            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, warehouseId, forceRefresh, renderTradein(getDynamicProductInfoP1, deviceId))
+            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, warehouseId, forceRefresh, createTradeinParam(getDynamicProductInfoP1, deviceId))
             getProductInfoP2ShopUseCase.executeOnBackground()
         }
     }
