@@ -54,6 +54,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -414,6 +415,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public String getZoneId() {
         return cartPassData.getZoneId();
+    }
+
+    @Override
+    public HashMap<String, String> getFields() {
+        return cartPassData.getFields();
     }
 
     @Override

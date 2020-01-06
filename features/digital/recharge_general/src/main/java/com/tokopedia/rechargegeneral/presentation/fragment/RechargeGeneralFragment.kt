@@ -85,6 +85,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
     private var clientNumber: String = ""
 
+    private lateinit var checkoutBottomSheet: BottomSheetUnify
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_digital_product, container, false)
     }
@@ -608,8 +610,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun renderCheckoutView(data: TopupBillsEnquiryData) {
         context?.let { context ->
-            val checkoutBottomSheet = BottomSheetUnify()
-            checkoutBottomSheet.setTitle("Checkout")
+            checkoutBottomSheet = BottomSheetUnify()
+            checkoutBottomSheet.setTitle(getString(R.string.checkout_view_title))
             checkoutBottomSheet.setCloseClickListener { checkoutBottomSheet.dismiss() }
             checkoutBottomSheet.setFullPage(true)
             checkoutBottomSheet.clearAction()
@@ -626,6 +628,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout() {
+        if (::checkoutBottomSheet.isInitialized) checkoutBottomSheet.dismiss()
         processCheckout()
     }
 
@@ -653,6 +656,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
             if (inputData.containsKey(PARAM_ZONE_ID)) {
                 checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(inputData[PARAM_ZONE_ID]!!)
+            }
+            val otherInputs = inputData.filter { it.key != PARAM_CLIENT_NUMBER && it.key != PARAM_ZONE_ID }
+            if (otherInputs.isNotEmpty()) {
+                checkoutPassDataBuilder = checkoutPassDataBuilder.fields(HashMap(otherInputs))
             }
             checkoutPassData = checkoutPassDataBuilder.build()
 

@@ -16,6 +16,7 @@ import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,8 @@ public interface DigitalBaseContract {
         String getClientNumber();
 
         String getZoneId();
+
+        HashMap<String, String> getFields();
 
         boolean isInstantCheckout();
 

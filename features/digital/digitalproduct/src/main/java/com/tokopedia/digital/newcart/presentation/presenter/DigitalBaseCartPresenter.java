@@ -118,6 +118,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         List<Field> fieldList = new ArrayList<>();
         String clientNumber = getView().getClientNumber();
         String zoneId = getView().getZoneId();
+        HashMap<String, String> fields = getView().getFields();
         if (clientNumber != null && !clientNumber.isEmpty()) {
             Field field = new Field();
             field.setName("client_number");
@@ -129,6 +130,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             field.setName("zone_id");
             field.setValue(zoneId);
             fieldList.add(field);
+        }
+        if (fields != null) {
+            for (Map.Entry<String, String> fieldItem : fields.entrySet()) {
+                Field field = new Field();
+                field.setName(fieldItem.getKey());
+                field.setValue(fieldItem.getValue());
+                fieldList.add(field);
+            }
         }
         Attributes attributes = new Attributes();
         attributes.setDeviceId(5);
