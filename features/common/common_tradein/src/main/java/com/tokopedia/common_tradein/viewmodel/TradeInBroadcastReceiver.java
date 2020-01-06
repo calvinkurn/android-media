@@ -11,8 +11,8 @@ public class TradeInBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction() != null && intent.getAction().equals(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE)) {
-            broadcastListener.onReceiveTradeIn(intent.getBooleanExtra(TradeInTextView.EXTRA_ISELLIGIBLE, false), intent.getStringExtra(TradeInTextView.EXTRA_DESCRIPTION));
+        if (intent.getAction()!= null && intent.getAction().equals(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE)) {
+            broadcastListener.onReceiveTradeIn(intent.getBooleanExtra(TradeInTextView.EXTRA_ISELLIGIBLE, false));
         }
     }
 
@@ -21,6 +21,6 @@ public class TradeInBroadcastReceiver extends BroadcastReceiver {
     }
 
     public interface BroadcastListener {
-        void onReceiveTradeIn(boolean isElligible, String description);
+        void onReceiveTradeIn(boolean isElligible);
     }
 }

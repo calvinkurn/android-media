@@ -5,11 +5,11 @@ import android.content.Intent
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.core.app.TaskStackBuilder
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.app.TaskStackBuilder
-import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst

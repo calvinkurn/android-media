@@ -1668,23 +1668,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
             }
         }
-//        tradeInParams = TradeInParams()
-//        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
-//        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
-//        tradeInParams.userId = if (productInfoViewModel.userId.isNotEmpty())
-//            productInfoViewModel.userId.toIntOrZero()
-//        else
-//            0
-//        tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
-//        tradeInParams.productId = productInfoP1.productInfo.basic.id
-//        tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
-//        tradeInParams.productName = productInfoP1.productInfo.basic.name
-//        val preorderstatus = productInfoP1.productInfo.isPreorderActive
-//        if (preorderstatus)
-//            tradeInParams.isPreorder = preorderstatus
-//        else
-//            tradeInParams.isPreorder = false
-//        tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
+
         baseTradein.setOnClickListener {
             goToNormalCheckout(TRADEIN_BUY)
             productInfoViewModel.tradeInParams.let {

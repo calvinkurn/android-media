@@ -22,7 +22,6 @@ import com.tokopedia.common_tradein.viewmodel.TradeInTextViewModel;
 public class TradeInTextView extends ConstraintLayout {
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
     public static final String EXTRA_ISELLIGIBLE = "EXTRA_ISELLIGIBLE";
-    public static final String EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION";
     public TextView titleTextView;
     public TextView priceTextView;
     private TradeInTextViewModel viewModel;

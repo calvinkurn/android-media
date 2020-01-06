@@ -15,7 +15,6 @@ import com.tokopedia.common_tradein.customviews.TradeInTextView;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
 import com.tokopedia.common_tradein.model.ValidateTradePDP;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -92,7 +91,6 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                             responseData.setValue(tradeInResponse);
                             Intent intent = new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
                             intent.putExtra(TradeInTextView.EXTRA_ISELLIGIBLE, tradeInResponse.isEligible());
-                            intent.putExtra(TradeInTextView.EXTRA_DESCRIPTION, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInResponse.getUsedPrice(), true));
                             LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(intent);
 
                             tradeInParams.setIsEligible(tradeInResponse.isEligible() ? 1 : 0);
