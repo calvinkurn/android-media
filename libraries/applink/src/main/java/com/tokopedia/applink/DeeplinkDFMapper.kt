@@ -93,6 +93,7 @@ object DeeplinkDFMapper {
     private val DFM_PROMO = "df_promo"
     private val DFM_TRAVEL = "df_travel"
     private val DFM_USER = "df_user"
+    private val DFM_SALAM = "df_salam"
 
     //sellerapp
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
