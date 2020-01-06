@@ -21,6 +21,7 @@ class PinnedComponent(
 ) : UIComponent<PinnedInteractionEvent>, CoroutineScope by coroutineScope, PinnedView.Listener {
 
     private val uiView = initView(container)
+    private var shouldShow: Boolean = false
 
     init {
         uiView.hide()
@@ -30,12 +31,16 @@ class PinnedComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.SetPinned -> {
-                                if (it.pinnedMessage.shouldRemove) uiView.hide()
-                                else {
+                                shouldShow = if (it.pinnedMessage.shouldRemove) {
+                                    uiView.hide()
+                                    false
+                                } else {
                                     uiView.show()
                                     uiView.setPinnedMessage(it.pinnedMessage)
+                                    true
                                 }
                             }
+                            is ScreenStateEvent.KeyboardStateChanged -> if (!it.isShown && shouldShow) uiView.show() else uiView.hide()
                         }
                     }
         }
