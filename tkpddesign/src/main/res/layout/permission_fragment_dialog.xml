@@ -7,8 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
-    android:background="@drawable/bg_rect_white_round"
-    tools:context="com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment">
+    android:background="@drawable/bg_rect_white_round">
 
     <TextView
         android:id="@+id/tv_title_access"
@@ -72,7 +71,7 @@
         android:gravity="center"
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
-        android:text="@string/tradein_accept"
+        android:text="@string/accept"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"

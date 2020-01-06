@@ -1,20 +1,22 @@
 package com.tokopedia.age_restriction.viewcontroller
 
 import android.app.Activity
-import androidx.lifecycle.Observer
 import android.content.Intent
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.tradein_common.IAccessRequestListener
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.design.dialog.AccessRequestFragmentDialog
+import com.tokopedia.design.dialog.IAccessRequestListener
+import com.tokopedia.track.TrackApp
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.age_restriction_home_activity.*
+import javax.inject.Inject
 
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
 
@@ -24,6 +26,18 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private var notFilledDob = 33
     private var notLogin = 44
     private var selection = 0
+
+    @Inject
+    lateinit var viewModelProvider:  ViewModelProvider.Factory
+
+
+    override fun getVMFactory(): ViewModelProvider.Factory? {
+        return viewModelProvider
+    }
+
+    override fun initInject() {
+        getComponent().inject(this)
+    }
 
     override fun clickAccept() {
         when (selection) {
@@ -113,7 +127,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         return ARHomeViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel?) {
+    override fun setViewModel(viewModel: BaseViewModel) {
         arHomeViewModel = viewModel as ARHomeViewModel
         arHomeViewModel.getAskUserLogin().observe(this, Observer<Int> {
             selection = notLogin
@@ -133,14 +147,6 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         return 0
     }
 
-    override fun getRootViewId(): Int {
-        return R.id.root_view
-    }
-
-    override fun getRootView(): View {
-        return root_view
-    }
-
     override fun showProgressBar() {
         progress_bar_layout.visibility = View.VISIBLE
     }
@@ -151,18 +157,6 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
 
     override fun getLayoutRes(): Int {
         return R.layout.age_restriction_home_activity
-    }
-
-    override fun getTncFragmentInstance(TncResId: Int): Fragment? {
-        return null
-    }
-
-    override fun getBottomSheetLayoutRes(): Int {
-        return 0
-    }
-
-    override fun doNeedReattach(): Boolean {
-        return false
     }
 
     override fun getNewFragment(): Fragment? {
@@ -213,6 +207,34 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                     "view - adult pop up - not yet verified",
                     "not yet verified - $event/$destinationUrlGtm")
         })
+    }
+
+    private fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(event,
+                category,
+                action,
+                label)
+    }
+
+    private fun showDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String?) {
+        val fragmentManager = supportFragmentManager
+        val accessDialog = AccessRequestFragmentDialog.newInstance()
+        accessDialog.setBodyText(bodyText)
+        accessDialog.setTitle(titleText)
+        accessDialog.setPositiveButton(positiveButton)
+        accessDialog.setNegativeButton(negativeButton)
+        accessDialog.show(fragmentManager, AccessRequestFragmentDialog.TAG)
+    }
+
+    private fun showAgeVerificationDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String) {
+        val fragmentManager = supportFragmentManager
+        val accessDialog = AccessRequestFragmentDialog.newInstance()
+        accessDialog.setLayoutResId(R.layout.age_restriction_verifcation_dialog)
+        accessDialog.setBodyText(bodyText)
+        accessDialog.setTitle(titleText)
+        accessDialog.setPositiveButton(positiveButton)
+        accessDialog.setNegativeButton(negativeButton)
+        accessDialog.show(fragmentManager, AccessRequestFragmentDialog.TAG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
