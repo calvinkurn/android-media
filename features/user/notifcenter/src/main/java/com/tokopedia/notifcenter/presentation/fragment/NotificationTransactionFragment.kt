@@ -96,10 +96,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         })
 
         swipeRefresh?.setOnRefreshListener {
-            viewModel.resetNotificationFilter()
-            lastListItem = 0
-
             swipeRefresh?.isRefreshing = true
+            fetchUpdateFilter(hashMapOf())
 
             /*
             * add some delay for 1 sec to
@@ -184,7 +182,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         analytics.trackNotificationClick(notification)
     }
 
-    override fun updateFilter(filter: HashMap<String, Int>) {
+    private fun fetchUpdateFilter(filter: HashMap<String, Int>) {
         //preventing bounce notification
         _adapter.addElement(EmptyDataStateProvider.clearEmptyData())
 
@@ -192,6 +190,10 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         cursor = ""
         _adapter.removeItem()
         getNotification(cursor)
+    }
+
+    override fun updateFilter(filter: HashMap<String, Int>) {
+        fetchUpdateFilter(filter)
     }
 
     override fun getAnalytic(): NotificationUpdateAnalytics {
