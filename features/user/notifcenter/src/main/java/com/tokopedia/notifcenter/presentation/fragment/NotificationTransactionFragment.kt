@@ -92,10 +92,11 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             }
         })
         viewModel.lastNotificationId.observe(this, Observer {
-            viewModel.getNotificationViewBean(it)
+            viewModel.getNotification(it)
         })
 
         swipeRefresh?.setOnRefreshListener {
+            viewModel.resetNotificationFilter()
             swipeRefresh?.isRefreshing = true
 
             /*
