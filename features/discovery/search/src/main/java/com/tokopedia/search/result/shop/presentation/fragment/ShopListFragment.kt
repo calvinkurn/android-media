@@ -428,7 +428,7 @@ internal class ShopListFragment:
 
     private fun trackEventClickProductRecommendation(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.trackEventClickShopRecommendationProductPreview(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), keyword)
+        SearchTracking.trackEventClickShopRecommendationProductPreview(shopItemProduct.getShopRecommendationProductPreviewAsObjectDataLayer(), keyword)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
