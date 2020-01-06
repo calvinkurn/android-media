@@ -65,5 +65,7 @@ interface FeedShopContract {
         fun trackPostClickUrl(url:String)
 
         fun addPostTagItemToCart(postTagItem: PostTagItem)
+
+        fun clearCache()
     }
 }

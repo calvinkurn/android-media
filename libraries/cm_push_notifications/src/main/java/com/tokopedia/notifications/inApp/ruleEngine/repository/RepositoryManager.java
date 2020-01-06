@@ -3,7 +3,8 @@ package com.tokopedia.notifications.inApp.ruleEngine.repository;
 import android.app.Application;
 import android.util.Log;
 
-import com.tokopedia.notifications.inApp.ruleEngine.storage.RoomDB;
+
+import com.tokopedia.notifications.database.RoomDB;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.StorageProvider;
 
 public class RepositoryManager {

@@ -178,8 +178,12 @@ public class CategoryProductStyle3View extends
 
     private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
+        ClientNumber clientNumber = operator.getClientNumberList().get(0);
+        if (data.getSlug().contains("emoney")) {
+            clientNumber.setEmoney(true);
+        }
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
-        clientNumberInputView.renderData(operator.getClientNumberList().get(0));
+        clientNumberInputView.renderData(clientNumber);
         clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
         clientNumberInputView.resetInputTyped();
         clientNumberInputView.enableImageOperator(operatorSelected.getImage());
@@ -341,6 +345,11 @@ public class CategoryProductStyle3View extends
     @NonNull
     private ClientNumberInputView.ActionListener getActionListenerClientNumberInputView() {
         return new ClientNumberInputView.ActionListener() {
+            @Override
+            public void onButtonCameraPickerClicked() {
+                actionListener.onButtonCameraPickerClicked();
+            }
+
             @Override
             public void onButtonContactPickerClicked() {
                 actionListener.onButtonContactPickerClicked();
