@@ -28,10 +28,10 @@
         android:id="@+id/tvLiability"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
         android:text="@string/sbank_limited_liability"
         android:textColor="@color/Neutral_N700_68"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_2"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvCompanyAccount"
         app:typographyType="body_3" />
@@ -61,10 +61,10 @@
         android:id="@+id/tvFamilyAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:text="@string/sbank_family_account"
         android:textColor="@color/Neutral_N700_96"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewCompanyAccount"
         app:typographyType="body_2" />
@@ -73,10 +73,10 @@
         android:id="@+id/tvDontHavePersonalAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
         android:text="@string/sbank_dont_have_personal_Account"
         android:textColor="@color/Neutral_N700_68"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_2"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvFamilyAccount"
         app:typographyType="body_3" />
@@ -85,9 +85,9 @@
         android:id="@+id/viewFamilyAccount"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
         android:background="@color/Neutral_N75"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvDontHavePersonalAccount" />
 
@@ -106,10 +106,10 @@
         android:id="@+id/tvOtherAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:text="@string/sbank_other_account"
         android:textColor="@color/Neutral_N700_96"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewFamilyAccount"
         app:typographyType="body_2" />
@@ -118,10 +118,10 @@
         android:id="@+id/tvErrorInInputData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
         android:text="@string/sbank_error_input_data"
         android:textColor="@color/Neutral_N700_68"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_2"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvOtherAccount"
         app:typographyType="body_3" />
@@ -129,8 +129,8 @@
     <View
         android:id="@+id/viewOtherAccount"
         android:layout_width="0dp"
-        android:layout_marginTop="@dimen/dp_16"
         android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
         android:background="@color/Neutral_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
@@ -151,34 +151,35 @@
         android:id="@+id/viewCompanyAccountClickable"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/viewCompanyAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/viewFamilyAccountClickable"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/viewFamilyAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/viewCompanyAccount" />
 
     <View
         android:id="@+id/viewOtherAccountClickable"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/viewOtherAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/viewFamilyAccount" />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupOtherAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="viewOtherAccount,viewOtherAccountClickable,ivOtherAccount,tvOtherAccount,tvErrorInInputData"/>
+        app:constraint_referenced_ids="viewOtherAccount,viewOtherAccountClickable,ivOtherAccount,tvOtherAccount,tvErrorInInputData" />
 
 
     <androidx.constraintlayout.widget.Guideline

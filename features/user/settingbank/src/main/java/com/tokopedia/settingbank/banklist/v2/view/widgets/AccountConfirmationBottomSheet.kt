@@ -4,8 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
@@ -35,11 +33,6 @@ class AccountConfirmationBottomSheet(val context: Context,
 
     private fun createBottomSheetView(): View {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_confirm_account, null)
-        if (kycInfo.isVerified)
-            view.findViewById<View>(R.id.groupOtherAccount).visible()
-        else
-            view.findViewById<View>(R.id.groupOtherAccount).gone()
-
         view.findViewById<View>(R.id.viewCompanyAccountClickable).setOnClickListener {
             openConfirmBankAccountActivity(AccountConfirmationType.COMPANY.accountType)
         }
@@ -50,7 +43,21 @@ class AccountConfirmationBottomSheet(val context: Context,
             openConfirmBankAccountActivity(AccountConfirmationType.OTHER.accountType)
         }
 
+        if (kycInfo.isVerified)
+            setGroupVisibility(view, View.VISIBLE)
+        else {
+            setGroupVisibility(view, View.GONE)
+        }
+
         return view
+    }
+
+    private fun setGroupVisibility(view: View, visibility: Int) {
+        view.findViewById<View>(R.id.viewOtherAccount).visibility = visibility
+        view.findViewById<View>(R.id.viewOtherAccountClickable).visibility = visibility
+        view.findViewById<View>(R.id.ivOtherAccount).visibility = visibility
+        view.findViewById<View>(R.id.tvOtherAccount).visibility = visibility
+        view.findViewById<View>(R.id.tvErrorInInputData).visibility = visibility
     }
 
     private fun openConfirmBankAccountActivity(accountType: Int) {
