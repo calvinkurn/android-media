@@ -28,6 +28,7 @@ class LikeComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.LikeContent -> uiView.playLikeAnimation(it.shouldLike)
                         }
                     }
         }
@@ -50,6 +51,6 @@ class LikeComponent(
         }
     }
 
-    private fun initView(container: ViewGroup): UIView =
+    private fun initView(container: ViewGroup) =
             LikeView(container, this)
 }
