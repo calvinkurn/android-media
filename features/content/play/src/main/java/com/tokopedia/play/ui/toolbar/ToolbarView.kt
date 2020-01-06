@@ -86,9 +86,8 @@ class ToolbarView(
             }
         }
 
-        if (partnerInfo.name.isEmpty()) {
-            groupPartner.gone()
-        } else {
+        if (partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) groupPartner.gone()
+        else {
             groupPartner.visible()
 
             tvPartnerName.setOnClickListener {

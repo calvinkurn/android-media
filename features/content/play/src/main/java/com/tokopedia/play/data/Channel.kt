@@ -7,6 +7,15 @@ import com.google.gson.annotations.SerializedName
  */
 data class Channel(
 
+        @SerializedName("gc_token")
+        val gcToken: String = "",
+
+        @SerializedName("partner_type")
+        val partnerType: Int = 0,
+
+        @SerializedName("partner_id")
+        val partnerId: Long = 0L,
+
         @SerializedName("channel_id")
         val channelId: String = "",
 
@@ -16,29 +25,26 @@ data class Channel(
         @SerializedName("description")
         val description: String = "",
 
-        @SerializedName("channel_url")
-        val channelUrl: String = "",
-
         @SerializedName("cover_url")
         val coverUrl: String = "",
 
         @SerializedName("start_time")
-        val startTime: String = "",
+        val startTime: Long = 0L,
 
         @SerializedName("end_time")
         val endTime: Long = 0L,
 
+        @SerializedName("total_view_formatted")
+        val totalViews: String = "",
+
         @SerializedName("total_participants_online")
         val totalParticipantsOnline: String = "",
 
-        @SerializedName("total_views")
-        val totalViews: String = "",
-
         @SerializedName("is_active")
-        val isActive: String = "",
+        val isActive: Boolean = true,
 
         @SerializedName("is_freeze")
-        val isFreeze: String = "",
+        val isFreeze: Boolean = false,
 
         @SerializedName("moderator_id")
         val moderatorId: String = "",
@@ -49,26 +55,8 @@ data class Channel(
         @SerializedName("moderator_thumb_url")
         val moderatorThumbUrl: String = "",
 
-        @SerializedName("gc_token")
-        val gcToken: String = "",
-
-        @SerializedName("banner_url")
-        val bannerUrl: String = "",
-
-        @SerializedName("banner_name")
-        val bannerName: String = "",
-
-        @SerializedName("banned_msg")
-        val bannedMsg: String = "",
-
-        @SerializedName("banned_title")
-        val bannedTitle: String = "",
-
-        @SerializedName("banned_button_title")
-        val bannedButtonTitle: String = "",
-
-        @SerializedName("banned_button_url")
-        val bannedButtonUrl: String = "",
+        @SerializedName("video_stream")
+        var videoStream: VideoStream = VideoStream(), // TODO("testing purposes")
 
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
@@ -76,38 +64,17 @@ data class Channel(
         @SerializedName("quick_reply")
         val quickReply: List<String> = emptyList(),
 
-        @SerializedName("partner_id")
-        val partnerId: Long = 0L,
-
-        @SerializedName("partner_type")
-        val partnerType: Int = 0,
-
         @SerializedName("settings")
         val settings: Settings = Settings(),
+
+        @SerializedName("banned")
+        val banned: Banned = Banned(),
 
         @SerializedName("exit_msg")
         val exitMsg: ExitMsg = ExitMsg(),
 
         @SerializedName("freeze_channel_state")
-        val freezeChannelState: FreezeChannelState = FreezeChannelState(),
-
-        @SerializedName("video_id")
-        val videoId: String = "",
-
-        @SerializedName("video_live")
-        val videoLive: String = "",
-
-        @SerializedName("background_default")
-        val backgroundDefault: String = "",
-
-        @SerializedName("background_url")
-        val backgroundUrl: String = "",
-
-        @SerializedName("link_info_url")
-        val linkInfoUrl: String = "",
-
-        @SerializedName("background")
-        val background: Background = Background()
+        val freezeChannelState: FreezeChannelState = FreezeChannelState()
 
 ) {
 
@@ -144,9 +111,14 @@ data class Channel(
             @SerializedName("btn_app_link")
             val btnAppLink: String = "")
 
-    data class Background(
-            @SerializedName("background_default")
-            val backgroundDefault: String = "",
-            @SerializedName("background_url")
-            val backgroundUrl: String = "")
+        data class Banned(
+                @SerializedName("msg")
+                val message: String = "",
+
+                @SerializedName("title")
+                val title: String = "",
+
+                @SerializedName("button_title")
+                val buttonTitle: String = ""
+        )
 }
