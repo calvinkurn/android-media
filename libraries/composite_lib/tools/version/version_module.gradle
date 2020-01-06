@@ -48,15 +48,3 @@ task versionDependency(type: PublishCompositeTask, dependsOn: scanProjectTask){
         println("[PUBLISH COMPOSITE TASK FINISHED]")
     }
 }
-
-configurations {
-    myDownloads
-}
-dependencies {
-    myDownloads 'com.tokopedia.config:global_config:1.0.3'
-}
-
-task getDeps(type: Copy) {
-    from configurations.myDownloads
-    into 'tools/version/latestaar'
-}
