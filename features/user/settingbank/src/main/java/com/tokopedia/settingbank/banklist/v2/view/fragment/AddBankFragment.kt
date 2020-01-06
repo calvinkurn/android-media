@@ -330,6 +330,7 @@ class AddBankFragment : BaseDaggerFragment() {
     fun onBankSelected(selectedBank: Bank) {
         bank = selectedBank
         textWatcherViewModel.onBankSelected(bank)
+        btnPeriksa.isEnabled =  true
         hideAccountHolderName()
         setBankName()
     }

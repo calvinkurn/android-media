@@ -87,13 +87,12 @@ class SettingBankModule {
     @SettingBankScope
     @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface)
-            : FingerprintInterceptor =  FingerprintInterceptor(networkRouter, userSession)
+            : FingerprintInterceptor = FingerprintInterceptor(networkRouter, userSession)
 
 
     @SettingBankScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor
-            = ChuckInterceptor(context)
+    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor = ChuckInterceptor(context)
 
     @SettingBankScope
     @Provides
@@ -106,15 +105,14 @@ class SettingBankModule {
                             headerErrorResponseInterceptor: HeaderErrorResponseInterceptor,
                             chuckInterceptor: ChuckInterceptor,
                             debugInterceptor: DebugInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
+                            httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(headerErrorResponseInterceptor)
 
-        if(GlobalConfig.isAllowDebuggingTools()){
-            builder
-                    .addInterceptor(chuckInterceptor)
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(chuckInterceptor)
                     .addInterceptor(debugInterceptor)
                     .addInterceptor(httpLoggingInterceptor)
         }
