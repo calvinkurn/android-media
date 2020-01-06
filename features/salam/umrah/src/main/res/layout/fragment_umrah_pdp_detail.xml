@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.common.travel.widget.SelectPassengerView
+            android:id="@+id/spv_umrah_pdp_detail_jamaah"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:spv_icon="@drawable/umrah_ic_pdp_person"
+            app:spv_max_value="30"
+            app:spv_min_value="1"
+            app:spv_subtitle=""
+            app:spv_title="@string/umrah_pdp_detail_jamaah"
+            app:spv_value="1" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/du_umrah_pdp_detail_divider_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spv_umrah_pdp_detail_jamaah" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_detail_choose_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/umrah_pdp_detail_choose_room_label"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/du_umrah_pdp_detail_divider_1"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_umrah_pdp_detail_rooms"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_detail_choose_room"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_detail_choose_room" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/du_umrah_pdp_detail_divider_2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_umrah_pdp_detail_rooms" />
+
+        <View
+            android:id="@+id/v_umrah_pdp_detail_purchase_summary"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/umrah_bg_pdp_detail_purchase_summary"
+            app:layout_constraintBottom_toBottomOf="@+id/justmargin"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/du_umrah_pdp_detail_divider_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_detail_purchase_summary_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/umrah_pdp_detail_purchase_summary_title"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toLeftOf="@+id/v_umrah_pdp_detail_purchase_summary"
+            app:layout_constraintTop_toTopOf="@+id/v_umrah_pdp_detail_purchase_summary"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/umrah_pdp_detail_purchase_summary_passenger"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_detail_purchase_summary_label"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_detail_purchase_summary_label"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintRight_toRightOf="@+id/v_umrah_pdp_detail_purchase_summary"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_detail_purchase_summary_label"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Rp19.500.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_detail_purchase_summary_label"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_label"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="x2 Jamaah" />
+
+        <View
+            android:id="@+id/v_umrah_pdp_detail_purchase_summary_separator"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@color/Neutral_N75"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_total"
+            app:layout_constraintRight_toRightOf="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_price"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_total" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_price_total_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:text="@string/umrah_pdp_detail_purchase_summary_price_total_label"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toLeftOf="@+id/v_umrah_pdp_detail_purchase_summary_separator"
+            app:layout_constraintTop_toBottomOf="@+id/v_umrah_pdp_detail_purchase_summary_separator"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_price_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:textColor="@color/Yellow_Y500"
+            app:layout_constraintRight_toRightOf="@+id/v_umrah_pdp_detail_purchase_summary_separator"
+            app:layout_constraintTop_toBottomOf="@+id/v_umrah_pdp_detail_purchase_summary_separator"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp39.000.000" />
+
+        <View
+            android:id="@+id/justmargin"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_12"
+            app:layout_constraintLeft_toLeftOf="@+id/v_umrah_pdp_detail_purchase_summary"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_detail_purchase_summary_passenger_price_total" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/bt_umrah_pdp_detail_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:text="@string/umrah_pdp_detail_next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/v_umrah_pdp_detail_purchase_summary"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="transaction"
+            app:unifyButtonVariant="filled"
+            tools:ignore="UnusedAttribute"
+            tools:targetApi="m" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

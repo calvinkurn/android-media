@@ -346,7 +346,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+    public void setRecommendation(Object recommendationResponse) {
+        RechargeWidgetResponse rechargeWidgetResponse = (RechargeWidgetResponse) recommendationResponse;
         if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null) {
             if (rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
                 ViewRecomendItems.setVisibility(View.GONE);

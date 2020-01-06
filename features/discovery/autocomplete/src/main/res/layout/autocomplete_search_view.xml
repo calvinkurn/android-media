@@ -81,7 +81,7 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="@dimen/dp_4"
-                        app:srcCompat="@drawable/autocomplete_ic_camera"
+                        app:srcCompat="@drawable/ic_product_action_camera_grayscale_24"
                         android:background="?attr/selectableItemBackgroundBorderless" />
 
                     <ImageView

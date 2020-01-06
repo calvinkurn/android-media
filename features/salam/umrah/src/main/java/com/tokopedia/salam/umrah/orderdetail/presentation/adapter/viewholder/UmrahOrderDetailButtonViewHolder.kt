@@ -4,8 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.salam.umrah.orderdetail.presentation.util.UmrahOrderDetailConst.BATALKAN_LABEL
-import com.tokopedia.salam.umrah.orderdetail.presentation.util.UmrahOrderDetailConst.PESAN_ULANG_LABEL
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Size.MEDIUM
@@ -41,13 +39,9 @@ class UmrahOrderDetailButtonViewHolder(itemView: View) : RecyclerView.ViewHolder
                 button.buttonVariant = GHOST
                 button.buttonType = MAIN
             }
-            data.buttonType == BUTTON_DEFAULT && data.label == BATALKAN_LABEL -> {
+            data.buttonType == BUTTON_DEFAULT -> {
                 button.buttonVariant = GHOST
                 button.buttonType = ALTERNATE
-            }
-            data.buttonType == BUTTON_DEFAULT && data.label == PESAN_ULANG_LABEL -> {
-                button.buttonVariant = FILLED
-                button.buttonType = TRANSACTION
             }
         }
 
