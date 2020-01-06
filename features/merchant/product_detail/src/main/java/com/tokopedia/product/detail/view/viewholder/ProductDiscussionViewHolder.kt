@@ -18,6 +18,8 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_discussion
+        const val DISCUSSION_LABEL_SELLER = "Penjual"
+        const val DISCUSSION_LABEL_BUYER = "Pengguna"
     }
 
     override fun bind(element: ProductDiscussionDataModel) {
@@ -41,21 +43,33 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
                 txt_resp_date.text = resp.createTimeFmt
                 txt_resp_message.text = MethodChecker.fromHtml(resp.message)
                 val labelUtils = LabelUtils.getInstance(context, txt_resp_date, 35)
-                labelUtils.giveSquareLabel(if (resp.shopId.toInt() == productShopId) "Penjual" else "Pengguna")
+                labelUtils.giveSquareLabel(if (resp.shopId.toInt() == productShopId) DISCUSSION_LABEL_SELLER else DISCUSSION_LABEL_BUYER)
 
-                iv_resp_user_ava.visible()
-                txt_resp_user_name.visible()
-                txt_resp_date.visible()
-                txt_resp_message.visible()
+                showCommentList()
             } else {
-                iv_resp_user_ava.gone()
-                txt_resp_user_name.gone()
-                txt_resp_date.gone()
-                txt_resp_message.gone()
+                removeCommentList()
             }
             txt_see_all_talk.text = context.getString(R.string.label_see_all_talk, totalTalk.thousandFormatted())
             txt_see_all_talk.setOnClickListener { listener.onDiscussionClicked() }
             visible()
+        }
+    }
+
+    private fun removeCommentList(){
+        with(view) {
+            iv_resp_user_ava.gone()
+            txt_resp_user_name.gone()
+            txt_resp_date.gone()
+            txt_resp_message.gone()
+        }
+    }
+
+    private fun showCommentList(){
+        with(view) {
+            iv_resp_user_ava.visible()
+            txt_resp_user_name.visible()
+            txt_resp_date.visible()
+            txt_resp_message.visible()
         }
     }
 
