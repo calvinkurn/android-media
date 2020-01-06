@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieListener
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieTask
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
@@ -73,6 +78,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
         private const val IMAGE_REVIEW_YELLOW_BG = "https://ecs7.tokopedia.net/android/others/4_5reviewbg.png"
         private const val IMAGE_BG_TRANSITION = 250
+        private const val LOTTIE_ANIM_1 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
+        private const val LOTTIE_ANIM_2 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
+        private const val LOTTIE_ANIM_3 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_3.json"
+        private const val LOTTIE_ANIM_4 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
+        private const val LOTTIE_ANIM_5 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
+
 
         private const val IMAGE_PEDIE_1 = "https://ecs7.tokopedia.net/android/pedie/1star.png"
         private const val IMAGE_PEDIE_2 = "https://ecs7.tokopedia.net/android/pedie/2star.png"
@@ -413,26 +424,37 @@ class CreateReviewFragment : BaseDaggerFragment() {
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_1)
                 }
                 2 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_2)
                 }
                 3 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_3)
                 }
                 4 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_4)
                 }
                 5 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_5)
                 }
             }
+        }
+    }
+
+    /**
+     * Fetch the animation from http URL and play the animation
+     */
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                imgAnimationView.setComposition(result)
+                imgAnimationView.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { throwable -> }
         }
     }
 
@@ -483,7 +505,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         stopLoading()
         showLayout()
         Handler(Looper.getMainLooper()).postDelayed({
-            finishIfRoot()
+            finishIfRoot(true)
         }, 800)
     }
 
@@ -541,16 +563,20 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     }
 
-    private fun finishIfRoot() {
+    private fun finishIfRoot(success: Boolean = false) {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-                setResult(Activity.RESULT_OK, intent)
+                if (success) {
+                    setResult(Activity.RESULT_OK, intent)
+                }
                 startActivity(intent)
             } else {
                 val intent = Intent()
                 intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
-                setResult(Activity.RESULT_OK, intent)
+                if (success) {
+                    setResult(Activity.RESULT_OK, intent)
+                }
             }
             finish()
         }

@@ -6,13 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
 
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT;
 
@@ -27,7 +25,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
     public static final int RESULT_CODE_COUPON_STATE_CHANGED = 735;
 
-    public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
     public static final String EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED = "EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED";
@@ -37,12 +34,10 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     public static Intent createInstance(Context context,
                                         PromoStackingData promoData,
-                                        CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                         String defaultSelectedTabPromo,
                                         boolean isAutoApplyPromoCodeApplied) {
         Intent intent = new Intent(context, ShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoData);
-        intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionHolderData);
         intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
         intent.putExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
         return intent;
@@ -59,12 +54,13 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     }
 
     @Override
-    protected void initInjector() {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        checkoutAnalyticsCourierSelection = new CheckoutAnalyticsCourierSelection();
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
+    protected void initInjector() {
 
     }
 
@@ -75,23 +71,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     @Override
     protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-        checkoutAnalyticsCourierSelection = new CheckoutAnalyticsCourierSelection(
-
-        );
-    }
-
-    @Override
-    protected void setActionVar() {
 
     }
 

@@ -19,11 +19,6 @@ public class GlobalMainTabSelectedListener implements TabLayout.OnTabSelectedLis
         this.viewPager = mViewPager;
     }
 
-    public GlobalMainTabSelectedListener(Activity activity, ViewPager mViewPager) {
-        this.viewPager = mViewPager;
-        this.activity = activity;
-    }
-
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
