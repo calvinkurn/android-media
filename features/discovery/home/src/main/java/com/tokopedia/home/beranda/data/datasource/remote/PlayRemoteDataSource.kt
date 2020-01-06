@@ -44,7 +44,7 @@ class PlayRemoteDataSource(
         )
         val response = graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
         val errors = response.getError(PlayLiveDynamicChannelEntity::class.java)
-        if(errors.isNotEmpty()){
+        if(errors?.isNotEmpty() == true){
             error(errors.first().message)
         }
         response.getSuccessData<PlayLiveDynamicChannelEntity>()

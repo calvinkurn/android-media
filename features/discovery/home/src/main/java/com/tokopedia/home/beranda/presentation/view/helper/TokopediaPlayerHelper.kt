@@ -414,7 +414,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun playerPlay() {
-        if(ConnectionUtils.isWifiConnected(context)){
+        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()){
             Thread.sleep(3000)
             mPlayer?.playWhenReady = true
         }

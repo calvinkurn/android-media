@@ -6,15 +6,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
-import com.tokopedia.home.beranda.presentation.view.helper.ExoThumbListener
+import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil
 import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
 import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
 import com.tokopedia.kotlin.extensions.view.hide
@@ -23,14 +22,14 @@ import com.tokopedia.kotlin.extensions.view.show
 class PlayCardViewHolder(
         val view: View,
         val listener: HomeCategoryListener
-): AbstractViewHolder<PlayCardViewModel>(view), ExoThumbListener, ExoPlayerListener {
+): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener {
 
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val volumeContainer = view.findViewById<FrameLayout>(R.id.volume)
     private val play = view.findViewById<ImageView>(R.id.play)
     private val volumeAsset = view.findViewById<ImageView>(R.id.volume_asset)
     private val errorMessage = view.findViewById<TextView>(R.id.error_message)
-
+    private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<TextView>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
@@ -47,13 +46,15 @@ class PlayCardViewHolder(
     private var playCardViewModel: PlayCardViewModel ?= null
 
     override fun bind(element: PlayCardViewModel) {
+        title.text = element.getChannel()?.header?.name ?: ""
+        description.hide()
+        description.text = ""
 
         element.getPlayCardHome()?.let { model ->
             mVideoUrl = model.videoStream.streamUrl
             mThumbUrl = model.coverUrl
-
-            title.text = model.title
-            description.text = model.description
+            playCardViewModel = element
+            thumbnailView.loadImage(mVideoUrl, 250, 100, false)
             broadcasterName.text = model.moderatorName
             titlePlay.text = model.title
             viewer.text = model.totalView
@@ -73,7 +74,7 @@ class PlayCardViewHolder(
     }
 
     fun createHelper() {
-        if(playCardViewModel == null) return
+        if(playCardViewModel == null || ExoUtil.isDeviceHasRequirementAutoPlay(itemView.context)) return
 
         if(helper == null) {
             helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
@@ -81,7 +82,6 @@ class PlayCardViewHolder(
                     .setToPrepareOnResume(false)
                     .setVideoUrls(mVideoUrl)
                     .setExoPlayerEventsListener(this)
-                    .setThumbImageViewEnabled(this)
                     .setRepeatModeOn(true)
                     .setMutedVolume()
                     .create()
@@ -90,10 +90,6 @@ class PlayCardViewHolder(
         if(helper?.isPlayerNull() == true){
             helper?.createPlayer(false)
         }
-    }
-
-    override fun onThumbImageViewReady(imageView: ImageView) {
-        Glide.with(itemView.context).load(mThumbUrl).override(200,100).diskCacheStrategy(DiskCacheStrategy.RESOURCE).skipMemoryCache(true).into(imageView)
     }
 
     override fun onPlayerPlaying(currentWindowIndex: Int) {
