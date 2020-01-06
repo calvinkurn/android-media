@@ -57,4 +57,5 @@ dependencies {
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.kyccentralized)
+    implementation project(rootProject.ext.features.topchat)
 }
