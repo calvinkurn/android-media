@@ -29,16 +29,6 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
     }
 
 
-//    suspend fun startValidateCoupon(item: CatalogsValueEntity) = withContext(Dispatchers.IO) {
-//        val variables = HashMap<String, Any>()
-//        variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = item.id
-//        variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 0   //Never be a gift
-//        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_tokopoint_validate_redeem),
-//                ValidateCouponBaseEntity::class.java, variables, false)
-//        repository.getReseponse(listOf(graphqlRequest), cacheStrategy)
-//
-//    }
-
     suspend fun redeemCoupon(promoCode: String) = withContext(Dispatchers.IO) {
         val variables = HashMap<String, Any>()
         variables[CommonConstant.GraphqlVariableKeys.PROMO_CODE] = promoCode
@@ -50,17 +40,6 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
 
     }
 
-//    suspend fun startSaveCoupon(item: CatalogsValueEntity) = withContext(Dispatchers.IO) {
-//        val variables = HashMap<String, Any>()
-//        variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = item.id
-//        variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 0     //Never be a gift
-//
-//        val request = GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(),
-//                R.raw.tp_gql_tokopoint_redeem_coupon),
-//                RedeemCouponBaseEntity::class.java,
-//                variables, false)
-//        repository.getReseponse(listOf(request), cacheStrategy)
-//    }
 
     suspend fun getCouponDetail(uniqueCouponCode: String) = withContext(Dispatchers.IO) {
         val variables = HashMap<String, Any>()
