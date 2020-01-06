@@ -179,14 +179,8 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void moveToSearchPage() {
-        Intent searchActivityIntent = createIntentToSearchResult();
-
-        startActivity(searchActivityIntent);
+        RouteManager.route(this, createSearchResultApplink());
         finish();
-    }
-
-    private Intent createIntentToSearchResult() {
-        return RouteManager.getIntent(this, createSearchResultApplink());
     }
 
     private String createSearchResultApplink() {

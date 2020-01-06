@@ -28,6 +28,7 @@ public class FlightDetailViewModel implements Parcelable {
         }
     };
     private String id;
+    private String term;
     private String departureAirport;
     private String departureAirportCity; // merge result
     private String departureTime;
@@ -53,6 +54,7 @@ public class FlightDetailViewModel implements Parcelable {
 
     protected FlightDetailViewModel(Parcel in) {
         id = in.readString();
+        term = in.readString();
         departureAirport = in.readString();
         departureAirportCity = in.readString();
         departureTime = in.readString();
@@ -77,6 +79,7 @@ public class FlightDetailViewModel implements Parcelable {
     public FlightDetailViewModel build(FlightJourneyViewModel flightJourneyViewModel) {
         if (flightJourneyViewModel != null) {
             setId(flightJourneyViewModel.getId());
+            setTerm(flightJourneyViewModel.getTerm());
             setDepartureAirport(flightJourneyViewModel.getDepartureAirport());
             setDepartureAirportCity(flightJourneyViewModel.getDepartureAirportCity());
             setArrivalAirport(flightJourneyViewModel.getArrivalAirport());
@@ -125,6 +128,14 @@ public class FlightDetailViewModel implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
     }
 
     public void setId(String id) {
@@ -283,6 +294,7 @@ public class FlightDetailViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
+        parcel.writeString(term);
         parcel.writeString(departureAirport);
         parcel.writeString(departureAirportCity);
         parcel.writeString(departureTime);

@@ -1,8 +1,6 @@
 package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -12,20 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
-import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
+import com.tokopedia.common.travel.data.entity.TravelContactListModel
+import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
+import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
+import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 
 class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 
@@ -80,8 +80,8 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         when (requestCode) {
             REQUEST_CODE_PHONE_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE) ?: CountryPhoneCode()
-                    contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
+                    val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE) ?: TravelCountryPhoneCode()
+                    contactData.phoneCode = countryPhoneCode.countryPhoneCode
 
                     spinnerData.clear()
                     spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
@@ -122,7 +122,7 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         sp_contact_phone_code.setSelection(0)
         sp_contact_phone_code.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(activity), REQUEST_CODE_PHONE_CODE)
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
             }
             true
         }

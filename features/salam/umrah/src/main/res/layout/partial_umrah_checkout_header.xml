@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white_65"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineHeight="@dimen/dp_22"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        tools:text="Umrah Silver 9 Hari Berangkat 20 November 2019"
+        />
+    <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
+        android:id="@+id/iw_umrah_checkout_travel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_umrah_checkout_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iw_umrah_checkout_travel">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_checkout_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            tools:text="Rp22.500.000"
+            android:textColor="@color/Yellow_Y500"
+            app:layout_constraintStart_toStartOf="@+id/tg_umrah_mulai_dari"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_mulai_dari"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_checkout_pax_all_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/umrah_homepage_pax_all_in"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:textColor="@color/Neutral_N700_44"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tg_umrah_checkout_price"
+            app:typographyType="small"
+            app:typographyWeight="reguler" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
+        android:id="@+id/iw_umrah_checkout_period"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_umrah_checkout_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"/>
+
+    <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
+        android:id="@+id/iw_umrah_checkout_hotel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iw_umrah_checkout_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"/>
+
+    <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
+        android:id="@+id/iw_umrah_checkout_flight"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iw_umrah_checkout_hotel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"/>
+
+    <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
+        android:id="@+id/iw_umrah_checkout_pilgrims"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iw_umrah_checkout_flight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

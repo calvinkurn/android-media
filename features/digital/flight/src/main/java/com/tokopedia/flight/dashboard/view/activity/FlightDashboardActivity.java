@@ -3,7 +3,6 @@ package com.tokopedia.flight.dashboard.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;

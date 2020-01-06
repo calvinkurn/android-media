@@ -624,8 +624,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void startActivityWithApplink(String applink, String... parameter) {
-        Intent intent = RouteManager.getIntent(this, applink, parameter);
-        startActivity(intent);
+        RouteManager.route(this, applink, parameter);
     }
 
     @Override
@@ -698,13 +697,6 @@ public class SearchActivity extends BaseActivity
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER_MODEL);
     }
 
     private void changeGrid() {

@@ -1,15 +1,15 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
 import android.app.ProgressDialog
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.Rect
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -26,7 +26,6 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
@@ -99,6 +98,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn))
             hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
+            hotelRoomListPageModel.destinationName = it.getString(ARG_DESTINATION_NAME, "")
+            hotelRoomListPageModel.destinationType =  it.getString(ARG_DESTINATION_TYPE, "")
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -135,7 +136,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 is Success -> {
                     context?.run {
                         startActivity(HotelBookingActivity.getCallingIntent(this,it.data.response.cartId,
-                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName))
+                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
+                                hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
                     }
                 }
                 is Fail -> {
@@ -270,7 +272,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
                 listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
-                hotelRoomListPageModel.adult, hotelRoomListPageModel.destinationType,
+                hotelRoomListPageModel.room, hotelRoomListPageModel.adult, hotelRoomListPageModel.destinationType,
                 hotelRoomListPageModel.destinationName)
     }
 
@@ -320,7 +322,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
-        hotelCalendarDialog.show(fragmentManager, "test")
+        fragmentManager?.let { hotelCalendarDialog.show(it, "test") }
     }
 
     override fun onSaveGuest(room: Int, adult: Int) {

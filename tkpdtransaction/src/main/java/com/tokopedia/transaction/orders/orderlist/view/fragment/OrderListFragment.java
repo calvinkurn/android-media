@@ -50,7 +50,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
-import com.tokopedia.transaction.orders.orderlist.common.util.Utils;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -70,6 +69,7 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderLi
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
+import com.tokopedia.transaction.util.Utils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
@@ -630,10 +630,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) {
 
-        defStartDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getStartRangeDate());
-        defEndDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getEndRangeDate());
-        customEndDate = Utils.INSTANCE.setFormat(format, format1, customDate.getEndRangeDate());
-        customStartDate = Utils.INSTANCE.setFormat(format, format1, customDate.getStartRangeDate());
+        defStartDate = Utils.setFormat(format, format1, defaultDate.getStartRangeDate());
+        defEndDate = Utils.setFormat(format, format1, defaultDate.getEndRangeDate());
+        customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
+        customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
 
     }
 
@@ -713,8 +713,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 customFilter = false;
             } else {
                 customFilter = true;
-                startDate = Utils.INSTANCE.setFormat(format, format2, mulaiButton.getText().toString());
-                endDate = Utils.INSTANCE.setFormat(format, format2, sampaiButton.getText().toString());
+                startDate = Utils.setFormat(format, format2, mulaiButton.getText().toString());
+                endDate = Utils.setFormat(format, format2, sampaiButton.getText().toString());
             }
             selectedDateMap.clear();
             selectedDateMap.put(SAMPAI, endDate);
@@ -736,8 +736,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             selectedDateMap.clear();
             customFilter = false;
             datePickerlayout.setVisibility(View.GONE);
-            sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customEndDate));
-            mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customStartDate));
+            sampaiButton.setText(Utils.setFormat(format2, format, customEndDate));
+            mulaiButton.setText(Utils.setFormat(format2, format, customStartDate));
         });
         if (customFilter) {
             radio2.setChecked(true);
@@ -745,8 +745,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         } else {
             radio1.setChecked(true);
         }
-        sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
-        mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
+        sampaiButton.setText(Utils.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
+        mulaiButton.setText(Utils.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
 
         crossIcon.setOnClickListener((View view) -> {
             changeDateBottomSheetDialog.dismiss();
@@ -796,9 +796,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void showDatePicker(String title) {
         String[] result = split(customStartDate);
-        Calendar minDate = new GregorianCalendar(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
-        Calendar maxDate = new GregorianCalendar(getCurrentLocale(getActivity()));
-        Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        Calendar minDate = Calendar.getInstance();
+        minDate.add(Calendar.YEAR, -3);
+        Calendar maxDate = Calendar.getInstance();
+        maxDate.add(Calendar.YEAR, 100);
+        Calendar defaultDate = Calendar.getInstance();
         datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
             @Override
             public void onDateChanged(long l) {
@@ -816,9 +818,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
-                sampaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1],getActivity()) + " " + date[2]);
+                sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
             } else {
-                mulaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1],getActivity()) + " " + date[2]);
+                mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
             }
             datePickerUnify.dismiss();
         });

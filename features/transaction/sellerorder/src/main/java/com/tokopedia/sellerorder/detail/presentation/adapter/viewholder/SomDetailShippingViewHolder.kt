@@ -22,27 +22,20 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             itemView.tv_receiver_phone.text = item.dataObject.receiverPhone
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
-            if (item.dataObject.shippingNotes.isNotEmpty()) {
-                itemView.tv_receiver_notes.visibility = View.VISIBLE
-                itemView.tv_notes_label.visibility = View.VISIBLE
-                itemView.tv_receiver_notes.text = item.dataObject.shippingNotes
-            } else {
-                itemView.tv_receiver_notes.visibility = View.GONE
-                itemView.tv_notes_label.visibility = View.GONE
-            }
 
-            if (item.dataObject.isFreeShipping) {
+            if (item.dataObject.isFreeShipping || item.dataObject.isRemoveAwb) {
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
                 itemView.ic_harus_sesuai.visibility = View.VISIBLE
                 itemView.label_harus_sesuai.setOnClickListener {
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
-                    }
+                }
                 itemView.ic_harus_sesuai.setOnClickListener {
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
-                            R.string.desc_bottomsheet_immutable_courier) }
+                            R.string.desc_bottomsheet_immutable_courier)
+                }
             } else {
                 itemView.label_harus_sesuai.visibility = View.GONE
                 itemView.ic_harus_sesuai.visibility = View.GONE
@@ -79,41 +72,52 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             }
 
             // booking online - booking code
-            if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()
-                    || item.dataObject.onlineBookingState == 0) {
+            if (item.dataObject.onlineBookingState == 0) {
                 itemView.rl_booking_code.visibility = View.GONE
             } else {
-                itemView.rl_booking_code.visibility = View.VISIBLE
-
-                itemView.rl_wajib_dicantumkan.setOnClickListener {
-                    actionListener.onShowBottomSheetInfo(
-                            itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
-                            R.string.wajib_tulis_kode_booking_desc)
-                }
-
-                if (item.dataObject.onlineBookingCode.isEmpty()) {
-                    itemView.booking_code_see_btn.visibility = View.GONE
-                    itemView.booking_code_value.apply {
-                        text = itemView.context.getString(R.string.placeholder_kode_booking)
-                        setTypeface(this.typeface, Typeface.ITALIC)
-                    }
+                if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
+                    itemView.rl_booking_code.visibility = View.GONE
                 } else {
-                    itemView.booking_code_value.apply {
-                        text = item.dataObject.onlineBookingCode
-                        setTypeface(this.typeface, Typeface.BOLD)
-                    }
-                    itemView.booking_code_see_btn.apply {
-                        visibility = View.VISIBLE
-                        setOnClickListener {
-                            actionListener.onShowBookingCode(
-                                    item.dataObject.onlineBookingCode,
-                                    item.dataObject.onlineBookingType)
-                            // intent ke BookingCodeActivity?
-                            // startActivity(BookingCodeActivity.createInstance(this, codeData))
-                        }
+                    itemView.rl_booking_code.visibility = View.VISIBLE
+
+                    itemView.rl_wajib_dicantumkan.setOnClickListener {
+                        actionListener.onShowBottomSheetInfo(
+                                itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
+                                R.string.wajib_tulis_kode_booking_desc)
                     }
 
+                    if (item.dataObject.onlineBookingCode.isEmpty()) {
+                        itemView.booking_code_see_btn.visibility = View.GONE
+                        itemView.booking_code_value.apply {
+                            text = itemView.context.getString(R.string.placeholder_kode_booking)
+                            setTypeface(this.typeface, Typeface.ITALIC)
+                        }
+                    } else {
+                        itemView.booking_code_value.apply {
+                            text = item.dataObject.onlineBookingCode
+                            setTypeface(this.typeface, Typeface.BOLD)
+                        }
+                        itemView.booking_code_see_btn.apply {
+                            visibility = View.VISIBLE
+                            setOnClickListener {
+                                actionListener.onShowBookingCode(
+                                        item.dataObject.onlineBookingCode,
+                                        item.dataObject.onlineBookingType)
+                            }
+                        }
+
+                    }
                 }
+            }
+
+            // dropshipper
+            if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
+                itemView.rl_som_dropshipper.visibility = View.VISIBLE
+                itemView.tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                itemView.tv_som_dropshipper_phone.text = item.dataObject.dropshipperPhone
+
+            } else {
+                itemView.rl_som_dropshipper.visibility = View.GONE
             }
         }
     }

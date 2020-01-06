@@ -630,7 +630,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
         val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
         if (feedfragment != null && feedfragment is FeedShopFragment) {
-            feedfragment.setRefresh()
+            feedfragment.clearCache()
         }
 
         getShopInfo(true)

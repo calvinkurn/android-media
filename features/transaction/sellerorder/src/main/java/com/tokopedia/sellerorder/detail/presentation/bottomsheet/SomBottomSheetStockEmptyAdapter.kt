@@ -29,12 +29,17 @@ class SomBottomSheetStockEmptyAdapter(): RecyclerView.Adapter<SomBottomSheetStoc
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.iv_product.loadImageRounded(listProduct[position].thumbnail, holder.itemView.resources.getDimension(R.dimen.dp_8))
+        holder.itemView.iv_product.loadImageRounded(listProduct[position].thumbnail, holder.itemView.resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
         holder.itemView.tv_product_name.text = listProduct[position].name
         holder.itemView.tv_product_price.text = listProduct[position].priceText
         holder.itemView.cb_product.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) listToBeEmptied.add(listProduct[position])
-            else listToBeEmptied.remove(listProduct[position])
+            if (isChecked) {
+                listToBeEmptied.add(listProduct[position])
+                holder.itemView.label_empty_stock.visibility = View.VISIBLE
+            } else {
+                listToBeEmptied.remove(listProduct[position])
+                holder.itemView.label_empty_stock.visibility = View.GONE
+            }
         }
     }
 

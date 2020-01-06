@@ -45,6 +45,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
@@ -52,6 +53,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
+import com.tokopedia.tokopoints.notification.model.PopupNotification;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
@@ -73,6 +75,7 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -335,6 +338,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         tokoPointToolbar.setTitle(R.string.tp_title_tokopoints);
         tokoPointToolbar.setOnTokoPointToolbarClickListener(this);
         TokoPointsNotificationManager.fetchNotification(getActivity(), "main", getChildFragmentManager());
+        mPresenter.tokopointOnboarding2020();
     }
 
     @Override
@@ -1015,6 +1019,40 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     }
 
     @Override
+    public void showTokopoint2020(PopupNotification data) {
+
+        if (data.getTitle().isEmpty() || data.getTitle() == null || data.getAppLink().isEmpty() || data.getAppLink() == null) {
+            return;
+        }
+
+        ButtonCompat btn;
+        Typography titleDialog;
+        Typography descDialog;
+        ImageView boxImageView;
+        AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.tp_upcoming_feature_dialog, null);
+        adb.setView(view);
+        btn = view.findViewById(R.id.btn_route);
+        titleDialog = view.findViewById(R.id.tv_dialogTitle);
+        descDialog = view.findViewById(R.id.tv_dialogDesc);
+        boxImageView = view.findViewById(R.id.iv_banner);
+
+        titleDialog.setText(data.getTitle());
+        descDialog.setText(data.getText());
+        btn.setText(data.getButtonText());
+        ImageHandler.loadImageFitCenter(getContext(), boxImageView, data.getImageURL());
+        AlertDialog alertDialog = adb.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        alertDialog.setCancelable(false);
+        alertDialog.setCanceledOnTouchOutside(false);
+        btn.setOnClickListener(v -> {
+            RouteManager.route(getContext(), data.getAppLink());
+            alertDialog.dismiss();
+        });
+        alertDialog.show();
+    }
+
+    @Override
     public void onToolbarLeaderboardClick() {
         RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.LEADERBOARD, getString(R.string.tp_leader));
         AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -1039,7 +1077,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void onDestroyView() {
-        if (mExploreSectionPagerAdapter != null){
+        if (mExploreSectionPagerAdapter != null) {
             mExploreSectionPagerAdapter.onDestroyView();
         }
         super.onDestroyView();

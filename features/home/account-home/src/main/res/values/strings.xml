@@ -90,6 +90,7 @@
 
     <string name="label_profile_completion">Kelengkapan Profil %1$d%%</string>
     <string name="label_tokopedia_pay_title">Tokopedia Pay</string>
+    <string name="label_tokopedia_pay_title_new">Dana di Tokopedia</string>
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
     <string name="label_tokopedia_pay_deposit">Saldo</string>
     <string name="label_tokopedia_pay_wallet">TokoCash</string>
@@ -155,7 +156,7 @@
     <string name="title_menu_other_features">Fitur Lainnya</string>
     <string name="title_menu_opportunity">Peluang Pesanan</string>
     <string name="label_menu_opportunity">Pesanan yang dibatalkan penjual lain</string>
-    <string name="title_menu_seller_center">Seller Center</string>
+    <string name="title_menu_seller_center">Pusat Seller</string>
     <string name="title_menu_topads">TopAds</string>
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
@@ -186,7 +187,7 @@
     <string name="top_features">Top Features</string>
     <string name="topads_desc">Media iklan Produk dan Toko</string>
     <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
-    <string name="seller_center">Seller Center</string>
+    <string name="seller_center">Pusat Seller</string>
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
@@ -224,6 +225,7 @@
 
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="label_tokopedia_pay_action">Atur</string>
 
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
     <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>

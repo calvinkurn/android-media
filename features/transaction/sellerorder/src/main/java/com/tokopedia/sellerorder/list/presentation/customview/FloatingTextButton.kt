@@ -139,7 +139,7 @@ class FloatingTextButton : FrameLayout {
 
     private fun inflateLayout(context: Context) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.widget_floating_text_button, this, true)
+        val view = inflater.inflate(R.layout.widget_floating_text_button_som, this, true)
 
         container = view.findViewById(R.id.layout_button_container)
 

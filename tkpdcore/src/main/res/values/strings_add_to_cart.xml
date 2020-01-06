@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="atc_selection_shipment_info">Pilih Agen Kurir</string>
-    <string name="atc_selection_shipment_package_info">Pilih Jenis Paket</string>
-
-</resources>
