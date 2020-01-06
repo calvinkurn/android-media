@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -49,7 +50,7 @@ class PdpGamificationView : FrameLayout {
     private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
     private lateinit var globalError: GlobalError
-    var fragment: CrackTokenFragment? = null
+    var fragment: BaseDaggerFragment? = null
 
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener

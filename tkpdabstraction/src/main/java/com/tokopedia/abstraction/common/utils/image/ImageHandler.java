@@ -59,6 +59,8 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
+import kotlin.jvm.functions.Function1;
+
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 
@@ -299,6 +301,27 @@ public class ImageHandler {
                 .dontAnimate()
                 .signature(signature)
                 .into(imageview);
+    }
+
+    public static void loadImageWithSignature(ImageView imageview, String url, ObjectKey signature, Function1<Boolean, Boolean> imageLoaded) {
+        Glide.with(imageview.getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .dontAnimate()
+                .signature(signature)
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                        imageview.setImageDrawable(resource);
+                        imageLoaded.invoke(true);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
+                        imageview.setImageDrawable(null);
+                        imageLoaded.invoke(false);
+                    }
+                });
     }
 
     public static void downloadOriginalSizeImageWithSignature(
