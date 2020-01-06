@@ -674,6 +674,22 @@ internal class HandleViewVisibilityChangedTest: Spek({
                 emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
             }
 
+            Then("should post shop recommendation item impression tracking event") {
+                val shopRecommendationItemImpressionTrackingEventLiveData = searchShopViewModel.getShopRecommendationItemImpressionTrackingEventLiveData().value
+
+                val shopRecommendationItemImpressionTracking = shopRecommendationItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopRecommendationItemImpressionTracking?.size shouldBe shopItemList.size
+            }
+
+            Then("should post shop recommendation product preview impression tracking event") {
+                val shopRecommendationProductPreviewImpressionTrackingEventLiveData =
+                        searchShopViewModel.getShopRecommendationProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking =
+                        shopRecommendationProductPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe shopItemList.size * shopItemProductList.size
+            }
+
             Then("assert has next page is false") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 

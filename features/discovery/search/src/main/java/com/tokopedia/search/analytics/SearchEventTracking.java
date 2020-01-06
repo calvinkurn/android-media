@@ -10,6 +10,10 @@ public interface SearchEventTracking {
         String CLICK_TOP_NAV = "clickTopNav";
         String VIEW_SEARCH_RESULT_IRIS = "viewSearchResultIris";
         String CLICK_SEARCH_RESULT_IRIS = "clickSearchResultIris";
+        String PROMO_VIEW = "promoView";
+        String PROMO_CLICK = "promoClick";
+        String PRODUCT_VIEW = "productView";
+        String PRODUCT_CLICK = "productClick";
     }
 
     interface Category {
@@ -49,6 +53,15 @@ public interface SearchEventTracking {
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
         String CLICK_SEARCH = "click - search";
         String CLICK_CHANGE_KEYWORD = "click ganti kata kunci";
+        String IMPRESSION_SHOP = "impression - shop";
+        String IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative";
+        String CLICK_SHOP = "click - shop";
+        String CLICK_SHOP_INACTIVE = "click - shop - inactive";
+        String CLICK_SHOP_ALTERNATIVE = "click - shop - alternative";
+        String IMPRESSION_PRODUCT_SHOP_TAB = "impression - product - shop tab";
+        String IMPRESSION_PRODUCT_SHOP_TAB_ALTERNATIVE = "impression - product - shop tab - alternative";
+        String CLICK_PRODUCT_SHOP_TAB = "click - product - shop tab";
+        String CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE = "click - product - shop tab - alternative";
     }
 
     interface Label {

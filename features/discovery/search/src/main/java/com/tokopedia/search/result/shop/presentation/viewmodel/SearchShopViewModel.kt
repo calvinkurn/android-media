@@ -68,6 +68,14 @@ internal class SearchShopViewModel(
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val emptySearchTrackingEventLiveData = MutableLiveData<Event<Boolean>>()
     private val searchShopFirstPagePerformanceMonitoringEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val shopRecommendationProductPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val clickShopItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem>>()
+    private val clickNotActiveShopItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem>>()
+    private val clickShopRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem>>()
+    private val routePageEventLiveData = MutableLiveData<Event<String>>()
+    private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
+    private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
 
     init {
         setSearchParameterUniqueId()
@@ -180,6 +188,7 @@ internal class SearchShopViewModel(
 
         postImpressionTrackingEvent(visitableList)
         postEmptySearchTrackingEvent()
+        postRecommendationItemTrackingEvent(visitableList)
     }
 
     private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
@@ -192,33 +201,42 @@ internal class SearchShopViewModel(
 
     private fun createVisitableListFromModel(searchShopModel: SearchShopModel): List<Visitable<*>> {
         return if (isEmptySearchShop) {
-            val emptySearchVisitableList = mutableListOf<Visitable<*>>()
-
-            emptySearchVisitableList.addAll(createVisitableListWithEmptySearchViewModel())
-
-            if (searchShopModel.aceSearchShop.topShopList.isNotEmpty()) {
-                emptySearchVisitableList.add(ShopRecommendationTitleViewModel())
-
-                val searchShopViewModel = shopViewModelMapper.convert(searchShopModel)
-                setShopItemPositionWithStartPosition(0, searchShopViewModel.recommendationShopItemList)
-                emptySearchVisitableList.addAll(searchShopViewModel.recommendationShopItemList)
-            }
-
-            emptySearchVisitableList
+            createSearchShopEmptyResultList(searchShopModel)
         }
         else {
             createSearchShopListWithHeader(searchShopModel)
         }
     }
 
-    private fun createVisitableListWithEmptySearchViewModel(): List<Visitable<*>> {
+    private fun createSearchShopEmptyResultList(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
         val emptySearchViewModel = ShopEmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), false)
-
         visitableList.add(emptySearchViewModel)
 
+        if (hasShopRecommendation(searchShopModel)) {
+            val shopRecommendationVisitableList = createShopRecommendationVisitableList(searchShopModel)
+            visitableList.addAll(shopRecommendationVisitableList)
+        }
+
         return visitableList
+    }
+
+    private fun hasShopRecommendation(searchShopModel: SearchShopModel): Boolean {
+        return searchShopModel.aceSearchShop.topShopList.isNotEmpty()
+    }
+
+    private fun createShopRecommendationVisitableList(searchShopModel: SearchShopModel): List<Visitable<*>> {
+        val shopRecommendationVisitableList = mutableListOf<Visitable<*>>()
+
+        val recommendationTitleViewModel = ShopRecommendationTitleViewModel()
+        shopRecommendationVisitableList.add(recommendationTitleViewModel)
+
+        val searchShopViewModel = shopViewModelMapper.convert(searchShopModel)
+        setShopItemPositionWithStartPosition(0, searchShopViewModel.recommendationShopItemList)
+        shopRecommendationVisitableList.addAll(searchShopViewModel.recommendationShopItemList)
+
+        return shopRecommendationVisitableList
     }
 
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -344,6 +362,31 @@ internal class SearchShopViewModel(
         if (isEmptySearchShop) {
             emptySearchTrackingEventLiveData.postValue(Event(true))
         }
+    }
+
+    private fun postRecommendationItemTrackingEvent(visitableList: List<Visitable<*>>) {
+        val dataLayerShopItemList = mutableListOf<Any>()
+        val dataLayerShopItemProductList = mutableListOf<Any>()
+
+        for (shopItem in visitableList) {
+            if (shopItem is ShopViewModel.ShopItem) {
+                dataLayerShopItemList.add(shopItem.getShopRecommendationAsObjectDataLayer())
+                dataLayerShopItemProductList.addAll(createShopRecommendationProductPreviewDataLayerObjectList(shopItem))
+            }
+        }
+
+        shopRecommendationItemImpressionTrackingEventLiveData.postValue(Event(dataLayerShopItemList))
+        shopRecommendationProductPreviewImpressionTrackingEventLiveData.postValue(Event(dataLayerShopItemProductList))
+    }
+
+    private fun createShopRecommendationProductPreviewDataLayerObjectList(shopItem: ShopViewModel.ShopItem): List<Any> {
+        val dataLayerShopItemProductList = mutableListOf<Any>()
+
+        shopItem.productList.forEach { productItem ->
+            dataLayerShopItemProductList.add(productItem.getShopRecommendationProductPreviewAsObjectDataLayerList())
+        }
+
+        return dataLayerShopItemProductList
     }
 
     private fun endSearchShopFirstPagePerformanceMonitoring() {
@@ -547,6 +590,51 @@ internal class SearchShopViewModel(
         }
     }
 
+    fun onViewClickShop(shopItem: ShopViewModel.ShopItem) {
+        postClickNotActiveShopTrackingEvent(shopItem)
+        postClickShopItemTrackingEvent(shopItem)
+        postRoutePageEvent(shopItem.applink)
+    }
+
+    private fun postClickNotActiveShopTrackingEvent(shopItem: ShopViewModel.ShopItem) {
+        if (isShopNotActive(shopItem)) {
+            clickNotActiveShopItemTrackingEventLiveData.postValue(Event(shopItem))
+        }
+    }
+
+    private fun isShopNotActive(shopItem: ShopViewModel.ShopItem): Boolean {
+        return (shopItem.isClosed
+                || shopItem.isModerated
+                || shopItem.isInactive)
+    }
+
+    private fun postClickShopItemTrackingEvent(shopItem: ShopViewModel.ShopItem) {
+        if (shopItem.isRecommendation) {
+            clickShopRecommendationItemTrackingEventLiveData.postValue(Event(shopItem))
+        }
+        else {
+            clickShopItemTrackingEventLiveData.postValue(Event(shopItem))
+        }
+    }
+
+    private fun postRoutePageEvent(applink: String) {
+        routePageEventLiveData.postValue(Event(applink))
+    }
+
+    fun onViewClickProductPreview(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+        postRoutePageEvent(shopItemProduct.applink)
+        postClickProductPreviewTrackingEvent(shopItemProduct)
+    }
+
+    private fun postClickProductPreviewTrackingEvent(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+        if (shopItemProduct.isRecommendation) {
+            clickProductRecommendationItemTrackingEventLiveData.postValue(Event(shopItemProduct))
+        }
+        else {
+            clickProductItemTrackingEventLiveData.postValue(Event(shopItemProduct))
+        }
+    }
+
     fun getSearchParameter() = searchParameter.toMap()
 
     fun getSearchParameterQuery() : String = (searchParameter[SearchApiConst.Q] ?: "").toString()
@@ -589,5 +677,36 @@ internal class SearchShopViewModel(
 
     fun getSearchShopFirstPagePerformanceMonitoringEventLiveData(): LiveData<Event<Boolean>> {
         return searchShopFirstPagePerformanceMonitoringEventLiveData
+    }
+
+    fun getShopRecommendationItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> {
+        return shopRecommendationItemImpressionTrackingEventLiveData
+    }
+
+    fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> {
+        return shopRecommendationProductPreviewImpressionTrackingEventLiveData
+    }
+
+    fun getClickShopItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem>> {
+        return clickShopItemTrackingEventLiveData
+    }
+    fun getClickNotActiveShopItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem>> {
+        return clickNotActiveShopItemTrackingEventLiveData
+    }
+
+    fun getClickShopRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem>> {
+        return clickShopRecommendationItemTrackingEventLiveData
+    }
+
+    fun getRoutePageEventLiveData(): LiveData<Event<String>> {
+        return routePageEventLiveData
+    }
+
+    fun getClickProductItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> {
+        return clickProductItemTrackingEventLiveData
+    }
+
+    fun getClickProductRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> {
+        return clickProductRecommendationItemTrackingEventLiveData
     }
 }

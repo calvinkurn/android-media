@@ -92,6 +92,15 @@ internal data class ShopViewModel(
             )
         }
 
+        fun getShopRecommendationAsObjectDataLayer(): Any {
+            return DataLayer.mapOf(
+                    "id", id,
+                    "name", "/search result - shop - alternative",
+                    "creative", name,
+                    "position", position
+            )
+        }
+
         override fun type(typeFactory: ShopListTypeFactory?): Int {
             return typeFactory?.type(this) ?: 0
         }
@@ -135,6 +144,33 @@ internal data class ShopViewModel(
                         "category", "none / other",
                         "variant", "none / other",
                         "position", position
+                )
+            }
+
+            fun getShopRecommendationProductPreviewAsObjectDataLayerList(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "list", "/searchproduct - shop product list",
+                        "position", position
+                )
+            }
+
+            fun getShopRecommendationProductPreviewAsObjectDataLayer(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "list", "/searchproduct - shop product list",
+                        "position", position,
+                        "attribution", "none / other"
                 )
             }
 

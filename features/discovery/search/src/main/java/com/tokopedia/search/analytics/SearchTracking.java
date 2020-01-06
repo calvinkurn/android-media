@@ -2,7 +2,6 @@ package com.tokopedia.search.analytics;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.SearchEvent;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
@@ -120,9 +119,9 @@ public class SearchTracking {
 
     public static void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, "promoView",
-                        EVENT_CATEGORY, "search result",
-                        EVENT_ACTION, "impression - shop",
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_VIEW,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_SHOP,
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoView", DataLayer.mapOf(
@@ -135,9 +134,9 @@ public class SearchTracking {
 
     public static void eventSearchResultShopItemClick(Object shopItem, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, "promoClick",
-                        EVENT_CATEGORY, "search result",
-                        EVENT_ACTION, "click - shop",
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_SHOP,
                         EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
@@ -150,9 +149,9 @@ public class SearchTracking {
 
     public static void eventImpressionSearchResultShopProductPreview(List<Object> shopItemProductList, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, "productView",
-                        EVENT_CATEGORY, "search result",
-                        EVENT_ACTION, "impression - product - shop tab",
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT_SHOP_TAB,
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
@@ -165,9 +164,9 @@ public class SearchTracking {
 
     public static void eventSearchResultShopProductPreviewClick(Object shopItemProduct, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, "productClick",
-                        EVENT_CATEGORY, "search result",
-                        EVENT_ACTION, "click - product - shop tab",
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT_SHOP_TAB,
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "click", DataLayer.mapOf(
@@ -181,9 +180,9 @@ public class SearchTracking {
 
     public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, "promoClick",
-                        EVENT_CATEGORY, "search result",
-                        EVENT_ACTION, "click - shop - inactive",
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_SHOP_INACTIVE,
                         EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
@@ -652,5 +651,67 @@ public class SearchTracking {
         );
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(value);
+    }
+
+    public static void trackEventImpressionShopRecommendation(List<Object> shopItem, String keyword) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_VIEW,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_SHOP_ALTERNATIVE,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(shopItem.toArray(new Object[shopItem.size()]))
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventClickShopRecommendation(Object shopItem, String shopId, String keyword) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_SHOP_ALTERNATIVE,
+                        EVENT_LABEL, shopId + " - " + keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(shopItem)
+                                )
+                        )
+                )
+        );
+    }
+
+
+    public static void trackEventImpressionShopRecommendationProductPreview(List<Object> shopItemProductList, String keyword) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT_SHOP_TAB_ALTERNATIVE,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        shopItemProductList.toArray(new Object[shopItemProductList.size()])
+                                ))
+                )
+        );
+    }
+
+    public static void trackEventClickShopRecommendationProductPreview(Object shopItemProduct, String keyword) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                "click", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf("list", "/notifcenter"),
+                                        "products", DataLayer.listOf(shopItemProduct)
+                                )
+                        )
+                )
+        );
     }
 }
