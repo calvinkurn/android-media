@@ -6,8 +6,6 @@ import android.os.Build
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
@@ -77,10 +75,12 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
+
     @JvmField
     val DFM_ONBOARDING = "df_base_onboarding"
     private val DFM_CATEGORY = "df_category"
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
+
     private val DFM_CONTENT = "df_content"
     private val DFM_DIGITAL = "df_digital"
     private val DFM_DISCOVERY = "df_discovery"
@@ -120,9 +120,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_CONTENT, R.string.applink_title_affiliate))
 
             // Digital
-            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_DIGITAL, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL, R.string.digital_topup_title))
-            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_DIGITAL, R.string.title_voucher_game))
+            add(DFP({  it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL) }, DFM_DIGITAL, R.string.title_digital_subhomepage))
 
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL, R.string.title_digital_deals))
