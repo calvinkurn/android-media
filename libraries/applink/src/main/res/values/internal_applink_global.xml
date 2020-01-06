@@ -20,6 +20,7 @@
     <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
+    <string name="path_change_password">/change-password</string>
     <string name="path_change_pin">/change-pin</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>

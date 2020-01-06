@@ -149,6 +149,7 @@ object DeeplinkMapper {
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+            ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
             else -> ""
         }
         when {

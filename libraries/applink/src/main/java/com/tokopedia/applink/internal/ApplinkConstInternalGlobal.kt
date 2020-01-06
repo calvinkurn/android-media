@@ -183,6 +183,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
 
+    // ChangePPasswordActivity
+    // tokopedia-android-internal://global/change-password
+    @JvmField
+    val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
+
     // ChangePinActivity
     // tokopedia-android-internal://global/change-pin
     @JvmField
