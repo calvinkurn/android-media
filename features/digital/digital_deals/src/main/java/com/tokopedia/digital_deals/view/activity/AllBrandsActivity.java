@@ -51,6 +51,7 @@ import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         if (uri != null) {
             List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS, uri, true);
             fromVoucher = params.get(0);
+            checkForCurrentLocation();
         }
         userSession = new UserSession(this);
         dealsAnalytics = new DealsAnalytics();
@@ -250,8 +252,18 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
                 .add(com.tokopedia.digital_deals.R.id.main_content, fragment).addToBackStack(ALL_BRANDS).commit();
     }
 
+    @Override
+    public void updateLocationName(String locationName) {
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        if (!TextUtils.isEmpty(locationName)) {
+            toolbarTitle.setText(location.getName());
+        }
+    }
+
     private void refetchData(String searchText, int position) {
         Fragment fragment = brandsTabsPagerAdapter.getSelectedFragment(position);
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        toolbarTitle.setText(location.getName());
         if (fragment instanceof AllBrandsFragment) {
             AllBrandsFragment allBrandsFragment = (AllBrandsFragment) fragment;
             allBrandsFragment.onSearchSubmitted(searchText);
@@ -389,5 +401,24 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
         localCacheHandler.applyEditor();
         allBrandsFragment.setCurrentCoordinates();
+    }
+
+    private void checkForCurrentLocation() {
+        PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                setDefaultLocationOnHomePage();
+            }
+
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, AllBrandsActivity.this);
+            }
+        }, getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
     }
 }

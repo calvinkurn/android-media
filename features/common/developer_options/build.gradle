@@ -48,6 +48,7 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation project(rootProject.ext.libraries.translator)
+    debugImplementation rootProject.ext.debugToolsDependencies.stetho
 }
 
 project.ext {

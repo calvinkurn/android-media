@@ -50,11 +50,12 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
     }
 
     private fun bindThumbnail(element: Invoice) {
+        val radius = 6.toPx().toFloat()
         ImageHandler.loadImageRounded2(
                 itemView.context,
                 itemView.ivThumbnail,
                 element.thumbnailUrl,
-                6.toPx().toFloat()
+                radius
         )
     }
 
