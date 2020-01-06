@@ -48,7 +48,6 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
 
         vLikeClickArea.setOnClickListener {
             val shouldLike = animationLike.progress == START_ANIMATED_PROGRESS
-            playLikeAnimation(shouldLike)
             listener.onLikeClicked(this, shouldLike)
         }
     }
@@ -63,7 +62,7 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
         view.hide()
     }
 
-    private fun playLikeAnimation(shouldLike: Boolean) {
+    fun playLikeAnimation(shouldLike: Boolean) {
         if (!shouldLike) animationLike.progress = 0f
         else animationLike.playAnimation()
     }

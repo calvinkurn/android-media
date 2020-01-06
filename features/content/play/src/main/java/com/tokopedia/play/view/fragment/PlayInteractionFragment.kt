@@ -772,8 +772,19 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
-        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
         viewModel.doLikeUnlike(channelId, shouldLike)
+        sendEventLikeContent(shouldLike)
+        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
+    }
+
+    private fun sendEventLikeContent(shouldLike: Boolean) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.LikeContent(shouldLike)
+                    )
+        }
     }
 
     private fun openLoginPage() {
