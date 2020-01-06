@@ -22,7 +22,9 @@
             android:id="@+id/search_top_bar"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/dp_44"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_4"
             android:gravity="center_vertical"
             android:background="@android:color/white">
 
@@ -46,12 +48,12 @@
                     <com.tokopedia.design.component.EditTextCompat
                         android:id="@+id/searchTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/dp_36"
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
                         android:background="@null"
-                        android:paddingTop="@dimen/dp_10"
-                        android:paddingBottom="@dimen/dp_10"
+                        android:paddingTop="@dimen/dp_8"
+                        android:paddingBottom="@dimen/dp_8"
                         android:paddingLeft="@dimen/dp_28"
                         android:paddingRight="@dimen/dp_32"
                         android:layout_marginLeft="@dimen/dp_2"
@@ -61,7 +63,9 @@
                         android:lines="1"
                         android:textColor="@color/edit_text_color"
                         android:textColorHint="@color/edit_text_color_hint"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textCursorDrawable="@drawable/autocomplete_cursor_color"
+                        android:textSize="@dimen/sp_14"
+                        android:lineSpacingExtra="@dimen/sp_6"/>
 
                     <ImageView
                         android:layout_width="wrap_content"

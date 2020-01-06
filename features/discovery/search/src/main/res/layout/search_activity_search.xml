@@ -14,11 +14,13 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/dp_44"
             app:contentInsetLeft="@dimen/dp_0"
             app:contentInsetStart="@dimen/dp_0"
             app:contentInsetRight="@dimen/dp_0"
             app:contentInsetEnd="@dimen/dp_0"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_4"
             android:background="@color/white"
             app:titleTextColor="@color/black_70">
 
@@ -51,11 +53,11 @@
                     android:background="@drawable/search_bg_autocomplete_input"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="@dimen/dp_6"
-                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingStart="@dimen/dp_28"
+                    android:paddingLeft="@dimen/dp_28"
                     android:paddingTop="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_6"
-                    android:paddingRight="@dimen/dp_6"
+                    android:paddingEnd="@dimen/dp_32"
+                    android:paddingRight="@dimen/dp_32"
                     android:paddingBottom="@dimen/dp_8"
                     android:textSize="@dimen/sp_14"
                     android:inputType="none"
@@ -65,11 +67,21 @@
                     android:maxLines="1"
                     android:textColor="@color/search_text_view_color"
                     android:textColorHint="@android:color/darker_gray"
-                    android:foreground="?attr/selectableItemBackground"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/action_up_btn"
                     app:layout_constraintRight_toLeftOf="@id/search_home_button"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/search_ic_search"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/searchTextView"
+                    app:srcCompat="@drawable/search_ic_search" />
 
                 <View
                     android:layout_width="@dimen/dp_1"

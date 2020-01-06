@@ -222,7 +222,6 @@ public class SearchActivity extends BaseActivity
 
     private void initToolbar() {
         configureSupportActionBar();
-        setSearchTextViewDrawableLeft();
         configureToolbarOnClickListener();
     }
 
@@ -234,11 +233,6 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
         }
-    }
-
-    private void setSearchTextViewDrawableLeft() {
-        Drawable iconSearch = AppCompatResources.getDrawable(this, R.drawable.search_ic_search);
-        searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
     }
 
     private void configureToolbarOnClickListener() {
