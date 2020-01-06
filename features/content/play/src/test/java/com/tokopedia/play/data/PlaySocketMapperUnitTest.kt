@@ -1,5 +1,6 @@
 package com.tokopedia.play.data
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.mapper.PlaySocketType
@@ -95,7 +96,6 @@ class PlaySocketMapperUnitTest {
                 "image url",
                 "redirect url")
 
-
         Assert.assertNotNull(actual)
         Assert.assertTrue(actual is PinnedMessage)
         Assert.assertEquals(actual, expected)
@@ -103,6 +103,68 @@ class PlaySocketMapperUnitTest {
 
     @Test
     fun mappingQuickReply() {
+        val type = PlaySocketType.QuickReply.value
+        val quickReply = JsonArray()
+        quickReply.add("smile")
+        quickReply.add("sad")
+        quickReply.add("angry")
 
+        val jsonObject = JsonObject()
+        jsonObject.add("quick_reply", quickReply)
+
+        val actual = actual(type, jsonObject)
+        val expected = QuickReply(
+                listOf("smile", "sad", "angry")
+        )
+
+        Assert.assertNotNull(actual)
+        Assert.assertTrue(actual is QuickReply)
+        Assert.assertEquals(actual, expected)
     }
+
+    @Test
+    fun mappingBanned() {
+        val type = PlaySocketType.EventBanned.value
+
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("is_banned", true)
+        jsonObject.addProperty("is_freeze", false)
+        jsonObject.addProperty("channel_id", "")
+        jsonObject.addProperty("user_id", "123")
+
+        val actual = actual(type, jsonObject)
+        val expected = BannedFreeze(
+                isBanned = true,
+                isFreeze = false,
+                channelId = "",
+                userId =  "123")
+
+
+        Assert.assertNotNull(actual)
+        Assert.assertTrue(actual is BannedFreeze)
+        Assert.assertEquals(actual, expected)
+    }
+
+    @Test
+    fun mappingFreeze() {
+        val type = PlaySocketType.EventFreeze.value
+
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("is_banned", false)
+        jsonObject.addProperty("is_freeze", true)
+        jsonObject.addProperty("channel_id", "123")
+        jsonObject.addProperty("user_id", "")
+
+        val actual = actual(type, jsonObject)
+        val expected = BannedFreeze(
+                isBanned = false,
+                isFreeze = true,
+                channelId = "123",
+                userId =  "")
+
+        Assert.assertNotNull(actual)
+        Assert.assertTrue(actual is BannedFreeze)
+        Assert.assertEquals(actual, expected)
+    }
+
 }
