@@ -89,7 +89,7 @@ open class NotificationItemViewBean(
 
     fun getImpressionTrackLabel(location: String): String {
         val productId = getProductIdImpression()
-        return "$location - $templateKey - $productId"
+        return "$location - $templateKey - $notificationId - $productId"
     }
 
     companion object {
