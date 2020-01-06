@@ -67,6 +67,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     private var cursor = ""
     private var lastItem = 0
     private var markAllReadCounter = 0L
+    private var _isFirstLoaded = true
 
     private lateinit var bottomActionView: BottomActionView
 
@@ -78,11 +79,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         return NotificationUpdateTypeFactoryImpl(this)
     }
 
-    @Inject
-    lateinit var presenter: NotificationUpdatePresenter
-
-    @Inject
-    lateinit var analytics: NotificationUpdateAnalytics
+    @Inject lateinit var presenter: NotificationUpdatePresenter
+    @Inject lateinit var analytics: NotificationUpdateAnalytics
 
     private var notificationUpdateListener: NotificationUpdateListener? = null
 
@@ -243,8 +241,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             hideLoading()
             _adapter.removeEmptyState()
 
-            if (it.list.isEmpty()) {
+            if (_isFirstLoaded && it.list.isEmpty()) {
                 filterRecyclerView.hide()
+            }
+
+            if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 _adapter.addElement(EmptyDataStateProvider.emptyData())
             } else {
@@ -256,7 +257,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
 
+                _isFirstLoaded = false
                 filterRecyclerView.show()
+
                 _adapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)
 
