@@ -33,6 +33,7 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFr
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.find.analytics.FindPageAnalytics.Companion.findPageAnalytics
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.discovery.find.di.component.DaggerFindNavComponent
 import com.tokopedia.discovery.find.di.component.FindNavComponent
@@ -142,6 +143,11 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     override fun hideFragmentView() {
         view?.findViewById<View>(R.id.swipe_refresh_layout)?.hide()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        productNavListAdapter?.onPause()
     }
 
     private fun getFindNavScreenName() {
@@ -305,6 +311,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     private fun setUpBreadCrumb() {
         home_bread_crumb.setOnClickListener {
+            findPageAnalytics.eventClickBreadCrumb(ApplinkConst.HOME)
             RouteManager.route(activity, ApplinkConst.HOME)
         }
         val breadCrumb = ">  $findNavScreenName"
@@ -325,6 +332,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     private fun attachLoadMoreButton() {
         btn_load_more.setOnClickListener {
+            //to confirm what to send for destinationUrl
+            findPageAnalytics.eventClickViewAll("")
             if (isPagingAllowed) {
                 incrementPage()
                 fetchProducts(getPage())
@@ -429,10 +438,11 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
-        // to add analytics
+        findPageAnalytics.eventClickSort(sortValue = sortValue.toString())
     }
 
     override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
+        findPageAnalytics.eventProductClick(item)
         val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
@@ -450,8 +460,10 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         if (userSession.isLoggedIn) {
             disableWishListButton(productItem.id.toString())
             if (productItem.wishlist) {
+                findPageAnalytics.eventClickWishList(productItem.id.toString(), false, productItem.isTopAds)
                 removeWishList(productItem.id.toString(), userSession.userId)
             } else {
+                findPageAnalytics.eventClickWishList(productItem.id.toString(), true, productItem.isTopAds)
                 addWishList(productItem.id.toString(), userSession.userId)
             }
         } else {
@@ -472,19 +484,16 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {
-        // To add analytics
     }
 
     override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
-        // To add analytics
+        findPageAnalytics.eventProductListViewImpression(viewedProductList, viewedTopAdsList)
     }
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
-        // To be implemented if the data tracker team will provide what values needed to send
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
-        // TO be implemented when topAds will be applied for find products, currently they are not applied for find products
     }
 
     override fun onQuickFilterSelected(option: Option) {

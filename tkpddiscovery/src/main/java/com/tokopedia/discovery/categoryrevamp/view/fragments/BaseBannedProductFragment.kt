@@ -64,13 +64,13 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
         })
     }
 
-    abstract fun addFragmentView()
+    protected abstract fun addFragmentView()
 
-    abstract fun initFragmentView()
+    protected abstract fun initFragmentView()
 
-    abstract fun getDataFromArguments()
+    protected abstract fun getDataFromArguments()
 
-    abstract fun hideFragmentView()
+    protected abstract fun hideFragmentView()
 
     private fun addBannedProductScreen() {
         hideFragmentView()

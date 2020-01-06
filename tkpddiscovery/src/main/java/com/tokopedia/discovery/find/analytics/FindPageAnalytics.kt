@@ -1,6 +1,8 @@
 package com.tokopedia.discovery.find.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -66,10 +68,30 @@ class FindPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
-    fun eventProductListViewImpression(productName: String, productId: String, productPrice: String,
-                                       productBrand: String, categoryBreadCrumb: String,
-                                       productVariant: String, productListName: String, productPositionIndex: String) {
+    fun eventProductListViewImpression(viewedProductList: List<Visitable<Any>>,
+                                       viewedTopAdsList: List<Visitable<Any>>) {
         val tracker = getTracker()
+        val list = ArrayList<Map<String, Any>>()
+        val itemList = ArrayList<Visitable<Any>>()
+
+        itemList.addAll(viewedProductList)
+        itemList.addAll(viewedTopAdsList)
+
+        for (element in itemList) {
+            val item = element as ProductsItem
+            // please change product list name accordingly
+            val productListName = ""
+            val map = HashMap<String, Any>()
+            map[KEY_NAME] = item.name
+            map[KEY_ID] = item.id.toString()
+            map[KEY_PRICE] = item.price
+            map[KEY_BRAND] = ""
+            map[KEY_CATEGORY] = item.categoryBreadcrumb + " / " + item.category
+            map[KEY_LIST] = productListName
+            map[KEY_VARIANT] = ""
+            map[KEY_POSITION] = item.adapter_position
+            list.add(map)
+        }
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_PRODUCT_VIEW_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
@@ -77,41 +99,32 @@ class FindPageAnalytics {
                 KEY_EVENT_LABEL, "",
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, CURRENCY_VALUE,
-                KEY_IMPRESSIONS, DataLayer.mapOf(DataLayer.mapOf(
-                KEY_NAME, productName,
-                KEY_ID, productId,
-                KEY_PRICE, productPrice,
-                KEY_BRAND, productBrand,
-                KEY_CATEGORY, categoryBreadCrumb,
-                KEY_VARIANT, productVariant,
-                KEY_LIST, productListName,
-                KEY_POSITION, productPositionIndex
-        ))))
+                KEY_IMPRESSIONS, DataLayer.listOf(list)))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
-    fun eventProductClick(productName: String, productId: String, productPrice: String,
-                          productBrand: String, categoryBreadCrumb: String,
-                          productVariant: String, productListName: String, productPositionIndex: String) {
+    fun eventProductClick(product: ProductsItem) {
         val tracker = getTracker()
+        // please change product list name accordingly
+        val productListName = ""
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_PRODUCT_CLICK_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_PRODUCT_CLICK_ACTION_VALUE,
-                KEY_EVENT_LABEL, productId,
+                KEY_EVENT_LABEL, product.id?.toString() ?: "",
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CLICK, DataLayer.mapOf(
                 KEY_ACTION_FIELD, DataLayer.mapOf(
                 KEY_LIST, productListName,
                 KEY_PRODUCTS, DataLayer.mapOf(
-                KEY_NAME, productName,
-                KEY_ID, productId,
-                KEY_PRICE, productPrice,
-                KEY_BRAND, productBrand,
-                KEY_CATEGORY, categoryBreadCrumb,
-                KEY_VARIANT, productVariant,
+                KEY_NAME, product.name,
+                KEY_ID, product.id?.toString() ?: "",
+                KEY_PRICE, product.price,
+                KEY_BRAND, "",
+                KEY_CATEGORY, product.categoryBreadcrumb + " / " + product.category,
+                KEY_VARIANT, "",
                 KEY_LIST, productListName,
-                KEY_POSITION, productPositionIndex
+                KEY_POSITION, product.adapter_position
         )))))
         tracker.sendEnhanceEcommerceEvent(map)
     }

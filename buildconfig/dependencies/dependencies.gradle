@@ -122,7 +122,7 @@ ext {
             design              : "com.google.android.material:material:${supportLibraryVersion}",
             cardViewV7          : "androidx.cardview:cardview:${supportLibraryVersion}",
             exifinterface       : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
-            constraintLayout    : "androidx.constraintlayout:constraintlayout:1.1.2 ",
+            constraintLayout    : "androidx.constraintlayout:constraintlayout:1.1.2",
             preferenceV7        : "androidx.preference:preference:${supportLibraryVersion}",
             kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
             kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",

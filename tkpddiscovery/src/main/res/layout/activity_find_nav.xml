@@ -14,7 +14,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
-        android:id="@+id/search_nav_container"
+        android:id="@+id/searchNavContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
@@ -48,7 +48,7 @@
                 android:layout_height="?attr/actionBarSize">
 
                 <ImageView
-                    android:id="@+id/action_up_btn"
+                    android:id="@+id/actionUpButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/dp_5"
@@ -62,7 +62,7 @@
                     app:srcCompat="@drawable/discovery_ic_back" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/et_search"
+                    android:id="@+id/etSearch"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_4"
@@ -79,15 +79,15 @@
                     android:paddingEnd="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:textColorHint="@android:color/black"
-                    app:layout_constraintEnd_toStartOf="@+id/search_button"
-                    app:layout_constraintStart_toEndOf="@+id/action_up_btn"
+                    app:layout_constraintEnd_toStartOf="@+id/searchButton"
+                    app:layout_constraintStart_toEndOf="@+id/actionUpButton"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5"
                     app:typographyType="body_1"
                     app:typographyWeight="bold"/>
 
                 <ImageView
-                    android:id="@+id/search_button"
+                    android:id="@+id/searchButton"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_gravity="center"
@@ -96,7 +96,7 @@
                     android:padding="@dimen/dp_4"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/imageDisplayButton"
-                    app:layout_constraintStart_toEndOf="@+id/et_search"
+                    app:layout_constraintStart_toEndOf="@+id/etSearch"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5"
                     app:srcCompat="@drawable/ic_category_filter" />
@@ -116,7 +116,7 @@
                     android:paddingRight="@dimen/dp_4"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/search_button"
+                    app:layout_constraintStart_toEndOf="@+id/searchButton"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5"
                     app:srcCompat="@drawable/ic_grid_display" />
@@ -128,7 +128,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.filter.widget.BottomSheetFilterView
-        android:id="@+id/bottomSheetFilter"
+        android:id="@+id/bottomSheetFilterView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"

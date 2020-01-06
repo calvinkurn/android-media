@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.find.view.activity
 
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -13,6 +12,7 @@ import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.discovery.find.analytics.FindPageAnalytics.Companion.findPageAnalytics
 import com.tokopedia.discovery.find.view.fragment.FindNavFragment
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
@@ -34,8 +34,6 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         BottomSheetListener, SearchNavigationView.SearchNavClickListener,
         BaseCategorySectionFragment.SortAppliedListener, BaseBannedProductFragment.OnBannedFragmentInteractionListener {
 
-    private var bottomSheetFilterView: BottomSheetFilterView? = null
-    private var searchNavContainer: SearchNavigationView? = null
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
     private lateinit var findNavFragment: BaseCategorySectionFragment
@@ -79,12 +77,12 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun initToolbar() {
-        action_up_btn.setOnClickListener {
+        actionUpButton.setOnClickListener {
             onBackPressed()
         }
-        et_search.text = findNavScreenName
+        etSearch.text = findNavScreenName
 
-        search_button.setOnClickListener {
+        searchButton.setOnClickListener {
             moveToAutoCompleteActivity(findNavScreenName)
         }
     }
@@ -126,7 +124,7 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         if (presentFilterList.size < filterParameter.size) {
             for (i in filterParameter.entries) {
                 if (!presentFilterList.containsKey(i.key)) {
-                    //to add gtm
+                    findPageAnalytics.eventClickFilter()
                 }
             }
         }
@@ -150,8 +148,6 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun initView() {
-        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
-        searchNavContainer = findViewById(R.id.search_nav_container)
         searchNavContainer?.setSearchNavListener(this)
         imageDisplayButton.tag = STATE_GRID
 
@@ -164,15 +160,18 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
             when (imageDisplayButton.tag) {
 
                 STATE_GRID -> {
+                    findPageAnalytics.eventClickViewType()
                     imageDisplayButton.tag = STATE_LIST
                     imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
+                    findPageAnalytics.eventClickViewType()
                     imageDisplayButton.tag = STATE_BIG
                     imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
+                    findPageAnalytics.eventClickViewType()
                     imageDisplayButton.tag = STATE_GRID
                     imageDisplayButton.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
                 }
@@ -231,7 +230,7 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
 
     override fun onBannedFragmentAttached() {
         hideBottomNavigation()
-        findViewById<ImageButton>(R.id.img_display_button).invisible()
+        imageDisplayButton.invisible()
 
     }
 }
