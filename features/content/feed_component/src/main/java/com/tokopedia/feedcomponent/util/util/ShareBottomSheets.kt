@@ -193,7 +193,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         show(fragmentManager, TITLE_EN)
     }
 
-    fun show(fragmentManager: FragmentManager?) {
+    fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TITLE_EN)
     }
 
@@ -226,10 +226,10 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         broadcastAddProduct()
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<ImageView>(com.tokopedia.design.R.id.btn_close)
-        btnClose.setOnClickListener { dismiss() }
+        val btnClose = getDialog()?.findViewById<ImageView>(com.tokopedia.design.R.id.btn_close)
+        btnClose?.setOnClickListener { dismiss() }
     }
 
     private fun init() {

@@ -65,7 +65,7 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         rvPromoList.adapter = adapter
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         actionListener.onShow()
         dialog?.run {

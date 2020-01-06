@@ -30,6 +30,10 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.design.component.Tooltip
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
@@ -214,7 +218,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         button_add_promo.visibility = View.GONE
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Callback) {
             callback = context
@@ -646,7 +650,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     override fun onErrorGetTicker(e: Throwable) {}
 
     override fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
-        isAutoTopUpActive = (data.status.toIntOrNull() ?: 0) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
+        isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         text_view_deposit_desc.setDrawableRight(if (isAutoTopUpActive) R.drawable.ic_repeat_green else R.drawable.ic_repeat_grey)
         text_view_deposit_desc.setOnClickListener {
             Tooltip(it.context).apply {
@@ -779,12 +783,12 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.menu_top_ads_dashboard, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item?.itemId == R.id.menu_more) {
             showMoreBottomSheetDialog()
             return true

@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemFragment
 
 class TabBusinessViewPagerAdapter(
-        fm: FragmentManager?,
+        fm: FragmentManager,
         private val list: List<HomeWidget.TabItem>,
         private val backgroundColor: String,
         private val positionWidget : Int
