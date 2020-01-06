@@ -153,7 +153,8 @@ object DeeplinkDFMapper {
                     it.startsWith(SHOP_SETTINGS_BASE) ||
                     it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL) ||
-                    it.startsWith(OPPORTUNITY)
+                    it.startsWith(OPPORTUNITY) ||
+                    it.startsWith(SELLER_TRANSACTION)
             }, DFM_MERCHANT_SELLER_CUSTOMERAPP, R.string.merchant_seller))
 
             // Operational
