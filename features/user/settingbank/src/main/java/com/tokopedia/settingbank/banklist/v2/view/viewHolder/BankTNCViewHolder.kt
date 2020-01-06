@@ -20,8 +20,8 @@ class BankTNCViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         templateData?.let {
             ticker.tickerTitle = context?.getString(R.string.sbank_catatan)
             ticker.setHtmlDescription(templateData.template)
-            ticker.findViewById<TextView>(R.id.ticker_description).text = fromHtml(templateData.template)
-            ticker.findViewById<TextView>(R.id.ticker_description).setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_796))
+            ticker.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text = fromHtml(templateData.template)
+            ticker.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_796))
         } ?: ticker.gone()
     }
 
