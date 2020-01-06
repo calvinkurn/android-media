@@ -74,34 +74,28 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
-
+    @JvmField
+    val DFM_ONBOARDING = "df_base_onboarding"
+    private val DFM_CATEGORY = "df_category"
+    private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     private val DFM_CONTENT = "df_content"
     private val DFM_DIGITAL = "df_digital"
     private val DFM_DISCOVERY = "df_discovery"
     private val DFM_FINTECH = "df_fintech"
+    private val DFM_IM = "df_im"
+    @JvmField
+    val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
+    private val DFM_MERCHANT_BUYER = "df_merchant_buyer"
     private val DFM_OPERATIONAL = "df_operational"
+    private val DFM_PAYMENT = "df_payment"
+    private val DFM_PROMO = "df_promo"
     private val DFM_TRAVEL = "df_travel"
     private val DFM_USER = "df_user"
-
-    private val DFM_DIGITAL_DEALS = "digital_deals"
-    private val DFM_AGE_RESTRICTION = "age_restriction"
-    private val DFM_TOKOPOINTS = "tokopoints"
-    private val DFM_REFERRAL = "im_referral"
-    private val DFM_TRADEIN = "tradein"
-    private val DFM_PAYMENT_SETTING = "payment_setting"
-
-    @JvmField
-    val DFM_MERCHANT_SELLER_CUSTOMERAPP = "merchant_seller"
-    private val DFM_MERCHANT_BUYER = "merchant_buyer"
-    private val DFM_SHOP_OPEN_CUSTOMERAPP = "merchant_seller_shop_open"
 
     //sellerapp
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
-
-    @JvmField
-    val DFM_ONBOARDING = "onboarding"
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
@@ -109,11 +103,11 @@ object DeeplinkDFMapper {
             // Base
 
             // Category
-            add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
-            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN, R.string.applink_harga_final))
-            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_TRADEIN, R.string.money_in))
+            add(DFP({ it.startsWith(TRADEIN) }, DFM_CATEGORY_TRADEIN, R.string.applink_title_tradein))
+            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_CATEGORY_TRADEIN, R.string.applink_harga_final))
+            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_CATEGORY_TRADEIN, R.string.money_in))
 
-            add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
+            add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_CATEGORY, R.string.applink_title_age_restriction))
 
             // Content
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_CONTENT, R.string.applink_title_profile))
@@ -124,11 +118,11 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL, R.string.digital_topup_title))
             add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_DIGITAL, R.string.title_voucher_game))
 
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
-            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL, R.string.title_digital_deals))
+            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_DIGITAL, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_DIGITAL, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_DIGITAL, R.string.title_digital_deals))
 
             // Discovery
             add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) ||
@@ -148,9 +142,12 @@ object DeeplinkDFMapper {
                     it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_FINTECH, R.string.instant_loan_title))
 
             // IM
-            add(DFP({ it.startsWith(REFERRAL) }, DFM_REFERRAL, R.string.applink_title_im_referral))
+            add(DFP({ it.startsWith(REFERRAL) }, DFM_IM, R.string.applink_title_im_referral))
 
             // Merchant
+            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_MERCHANT_BUYER, R.string.applink_report_title))
+            add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_MERCHANT_BUYER, R.string.title_open_shop))
+
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) ||
                     it.startsWith(POWER_MERCHANT_SUBSCRIBE) ||
                     it.startsWith(SHOP_SETTINGS_BASE) ||
@@ -159,8 +156,6 @@ object DeeplinkDFMapper {
                     it.startsWith(OPPORTUNITY) ||
                     it.startsWith(SELLER_TRANSACTION)
             }, DFM_MERCHANT_SELLER_CUSTOMERAPP, R.string.merchant_seller))
-            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_MERCHANT_BUYER, R.string.applink_report_title))
-            add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
 
             // Operational
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) ||
@@ -169,10 +164,10 @@ object DeeplinkDFMapper {
             add(DFP({it.startsWith(CHAT_BOT)}, DFM_OPERATIONAL, R.string.title_applink_chatbot))
 
             // Payment
-            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
+            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT, R.string.payment_settings_title))
 
             // Promo
-            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
+            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS)},DFM_PROMO,R.string.title_tokopoints))
 
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_TRAVEL, R.string.title_travel_homepage))
