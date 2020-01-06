@@ -38,8 +38,6 @@ import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.digital.applink.DigitalApplinkModule;
-import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
@@ -133,7 +131,6 @@ import rx.schedulers.Schedulers;
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
-        DigitalApplinkModule.class,
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
         DiscoveryApplinkModule.class,
@@ -185,7 +182,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
-                    new DigitalApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
                     new DiscoveryApplinkModuleLoader(),

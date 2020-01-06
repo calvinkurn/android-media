@@ -6,21 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.core.app.TaskStackBuilder;
-
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.Objects;
-
-import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_PRODUCT;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
@@ -40,43 +31,31 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 .putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData);
     }
 
-    @SuppressWarnings("unused")
-    @DeepLink({DIGITAL_PRODUCT})
-    public static Intent getcallingIntent(Context context, Bundle extras) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (extras.getBoolean(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), false)) {
-            Intent homeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApplinkConst.HOME));
-            taskStackBuilder.addNextIntent(homeIntent);
-        }
-        boolean isFromWidget = false;
-        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET))) {
-            isFromWidget = Boolean.valueOf(extras.getString(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET));
-        }
-        boolean isCouponApplied = false;
-        if (!TextUtils.isEmpty(extras.getString(KEY_IS_COUPON_APPLIED_APPLINK))) {
-            isCouponApplied = Objects.requireNonNull(extras.getString(KEY_IS_COUPON_APPLIED_APPLINK)).equals("1");
-        }
-        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                .appLinks(uri.toString())
-                .categoryId(extras.getString(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
-                .operatorId(extras.getString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
-                .productId(extras.getString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
-                .clientNumber(extras.getString(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
-                .isFromWidget(isFromWidget)
-                .isCouponApplied(isCouponApplied)
-                .build();
-
-        Intent destination = DigitalProductActivity.newInstance(context, passData);
-        destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
-        taskStackBuilder.addNextIntent(destination);
-        return destination;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
+        Uri uriData = getIntent().getData();
+        if (uriData != null && uriData.getQueryParameterNames().size() > 0) {
+            boolean isFromWidget = false;
+            if (!TextUtils.isEmpty(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET))) {
+                isFromWidget = Boolean.valueOf(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET));
+            }
+            boolean isCouponApplied = false;
+            if (!TextUtils.isEmpty(uriData.getQueryParameter(KEY_IS_COUPON_APPLIED_APPLINK))) {
+                isCouponApplied = Objects.requireNonNull(uriData.getQueryParameter(KEY_IS_COUPON_APPLIED_APPLINK)).equals("1");
+            }
+            DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                    .appLinks(uriData.toString())
+                    .categoryId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
+                    .operatorId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
+                    .productId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
+                    .clientNumber(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
+                    .isFromWidget(isFromWidget)
+                    .isCouponApplied(isCouponApplied)
+                    .build();
+            this.passData = passData;
+        } else {
+            passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
+        }
         super.onCreate(savedInstanceState);
     }
 
