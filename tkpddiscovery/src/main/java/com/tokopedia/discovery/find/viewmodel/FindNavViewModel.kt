@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.data.productModel.SearchProduct
 import com.tokopedia.discovery.find.data.repository.FindNavRepository
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.discovery.find.util.FindNavParamBuilder
@@ -22,12 +23,12 @@ import kotlin.coroutines.CoroutineContext
 
 class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
-    val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
-    val mProductCount = MutableLiveData<String>()
-    var mBannedData = ArrayList<String>()
-    var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
-    var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
-    var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
+    private val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
+    private val mProductCount = MutableLiveData<String>()
+    private var mBannedData = MutableLiveData<Result<ArrayList<String>>>()
+    private var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
+    private var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
+    private var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
     private val findNavParamBuilder: FindNavParamBuilder by lazy { FindNavParamBuilder() }
     private val jobs = SupervisorJob()
 
@@ -44,24 +45,35 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
             val productListResponse: ProductListResponse? = findNavRepository.getProductList(reqParams.paramsAllValueInString)
             productListResponse?.let { productResponse ->
                 (productResponse.searchProduct)?.let { searchProduct ->
-                    val list = ArrayList<String>()
-                    searchProduct.errorMessage?.let {
-                        list.add(it)
-                    }
-                    searchProduct.liteUrl?.let {
-                        list.add(it)
-                    }
-                    mBannedData = list
-                    searchProduct.products.let { productList ->
-                        mProductList.value = Success((productList) as List<ProductsItem>)
-                    }
-                    mProductCount.value = searchProduct.countText
+                    handleDataForSearchProduct(searchProduct)
                 }
             }
         }, onError = {
             it.printStackTrace()
             mProductList.value = Fail(it)
         })
+    }
+
+    private fun handleDataForSearchProduct(searchProduct: SearchProduct) {
+        if (checkForBannedData(searchProduct)) {
+            val list = ArrayList<String>()
+            searchProduct.errorMessage?.let {
+                list.add(it)
+            }
+            searchProduct.liteUrl?.let {
+                list.add(it)
+            }
+            mBannedData.value = Success(list)
+        } else {
+            searchProduct.products.let { productList ->
+                mProductList.value = Success((productList) as List<ProductsItem>)
+            }
+            mProductCount.value = searchProduct.countText
+        }
+    }
+
+    private fun checkForBannedData(searchProduct: SearchProduct): Boolean {
+        return searchProduct.errorMessage != null && searchProduct.errorMessage.isNotEmpty()
     }
 
     fun fetchQuickFilterList(productId: String) {
@@ -116,7 +128,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return mProductCount
     }
 
-    fun getBannedLiveData(): ArrayList<String> {
+    fun getBannedLiveData(): LiveData<Result<ArrayList<String>>> {
         return mBannedData
     }
 

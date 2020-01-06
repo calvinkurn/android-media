@@ -1,10 +1,14 @@
 package com.tokopedia.discovery.find.di.module
 
+import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.discovery.R
 import com.tokopedia.discovery.find.di.scope.FindNavScope
+import com.tokopedia.discovery.find.util.FindNavConstants
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -15,6 +19,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 @FindNavScope
 @Module
@@ -72,6 +77,34 @@ class FindNavModule {
     @Provides
     fun getRemoveWishListUseCase(context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @FindNavScope
+    @Named(FindNavConstants.GQL_NAV_SEARCH_PRODUCT)
+    @Provides
+    fun provideProductListQuery(resources: Resources): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.gql_nav_search_product)
+    }
+
+    @FindNavScope
+    @Named(FindNavConstants.GQL_NAV_QUICK_FILTER)
+    @Provides
+    fun provideQuickFilterListQuery(resources: Resources): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.gql_nav_quick_filter)
+    }
+
+    @FindNavScope
+    @Named(FindNavConstants.GQL_NAV_DYNAMIC_FILTER)
+    @Provides
+    fun provideDynamicFilterListQuery(resources: Resources): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.gql_nav_dynamic_attribute)
+    }
+
+    @FindNavScope
+    @Named(FindNavConstants.GQL_NAV_RELATED_LINK)
+    @Provides
+    fun provideRelatedLinkListQuery(resources: Resources): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.gql_find_related_link)
     }
 
 }

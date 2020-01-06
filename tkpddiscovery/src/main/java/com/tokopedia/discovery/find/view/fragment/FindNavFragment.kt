@@ -21,11 +21,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
@@ -45,9 +45,6 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -68,7 +65,6 @@ import kotlin.collections.ArrayList
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 private const val REQUEST_PRODUCT_ITEM_CLICK = 1002
-private const val FIND_SHARE_URI = "https://www.tokopedia.com/find/"
 
 class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         BaseCategoryAdapter.OnItemChangeView,
@@ -112,7 +108,6 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        component.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -188,6 +183,20 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                     isPagingAllowed = true
                 }
 
+            }
+        })
+
+        findNavViewModel.getBannedLiveData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    addBannedProductScreen()
+                    val bannedData = Data()
+                    bannedData.bannedMsgHeader = getString(R.string.find_nav_banned_product)
+                    bannedData.bannedMessage = it.data[0]
+                    bannedData.displayButton = it.data[1].isNotEmpty()
+                    bannedData.appRedirection = it.data[1]
+                    showBannedProductScreen(bannedData)
+                }
             }
         })
 
@@ -390,6 +399,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     override fun initInjector() {
         component = DaggerFindNavComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
+        component.inject(this)
     }
 
     override fun getAdapter(): BaseCategoryAdapter? {
@@ -413,20 +423,6 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onShareButtonClicked() {
-        val remoteConfig = FirebaseRemoteConfigImpl(activity)
-        // to be verified on what to use in place of hotlist_share_msg
-        val hotlistShareMsg = remoteConfig.getString(RemoteConfigKey.HOTLIST_SHARE_MSG)
-        val shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(LinkerData.DISCOVERY_TYPE)
-                .setName(getString(R.string.message_share_catalog))
-                .setTextContent(hotlistShareMsg)
-                .setCustMsg(hotlistShareMsg)
-                .setUri(FIND_SHARE_URI + findSearchParam)
-                .setId(findSearchParam)
-                .build()
-
-        shareData.type = LinkerData.HOTLIST_TYPE
-        DefaultShare(activity, shareData).show()
     }
 
     override fun getFilterRequestCode(): Int {

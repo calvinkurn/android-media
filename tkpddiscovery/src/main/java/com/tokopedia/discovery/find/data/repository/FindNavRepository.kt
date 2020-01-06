@@ -1,41 +1,36 @@
 package com.tokopedia.discovery.find.data.repository
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.data.filter.FilterResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.find.data.model.RelatedLinkResponse
+import com.tokopedia.discovery.find.util.FindNavConstants
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.tradein_common.repository.BaseRepository
 import javax.inject.Inject
+import javax.inject.Named
 
-class FindNavRepository @Inject constructor() {
+class FindNavRepository @Inject constructor(@Named(FindNavConstants.GQL_NAV_SEARCH_PRODUCT) val productListQuery: String,
+                                            @Named(FindNavConstants.GQL_NAV_QUICK_FILTER) val quickFilterListQuery: String,
+                                            @Named(FindNavConstants.GQL_NAV_DYNAMIC_FILTER) val dynamicFilterListQuery: String,
+                                            @Named(FindNavConstants.GQL_NAV_RELATED_LINK) val relatedLinkListQuery: String) {
 
     @Inject
     lateinit var baseRepository: BaseRepository
 
-    @Inject
-    lateinit var resources: Resources
-
     suspend fun getProductList(reqParams: Map<String, String>): ProductListResponse {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.gql_nav_search_product)
-        return baseRepository.getGQLData(query, ProductListResponse::class.java, reqParams) as ProductListResponse
+        return baseRepository.getGQLData(productListQuery, ProductListResponse::class.java, reqParams) as ProductListResponse
     }
 
     suspend fun getQuickFilterList(reqParams: Map<String, String>): MutableList<Filter>? {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.gql_nav_quick_filter)
-        return (baseRepository.getGQLData(query, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute?.data?.filter as MutableList<Filter>?
+        return (baseRepository.getGQLData(quickFilterListQuery, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute?.data?.filter as MutableList<Filter>?
     }
 
     suspend fun getDynamicFilterList(reqParams: Map<String, String>): DynamicFilterModel? {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.gql_nav_dynamic_attribute)
-        return (baseRepository.getGQLData(query, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute
+        return (baseRepository.getGQLData(dynamicFilterListQuery, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute
     }
 
     suspend fun getRelatedLinkList(reqParams: Map<String, String>): RelatedLinkResponse? {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.gql_find_related_link)
-        return baseRepository.getGQLData(query, RelatedLinkResponse::class.java, reqParams) as RelatedLinkResponse
+        return baseRepository.getGQLData(relatedLinkListQuery, RelatedLinkResponse::class.java, reqParams) as RelatedLinkResponse
     }
 }

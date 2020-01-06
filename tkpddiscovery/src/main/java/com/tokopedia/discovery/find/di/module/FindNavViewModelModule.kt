@@ -22,5 +22,5 @@ abstract class FindNavViewModelModule {
     @IntoMap
     @FindNavScope
     @ViewModelKey(FindNavViewModel::class)
-    internal abstract fun categoryNavViewModel(viewModel: FindNavViewModel): ViewModel
+    internal abstract fun findNavViewModel(viewModel: FindNavViewModel): ViewModel
 }

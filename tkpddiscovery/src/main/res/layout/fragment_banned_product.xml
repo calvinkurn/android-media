@@ -74,7 +74,7 @@
         android:gravity="center"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
-        android:text="@string/buka_browser"
+        android:text="@string/banned_fragment_buka_browser"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_18"

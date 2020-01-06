@@ -225,7 +225,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun fetchCategoryDetail() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.show()
         categoryNavViewModel.fetchCategoryDetail(departmentId)
     }
 

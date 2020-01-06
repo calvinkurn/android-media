@@ -24,7 +24,7 @@ class CatalogDetailsAndSpecsPagerAdapter(
         return if(position == 0){
             context?.getString(R.string.spesification)
         } else {
-            context?.getString(R.string.description)
+            context?.getString(R.string.catalog_description)
         }
     }
 

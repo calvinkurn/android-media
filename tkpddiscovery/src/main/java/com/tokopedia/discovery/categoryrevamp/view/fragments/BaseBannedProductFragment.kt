@@ -72,7 +72,7 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
 
     protected abstract fun hideFragmentView()
 
-    private fun addBannedProductScreen() {
+    protected fun addBannedProductScreen() {
         hideFragmentView()
         view?.findViewById<View>(R.id.layout_banned_screen)?.show()
     }
@@ -83,7 +83,7 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
         observeSeamlessLogin()
     }
 
-    private fun showBannedProductScreen(bannedProductData: Data) {
+    protected fun showBannedProductScreen(bannedProductData: Data) {
         bannedProductData.let {
             if (bannedProductData.displayButton) {
                 category_btn_banned_navigation.show()
@@ -132,7 +132,7 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
 
     private fun onSeamlessError() {
         txt_header.text = getString(R.string.category_server_error_header)
-        txt_sub_header.text = getString(R.string.try_again)
+        txt_sub_header.text = getString(R.string.category_try_again)
     }
 
     private fun onButtonPressed(bannedProduct: Data) {
