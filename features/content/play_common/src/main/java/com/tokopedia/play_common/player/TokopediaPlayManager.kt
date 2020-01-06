@@ -108,6 +108,10 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     fun getObservablePlayVideoState(): LiveData<TokopediaPlayVideoState> = _observablePlayVideoState
 
     fun isVideoPlaying(): Boolean = videoPlayer.isPlaying
+
+    fun getDurationVideo(): Long {
+        return videoPlayer.duration
+    }
     //endregion
 
     //region private method

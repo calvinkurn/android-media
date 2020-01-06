@@ -1,7 +1,6 @@
 package com.tokopedia.play.ui.quickreply.adapter
 
-import com.tokopedia.adapter_delegate.BaseDiffUtilAdapter
-import com.tokopedia.play.data.QuickReply
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.quickreply.adapter.delegate.QuickReplyAdapterDelegate
 
 /**

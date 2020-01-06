@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.PARTNER_NAME_ADMIN
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -17,6 +16,8 @@ import com.tokopedia.play.domain.GetVideoStreamUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.type.PlayVideoType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
@@ -70,6 +71,9 @@ class PlayViewModel @Inject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
     val observableEvent: LiveData<EventUiModel> = _observableEvent
 
+    private val _observableKeyboardState = MutableLiveData<KeyboardState>()
+    val observableKeyboardState: LiveData<KeyboardState> = _observableKeyboardState
+
     private val _observablePinnedMessage = MediatorLiveData<PinnedMessageUiModel>().apply {
         addSource(observablePartnerInfo) {
             val currentValue = value
@@ -90,8 +94,18 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    var isLive: Boolean = false
+
     fun startCurrentVideo() {
         playManager.resumeCurrentVideo()
+    }
+
+    fun getDurationCurrentVideo(): Long {
+        return playManager.getDurationVideo()
+    }
+
+    fun showKeyboard(isShown: Boolean) {
+        _observableKeyboardState.value = if (isShown) KeyboardState.Shown else KeyboardState.Hidden
     }
 
     fun getChannelInfo(channelId: String) {
@@ -114,7 +128,8 @@ class PlayViewModel @Inject constructor(
             /**
              * If Live => start web socket
              */
-            getPartnerInfo(PartnerType.getTypeByValue(channel.partnerType), channel.partnerId)
+            getPartnerInfo(channel)
+            setStateLiveOrVod(channel)
             if (channel.endTime < System.currentTimeMillis()) startWebSocket(channelId, channel.gcToken, channel.settings)
             playVideoStream(channel)
 
@@ -147,13 +162,15 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun getPartnerInfo(partnerType: PartnerType, partnerId: Long) {
+    private fun getPartnerInfo(channel: Channel) {
+        val partnerType = PartnerType.getTypeByValue(channel.partnerType)
+        val partnerId = channel.partnerId
         if (partnerType == PartnerType.SHOP) getShopPartnerInfo(partnerId)
 
         if (partnerType == PartnerType.ADMIN) {
             _observablePartnerInfo.value = PartnerInfoUiModel(
                     id = partnerId,
-                    name = PARTNER_NAME_ADMIN,
+                    name = channel.moderatorName,
                     type = partnerType,
                     isFollowed = true
             )
@@ -240,6 +257,10 @@ class PlayViewModel @Inject constructor(
         if (channel.isActive) {
             startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
         }
+    }
+
+    private fun setStateLiveOrVod(channel: Channel) {
+        isLive = channel.endTime < System.currentTimeMillis()
     }
 
     private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(

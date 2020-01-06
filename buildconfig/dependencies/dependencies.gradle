@@ -10,19 +10,13 @@ ext {
 
     lifeCycleVersion = "2.1.0"
 
-    supportLibraryVersion = '1.1.0'
-    supportLegacyLibraryVersion = '1.0.0'
-    materialVersion = '1.0.0'
-    constraintLayoutVersion = '2.0.0-beta4'
-
+    supportLibraryVersion = '1.0.0'
+    constraintLayoutVersion = '1.1.2'
     playServiceVersion = '11.0.4'
-    butterKnifeVersion = '10.1.0'
-    coroutineVersion = '1.3.2'
-    dbFlowVersion = '3.0.1'
+    coroutineVersion = '1.3.3'
     retrofitVersion = '2.6.0'
     okHttpVersion = '3.12.5'
     glideVersion = '4.9.0'
-    permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '4.1.0'
     espressoVersion = "3.1.0"
     runnerVersion = "1.1.0"
@@ -31,7 +25,6 @@ ext {
     lottieVersion = '2.7.0'
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.60.5'
-    alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '2.1.0'
     multiDexVersion = '2.0.0'
@@ -73,13 +66,10 @@ ext {
     googleServiceGradleVersion = '4.3.0'
     coroutineTestVersion = '1.3.2'
 
-    groupIdTransaction = 'com.tokopedia.transaction'
-    artifactIdCheckout = 'checkout'
-
     // Sort and categorize alphabetically by folder name
     app = [
-        customerapp     : ":customerapp",
-        sellerapp       : ":sellerapp"
+            customerapp     : ":customerapp",
+            sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
@@ -94,8 +84,8 @@ ext {
     unifyGlobalErrorVersion = '1.0.1'
 
     gradlePlugin = [
-        crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
-        googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
+            crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
+            googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
     ]
 
     networkDependencies = [
@@ -109,9 +99,6 @@ ext {
     ]
 
     dbDependencies = [
-            dbFlow           : "com.github.agrosner.DBFlow:dbflow:${dbFlowVersion}",
-            dbFlowCore       : "com.github.agrosner.DBFlow:dbflow-core:${dbFlowVersion}",
-            dbFlowProcessor  : "com.github.agrosner.DBFlow:dbflow-processor:${dbFlowVersion}",
             dbRoomRuntime    : "androidx.room:room-runtime:${roomVersion}",
             dbRoomCompiler   : "androidx.room:room-compiler:${roomVersion}",
             dbRoomCoroutine  : "androidx.room:room-ktx:${roomVersion}",
@@ -120,11 +107,11 @@ ext {
 
     supportLibDependencies = [
             recyclerViewV7      : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
-            supportV4           : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
+            supportV4           : "androidx.legacy:legacy-support-v4:${supportLibraryVersion}",
             appCompactV7        : "androidx.appcompat:appcompat:${supportLibraryVersion}",
-            supportV13          : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
-            design              : "com.google.android.material:material:${materialVersion}",
-            cardViewV7          : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
+            supportV13          : "androidx.legacy:legacy-support-v13:${supportLibraryVersion}",
+            design              : "com.google.android.material:material:${supportLibraryVersion}",
+            cardViewV7          : "androidx.cardview:cardview:${supportLibraryVersion}",
             exifinterface       : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
             constraintLayout    : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
             preferenceV7        : "androidx.preference:preference:${supportLibraryVersion}",
@@ -161,16 +148,6 @@ ext {
             fireStore   : "com.google.firebase:firebase-firestore:17.1.2"
     ]
 
-    butterKnifeDependencies = [
-            butterKnife        : "com.jakewharton:butterknife:${butterKnifeVersion}",
-            butterKnifeCompiler: "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
-    ]
-
-    permissionDispatcherDependencies = [
-            permissionDispatcher         : "com.github.hotchemi:permissionsdispatcher:${permissionDispatcherVersion}@aar",
-            permissionDispatcherProcessor: "com.github.hotchemi:permissionsdispatcher-processor:${permissionDispatcherVersion}"
-    ]
-
     viewDependencies = [
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
             appIntro           : "com.github.apl-devs:appintro:v4.2.2",
@@ -188,7 +165,6 @@ ext {
             moengage   : "com.moengage:moe-android-sdk:9.7.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",
-            rapid7     : "com.rapid7:r7insight_java:1.1.39"
     ]
 
     deeplinkDispatchDependencies = [
@@ -238,10 +214,8 @@ ext {
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
-            archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
-            archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.4",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.5",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
     ]
@@ -299,24 +273,20 @@ ext {
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
-    alibabaDependencies = [
-            coreLib: "com.aliyun:aliyun-java-sdk-core:${alibabaCoreLibVersion}"
-    ]
-
     instabugDependencies = [
             instabug: "com.instabug.library:instabug:8.0.3"
     ]
 
     unifyDependencies = [
-       icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-       principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-       components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-       coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
-       calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
-       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
-       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
-       empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
-       global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
+            icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
+            principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
+            components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
+            coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
+            calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
+            banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+            dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+            datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+            empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+            global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
     ]
 }

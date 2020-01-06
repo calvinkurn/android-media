@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  */
 class ChatListComponent(
         container: ViewGroup,
-        bus: EventBusFactory,
+        private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 

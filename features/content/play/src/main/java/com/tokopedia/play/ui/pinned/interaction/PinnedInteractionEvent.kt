@@ -7,5 +7,5 @@ import com.tokopedia.play.component.ComponentEvent
  */
 sealed class PinnedInteractionEvent : ComponentEvent {
 
-    data class PinnedActionClicked(val applink: String) : PinnedInteractionEvent()
+    data class PinnedActionClicked(val applink: String, val message: String) : PinnedInteractionEvent()
 }

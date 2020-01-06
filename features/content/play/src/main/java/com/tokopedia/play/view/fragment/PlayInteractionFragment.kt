@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
@@ -89,7 +90,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
 
+    private lateinit var sendChatComponent: UIComponent<*>
+    private lateinit var likeComponent: UIComponent<*>
+    private lateinit var statsComponent: UIComponent<*>
+    private lateinit var pinnedComponent: UIComponent<*>
+    private lateinit var chatListComponent: UIComponent<*>
+    private lateinit var immersiveBoxComponent: UIComponent<*>
+    private lateinit var videoControlComponent: UIComponent<*>
+    private lateinit var toolbarComponent: UIComponent<*>
+    private lateinit var quickReplyComponent: UIComponent<*>
+    private lateinit var playButtonComponent: UIComponent<*>
+
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
+
+    private var interactionHeightOnKeyboardShown = -1
 
     private var channelId: String = ""
 
@@ -152,7 +166,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                      setChannelTitle(it.data.title)
                  }
                 is Fail -> {
-                    showToast("don't forget to handle when get channel info return error ")
+                    showToast("don't forget to handle when get channel info return error")
                 }
             }
         })
@@ -166,6 +180,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observePinnedMessage()
         observeFollowShop()
         observeLikeContent()
+        observeKeyboardState()
 
         observeLoggedInInteractionEvent()
     }
@@ -176,6 +191,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
+        PlayAnalytics.clickWatchMode(channelId, playViewModel.isLive)
         view?.let { triggerImmersive(it, VISIBLE_ALPHA) }
         bottomSheet.dismiss()
     }
@@ -242,9 +258,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
     }
+
+    private fun observeKeyboardState() {
+        playViewModel.observableKeyboardState.observe(this, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+
+                if (it.isShown) calculateInteractionHeightOnKeyboardShown()
+            }
+        })
+    }
     //endregion
 
     private fun setupView(view: View) {
+        PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
         view.setOnClickListener {
             triggerImmersive(
                     view = view,
@@ -266,17 +294,17 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        val sendChatComponent: UIComponent<*> = initSendChatComponent(container)
-        val likeComponent: UIComponent<*> = initLikeComponent(container)
-        val statsComponent: UIComponent<*> = initStatsComponent(container)
-        val pinnedComponent: UIComponent<*> = initPinnedComponent(container)
-        val chatListComponent: UIComponent<*> = initChatListComponent(container)
-        val immersiveBoxComponent: UIComponent<*> = initImmersiveBoxComponent(container)
-        val videoControlComponent: UIComponent<*> = initVideoControlComponent(container)
-        val toolbarComponent: UIComponent<*> = initToolbarComponent(container)
-        val quickReplyComponent: UIComponent<*> = initQuickReplyComponent(container)
+        sendChatComponent = initSendChatComponent(container)
+        likeComponent = initLikeComponent(container)
+        statsComponent = initStatsComponent(container)
+        pinnedComponent = initPinnedComponent(container)
+        chatListComponent = initChatListComponent(container)
+        immersiveBoxComponent = initImmersiveBoxComponent(container)
+        videoControlComponent = initVideoControlComponent(container)
+        toolbarComponent = initToolbarComponent(container)
+        quickReplyComponent = initQuickReplyComponent(container)
         //play button should be on top of other component so it can be clicked
-        val playButtonComponent: UIComponent<*> = initPlayButtonComponent(container)
+        playButtonComponent = initPlayButtonComponent(container)
 
         layoutView(
                 container = container,
@@ -301,7 +329,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             SendChatInteractionEvent.FormClicked -> doClickChatBox()
-                            is SendChatInteractionEvent.SendClicked -> doSendChat(it.message)
+                            is SendChatInteractionEvent.SendClicked -> {
+                                PlayAnalytics.clickSendChat(channelId)
+                                doSendChat(it.message)
+                            }
                         }
                     }
         }
@@ -335,7 +366,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             pinnedComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            is PinnedInteractionEvent.PinnedActionClicked -> openPageByApplink(it.applink)
+                            is PinnedInteractionEvent.PinnedActionClicked -> {
+                                PlayAnalytics.clickPinnedMessage(channelId, it.message, playViewModel.isLive)
+                                openPageByApplink(it.applink)
+                            }
                         }
                     }
         }
@@ -359,7 +393,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             toolbarComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            PlayToolbarInteractionEvent.BackButtonClicked -> activity?.onBackPressed()
+                            PlayToolbarInteractionEvent.BackButtonClicked -> doLeaveRoom()
                             is PlayToolbarInteractionEvent.FollowButtonClicked -> doActionFollowShop(it.partnerId, it.action)
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
@@ -392,7 +426,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             immersiveBoxComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            ImmersiveBoxInteractionEvent.BoxClicked -> view?.let { fragmentView -> triggerImmersive(fragmentView, VISIBLE_ALPHA) }
+                            ImmersiveBoxInteractionEvent.BoxClicked -> {
+                                PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
+                                view?.let { fragmentView -> triggerImmersive(fragmentView, VISIBLE_ALPHA) }
+                            }
                         }
                     }
         }
@@ -407,7 +444,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             quickReplyComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            is QuickReplyInteractionEvent.ReplyClicked -> doSendChat(it.replyString)
+                            is QuickReplyInteractionEvent.ReplyClicked -> {
+                                PlayAnalytics.clickQuickReply(channelId)
+                                doSendChat(it.replyString)
+                            }
                         }
                     }
         }
@@ -584,14 +624,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
     //endregion
 
-    private fun showToast(text: String) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun doActionFollowShop(partnerId: Long, action: PartnerFollowAction) {
-        viewModel.doFollow(partnerId, action)
-    }
-
     //region set data
     /**
      * Emit data to ui component
@@ -668,6 +700,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
     //endregion
 
+    private fun doLeaveRoom() {
+        PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.isLive)
+        activity?.onBackPressed()
+    }
+
+    private fun showToast(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun doActionFollowShop(partnerId: Long, action: PartnerFollowAction) {
+        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), playViewModel.isLive)
+        viewModel.doFollow(partnerId, action)
+    }
+
     private fun showMoreActionBottomSheet() {
         if (!::bottomSheet.isInitialized) {
             bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
@@ -681,6 +727,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openShopPage(partnerId: Long) {
+        PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.isLive)
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
     }
 
@@ -726,6 +773,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun doLikeUnlike(shouldLike: Boolean) {
         viewModel.doLikeUnlike(channelId, shouldLike)
+        sendEventLikeContent(shouldLike)
+        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
+    }
+
+    private fun sendEventLikeContent(shouldLike: Boolean) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.LikeContent(shouldLike)
+                    )
+        }
     }
 
     private fun openLoginPage() {
@@ -737,5 +796,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun openPageByApplink(applink: String, vararg params: String) {
         RouteManager.route(context, applink, *params)
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
+    }
+
+    private fun calculateInteractionHeightOnKeyboardShown() {
+        if (interactionHeightOnKeyboardShown == -1) {
+            interactionHeightOnKeyboardShown = view?.findViewById<View>(statsComponent.getContainerId())?.y?.toInt() ?: -1
+        }
+
+        if (interactionHeightOnKeyboardShown != -1) (parentFragment as? PlayFragment)?.onKeyboardShown(interactionHeightOnKeyboardShown)
     }
 }

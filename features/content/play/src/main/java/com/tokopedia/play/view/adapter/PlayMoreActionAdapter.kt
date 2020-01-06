@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.adapter
 
-import com.tokopedia.adapter_delegate.BaseDiffUtilAdapter
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.view.adapter.delegate.PlayMoreActionAdapterDelegate
 import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 

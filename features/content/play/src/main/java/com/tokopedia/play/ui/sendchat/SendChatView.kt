@@ -1,14 +1,15 @@
 package com.tokopedia.play.ui.sendchat
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
@@ -26,11 +27,14 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
                     .findViewById(R.id.cl_chat_form)
 
     private val etChat: EditText = view.findViewById(R.id.et_chat)
+    private val ivSend: ImageView = view.findViewById(R.id.iv_send)
 
     private var prevText = ""
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
+            if (s.isNotEmpty()) ivSend.visible() else ivSend.gone()
+
             if (s.length > MAX_CHARS) {
                 if (prevText.length < MAX_CHARS) prevText = s.substring(0, MAX_CHARS)
                 s.replace(0, s.length, prevText)
@@ -52,14 +56,13 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
             listener.onChatFormClicked(this)
         }
 
-        view.findViewById<ImageView>(R.id.iv_send)
-                .setOnClickListener {
-                    val message: String = etChat.text.toString()
-                    if (message.isNotEmpty() && message.isNotBlank()) {
-                        listener.onSendChatClicked(this, message)
-                        etChat.setText("")
-                    }
-                }
+        ivSend.setOnClickListener {
+            val message: String = etChat.text.toString()
+            if (message.isNotEmpty() && message.isNotBlank()) {
+                listener.onSendChatClicked(this, message)
+                etChat.setText("")
+            }
+        }
     }
 
     override val containerId: Int = view.id
@@ -72,16 +75,35 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
         view.hide()
     }
 
-    fun focusChatForm() {
-        if (!etChat.isFocusable) {
+    fun focusChatForm(shouldFocus: Boolean) {
+        if (shouldFocus && !etChat.isFocusable) {
             etChat.apply {
                 isFocusable = true
                 isFocusableInTouchMode = true
+                isLongClickable = true
+            }
+        } else if (!shouldFocus && etChat.isFocusable) {
+            etChat.apply {
+                isFocusable = false
+                isFocusableInTouchMode = false
+                isLongClickable = false
             }
         }
 
-        if (!etChat.hasFocus()) etChat.requestFocus()
+        if (!etChat.hasFocus() && shouldFocus) {
+            etChat.requestFocus()
+            showKeyboard(true)
+        }
+        else if (etChat.hasFocus() && !shouldFocus) {
+            etChat.clearFocus()
+            showKeyboard(false)
+        }
+    }
 
+    private fun showKeyboard(shouldShow: Boolean) {
+        val imm = etChat.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (shouldShow) imm.showSoftInput(etChat, InputMethodManager.SHOW_FORCED)
+        else imm.hideSoftInputFromWindow(etChat.windowToken, 0)
     }
 
     interface Listener {

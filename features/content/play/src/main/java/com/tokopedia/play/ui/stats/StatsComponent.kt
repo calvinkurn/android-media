@@ -21,10 +21,6 @@ class StatsComponent(
 
     private val uiView = initView(container)
 
-    override fun getContainerId(): Int {
-        return uiView.containerId
-    }
-
     init {
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
@@ -32,9 +28,14 @@ class StatsComponent(
                         when (it) {
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
                             is ScreenStateEvent.SetTotalLikes -> uiView.setTotalLikes(it.totalLikes)
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                         }
                     }
         }
+    }
+
+    override fun getContainerId(): Int {
+        return uiView.containerId
     }
 
     override fun getUserInteractionEvents(): Flow<Unit> {

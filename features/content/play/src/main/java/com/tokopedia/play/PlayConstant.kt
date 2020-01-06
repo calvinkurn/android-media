@@ -1,6 +1,5 @@
 package com.tokopedia.play
 
-
 /**
  * Created by mzennis on 2019-12-03.
  */
@@ -16,8 +15,6 @@ const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
 
 const val PLAY_GET_VIDEO_STREAM = "${PLAY_GET_CHANNEL_INFO_V5}/video_stream"
 const val PLAY_GET_TOTAL_LIKES = "${PLAY_GET_CHANNEL_INFO_V5}/lope_lope"
-
-const val PARTNER_NAME_ADMIN = "Admin"
 
 const val PARAM_SEND_TYPE = "type"
 const val PARAM_SEND_DATA = "data"
