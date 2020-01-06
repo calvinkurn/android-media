@@ -27,6 +27,8 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
@@ -242,6 +244,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             _adapter.removeEmptyState()
 
             if (it.list.isEmpty()) {
+                filterRecyclerView.hide()
                 updateScrollListenerState(false)
                 _adapter.addElement(EmptyDataStateProvider.emptyData())
             } else {
@@ -253,6 +256,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
 
+                filterRecyclerView.show()
                 _adapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)
 
