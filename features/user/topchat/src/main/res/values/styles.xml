@@ -7,7 +7,7 @@
     </style>
 
     <style name="SwitchCompatStyle">
-        <item name="thumbTint">@color/switch_template</item>
+        <item name="thumbTint">@color/topchat_switch_template</item>
         <item name="trackTint">@color/grey_300</item>
     </style>
 
