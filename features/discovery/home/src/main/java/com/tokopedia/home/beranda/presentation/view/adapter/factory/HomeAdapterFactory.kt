@@ -64,10 +64,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return TickerViewHolder.LAYOUT
     }
 
-    override fun type(searchPlaceholderViewModel: SearchPlaceholderViewModel): Int {
-        return SearchPlaceholderViewModel.SEARCH_PLACE_HOLDER
-    }
-
     override fun type(digitalsViewModel: DigitalsViewModel): Int {
         return DigitalsViewHolder.LAYOUT
     }

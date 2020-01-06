@@ -20,8 +20,6 @@ interface HomeTypeFactory {
 
     fun type(tickerViewModel: TickerViewModel): Int
 
-    fun type(searchPlaceholderViewModel: SearchPlaceholderViewModel): Int
-
     fun type(digitalViewModel: DigitalsViewModel): Int
 
     fun type(businessUnitViewModel: BusinessUnitViewModel): Int
