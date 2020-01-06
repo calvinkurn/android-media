@@ -226,9 +226,7 @@ open class PublishCompositeTask : DefaultTask() {
         val moduleLogFile = File("${module}/${module}_log.txt")
         moduleLogFile.delete()
         val gitCommandString = "\"./gradlew assemble artifactoryPublish  -p $module --parallel --stacktrace\""
-        //val gitResultLog = gitCommandString.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
-        val gitResultLog = "BUILD SUCCESSFUL"
-//        val gitResultLog = "BUILD FAILED"
+        val gitResultLog = gitCommandString.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         moduleLogFile.appendText(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }

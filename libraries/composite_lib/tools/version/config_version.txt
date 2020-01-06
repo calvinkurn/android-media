@@ -7,4 +7,4 @@ Minute=30
 Head=1000000
 Mid=10
 Tail=100
-Step=1
+Step=123
