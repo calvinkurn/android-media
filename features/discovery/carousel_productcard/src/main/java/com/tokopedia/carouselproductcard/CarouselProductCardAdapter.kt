@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.carouselproductcard.model.CarouselProductCardModel
 
-internal class CarouselProductCardAdapter(
-        private val productCardHeight: Int = 0
-): ListAdapter<CarouselProductCardModel, CarouselProductCardViewHolder>(ProductModelDiffUtil()) {
+internal class CarouselProductCardAdapter: ListAdapter<CarouselProductCardModel, CarouselProductCardViewHolder>(ProductModelDiffUtil()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CarouselProductCardViewHolder {
         val view = LayoutInflater
@@ -22,7 +20,7 @@ internal class CarouselProductCardAdapter(
     }
 
     override fun onBindViewHolder(carouselProductCardViewHolder: CarouselProductCardViewHolder, position: Int) {
-        carouselProductCardViewHolder.bind(getItem(position), productCardHeight)
+        carouselProductCardViewHolder.bind(getItem(position))
     }
 
     fun updateWishlist(index: Int, isWishlist: Boolean){
