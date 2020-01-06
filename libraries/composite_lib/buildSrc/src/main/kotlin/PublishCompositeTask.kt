@@ -3,7 +3,6 @@ package com.tokopedia.plugin
 import GraphStr
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.impldep.org.joda.time.DateTime
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -170,6 +169,8 @@ open class PublishCompositeTask : DefaultTask() {
                     val projectSplit = strProject.split(":".toPattern(), 3)
                     if (projectSplit.size == 3 && projectSplit[0].contains(ScanProjectTask.TOKOPEDIA)) {
                         val artifactId = projectSplit[1]
+                        println(artifactId + "\n")
+                        println(artifactInfo.artifactId + "\n")
                         if (artifactId == artifactInfo.artifactId) {
                             val versionInRoot = projectSplit[2]
                             textToPut = line.replaceFirst(versionInRoot, artifactInfo.increaseVersionString)
@@ -178,7 +179,8 @@ open class PublishCompositeTask : DefaultTask() {
                         }
                     }
                 }
-            } else {
+            }
+            if (textToPut.isEmpty()) {
                 textToPut = line
             }
             writerFile.appendText("$textToPut\n")
@@ -226,8 +228,8 @@ open class PublishCompositeTask : DefaultTask() {
         moduleLogFile.delete()
         val gitCommandString = "\"./gradlew assemble artifactoryPublish  -p $module --parallel --stacktrace\""
         //val gitResultLog = gitCommandString.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
-        //val gitResultLog = "BUILD SUCCESSFUL"
-        val gitResultLog = "BUILD FAILED"
+        val gitResultLog = "BUILD SUCCESSFUL"
+//        val gitResultLog = "BUILD FAILED"
         moduleLogFile.appendText(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }
