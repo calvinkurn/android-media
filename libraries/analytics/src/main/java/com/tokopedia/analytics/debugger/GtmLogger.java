@@ -50,7 +50,7 @@ public class GtmLogger implements AnalyticsLogger {
     @Override
     public void save(String name, Map<String, Object> mapData) {
         try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 
             AnalyticsLogData data = new AnalyticsLogData();
             data.setCategory((String) mapData.get("eventCategory"));
