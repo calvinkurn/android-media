@@ -56,7 +56,7 @@ open class PublishCompositeTask : DefaultTask() {
         publishToArtifactory()
     }
 
-    fun sortGraph(): List<String> {
+    private fun sortGraph(): List<String> {
         val graph = GraphStr()
         projectToArtifactInfoList.forEach {
             graph.addVertices(it.value.projectName)
@@ -68,7 +68,7 @@ open class PublishCompositeTask : DefaultTask() {
         return graph.listTop
     }
 
-    fun publishToArtifactory() {
+    private fun publishToArtifactory() {
         deletePreviousLog()
 
         backupRootDependencyLibraryFile()
@@ -135,7 +135,6 @@ open class PublishCompositeTask : DefaultTask() {
                 noChangeModuleList.add(it)
             }
         }
-        //TODO increase log release to current date if success
         val isSuccessRelease = successModuleList.isNotEmpty() && failModuleList.isEmpty()
         if (isSuccessRelease) {
             val releaseFile = File(RELEASE_DATE_PATH)
@@ -143,7 +142,7 @@ open class PublishCompositeTask : DefaultTask() {
         }
     }
 
-    fun backupRootDependencyLibraryFile() {
+    private fun backupRootDependencyLibraryFile() {
         if (candidateModuleListToUpdate.isNotEmpty()) {
             //backup rootDependencyFile
             val rootDependencyFile = File(LIBRARIES_PATH)
@@ -154,7 +153,7 @@ open class PublishCompositeTask : DefaultTask() {
         }
     }
 
-    fun changeRootDependencyFile(artifactInfo: ArtifactInfo) {
+    private fun changeRootDependencyFile(artifactInfo: ArtifactInfo) {
         val rootDependencyFile = File(LIBRARIES_PATH)
         val writerFile = File(LIBRARIES_WRITER_PATH)
         var textToPut = ""
@@ -191,12 +190,12 @@ open class PublishCompositeTask : DefaultTask() {
         }
     }
 
-    fun returnBackup() {
+    private fun returnBackup() {
         returnBackupForCompositeProject()
         returnBackupForRootDependencyLibraries()
     }
 
-    fun returnBackupForCompositeProject() {
+    private fun returnBackupForCompositeProject() {
         changedModuleList.forEach {
             val reader = File("${it}/build.gradle")
             val backup = File("${it}/.build_backup")
@@ -210,7 +209,7 @@ open class PublishCompositeTask : DefaultTask() {
         }
     }
 
-    fun returnBackupForRootDependencyLibraries() {
+    private fun returnBackupForRootDependencyLibraries() {
         val reader = File(LIBRARIES_PATH)
         val backup = File(LIBRARIES_BACKUP_PATH)
         if (backup.exists()) {
@@ -222,7 +221,7 @@ open class PublishCompositeTask : DefaultTask() {
         }
     }
 
-    fun publishModule(module: String): Boolean {
+    private fun publishModule(module: String): Boolean {
         val moduleLogFile = File("${module}/${module}_log.txt")
         moduleLogFile.delete()
         val gitCommandString = "./gradlew assemble artifactoryPublish  -p $module --parallel --stacktrace"
@@ -231,7 +230,7 @@ open class PublishCompositeTask : DefaultTask() {
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }
 
-    fun deletePreviousLog() {
+    private fun deletePreviousLog() {
         val logFile = File(LOG_FILE_PATH)
         logFile.delete()
     }
