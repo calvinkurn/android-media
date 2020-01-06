@@ -11,12 +11,10 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.GetChannelInfoUseCase
-import com.tokopedia.play.domain.GetShopInfoUseCase
-import com.tokopedia.play.domain.GetVideoStreamUseCase
+import com.tokopedia.play.domain.GetPartnerInfoUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.type.PlayVideoType
 import com.tokopedia.play.view.uimodel.*
@@ -36,8 +34,7 @@ import javax.inject.Inject
 class PlayViewModel @Inject constructor(
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
-        private val getVideoStreamUseCase: GetVideoStreamUseCase,
-        private val getShopInfoUseCase: GetShopInfoUseCase,
+        private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val playSocket: PlaySocket,
         private val userSessionInterface: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
@@ -110,24 +107,28 @@ class PlayViewModel @Inject constructor(
 
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
-            val (channel, videoStream) = withContext(dispatchers.io) {
+            val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
-                val channel = getChannelInfoUseCase.executeOnBackground()
-
-                getVideoStreamUseCase.channelId = channelId
-                val videoStream = getVideoStreamUseCase.executeOnBackground()
-
-                return@withContext Pair(channel, videoStream)
+                return@withContext getChannelInfoUseCase.executeOnBackground()
             }
             /**
              * If Live => start web socket
              */
             getPartnerInfo(channel)
-            setStateLiveOrVod(channel)
-            if (videoStream.isLive) startWebSocket(channelId, channel.gcToken, channel.settings)
-            playVideoStream(videoStream)
+            // TODO("remove, for testing")
+            channel.videoStream = VideoStream(
+                    "vertical",
+                    "live",
+                    true,
+                    VideoStream.Config(streamUrl = "rtmp://fms.105.net/live/rmc1"))
 
-            val completeInfoUiModel = createCompleteInfoModel(channel, videoStream)
+            setStateLiveOrVod(channel)
+            if (channel.videoStream.isLive
+                    && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
+                startWebSocket(channelId, channel.gcToken, channel.settings)
+            playVideoStream(channel)
+
+            val completeInfoUiModel = createCompleteInfoModel(channel)
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
             _observableTotalViews.value = completeInfoUiModel.totalView
@@ -184,8 +185,8 @@ class PlayViewModel @Inject constructor(
 
     private fun getShopPartnerInfo(shopId: Long) = launchCatchError(block = {
         val response = withContext(dispatchers.io) {
-            getShopInfoUseCase.params = GetShopInfoUseCase.createParam(shopId.toString())
-            getShopInfoUseCase.executeOnBackground()
+            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(shopId.toString())
+            getPartnerInfoUseCase.executeOnBackground()
         }
 
         _observablePartnerInfo.value = mapPartnerInfoFromShop(response)
@@ -228,11 +229,6 @@ class PlayViewModel @Inject constructor(
                                             && result.userId.equals(userSessionInterface.userId, true))
                         }
                     }
-                    is VideoStream -> {
-                        val videoStreamUiModel = mapVideoStream(result)
-                        startVideoWithUrlString(videoStreamUiModel.uriString, videoStreamUiModel.videoType.isLive)
-                        _observableVideoStream.value = videoStreamUiModel
-                    }
                 }
             }
         }, onReconnect = {
@@ -247,19 +243,19 @@ class PlayViewModel @Inject constructor(
         if (_observableVOD.value == null) _observableVOD.value = playManager.videoPlayer
     }
 
-    private fun playVideoStream(videoStream: VideoStream) {
-        if (videoStream.isActive) {
-            startVideoWithUrlString(videoStream.androidStreamHd, videoStream.isLive)
+    private fun playVideoStream(channel: Channel) {
+        if (channel.isActive) {
+            startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
         }
     }
 
     private fun setStateLiveOrVod(channel: Channel) {
-        isLive = channel.endTime < System.currentTimeMillis()
+        isLive = channel.videoStream.isLive
     }
 
-    private fun createCompleteInfoModel(channel: Channel, videoStream: VideoStream) = PlayCompleteInfoUiModel(
+    private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
-            videoStream = mapVideoStream(videoStream),
+            videoStream = mapVideoStream(channel.videoStream, channel.isActive),
             pinnedMessage = mapPinnedMessage(
                     _observablePartnerInfo.value?.name.orEmpty(),
                     channel.pinnedMessage
@@ -281,10 +277,12 @@ class PlayViewModel @Inject constructor(
             shouldRemove = pinnedMessage.pinnedMessageId <= 0 || pinnedMessage.title.isEmpty()
     )
 
-    private fun mapVideoStream(videoStream: VideoStream) = VideoStreamUiModel(
-            uriString = videoStream.androidStreamHd,
-            videoType = if (videoStream.isLive) PlayVideoType.Live else PlayVideoType.VOD,
-            isActive = videoStream.isActive
+    private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
+            uriString = videoStream.config.streamUrl,
+            videoType = if (videoStream.isLive
+                    && videoStream.type.equals(PlayVideoType.Live.value, true))
+                PlayVideoType.Live else PlayVideoType.VOD,
+            isActive = isActive
     )
 
     private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList)
@@ -303,10 +301,9 @@ class PlayViewModel @Inject constructor(
     private fun mapEvent(channel: Channel) = EventUiModel(
                 isBanned = false,
                 isFreeze = false,
-                bannedMessage = channel.bannedMsg,
-                bannedTitle = channel.bannedTitle,
-                bannedButtonTitle = channel.bannedButtonTitle,
-                bannedButtonUrl = channel.bannedButtonUrl,
+                bannedMessage = channel.banned.message,
+                bannedTitle = channel.banned.title,
+                bannedButtonTitle = channel.banned.buttonTitle,
                 freezeMessage = channel.freezeChannelState.desc,
                 freezeTitle = channel.freezeChannelState.title,
                 freezeButtonTitle = channel.freezeChannelState.btnTitle,

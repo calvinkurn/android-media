@@ -81,7 +81,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "1865" // TODO remove default value, handle channel_id not found
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "2" // TODO remove default value, handle channel_id=1865, 80 staging live not found
         PlayAnalytics.sendScreen(channelId)
     }
 
@@ -187,14 +187,14 @@ class PlayFragment : BaseDaggerFragment() {
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             if (it.isBanned) {
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle, it.bannedButtonUrl)
+                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
             } else if (it.isFreeze) {
                 showEventDialog(it.freezeTitle, it.freezeMessage, it.freezeButtonTitle, it.freezeButtonUrl)
             }
         })
     }
 
-    private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String) {
+    private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(title)
@@ -203,7 +203,7 @@ class PlayFragment : BaseDaggerFragment() {
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 it.finish()
-                RouteManager.route(it, buttonUrl)
+                if (buttonUrl.isNotEmpty()) RouteManager.route(it, buttonUrl)
             }
             dialog.show()
         }

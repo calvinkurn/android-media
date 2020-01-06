@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-10.
  */
 
-class GetShopInfoUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopInfo>() {
+class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
 

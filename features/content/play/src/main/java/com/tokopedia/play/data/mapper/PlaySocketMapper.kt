@@ -17,10 +17,6 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
         if (webSocketResponse.type.isEmpty()) return null
 
         when(webSocketResponse.type) {
-            PlaySocketType.VideoStream.value -> {
-                //TODO("check as to why the vod -> live still return `is_live` = false")
-                return mapToVideoStream()
-            }
             PlaySocketType.TotalClick.value -> {
                 return mapToTotalClick()
             }
@@ -67,9 +63,5 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
 
     private fun mapToBannedFreeze(): BannedFreeze {
         return gson.fromJson(webSocketResponse.jsonObject, BannedFreeze::class.java)
-    }
-
-    private fun mapToVideoStream(): VideoStream {
-        return gson.fromJson(webSocketResponse.jsonObject, VideoStream::class.java)
     }
 }
