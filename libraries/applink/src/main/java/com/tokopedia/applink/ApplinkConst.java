@@ -374,6 +374,11 @@ public interface ApplinkConst {
         String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
     }
 
+    interface AttachInvoice {
+        String PARAM_MESSAGE_ID = "msgId";
+        String PARAM_OPPONENT_NAME = "opponentName";
+    }
+
     interface Play {
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";

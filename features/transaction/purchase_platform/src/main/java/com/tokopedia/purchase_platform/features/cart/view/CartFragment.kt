@@ -1970,7 +1970,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 setAnalyticsCart(cartPageAnalytics)
                 setSource("cart")
                 setType(type)
-                show(fragmentManager, "")
+                show(it, "")
             }
         }
     }
