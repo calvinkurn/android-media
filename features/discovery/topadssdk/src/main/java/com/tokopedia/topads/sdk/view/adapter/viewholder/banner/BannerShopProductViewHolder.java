@@ -71,7 +71,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             @Override
             public void onViewHint() {
                 if (impressionListener != null) {
-                    impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+                    impressionListener.onImpressionHeadlineAdsItem(getAdapterPosition(), element.getCpmData());
                 }
             }
         });

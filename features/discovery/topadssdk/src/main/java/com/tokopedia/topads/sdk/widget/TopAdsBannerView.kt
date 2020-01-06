@@ -114,11 +114,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
             var shop_image = findViewById<ImageView>(R.id.shop_image)
             shop_image?.let {
-                Glide.with(context).load(cpmData.cpm.cpmShop.imageShop.getsEcs()).into(shop_image)
-                shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
+                Glide.with(context).load(cpmData.cpm.cpmImage.fullEcs).into(shop_image)
+                shop_image.addOnImpressionListener(cpmData.cpm.cpmImage) {
                     impressionListener?.let {
                         it.onImpressionHeadlineAdsItem(0, cpmData)
-                        ImpresionTask().execute(cpmData.cpm.cpmShop.imageShop.getsUrl())
+                        ImpresionTask().execute(cpmData.cpm.cpmImage.fullUrl)
                     }
                 }
             }
