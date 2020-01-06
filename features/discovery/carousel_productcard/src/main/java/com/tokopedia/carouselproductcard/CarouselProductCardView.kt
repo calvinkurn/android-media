@@ -23,6 +23,7 @@ import com.tokopedia.productcard.v2.BlankSpaceConfig
 
 class CarouselProductCardView: BaseCustomView {
 
+    private var carouselAdapter: CarouselProductCardAdapter? = null
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
 
@@ -93,9 +94,15 @@ class CarouselProductCardView: BaseCustomView {
         val knownPosition = carouselProductPool.carouselAdaptersPositions[carouselModelId]
 
         carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-        val newCarouselAdapter = CarouselProductCardAdapter()
-        setupCarouselProductCardRecyclerView(newCarouselAdapter)
-        submitProductCardCarouselData(newCarouselAdapter, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
+
+        if (carouselAdapter == null) {
+            carouselAdapter = CarouselProductCardAdapter()
+            setupCarouselProductCardRecyclerView(carouselAdapter!!)
+        }
+
+        carouselAdapter?.let {
+            submitProductCardCarouselData(it, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
+        }
 
         carouselLayoutManager?.run {
             if (this is LinearLayoutManager) {
