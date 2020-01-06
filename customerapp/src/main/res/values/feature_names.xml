@@ -206,4 +206,9 @@
     <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
     <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
 
+
+
+    <string name="add_bank_account">Tambah Rekening</string>
+    <string name="sbank_confirm_bank_account">Konfirmasi rekening bank</string>
+
 </resources>
