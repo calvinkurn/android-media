@@ -26,9 +26,9 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:maxWidth="270dp"
-        android:paddingLeft="@dimen/dp_3"
+        android:paddingLeft="@dimen/dp_topchat_3"
         android:paddingTop="@dimen/spacing_lvl3"
-        android:paddingRight="@dimen/dp_3"
+        android:paddingRight="@dimen/dp_topchat_3"
         android:paddingBottom="@dimen/spacing_lvl3" />
 
     <RelativeLayout
@@ -43,8 +43,8 @@
             android:layout_height="6dp"
             android:layout_alignTop="@+id/hour"
             android:layout_alignBottom="@+id/hour"
-            android:layout_marginEnd="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_topchat_5"
+            android:layout_marginRight="@dimen/dp_topchat_5"
             android:adjustViewBounds="true"
             tools:src="@drawable/ic_read_thin" />
 

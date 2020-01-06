@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/search_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
+        android:layout_height="@dimen/dp_topchat_44"
         android:background="@android:color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -20,11 +20,11 @@
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="@dimen/spacing_lvl8"
-            android:layout_height="@dimen/dp_44"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_10"
+            android:layout_height="@dimen/dp_topchat_44"
+            android:paddingStart="@dimen/dp_topchat_12"
+            android:paddingTop="@dimen/dp_topchat_10"
+            android:paddingEnd="@dimen/dp_topchat_12"
+            android:paddingBottom="@dimen/dp_topchat_10"
             app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
 
         <RelativeLayout
@@ -40,7 +40,7 @@
             <EditText
                 android:id="@+id/searchTextView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_36"
+                android:layout_height="@dimen/dp_topchat_36"
                 android:layout_centerVertical="true"
                 android:background="@null"
                 android:gravity="center_vertical"
@@ -48,11 +48,11 @@
                 android:imeOptions="actionSearch"
                 android:inputType="textNoSuggestions"
                 android:lines="1"
-                android:paddingStart="@dimen/dp_28"
-                android:paddingLeft="@dimen/dp_28"
+                android:paddingStart="@dimen/dp_topchat_28"
+                android:paddingLeft="@dimen/dp_topchat_28"
                 android:paddingTop="@dimen/spacing_lvl3"
-                android:paddingEnd="@dimen/dp_44"
-                android:paddingRight="@dimen/dp_44"
+                android:paddingEnd="@dimen/dp_topchat_44"
+                android:paddingRight="@dimen/dp_topchat_44"
                 android:paddingBottom="@dimen/spacing_lvl3"
                 android:textColor="#fd31353b"
                 android:textColorHint="@color/Neutral_N700_44"
@@ -69,12 +69,12 @@
 
             <ImageView
                 android:id="@+id/ivClear"
-                android:layout_width="@dimen/dp_44"
+                android:layout_width="@dimen/dp_topchat_44"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:padding="@dimen/dp_10"
+                android:padding="@dimen/dp_topchat_10"
                 android:visibility="gone"
                 app:srcCompat="@drawable/topchat_ic_close"
                 tools:visibility="visible" />
@@ -84,7 +84,7 @@
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="@dimen/dp_topchat_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_top_bar" />
 

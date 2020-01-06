@@ -11,11 +11,11 @@
         android:id="@+id/image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/empty_chat"></ImageView>
+        app:srcCompat="@drawable/empty_chat" />
 
     <androidx.legacy.widget.Space
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_25" />
+        android:layout_height="@dimen/dp_topchat_25" />
 
     <TextView
         android:id="@+id/title"
@@ -37,8 +37,8 @@
         android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginLeft="@dimen/dp_topchat_30"
+        android:layout_marginRight="@dimen/dp_topchat_30"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:lineSpacingExtra="6sp"

@@ -112,8 +112,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/dp_topchat_60"
+        android:layout_height="@dimen/dp_topchat_60"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/spacing_lvl4"
         android:background="@color/tkpd_main_green"

@@ -30,4 +30,34 @@
     <dimen name="max_width_template">132dp</dimen>
     <dimen name="min_width_template">52dp</dimen>
     <dimen name="min_height_template">32dp</dimen>
+
+    <dimen name="dp_topchat_0">0dp</dimen>
+    <dimen name="dp_topchat_1">1dp</dimen>
+    <dimen name="dp_topchat_3">3dp</dimen>
+    <dimen name="dp_topchat_5">5dp</dimen>
+    <dimen name="dp_topchat_6">6dp</dimen>
+    <dimen name="dp_topchat_10">10dp</dimen>
+    <dimen name="dp_topchat_12">12dp</dimen>
+    <dimen name="dp_topchat_14">14dp</dimen>
+    <dimen name="dp_topchat_15">15dp</dimen>
+    <dimen name="dp_topchat_18">18dp</dimen>
+    <dimen name="dp_topchat_25">25dp</dimen>
+    <dimen name="dp_topchat_28">28dp</dimen>
+    <dimen name="dp_topchat_30">30dp</dimen>
+    <dimen name="dp_topchat_34">34dp</dimen>
+    <dimen name="dp_topchat_36">36dp</dimen>
+    <dimen name="dp_topchat_44">44dp</dimen>
+    <dimen name="dp_topchat_50">50dp</dimen>
+    <dimen name="dp_topchat_52">52dp</dimen>
+    <dimen name="dp_topchat_56">56dp</dimen>
+    <dimen name="dp_topchat_60">60dp</dimen>
+    <dimen name="dp_topchat_72">72dp</dimen>
+    <dimen name="dp_topchat_85">85dp</dimen>
+    <dimen name="dp_topchat_90">90dp</dimen>
+    <dimen name="dp_topchat_160">160dp</dimen>
+    <dimen name="dp_topchat_210">210dp</dimen>
+    <dimen name="dp_topchat_240">240dp</dimen>
+
+    <dimen name="sp_topchat_4">4sp</dimen>
+    <dimen name="sp_topchat_11">11sp</dimen>
 </resources>

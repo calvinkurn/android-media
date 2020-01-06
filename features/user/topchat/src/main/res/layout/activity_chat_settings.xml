@@ -41,8 +41,8 @@
                     android:id="@+id/chat_personal_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_topchat_12"
+                    android:layout_marginLeft="@dimen/dp_topchat_12"
                     android:lineSpacingExtra="2sp"
                     android:text="@string/chat_personal_text"
                     android:textColor="@color/black_70"
@@ -93,8 +93,8 @@
 
                     <ImageView
                         android:id="@+id/chat_personal_info_img"
-                        android:layout_width="@dimen/dp_36"
-                        android:layout_height="@dimen/dp_36"
+                        android:layout_width="@dimen/dp_topchat_36"
+                        android:layout_height="@dimen/dp_topchat_36"
                         android:layout_marginLeft="@dimen/spacing_lvl4"
                         android:elevation="@dimen/spacing_lvl2"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -154,8 +154,8 @@
                     android:id="@+id/chat_promotion_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_topchat_12"
+                    android:layout_marginLeft="@dimen/dp_topchat_12"
                     android:lineSpacingExtra="2sp"
                     android:text="@string/chat_promotion_text"
                     android:textColor="@color/black_70"
@@ -204,8 +204,8 @@
 
                     <ImageView
                         android:id="@+id/chat_promotion_info_img"
-                        android:layout_width="@dimen/dp_36"
-                        android:layout_height="@dimen/dp_36"
+                        android:layout_width="@dimen/dp_topchat_36"
+                        android:layout_height="@dimen/dp_topchat_36"
                         android:layout_marginLeft="@dimen/spacing_lvl4"
                         android:elevation="@dimen/spacing_lvl2"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -248,8 +248,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/dp_topchat_50"
+            android:layout_height="@dimen/dp_topchat_50"
             android:layout_gravity="center" />
     </FrameLayout>
 

@@ -6,15 +6,15 @@
     android:background="@drawable/interactive_adapter_template_chat"
     android:orientation="vertical"
     android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/dp_12"
+    android:paddingTop="@dimen/dp_topchat_12"
     android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/dp_12">
+    android:paddingBottom="@dimen/dp_topchat_12">
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/thumbnail"
-        android:layout_width="@dimen/dp_160"
+        android:layout_width="@dimen/dp_topchat_160"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_topchat_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

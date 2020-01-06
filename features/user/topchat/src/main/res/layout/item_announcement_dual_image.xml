@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_15"
+    android:paddingLeft="@dimen/dp_topchat_15"
     android:paddingTop="@dimen/small_space"
-    android:paddingRight="@dimen/dp_15"
+    android:paddingRight="@dimen/dp_topchat_15"
     android:paddingBottom="@dimen/small_space">
 
     <TextView
@@ -29,7 +29,7 @@
         android:layout_alignParentRight="true"
         app:cardBackgroundColor="@color/cardview_light_background"
         app:cardCornerRadius="@dimen/attached_image_corner_radius"
-        app:cardElevation="@dimen/dp_0"
+        app:cardElevation="@dimen/dp_topchat_0"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true">
 
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/card_group_chat_message"
         android:layout_gravity="left"
-        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginTop="@dimen/dp_topchat_3"
         android:gravity="left"
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontSize_lvl1"

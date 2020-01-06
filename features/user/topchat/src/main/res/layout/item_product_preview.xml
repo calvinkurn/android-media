@@ -2,20 +2,20 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_210"
-    android:layout_height="@dimen/dp_90">
+    android:layout_width="@dimen/dp_topchat_210"
+    android:layout_height="@dimen/dp_topchat_90">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/spacing_lvl3"
         android:background="@drawable/bg_rounded_grey"
-        android:padding="@dimen/dp_10">
+        android:padding="@dimen/dp_topchat_10">
 
         <ImageView
             android:id="@+id/iv_product"
-            android:layout_width="@dimen/dp_52"
-            android:layout_height="@dimen/dp_52"
+            android:layout_width="@dimen/dp_topchat_52"
+            android:layout_height="@dimen/dp_topchat_52"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,8 +24,8 @@
 
         <LinearLayout
             android:id="@+id/ll_variant"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_14"
+            android:layout_width="@dimen/dp_topchat_0"
+            android:layout_height="@dimen/dp_topchat_14"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
@@ -48,8 +48,8 @@
 
                 <ImageView
                     android:id="@+id/iv_variant_color"
-                    android:layout_width="@dimen/dp_6"
-                    android:layout_height="@dimen/dp_6"
+                    android:layout_width="@dimen/dp_topchat_6"
+                    android:layout_height="@dimen/dp_topchat_6"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
                     android:layout_marginRight="@dimen/spacing_lvl2"
@@ -90,7 +90,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_product_name"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/dp_topchat_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -107,7 +107,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_product_price"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/dp_topchat_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"

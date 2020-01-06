@@ -27,15 +27,15 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_broadcast"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="@dimen/dp_topchat_56"
+        android:layout_height="@dimen/dp_topchat_56"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:visibility="gone"
         app:backgroundTint="@color/Yellow_Y400"
-        app:fabCustomSize="@dimen/dp_56"
+        app:fabCustomSize="@dimen/dp_topchat_56"
         app:layout_anchorGravity="bottom|center"
         app:maxImageSize="33dp"
         app:srcCompat="@drawable/ic_broadcast_white" />
