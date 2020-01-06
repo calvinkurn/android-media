@@ -35,8 +35,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
                                                private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapListener>() {
 
-    private val defaultLat: Double by lazy { -6.175794 }
-    private val defaultLong: Double by lazy { 106.826457 }
     private var saveAddressDataModel = SaveAddressDataModel()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
