@@ -132,7 +132,6 @@ object DynamicProductDetailMapper {
         }
     }
 
-
     private fun mapToProductInfoContent(listOfData: List<ComponentData>): List<ProductInfoContent>? {
         return if (listOfData.isEmpty()) {
             null

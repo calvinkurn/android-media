@@ -29,20 +29,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
 class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
-    private var isFromDeeplink = false
-    private var isFromAffiliate = false
-    private var shopDomain: String? = null
-    private var productKey: String? = null
-    private var productId: String? = null
-    private var warehouseId: String? = null
-    private var trackerAttribution: String? = null
-    private var trackerListName: String? = null
-    private var affiliateString: String? = null
-    private var deeplinkUrl: String? = null
-
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(applicationContext)
-    }
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -74,6 +60,21 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
     }
 
+    private var isFromDeeplink = false
+    private var isFromAffiliate = false
+    private var shopDomain: String? = null
+    private var productKey: String? = null
+    private var productId: String? = null
+    private var warehouseId: String? = null
+    private var trackerAttribution: String? = null
+    private var trackerListName: String? = null
+    private var affiliateString: String? = null
+    private var deeplinkUrl: String? = null
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(applicationContext)
+    }
+
     object DeeplinkIntents {
         @DeepLink(ApplinkConst.PRODUCT_INFO)
         @JvmStatic
@@ -94,6 +95,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
             return intent
         }
+    }
+
+    fun goToHomePageClicked() {
+        if (isTaskRoot) {
+            RouteManager.route(this, ApplinkConst.HOME)
+        } else {
+            onBackPressed()
+        }
+        finish()
     }
 
     override fun getScreenName(): String {

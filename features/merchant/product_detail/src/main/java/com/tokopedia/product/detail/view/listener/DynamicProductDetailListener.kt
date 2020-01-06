@@ -86,5 +86,6 @@ interface DynamicProductDetailListener {
      * ProductDefaultErrorViewHolder
      */
     fun onRetryClicked(forceRefresh:Boolean)
+    fun goToHomePageClicked()
 
 }

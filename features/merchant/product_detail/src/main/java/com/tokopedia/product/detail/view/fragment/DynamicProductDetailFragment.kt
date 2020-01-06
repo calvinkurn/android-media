@@ -85,10 +85,7 @@ import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
-import com.tokopedia.product.detail.view.activity.CourierActivity
-import com.tokopedia.product.detail.view.activity.ProductFullDescriptionTabActivity
-import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
-import com.tokopedia.product.detail.view.activity.WholesaleActivity
+import com.tokopedia.product.detail.view.activity.*
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
@@ -662,6 +659,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         onSwipeRefresh()
     }
 
+    override fun goToHomePageClicked() {
+        if (activity is ProductDetailActivity) {
+            (activity as ProductDetailActivity).goToHomePageClicked()
+        }
+    }
+
     /**
      * ProductOpenShopViewHolder Listener
      */
@@ -1067,7 +1070,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         it.productFinancingRecommendationData.let { financingData ->
             if (financingData.response.data.partnerCode.isNotBlank()) {
-                pdpHashMapUtil.updateDataInstallment(financingData,viewModel.getDynamicProductInfoP1?.data?.isOS == true)
+                pdpHashMapUtil.updateDataInstallment(financingData, viewModel.getDynamicProductInfoP1?.data?.isOS == true)
             } else {
                 dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productInstallmentInfoMap)
             }
