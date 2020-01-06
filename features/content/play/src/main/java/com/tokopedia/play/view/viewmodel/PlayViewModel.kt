@@ -12,11 +12,9 @@ import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.GetChannelInfoUseCase
 import com.tokopedia.play.domain.GetShopInfoUseCase
-import com.tokopedia.play.domain.GetVideoStreamUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.type.PlayVideoType
 import com.tokopedia.play.view.uimodel.*
@@ -36,7 +34,6 @@ import javax.inject.Inject
 class PlayViewModel @Inject constructor(
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
-        private val getVideoStreamUseCase: GetVideoStreamUseCase,
         private val getShopInfoUseCase: GetShopInfoUseCase,
         private val playSocket: PlaySocket,
         private val userSessionInterface: UserSessionInterface,
@@ -110,17 +107,6 @@ class PlayViewModel @Inject constructor(
 
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
-//            val (channel, videoStream) = withContext(dispatchers.io) {
-//                getChannelInfoUseCase.channelId = channelId
-//                val channel = getChannelInfoUseCase.executeOnBackground()
-//
-//                // TODO("we will getting data video stream from get channel info")
-//                getVideoStreamUseCase.channelId = channelId
-//                val videoStream = getVideoStreamUseCase.executeOnBackground()
-//
-//                return@withContext Pair(channel, videoStream)
-//            }
-
             val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
@@ -130,7 +116,9 @@ class PlayViewModel @Inject constructor(
              */
             getPartnerInfo(channel)
             setStateLiveOrVod(channel)
-            if (channel.endTime < System.currentTimeMillis()) startWebSocket(channelId, channel.gcToken, channel.settings)
+            if (channel.videoStream.isLive
+                    && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
+                startWebSocket(channelId, channel.gcToken, channel.settings)
             playVideoStream(channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
@@ -234,11 +222,6 @@ class PlayViewModel @Inject constructor(
                                             && result.userId.equals(userSessionInterface.userId, true))
                         }
                     }
-                    is VideoStream -> {
-                        val videoStreamUiModel = mapVideoStream(result, true)
-                        startVideoWithUrlString(videoStreamUiModel.uriString, videoStreamUiModel.videoType.isLive)
-                        _observableVideoStream.value = videoStreamUiModel
-                    }
                 }
             }
         }, onReconnect = {
@@ -260,7 +243,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun setStateLiveOrVod(channel: Channel) {
-        isLive = channel.endTime < System.currentTimeMillis()
+        isLive = channel.videoStream.isLive
     }
 
     private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(
@@ -289,7 +272,9 @@ class PlayViewModel @Inject constructor(
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            videoType = if (videoStream.isLive) PlayVideoType.Live else PlayVideoType.VOD,
+            videoType = if (videoStream.isLive
+                    && videoStream.type.equals(PlayVideoType.Live.value, true))
+                PlayVideoType.Live else PlayVideoType.VOD,
             isActive = isActive
     )
 

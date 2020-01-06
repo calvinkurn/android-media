@@ -32,7 +32,9 @@ class PlaySocket @Inject constructor(
         val wsBaseUrl: String = localCacheHandler.
                 getString(KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
                         TokopediaUrl.getInstance().WS_GROUPCHAT)
-        val wsConnectUrl = "$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId&token=$gcToken"
+        val wsConnectUrl = "$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId"
+        if (gcToken.isNotEmpty())
+            wsConnectUrl.plus("&token=$gcToken")
 
         compositeSubscription?.clear()
         if (compositeSubscription == null) {
