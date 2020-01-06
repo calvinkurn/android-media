@@ -186,4 +186,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
+
+    public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 }
