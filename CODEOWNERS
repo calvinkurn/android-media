@@ -150,7 +150,7 @@
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team
-/libraries/core_legacy/									@ricoharisin @sonodabot
+/libraries/core_legacy/									@ricoharisin
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
@@ -173,8 +173,8 @@
 /libraries/react_native/								@tokopedia/core-team
 /libraries/remote_config/								@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
-/libraries/track/										@ricoharisin @sonodabot
-/libraries/tracking_optimizer/							@ricoharisin @sonodabot
+/libraries/track/										@ricoharisin
+/libraries/tracking_optimizer/							@ricoharisin
 /libraries/translator/									@tokopedia/core-team
 /libraries/travel_calendar/								@tokopedia/core-team
 /libraries/twitter_share/								@tokopedia/core-team
@@ -194,9 +194,9 @@
 /tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
-/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89 @sonodabot
-/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89 @sonodabot
-/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89 @sonodabot
+/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89
+/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89
+/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
 
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/core-team

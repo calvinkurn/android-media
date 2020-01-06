@@ -168,6 +168,7 @@ ext {
             opportunity                     : ":features:transaction:opportunity",
 
             attachproduct                   : ":features:user:attachproduct",
+            attachinvoice                   : ":features:user:attachinvoice",
             changepassword                  : ":features:user:changepassword",
 //            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",

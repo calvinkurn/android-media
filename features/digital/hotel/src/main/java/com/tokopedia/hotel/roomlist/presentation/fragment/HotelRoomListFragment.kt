@@ -322,7 +322,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
-        hotelCalendarDialog.show(fragmentManager, "test")
+        fragmentManager?.let { hotelCalendarDialog.show(it, "test") }
     }
 
     override fun onSaveGuest(room: Int, adult: Int) {
