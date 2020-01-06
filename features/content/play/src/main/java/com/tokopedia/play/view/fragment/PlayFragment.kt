@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -113,7 +113,7 @@ class PlayFragment : BaseDaggerFragment() {
 
             override fun onKeyboardHidden() {
                 playViewModel.showKeyboard(false)
-                ivClose.gone()
+                ivClose.invisible()
                 flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 this@PlayFragment.onKeyboardHidden()
             }
