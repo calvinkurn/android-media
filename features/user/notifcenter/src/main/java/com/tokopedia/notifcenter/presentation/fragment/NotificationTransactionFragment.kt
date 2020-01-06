@@ -97,6 +97,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
         swipeRefresh?.setOnRefreshListener {
             viewModel.resetNotificationFilter()
+            lastListItem = 0
+
             swipeRefresh?.isRefreshing = true
 
             /*
