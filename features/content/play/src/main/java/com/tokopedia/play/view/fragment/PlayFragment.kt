@@ -43,9 +43,11 @@ class PlayFragment : BaseDaggerFragment() {
         private const val ANIMATION_DURATION = 300L
         private const val FULL_SCALE_FACTOR = 1.0f
 
-        fun newInstance(channelId: String): PlayFragment {
+        fun newInstance(channelId: String?): PlayFragment {
             return PlayFragment().apply {
-                arguments?.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                val args = Bundle()
+                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                arguments = args
             }
         }
     }
@@ -79,7 +81,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID)?:"1865" // TODO remove default value, handle channel_id not found
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "1865" // TODO remove default value, handle channel_id not found
         PlayAnalytics.sendScreen(channelId)
     }
 
