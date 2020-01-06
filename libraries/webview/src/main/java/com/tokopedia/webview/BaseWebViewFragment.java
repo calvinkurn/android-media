@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -160,6 +161,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.setWebViewClient(new MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings.setMediaPlaybackRequiresUserGesture(false);
+        }
+
+        if(GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
     }
