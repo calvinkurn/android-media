@@ -80,11 +80,13 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
             etChat.apply {
                 isFocusable = true
                 isFocusableInTouchMode = true
+                isLongClickable = true
             }
         } else if (!shouldFocus && etChat.isFocusable) {
             etChat.apply {
                 isFocusable = false
                 isFocusableInTouchMode = false
+                isLongClickable = false
             }
         }
 
