@@ -1,10 +1,12 @@
 package com.tokopedia.play.ui.sendchat
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.*
@@ -73,16 +75,33 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
         view.hide()
     }
 
-    fun focusChatForm() {
-        if (!etChat.isFocusable) {
+    fun focusChatForm(shouldFocus: Boolean) {
+        if (shouldFocus && !etChat.isFocusable) {
             etChat.apply {
                 isFocusable = true
                 isFocusableInTouchMode = true
             }
+        } else if (!shouldFocus && etChat.isFocusable) {
+            etChat.apply {
+                isFocusable = false
+                isFocusableInTouchMode = false
+            }
         }
 
-        if (!etChat.hasFocus()) etChat.requestFocus()
+        if (!etChat.hasFocus() && shouldFocus) {
+            etChat.requestFocus()
+            showKeyboard(true)
+        }
+        else if (etChat.hasFocus() && !shouldFocus) {
+            etChat.clearFocus()
+            showKeyboard(false)
+        }
+    }
 
+    private fun showKeyboard(shouldShow: Boolean) {
+        val imm = etChat.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (shouldShow) imm.showSoftInput(etChat, InputMethodManager.SHOW_FORCED)
+        else imm.hideSoftInputFromWindow(etChat.windowToken, 0)
     }
 
     interface Listener {

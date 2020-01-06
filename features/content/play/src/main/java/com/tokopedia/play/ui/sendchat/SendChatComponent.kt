@@ -31,7 +31,8 @@ class SendChatComponent(
                         when (it) {
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.ComposeChat -> uiView.focusChatForm()
+                            is ScreenStateEvent.ComposeChat -> uiView.focusChatForm(true)
+                            is ScreenStateEvent.KeyboardStateChanged -> uiView.focusChatForm(it.isShown)
                         }
                     }
         }
