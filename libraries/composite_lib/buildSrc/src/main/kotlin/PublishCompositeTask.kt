@@ -169,8 +169,6 @@ open class PublishCompositeTask : DefaultTask() {
                     val projectSplit = strProject.split(":".toPattern(), 3)
                     if (projectSplit.size == 3 && projectSplit[0].contains(ScanProjectTask.TOKOPEDIA)) {
                         val artifactId = projectSplit[1]
-                        println(artifactId + "\n")
-                        println(artifactInfo.artifactId + "\n")
                         if (artifactId == artifactInfo.artifactId) {
                             val versionInRoot = projectSplit[2]
                             textToPut = line.replaceFirst(versionInRoot, artifactInfo.increaseVersionString)

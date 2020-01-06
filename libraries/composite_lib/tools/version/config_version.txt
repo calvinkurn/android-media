@@ -7,5 +7,4 @@ Minute=30
 Head=1000000
 Mid=10
 Tail=100
-Step=1234
-// step should be 1 in prod
+Step=1
