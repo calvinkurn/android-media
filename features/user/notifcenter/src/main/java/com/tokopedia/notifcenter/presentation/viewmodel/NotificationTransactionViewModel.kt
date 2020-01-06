@@ -25,7 +25,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 interface NotificationTransactionContract {
-    fun getNotificationViewBean(lastNotificationId: String)
+    fun getNotification(lastNotificationId: String)
     fun updateNotificationFilter(filter: HashMap<String, Int>)
     fun markReadNotification(notificationId: String)
     fun onErrorMessage(throwable: Throwable)
@@ -75,7 +75,7 @@ class NotificationTransactionViewModel @Inject constructor(
         }
 
         _notification.addSource(_filterNotification) {
-            getNotificationViewBean(_lastNotificationId.value?: "")
+            getNotification(_lastNotificationId.value?: "")
         }
     }
 
@@ -91,7 +91,7 @@ class NotificationTransactionViewModel @Inject constructor(
         })
     }
 
-    override fun getNotificationViewBean(lastNotificationId: String) {
+    override fun getNotification(lastNotificationId: String) {
         val params = NotificationTransactionUseCase.params(
                 FIRST_INITIAL_PAGE,
                 variables,
