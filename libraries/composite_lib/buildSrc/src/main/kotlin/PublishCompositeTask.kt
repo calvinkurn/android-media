@@ -139,7 +139,7 @@ open class PublishCompositeTask : DefaultTask() {
         val isSuccessRelease = successModuleList.isNotEmpty() && failModuleList.isEmpty()
         if (isSuccessRelease) {
             val releaseFile = File(RELEASE_DATE_PATH)
-            releaseFile.appendText(dateFormatter.format(DateTime.now()))
+            releaseFile.appendText("\n" + dateFormatter.format(Calendar.getInstance().time))
         }
     }
 
@@ -174,7 +174,8 @@ open class PublishCompositeTask : DefaultTask() {
                         if (artifactId == artifactInfo.artifactId) {
                             val versionInRoot = projectSplit[2]
                             textToPut = line.replaceFirst(versionInRoot, artifactInfo.increaseVersionString)
-                            logFile.appendText("Change root Dependency-libraries from \n$lineTrim\nto\n$textToPut\n")
+                            val textToPutTrim = textToPut.trim().replace("\\s".toRegex(), "")
+                            logFile.appendText("Change root Dependency-libraries from \n$lineTrim\nto\n$textToPutTrim\n")
                             found = true
                         }
                     }
