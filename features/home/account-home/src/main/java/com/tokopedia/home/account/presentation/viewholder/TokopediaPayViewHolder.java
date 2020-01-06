@@ -39,10 +39,21 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
         } else {
             tokopediaPayCardView.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
         }
+
+        if(element.getBsDataCentre() == null) {
+            tokopediaPayCardView.setCenterLayoutVisibility(View.GONE);
+        }
+
         tokopediaPayCardView.setTextDescLeft(element.getLabelLeft());
+
+        tokopediaPayCardView.setTextAmountCentre(element.getAmountCentre());
+        tokopediaPayCardView.setTextDesctCentre(element.getLabelCentre());
+
         tokopediaPayCardView.setTextAmountRight(element.getAmountRight(), element.isRightImportant());
         tokopediaPayCardView.setTextDesctRight(element.getLabelRight());
+
         tokopediaPayCardView.setIconLeft(element.getIconUrlLeft());
+        tokopediaPayCardView.setIconCentre(element.getIconUrlCentre());
         tokopediaPayCardView.setIconRight(element.getIconUrlRight());
 
         tokopediaPayCardView.setActionTextClickListener(v -> listener.onTokopediaPayLinkClicked());
@@ -50,6 +61,12 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
                 element.getLabelLeft(),
                 element.getApplinkLeft(),
                 element.getBsDataLeft(),
+                element.isLinked(),
+                element.getWalletType()));
+        tokopediaPayCardView.setCentreItemClickListener(v -> listener.onTokopediaPayCentreItemClicked(
+                element.getLabelCentre(),
+                element.getApplinkCentre(),
+                element.getBsDataCentre(),
                 element.isLinked(),
                 element.getWalletType()));
         tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayRightItemClicked(

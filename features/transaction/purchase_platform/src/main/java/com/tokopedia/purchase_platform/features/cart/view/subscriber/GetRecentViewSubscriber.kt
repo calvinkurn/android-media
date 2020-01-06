@@ -1,18 +1,15 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
-import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse
-
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 
 /**
  * Created by Irfan Khoirul on 21/09/18.
  */
 
-class GetRecentViewSubscriber(private val view: ICartListView?,
-                              private val presenter: ICartListPresenter) : Subscriber<GraphqlResponse>() {
+class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -28,10 +25,8 @@ class GetRecentViewSubscriber(private val view: ICartListView?,
         if (view != null) {
             if (graphqlResponse?.getData<Any>(GqlRecentViewResponse::class.java) != null) {
                 val gqlRecentViewResponse = graphqlResponse.getData<GqlRecentViewResponse>(GqlRecentViewResponse::class.java)
-                if (gqlRecentViewResponse != null && gqlRecentViewResponse.gqlRecentView != null &&
-                        gqlRecentViewResponse.gqlRecentView.recentViewList != null &&
-                        gqlRecentViewResponse.gqlRecentView.recentViewList.size > 0) {
-                    view.renderRecentView(gqlRecentViewResponse.gqlRecentView.recentViewList)
+                if (gqlRecentViewResponse.gqlRecentView?.recentViewList?.size ?: 0 > 0) {
+                    view.renderRecentView(gqlRecentViewResponse.gqlRecentView?.recentViewList)
                 }
             }
             view.setHasTriedToLoadRecentView()

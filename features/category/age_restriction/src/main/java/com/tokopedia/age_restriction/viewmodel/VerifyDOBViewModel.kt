@@ -15,6 +15,8 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
     val userIsAdult = MutableLiveData<Boolean>()
     val userNotAdult = MutableLiveData<Boolean>()
 
+    lateinit var response: UserDOBUpdateResponse
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -22,12 +24,8 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
     fun updateUserDoB(query: String, bdayDD: String, bdayMM: String, bdayYY: String) {
         progBarVisibility.value = true
         launchCatchError(block = {
-            val dobMap = HashMap<String, String>()
-            dobMap["bdayDD"] = bdayDD
-            dobMap["bdayMM"] = bdayMM
-            dobMap["bdayYY"] = bdayYY
-
-            val response = repository?.getGQLData(query, UserDOBUpdateResponse::class.java, dobMap) as UserDOBUpdateResponse
+            response = getRepo()?.getGQLData(query, UserDOBUpdateResponse::class.java,
+                    generateDOBRequestparam(bdayDD, bdayMM, bdayYY)) as UserDOBUpdateResponse
             checkIfAdult(response)
         }, onError = {
             it.printStackTrace()
@@ -51,4 +49,13 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
                 userNotAdult.value = true
         }
     }
+
+    fun generateDOBRequestparam(bdayDD: String, bdayMM: String, bdayYY: String) =
+            HashMap<String, Any>().apply {
+                put("bdayDD", bdayDD)
+                put("bdayMM", bdayMM)
+                put("bdayYY", bdayYY)
+            }
+
+    fun getRepo() = repository
 }
