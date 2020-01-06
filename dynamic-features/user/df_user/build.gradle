@@ -56,4 +56,5 @@ dependencies {
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
+    implementation project(rootProject.ext.features.kyccentralized)
 }
