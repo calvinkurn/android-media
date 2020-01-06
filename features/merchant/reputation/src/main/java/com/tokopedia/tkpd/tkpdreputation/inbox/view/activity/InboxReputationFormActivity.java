@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 
@@ -176,8 +176,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ImageUploadHandler.REQUEST_CODE
-                || requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE)
+        if (requestCode == Constant.ImageUpload.REQUEST_CODE
+                || requestCode == Constant.ImageUpload.CODE_UPLOAD_IMAGE)
             getSupportFragmentManager().findFragmentById(R.id.container).onActivityResult(requestCode,
                     resultCode, data);
         else

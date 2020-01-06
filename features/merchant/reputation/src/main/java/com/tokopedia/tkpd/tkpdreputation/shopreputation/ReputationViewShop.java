@@ -34,7 +34,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.util.LabelUtils;
@@ -559,7 +558,7 @@ public class ReputationViewShop extends TActivity {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = ((ReputationRouter) MainApplication.getAppContext())
+                Intent intent = ((ReputationRouter) getApplicationContext())
                         .getLoginIntent(ReputationViewShop.this);
                 startActivityForResult(intent,REQUEST_LOGIN);
             }

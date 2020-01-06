@@ -1,12 +1,12 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewTips;
 
@@ -20,14 +20,16 @@ public class ReviewTipsAdapter extends RecyclerView.Adapter<ReviewTipsAdapter.Vi
 
     ArrayList<ReviewTips> list;
     private boolean isExpanded;
+    private Context context;
 
-    private ReviewTipsAdapter() {
+    private ReviewTipsAdapter(Context context) {
         this.list = new ArrayList<>();
         this.isExpanded = false;
+        this.context = context;
     }
 
-    public static ReviewTipsAdapter createInstance() {
-        return new ReviewTipsAdapter();
+    public static ReviewTipsAdapter createInstance(Context context) {
+        return new ReviewTipsAdapter(context);
     }
 
     public boolean isExpanded() {
@@ -46,14 +48,15 @@ public class ReviewTipsAdapter extends RecyclerView.Adapter<ReviewTipsAdapter.Vi
     }
 
     public void expand() {
-        list.add(new ReviewTips(MainApplication.getAppContext().getString(R.string.tips1_title),
-                MainApplication.getAppContext().getString(R.string.tips1_tips)
+
+        list.add(new ReviewTips(context.getString(R.string.tips1_title),
+                context.getString(R.string.tips1_tips)
         ));
-        list.add(new ReviewTips(MainApplication.getAppContext().getString(R.string.tips2_title),
-                MainApplication.getAppContext().getString(R.string.tips2_tips)
+        list.add(new ReviewTips(context.getString(R.string.tips2_title),
+                context.getString(R.string.tips2_tips)
         ));
-        list.add(new ReviewTips(MainApplication.getAppContext().getString(R.string.tips3_title),
-                MainApplication.getAppContext().getString(R.string.tips3_tips)
+        list.add(new ReviewTips(context.getString(R.string.tips3_title),
+                context.getString(R.string.tips3_tips)
         ));
         notifyItemRangeInserted(0, list.size());
         setExpanded(true);

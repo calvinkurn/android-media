@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.tkpdreputation.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
@@ -56,7 +56,6 @@ import com.tokopedia.tkpd.tkpdreputation.network.shop.ShopService;
 import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
 import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.GenerateHostActService;
 import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
@@ -78,7 +77,6 @@ import dagger.Module;
 import dagger.Provides;
 import kotlinx.coroutines.CoroutineDispatcher;
 import kotlinx.coroutines.Dispatchers;
-import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 8/11/17.
@@ -361,8 +359,9 @@ public class ReputationModule {
     @Provides
     UploadImageUseCase
     provideUploadImageUseCase(ImageUploadRepository imageUploadRepository,
-                              UserSessionInterface userSession) {
-        return new UploadImageUseCase(imageUploadRepository, userSession);
+                              UserSessionInterface userSession,
+                              @ApplicationContext Context context) {
+        return new UploadImageUseCase(imageUploadRepository, userSession, context);
     }
 
     @ReputationScope
@@ -397,15 +396,15 @@ public class ReputationModule {
     @ReputationScope
     @Provides
     GenerateHostMapper
-    provideGenerateHostMapper() {
-        return new GenerateHostMapper();
+    provideGenerateHostMapper(@ApplicationContext Context context) {
+        return new GenerateHostMapper(context);
     }
 
     @ReputationScope
     @Provides
     UploadImageMapper
-    provideUploadImageMapper() {
-        return new UploadImageMapper();
+    provideUploadImageMapper(@ApplicationContext Context context) {
+        return new UploadImageMapper(context);
     }
 
     @ReputationScope

@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewFragment;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class ImageUploadPreviewActivity extends BasePresenterActivity {
 
         ArrayList<String> fileLoc = new ArrayList<>();
         if (getIntent().getExtras() != null)
-            fileLoc = getIntent().getExtras().getStringArrayList(ImageUploadHandler.FILELOC);
+            fileLoc = getIntent().getExtras().getStringArrayList(Constant.ImageUpload.FILELOC);
 
         boolean isUpdate = false;
         if (getIntent().getExtras() != null)
@@ -89,7 +89,7 @@ public class ImageUploadPreviewActivity extends BasePresenterActivity {
     public static Intent getCallingIntent(Context context, ArrayList<String> fileLoc) {
         Intent intent = new Intent(context, ImageUploadPreviewActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList(ImageUploadHandler.FILELOC, fileLoc);
+        bundle.putStringArrayList(Constant.ImageUpload.FILELOC, fileLoc);
         intent.putExtras(bundle);
         return intent;
     }
@@ -105,7 +105,7 @@ public class ImageUploadPreviewActivity extends BasePresenterActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ImageUploadHandler.REQUEST_CODE)
+        if (requestCode == Constant.ImageUpload.REQUEST_CODE)
             getFragmentManager().findFragmentById(R.id.container).onActivityResult(requestCode,
                     resultCode, data);
         else

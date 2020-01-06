@@ -17,11 +17,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
@@ -62,11 +63,11 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
         DaggerReputationComponent reputationComponent =
                 (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(baseAppComponent)
                         .build();
         reputationComponent.inject(this);
     }

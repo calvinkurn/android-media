@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
@@ -35,7 +35,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     private static final String TAG = ImageUploadFragmentPresenterImpl.class.getSimpleName();
 
     ImageUploadPreviewFragmentView viewListener;
-    ImageUploadHandler imageUploadHandler;
     GetSendReviewFormUseCase getSendReviewFormUseCase;
     SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     List<ImageUpload> deletedImageUploads;
@@ -43,7 +42,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
     public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener, Context context) {
         this.viewListener = viewListener;
-        this.imageUploadHandler = ImageUploadHandler.createInstance(viewListener.getActivity());
         this.deletedImageUploads = new ArrayList<>();
         PersistentCacheManager persistentCacheManager = new PersistentCacheManager(context);
         this.getSendReviewFormUseCase = new GetSendReviewFormUseCase(persistentCacheManager);
@@ -104,7 +102,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
         } else {
 
-            for(String url : Objects.requireNonNull(arguments.getStringArrayList(ImageUploadHandler.FILELOC))) {
+            for(String url : Objects.requireNonNull(arguments.getStringArrayList(Constant.ImageUpload.FILELOC))) {
                 int position = viewListener.getAdapter().getList().size();
                 final ImageUpload image = new ImageUpload();
                 image.setPosition(position);

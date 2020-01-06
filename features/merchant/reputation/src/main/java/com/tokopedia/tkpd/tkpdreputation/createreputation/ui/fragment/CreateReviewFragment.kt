@@ -26,12 +26,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -117,7 +117,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             DaggerReputationComponent
                     .builder()
                     .reputationModule(ReputationModule())
-                    .appComponent(getComponent(AppComponent::class.java))
+                    .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
                     .build()
                     .inject(this)
         }

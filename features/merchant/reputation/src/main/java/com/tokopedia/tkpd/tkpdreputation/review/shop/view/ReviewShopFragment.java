@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -18,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -119,7 +119,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
         DaggerReputationComponent
                 .builder()
                 .reputationModule(new ReputationModule())
-                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
+                .baseAppComponent(((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent())
                 .build()
                 .inject(this);
         shopReviewPresenter.attachView(this);

@@ -28,13 +28,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.StarGenerator;
-import com.tokopedia.core.util.ToolTipUtils;
+import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
@@ -610,7 +609,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = ((ReputationRouter) MainApplication.getAppContext()).getLoginIntent
+                Intent intent = ((ReputationRouter) getActivity().getApplicationContext()).getLoginIntent
                         (getActivity());
                 getActivity().startActivityForResult(intent, REQUEST_LOGIN);
             }

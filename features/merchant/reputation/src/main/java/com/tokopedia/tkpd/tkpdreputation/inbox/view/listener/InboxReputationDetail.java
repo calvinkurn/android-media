@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -50,6 +52,8 @@ public interface InboxReputationDetail {
         void goToPreviewImage(int position, ArrayList<ImageUpload> list);
 
         int getTab();
+
+        Context getContext();
 
         void onGoToReportReview(int shopId, String reviewId);
 

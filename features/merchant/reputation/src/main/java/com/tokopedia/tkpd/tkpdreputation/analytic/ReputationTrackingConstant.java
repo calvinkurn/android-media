@@ -7,10 +7,12 @@ package com.tokopedia.tkpd.tkpdreputation.analytic;
 public class ReputationTrackingConstant {
     //Event
     public static final String CLICK_OFFICIAL_STORE = "clickOfficialStore";
+    public static final String CLICK_PDP = "clickPDP";
 
     //Category
     public static final String OFFICIAL_STORE_SHOP_PAGE_BUYER = "official store shop page - buyer";
     public static final String OFFICIAL_STORE_SHOP_PAGE_BRAND = "official store shop page - brand";
+    public static final String PRODUCT_DETAIL_PAGE = "product detail page";
 
     //Action
     public static final String TOP_CONTENT_CLICK = " - top content - click";

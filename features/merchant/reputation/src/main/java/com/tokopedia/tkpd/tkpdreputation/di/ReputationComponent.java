@@ -1,13 +1,11 @@
 package com.tokopedia.tkpd.tkpdreputation.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationReportFragment;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.fragment.ReputationProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 
@@ -18,7 +16,7 @@ import dagger.Component;
  */
 
 @ReputationScope
-@Component(modules = {ReputationModule.class, ViewModelModule.class}, dependencies = AppComponent.class)
+@Component(modules = {ReputationModule.class, ViewModelModule.class}, dependencies = BaseAppComponent.class)
 public interface ReputationComponent {
 
     void inject(InboxReputationFragment inboxReputationFragment);

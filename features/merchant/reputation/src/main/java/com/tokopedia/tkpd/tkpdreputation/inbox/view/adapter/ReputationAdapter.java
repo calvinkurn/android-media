@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.SmileyModel;
@@ -46,15 +47,17 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     ArrayList<SmileyModel> list;
     ReputationListener listener;
+    Context context;
 
-    private ReputationAdapter(ReputationListener listener) {
+    private ReputationAdapter(Context context, ReputationListener listener) {
         this.list = new ArrayList<>();
         this.listener = listener;
         this.canGiveReputation = true;
+        this.context = context;
     }
 
-    public static ReputationAdapter createInstance(ReputationListener listener) {
-        return new ReputationAdapter(listener);
+    public static ReputationAdapter createInstance(Context context, ReputationListener listener) {
+        return new ReputationAdapter(context, listener);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,13 +107,13 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     public void showAllSmiley() {
         this.list.clear();
         this.list.add(new SmileyModel(R.drawable.ic_smiley_bad_empty,
-                MainApplication.getAppContext().getString(R.string.smiley_bad),
+                context.getString(R.string.smiley_bad),
                 SMILEY_BAD));
         this.list.add(new SmileyModel(R.drawable.ic_smiley_netral_empty,
-                MainApplication.getAppContext().getString(R.string.smiley_netral),
+                context.getString(R.string.smiley_netral),
                 SMILEY_NEUTRAL));
         this.list.add(new SmileyModel(R.drawable.ic_smiley_good_empty,
-                MainApplication.getAppContext().getString(R.string.smiley_good),
+                context.getString(R.string.smiley_good),
                 SMILEY_GOOD));
         notifyDataSetChanged();
     }
@@ -118,7 +121,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     public void showSmileyBad() {
         this.list.clear();
         this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
-                MainApplication.getAppContext().getString(R.string.smiley_bad),
+                context.getString(R.string.smiley_bad),
                 SMILEY_BAD));
         this.canGiveReputation = false;
         notifyDataSetChanged();
@@ -127,7 +130,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     public void showSmileyNeutral() {
         this.list.clear();
         this.list.add(new SmileyModel(R.drawable.ic_smiley_neutral,
-                MainApplication.getAppContext().getString(R.string.smiley_netral),
+                context.getString(R.string.smiley_netral),
                 SMILEY_NEUTRAL));
         this.canGiveReputation = false;
         notifyDataSetChanged();
@@ -136,7 +139,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
     public void showSmileyGood() {
         this.list.clear();
         this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
-                MainApplication.getAppContext().getString(R.string.smiley_good),
+                context.getString(R.string.smiley_good),
                 SMILEY_GOOD));
         this.canGiveReputation = false;
         notifyDataSetChanged();
@@ -156,29 +159,29 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
         if (reviewerScore == InboxReputationDetailHeaderViewHolder.SMILEY_BAD) {
             this.list.clear();
             this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
-                    MainApplication.getAppContext().getString(R.string.smiley_bad),
+                    context.getString(R.string.smiley_bad),
                     SMILEY_BAD,
                     true));
             this.list.add(new SmileyModel(R.drawable.ic_smiley_netral_empty,
-                    MainApplication.getAppContext().getString(R.string.smiley_netral),
+                    context.getString(R.string.smiley_netral),
                     SMILEY_NEUTRAL,
                     true));
             this.list.add(new SmileyModel(R.drawable.ic_smiley_good_empty,
-                    MainApplication.getAppContext().getString(R.string.smiley_good),
+                    context.getString(R.string.smiley_good),
                     SMILEY_GOOD,
                     true));
         } else if (reviewerScore == InboxReputationDetailHeaderViewHolder.SMILEY_NEUTRAL) {
             this.list.clear();
             this.list.add(new SmileyModel(R.drawable.ic_smiley_bad_empty,
-                    MainApplication.getAppContext().getString(R.string.smiley_bad),
+                    context.getString(R.string.smiley_bad),
                     SMILEY_BAD,
                     true));
             this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
-                    MainApplication.getAppContext().getString(R.string.smiley_netral),
+                    context.getString(R.string.smiley_netral),
                     SMILEY_NEUTRAL,
                     true));
             this.list.add(new SmileyModel(R.drawable.ic_smiley_good_empty,
-                    MainApplication.getAppContext().getString(R.string.smiley_good),
+                    context.getString(R.string.smiley_good),
                     SMILEY_GOOD,
                     true));
         }

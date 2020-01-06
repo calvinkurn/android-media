@@ -24,16 +24,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.facebook.CallbackManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -119,11 +119,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
         DaggerReputationComponent reputationComponent =
                 (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(baseAppComponent)
                         .build();
         reputationComponent.inject(this);
     }
@@ -338,9 +338,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private String getTextDeadline(InboxReputationItemViewModel element) {
-        return MainApplication.getAppContext().getString(R.string.deadline_prefix)
+        return getContext().getString(R.string.deadline_prefix)
                 + " " + element.getReputationDaysLeft() + " " +
-                MainApplication.getAppContext().getString(R.string.deadline_suffix);
+                getContext().getString(R.string.deadline_suffix);
     }
 
     @Override

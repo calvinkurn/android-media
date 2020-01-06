@@ -14,16 +14,17 @@ import android.view.ViewGroup;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -90,14 +91,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
         DaggerReputationComponent reputationComponent =
                 (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(baseAppComponent)
                         .build();
-
         reputationComponent.inject(this);
     }
 
@@ -124,7 +123,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             scoreFilter = "";
         }
 
-        InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(this);
+        InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(getContext(), this);
         adapter = new InboxReputationAdapter(typeFactory);
     }
 
@@ -385,18 +384,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void goToHotlist() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter
-                && !GlobalConfig.isSellerApp()) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeHotlistIntent
-                    (getActivity());
-            startActivity(intent);
-            getActivity().finish();
-        } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
-                    (getActivity());
-            startActivity(intent);
-            getActivity().finish();
-        }
+        RouteManager.route(getContext(), ApplinkConst.HOME);
+        getActivity().finish();
     }
 
     @Override

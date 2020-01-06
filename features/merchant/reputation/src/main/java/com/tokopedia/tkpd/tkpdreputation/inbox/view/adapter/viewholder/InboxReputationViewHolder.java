@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.reputation.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -40,8 +40,9 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private TextView date;
     private TextView action;
     private ImageView unreadNotification;
+    private Context context;
 
-    public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
+    public InboxReputationViewHolder(Context context, View itemView, InboxReputation.View viewListener) {
         super(itemView);
         mainView = itemView.findViewById(R.id.main_view);
         textDeadline = itemView.findViewById(R.id.deadline_text);
@@ -55,6 +56,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         action = itemView.findViewById(R.id.action);
         unreadNotification = itemView.findViewById(R.id.unread_notif);
         this.viewListener = viewListener;
+        this.context = context;
 
 
     }
@@ -139,35 +141,34 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
     private String getTextDeadline(InboxReputationItemViewModel element) {
-        return MainApplication.getAppContext().getString(R.string.deadline_prefix)
+        return context.getString(R.string.deadline_prefix)
                 + " " + element.getReputationDaysLeft() + " " +
-                MainApplication.getAppContext().getString(R.string.deadline_suffix);
+                context.getString(R.string.deadline_suffix);
     }
 
     private void setIconDeadline(TextView deadline, String reputationDaysLeft) {
-        deadline.setText(reputationDaysLeft + " " + MainApplication.getAppContext().getString(R.string.deadline_suffix));
+        deadline.setText(reputationDaysLeft + " " + context.getString(R.string.deadline_suffix));
 
-        Drawable background = MethodChecker.getDrawable(MainApplication
-                .getAppContext(), R.drawable.custom_label);
+        Drawable background = MethodChecker.getDrawable(context, R.drawable.custom_label);
 
         switch (reputationDaysLeft) {
             case "1":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, R
                         .color.red_500),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             case "2":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, R
                         .color.orange_300),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             default:
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, R
                         .color.light_blue_300),
                         PorterDuff.Mode
                                 .MULTIPLY));

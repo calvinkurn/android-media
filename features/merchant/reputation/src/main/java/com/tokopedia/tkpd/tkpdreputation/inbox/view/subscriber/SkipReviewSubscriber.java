@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
@@ -27,7 +26,7 @@ public class SkipReviewSubscriber extends Subscriber<SkipReviewDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingProgress();
-        viewListener.onErrorSkipReview(ErrorHandler.getErrorMessage(MainApplication.getAppContext(), e));
+        viewListener.onErrorSkipReview(ErrorHandler.getErrorMessage(viewListener.getActivity().getApplicationContext(), e));
     }
 
     @Override
@@ -36,7 +35,7 @@ public class SkipReviewSubscriber extends Subscriber<SkipReviewDomain> {
         if (skipReviewDomain.isSuccess()) {
             viewListener.onSuccessSkipReview();
         } else {
-            viewListener.onErrorSkipReview(MainApplication.getAppContext()
+            viewListener.onErrorSkipReview(viewListener.getActivity().getApplicationContext()
                     .getString(R.string.default_request_error_unknown));
         }
 

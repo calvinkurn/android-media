@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -98,7 +98,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     private void prepareView() {
         list.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
-        adapter = InboxReputationFilterAdapter.createInstance(this, listOption);
+        adapter = InboxReputationFilterAdapter.createInstance(getContext(),this, listOption);
         list.setAdapter(adapter);
 
         saveButton.setOnClickListener(new View.OnClickListener() {

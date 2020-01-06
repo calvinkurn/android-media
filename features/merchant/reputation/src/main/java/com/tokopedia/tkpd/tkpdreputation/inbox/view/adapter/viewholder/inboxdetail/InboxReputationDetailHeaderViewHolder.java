@@ -4,15 +4,16 @@ import androidx.annotation.LayoutRes;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.reputation.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -52,6 +53,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     ReputationAdapter adapter;
     GridLayoutManager gridLayout;
     LinearLayoutManager linearLayoutManager;
+    Context context;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
@@ -60,6 +62,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                                                  final ReputationAdapter.ReputationListener reputationListener) {
         super(itemView);
         this.reputationListener = reputationListener;
+        this.context = itemView.getContext();
         userAvatar = itemView.findViewById(R.id.user_avatar);
         name = (TextView) itemView.findViewById(R.id.name);
         userReputationView =  itemView.findViewById(R.id.user_reputation);
@@ -75,13 +78,14 @@ public class InboxReputationDetailHeaderViewHolder extends
         smiley = (RecyclerView) itemView.findViewById(R.id.smiley);
         opponentSmileyText = (TextView) itemView.findViewById(R.id.opponent_smiley_text);
         opponentSmiley = (ImageView) itemView.findViewById(R.id.opponent_smiley);
-        adapter = ReputationAdapter.createInstance(reputationListener);
+        adapter = ReputationAdapter.createInstance(itemView.getContext(), reputationListener);
         gridLayout = new GridLayoutManager(itemView.getContext(), 3,
                 LinearLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager
                 .HORIZONTAL, false);
         smiley.setLayoutManager(gridLayout);
         smiley.setAdapter(adapter);
+        
     }
 
     @Override
@@ -114,25 +118,25 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (element.getReputationDataViewModel().isAutoScored()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.review_auto_scored);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
         } else if (element.getReputationDataViewModel().isLocked()
                 && element.getReputationDataViewModel().isInserted()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.review_is_saved);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
         } else if (element.getReputationDataViewModel().isLocked()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.locked_reputation);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             adapter.showLockedSmiley();
         } else if (element.getReputationDataViewModel().isInserted()) {
             lockedLayout.setVisibility(View.GONE);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
         } else {
@@ -146,14 +150,14 @@ public class InboxReputationDetailHeaderViewHolder extends
             changeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (changeButton.getText().equals(MainApplication.getAppContext().getString(R.string
+                    if (changeButton.getText().equals(context.getString(R.string
                             .change))) {
                         adapter.showChangeSmiley(element.getReputationDataViewModel().getReviewerScore());
-                        changeButton.setText(MainApplication.getAppContext().getString(R.string
+                        changeButton.setText(context.getString(R.string
                                 .title_cancel));
                     } else {
                         setSmiley(element, adapter);
-                        changeButton.setText(MainApplication.getAppContext().getString(R.string
+                        changeButton.setText(context.getString(R.string
                                 .change));
                     }
                 }
@@ -234,18 +238,18 @@ public class InboxReputationDetailHeaderViewHolder extends
     private String getOpponentSmileyPromptText(InboxReputationDetailHeaderViewModel element) {
         if (element.getReputationDataViewModel().getRevieweeScore() == NO_REPUTATION)
             return element.getRole() == InboxReputationItemViewModel
-                    .ROLE_SELLER ? MainApplication.getAppContext().getString(R.string
-                    .seller_has_not_review) : MainApplication.getAppContext().getString(R.string
+                    .ROLE_SELLER ? context.getString(R.string
+                    .seller_has_not_review) : context.getString(R.string
                     .buyer_has_not_review);
         else
             return element.getRole() == InboxReputationItemViewModel
-                    .ROLE_SELLER ? MainApplication.getAppContext().getString(R.string
-                    .score_from_seller) : MainApplication.getAppContext().getString(R.string
+                    .ROLE_SELLER ? context.getString(R.string
+                    .score_from_seller) : context.getString(R.string
                     .score_from_buyer);
     }
 
     private void setSmiley(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {
-        changeButton.setText(MainApplication.getAppContext().getString(R.string
+        changeButton.setText(context.getString(R.string
                 .change));
         switch (element.getReputationDataViewModel().getReviewerScore()) {
             case SMILEY_BAD:
@@ -262,7 +266,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     private String getPromptText(InboxReputationDetailHeaderViewModel element) {
-        return MainApplication.getAppContext().getString(R.string
+        return context.getString(R.string
                 .reputation_prompt) + " " + element.getName() + "?";
     }
 

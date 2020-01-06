@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
+import android.content.Context;
+
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
@@ -17,12 +18,14 @@ public class EditReviewWithoutImageSubscriber extends Subscriber<SendReviewValid
     private final InboxReputationForm.View viewListener;
     private final boolean shareFb;
     private final ShareModel shareModel;
+    private final Context context;
 
     public EditReviewWithoutImageSubscriber(InboxReputationForm.View viewListener,
                                             boolean shareFb, ShareModel shareModel) {
         this.viewListener = viewListener;
         this.shareFb = shareFb;
         this.shareModel = shareModel;
+        this.context = viewListener.getActivity().getApplicationContext();
     }
 
     @Override
@@ -33,7 +36,7 @@ public class EditReviewWithoutImageSubscriber extends Subscriber<SendReviewValid
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingProgress();
-        viewListener.onErrorEditReview(ErrorHandler.getErrorMessage(MainApplication.getAppContext(), e));
+        viewListener.onErrorEditReview(ErrorHandler.getErrorMessage(context, e));
     }
 
     @Override
@@ -44,7 +47,7 @@ public class EditReviewWithoutImageSubscriber extends Subscriber<SendReviewValid
         } else if (sendReviewValidateDomain.getIsSuccess() == 1) {
             viewListener.onSuccessEditReview();
         } else {
-            viewListener.onErrorEditReview(MainApplication.getAppContext().getString(R.string
+            viewListener.onErrorEditReview(context.getString(R.string
                     .default_request_error_unknown));
 
         }

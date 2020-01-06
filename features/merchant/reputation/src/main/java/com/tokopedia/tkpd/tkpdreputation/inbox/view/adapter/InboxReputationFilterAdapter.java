@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter.HeaderOptionViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter.OptionViewModel;
@@ -75,18 +76,20 @@ public class InboxReputationFilterAdapter
 
     private final ArrayList<OptionViewModel> listOption;
     private final FilterListener listener;
+    private Context context;
 
 
-    public static InboxReputationFilterAdapter createInstance(FilterListener listener,
+    public static InboxReputationFilterAdapter createInstance(Context context, FilterListener listener,
                                                               ArrayList<OptionViewModel>
                                                                       listOption) {
-        return new InboxReputationFilterAdapter(listener, listOption);
+        return new InboxReputationFilterAdapter(context, listener, listOption);
     }
 
-    private InboxReputationFilterAdapter(FilterListener listener,
+    private InboxReputationFilterAdapter(Context context, FilterListener listener,
                                          ArrayList<OptionViewModel> listOption) {
         this.listener = listener;
         this.listOption = listOption;
+        this.context = context;
     }
 
     @Override
@@ -113,12 +116,10 @@ public class InboxReputationFilterAdapter
             ViewHolder holder = (ViewHolder) parent;
             holder.filter.setText(listOption.get(position).getName());
             if (listOption.get(position).isSelected()) {
-                holder.filter.setTextColor(MethodChecker.getColor(MainApplication.getAppContext()
-                        , R.color.medium_green));
+                holder.filter.setTextColor(MethodChecker.getColor(context, R.color.medium_green));
                 holder.check.setVisibility(View.VISIBLE);
             } else {
-                holder.filter.setTextColor(MethodChecker.getColor(MainApplication.getAppContext()
-                        , R.color.black_54));
+                holder.filter.setTextColor(MethodChecker.getColor(context, R.color.black_54));
                 holder.check.setVisibility(View.GONE);
             }
         }

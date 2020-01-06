@@ -6,18 +6,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.app.MainApplication
-import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
-class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
+class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
 
     private var productId: String = ""
     lateinit var createReviewFragment: CreateReviewFragment
@@ -64,8 +64,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     }
 
 
-    override fun getComponent(): AppComponent {
-        return (application as MainApplication).appComponent
+    override fun getComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
     }
 
     override fun onBackPressed() {

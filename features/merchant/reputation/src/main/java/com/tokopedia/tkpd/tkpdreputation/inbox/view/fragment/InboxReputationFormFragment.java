@@ -42,12 +42,11 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
@@ -57,6 +56,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -139,11 +139,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
         DaggerReputationComponent reputationComponent =
                 (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(baseAppComponent)
                         .build();
         reputationComponent.inject(this);
     }
@@ -259,7 +259,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                         startActivityForResult(
                                 ImageUploadPreviewActivity.getUpdateCallingIntent(getActivity(),
                                         position),
-                                ImageUploadHandler.CODE_UPLOAD_IMAGE);
+                                Constant.ImageUpload.CODE_UPLOAD_IMAGE);
                     }
                 };
             }
@@ -269,7 +269,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 LinearLayoutManager.HORIZONTAL, false));
         listImageUpload.setAdapter(adapter);
 
-        tipsAdapter = ReviewTipsAdapter.createInstance();
+        tipsAdapter = ReviewTipsAdapter.createInstance(getContext());
         reviewTips.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
         reviewTips.setAdapter(tipsAdapter);
@@ -294,27 +294,27 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 if (rating == 1.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
+                    ratingText.setText(getContext().getString(R.string
                             .rating_title_1));
                     isValidRating = true;
                 } else if (rating == 2.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
+                    ratingText.setText(getContext().getString(R.string
                             .rating_title_2));
                     isValidRating = true;
                 } else if (rating == 3.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
+                    ratingText.setText(getContext().getString(R.string
                             .rating_title_3));
                     isValidRating = true;
                 } else if (rating == 4.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
+                    ratingText.setText(getContext().getString(R.string
                             .rating_title_4));
                     isValidRating = true;
                 } else if (rating == 5.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
+                    ratingText.setText(getContext().getString(R.string
                             .rating_title_5));
                     isValidRating = true;
                 } else if (rating == 0.0f) {
-                    ratingText.setText(MainApplication.getAppContext().getString(R.string
+                    ratingText.setText(getContext().getString(R.string
                             .rating_title_0));
                     isValidRating = false;
                 }
@@ -415,14 +415,14 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 (InboxReputationFormActivity.ARGS_PRODUCT_STATUS, -1) ==
                 GetInboxReputationDetailSubscriber.PRODUCT_IS_DELETED) {
             productName.setText(
-                    MainApplication.getAppContext().getString(R.string.product_is_deleted));
+                    getContext().getString(R.string.product_is_deleted));
 
             ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
         } else if (getArguments().getInt
                 (InboxReputationFormActivity.ARGS_PRODUCT_STATUS, -1) ==
                 GetInboxReputationDetailSubscriber.PRODUCT_IS_BANNED) {
             productName.setText(
-                    MainApplication.getAppContext().getString(R.string.product_is_banned));
+                    getContext().getString(R.string.product_is_banned));
 
             ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
         } else {
@@ -701,9 +701,9 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 );
 
                 startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
-                        imageUrlOrPathList), ImageUploadHandler.CODE_UPLOAD_IMAGE);
+                        imageUrlOrPathList), Constant.ImageUpload.CODE_UPLOAD_IMAGE);
             }
-        } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
+        } else if (requestCode == Constant.ImageUpload.CODE_UPLOAD_IMAGE) {
             presenter.restoreFormFromCache();
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -4,6 +4,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.text.Spanned;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +15,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
@@ -62,10 +63,12 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     private TextView counterLike;
     private View containerReplyView;
     private View containerLike;
+    private Context context;
 
     public ReviewProductContentViewHolder(View itemView, ListenerReviewHolder viewListener) {
         super(itemView);
         this.viewListener = viewListener;
+        this.context = itemView.getContext();
         reviewerName = (TextView) itemView.findViewById(R.id.reviewer_name);
         reviewTime = (TextView) itemView.findViewById(R.id.review_time);
         reviewAttachment = (RecyclerView) itemView.findViewById(R.id.product_review_image);
@@ -119,7 +122,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         review.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (review.getText().toString().endsWith(MainApplication.getAppContext().getString(R.string.more_to_complete))) {
+                if (review.getText().toString().endsWith(context.getString(R.string.more_to_complete))) {
                     review.setText(MethodChecker.fromHtml(element.getReviewMessage()));
                 }
             }
@@ -241,7 +244,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
 
                     final PopupMenu popup = new PopupMenu(itemView.getContext(), v);
                     popup.getMenu().add(1, MENU_DELETE, 1,
-                            MainApplication.getAppContext()
+                            context
                                     .getString(R.string.menu_delete));
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -272,12 +275,12 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
 
     private void initReplyViewState(ReviewProductModelContent element) {
         if (element.isReplyOpened()) {
-            seeReplyText.setText(MainApplication.getAppContext().getText(R.string.close_reply));
+            seeReplyText.setText(context.getText(R.string.close_reply));
             replyArrow.setRotation(180);
             replyReviewLayout.setVisibility(View.VISIBLE);
             viewListener.onSmoothScrollToReplyView(getAdapterPosition());
         } else {
-            seeReplyText.setText(MainApplication.getAppContext().getText(R.string.see_reply));
+            seeReplyText.setText(context.getText(R.string.see_reply));
             replyArrow.setRotation(0);
             replyReviewLayout.setVisibility(View.GONE);
         }

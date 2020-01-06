@@ -1,10 +1,12 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewRequestModel;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.UploadImageDomain;
@@ -44,12 +46,15 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
 
     private ImageUploadRepository imageUploadRepository;
     private UserSessionInterface userSession;
+    private @ApplicationContext Context context;
 
     public UploadImageUseCase(ImageUploadRepository imageUploadRepository,
-                              UserSessionInterface userSession) {
+                              UserSessionInterface userSession,
+                              @ApplicationContext Context context) {
         super();
         this.imageUploadRepository = imageUploadRepository;
         this.userSession = userSession;
+        this.context = context;
     }
 
     @Override
@@ -69,8 +74,7 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     private Map<String, RequestBody> generateRequestBody(RequestParams requestParams) {
         Map<String, String> paramsMap = AuthHelper.generateParamsNetwork(
                 requestParams.getString(PARAM_USER_ID, userSession.getUserId()),
-                requestParams.getString(PARAM_DEVICE_ID,
-                        GCMHandler.getRegistrationId(MainApplication.getAppContext())),
+                requestParams.getString(PARAM_DEVICE_ID, userSession.getDeviceId()),
                 new HashMap<String, String>()
         );
 
@@ -107,11 +111,9 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     private RequestBody generateImage(RequestParams requestParams) {
         File file = null;
         try {
-            file = ImageUploadHandler.writeImageToTkpdPath(
-                    ImageUploadHandler.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""))
-            );
+            file = ImageUtils.compressImageFile(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""), Constant.ImageUpload.QUALITY_COMPRESS);
         } catch (IOException e) {
-            throw new RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image));
+            throw new RuntimeException(context.getString(R.string.error_upload_image));
         }
         return RequestBody.create(MediaType.parse("image/*"),
                 file);
