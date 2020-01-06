@@ -741,7 +741,7 @@ public class ProductListFragment
 
     @Override
     public void onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
+        SearchTracking.eventUserClickNewSearchOnEmptySearchProduct(getQueryKey());
         showSearchInputView();
     }
 

@@ -48,6 +48,7 @@ public interface SearchEventTracking {
         String CLICK_SORT_PRICE_MIN_TICKER = "click - sort terendah ticker";
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
         String CLICK_SEARCH = "click - search";
+        String CLICK_CHANGE_KEYWORD = "click ganti kata kunci";
     }
 
     interface Label {

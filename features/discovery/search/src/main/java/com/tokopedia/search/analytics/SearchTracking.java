@@ -433,6 +433,15 @@ public class SearchTracking {
         );
     }
 
+    public static void eventUserClickNewSearchOnEmptySearchProduct(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_SEARCH_RESULT,
+                EVENT_CATEGORY_SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_CHANGE_KEYWORD,
+                keyword
+        );
+    }
+
     public static void eventUserClickSeeAllGlobalNavWidget(String keyword,
                                                            String productName,
                                                            String applink) {
