@@ -1,40 +1,43 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.content.Context
+import android.app.Application
+import android.content.Intent
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
-import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
+import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tradein.Constants
 import com.tokopedia.tradein.R
-import com.tokopedia.tradein.model.*
+import com.tokopedia.tradein.model.DeviceAttr
+import com.tokopedia.tradein.model.DeviceDiagInput
+import com.tokopedia.tradein.model.DeviceDiagInputResponse
+import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
-import com.tokopedia.tradein.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.json.JSONException
 import org.json.JSONObject
 import rx.Subscriber
-import com.tokopedia.common_tradein.utils.TradeInUtils
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class TradeInHomeViewModel(@ApplicationContext val applicationContext: Context ,val intent: Intent) : BaseTradeInViewModel(),
+class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
         CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams: TradeInParams
+    lateinit var applicationContext:Application
 
     init {
         tradeInParams = if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
@@ -239,6 +242,10 @@ class TradeInHomeViewModel(@ApplicationContext val applicationContext: Context ,
         progBarVisibility.value = true
         this.tradeInType = tradeinType
         laku6TradeIn.getMinMaxPrice(this)
+    }
+
+    fun initilizeAppContext(application: Application) {
+        applicationContext = application
     }
 
     override val coroutineContext: CoroutineContext

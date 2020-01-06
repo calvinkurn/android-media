@@ -150,6 +150,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tradeInHomeViewModel.initilizeAppContext(getApplication());
         tradeInHomeViewModel.getHomeResultData().observe(this, (homeResult -> {
             if (!homeResult.isSuccess()) {
                 mTvInitialPrice.setText(homeResult.getDisplayMessage());
