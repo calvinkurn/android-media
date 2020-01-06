@@ -18,7 +18,8 @@ class MyUmrahEntity(
         val nextActionText: String = "",
         @SerializedName("mainButton")
         @Expose
-        val mainButton: MainButton = MainButton()
+        val mainButton: MainButton = MainButton(),
+        var isViewed: Boolean = false
 ) {
     class MainButton(
             @SerializedName("text")

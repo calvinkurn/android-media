@@ -11,6 +11,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
@@ -67,7 +68,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
         val emptyCartListData = CartListData()
@@ -169,7 +170,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
 
@@ -234,7 +235,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
 
@@ -325,7 +326,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
 
@@ -391,7 +392,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
 
@@ -460,7 +461,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
 
@@ -559,7 +560,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
 
@@ -574,9 +575,11 @@ class CartListPresenterTest : Spek({
                 val messages = arrayListOf<String>()
                 messages.add(successMessage)
                 dataModel.message = messages
+                dataModel.success = 1
                 addToCartDataModel.status = AddToCartDataModel.STATUS_OK
                 addToCartDataModel.data = dataModel
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
             Given("attach view") {
@@ -591,7 +594,7 @@ class CartListPresenterTest : Spek({
                 verify {
                     view.hideProgressLoading()
                     view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), productModel)
-                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+//                    cartListPresenter.processInitialGetCartData(any(), any(), any())
                     view.showToastMessageGreen(successMessage)
                 }
             }
@@ -605,10 +608,7 @@ class CartListPresenterTest : Spek({
             Given("add to cart data") {
                 addToCartDataModel = AddToCartDataModel().apply {
                     this.status = AddToCartDataModel.STATUS_ERROR
-                    this.data = DataModel().let { dataModel ->
-                        dataModel.success = 1
-                        dataModel
-                    }
+                    this.data = DataModel()
                     this.errorMessage = arrayListOf<String>().let { errorMessages ->
                         errorMessages.add(errorMessage)
                         errorMessages
@@ -642,6 +642,7 @@ class CartListPresenterTest : Spek({
                 val messages = arrayListOf<String>()
                 messages.add("Success message")
                 dataModel.message = messages
+                dataModel.success = 1
                 addToCartDataModel.status = AddToCartDataModel.STATUS_OK
                 addToCartDataModel.data = dataModel
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
@@ -659,7 +660,7 @@ class CartListPresenterTest : Spek({
                 verify {
                     view.hideProgressLoading()
                     view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
-                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+//                    cartListPresenter.processInitialGetCartData(any(), any(), any())
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
             }
@@ -673,10 +674,7 @@ class CartListPresenterTest : Spek({
             Given("add to cart data") {
                 addToCartDataModel = AddToCartDataModel().apply {
                     this.status = AddToCartDataModel.STATUS_ERROR
-                    this.data = DataModel().let { dataModel ->
-                        dataModel.success = 1
-                        dataModel
-                    }
+                    this.data = DataModel()
                     this.errorMessage = arrayListOf<String>().let { errorMessages ->
                         errorMessages.add(errorMessage)
                         errorMessages
@@ -727,7 +725,7 @@ class CartListPresenterTest : Spek({
                 verify {
                     view.hideProgressLoading()
                     view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
-                    cartListPresenter.processInitialGetCartData(any(), any(), any())
+//                    cartListPresenter.processInitialGetCartData(any(), any(), any())
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
             }
@@ -780,7 +778,7 @@ class CartListPresenterTest : Spek({
                     addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
             )
         }
 

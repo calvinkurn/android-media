@@ -51,6 +51,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICA
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -92,6 +94,7 @@ object DeeplinkDFMapper {
     private val DFM_PROMO = "df_promo"
     private val DFM_TRAVEL = "df_travel"
     private val DFM_USER = "df_user"
+    private val DFM_SALAM = "df_salam"
 
     //sellerapp
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
@@ -187,6 +190,8 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_USER, R.string.notif_settings_title))
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_USER, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DFM_USER, R.string.title_module_attachinvoice))
+            add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_SALAM, R.string.title_salam))
+            add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_SALAM, R.string.title_salam))
         }
     }
 
