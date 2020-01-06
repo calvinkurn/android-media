@@ -153,8 +153,6 @@
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
 
-
-
     <!-- Setting-Notif-->
     <string name="setting_notif_app_name">Setting Notif</string>
 
@@ -183,6 +181,19 @@
     <string name="title_take_opportunity">Ambil Peluang</string>
     <string name="title_sort_opportunity">Urutkan</string>
     <string name="title_filter_opportunity">Filter</string>
+
+    <!-- Dynamic feature for manage Seller Order Management-->
+    <string name="title_seller_order">Seller Order Management</string>
+    <string name="som_app_name">Seller Order Management</string>
+    <string name="title_som_list">Penjualan</string>
+    <string name="title_som_filter">Filter</string>
+    <string name="title_som_detail">Detail Pesanan</string>
+    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
+    <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="title_som_change_courier">Ganti Kurir</string>
+    <string name="title_som_scan_barcode">Scan Resi</string>
+    <string name="title_som_booking_code">Detail Kode Booking</string>
+
 
     <!-- Dynamic feature for user identification commmon-->
     <string name="title_upload_user_identification_common">Upload Foto</string>
