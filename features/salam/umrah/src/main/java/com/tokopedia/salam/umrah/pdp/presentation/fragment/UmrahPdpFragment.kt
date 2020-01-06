@@ -407,7 +407,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             iw_umrah_pdp_itineraries.buildView()
         }
         itineraryBottomSheet.setChild(view)
-        itineraryBottomSheet.show(fragmentManager, "")
+        itineraryBottomSheet.show(fragmentManager!!, "")
     }
 
     private fun setupRVFeaturedFacilities() {
@@ -451,7 +451,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         }
         umrahPdpFacilityAdapter.facilities = umrahProduct.facilities
         facilitiesBottomSheet.setChild(view)
-        facilitiesBottomSheet.show(fragmentManager, "")
+        facilitiesBottomSheet.show(fragmentManager!!, "")
     }
 
     private fun setupRVNonFacilities() {

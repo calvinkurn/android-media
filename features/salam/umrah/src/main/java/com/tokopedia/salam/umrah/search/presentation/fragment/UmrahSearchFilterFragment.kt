@@ -270,7 +270,7 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
                 }
             }
         }
-        bottomSheets.show(fragmentManager, "")
+        bottomSheets.show(fragmentManager!!, "")
     }
 
 

@@ -309,7 +309,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     private fun openSortBottomSheets() {
         umrahSearchSortAdapter.setSelectedOption(umrahSearchViewModel.getSortValue())
-        sortBottomSheets.show(fragmentManager, "TEST")
+        sortBottomSheets.show(fragmentManager!!, "TEST")
     }
 
     private fun loadSortData() {

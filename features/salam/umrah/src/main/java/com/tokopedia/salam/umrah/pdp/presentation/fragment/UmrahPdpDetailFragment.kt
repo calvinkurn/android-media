@@ -219,7 +219,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
             }
         }
         soldOutBottomSheet.setChild(view)
-        soldOutBottomSheet.show(fragmentManager, "")
+        soldOutBottomSheet.show(fragmentManager!!, "")
     }
 
     private fun showSoldOutPackage() {
