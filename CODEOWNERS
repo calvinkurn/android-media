@@ -109,6 +109,7 @@
 /features/user/user_identification_no_op/       		@tokopedia/minion-kevin
 /features/user/seamless_login/                          @tokopedia/minion-kevin
 /features/user/kyc_centralized/                         @tokopedia/minion-kevin
+/features/user/attachinvoice/                           @tokopedia/minion-kevin
 
 /features/content/affiliate/            				@tokopedia/minion-stuart
 /features/content/affiliate_common/     				@tokopedia/minion-stuart
