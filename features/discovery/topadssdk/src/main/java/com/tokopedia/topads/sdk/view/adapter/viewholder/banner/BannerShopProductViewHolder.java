@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.LayoutRes;
 
+import android.graphics.Paint;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -83,11 +84,15 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         } else {
             newLabelTxt.setVisibility(View.GONE);
         }
-        discountTxt.setText(element.getProduct().getProductCashbackRate());
-        if (element.getProduct().isProductCashback() && !element.getProduct().getProductCashbackRate().isEmpty()) {
+
+        if (element.getProduct().getCampaign().getDiscountPercentage() > 0) {
+            discountTxt.setText(String.format("%d%%", element.getProduct().getCampaign().getDiscountPercentage()));
             discountTxt.setVisibility(View.VISIBLE);
+            slashedPrice.setVisibility(View.VISIBLE);
+            initSlashedPrice(product.getCampaign().getOriginalPrice());
         } else {
             discountTxt.setVisibility(View.GONE);
+            slashedPrice.setVisibility(View.INVISIBLE);
         }
         setRating(element.getProduct().getProductRating());
         container.setOnClickListener(new View.OnClickListener() {
@@ -109,12 +114,12 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         rating3.setImageResource(getRatingDrawable(rating >= 3));
         rating4.setImageResource(getRatingDrawable(rating >= 4));
         rating5.setImageResource(getRatingDrawable(rating >= 5));
-        rating1.setVisibility((rating>0)?View.VISIBLE:View.GONE);
-        rating2.setVisibility((rating>0)?View.VISIBLE:View.GONE);
-        rating3.setVisibility((rating>0)?View.VISIBLE:View.GONE);
-        rating4.setVisibility((rating>0)?View.VISIBLE:View.GONE);
-        rating5.setVisibility((rating>0)?View.VISIBLE:View.GONE);
-        reviewCountTxt.setVisibility((rating>0)?View.VISIBLE:View.GONE);
+        rating1.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
+        rating2.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
+        rating3.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
+        rating4.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
+        rating5.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
+        reviewCountTxt.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
     }
 
     private int getRatingDrawable(Boolean isActive) {
@@ -122,6 +127,16 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             return R.drawable.topads_ic_rating_active;
         } else {
             return R.drawable.topads_ic_rating_default;
+        }
+    }
+
+    private void initSlashedPrice(String price) {
+        if (price.trim().isEmpty()) {
+            slashedPrice.setVisibility(View.GONE);
+        } else {
+            slashedPrice.setVisibility(View.VISIBLE);
+            slashedPrice.setText(price);
+            slashedPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
     }
 }

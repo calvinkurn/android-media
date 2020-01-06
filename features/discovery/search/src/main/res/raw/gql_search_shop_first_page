@@ -98,6 +98,10 @@ query SearchShop($params: String!, $headline_params: String) {
                             image_url
                             image_click_url
                         }
+                       	campaign {
+                          discount_percentage
+                          original_price
+                        }
                     }
                     image_shop {
                         cover
