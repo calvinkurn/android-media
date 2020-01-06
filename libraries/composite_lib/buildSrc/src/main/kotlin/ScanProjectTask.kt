@@ -23,6 +23,9 @@ open class ScanProjectTask : DefaultTask() {
         const val TOKOPEDIA = "tokopedia"
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val LIBRARIES_PATH = "../../buildconfig/dependencies/dependency-libraries.gradle"
+        //define who is responsible to change the version
+        //if the author contains the name in here, it will be ignored and the version will not change.
+        val CHANGER_EMAIL = listOf("jenkins")
     }
 
     @TaskAction
@@ -182,8 +185,23 @@ open class ScanProjectTask : DefaultTask() {
     }
 
     private fun moduleHasNewChanges(module: String): Boolean {
-        val gitLog = "git log -1 --pretty=\'%ad\' --date=format:\'%Y-%m-%d,%H:%M:%S\' $module"
-        val moduleLatestChangeDateString = gitLog.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        val gitLog = "git log -1 --pretty=\'%ad#%ae\' --date=format:\'%Y-%m-%d,%H:%M:%S\' $module"
+        val gitLogResult = gitLog.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        val split = gitLogResult.split("#")
+        val moduleLatestChangeDateString = split[0]
+        val authorEmail = split[1]
+
+        //check if the last log is written by admin/jenkins
+        var isWrittenByAdmin = false
+        CHANGER_EMAIL.forEach {
+            if (authorEmail.contains(it,true)) {
+                isWrittenByAdmin = true
+            }
+        }
+        //if this is written by admin, ignore this changes.
+        if (isWrittenByAdmin) {
+            return false
+        }
         val moduleLatestChangeDate = dateFormatter.parse(moduleLatestChangeDateString)
         if (moduleLatestChangeDate > latestReleaseDate) {
             println("$module latest date $moduleLatestChangeDateString")
