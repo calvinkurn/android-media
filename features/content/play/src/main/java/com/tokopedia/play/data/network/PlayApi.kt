@@ -22,11 +22,6 @@ interface PlayApi {
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): DataResponse<Channel.Response>
 
-    @GET(PLAY_GET_VIDEO_STREAM)
-    suspend fun getVideoStream(
-            @Path(PLAY_KEY_CHANNEL_ID) channelId: String
-    ): DataResponse<VideoStream.Response>
-
     @GET(PLAY_GET_TOTAL_LIKES)
     suspend fun getTotalLike(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String

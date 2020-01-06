@@ -56,7 +56,7 @@ data class Channel(
         val moderatorThumbUrl: String = "",
 
         @SerializedName("video_stream")
-        val videoStream: VideoStream = VideoStream(),
+        var videoStream: VideoStream = VideoStream(), // TODO("testing purposes")
 
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),

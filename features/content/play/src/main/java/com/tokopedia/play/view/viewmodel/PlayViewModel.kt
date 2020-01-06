@@ -11,7 +11,7 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.GetChannelInfoUseCase
-import com.tokopedia.play.domain.GetShopInfoUseCase
+import com.tokopedia.play.domain.GetPartnerInfoUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class PlayViewModel @Inject constructor(
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
-        private val getShopInfoUseCase: GetShopInfoUseCase,
+        private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val playSocket: PlaySocket,
         private val userSessionInterface: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
@@ -115,6 +115,13 @@ class PlayViewModel @Inject constructor(
              * If Live => start web socket
              */
             getPartnerInfo(channel)
+            // TODO("remove, for testing")
+            channel.videoStream = VideoStream(
+                    "vertical",
+                    "live",
+                    true,
+                    VideoStream.Config(streamUrl = "rtmp://fms.105.net/live/rmc1"))
+
             setStateLiveOrVod(channel)
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
@@ -178,8 +185,8 @@ class PlayViewModel @Inject constructor(
 
     private fun getShopPartnerInfo(shopId: Long) = launchCatchError(block = {
         val response = withContext(dispatchers.io) {
-            getShopInfoUseCase.params = GetShopInfoUseCase.createParam(shopId.toString())
-            getShopInfoUseCase.executeOnBackground()
+            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(shopId.toString())
+            getPartnerInfoUseCase.executeOnBackground()
         }
 
         _observablePartnerInfo.value = mapPartnerInfoFromShop(response)

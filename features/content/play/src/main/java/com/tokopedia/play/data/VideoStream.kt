@@ -10,11 +10,11 @@ data class VideoStream(
         @SerializedName("orientation")
         val orientation: String = "", // vertical or horizontal
         @SerializedName("type")
-        val type: String = "", // youtube / live / live+playback / vod / playback+live
+        val type: String = "live", // youtube / live / live+playback / vod / playback+live
         @SerializedName("is_live")
         val isLive: Boolean = false,
         @SerializedName("config")
-        val config: Config = Config(streamUrl = "rtmp://fms.105.net/live/rmc1") // TODO("remove this, testing purposes")
+        val config: Config = Config()
 ) {
 
     data class Response(

@@ -32,6 +32,7 @@ class ToolbarView(
     private val tvChannelName = view.findViewById<Typography>(R.id.tv_stream_name)
     private val tvPartner = view.findViewById<Typography>(R.id.tv_shop_name)
     private val tvFollow = view.findViewById<Typography>(R.id.tv_follow)
+    private val viewDot = view.findViewById<View>(R.id.v_separator)
 
     init {
         view.findViewById<ImageView>(R.id.iv_back)
@@ -86,6 +87,12 @@ class ToolbarView(
 
         tvPartner.setOnClickListener {
             listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)
+        }
+
+        if (tvPartner.text.isEmpty() || tvPartner.text.isBlank()) {
+            tvPartner.gone()
+            tvFollow.gone()
+            viewDot.gone()
         }
     }
 
