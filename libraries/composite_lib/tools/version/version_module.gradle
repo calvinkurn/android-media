@@ -3,19 +3,6 @@ import com.tokopedia.plugin.ReadVersionConfigTask
 import com.tokopedia.plugin.ScanProjectTask
 import com.tokopedia.plugin.PublishCompositeTask
 
-// jadi cara `ini` store semua variable diantara task
-//task readGradlefile(type: ReadGradlefileTasks){
-//    subprojects = project.subprojects
-//    doLast{
-//        latestReleaseDate = scanReleaseDate.latestReleaseDate
-//        listVersion = versionDependency.listVersion
-//        listTree = versionDependency.listTree
-//        topList()
-//        readVersionConfig()
-//        moduleVersionUpdate()
-//    }
-//}
-
 task scanReleaseDate(type: ScanReleaseDateTask){
     doFirst {
         println("[SCAN RELEASE DATE TASK START]")
@@ -24,18 +11,6 @@ task scanReleaseDate(type: ScanReleaseDateTask){
         println("[SCAN RELEASE DATE TASK FINISHED]")
     }
 }
-
-//task versionDependency(type: VersionTasks, dependsOn: scanReleaseDate) {
-//    doFirst {
-//        // simpan list release date
-//        latestReleaseDate = scanReleaseDate.latestReleaseDate
-//
-//        // simpan root Project {Project}
-//        rootProjectTask = rootProject
-//    }
-//    // setelah task dipanggil selesaikan dengan readGradle
-////    finalizedBy readGradlefile
-//}
 
 task readVersionConfigTask(type: ReadVersionConfigTask) {
     doFirst {
