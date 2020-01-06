@@ -460,6 +460,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             view?.let {
                 Toaster.showNormalWithAction(it, str, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
             }
+            list_quick_reply.show()
         }
     }
 
