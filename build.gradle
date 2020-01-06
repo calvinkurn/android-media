@@ -103,7 +103,13 @@ okbuck {
     buildScan {
         // plugin configuration
         server = "http://172.21.57.32"
-        publishAlways()
+        if (System.getenv("CI")) {
+            tag System.getenv("JOB_NAME") ?: ""
+            tag System.getenv("AGENT_NAME") ?: ""
+            publishAlways()
+        } else {
+            tag "Local"
+        }
     }
 
 idea.module {
