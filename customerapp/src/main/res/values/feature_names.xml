@@ -194,4 +194,20 @@
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
 
+
+    <!-- Dynamic feature for Umrah-->
+    <string name="salam_title_df">Salam</string>
+    <string name="umrah_title_df">Umrah</string>
+    <string name="umrah_search_title">Cari Paket Umrah</string>
+    <string name="umrah_label_filter">Filter</string>
+    <string name="umrah_label_pdp">Pilih Detail</string>
+    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
+    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+
+
+    <!-- Dynamic feature for user identification commmon-->
+    <string name="title_upload_user_identification_common">Upload Foto</string>
+
 </resources>

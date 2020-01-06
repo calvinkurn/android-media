@@ -34,4 +34,7 @@
 
     <!--Seller Order Management-->
     <string name="som_title">Seller Order Management</string>
+
+    <string name="user_identification_common_title">Verifikasi Data Diri</string>
+
 </resources>
