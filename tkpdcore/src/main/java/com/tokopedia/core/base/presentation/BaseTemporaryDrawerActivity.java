@@ -12,6 +12,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
+import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core2.R;
 
@@ -27,12 +28,12 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
                 return;
             }
 
-            if (intent.getAction().equals(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION)
-                    && intent.getBooleanExtra(DrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false)){
+            if (intent.getAction().equals(PushNotificationIntentService.BROADCAST_GET_NOTIFICATION)
+                    && intent.getBooleanExtra(PushNotificationIntentService.GET_NOTIFICATION_SUCCESS, false)){
                 updateDrawerData();
             }
 
-            if (intent.getAction().equals(DrawerGetNotificationService.UPDATE_NOTIFICATION_DATA)){
+            if (intent.getAction().equals(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA)){
                 DrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, true);
             }
         }
@@ -65,8 +66,8 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
 
     private void registerBroadcastReceiver() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION);
-        intentFilter.addAction(DrawerGetNotificationService.UPDATE_NOTIFICATION_DATA);
+        intentFilter.addAction(PushNotificationIntentService.BROADCAST_GET_NOTIFICATION);
+        intentFilter.addAction(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA);
         LocalBroadcastManager.getInstance(this).registerReceiver(drawerGetNotificationReceiver, intentFilter);
     }
 
