@@ -104,8 +104,9 @@ okbuck {
         // plugin configuration
         server = "http://172.21.57.32"
         if (System.getenv("CI")) {
-            tag System.getenv("JOB_NAME") ?: ""
-            tag System.getenv("AGENT_NAME") ?: ""
+            tag "CI"
+            if (System.getenv("JOB_NAME")) tag System.getenv("JOB_NAME")
+            if (System.getenv("AGENT_NAME")) tag System.getenv("AGENT_NAME")
             publishAlways()
         } else {
             tag "Local"
