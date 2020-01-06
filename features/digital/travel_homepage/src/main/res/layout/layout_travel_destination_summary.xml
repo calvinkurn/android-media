@@ -16,11 +16,27 @@
         app:typographyType="heading_2"
         tools:text="Jakarta, Indonesia" />
 
+    <ImageView
+        android:id="@+id/arrow_up"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24"
+        android:layout_gravity="center"/>
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_68"
+        android:text="Geser ke atas"
+        android:layout_gravity="center"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/destination_summary_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/dp_3"
         android:maxLines="6"
@@ -30,7 +46,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/destination_summary_read_more"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:text="Baca selengkapnya"

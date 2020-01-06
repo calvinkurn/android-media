@@ -1,10 +1,12 @@
 package com.tokopedia.travelhomepage.destination.presentation.fragment
 
+import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -12,8 +14,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.travelhomepage.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.travelhomepage.destination.di.TravelDestinationComponent
 import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
 import com.tokopedia.travelhomepage.destination.listener.OnClickListener
@@ -26,7 +27,8 @@ import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.Travel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_travel_homepage_destination.*
 import javax.inject.Inject
-import kotlin.math.roundToLong
+import com.tokopedia.travelhomepage.R
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 
 /**
  * @author by jessica on 2019-12-20
@@ -85,6 +87,7 @@ OnViewHolderBindListener{
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
 
         destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
+
     }
 
     fun renderLayout(title: String) {
@@ -135,7 +138,7 @@ OnViewHolderBindListener{
     override fun loadData(page: Int) { /* do nothing */ }
 
     override fun clickAndRedirect(appUrl: String, webUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        RouteManager.route(context, appUrl)
     }
 
     override fun onCitySummaryVHBind() {
@@ -143,7 +146,9 @@ OnViewHolderBindListener{
     }
 
     override fun onCitySummaryLoaded(imgUrls: List<String>) {
-        if (imgUrls.isNotEmpty()) { travel_homepage_destination_view_pager.setImages(imgUrls) }
+        if (imgUrls.isNotEmpty()) {
+            travel_homepage_destination_view_pager.setImages(imgUrls)
+        }
         travel_homepage_destination_view_pager.buildView()
     }
 
@@ -157,6 +162,12 @@ OnViewHolderBindListener{
 
     override fun onCityArticleVHBind() {
         destinationViewModel.getCityArticles(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article), cityId)
+    }
+
+    private fun openImagePreview(index: Int) {
+        context?.run {
+//            startActivity(ImagePreviewSliderActivity.getCallingIntent(this, "LALALA", imageList, thumbnailImageList, index))
+        }
     }
 
     companion object {

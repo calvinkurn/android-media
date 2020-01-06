@@ -28,9 +28,9 @@ open class TravelDestinationAdapterTypeFactory(private val onBindListener: OnVie
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
             TravelDestinationSummaryViewHolder.LAYOUT -> return TravelDestinationSummaryViewHolder(parent, onBindListener)
-            TravelDestinationCityRecommendationViewHolder.LAYOUT -> return TravelDestinationCityRecommendationViewHolder(parent, onBindListener)
-            TravelDestinationSectionViewHolder.LAYOUT -> return TravelDestinationSectionViewHolder(parent, onBindListener)
-            TravelDestinationArticleViewHolder.LAYOUT -> return TravelDestinationArticleViewHolder(parent, onBindListener)
+            TravelDestinationCityRecommendationViewHolder.LAYOUT -> return TravelDestinationCityRecommendationViewHolder(parent, onBindListener, onItemClickListener)
+            TravelDestinationSectionViewHolder.LAYOUT -> return TravelDestinationSectionViewHolder(parent, onBindListener, onItemClickListener)
+            TravelDestinationArticleViewHolder.LAYOUT -> return TravelDestinationArticleViewHolder(parent, onBindListener, onItemClickListener)
         }
         return super.createViewHolder(parent, type)
     }
