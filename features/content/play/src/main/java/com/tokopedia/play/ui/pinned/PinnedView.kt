@@ -8,12 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.data.PinnedMessage
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 
 /**

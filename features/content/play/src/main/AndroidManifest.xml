@@ -4,8 +4,7 @@
     <application>
         <activity
             android:name=".view.activity.PlayActivity"
-            android:theme="@style/Play.FullScreen"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:theme="@style/Play.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

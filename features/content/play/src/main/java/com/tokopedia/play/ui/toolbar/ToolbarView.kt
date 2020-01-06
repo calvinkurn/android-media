@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -30,9 +31,9 @@ class ToolbarView(
 
     private val flLiveBadge = view.findViewById<FrameLayout>(R.id.fl_live_badge)
     private val tvChannelName = view.findViewById<Typography>(R.id.tv_stream_name)
-    private val tvPartner = view.findViewById<Typography>(R.id.tv_shop_name)
+    private val tvPartnerName = view.findViewById<Typography>(R.id.tv_partner_name)
     private val tvFollow = view.findViewById<Typography>(R.id.tv_follow)
-    private val viewDot = view.findViewById<View>(R.id.v_separator)
+    private val groupPartner = view.findViewById<Group>(R.id.group_partner)
 
     init {
         view.findViewById<ImageView>(R.id.iv_back)
@@ -65,7 +66,7 @@ class ToolbarView(
     }
 
     fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
-        tvPartner.text = partnerInfo.name
+        tvPartnerName.text = partnerInfo.name
         tvFollow.text = if (partnerInfo.isFollowed)
             view.context.getString(R.string.play_following) else
             view.context.getString(R.string.play_follow)
@@ -85,14 +86,13 @@ class ToolbarView(
             }
         }
 
-        tvPartner.setOnClickListener {
-            listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)
-        }
+        if (partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) groupPartner.gone()
+        else {
+            groupPartner.visible()
 
-        if (tvPartner.text.isEmpty() || tvPartner.text.isBlank()) {
-            tvPartner.gone()
-            tvFollow.gone()
-            viewDot.gone()
+            tvPartnerName.setOnClickListener {
+                listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)
+            }
         }
     }
 
