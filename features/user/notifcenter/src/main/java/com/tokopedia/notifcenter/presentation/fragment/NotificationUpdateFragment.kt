@@ -25,6 +25,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
@@ -61,6 +63,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     private var cursor = ""
     private var lastItem = 0
     private var markAllReadCounter = 0L
+    private var _isFirstLoaded = true
 
     private lateinit var bottomActionView: BottomActionView
 
@@ -216,6 +219,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             hideLoading()
             _adapter.removeEmptyState()
 
+            if (_isFirstLoaded && it.list.isEmpty()) {
+                filterRecyclerView.hide()
+            }
+
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 _adapter.addElement(EmptyDataStateProvider.emptyData())
@@ -227,6 +234,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                 if (swipeToRefresh.isRefreshing) {
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
+
+                _isFirstLoaded = false
+                filterRecyclerView.show()
 
                 _adapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)
