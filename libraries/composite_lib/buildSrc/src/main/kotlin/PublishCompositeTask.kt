@@ -3,6 +3,7 @@ package com.tokopedia.plugin
 import GraphStr
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.impldep.org.joda.time.DateTime
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,6 +36,7 @@ open class PublishCompositeTask : DefaultTask() {
         const val LIBRARIES_PATH = "../../buildconfig/dependencies/dependency-libraries.gradle"
         const val LIBRARIES_BACKUP_PATH = "../../buildconfig/dependencies/dependency-libraries-backup.gradle"
         const val LIBRARIES_WRITER_PATH = "../../buildconfig/dependencies/dependency-libraries-writer.gradle"
+        const val RELEASE_DATE_PATH = "tools/version/release_date.txt"
     }
 
     @TaskAction
@@ -135,6 +137,11 @@ open class PublishCompositeTask : DefaultTask() {
             }
         }
         //TODO increase log release to current date if success
+        val isSuccessRelease = successModuleList.isNotEmpty() && failModuleList.isEmpty()
+        if (isSuccessRelease) {
+            val releaseFile = File(RELEASE_DATE_PATH)
+            releaseFile.appendText(dateFormatter.format(DateTime.now()))
+        }
     }
 
     fun backupRootDependencyLibraryFile() {
