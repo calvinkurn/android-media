@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -42,6 +43,8 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener {
@@ -61,11 +64,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private boolean isShowingPermissionPopup;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
     private String errorDialogGTMLabel = "";
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            tradeInHomeViewModel.processMessage(intent, GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_insert_device_diag));
+            tradeInHomeViewModel.processMessage(intent);
         }
     };
 
@@ -114,7 +119,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
+    public void initInject() {
+        getComponent().inject(this);
+    }
+
+    @Override
     public void initView() {
+        setTradeInParams();
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -135,6 +146,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             tncStringId = R.string.tradein_tnc;
         }
         mTvGoToProductDetails.setText(closeButtonText);
+    }
+
+    private void setTradeInParams() {
+        if (getIntent().hasExtra(TradeInParams.class.getSimpleName())) {
+            tradeInHomeViewModel.setTradeInParams(getIntent().getParcelableExtra(TradeInParams.class.getSimpleName()));
+        }
     }
 
     @Override
@@ -434,5 +451,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             }
         } else {
         }
+    }
+
+    @NotNull
+    @Override
+    public ViewModelProvider.Factory getVMFactory() {
+        return viewModelFactory;
     }
 }

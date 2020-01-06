@@ -1,47 +1,39 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
-import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein.model.DeviceAttr
-import com.tokopedia.tradein.model.DeviceDiagInput
+import com.tokopedia.tradein.Constants
 import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
+import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
+import com.tokopedia.tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
-import com.tokopedia.tradein.Constants
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.json.JSONException
 import org.json.JSONObject
-import com.tokopedia.common_tradein.utils.TradeInUtils
-import java.util.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class TradeInHomeViewModel(@ApplicationContext val applicationContext: Context ,val intent: Intent) : BaseTradeInViewModel(),
+class TradeInHomeViewModel @Inject constructor(
+        private val processMessageUseCase: ProcessMessageUseCase,
+        private val checkMoneyInUseCase: CheckMoneyInUseCase,
+        private val userSession: UserSessionInterface
+) : BaseTradeInViewModel(),
         CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
-    var tradeInParams: TradeInParams
-
-    init {
-        tradeInParams = if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
-            val parcelable = intent.getParcelableExtra(TradeInParams::class.java.simpleName) as TradeInParams?
-            parcelable ?: TradeInParams()
-        } else
-            TradeInParams()
-    }
-
+    var tradeInParams = TradeInParams()
     var tradeInType: Int = TRADEIN_OFFLINE
 
     override fun doOnCreate() {
@@ -50,21 +42,18 @@ class TradeInHomeViewModel(@ApplicationContext val applicationContext: Context ,
     }
 
     fun checkLogin() {
-        getMYRepository().let {
-            if (!it.getUserLoginState()?.isLoggedIn)
-                askUserLogin.value = Constants.LOGIN_REQUIRED
-            else {
-                askUserLogin.value = Constants.LOGEED_IN
-            }
+        if (!userSession.isLoggedIn)
+            askUserLogin.value = Constants.LOGIN_REQUIRED
+        else {
+            askUserLogin.value = Constants.LOGEED_IN
         }
     }
 
-    fun processMessage(intent: Intent, query : String) {
+    fun processMessage(intent: Intent) {
         val diagnostics = getDiagnosticData(intent)
-        val variables = getProcessMessageRequestParam(diagnostics)
+        tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            val response = getMYRepository()?.getGQLData(query, DeviceDiagInputResponse::class.java, variables) as DeviceDiagInputResponse?
-            setDiagnoseResult(response, diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
@@ -86,35 +75,6 @@ class TradeInHomeViewModel(@ApplicationContext val applicationContext: Context ,
         }
     }
 
-    fun getProcessMessageRequestParam(diagnostics: DeviceDiagnostics): HashMap<String, Any> {
-        val variables = HashMap<String, Any>()
-        try {
-            val imei = ArrayList<String>()
-            imei.add(diagnostics.imei)
-            val deviceAttr = DeviceAttr()
-            deviceAttr.brand = diagnostics.brand
-            deviceAttr.grade = diagnostics.grade
-            deviceAttr.imei = imei
-            deviceAttr.model = diagnostics.model
-            deviceAttr.modelId = diagnostics.modelId
-            deviceAttr.ram = diagnostics.ram
-            deviceAttr.storage = diagnostics.storage
-            val deviceDiagInput = DeviceDiagInput()
-            deviceDiagInput.uniqueCode = diagnostics.tradeInUniqueCode
-            deviceDiagInput.deviceAttr = deviceAttr
-            deviceDiagInput.deviceId = diagnostics.imei
-            deviceDiagInput.deviceReview = diagnostics.reviewDetails
-            deviceDiagInput.newPrice = tradeInParams.newPrice
-            deviceDiagInput.oldPrice = diagnostics.tradeInPrice
-            deviceDiagInput.tradeInType = tradeInType
-            tradeInParams.deviceId = diagnostics.imei
-            variables["params"] = deviceDiagInput
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return variables
-    }
-
     fun getDiagnosticData(intent: Intent): DeviceDiagnostics {
         val result = intent.getStringExtra("test-result")
         return Gson().fromJson(result, DeviceDiagnostics::class.java)
@@ -122,16 +82,8 @@ class TradeInHomeViewModel(@ApplicationContext val applicationContext: Context ,
 
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
-        tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationContext)
-        tradeInParams.userId = getMYRepository().getUserLoginState().userId.toInt()
-        tradeInParams.tradeInType = 2
-        tradeInParams.modelID = modelId
-        val variables = HashMap<String, Any>()
-        variables["params"] = tradeInParams
         launchCatchError(block = {
-            val query = GraphqlHelper.loadRawString(applicationContext.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
-            val response = getMYRepository()?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
-            checkIfElligible(response, jsonObject)
+            checkIfElligible(checkMoneyInUseCase.checkMoneyIn(modelId, tradeInParams, userSession.userId), jsonObject)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
