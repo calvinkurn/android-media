@@ -830,6 +830,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             adapter = somBottomSheetStockEmptyAdapter
         }
 
+        viewBottomSheet.tf_extra_notes?.visibility = View.VISIBLE
         viewBottomSheet.tf_extra_notes?.setLabelStatic(true)
         viewBottomSheet.tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
         viewBottomSheet.tf_extra_notes?.setPlaceholder(getString(R.string.empty_stock_extra_placeholder))
