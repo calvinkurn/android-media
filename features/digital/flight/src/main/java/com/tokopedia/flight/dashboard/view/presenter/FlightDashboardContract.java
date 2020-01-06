@@ -4,9 +4,9 @@ import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
@@ -60,7 +60,7 @@ public interface FlightDashboardContract {
 
         void showAirportShouldDifferentCity(@StringRes int resId);
 
-        void renderBannerView(List<BannerDetail> bannerList);
+        void renderBannerView(List<TravelCollectiveBannerModel.Banner> bannerList);
 
         void hideBannerView();
 
@@ -129,9 +129,11 @@ public interface FlightDashboardContract {
 
         void onDestroyView();
 
-        void onBannerItemClick(int position, BannerDetail bannerDetail);
+        void onBannerItemClick(int position, TravelCollectiveBannerModel.Banner bannerDetail);
 
-        void actionOnPromoScrolled(int position, BannerDetail bannerData);
+        void getBannerData(String query);
+
+        void actionOnPromoScrolled(int position, TravelCollectiveBannerModel.Banner bannerData);
 
         void fetchTickerData();
     }

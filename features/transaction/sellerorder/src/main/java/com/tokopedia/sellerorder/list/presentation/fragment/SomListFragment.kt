@@ -142,7 +142,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun prepareLayout() {
-        refreshHandler = RefreshHandler(activity, view, this)
+        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
         somListItemAdapter = SomListItemAdapter()
         somListItemAdapter.setActionListener(this)
@@ -280,7 +280,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
                 currentIndex = index
-                filterItem.setColorBorder(R.color.tkpd_main_green)
+                filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
                 filterItem.isSelected = true
                 if (paramOrder.statusList.isEmpty()) {
                     if (tabStatus.equals(STATUS_DELIVERED, true)) {
@@ -292,10 +292,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         paramOrder.statusList = it.orderStatusIdList
                     }
                 }
-            }  /*else {
-                filterItem.setColorBorder(R.color.gray_background)
-                filterItem.isSelected = false
-            }*/
+            }
             refreshHandler?.startRefresh()
 
             listQuickFilter.add(filterItem)
@@ -362,6 +359,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             somListItemAdapter.somItemList = orderList.orders.toMutableList()
         } else {
             somListItemAdapter.addItems(orderList.orders)
+            scrollListener.updateStateAfterGetData()
         }
         somListItemAdapter.notifyDataSetChanged()
     }
@@ -492,7 +490,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onListItemClicked(orderId: String) {
-        eventClickOrder()
+        eventClickOrder(tabActive)
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_DETAIL)

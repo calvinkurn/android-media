@@ -54,10 +54,4 @@ public class SimpleSpinnerAdapter extends ArrayAdapter<String>{
         return adapter;
     }
 
-    public static SimpleSpinnerAdapter createAdapterAddProduct(Context context, List<String> itemList){
-        SimpleSpinnerAdapter adapter = new SimpleSpinnerAdapter(context, R.layout.spinner_add_product_item, itemList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
-    }
-
 }

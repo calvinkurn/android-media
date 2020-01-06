@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sellerorder</string>
+    <string name="som_app_name">Seller Order Management</string>
     <string name="title_som_list">Penjualan</string>
     <string name="title_som_filter">Filter</string>
     <string name="title_som_detail">Detail Pesanan</string>
@@ -208,7 +208,7 @@
         <html>
         <body>
         <p>Pembeli telah mengajukan pembatalan.</p>
-        <p><strong style="color: red;">Lihat Alasan</strong></p>
+        <p><font color="#ef144a"><b>Lihat Alasan</b></font></a></p>
         </body>
         </html>
         ]]>
@@ -233,12 +233,13 @@
     <string name="som_request_buyer_notes_html">
         <![CDATA[
         <html>
-        <body>
-        <p><b>#custName</b> telah mengajukan pembatalan pesanan <strong style="color: red;">#invoiceNo</strong> dengan alasan:</p>
+        <body><b>#custName</b> telah mengajukan pembatalan pesanan <font color="#ef144a">#invoiceNo</font> dengan alasan:
         </body>
         </html>
         ]]>
     </string>
     <string name="som_penalty_subtitle">Apakah Anda yakin ingin membatalkan pesanan?</string>
+
+    <string name="som_dropshipper_label">Dropshipper</string>
 
 </resources>

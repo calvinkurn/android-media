@@ -25,30 +25,8 @@ public class URLGenerator {
 
     private static final String SEAMLESS_LOGIN = "seamless?";
 
-    public static String generateURLLucky(String url, Context context) {
-        Uri uri = Uri.parse(url);
-        String path = uri.getLastPathSegment();
-        String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
-                + "token=" + GCMHandler.getRegistrationId(context)
-                + "&os_type=1"
-                + "&uid=" + SessionHandler.getLoginID(context)
-                + "&url=" + url;
-        Log.i("Loyalty System", url);
-        return urlFinal;
-    }
-
     public static String generateURLSessionLogin(String url, Context context) {
 
-        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
-                + "token=" + GCMHandler.getRegistrationId(context)
-                + "&os_type=1"
-                + "&uid=" + SessionHandler.getLoginID(context)
-                + "&url=" + url;
-        return urlFinal;
-    }
-
-    public static String generateURLSessionLoginV4(String url, Context context) {
         String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
                 + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"

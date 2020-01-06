@@ -13,7 +13,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
-import com.tokopedia.tkpd.home.service.ProductFeedService;
 
 import org.parceler.Parcels;
 
@@ -41,8 +40,6 @@ public class ProductHistoryImpl implements ProductHistory {
 
     private final MojitoAuthService mojitoService;
 
-    ProductFeedService productFeedService;
-
     CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     CacheHomeInteractor cache;
@@ -50,7 +47,6 @@ public class ProductHistoryImpl implements ProductHistory {
     public ProductHistoryImpl(ProductHistoryView productHistoryView) {
         this.productHistoryView = productHistoryView;
         mPaging = new PagingHandler();
-        productFeedService = new ProductFeedService();
         cache = new CacheHomeInteractorImpl();
         mojitoService = new MojitoAuthService();
     }

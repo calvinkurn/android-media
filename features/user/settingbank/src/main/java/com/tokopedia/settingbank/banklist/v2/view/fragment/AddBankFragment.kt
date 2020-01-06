@@ -399,4 +399,5 @@ class AddBankFragment : BaseDaggerFragment() {
         addAccountViewModel.addBank(builder.build())
 
     }
+
 }

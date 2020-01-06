@@ -53,6 +53,10 @@ public interface NewOrderView extends BaseView {
 
     void addRetry();
 
+    void addRetryMessage(String message);
+
+    void removeRetryMessage();
+
     void moveToDetailResult(Intent intent, int code);
 
     void addEmptyView();

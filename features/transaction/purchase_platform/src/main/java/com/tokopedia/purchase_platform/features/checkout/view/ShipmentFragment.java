@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -111,7 +111,8 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
@@ -136,9 +137,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.Shipment
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.transaction.common.dialog.UnifyDialog;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -190,15 +188,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
-    private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String BOTTOM_SHEET_TAG = "BOTTOM_SHEET_TAG";
-    private static final String GLOBAL_COUPON_ATTR_DESC = "GLOBAL_COUPON_ATTR_DESC";
-    private static final String GLOBAL_COUPON_ATTR_QTY = "GLOBAL_COUPON_ATTR_QTY";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayout llNetworkErrorView;
-    private ProgressDialog progressDialogNormal;
+    private AlertDialog progressDialogNormal;
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
     private Snackbar snackbarError;
@@ -234,7 +229,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
-    CartPromoSuggestionHolderData savedCartPromoSuggestionHolderData;
     List<ShipmentCartItemModel> savedShipmentCartItemModelList;
     ShipmentCostModel savedShipmentCostModel;
     EgoldAttributeModel savedEgoldAttributeModel;
@@ -285,11 +279,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getContext() != null) {
@@ -301,7 +290,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }).getType());
             if (savedShipmentCartItemModelList != null) {
                 savedTickerAnnouncementModel = saveInstanceCacheManager.get(TickerAnnouncementHolderData.class.getSimpleName(), TickerAnnouncementHolderData.class);
-                savedCartPromoSuggestionHolderData = saveInstanceCacheManager.get(CartPromoSuggestionHolderData.class.getSimpleName(), CartPromoSuggestionHolderData.class);
                 savedRecipientAddressModel = saveInstanceCacheManager.get(RecipientAddressModel.class.getSimpleName(), RecipientAddressModel.class);
                 savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
                 savedEgoldAttributeModel = saveInstanceCacheManager.get(EgoldAttributeModel.class.getSimpleName(), EgoldAttributeModel.class);
@@ -335,28 +323,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        // no op, already in onCreate()
-    }
-
-    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
     }
 
     @Override
@@ -372,9 +340,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         snackbarError = Snackbar.make(view, "", BaseToaster.LENGTH_SHORT);
 
-        progressDialogNormal = new ProgressDialog(getActivity());
-        progressDialogNormal.setMessage(getString(R.string.title_loading));
-        progressDialogNormal.setCancelable(false);
+        progressDialogNormal = new AlertDialog.Builder(getActivity())
+                .setView(R.layout.purchase_platform_progress_dialog_view)
+                .setCancelable(false)
+                .create();
 
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
@@ -391,7 +360,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             shipmentPresenter.setTickerAnnouncementHolderData(savedTickerAnnouncementModel);
             shipmentPresenter.setShipmentCartItemModelList(savedShipmentCartItemModelList);
-            shipmentPresenter.setCartPromoSuggestionHolderData(savedCartPromoSuggestionHolderData);
             shipmentPresenter.setRecipientAddressModel(savedRecipientAddressModel);
             shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
             shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
@@ -419,7 +387,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentPresenter.getShipmentCartItemModelList() != null) {
             saveInstanceCacheManager.put(TickerAnnouncementHolderData.class.getSimpleName(), shipmentPresenter.getTickerAnnouncementHolderData());
             saveInstanceCacheManager.put(ShipmentCartItemModel.class.getSimpleName(), new ArrayList<>(shipmentPresenter.getShipmentCartItemModelList()));
-            saveInstanceCacheManager.put(CartPromoSuggestionHolderData.class.getSimpleName(), shipmentPresenter.getCartPromoSuggestionHolderData());
             saveInstanceCacheManager.put(RecipientAddressModel.class.getSimpleName(), shipmentPresenter.getRecipientAddressModel());
             saveInstanceCacheManager.put(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
             saveInstanceCacheManager.put(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
@@ -433,16 +400,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (!shipmentSelectionStateDataHashSet.isEmpty()) {
             saveInstanceCacheManager.put(EXTRA_STATE_SHIPMENT_SELECTION, new ArrayList<>(shipmentSelectionStateDataHashSet));
         }
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        // no op, already in onSaveInstanceState
-    }
-
-    @Override
-    protected void setViewListener() {
-
     }
 
     private boolean isOneClickShipment() {
@@ -465,7 +422,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void initRecyclerViewData(TickerAnnouncementHolderData tickerAnnouncementHolderData,
                                       PromoStackingData promoStackingData,
-                                      CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                       RecipientAddressModel recipientAddressModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
@@ -499,10 +455,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
                 onPromoGlobalTrackingImpression(promoStackingData);
             }
-            cartPromoSuggestionHolderData.setVisible(false);
-            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestionHolderData);
-        } else {
-            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestionHolderData);
         }
 
         if (recipientAddressModel != null) {
@@ -633,16 +585,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
     public void showInitialLoading() {
         swipeToRefresh.setRefreshing(true);
     }
@@ -758,7 +700,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         initRecyclerViewData(
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 recipientAddressModel,
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
@@ -797,7 +738,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         initRecyclerViewData(
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 oldShipmentCartItemModelList,
                 shipmentPresenter.getShipmentDonationModel(),
@@ -814,7 +754,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         initRecyclerViewData(
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
@@ -872,19 +811,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
-        UnifyDialog createTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER);
+        DialogUnify createTicketDialog = new DialogUnify(getActivityContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         createTicketDialog.setTitle(checkoutData.getErrorReporter().getTexts().getSubmitTitle());
         createTicketDialog.setDescription(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
-        createTicketDialog.setSecondary(checkoutData.getErrorReporter().getTexts().getCancelButton());
-        createTicketDialog.setSecondaryOnClickListener(v -> {
+        createTicketDialog.setSecondaryCTAText(checkoutData.getErrorReporter().getTexts().getCancelButton());
+        createTicketDialog.setSecondaryCTAClickListener(() -> {
             checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
+            return Unit.INSTANCE;
         });
-        createTicketDialog.setOk(checkoutData.getErrorReporter().getTexts().getSubmitButton());
-        createTicketDialog.setOkOnClickListener(v -> {
+        createTicketDialog.setPrimaryCTAText(checkoutData.getErrorReporter().getTexts().getSubmitButton());
+        createTicketDialog.setPrimaryCTAClickListener(() -> {
             checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
             shipmentPresenter.processSubmitHelpTicket(checkoutData);
+            return Unit.INSTANCE;
         });
         createTicketDialog.show();
         checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
@@ -928,11 +869,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
-        UnifyDialog successTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER);
+        DialogUnify successTicketDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
         successTicketDialog.setTitle(submitTicketResult.getTexts().getSubmitTitle());
         successTicketDialog.setDescription(submitTicketResult.getTexts().getSubmitDescription());
-        successTicketDialog.setOk(submitTicketResult.getTexts().getSuccessButton());
-        successTicketDialog.setOkOnClickListener(v -> getActivity().finish());
+        successTicketDialog.setPrimaryCTAText(submitTicketResult.getTexts().getSuccessButton());
+        successTicketDialog.setPrimaryCTAClickListener(() -> {
+            getActivity().finish();
+            return Unit.INSTANCE;
+        });
         successTicketDialog.show();
     }
 
@@ -1092,13 +1036,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         showToastError(text);
         //scroll to ticker section
         rvShipment.scrollToPosition(0);
-    }
-
-    @Override
-    public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
-        View view = getView();
-        if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
-        else Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -1402,16 +1339,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 getActivity().finish();
             }
         } else if (data != null) {
-            PromoStackingData promoStackingData = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_PROMO_DATA);
-            CartPromoSuggestionHolderData cartPromoSuggestionHolderData = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_PROMO_SUGGESTION_DATA);
             RecipientAddressModel recipientAddressModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_RECIPIENT_ADDRESS_DATA);
             ArrayList<ShipmentCartItemModel> shipmentCartItemModels = data.getParcelableArrayListExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_CART_TEM_LIST_DATA);
-            ShipmentCostModel shipmentCostModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_COST_SATA);
-            ShipmentDonationModel shipmentDonationModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_DONATION_DATA);
-            shipmentPresenter.processReloadCheckoutPageFromMultipleAddress(
-                    promoStackingData, cartPromoSuggestionHolderData, recipientAddressModel, shipmentCartItemModels,
-                    shipmentCostModel, shipmentDonationModel
-            );
+            shipmentPresenter.processReloadCheckoutPageFromMultipleAddress(recipientAddressModel, shipmentCartItemModels);
         } else {
             shipmentSelectionStateDataHashSet.clear();
             shipmentPresenter.processInitialLoadCheckoutPage(
@@ -1560,7 +1490,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         sendAnalyticsOnClickChooseToMultipleAddressShipment();
         Intent intent = MultipleAddressFormActivity.createInstance(getActivity(),
                 shipmentAdapter.getPromoGlobalStackData(),
-                shipmentPresenter.getCartPromoSuggestionHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 new ArrayList<>(),
                 shipmentPresenter.getShipmentCostModel(),
@@ -1854,13 +1783,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ArrayList<String> promoCodes = new ArrayList<>();
         promoCodes.add(promoCode);
         shipmentPresenter.cancelAutoApplyPromoStack(INDEX_PROMO_GLOBAL, promoCodes, false, "global");
-    }
-
-    @Override
-    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
-                                                        int position) {
-        cartPromoSuggestionHolderData.setVisible(false);
-        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

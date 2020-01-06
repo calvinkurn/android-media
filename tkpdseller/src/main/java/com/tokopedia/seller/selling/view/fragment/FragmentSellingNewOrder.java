@@ -304,6 +304,16 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     }
 
     @Override
+    public void addRetryMessage(String message) {
+        adapter.addRetryMessage(message);
+    }
+
+    @Override
+    public void removeRetryMessage() {
+        adapter.removeRetryMessage();
+    }
+
+    @Override
     public void addEmptyView() {
         adapter.setIsDataEmpty(true);
     }

@@ -28,7 +28,7 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideProgressLoading()
-        view?.showToastMessageRed(ErrorHandler.getErrorMessage(view.activity, e))
+        view?.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivityObject(), e))
     }
 
     override fun onNext(response: GraphqlResponse) {
