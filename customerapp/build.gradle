@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply from: "$rootProject.projectDir/buildconfig/appcompile/df-enable-customerapp.gradle"
+if (project.hasProperty("enable-shrinkresource")) {
+    apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
+}
 
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
@@ -194,7 +196,9 @@ android {
             ext.enableHansel = true
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
+            if (project.hasProperty("enable-shrinkresource")) {
+                shrinkResources true
+            }
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
@@ -264,8 +268,10 @@ android {
 
     // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
     // to disable dynamic feature, use command option -Pdisable-dynamic-feature
-    //dynamicFeatures = getDynamicFeatureIfEnabled(project)
-    //generateAssetFile(project, dynamicFeatures)
+    if (!project.hasProperty("enable-shrinkresource")) {
+        dynamicFeatures = getDynamicFeatureIfEnabled(project)
+        generateAssetFile(project, dynamicFeatures)
+    }
 }
 
 
