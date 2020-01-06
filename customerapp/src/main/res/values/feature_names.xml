@@ -67,7 +67,7 @@
     <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
 
     <!-- Dynamic feature for Digital Recharge -->
-    <string name="recharge_app_name"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
