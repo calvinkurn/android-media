@@ -58,8 +58,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
-import com.tokopedia.shop.oldpage.di.component.DaggerShopPageComponent
-import com.tokopedia.shop.oldpage.di.module.ShopPageModule
+import com.tokopedia.shop.oldpage.di.component.DaggerOldShopPageComponent
+import com.tokopedia.shop.oldpage.di.module.OldShopPageModule
 import com.tokopedia.shop.oldpage.view.ShopPageViewModel
 import com.tokopedia.shop.oldpage.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.oldpage.view.holder.ShopPageHeaderViewHolder
@@ -395,8 +395,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun initInjector() {
-        DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
-            .shopComponent(component).build().inject(this)
+//        DaggerOldShopPageComponent.builder().shopPageModule(OldShopPageModule())
+//            .shopComponent(component).build().inject(this)
     }
 
     override fun getNewFragment(): Fragment? = null
