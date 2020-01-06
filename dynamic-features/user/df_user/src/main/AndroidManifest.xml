@@ -3,7 +3,7 @@
     package="com.tokopedia.df.user">
 
     <dist:module
-        dist:onDemand="false"
+        dist:onDemand="true"
         dist:title="@string/change_phone_number_app_module_name">
         <dist:fusing dist:include="true" />
     </dist:module>
