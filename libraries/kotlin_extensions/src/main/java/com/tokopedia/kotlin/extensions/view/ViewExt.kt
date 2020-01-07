@@ -6,24 +6,19 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
-import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.annotation.StringRes
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
-import android.graphics.drawable.GradientDrawable
-
-
+import com.tokopedia.unifycomponents.Toaster
 
 
 /**
@@ -148,13 +143,9 @@ fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int = 
 }
 
 fun View.showErrorToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
-    val toaster = ToasterError.make(this, errorMessage, BaseToaster.LENGTH_LONG)
     actionMessage?.let { message ->
-        toaster.setAction(message) {
-            action()
-        }
+        Toaster.make(this, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, message)
     }
-    toaster.show()
 }
 
 fun View.showNormalToaster(successMessage: String) {
@@ -166,13 +157,9 @@ fun View.showNormalToaster(successMessage: String, @StringRes actionMessage: Int
 }
 
 fun View.showNormalToaster(successMessage: String, actionMessage: String?, action: () -> Unit) {
-    val toaster = ToasterNormal.make(this, successMessage, BaseToaster.LENGTH_LONG)
     actionMessage?.let { message ->
-        toaster.setAction(message) {
-            action()
-        }
+        Toaster.make(this, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, message)
     }
-    toaster.show()
 }
 
 fun View.showEmptyState(@StringRes errorMessage: Int, action: () -> Unit) {
