@@ -376,7 +376,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 else itemMenus.add(Menus.ItemMenus(title, false))
             }
 
-            val title = getString(R.string.label_filter)
+            val title = getString(com.tokopedia.design.R.string.label_filter)
             filterMenu.apply {
                 setTitle(title)
                 setItemMenuList(itemMenus)

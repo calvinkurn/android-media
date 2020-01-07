@@ -63,7 +63,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     }
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
-        val backgroundDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator)
+        val backgroundDrawable = ContextCompat.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.circle_color_variant_indicator)
 
         if (isWhiteColor(hexColor)) {
             applyStrokeTo(backgroundDrawable)
