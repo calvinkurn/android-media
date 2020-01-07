@@ -341,7 +341,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
-                    getString(R.string.wishlist_check_cart),
+                    getString(R.string.notifcenter_title_view),
                     onClickSeeButtonOnAtcSuccessToaster()
             )
         }
