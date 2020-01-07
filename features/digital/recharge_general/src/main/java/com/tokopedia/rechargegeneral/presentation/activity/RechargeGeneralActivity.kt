@@ -28,6 +28,11 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
                     .build()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        (fragment as RechargeGeneralFragment).onBackPressed()
+    }
+
     companion object {
 
         val PARAM_CATEGORY_ID = "category_id"

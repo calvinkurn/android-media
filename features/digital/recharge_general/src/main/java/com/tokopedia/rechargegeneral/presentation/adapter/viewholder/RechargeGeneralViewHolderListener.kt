@@ -4,7 +4,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 
 interface OnInputListener {
-    fun onFinishInput(label: String, input: String)
+    fun onFinishInput(label: String, input: String, position: Int)
     fun onCustomInputClick(field: TopupBillsInputFieldWidget,
                            position: Int,
                            data: List<RechargeGeneralProductSelectData>? = null)

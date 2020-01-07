@@ -34,11 +34,11 @@ class RechargeGeneralCheckoutBottomSheet @JvmOverloads constructor(@NotNull cont
     }
 
     override fun onClickNextBuyButton() {
-        if (::listener.isInitialized) listener.onClickCheckout()
+        if (::listener.isInitialized) listener.onClickCheckout(enquiry_data_view.enquiryData)
     }
 
     interface CheckoutListener {
-        fun onClickCheckout()
+        fun onClickCheckout(data: TopupBillsEnquiry)
     }
 
 }

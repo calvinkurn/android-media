@@ -7,12 +7,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralPromoListFragment
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralRecentTransactionFragment
+import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 
 @RechargeGeneralScope
-@Component(modules = [RechargeGeneralViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
+@Component(modules = [RechargeGeneralModule::class, RechargeGeneralViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
 interface RechargeGeneralComponent {
 
     @ApplicationContext
@@ -23,6 +24,8 @@ interface RechargeGeneralComponent {
     fun coroutineDispatcher(): CoroutineDispatcher
 
     fun graphqlRepository(): GraphqlRepository
+
+    fun rechargeGeneralAnalytics(): RechargeGeneralAnalytics
 
     fun inject(rechargeGeneralFragment: RechargeGeneralFragment)
 

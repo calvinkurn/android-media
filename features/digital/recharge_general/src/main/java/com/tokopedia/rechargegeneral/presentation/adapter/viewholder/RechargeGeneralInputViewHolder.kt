@@ -27,7 +27,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
             override fun onFinishInput(input: String) {
                 if (input.isEmpty() || verifyField(enquiryData.validations, input)) {
                     inputView.hideErrorMessage()
-                    listener.onFinishInput(enquiryData.name, input)
+                    listener.onFinishInput(enquiryData.name, input, adapterPosition)
                 } else {
                     inputView.setErrorMessage("Input tidak sesuai")
                 }
