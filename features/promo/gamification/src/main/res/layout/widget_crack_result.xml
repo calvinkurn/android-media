@@ -142,7 +142,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:alpha="0"
-        android:background="@drawable/gamification_tooltip"
         android:gravity="center_horizontal"
         android:paddingStart="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"

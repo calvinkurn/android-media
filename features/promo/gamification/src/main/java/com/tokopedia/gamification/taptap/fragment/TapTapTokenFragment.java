@@ -38,6 +38,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
@@ -351,9 +352,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
             crackTokenPresenter.playWithPoints(true);
         } else {
-            ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(),
-                    actionButton.getUrl(),
-                    TapTapTokenActivity.class);
+            String applink = actionButton.getApplink();
+            if (!TextUtils.isEmpty(applink)) {
+                boolean isSupported = RouteManager.route(getActivity(), applink);
+                if (!isSupported) {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(), actionButton.getUrl(), TapTapTokenActivity.class);
+                }
+            } else {
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(), actionButton.getUrl(), TapTapTokenActivity.class);
+            }
+
         }
         if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
             sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK, actionButton.getText());
@@ -620,7 +628,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 if (getContext() != null) {
                     if (widgetTokenView.isCrackPercentageFull()) {
                         NetworkErrorHelper.showErrorSnackBar(errorMessage, getContext(), rootView, true);
-                        if(resetEggForUnknownErrorCodes){
+                        if (resetEggForUnknownErrorCodes) {
                             widgetTokenView.clearTokenAnimation();
                             widgetTokenView.resetForUnlimitedCrack(tokenData.getTokensUser());
                             widgetTokenView.stopMediaPlayer();
