@@ -14,14 +14,21 @@ import com.tokopedia.gm.common.data.source.GMCommonDataSource
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
+import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST
 import com.tokopedia.shop.common.constant.ShopUrl
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
+import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.product.data.GQLQueryConstant
+import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
@@ -97,6 +104,34 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
+    fun provideGraphqlGetMembershipUseCaseNew(gqlRepository: GraphqlRepository): GraphqlUseCase<MembershipStampProgress> {
+        return GraphqlUseCase(gqlRepository)
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideGraphqlGetShopFeaturedProductUseCaseNew(gqlRepository: GraphqlRepository): GraphqlUseCase<ShopFeaturedProduct.Response> {
+        return GraphqlUseCase(gqlRepository)
+    }
+
+    @ShopProductScope
+    @Provides
+    @Named(GQL_PRODUCT_LIST)
+    fun provideProductListQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(
+                context.resources,
+                R.raw.gql_get_product_list
+        )
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideDeleteShopInfoUseCase(@ApplicationContext context: Context ): DeleteShopInfoCacheUseCase {
+        return DeleteShopInfoCacheUseCase(context)
+    }
+
+    @ShopProductScope
+    @Provides
     fun provideClaimBenefitMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP) gqlQuery: String?,
                                              gqlUseCase: MultiRequestGraphqlUseCase?): ClaimBenefitMembershipUseCase {
         return ClaimBenefitMembershipUseCase(gqlQuery!!, gqlUseCase!!)
@@ -109,7 +144,6 @@ class ShopProductModule {
         return GetShopFeaturedProductUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
-    @ShopProductScope
     @Provides
     fun getShopProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
                               gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {
