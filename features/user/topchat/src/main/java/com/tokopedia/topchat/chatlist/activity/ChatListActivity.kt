@@ -453,23 +453,18 @@ class ChatListActivity : BaseTabActivity()
         chatNotifCounterViewModel.clear()
     }
 
-//    object DeeplinkIntent {
-//        @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
-//        @JvmStatic
-//        fun createIntent(context: Context, extras: Bundle) = createIntent(context)
-//    }
+    override fun getComponent(): ChatListComponent {
+        return DaggerChatListComponent.builder().baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent).build()
+    }
 
+    override fun getViewPagerResourceId(): Int = R.id.pager
+    override fun getTabLayoutResourceId(): Int = R.id.indicator
 
     companion object {
         const val BUYER_ANALYTICS_LABEL = "buyer"
         const val SELLER_ANALYTICS_LABEL = "seller"
         const val TAG = "ChatListActivity"
         private val TAG_ONBOARDING = ChatListActivity::class.java.name + ".OnBoarding"
-        fun createIntent(context: Context) = Intent(context, ChatListActivity::class.java)
-    }
-
-    override fun getComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
     }
 }
