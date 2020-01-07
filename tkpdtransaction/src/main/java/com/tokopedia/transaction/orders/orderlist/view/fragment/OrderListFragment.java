@@ -484,10 +484,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 addRecyclerListener();
             }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-                if (elapsedDays == _days90) {
+                // if (elapsedDays == _days90) {
                     orderListAdapter.setEmptyMarketplaceFilter();
-                } else
-                    orderListAdapter.setEmptyMarketplace();
+                /*} else
+                    orderListAdapter.setEmptyMarketplace();*/
                 presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
                 orderListAdapter.setEmptyOrderList();
