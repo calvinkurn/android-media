@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.appcompat.app.AlertDialog
 import android.text.*
 import android.text.style.ClickableSpan
@@ -21,24 +22,34 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.otp.common.design.PinInputEditText
 import com.tokopedia.otp.validator.data.*
+import com.tokopedia.otp.validator.data.ModeListData
+import com.tokopedia.otp.validator.data.OtpRequestData
+import com.tokopedia.otp.validator.data.OtpValidateData
+
 import com.tokopedia.otp.validator.di.ValidatorComponent
 import com.tokopedia.otp.validator.viewmodel.ValidatorViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
+import kotlinx.android.synthetic.main.fragment_validator.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -57,7 +68,7 @@ class ValidatorFragment: BaseDaggerFragment(){
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val validatorViewModel by lazy { viewModelProvider.get(ValidatorViewModel::class.java) }
 
-    private lateinit var verifyButton: ButtonCompat
+    private lateinit var verifyButton: UnifyButton
     private lateinit var inputVerifyCode: PinInputEditText
     private lateinit var footer: TextView
     private lateinit var errorImage: ImageView
@@ -69,6 +80,11 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private var otpParams = OtpParams()
     private var modeListData = ModeListData()
+
+    private lateinit var countDownTimer: CountDownTimer
+    private lateinit var cacheHandler: LocalCacheHandler
+
+    private var isRunningTimer = false
 
     override fun getScreenName(): String = SCREEN_ACCOUNT_ACTIVATION
 
@@ -84,6 +100,12 @@ class ValidatorFragment: BaseDaggerFragment(){
                 it.finish()
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        cacheHandler = LocalCacheHandler(activity, CACHE_VALIDATOR)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -112,20 +134,21 @@ class ValidatorFragment: BaseDaggerFragment(){
 
         footer.setOnClickListener {
             analytics.trackClickResendButton()
-            showChangeEmailDialog(otpParams.email)
+            resendDialog(otpParams.email)
         }
 
+        inputVerifyCode.requestFocus()
         inputVerifyCode.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) { }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.length == 6) {
+                if (s?.length == modeListData.otpDigit) {
                     validateCode()
-                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY
+                    verifyButton.isEnabled = true
                 }else{
-                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
+                    verifyButton.isEnabled = false
                 }
             }
 
@@ -142,6 +165,11 @@ class ValidatorFragment: BaseDaggerFragment(){
             inputVerifyCode.setText("")
             removeErrorOtp()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
     }
 
     private fun prepareView(){
@@ -180,6 +208,19 @@ class ValidatorFragment: BaseDaggerFragment(){
         showKeyboard()
     }
 
+    private fun initVar() {
+        arguments?.let {
+            otpParams = it.getParcelable(OtpConstant.OTP_PARAMS) as OtpParams
+            modeListData = it.getParcelable(OtpConstant.OTP_MODE_PARAM) as ModeListData
+        }
+
+        if (!isCountdownFinished()) {
+            startTimer()
+        } else {
+            footer.show()
+        }
+    }
+
     private fun initObserver(){
         validatorViewModel.otpRequestResponse.observe(this, Observer {
             when(it){
@@ -196,36 +237,63 @@ class ValidatorFragment: BaseDaggerFragment(){
         validatorViewModel.otpValidateResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessOtpValidate(it.data)
-                is Fail -> onErrorOtpValidate(it.throwable)
+                is Fail -> {
+                    val message = it.throwable.message as String
+                    if (message.contains(getString(R.string.job_was_cancelled))) {
+                        onErrorOtpValidate(Throwable(getString(R.string.no_network_connection)))
+                    } else {
+                        onErrorOtpValidate(it.throwable)
+                    }
+                }
             }
         })
     }
 
-    private fun initVar() {
-        arguments?.let {
-            otpParams = it.getParcelable(OtpConstant.OTP_PARAMS) as OtpParams
-            modeListData = it.getParcelable(OtpConstant.OTP_MODE_PARAM) as ModeListData
+    private fun startTimer() {
+        if (isCountdownFinished()) {
+            cacheHandler.putBoolean(HAS_TIMER, true)
+            cacheHandler.setExpire(COUNTDOWN_LENGTH)
+            cacheHandler.applyEditor()
+        }
+
+        if (!isRunningTimer) {
+            countDownTimer = object : CountDownTimer((cacheHandler.remainingTime * INTERVAL).toLong(), INTERVAL.toLong()) {
+                override fun onTick(millisUntilFinished: Long) {
+                    isRunningTimer = true
+                    setRunningCountdownText(TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt())
+                }
+
+                override fun onFinish() {
+                    isRunningTimer = false
+                    countDownText?.hide()
+                    footer.show()
+                }
+
+            }.start()
         }
     }
 
     private fun requestCode(isResend: Boolean) {
         showLoading()
-        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, isResend)
+        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, isResend, modeListData.otpDigit)
     }
 
     private fun validateCode() {
-        showLoading()
+        verifyButton.isLoading = true
         validatorViewModel.otpValidateEmail(otpParams.otpType.toString(), inputVerifyCode.text.toString(), otpParams.email)
     }
 
     private fun onSuccessOtpRequest(otpRequestData: OtpRequestData){
         dismissLoading()
+        startTimer()
+        showKeyboard()
         inputVerifyCode.requestFocus()
         inputVerifyCode.requestFocusFromTouch()
     }
 
     private fun onErrorOtpRequest(throwable: Throwable){
         dismissLoading()
+        inputVerifyCode.text.clear()
         view?.let {
             val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
             NetworkErrorHelper.showEmptyState(context, it, error) {
@@ -236,17 +304,23 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onSuccessOtpResendRequest(otpRequestData: OtpRequestData){
         dismissLoading()
-        activity?.let {
-            analytics.trackSuccessClickOkResendButton()
-            analytics.trackSuccessClickResendButton()
-            removeErrorOtp()
-            dismissLoading()
-            ToasterNormal.show(it, getString(R.string.success_resend_activation))
+        removeErrorOtp()
+        startTimer()
+        showKeyboard()
+        inputVerifyCode.requestFocus()
+        inputVerifyCode.requestFocusFromTouch()
+        analytics.trackSuccessClickResendButton()
+
+        view?.let { it ->
+            Toaster.make(it, getString(R.string.success_resend_activation))
         }
     }
 
     private fun onErrorOtpResendRequest(throwable: Throwable){
         dismissLoading()
+        inputVerifyCode.text.clear()
+        inputVerifyCode.requestFocus()
+        inputVerifyCode.requestFocusFromTouch()
         throwable.message?.let {
             analytics.trackFailedClickOkResendButton(it)
             analytics.trackFailedClickResendButton(it)
@@ -260,6 +334,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onSuccessOtpValidate(otpValidateData: OtpValidateData){
         dismissLoading()
+        verifyButton.isLoading = false
         analytics.trackSuccessClickActivationButton()
         activity?.let {
             if(otpValidateData.validateToken.isEmpty()){
@@ -278,6 +353,9 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onErrorOtpValidate(throwable: Throwable){
         dismissLoading()
+        verifyButton.isLoading = false
+        inputVerifyCode.requestFocus()
+        inputVerifyCode.requestFocusFromTouch()
         activity?.let {
             throwable.message?.let { errorMessage ->
                 analytics.trackFailedClickActivationButton(errorMessage)
@@ -294,19 +372,19 @@ class ValidatorFragment: BaseDaggerFragment(){
         }
     }
 
-    private fun showChangeEmailDialog(email: String) {
-        if (activity != null) {
-            val dialogMessage = getString(R.string.message_resend_email_to) + " <b>" + email + "</b>"
-            AlertDialog.Builder(activity!!)
+    private fun resendDialog(email: String) {
+        val dialogMessage = String.format(getString(R.string.message_resend_email_to), email)
+        activity?.let {
+            AlertDialog.Builder(it)
                     .setTitle(R.string.resend_activation_email)
                     .setMessage(MethodChecker.fromHtml(dialogMessage))
-                    .setPositiveButton(android.R.string.yes) { dialog, which ->
+                    .setPositiveButton(android.R.string.yes) { _, _ ->
                         analytics.trackClickOkResendButton()
                         requestCode(true)
                     }
-                    .setNegativeButton(R.string.cancel_dialog_change_email){ dialog, which ->
+                    .setNegativeButton(R.string.cancel_dialog_change_email){ dialog, _ ->
                         analytics.trackFailedClickResendButton(
-                                activity!!.getString(R.string.change_email_error_condition))
+                                it.getString(R.string.change_email_error_condition))
                         dialog.dismiss()
                     }
                     .show()
@@ -322,7 +400,22 @@ class ValidatorFragment: BaseDaggerFragment(){
                     activationText.text = Html.fromHtml(text)
                 }
             }
+            inputVerifyCode.requestFocus()
         }
+    }
+
+    private fun setRunningCountdownText(countdown: Int) {
+        countDownText?.show()
+        footer.hide()
+
+        countDownText?.setTextColor(MethodChecker.getColor(activity, R.color.font_black_disabled_38))
+        countDownText?.isEnabled = false
+        val text = String.format(activity?.getString(R.string.validator_coundown_text) as String, countdown)
+        countDownText?.text = MethodChecker.fromHtml(text)
+    }
+
+    private fun isCountdownFinished(): Boolean {
+        return cacheHandler.isExpired || !cacheHandler.getBoolean(HAS_TIMER, false)
     }
 
     private fun removeErrorOtp() {
@@ -346,6 +439,11 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     companion object {
+
+        const val INTERVAL = 1000
+        const val COUNTDOWN_LENGTH = 30
+        const val CACHE_VALIDATOR = "cacheValidator"
+        const val HAS_TIMER = "hasTimer"
 
         fun createInstance(otpParams: OtpParams, modeListData: ModeListData): Fragment {
             val bundle = Bundle()

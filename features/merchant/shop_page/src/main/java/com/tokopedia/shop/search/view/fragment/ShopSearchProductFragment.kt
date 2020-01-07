@@ -32,8 +32,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.page.view.activity.ShopPageActivity.Companion.SHOP_LOCATION_PLACEHOLDER
-import com.tokopedia.shop.page.view.activity.ShopPageActivity.Companion.SHOP_NAME_PLACEHOLDER
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_LOCATION_PLACEHOLDER
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_NAME_PLACEHOLDER
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent

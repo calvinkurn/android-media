@@ -164,5 +164,9 @@
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
 
+    <string name="shop_menu_action_cart">Cart</string>
+    <string name="shop_menu_action_store_info">Info</string>
+    <string name="shop_header_action_follow">Follow</string>
+    <string name="shop_menu_search_placeholder_text">Cari barang di sini</string>
 
 </resources>

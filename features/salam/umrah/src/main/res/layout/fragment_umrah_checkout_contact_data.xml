@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_16"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/til_umrah_checkout_contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/HintTextInputLayout"
+            android:layout_marginBottom="@dimen/dp_24">
+
+            <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
+                android:id="@+id/ac_umrah_checkout_contact_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/umrah_checkout_bottom_sheet_contact_label_name"
+                android:imeActionLabel="@string/label_next"
+                android:imeOptions="actionNext"
+                android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
+                android:importantForAutofill="no"
+                android:singleLine="true"
+                android:maxLength="25"
+                android:digits="0123456789qwertzuiopasdfghjklyxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                android:textColor="@color/font_black_primary_70" />
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/til_umrah_checkout_contact_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/HintTextInputLayout"
+            android:layout_marginBottom="@dimen/dp_24">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="40"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:digits="0123456789qwertzuiopasdfghjklyxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ.@"
+                android:hint="@string/umrah_checkout_bottom_sheet_contact_label_email" />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_umrah_checkout_contact_phone_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_2"
+            android:text="@string/umrah_checkout_bottom_sheet_contact_label_phone"
+            app:fontSize="micro"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_umrah_checkout_contact_email"
+            app:textViewTheme="lightDisabled"
+            android:paddingStart="@dimen/dp_2"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/dp_24">
+
+            <Spinner
+                android:id="@+id/sp_umrah_checkout_contact_phone_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_umrah_checkout_contact_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="15"
+                    android:imeOptions="actionDone"
+                    style="@style/HintTextInputLayout"
+                    android:hint="@string/umrah_checkout_bottom_sheet_contact_phone_minimum" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.tokopedia.design.component.ButtonCompat
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:id="@+id/btn_umrah_checkout_contact_data_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:text="@string/umrah_checkout_bottom_sheet_button"
+        android:layout_alignParentBottom="true"
+        app:buttonCompatType="primary"
+        tools:targetApi="m"
+        tools:ignore="UnusedAttribute" />
+
+</RelativeLayout>

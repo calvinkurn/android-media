@@ -1,6 +1,5 @@
 package com.tokopedia.flight.common.domain;
 
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
@@ -49,8 +48,6 @@ public interface FlightRepository extends FlightOrderRepository {
     Observable<FlightCheckoutEntity> checkout(FlightCheckoutRequest request);
 
     Observable<OrderEntity> getOrderEntity(String id);
-
-    Observable<List<BannerDetail>> getBanners(Map<String, String> params);
 
     Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId);
 

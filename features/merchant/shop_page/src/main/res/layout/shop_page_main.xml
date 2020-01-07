@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/Neutral_N0">
+
+    <Space
+        android:id="@+id/shop_page_main_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:background="@color/Neutral_N0" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/shop_page_main_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingBottom="@dimen/spacing_lvl3"
+            android:background="@drawable/bg_shop_page_search">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/shop_page_main_search_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_shop_search" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/shop_page_main_search_placeholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:lines="1"
+                android:ellipsize="end"
+                android:hint="@string/shop_menu_search_placeholder_text" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/shop_page_main_sort_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_shop_sort" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Neutral_N0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shop_page_main_profile_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_lvl0"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shop_page_main_profile_image"
+                    android:layout_width="@dimen/layout_lvl7"
+                    android:layout_height="@dimen/layout_lvl7"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginLeft="@dimen/spacing_lvl2"
+                    android:background="@drawable/bg_shop_page_profile"
+                    android:adjustViewBounds="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shop_page_main_profile_badge"
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    android:background="@color/Green_G500"
+                    android:adjustViewBounds="true"
+                    app:layout_constraintEnd_toEndOf="@id/shop_page_main_profile_image"
+                    app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_image" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/shop_page_main_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    app:typographyType="heading_4"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+                    app:layout_constraintEnd_toStartOf="@+id/shop_page_main_profile_follow_btn"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shop_page_main_profile_location_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="6dp"
+                    app:srcCompat="@drawable/ic_shop_location"
+                    app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+                    app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_name" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/shop_page_main_profile_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl2"
+                    android:layout_marginLeft="@dimen/spacing_lvl2"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    app:typographyType="small"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_location_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/shop_page_main_profile_follow_btn"
+                    app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_location_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_location_icon"
+                    android:text="Kab. Aceh Barat Daya" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shop_page_main_profile_follower_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="6dp"
+                    app:srcCompat="@drawable/ic_shop_follower"
+                    app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+                    app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_location_icon" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/shop_page_main_profile_follower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl2"
+                    android:layout_marginLeft="@dimen/spacing_lvl2"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    app:typographyType="small"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_follower_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/shop_page_main_profile_follow_btn"
+                    app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_follower_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_follower_icon"
+                    android:text="100rb Followers" />
+
+                <com.tokopedia.unifycomponents.Label
+                    android:id="@+id/shop_page_main_profile_free_ongkir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:text="Toko ini Bebas Ongkir"
+                    app:labelType="general_light_green"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+                    app:layout_constraintEnd_toStartOf="@+id/shop_page_main_profile_follow_btn"
+                    app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_follower_icon" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/shop_page_main_profile_reputation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="0dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+                    app:layout_constraintEnd_toStartOf="@+id/shop_page_main_profile_follow_btn"
+                    app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_free_ongkir"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_shop_location" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_shop_location" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_shop_location" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_shop_location" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_shop_location" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/shop_page_main_profile_follow_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:text="@string/shop_header_action_follow"
+                    app:unifyButtonSize="small"
+                    app:unifyButtonType="main"
+                    app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_reputation"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/shop_page_main_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/shop_page_main_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
