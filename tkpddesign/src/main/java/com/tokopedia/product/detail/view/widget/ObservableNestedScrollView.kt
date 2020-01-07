@@ -1,4 +1,4 @@
-package com.tokopedia.design.widget
+package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
 import androidx.core.widget.NestedScrollView
