@@ -82,8 +82,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.core
-    
+    implementation project(rootProject.ext.libraries.playCore)
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.miscDependencies.parcelerApi

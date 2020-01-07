@@ -380,6 +380,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             bottomSheet.dismiss()
             finishActivityToSearchPage()
         }
+
         fragmentManager?.let {
             bottomSheet.show(it, getString(R.string.flight_booking_reprice_bottom_sheet_title))
         }

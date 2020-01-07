@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
-import android.os.Bundle;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -379,51 +377,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
             sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
         }
         flushEnhancedECommerce();
-    }
-
-    // GTM v5 EE Step 1
-    private void sendEnhancedECommerce(Bundle eCommerceBundle, String eventLabel) {
-
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
-        }
     }
 
     //PHASE 2

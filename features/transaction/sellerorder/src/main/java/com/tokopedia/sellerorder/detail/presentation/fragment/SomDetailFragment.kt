@@ -74,7 +74,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
@@ -112,7 +111,7 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
-import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping.view.*
+import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
@@ -288,9 +287,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
                     bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
                     bottomSheetUnify.setChild(viewBottomSheet)
-                    fragmentManager?.let {
-                        bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
-                    }
+                    fragmentManager?.let { it1 -> bottomSheetUnify.show(it1, getString(R.string.show_bottomsheet)) }
                     bottomSheetUnify.setTitle(TITLE_PILIH_PENOLAKAN)
 
                     somBottomSheetRejectReasonsAdapter.listRejectReasons = rejectReasonResponse.toMutableList()
@@ -305,6 +302,17 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun renderDetail() {
+        renderHeader()
+        renderProducts()
+        renderShipment()
+        renderPayment()
+        renderButtons()
+
+        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
+        somDetailAdapter.notifyDataSetChanged()
+    }
+
+    private fun renderHeader() {
         // header
         val dataHeader = SomDetailHeader(
                 detailResponse.statusId,
@@ -326,9 +334,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.onlineBooking.state,
                 detailResponse.bookingInfo.onlineBooking.barcodeType)
 
+        listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
+    }
+
+    private fun renderProducts() {
         // products
         val dataProducts = SomDetailProducts(detailResponse.listProduct)
+        listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
+    }
 
+    private fun renderShipment() {
         // shipping
         val receiverStreet = detailResponse.receiver.street
         var notesValue = ""
@@ -352,11 +367,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
-                notesValue,
                 detailResponse.flagOrderMeta.flagFreeShipping,
                 detailResponse.bookingInfo.driver.photo,
                 detailResponse.bookingInfo.driver.name,
                 detailResponse.bookingInfo.driver.phone,
+                detailResponse.dropshipper.name,
+                detailResponse.dropshipper.phone,
                 detailResponse.bookingInfo.driver.licenseNumber,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
                 detailResponse.bookingInfo.onlineBooking.state,
@@ -365,6 +381,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
                 isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
 
+        listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
+    }
+
+    private fun renderPayment() {
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,
                 detailResponse.paymentSummary.totalItem,
@@ -376,14 +396,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.paymentSummary.additionalPriceText,
                 detailResponse.paymentSummary.totalPriceText)
 
-        listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
-        listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
-        listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
+    }
 
-        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
-        somDetailAdapter.notifyDataSetChanged()
-
+    private fun renderButtons() {
         // buttons
         if (detailResponse.button.isNotEmpty()) {
             rl_btn_detail?.visibility = View.VISIBLE
@@ -444,7 +460,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
                 setUnlockVersion()
 
-                val dialogView = View.inflate(it, R.layout.dialog_accept_order_free_shipping, null)
+                val dialogView = View.inflate(it, R.layout.dialog_accept_order_free_shipping_som, null)
 
                 val msgReguler1 = getString(R.string.confirm_msg_1a)
                 val msgBold1 = getString(R.string.confirm_msg_1b)
@@ -523,10 +539,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             infoLayout.tv_confirm_info?.text = detailResponse.onlineBooking.infoText
             infoLayout.button_understand.setOnClickListener { btSheet.dismiss() }
 
-            btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
-            btSheet.setChild(infoLayout)
-            btSheet.setCloseClickListener { btSheet.dismiss() }
-            fragmentManager?.let{
+            fragmentManager?.let {
+                btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
+                btSheet.setChild(infoLayout)
+                btSheet.setCloseClickListener { btSheet.dismiss() }
+                fragmentManager?.let{
                 btSheet.show(it, tagConfirm)
             }
         } else {
@@ -544,9 +561,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         }
         viewBottomSheet.fl_btn_primary?.visibility = View.GONE
         viewBottomSheet.tf_extra_notes?.visibility = View.GONE
-        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
-        bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let{
+
+        fragmentManager?.let {
+            bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+            bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
     }
@@ -642,14 +661,13 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 showToasterError(getString(R.string.cancel_order_notes_empty_warning))
             }
         }
-
-        bottomSheetUnify.apply {
-            setTitle(TITLE_BATALKAN_PESANAN_PENALTY)
-            setFullPage(true)
-            setChild(viewBottomSheet)
-            setCloseClickListener { dismiss() }
-        }
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify.apply {
+                setTitle(TITLE_BATALKAN_PESANAN_PENALTY)
+                setFullPage(true)
+                setChild(viewBottomSheet)
+                setCloseClickListener { dismiss() }
+            }
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
     }
@@ -728,15 +746,15 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val childBtn: UnifyButton = childView.findViewById(R.id.btn_mengerti)
         childBtn.setOnClickListener { bottomSheetUnify.dismiss() }
 
-        bottomSheetUnify.apply {
-            clearClose(false)
-            clearHeader(false)
-            setTitle(title)
-            setOnDismissListener { this.dismiss() }
-            setCloseClickListener { this.dismiss() }
-            setChild(childView)
-        }
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify.apply {
+                clearClose(false)
+                clearHeader(false)
+                setTitle(title)
+                setOnDismissListener { this.dismiss() }
+                setCloseClickListener { this.dismiss() }
+                setChild(childView)
+            }
             bottomSheetUnify.show(it, "")
         }
     }
@@ -776,13 +794,13 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
         }
 
-        bottomSheetUnify.apply {
-            setTitle(TITLE_TOLAK_PESANAN_INI)
-            setFullPage(false)
-            setCloseClickListener { bottomSheetUnify.dismiss() }
-            setChild(viewBottomSheet)
-        }
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify.apply {
+                setTitle(TITLE_TOLAK_PESANAN_INI)
+                setFullPage(false)
+                setCloseClickListener { bottomSheetUnify.dismiss() }
+                setChild(viewBottomSheet)
+            }
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
     }
@@ -852,13 +870,15 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
         }
 
-        bottomSheetUnify.setFullPage(true)
-        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
-        bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify.setFullPage(true)
+            bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+            bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
-        bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
+            bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
+        }
         somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
         somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
     }
@@ -896,13 +916,15 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         viewBottomSheet.tf_shop_closed_notes?.textFiedlLabelText?.text = getString(R.string.shop_closed_note_label)
         viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.hint = getString(R.string.shop_closed_note_placeholder)
 
-        bottomSheetUnify.setFullPage(true)
-        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
-        bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify.setFullPage(true)
+            bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+            bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
-        bottomSheetUnify.setTitle(TITLE_ATUR_TOKO_TUTUP)
+            bottomSheetUnify.setTitle(TITLE_ATUR_TOKO_TUTUP)
+        }
 
         viewBottomSheet.btn_reject_shop_closed?.setOnClickListener {
             bottomSheetUnify.dismiss()
@@ -963,13 +985,15 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
         }
 
-        bottomSheetUnify.setFullPage(true)
-        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
-        bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify.setFullPage(true)
+            bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+            bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
-        bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
+            bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
+        }
         somBottomSheetCourierProblemsAdapter.listChildCourierProblems = listChild.toMutableList()
         somBottomSheetCourierProblemsAdapter.notifyDataSetChanged()
     }
@@ -1000,15 +1024,15 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
         }
 
-        bottomSheetUnify = BottomSheetUnify().apply {
-            if (this.isAdded) this.dismiss()
-            setFullPage(true)
-            setOnDismissListener { this.dismiss() }
-            setCloseClickListener { this.dismiss() }
-            setChild(viewBottomSheet)
-            setTitle(VALUE_REASON_BUYER_NO_RESPONSE)
-        }
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify = BottomSheetUnify().apply {
+                if (this.isAdded) this.dismiss()
+                setFullPage(true)
+                setOnDismissListener { this.dismiss() }
+                setCloseClickListener { this.dismiss() }
+                setChild(viewBottomSheet)
+                setTitle(VALUE_REASON_BUYER_NO_RESPONSE)
+            }
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
     }
@@ -1039,15 +1063,15 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
         }
 
-        bottomSheetUnify = BottomSheetUnify().apply {
-            if (this.isAdded) this.dismiss()
-            setFullPage(true)
-            setOnDismissListener { this.dismiss() }
-            setCloseClickListener { this.dismiss() }
-            setChild(viewBottomSheet)
-            setTitle(VALUE_REASON_OTHER)
-        }
-        fragmentManager?.let{
+        fragmentManager?.let {
+            bottomSheetUnify = BottomSheetUnify().apply {
+                if (this.isAdded) this.dismiss()
+                setFullPage(true)
+                setOnDismissListener { this.dismiss() }
+                setCloseClickListener { this.dismiss() }
+                setChild(viewBottomSheet)
+                setTitle(VALUE_REASON_OTHER)
+            }
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
     }
@@ -1113,18 +1137,18 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             val maxDate = Calendar.getInstance()
             maxDate.add(Calendar.YEAR, 100)
 
-            val datePicker = DatePickerUnify(context, dateNow, dateNow, maxDate)
-            datePicker.setTitle(getString(R.string.end_shop_closed_label))
-            fragmentManager?.let{
+            fragmentManager?.let {
+                val datePicker = DatePickerUnify(context, dateNow, dateNow, maxDate)
+                datePicker.setTitle(getString(R.string.end_shop_closed_label))
                 datePicker.show(it, "")
+                datePicker.datePickerButton.setOnClickListener {
+                    val resultDate = datePicker.getDate()
+                    tfEndShopClosed.textFieldInput.setText("${resultDate[0]}/${resultDate[1] + 1}/${resultDate[2]}")
+                    updateClosingEndDate("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}", viewBottomSheet)
+                    datePicker.dismiss()
+                }
+                datePicker.setCloseClickListener { datePicker.dismiss() }
             }
-            datePicker.datePickerButton.setOnClickListener {
-                val resultDate = datePicker.getDate()
-                tfEndShopClosed.textFieldInput.setText("${resultDate[0]}/${resultDate[1] + 1}/${resultDate[2]}")
-                updateClosingEndDate("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}", viewBottomSheet)
-                datePicker.dismiss()
-            }
-            datePicker.setCloseClickListener { datePicker.dismiss() }
         }
     }
 

@@ -139,9 +139,7 @@ class SomFilterFragment : BaseDaggerFragment() {
                     val dateNow = GregorianCalendar(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
                     val datePickerStart = DatePickerUnify(context, minDate, dateNow, dateMax)
                     datePickerStart.setTitle(getString(R.string.mulai_dari))
-                    fragmentManager?.let{
-                        datePickerStart.show(it, "")
-                    }
+                    fragmentManager?.let { it1 -> datePickerStart.show(it1, "") }
                     datePickerStart.datePickerButton.setOnClickListener {
                         val resultDate = datePickerStart.getDate()
                         val monthInt = resultDate[1]+1
@@ -163,9 +161,7 @@ class SomFilterFragment : BaseDaggerFragment() {
                     val dateNow = GregorianCalendar(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
                     val datePickerEnd = DatePickerUnify(context, minDate, dateNow, dateMax)
                     datePickerEnd.setTitle(getString(R.string.sampai))
-                    fragmentManager?.let{
-                        datePickerEnd.show(it, "")
-                    }
+                    fragmentManager?.let { it1 -> datePickerEnd.show(it1, "") }
                     datePickerEnd.datePickerButton.setOnClickListener {
                         val resultDate = datePickerEnd.getDate()
                         val monthInt = resultDate[1]+1

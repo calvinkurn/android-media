@@ -7,6 +7,9 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
+include "features:common:common_tradein"
+
+include "features:home:navigation-common"
 
 include "features:communication:broadcast_message"
 //include "features:communication:broadcast_message_no_op"
@@ -27,9 +30,11 @@ include "features:discovery:flashsale_management"
 //include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'
 include 'features:discovery:productcard'
+include 'features:discovery:carousel_productcard'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
+include "features:discovery:carousel_productcard"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
@@ -108,6 +113,7 @@ include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 include "features:transaction:purchase_platform_common"
+include "features:transaction:opportunity"
 
 include "features:top_ads:top_ads_widget"
 
@@ -126,7 +132,6 @@ include "features:user:otp"
 include "features:user:phoneverification"
 include "features:user:settingbank"
 include "features:user:sessioncommon"
-include "features:user:stickylogin"
 include "features:user:talk"
 include "features:user:topchat"
 //include "features:user:topchat_no_op"
@@ -136,6 +141,8 @@ include "features:user:user_identification"
 include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:user:profilecompletion"
+include "features:user:stickylogin"
+include "features:user:seamless_login"
 
 include "features:category:basemvvm"
 include "features:category:tradein"

@@ -78,9 +78,6 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         }
         dataModel.messagesModel = messagesModel
 
-        val promoSuggestionModel = getPromoSuggestionModel(atcResponse)
-        dataModel.promoSuggestionModel = promoSuggestionModel
-
         val userProfileDefaultModel = getUserProfileModel(atcResponse)
         dataModel.userProfileModelDefaultModel = userProfileDefaultModel
         return dataModel
@@ -323,16 +320,6 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         donationModel.nominal = atcResponse.data.donation?.nominal ?: 0
         donationModel.title = atcResponse.data.donation?.title
         return donationModel
-    }
-
-    private fun getPromoSuggestionModel(atcResponse: AtcResponse): PromoSuggestionModel {
-        val promoSuggestionModel = PromoSuggestionModel()
-        promoSuggestionModel.cta = atcResponse.data.promoSuggestion?.cta
-        promoSuggestionModel.ctaColor = atcResponse.data.promoSuggestion?.ctaColor
-        promoSuggestionModel.isVisible = atcResponse.data.promoSuggestion?.isVisible
-        promoSuggestionModel.promoCode = atcResponse.data.promoSuggestion?.promoCode
-        promoSuggestionModel.text = atcResponse.data.promoSuggestion?.text
-        return promoSuggestionModel
     }
 
     private fun getUserProfileModel(atcResponse: AtcResponse): ProfileModel {

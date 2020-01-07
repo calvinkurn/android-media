@@ -137,11 +137,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST);
         this.token = extras.getParcelable(EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
@@ -178,21 +173,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 break;
             default:
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.common.feature.promo_global
 
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 
 /**
@@ -8,8 +7,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
  */
 
 interface PromoActionListener {
-
-    fun onCartPromoSuggestionButtonCloseClicked(cartPromoSuggestionHolderData: CartPromoSuggestionHolderData, position: Int)
 
     fun onCartPromoUseVoucherGlobalPromoClicked(cartPromoGlobal: PromoStackingData, position: Int)
 

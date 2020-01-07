@@ -7,9 +7,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.URLUtil;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
-import android.webkit.URLUtil;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
@@ -21,7 +22,6 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
@@ -49,12 +49,6 @@ import java.util.concurrent.TimeUnit;
 
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
-
-    public static final int SELLER_APPLICATION = 2;
-
-    public static SellerMainApplication get(Context context) {
-        return (SellerMainApplication) context.getApplicationContext();
-    }
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);

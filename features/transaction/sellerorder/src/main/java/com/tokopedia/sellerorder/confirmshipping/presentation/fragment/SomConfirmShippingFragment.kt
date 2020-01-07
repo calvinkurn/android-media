@@ -263,9 +263,8 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let{
-            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
-        }
+        fragmentManager?.let { bottomSheetUnify.show(it, getString(R.string.show_bottomsheet)) }
+
         if (isCourierService) {
             setCourierServiceListData(currShipmentId)
         } else {

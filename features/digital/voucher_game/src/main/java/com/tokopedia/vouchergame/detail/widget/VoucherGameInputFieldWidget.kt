@@ -148,7 +148,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
     private fun showDropdownBottomSheet() {
         if (isDropdown && fragmentManager != null) {
-            fragmentManager?.let{
+            fragmentManager?.let {
                 dropdownBottomSheet.show(it,"Enquiry input field dropdown bottom sheet")
             }
             // Open keyboard with delay so it opens when bottom sheet is fully visible
