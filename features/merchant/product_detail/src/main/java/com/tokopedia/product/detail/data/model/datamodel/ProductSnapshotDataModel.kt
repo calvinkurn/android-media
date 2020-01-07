@@ -24,7 +24,7 @@ data class ProductSnapshotDataModel(
         var statusTitle: String = "",
         var statusMessage: String = "",
         var shopStatus: Int = SHOP_STATUS_ACTIVE
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun name(): String = name
     override fun type(): String = type
 

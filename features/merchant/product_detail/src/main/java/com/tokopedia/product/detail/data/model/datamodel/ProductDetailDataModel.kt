@@ -4,5 +4,5 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 
 data class ProductDetailDataModel(
         val layoutData: DynamicProductInfoP1 = DynamicProductInfoP1(),
-        val listOfLayout: MutableList<DynamicPDPDataModel> = mutableListOf()
+        val listOfLayout: MutableList<DynamicPdpDataModel> = mutableListOf()
 )

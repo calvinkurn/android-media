@@ -123,6 +123,7 @@
     <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="label_prescription">Obat Keras</string>
+    <string name="label_no_description">TIDAK ADA DESKRIPSI</string>
 
     <string name="value_proposition_learn_more">Pelajari Selengkapnya</string>
     <string name="value_proposition_title_guarantee">Garansi Harga Termurah</string>

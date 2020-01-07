@@ -234,21 +234,22 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
                     ShopCodStatus.Response::class.java, shopCodParam)
 
-            val tradeinRequestMap = mapOf("CategoryId" to tradeinParam.categoryId,
-                    "DeviceId" to tradeinParam.deviceId,
-                    "isEligible" to tradeinParam.isEligible,
-                    "IsOnCampaign" to tradeinParam.isOnCampaign,
-                    "IsPreOrder" to tradeinParam.isPreorder,
-                    "ModelId" to tradeinParam.modelID,
-                    "NewPrice" to tradeinParam.newPrice,
-                    "ProductId" to tradeinParam.productId,
-                    "productName" to tradeinParam.productName,
-                    "remainingPrice" to tradeinParam.remainingPrice,
-                    "ShopId" to tradeinParam.shopId,
-                    "TradeInType" to tradeinParam.tradeInType,
-                    "useKyc" to tradeinParam.isUseKyc,
-                    "usedPrice" to tradeinParam.usedPrice,
-                    "UserId" to tradeinParam.userId)
+            val tradeinRequestMap = mapOf(
+                    ProductDetailCommonConstant.PARAM_TRADEIN_CATEGORY_ID to tradeinParam.categoryId,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_DEVICE_ID to tradeinParam.deviceId,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_IS_ELIGIBLE to tradeinParam.isEligible,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_IS_ON_CAMPAIGN to tradeinParam.isOnCampaign,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_IS_PRE_ORDER to tradeinParam.isPreorder,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_MODEL_ID to tradeinParam.modelID,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_NEW_PRICE to tradeinParam.newPrice,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_PRODUCT_ID to tradeinParam.productId,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_PRODUCT_NAME to tradeinParam.productName,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_REMAINING_PRICE to tradeinParam.remainingPrice,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_SHOP_ID to tradeinParam.shopId,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_TRADE_IN_TYPE to tradeinParam.tradeInType,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_TRADE_USE_KYC to tradeinParam.isUseKyc,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_TRADE_USED_PRICE to tradeinParam.usedPrice,
+                    ProductDetailCommonConstant.PARAM_TRADEIN_TRADE_USER_ID to tradeinParam.userId)
 
             val pdpTradeinParam = mapOf(ProductDetailCommonConstant.PARAMS to tradeinRequestMap)
             val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],

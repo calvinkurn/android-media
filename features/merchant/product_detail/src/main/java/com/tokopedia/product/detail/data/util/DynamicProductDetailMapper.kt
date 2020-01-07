@@ -6,8 +6,8 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 
 object DynamicProductDetailMapper {
 
-    fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPDPDataModel> {
-        val listOfComponent: MutableList<DynamicPDPDataModel> = mutableListOf()
+    fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
+        val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         data.forEachIndexed { index, component ->
             when (component.type) {
                 ProductDetailConstant.PRODUCT_SNAPSHOT -> {
@@ -114,9 +114,9 @@ object DynamicProductDetailMapper {
         return DynamicProductInfoP1(basic,data)
     }
 
-    fun hashMapLayout(data: List<DynamicPDPDataModel>): Map<String, DynamicPDPDataModel> {
+    fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
         return data.associateBy({
-            if (it.type() != it.name()) it.name() else it.type()
+            it.name()
         }, {
             it
         })

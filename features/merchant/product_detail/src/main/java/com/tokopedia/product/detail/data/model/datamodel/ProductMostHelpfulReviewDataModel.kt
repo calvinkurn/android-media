@@ -11,7 +11,7 @@ data class ProductMostHelpfulReviewDataModel(
         var listOfReviews: List<Review> = listOf(),
         var imageReviews: List<ImageReviewItem>? = null,
         var rating: Rating? = null
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun name(): String = name
 
     override fun type(): String = type

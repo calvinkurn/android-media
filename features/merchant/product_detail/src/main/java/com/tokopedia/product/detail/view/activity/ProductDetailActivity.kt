@@ -72,7 +72,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var deeplinkUrl: String? = null
 
     private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(applicationContext)
+        FirebaseRemoteConfigImpl(this)
     }
 
     object DeeplinkIntents {

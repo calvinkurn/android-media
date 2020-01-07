@@ -13,7 +13,7 @@ data class ProductSocialProofDataModel(
         var wishListCount: Int = 0,
         var stats: Stats? = null,
         var txStats: TxStatsDynamicPdp? = null
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun name(): String = name
 
     override fun type(): String = type

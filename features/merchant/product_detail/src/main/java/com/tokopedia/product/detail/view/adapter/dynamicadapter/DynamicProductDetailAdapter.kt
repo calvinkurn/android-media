@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHol
 class DynamicProductDetailAdapter(
         adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl,
         val listener: DynamicProductDetailListener
-) : BaseListAdapter<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
+) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
     fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel, payload: Int) {
         val indexOfSnapshot = list.indexOf(snapshotData)
@@ -42,7 +42,7 @@ class DynamicProductDetailAdapter(
 
     fun removeRecommendation(listOfData: List<ProductRecommendationDataModel>?) {
         listOfData?.run {
-            listOfData.forEach {
+            forEach {
                 clearElement(it)
             }
         }
@@ -58,6 +58,14 @@ class DynamicProductDetailAdapter(
 
     fun removeMostHelpfulReviewSection(data: ProductMostHelpfulReviewDataModel?) {
         clearElement(data)
+    }
+
+    fun getTradeinPosition(data: ProductGeneralInfoDataModel?): Int {
+        return if(data != null) {
+            list.indexOf(data)
+        } else {
+            0
+        }
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {

@@ -8,7 +8,7 @@ class ProductMerchantVoucherDataModel(
         val name: String = "",
         var voucherData: ArrayList<MerchantVoucherViewModel> = arrayListOf(),
         var shouldRenderInitialData : Boolean = true
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class SeparatorDataModel(
         val type: String = "",
         val name: String = ""
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

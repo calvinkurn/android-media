@@ -4,7 +4,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 
 data class ProductOpenShopDataModel(
         val title: String = ""
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun type(): String = ""
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

@@ -11,7 +11,7 @@ data class ProductGeneralInfoDataModel(
         val isApplink: Boolean = false,
         val parentIcon: String = "",
         val data: List<Content> = listOf(Content())
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
 
     override fun name(): String = name
 

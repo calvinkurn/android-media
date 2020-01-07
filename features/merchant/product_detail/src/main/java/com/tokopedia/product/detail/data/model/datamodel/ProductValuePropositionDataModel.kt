@@ -6,7 +6,7 @@ data class ProductValuePropositionDataModel(
         val type: String = "",
         val name: String = "",
         var isOfficialStore: Boolean = false
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun type(): String = type
     override fun name(): String = name
 

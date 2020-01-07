@@ -1,12 +1,13 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductLastSeenDataModel(
-        val type: String = "product_last_seen",
-        val name: String = "product_last_seen",
+        val type: String = ProductDetailConstant.PRODUCT_LAST_SEEN,
+        val name: String = ProductDetailConstant.PRODUCT_LAST_SEEN,
         var lastSeen: String = ""
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

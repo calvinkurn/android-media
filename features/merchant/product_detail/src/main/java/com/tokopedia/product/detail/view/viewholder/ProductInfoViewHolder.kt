@@ -27,7 +27,6 @@ class ProductInfoViewHolder(private val view: View,
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_info
         private const val MAX_CHAR = 300
-        private const val NO_DESCRIPTION = "TIDAK ADA DESKRIPSI"
     }
 
     override fun bind(element: ProductInfoDataModel) {
@@ -71,8 +70,8 @@ class ProductInfoViewHolder(private val view: View,
                 view.youtube_scroll.gone()
             }
 
-            val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(if (listOfData.first().subtitle.isNotBlank()) listOfData.first().subtitle
-            else NO_DESCRIPTION)
+            val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(if (listOfData.firstOrNull()?.subtitle?.isNotBlank() == true) listOfData.first().subtitle
+            else context.getString(R.string.label_no_description))
 
             txt_product_descr.text = if (descFormatted.length > MAX_CHAR) {
                 val subDescr = descFormatted.toString().substring(0, MAX_CHAR)
@@ -90,7 +89,7 @@ class ProductInfoViewHolder(private val view: View,
                                 basicPrice = productInfo.data.price.value.toFloat(),
                                 shopName = shopName,
                                 thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
-                                basicDescription = listOfData.first().subtitle,
+                                basicDescription = listOfData.firstOrNull()?.subtitle ?: "",
                                 videoUrlList = productInfo.data.videos.map { it.url },
                                 isOfficial = productInfo.data.isOS),
 

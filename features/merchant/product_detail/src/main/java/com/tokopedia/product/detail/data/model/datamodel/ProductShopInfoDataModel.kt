@@ -14,7 +14,7 @@ class ProductShopInfoDataModel(
         var shopBadge: ShopBadge? = null,
         var shopFeature: ShopFeatureData? = null
 
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun name(): String = name
 
     override fun type(): String = type

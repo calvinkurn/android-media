@@ -69,7 +69,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
@@ -77,7 +76,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.ValidateTradeInPDP
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
@@ -130,7 +129,7 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -318,7 +317,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl> {
+    override fun createAdapterInstance(): BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl> {
         return dynamicAdapter
     }
 
@@ -332,7 +331,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun getAdapterTypeFactory(): DynamicProductDetailAdapterFactoryImpl = adapterFactory
 
-    override fun onItemClicked(t: DynamicPDPDataModel) {
+    override fun onItemClicked(t: DynamicPdpDataModel) {
         //No OP
     }
 
@@ -615,8 +614,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 val data = DynamicProductDetailMapper.mapToWholesale(viewModel.getDynamicProductInfoP1?.data?.wholesale)
                 if (data != null && data.isNotEmpty()) {
                     context?.run {
-                        startActivity(WholesaleActivity.getIntent(this,
-                                (data as ArrayList<Wholesale>)))
+                        startActivity(WholesaleActivity.getIntent(this, ArrayList(data)))
                     }
                 }
             }
@@ -784,8 +782,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
-    override fun txtTradeinClicked(adapterPosition: Int) {
-        scrollToPosition(adapterPosition)
+    override fun txtTradeinClicked() {
+        scrollToPosition(dynamicAdapter.getTradeinPosition(pdpHashMapUtil.productTradeinMap))
     }
 
     override fun getProductFragmentManager(): FragmentManager {
@@ -982,7 +980,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         })
     }
 
-    private fun onSuccessGetDataP1(data: List<DynamicPDPDataModel>) {
+    private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             pdpHashMapUtil.updateDataP1(productInfo)
             // if when first time and the product is actually a variant product, then select the default variant

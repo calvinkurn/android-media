@@ -15,7 +15,7 @@ data class ProductInfoDataModel(
         var shopName: String = "",
         var dynamicProductInfoP1: DynamicProductInfoP1? = null,
         var productSpecification: ProductSpecificationResponse? = null
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun name(): String = name
 
     override fun type(): String = type

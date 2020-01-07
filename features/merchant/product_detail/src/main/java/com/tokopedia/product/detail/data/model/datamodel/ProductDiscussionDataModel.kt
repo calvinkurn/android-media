@@ -12,7 +12,7 @@ data class ProductDiscussionDataModel(
         var latestTalk: Talk? = null,
         var talkCount: Int = 0,
         var shopId: String = ""
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun name(): String = name
 
     override fun type(): String = type

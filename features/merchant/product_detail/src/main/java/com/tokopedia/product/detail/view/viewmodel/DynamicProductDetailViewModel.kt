@@ -20,7 +20,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -75,8 +75,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                              private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
-    private val _productLayout = MutableLiveData<Result<List<DynamicPDPDataModel>>>()
-    val productLayout: LiveData<Result<List<DynamicPDPDataModel>>>
+    private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
+    val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
         get() = _productLayout
 
     private val _p2ShopDataResp = MutableLiveData<ProductInfoP2ShopData>()
@@ -259,7 +259,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPDPDataModel>) {
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true

@@ -10,10 +10,10 @@ data class ProductRecommendationDataModel(
         var recomWidgetData: RecommendationWidget? = null,
         var cardModel: List<ProductCardModel>? = null,
         var position: Int = -1
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
 
     val isRecomenDataEmpty: Boolean
-        get() = recomWidgetData == null || recomWidgetData?.recommendationItemList?.isEmpty() == true
+        get() = recomWidgetData?.recommendationItemList?.isEmpty() == true
 
     override fun type(): String = type
 

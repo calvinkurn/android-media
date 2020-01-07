@@ -34,7 +34,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         val productInfoP3 = ProductInfoP3()
 
         val estimationParams = mapOf(ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to weight,
-                ProductDetailCommonConstant.PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, "origin" to origin)
+                ProductDetailCommonConstant.PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, ProductDetailCommonConstant.PARAM_PRODUCT_ORIGIN to origin)
         val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                 RatesEstimationModel.Response::class.java, estimationParams)
 
@@ -42,7 +42,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
 
         if (needRequestCod) {
-            val userCodParams = mapOf("isPDP" to true)
+            val userCodParams = mapOf(ProductDetailCommonConstant.PARAM_IS_PDP to true)
             val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
                     UserCodStatus.Response::class.java, userCodParams)
             requests.add(userCodRequest)

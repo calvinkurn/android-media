@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoData
@@ -37,8 +38,7 @@ class ProductInfoAdapter(private val listOfData: List<Content>,
             if (data.applink.isNotEmpty()) {
                 view.desc_info.setTextColor(MethodChecker.getColor(view.context, R.color.tkpd_main_green))
                 view.desc_info.setOnClickListener {
-                    listener.onSubtitleInfoClicked(data.applink, infoData.etalaseId, infoData.shopId.toIntOrNull()
-                            ?: 0, infoData.categoryId)
+                    listener.onSubtitleInfoClicked(data.applink, infoData.etalaseId, infoData.shopId.toIntOrZero(), infoData.categoryId)
                 }
             }
         }

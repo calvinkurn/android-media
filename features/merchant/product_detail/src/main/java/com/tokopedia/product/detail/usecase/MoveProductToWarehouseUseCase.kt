@@ -6,7 +6,6 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.usecase.coroutines.UseCase
@@ -28,24 +27,20 @@ class MoveProductToWarehouseUseCase @Inject constructor(private val restReposito
 
     override suspend fun executeOnBackground(): ProductActionSubmit {
         val data: ProductActionSubmit
-        try {
-            val bodyMap = mutableMapOf(
-                    ProductDetailConstant.PARAM_PRODUCT_ID to productId
-            )
-            AuthHelper.generateParamsNetwork(
-                    userId, deviceId, bodyMap)
-            val restRequest = RestRequest.Builder(
-                    rawQuery[ProductDetailConstant.PATH_MOVE_TO_WAREHOUSE] ?: "",
-                    object : TypeToken<DataResponse<ProductActionSubmit>>() {}.type)
-                    .setRequestType(RequestType.POST)
-                    .setBody(bodyMap)
-                    .build()
-            data = restRepository.getResponse(restRequest).getData()
-            if (data.getIsSuccess()) {
-                throw IOException()
-            }
-        } catch (e: Throwable) {
-            throw MessageErrorException(e.message)
+        val bodyMap = mutableMapOf(
+                ProductDetailConstant.PARAM_PRODUCT_ID to productId
+        )
+        AuthHelper.generateParamsNetwork(
+                userId, deviceId, bodyMap)
+        val restRequest = RestRequest.Builder(
+                rawQuery[ProductDetailConstant.PATH_MOVE_TO_WAREHOUSE] ?: "",
+                object : TypeToken<DataResponse<ProductActionSubmit>>() {}.type)
+                .setRequestType(RequestType.POST)
+                .setBody(bodyMap)
+                .build()
+        data = restRepository.getResponse(restRequest).getData()
+        if (!data.getIsSuccess()) {
+            throw IOException()
         }
 
         return data

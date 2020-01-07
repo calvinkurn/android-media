@@ -9,7 +9,7 @@ data class PageErrorDataModel(
         val errorMessage: String = "",
         val shouldShowTobacoError: Boolean = false,
         val tobacoErrorData: TobacoErrorData? = null
-) : DynamicPDPDataModel {
+) : DynamicPdpDataModel {
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
