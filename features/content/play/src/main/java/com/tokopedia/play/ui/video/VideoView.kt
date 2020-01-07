@@ -36,7 +36,7 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
     fun setPlayer(exoPlayer: ExoPlayer) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            pvVideo.videoSurfaceView.transitionName = "playlah"
+            pvVideo.videoSurfaceView.transitionName = "play_video"
         }
         pvVideo.player = exoPlayer
     }

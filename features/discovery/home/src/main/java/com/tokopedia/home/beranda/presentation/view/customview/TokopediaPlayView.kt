@@ -70,7 +70,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         surfaceView = TextureView(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            surfaceView?.transitionName = "playlah"
+            surfaceView?.transitionName = "play_video"
         }
         val params = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
