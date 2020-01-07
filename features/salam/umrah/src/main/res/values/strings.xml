@@ -254,6 +254,6 @@
     <string name="umrah_shop_id">7298319</string>
     <string name="umrah_shop_source">seller</string>
     <string name="umrah_shop_name">Tokopedia Umroh</string>
-    <string name="umrah_shop_link">Hai, Saya ingin bertanya mengenai paket umroh ini %s</string>
+    <string name="umrah_shop_link">Hai, Saya ingin bertanya mengenai paket umroh ini tokopedia://s/umroh/produk/%s</string>
 
 </resources>
