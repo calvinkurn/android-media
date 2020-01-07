@@ -134,8 +134,8 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                 context?.let {
                     val intent = RouteManager.getIntent(it,
                             ApplinkConst.TOPCHAT_ASKSELLER,
-                            "7298319", "",
-                            "seller", "Tokopedia Umroh", "")
+                            resources.getString(R.string.umrah_shop_id), "",
+                            resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
                     startActivity(intent)
                 }
             } else {

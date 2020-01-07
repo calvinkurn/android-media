@@ -192,8 +192,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                 context?.let {
                     val intent = RouteManager.getIntent(it,
                             ApplinkConst.TOPCHAT_ASKSELLER,
-                            "7298319", "Hai, Saya ingin bertanya mengenai paket umroh ini tokopedia://s/umroh/produk/${umrahProduct.slugName}",
-                            "seller", "Tokopedia Umroh", "")
+                            resources.getString(R.string.umrah_shop_id), resources.getString(R.string.umrah_shop_link, umrahProduct.slugName),
+                            resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
                     startActivity(intent)
                 }
             } else {

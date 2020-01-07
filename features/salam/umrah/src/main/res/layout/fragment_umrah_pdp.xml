@@ -405,6 +405,7 @@
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_umrah_pdp_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/umrah_bg_search_filter_save_button"
@@ -480,21 +481,24 @@
                     tools:ignore="UnusedAttribute"
                     tools:targetApi="m" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab_umrah_pdp_message"
-                    android:layout_width="@dimen/dp_48"
-                    android:layout_height="@dimen/dp_48"
-                    android:layout_gravity="bottom|right"
-                    android:backgroundTint="@color/green_300"
-                    app:srcCompat="@drawable/ic_umrah_message"
-                    app:backgroundTint="@color/green_300"
-                    app:fabCustomSize="@dimen/dp_48"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:clickable="true"
-                    />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_umrah_pdp_message"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_gravity="bottom|right"
+                android:backgroundTint="@color/green_300"
+                android:layout_marginBottom="@dimen/dp_120"
+                android:layout_marginRight="@dimen/dp_8"
+                app:srcCompat="@drawable/ic_umrah_message"
+                app:backgroundTint="@color/green_300"
+                app:fabCustomSize="@dimen/dp_48"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/container_umrah_pdp_bottom"
+                android:clickable="true"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
