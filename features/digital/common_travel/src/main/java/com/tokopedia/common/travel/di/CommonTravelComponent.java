@@ -8,7 +8,7 @@ import dagger.Component;
  * Created by nabillasabbaha on 13/08/18.
  */
 @CommonTravelScope
-@Component(modules = {CommonTravelModule.class, CommonTravelViewModelModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {CommonTravelModule.class}, dependencies = BaseAppComponent.class)
 public interface CommonTravelComponent {
 
 }

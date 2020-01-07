@@ -1,7 +1,5 @@
 package com.tokopedia.common.travel.di;
 
-import com.tokopedia.common.travel.domain.provider.TravelProvider;
-import com.tokopedia.common.travel.domain.provider.TravelScheduler;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -16,11 +14,6 @@ import kotlinx.coroutines.Dispatchers;
  */
 @Module
 public class CommonTravelModule {
-
-    @Provides
-    TravelProvider provideTravelProvider() {
-        return new TravelScheduler();
-    }
 
     @Provides
     GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }

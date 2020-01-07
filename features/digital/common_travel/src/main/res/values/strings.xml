@@ -7,7 +7,6 @@
     <string name="travel_passenger_error_identity_number">Nomor Identitas harus diisi</string>
     <string name="travel_passenger_error_identity_number_min">Nomor Identitas minimal 5 huruf</string>
     <string name="travel_passenger_error_identity_number_max">Nomor Identitas maksimal 20 huruf</string>
-    <string name="travel_passenger_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
     <string name="travel_passenger_contact_name_max">Nama kontak maksimal 60 huruf</string>
     <string name="travel_passenger_contact_last_name_word">Nama Belakang hanya boleh 1 kata</string>
     <string name="travel_passenger_birthdate_empty">Tanggal Lahir tidak boleh kosong</string>
