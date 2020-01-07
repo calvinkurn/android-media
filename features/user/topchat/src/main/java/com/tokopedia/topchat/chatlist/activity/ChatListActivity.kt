@@ -396,7 +396,7 @@ class ChatListActivity : BaseTabActivity()
 
     private fun createCustomView(title: String, icon: Int, counter: String): View? {
         val customView = LayoutInflater.from(this).inflate(R.layout.item_chat_tab, null)
-        val titleView = customView.findViewById<TextView>(com.tokopedia.design.R.id.title)
+        val titleView = customView.findViewById<TextView>(R.id.title)
         val iconView = customView.findViewById<ImageView>(R.id.icon)
         titleView.text = setTitleTab(title, counter)
         iconView.setImageDrawable(MethodChecker.getDrawable(this, icon))
