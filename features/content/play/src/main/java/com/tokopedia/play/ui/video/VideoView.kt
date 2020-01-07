@@ -16,7 +16,9 @@ import com.tokopedia.play.view.custom.RoundedFrameLayout
  * Created by jegul on 02/12/19
  */
 class VideoView(container: ViewGroup) : UIView(container) {
-
+    companion object{
+        private const val ANIMATION_TRANSITION_NAME = "play_video"
+    }
     private val view: View =
             LayoutInflater.from(container.context).inflate(R.layout.view_video, container, true)
                     .findViewById(R.id.rfl_video_wrapper)
@@ -36,7 +38,7 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
     fun setPlayer(exoPlayer: ExoPlayer) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            pvVideo.videoSurfaceView.transitionName = "play_video"
+            pvVideo.videoSurfaceView.transitionName = ANIMATION_TRANSITION_NAME
         }
         pvVideo.player = exoPlayer
     }

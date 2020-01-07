@@ -72,14 +72,14 @@
       android:background="@color/green_600"
       android:visibility="invisible" />
     
-<!--    <fragment-->
-<!--      android:id="@+id/floating_egg_fragment"-->
-<!--      android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"-->
-<!--      android:layout_width="match_parent"-->
-<!--      android:layout_height="match_parent"-->
-<!--      android:tag="floating_egg"-->
-<!--      app:draggable="true"-->
-<!--      app:margin_bottom="@dimen/new_margin_sm" />-->
+    <fragment
+      android:id="@+id/floating_egg_fragment"
+      android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:tag="floating_egg"
+      app:draggable="true"
+      app:margin_bottom="@dimen/new_margin_sm" />
   
   </FrameLayout>
 

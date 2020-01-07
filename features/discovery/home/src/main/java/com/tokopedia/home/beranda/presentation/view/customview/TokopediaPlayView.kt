@@ -34,6 +34,8 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
          */
         private const val SHOW_BUFFERING_ALWAYS = 2
 
+        private const val ANIMATION_TRANSITION_NAME = "play_video"
+
     }
     private var componentListener: ComponentListener? = null
     private var overlayFrameLayout: FrameLayout? = null
@@ -70,7 +72,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         surfaceView = TextureView(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            surfaceView?.transitionName = "play_video"
+            surfaceView?.transitionName = ANIMATION_TRANSITION_NAME
         }
         val params = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
