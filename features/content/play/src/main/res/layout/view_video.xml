@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/Neutral_N700_96"
+            app:resize_mode="zoom"
             app:use_controller="false"
             app:surface_type="texture_view"
             tools:parentTag="android.widget.FrameLayout"
