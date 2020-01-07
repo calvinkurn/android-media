@@ -11,6 +11,7 @@ import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.di.DaggerDrawerComponent;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
+import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +22,6 @@ import rx.Subscriber;
 public class DrawerGetNotificationService extends JobIntentService {
 
     private static final int JOB_ID = 12383213;
-    public static final String UPDATE_NOTIFICATION_DATA = "update_notification_data";
-    public static final String BROADCAST_GET_NOTIFICATION = "broadcast_get_notification";
-    public static final String GET_NOTIFICATION_SUCCESS = "get_notification_success";
     private static final String KEY_IS_SELLER = "is_seller";
     private static final String KEY_IS_REFRESH = "is_refresh";
 
@@ -76,8 +74,8 @@ public class DrawerGetNotificationService extends JobIntentService {
     }
 
     private void sendBroadcast() {
-        Intent intent = new Intent(BROADCAST_GET_NOTIFICATION);
-        intent.putExtra(GET_NOTIFICATION_SUCCESS, true);
+        Intent intent = new Intent(PushNotificationIntentService.BROADCAST_GET_NOTIFICATION);
+        intent.putExtra(PushNotificationIntentService.GET_NOTIFICATION_SUCCESS, true);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 }
