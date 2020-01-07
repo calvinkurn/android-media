@@ -3,8 +3,6 @@ package com.tokopedia.play.domain
 import com.tokopedia.play.data.Channel
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -16,6 +14,6 @@ class GetChannelInfoUseCase @Inject constructor(private val playApi: PlayApi) : 
     var channelId = ""
 
     override suspend fun executeOnBackground(): Channel {
-        return playApi.getChannelInfoV3(channelId).data.channel
+        return playApi.getChannelInfoV5(channelId).data.channel
     }
 }

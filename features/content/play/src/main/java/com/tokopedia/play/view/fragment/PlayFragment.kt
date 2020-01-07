@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -43,9 +43,11 @@ class PlayFragment : BaseDaggerFragment() {
         private const val ANIMATION_DURATION = 300L
         private const val FULL_SCALE_FACTOR = 1.0f
 
-        fun newInstance(channelId: String): PlayFragment {
+        fun newInstance(channelId: String?): PlayFragment {
             return PlayFragment().apply {
-                arguments?.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                val args = Bundle()
+                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                arguments = args
             }
         }
     }
@@ -79,7 +81,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID)?:"1865" // TODO remove default value, handle channel_id not found
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "2" // TODO remove default value, handle channel_id=1865, 80 staging live not found
         PlayAnalytics.sendScreen(channelId)
     }
 
@@ -111,7 +113,7 @@ class PlayFragment : BaseDaggerFragment() {
 
             override fun onKeyboardHidden() {
                 playViewModel.showKeyboard(false)
-                ivClose.gone()
+                ivClose.invisible()
                 flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 this@PlayFragment.onKeyboardHidden()
             }
@@ -185,14 +187,14 @@ class PlayFragment : BaseDaggerFragment() {
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             if (it.isBanned) {
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle, it.bannedButtonUrl)
+                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
             } else if (it.isFreeze) {
                 showEventDialog(it.freezeTitle, it.freezeMessage, it.freezeButtonTitle, it.freezeButtonUrl)
             }
         })
     }
 
-    private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String) {
+    private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(title)
@@ -201,7 +203,7 @@ class PlayFragment : BaseDaggerFragment() {
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 it.finish()
-                RouteManager.route(it, buttonUrl)
+                if (buttonUrl.isNotEmpty()) RouteManager.route(it, buttonUrl)
             }
             dialog.show()
         }

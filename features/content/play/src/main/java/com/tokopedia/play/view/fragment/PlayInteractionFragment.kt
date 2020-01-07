@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -102,8 +103,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var playButtonComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
-
-    private var interactionHeightOnKeyboardShown = -1
 
     private var channelId: String = ""
 
@@ -772,8 +771,19 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
-        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
         viewModel.doLikeUnlike(channelId, shouldLike)
+        sendEventLikeContent(shouldLike)
+        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
+    }
+
+    private fun sendEventLikeContent(shouldLike: Boolean) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.LikeContent(shouldLike)
+                    )
+        }
     }
 
     private fun openLoginPage() {
@@ -788,9 +798,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun calculateInteractionHeightOnKeyboardShown() {
-        if (interactionHeightOnKeyboardShown == -1) {
-            interactionHeightOnKeyboardShown = view?.findViewById<View>(statsComponent.getContainerId())?.y?.toInt() ?: -1
-        }
+        val statsViewY = view?.findViewById<View>(statsComponent.getContainerId())?.y?.toInt().orZero()
+        val pinnedView = view?.findViewById<View>(pinnedComponent.getContainerId())
+        val pinnedViewHeight = pinnedView?.height ?: 0
+        val interactionHeightOnKeyboardShown = statsViewY + pinnedViewHeight
 
         if (interactionHeightOnKeyboardShown != -1) (parentFragment as? PlayFragment)?.onKeyboardShown(interactionHeightOnKeyboardShown)
     }
