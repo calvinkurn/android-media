@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -27,6 +26,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
@@ -330,7 +330,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun showMessageAtcError(e: Throwable?) {
         view?.let {
-            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(it.context, e)
+            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
             Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
