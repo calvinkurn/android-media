@@ -549,7 +549,7 @@ public class DynamicHomeChannel {
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", id+"_"+grid.getId(),
+                                                    "id", grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getAttribution(),
                                                     "creative_url", grid.getImageUrl(),
@@ -572,7 +572,7 @@ public class DynamicHomeChannel {
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", id+"_"+grid.getId(),
+                                                    "id", grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getAttribution(),
                                                     "creative_url", grid.getImageUrl(),
@@ -700,7 +700,7 @@ public class DynamicHomeChannel {
                             "promoView", DataLayer.mapOf(
                                         "promotions",
                                     DataLayer.mapOf(
-                                            "id", channelId + "-" + getBanner().getId(),
+                                            "id", channelId + "_" + getBanner().getId(),
                                             "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().name,
                                             "creative", getBanner().getAttribution(),
                                             "creative_url", getBanner().getImageUrl(),
