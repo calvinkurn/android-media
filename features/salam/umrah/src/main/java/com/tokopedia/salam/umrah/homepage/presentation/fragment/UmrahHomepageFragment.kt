@@ -1,6 +1,9 @@
 package com.tokopedia.salam.umrah.homepage.presentation.fragment
 
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -79,17 +82,29 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         fab_umrah_home_page_message.setOnClickListener {
             if (userSessionInterface.isLoggedIn){
                 context?.let {
-                    val intent = RouteManager.getIntent(it,
-                            ApplinkConst.TOPCHAT_ASKSELLER,
-                            resources.getString(R.string.umrah_shop_id), "",
-                            resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
-                    startActivity(intent)
+                    startChatUmrah(it)
                 }
             }else{
                 goToLoginPage()
             }
         }
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_LOGIN -> context?.let{startChatUmrah(it)}
+            }
+        }
+    }
+
+    private fun startChatUmrah(context: Context){
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                resources.getString(R.string.umrah_shop_id), "",
+                resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
+        startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

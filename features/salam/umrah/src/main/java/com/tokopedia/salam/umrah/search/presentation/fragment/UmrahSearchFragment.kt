@@ -3,6 +3,7 @@ package com.tokopedia.salam.umrah.search.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -120,6 +121,8 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                     }
                 }
                 REQUEST_PDP -> loadInitialData()
+                REQUEST_CODE_LOGIN -> context?.let{startChatUmrah(it)}
+
             }
 
         }
@@ -132,16 +135,20 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         fab_umrah_search_message.setOnClickListener {
             if (userSessionInterface.isLoggedIn) {
                 context?.let {
-                    val intent = RouteManager.getIntent(it,
-                            ApplinkConst.TOPCHAT_ASKSELLER,
-                            resources.getString(R.string.umrah_shop_id), "",
-                            resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
-                    startActivity(intent)
+                    startChatUmrah(it)
                 }
             } else {
                 goToLoginPage()
             }
         }
+    }
+
+    private fun startChatUmrah(context: Context){
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                resources.getString(R.string.umrah_shop_id), "",
+                resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
+        startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -359,6 +366,8 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     companion object {
         var isFilter = false
+        const val REQUEST_CODE_LOGIN = 400
+
         fun getInstance(categorySlugName: String?, departureCityId: String?, departurePeriod: String?,
                         priceMin: Int?, priceMax: Int?, durationMin: Int,
                         durationMax: Int, defaultSort: String) =
@@ -387,7 +396,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     private fun goToLoginPage() {
         if (activity != null) {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                    UmrahHomepageFragment.REQUEST_CODE_LOGIN)
+                    REQUEST_CODE_LOGIN)
         }
     }
 

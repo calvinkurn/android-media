@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.pdp.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -148,6 +149,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                     }
                 }
             }
+
+            REQUEST_CODE_LOGIN-> context?.let { startChatUmroh(it) }
         }
     }
 
@@ -190,16 +193,20 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         fab_umrah_pdp_message.setOnClickListener {
             if (userSessionInterface.isLoggedIn) {
                 context?.let {
-                    val intent = RouteManager.getIntent(it,
-                            ApplinkConst.TOPCHAT_ASKSELLER,
-                            resources.getString(R.string.umrah_shop_id), resources.getString(R.string.umrah_shop_link, umrahProduct.slugName),
-                            resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
-                    startActivity(intent)
+                    startChatUmroh(it)
                 }
             } else {
                 goToLoginPage()
             }
         }
+    }
+
+    private fun startChatUmroh(context: Context){
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                resources.getString(R.string.umrah_shop_id), resources.getString(R.string.umrah_shop_link, umrahProduct.slugName),
+                resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
+        startActivity(intent)
     }
 
     private fun enableSwipeToRefresh() {
@@ -568,6 +575,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     }
 
     companion object {
+        const val REQUEST_CODE_LOGIN = 400
+
         var umrahProduct: UmrahProductModel.UmrahProduct = UmrahProductModel.UmrahProduct()
 
         fun getInstance(slugName: String) =
@@ -606,7 +615,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private fun goToLoginPage() {
         if (activity != null) {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                    UmrahHomepageFragment.REQUEST_CODE_LOGIN)
+                    REQUEST_CODE_LOGIN)
         }
     }
 }
