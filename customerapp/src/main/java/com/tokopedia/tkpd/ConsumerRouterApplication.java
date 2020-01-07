@@ -1374,7 +1374,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTalkCallingIntent(Context context) {
-        return InboxTalkActivity.Companion.createIntent(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.INBOX_TALK);
     }
 
     @Override
@@ -1498,7 +1498,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getProductTalk(Context context, String productId) {
-        return TalkProductActivity.Companion.createIntent(context, productId);
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId);
+        return intent;
     }
 
     @Override
@@ -1546,7 +1548,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
-        return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK);
+        intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId);
+        intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId);
+        intent.putExtra(TalkDetailsActivity.SOURCE, source);
+        return intent;
     }
 
     @Override

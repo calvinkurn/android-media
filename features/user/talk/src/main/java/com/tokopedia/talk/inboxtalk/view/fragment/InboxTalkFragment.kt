@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
@@ -655,10 +656,12 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK)
+                intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+                intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId)
+                intent.putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_INBOX)
                 this@InboxTalkFragment.startActivityForResult(
-                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this,
-                                TalkDetailsActivity.SOURCE_INBOX)
-                        , REQUEST_GO_TO_DETAIL)
+                        intent, REQUEST_GO_TO_DETAIL)
             }
         } else {
             showErrorReplyTalk()

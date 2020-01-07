@@ -163,6 +163,9 @@ object DeeplinkMapper {
             ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.NOTIFICATION -> return ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
+            ApplinkConst.TALK -> return ApplinkConstInternalGlobal.INBOX_TALK
+            ApplinkConst.PRODUCT_TALK -> return ApplinkConstInternalGlobal.PRODUCT_TALK
+            ApplinkConst.TALK_DETAIL -> return ApplinkConstInternalGlobal.DETAIL_TALK
             else -> ""
         }
         when {
