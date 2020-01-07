@@ -131,7 +131,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     override fun attachView(view: HomeContract.View?) {
         super.attachView(view)
         view?.let {
-            homeDataMapper = HomeDataMapper(it.context, HomeVisitableFactoryImpl(), it.trackingQueue)
+            homeDataMapper = HomeDataMapper(it.context, HomeVisitableFactoryImpl(userSession), it.trackingQueue)
         }
     }
 
