@@ -13,11 +13,13 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
 import com.google.android.exoplayer2.source.BehindLiveWindowException
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultAllocator
@@ -103,12 +105,12 @@ class TokopediaPlayerHelper(
         // A MediaSource defines the media to be played, loads the media, and from which the loaded media can be read.
         // A MediaSource is injected via ExoPlayer.prepare at the start of playback.
         mVideosUris?.let {
-            TokopediaPlayManager.getInstance(context).playVideoWithUri(it[0], false)
-//            val mediaSources: MutableList<MediaSource> = mutableListOf()
-//            it.forEach {uri ->
-//                mediaSources.add(buildMediaSource(uri))
-//            }
-//            mMediaSource = if(mediaSources.size == 1)  mediaSources[0] else ConcatenatingMediaSource(*mediaSources.toTypedArray())
+//            TokopediaPlayManager.getInstance(context).playVideoWithUri(it[0], false)
+            val mediaSources: MutableList<MediaSource> = mutableListOf()
+            it.forEach {uri ->
+                mediaSources.add(buildMediaSource(uri))
+            }
+            mMediaSource = if(mediaSources.size == 1)  mediaSources[0] else ConcatenatingMediaSource(*mediaSources.toTypedArray())
         }
     }
 
@@ -248,14 +250,14 @@ class TokopediaPlayerHelper(
             addThumbImageView()
         }
 
-        TokopediaPlayManager.deleteInstance()
-        mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
+//        TokopediaPlayManager.deleteInstance()
+//        mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
 
-//        mPlayer = ExoPlayerFactory.newSimpleInstance(
-//                context,
-//                DefaultRenderersFactory(context),
-//                DefaultTrackSelector(),
-//                mLoadControl)
+        mPlayer = ExoPlayerFactory.newSimpleInstance(
+                context,
+                DefaultRenderersFactory(context),
+                DefaultTrackSelector(),
+                mLoadControl)
 
         exoPlayerView.setPlayer(mPlayer)
         isVideoMuted = true
@@ -277,7 +279,7 @@ class TokopediaPlayerHelper(
         }
         createMediaSource()
         isPlayerPrepared = true
-//        mPlayer?.prepare(mMediaSource)
+        mPlayer?.prepare(mMediaSource)
 
         if (mResumeWindow != C.INDEX_UNSET) {
             mPlayer?.playWhenReady = isResumePlayWhenReady

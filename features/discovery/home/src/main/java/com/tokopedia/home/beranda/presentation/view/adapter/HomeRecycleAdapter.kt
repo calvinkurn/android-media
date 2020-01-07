@@ -294,13 +294,10 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
             listPlay[visitables[holder.adapterPosition]] = holder.adapterPosition
-            holder.createHelper()
-            if (!isFirstItemPlayed && currentSelected == -1) {
-                isFirstItemPlayed = true
-                currentSelected = holder.adapterPosition
-                holder.helper?.preparePlayer()
-                holder.helper?.playerPlay()
-            }
+//            if (!isFirstItemPlayed && currentSelected == -1) {
+//                isFirstItemPlayed = true
+//                currentSelected = holder.adapterPosition
+//            }
         }
     }
 

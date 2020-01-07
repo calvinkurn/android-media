@@ -20,7 +20,7 @@ class PlayRemoteDataSource(
         private const val PARAM_SOURCE = "source"
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_DEVICE = "device"
-        private const val DEFAULT_SOURCE = "homepage"
+        private const val DEFAULT_SOURCE = "home-play"
         private const val DEFAULT_LIMIT = 1
         private const val DEFAULT_PAGE = 1
         private const val DEFAULT_DEVICE = "android"

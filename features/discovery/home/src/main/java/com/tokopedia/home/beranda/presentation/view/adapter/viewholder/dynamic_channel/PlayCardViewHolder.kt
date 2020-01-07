@@ -51,16 +51,16 @@ class PlayCardViewHolder(
         description.text = ""
 
         element.getPlayCardHome()?.let { model ->
-            mVideoUrl = model.videoStream.streamUrl
+            mVideoUrl = model.videoStream.config.streamUrl
             mThumbUrl = model.coverUrl
+            if(playCardViewModel == null) createHelper()
             playCardViewModel = element
-            thumbnailView.loadImage(mVideoUrl, 250, 100, false)
+            thumbnailView.loadImage(mThumbUrl, 250, 100, true)
             broadcasterName.text = model.moderatorName
             titlePlay.text = model.title
             viewer.text = model.totalView
             if(model.videoStream.isLive) live.show()
             else live.hide()
-
             volumeContainer.setOnClickListener {
                 helper?.updateVideoMuted()
                 volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
@@ -74,7 +74,7 @@ class PlayCardViewHolder(
     }
 
     fun createHelper() {
-        if(playCardViewModel == null || ExoUtil.isDeviceHasRequirementAutoPlay(itemView.context)) return
+        if(!ExoUtil.isDeviceHasRequirementAutoPlay(itemView.context)) return
 
         if(helper == null) {
             helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
@@ -93,6 +93,7 @@ class PlayCardViewHolder(
     }
 
     override fun onPlayerPlaying(currentWindowIndex: Int) {
+        thumbnailView.hide()
         volumeContainer.show()
     }
 
@@ -106,10 +107,12 @@ class PlayCardViewHolder(
 
     override fun onPlayerError(errorString: String?) {
         errorMessage.text = errorString
+        thumbnailView.show()
         errorMessage.show()
     }
 
     override fun releaseExoPlayerCalled() {
+        thumbnailView.show()
     }
 
     companion object {

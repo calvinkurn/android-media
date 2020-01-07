@@ -39,6 +39,11 @@ data class PlayChannel(
 data class VideoStream(
         @SerializedName("is_live")
         val isLive: Boolean = false,
+        @SerializedName("config")
+        val config: Config = Config()
+)
+
+data class Config(
         @SerializedName("stream_url")
         val streamUrl: String = ""
 )

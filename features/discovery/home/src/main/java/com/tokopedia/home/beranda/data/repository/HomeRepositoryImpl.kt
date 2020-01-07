@@ -55,6 +55,6 @@ class HomeRepositoryImpl @Inject constructor(
     override fun sendGeolocationInfo(): Observable<Response<String>> = homeDataSource.sendGeolocationInfo()
 
     override fun getPlayChannel(): Flow<PlayLiveDynamicChannelEntity> = flow {
-        emit(playRemoteDataSource.getPlayData())
+        emit(playRemoteDataSource.getPlayData(page = 2))
     }
 }
