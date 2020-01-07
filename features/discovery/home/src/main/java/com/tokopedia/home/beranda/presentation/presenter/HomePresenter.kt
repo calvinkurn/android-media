@@ -111,7 +111,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
-    private var fetchFirstData = false
+    private var fetchFirstData = true
     private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(3) // 3 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
@@ -123,10 +123,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
         }
-    }
-
-    override fun onFirstLaunch() {
-        fetchFirstData = true
     }
 
     override fun onResume() {
