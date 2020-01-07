@@ -105,16 +105,16 @@ class TokopediaPlayerHelper(
         // A MediaSource defines the media to be played, loads the media, and from which the loaded media can be read.
         // A MediaSource is injected via ExoPlayer.prepare at the start of playback.
         mVideosUris?.let {
-//            TokopediaPlayManager.getInstance(context).playVideoWithUri(it[0], false)
-            val mediaSources: MutableList<MediaSource> = mutableListOf()
-            it.forEach {uri ->
-                mediaSources.add(buildMediaSource(uri))
-            }
-            mMediaSource = if(mediaSources.size == 1)  mediaSources[0] else ConcatenatingMediaSource(*mediaSources.toTypedArray())
+            TokopediaPlayManager.getInstance(context).playVideoWithUri(it[0], false)
+//            val mediaSources: MutableList<MediaSource> = mutableListOf()
+//            it.forEach {uri ->
+//                mediaSources.add(buildMediaSource(uri))
+//            }
+//            mMediaSource = if(mediaSources.size == 1)  mediaSources[0] else ConcatenatingMediaSource(*mediaSources.toTypedArray())
         }
     }
 
-    fun isPlayerNull(): Boolean{
+    fun isPlayerNull(): Boolean {
         return mPlayer == null
     }
 
@@ -250,14 +250,14 @@ class TokopediaPlayerHelper(
             addThumbImageView()
         }
 
-//        TokopediaPlayManager.deleteInstance()
-//        mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
+        TokopediaPlayManager.deleteInstance()
+        mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
 
-        mPlayer = ExoPlayerFactory.newSimpleInstance(
-                context,
-                DefaultRenderersFactory(context),
-                DefaultTrackSelector(),
-                mLoadControl)
+//        mPlayer = ExoPlayerFactory.newSimpleInstance(
+//                context,
+//                DefaultRenderersFactory(context),
+//                DefaultTrackSelector(),
+//                mLoadControl)
 
         exoPlayerView.setPlayer(mPlayer)
         isVideoMuted = true
