@@ -92,7 +92,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
 
     public void markReadNotification(String infoId) {
         markReadNotificationUseCase.execute(
-                MarkReadNotificationUseCase.createRequestParams(String.valueOf(infoId)),
+                MarkReadNotificationUseCase.createRequestParams(String.valueOf(infoId), 2),
                 new Subscriber<NotificationUpdateActionResponse>() {
                     @Override
                     public void onCompleted() {}
