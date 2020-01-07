@@ -1,7 +1,6 @@
 package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
@@ -23,6 +24,9 @@ import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -50,6 +54,9 @@ public class CategoryProductStyle3View extends
     private DigitalProductChooserView digitalProductChooserView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
+    private RemoteConfig remoteConfig;
+
+    private static String SLUG_EMONEY = "emoney";
 
     public CategoryProductStyle3View(Context context) {
         super(context);
@@ -76,6 +83,7 @@ public class CategoryProductStyle3View extends
         layoutCheckout = findViewById(R.id.layout_checkout);
         tooltipInstantCheckout = findViewById(R.id.tooltip_instant_checkout);
 
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
         digitalOperatorChooserView = new DigitalOperatorChooserView(context);
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
@@ -179,9 +187,8 @@ public class CategoryProductStyle3View extends
     private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
         ClientNumber clientNumber = operator.getClientNumberList().get(0);
-        if (data.getSlug().contains("emoney")) {
-            clientNumber.setEmoney(true);
-        }
+        clientNumber.setEmoney(data.getSlug().contains(SLUG_EMONEY) &&
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_OCR, true));
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
         clientNumberInputView.renderData(clientNumber);
         clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());

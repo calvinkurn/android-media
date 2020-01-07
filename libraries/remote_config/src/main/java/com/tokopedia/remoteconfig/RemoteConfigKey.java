@@ -188,4 +188,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
 
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
+
+    public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
+    public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
 }
