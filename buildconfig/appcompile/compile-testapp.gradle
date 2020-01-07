@@ -64,5 +64,3 @@ include "features:common:resources_common"
 // digital home
 //include ":features:digital:digital_homepage"
 
-
-include 'testapp'
