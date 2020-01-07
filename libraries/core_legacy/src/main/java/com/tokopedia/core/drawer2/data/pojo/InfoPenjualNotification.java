@@ -10,11 +10,11 @@ import com.google.gson.annotations.SerializedName;
 public class InfoPenjualNotification {
 
     @Expose
-    @SerializedName("notif_total_unread")
+    @SerializedName("notif_unread")
     private String notifUnreadString = "";
 
     @Expose
-    @SerializedName("notif_total_unread_int")
+    @SerializedName("notif_unread_int")
     private Long notifUnreadInt = 0L;
 
     public String getNotifUnreadString() {
