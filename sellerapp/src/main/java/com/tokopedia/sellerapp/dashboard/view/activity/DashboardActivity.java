@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -22,7 +23,6 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
-import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdatedListener;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -33,12 +33,13 @@ import javax.inject.Inject;
  * Created by nathan on 9/5/17.
  */
 
-public class DashboardActivity extends DrawerPresenterActivity implements
+public class DashboardActivity extends BaseTemporaryDrawerActivity implements
         GCMHandlerListener,
-        SellerDashboardDrawerPresenter.SellerDashboardView,
-        OnNotificationDataUpdatedListener {
+        SellerDashboardDrawerPresenter.SellerDashboardView {
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
+
+    private DashboardFragment dashboardFragment;
 
     @Inject
     public SellerDashboardDrawerPresenter presenter;
@@ -57,10 +58,12 @@ public class DashboardActivity extends DrawerPresenterActivity implements
 
         presenter.attachView(this);
 
+        dashboardFragment = DashboardFragment.newInstance();
+
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, DashboardFragment.newInstance(), TAG)
+                    .replace(R.id.container, dashboardFragment, TAG)
                     .commit();
         }
         checkAppUpdate();
@@ -110,6 +113,7 @@ public class DashboardActivity extends DrawerPresenterActivity implements
         NotificationModHandler.showDialogNotificationIfNotShowing(this,
                 ManageGeneral.getCallingIntent(this, ManageGeneral.TAB_POSITION_MANAGE_APP)
         );
+        updateDrawerData();
     }
 
     // will done in onresume
@@ -205,8 +209,4 @@ public class DashboardActivity extends DrawerPresenterActivity implements
         return this;
     }
 
-    @Override
-    public void notificationDataUpdated() {
-        updateDrawerData();
-    }
 }
