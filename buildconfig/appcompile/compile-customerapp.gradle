@@ -40,6 +40,7 @@ include "features:digital:travel_homepage"
 include "features:digital:travel_country_code"
 include ":features:digital:digital_emoney"
 include "features:digital:digital_homepage"
+include "features:digital:rechargeocr"
 
 include "features:salam:umrah"
 

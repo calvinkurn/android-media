@@ -13,6 +13,7 @@ public class TkpdBaseURL {
     public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
     public static String MERLIN_DOMAIN = TokopediaUrl.Companion.getInstance().getMERLIN();
     public static String GOOGLE_APIS = "https://www.googleapis.com";
+    public static String TOPADS_DOMAIN = TokopediaUrl.Companion.getInstance().getTA();
     public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
     public static String INBOX_DOMAIN = TokopediaUrl.Companion.getInstance().getINBOX();
     public static String CHAT_DOMAIN = TokopediaUrl.Companion.getInstance().getCHAT();
@@ -25,6 +26,7 @@ public class TkpdBaseURL {
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String TOKOPEDIA_CART_DOMAIN = TokopediaUrl.getInstance().getFS() + "tkpdcart/";
     public static String DIGITAL_API_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA_API();
+    public static String DIGITAL_WEBSITE_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA();
     public static String SCROOGE_DOMAIN = TokopediaUrl.Companion.getInstance().getPAY();
     public static String HOME_DATA_BASE_URL = TokopediaUrl.Companion.getInstance().getGQL();
     public static String SCROOGE_CREDIT_CARD_DOMAIN = TokopediaUrl.Companion.getInstance().getPAY_ID();
@@ -257,6 +259,7 @@ public class TkpdBaseURL {
 
     public static class Accounts {
         public static final String PATH_GET_TOKEN = "token";
+        public static final String PATH_DISCOVER_LOGIN = "api/discover";
         public static final String GENERATE_HOST = "/api/upload-host";
     }
 

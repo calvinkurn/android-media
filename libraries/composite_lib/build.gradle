@@ -44,31 +44,3 @@ buildscript {
 
 apply from: 'buildproj.gradle'
 
-task projectDependencyGraph {
-    doLast {
-        def rootProjects = []
-        def queue = [rootProject]
-        while (!queue.isEmpty()) {
-            def project = queue.remove(0)
-            rootProjects.add(project)
-            queue.addAll(project.childProjects.values())
-        }
-
-        def projects = new LinkedHashSet<Project>()
-
-        queue = [rootProject]
-        while (!queue.isEmpty()) {
-            def project = queue.remove(0)
-            queue.addAll(project.childProjects.values())
-            project.configurations.all { config ->
-                config.dependencies.each { dependency ->
-                    projects.add(project)
-                    projects.add(dependency)
-                    rootProjects.remove(dependency)
-
-                    println " ${project.path} -> ${dependency.group} "
-                }
-            }
-        }
-    }
-}
