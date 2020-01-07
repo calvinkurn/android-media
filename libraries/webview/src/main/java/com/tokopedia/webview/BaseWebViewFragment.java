@@ -121,11 +121,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (args == null || !args.containsKey(KEY_URL)) {
             return;
         }
-        url = UrlEncoderExtKt.decode(args.getString(KEY_URL, TokopediaUrl.Companion.getInstance().getWEB()));
+        url = getUrlFromArguments(args);
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+    }
+
+    private String getUrlFromArguments(Bundle args) {
+        String defaultUrl = TokopediaUrl.Companion.getInstance().getWEB();
+        String url = UrlEncoderExtKt.decode(args.getString(KEY_URL, defaultUrl));
+
+        if (!url.startsWith("http")) {
+            return defaultUrl;
+        }
+        return url;
     }
 
     @Nullable

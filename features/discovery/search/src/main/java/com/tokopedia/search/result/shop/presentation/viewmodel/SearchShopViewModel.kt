@@ -639,44 +639,47 @@ internal class SearchShopViewModel(
 
     fun getSearchParameterQuery() : String = (searchParameter[SearchApiConst.Q] ?: "").toString()
 
-    fun getSearchShopLiveData() = searchShopLiveData
+    fun getSearchShopLiveData(): LiveData<State<List<Visitable<*>>>> = searchShopLiveData
 
     fun getHasNextPage() = hasNextPage
 
-    fun getDynamicFilterEventLiveData() = dynamicFilterEventLiveData
+    fun getDynamicFilterEventLiveData(): LiveData<Event<Boolean>> = dynamicFilterEventLiveData
 
-    fun getOpenFilterPageEventLiveData() = openFilterPageEventLiveData
+    fun getOpenFilterPageEventLiveData(): LiveData<Event<Boolean>> = openFilterPageEventLiveData
 
     fun getActiveFilterOptionListForEmptySearch() = filterController.getActiveFilterOptionList()
 
-    fun getShopItemImpressionTrackingEventLiveData() = shopItemImpressionTrackingEventLiveData
+    fun getShopItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> = shopItemImpressionTrackingEventLiveData
 
-    fun getProductPreviewImpressionTrackingEventLiveData() = productPreviewImpressionTrackingEventLiveData
+    fun getProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
+            productPreviewImpressionTrackingEventLiveData
 
     fun getActiveFilterMapForEmptySearchTracking() = filterController.getActiveFilterMap()
 
-    fun getEmptySearchTrackingEventLiveData() = emptySearchTrackingEventLiveData
+    fun getEmptySearchTrackingEventLiveData(): LiveData<Event<Boolean>> = emptySearchTrackingEventLiveData
 
-    fun getSearchShopFirstPagePerformanceMonitoringEventLiveData() =
+    fun getSearchShopFirstPagePerformanceMonitoringEventLiveData(): LiveData<Event<Boolean>> =
             searchShopFirstPagePerformanceMonitoringEventLiveData
 
-    fun getShopRecommendationItemImpressionTrackingEventLiveData() =
+    fun getShopRecommendationItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
             shopRecommendationItemImpressionTrackingEventLiveData
 
-    fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData() =
+    fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
             shopRecommendationProductPreviewImpressionTrackingEventLiveData
 
-    fun getClickShopItemTrackingEventLiveData() = clickShopItemTrackingEventLiveData
+    fun getClickShopItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem>> = clickShopItemTrackingEventLiveData
 
-    fun getClickNotActiveShopItemTrackingEventLiveData() = clickNotActiveShopItemTrackingEventLiveData
+    fun getClickNotActiveShopItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem>> =
+            clickNotActiveShopItemTrackingEventLiveData
 
-    fun getClickShopRecommendationItemTrackingEventLiveData() =
+    fun getClickShopRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem>> =
             clickShopRecommendationItemTrackingEventLiveData
 
-    fun getRoutePageEventLiveData() = routePageEventLiveData
+    fun getRoutePageEventLiveData(): LiveData<Event<String>> = routePageEventLiveData
 
-    fun getClickProductItemTrackingEventLiveData() = clickProductItemTrackingEventLiveData
+    fun getClickProductItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> =
+            clickProductItemTrackingEventLiveData
 
-    fun getClickProductRecommendationItemTrackingEventLiveData() =
+    fun getClickProductRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> =
             clickProductRecommendationItemTrackingEventLiveData
 }

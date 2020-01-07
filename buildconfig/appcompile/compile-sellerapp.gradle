@@ -31,6 +31,7 @@ include "features:discovery:flashsale_management"
 //include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'
 include 'features:discovery:productcard'
+include 'features:discovery:carousel_productcard'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
@@ -120,6 +121,7 @@ include "features:user:otp"
 include "features:user:phoneverification"
 include "features:user:settingbank"
 include "features:user:sessioncommon"
+include "features:user:seamless_login"
 include "features:user:talk"
 include "features:user:topchat"
 //include "features:user:topchat_no_op"

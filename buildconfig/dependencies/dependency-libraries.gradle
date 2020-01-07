@@ -48,6 +48,7 @@ ext {
             logger                  : ":libraries:logger",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
+            playCore                : ":libraries:play_core",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
