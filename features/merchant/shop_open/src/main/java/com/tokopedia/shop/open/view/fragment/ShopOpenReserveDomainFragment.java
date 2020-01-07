@@ -24,18 +24,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.widget.PrefixEditText;
@@ -55,7 +57,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -429,6 +433,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         trackingOpenShop.eventShopCreatedSuccessfully(setUserData(shopId));
         if (getActivity() != null) {
+            if (!GlobalConfig.isSellerApp()) {
+                List<String> listToInstall = new ArrayList<>();
+                listToInstall.add(DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP);
+                new DFInstaller().installOnBackground(getActivity().getApplication(), listToInstall, null, null);
+            }
             Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);
             startActivity(intent);
             getActivity().finish();

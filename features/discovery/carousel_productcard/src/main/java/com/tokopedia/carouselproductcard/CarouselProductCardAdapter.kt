@@ -2,16 +2,15 @@ package com.tokopedia.carouselproductcard
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.productcard.v2.ProductCardModel
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import com.tokopedia.carouselproductcard.model.CarouselProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 
 internal class CarouselProductCardAdapter(
-        private var productCardModelList: List<ProductCardModel> = ArrayList(),
         private val isScrollable: Boolean,
-        private val carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
         private val productCardHeight: Int = 0
-): RecyclerView.Adapter<CarouselProductCardViewHolder>() {
+): ListAdapter<CarouselProductCardModel, CarouselProductCardViewHolder>(ProductModelDiffUtil()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CarouselProductCardViewHolder {
         val view = LayoutInflater
@@ -28,11 +27,7 @@ internal class CarouselProductCardAdapter(
             productCardView.setCardHeight(productCardHeight)
         }
 
-        return CarouselProductCardViewHolder(view, carouselProductCardListenerInfo)
-    }
-
-    override fun getItemCount(): Int {
-        return productCardModelList.size
+        return CarouselProductCardViewHolder(view)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -40,11 +35,21 @@ internal class CarouselProductCardAdapter(
     }
 
     override fun onBindViewHolder(carouselProductCardViewHolder: CarouselProductCardViewHolder, position: Int) {
-        carouselProductCardViewHolder.bind(productCardModelList[position])
+        carouselProductCardViewHolder.bind(getItem(position))
     }
 
     fun updateWishlist(index: Int, isWishlist: Boolean){
-        productCardModelList[index].isWishlisted = isWishlist
+        getItem(index).productCardModel.isWishlisted = isWishlist
         notifyItemChanged(index)
+    }
+
+    class ProductModelDiffUtil : DiffUtil.ItemCallback<CarouselProductCardModel>() {
+        override fun areItemsTheSame(oldItem: CarouselProductCardModel, newItem: CarouselProductCardModel): Boolean {
+            return oldItem.productCardModel.productName == newItem.productCardModel.productName
+        }
+
+        override fun areContentsTheSame(oldItem: CarouselProductCardModel, newItem: CarouselProductCardModel): Boolean {
+            return oldItem.productCardModel == newItem.productCardModel
+        }
     }
 }

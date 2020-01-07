@@ -21,7 +21,7 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
 
     public static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";
     public static final String EXTRA_ITEM_SELECTED_POSITION = "EXTRA_ITEM_SELECTED_POSITION";
-    
+
     private TopAdsFilterAdapter adapter;
     private RecyclerView recyclerView;
     private ArrayList<FilterTitleItem> filterTitleItemList;

@@ -17,11 +17,11 @@ class RecomendationEntity {
     }
 
     class Pagination {
-        @SerializedName("current_page")
+        @SerializedName("currentPage")
         var currentPage: Int = 0
-        @SerializedName("next_page")
+        @SerializedName("nextPage")
         var nextPage: Int = 0
-        @SerializedName("prev_page")
+        @SerializedName("prevPage")
         var prevPage: Int = 0
         @SerializedName("hasNext")
         var hasNext: Boolean = false
