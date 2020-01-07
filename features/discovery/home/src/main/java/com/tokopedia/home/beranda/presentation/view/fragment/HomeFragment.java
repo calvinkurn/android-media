@@ -414,7 +414,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.onFirstLaunch();
         initAdapter();
         initRefreshLayout();
         subscribeHome();
