@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
@@ -73,6 +75,20 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         rv_umrah_home_page.setHasFixedSize(true)
         rv_umrah_home_page.setDrawingCacheEnabled(true)
         rv_umrah_home_page.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH)
+        fab_umrah_home_page_message.bringToFront()
+        fab_umrah_home_page_message.setOnClickListener {
+            if (userSessionInterface.isLoggedIn){
+                context?.let {
+                    val intent = RouteManager.getIntent(it,
+                            ApplinkConst.TOPCHAT_ASKSELLER,
+                            "7298319", "",
+                            "seller", "Tokopedia Umroh", "")
+                    startActivity(intent)
+                }
+            }else{
+                goToLoginPage()
+            }
+        }
 
     }
 
@@ -189,6 +205,14 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         var isDreamFundViewed = false
         var isRequestedCategory = false
         var isRequestedSpinnerLike = false
+        const val REQUEST_CODE_LOGIN = 400
+    }
+
+    private fun goToLoginPage() {
+        if (activity != null) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN)
+        }
     }
 }
 
