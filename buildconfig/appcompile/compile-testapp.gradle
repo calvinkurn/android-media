@@ -64,5 +64,4 @@ include "libraries:inappupdate"
 // digital home
 //include ":features:digital:digital_homepage"
 
-include "features:discovery:home"
 include 'testapp'
