@@ -88,7 +88,7 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         val videoType = PlayVideoProtocol.getVideoTypeByUri(uri)
         val mediaSource = getMediaSourceByProtocol(videoType)
         videoPlayer.playWhenReady = autoPlay
-        videoPlayer.prepare(mediaSource, true, true)
+        videoPlayer.prepare(mediaSource)
     }
 
     fun playVideoWithString(uriString: String, autoPlay: Boolean = true) = playVideoWithUri(Uri.parse(uriString), autoPlay)

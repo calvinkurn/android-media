@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
-import com.tokopedia.dynamicbanner.entity.PlayCardHome
+import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -10,8 +10,12 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()
-    private var playCardHome: PlayCardHome? = null
+    private var playCardHome: PlayChannel? = null
     private var channel: DynamicHomeChannel.Channels? = null
+
+    var url = "https://www.w3schools.com/html/mov_bbb.mp4"
+    var thumbnailUrl = "https://i.ytimg.com/vi/JQ5xItF40yA/maxresdefault.jpg"
+//    val url = "rtmp://fms.105.net/live/rmc1"
 
     override fun isCache(): Boolean {
         return isCache
@@ -21,7 +25,7 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
         isCache = cache
     }
 
-    fun setPlayCardHome(playCardHome: PlayCardHome) {
+    fun setPlayCardHome(playCardHome: PlayChannel) {
         this.playCardHome = playCardHome
         setBannerImageUrl()
     }
@@ -34,12 +38,12 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
         return channel
     }
 
-    fun getPlayCardHome(): PlayCardHome? {
+    fun getPlayCardHome(): PlayChannel? {
         return playCardHome
     }
 
     private fun setBannerImageUrl() {
-        val bannerUrl = playCardHome?.playGetCardHome?.data?.card?.imageUrl?: ""
+        val bannerUrl = playCardHome?.coverUrl ?: ""
         this.channel?.banner?.imageUrl = bannerUrl
     }
 
