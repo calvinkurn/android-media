@@ -3,10 +3,11 @@ package com.tokopedia.user_identification_common.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
@@ -84,6 +85,10 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     public void showError(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener) {
         snackbar = NetworkErrorHelper.createSnackbarWithAction(this, error, retryClickedListener);
         snackbar.showRetrySnackbar();
+    }
+
+    public void showErrorWithoutAction(String error) {
+        NetworkErrorHelper.showCloseSnackbar(this, error);
     }
 
     @Override

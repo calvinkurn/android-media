@@ -14,6 +14,7 @@ import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCa
 import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
+import com.tokopedia.user_identification_common.util.KycImageUtils;
 import com.tokopedia.user_identification_common.util.SchedulerProvider;
 import com.tokopedia.user_identification_common.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.user_identification_common.view.viewmodel.AttachmentImageModel;
@@ -213,7 +214,13 @@ public class UserIdentificationUploadImagePresenter extends
 
     @Override
     public void checkKtp(String image) {
-        cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image), new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
+        String resizedImg = KycImageUtils.Companion.resizeImage(image, GetKtpStatusUseCase.MAX_WIDTH, GetKtpStatusUseCase.MAX_HEIGHT);
+        if(!resizedImg.isEmpty()) {
+            cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image),
+                    new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
+        }else{
+            getView().onImageEmpty();
+        }
     }
 
     @Override
