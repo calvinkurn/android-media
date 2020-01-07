@@ -69,8 +69,8 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     app = [
-            customerapp     : ":customerapp",
-            sellerapp       : ":sellerapp"
+        customerapp     : ":customerapp",
+        sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
@@ -85,8 +85,8 @@ ext {
     unifyGlobalErrorVersion = '1.0.4'
 
     gradlePlugin = [
-            crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
-            googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
+        crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
+        googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
     ]
 
     networkDependencies = [
@@ -280,15 +280,15 @@ ext {
     ]
 
     unifyDependencies = [
-            icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-            principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-            components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-            coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
-            calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-            banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
-            dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
-            datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
-            empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
-            global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
+       icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
+       principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
+       components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
+       coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
+       calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
+       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+       empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+       global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
     ]
 }
