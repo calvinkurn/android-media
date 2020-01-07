@@ -17,7 +17,6 @@ data class AtcDataModel(
         var keroUnixTime: Long = 0,
         var enablePartialCancel: Boolean? = null,
         var donationModel: DonationModel? = null,
-        var promoSuggestionModel: PromoSuggestionModel? = null,
         var autoapplyModel: AutoApplyModel? = null,
         var userProfileModelDefaultModel: ProfileModel? = null,
         var messagesModel: HashMap<String, String>? = null,

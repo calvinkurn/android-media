@@ -9,6 +9,7 @@ ext {
     kotlinVersion = "1.3.50"
 
     lifeCycleVersion = "2.1.0"
+    workManagerVersion = "1.0.1"
 
     supportLibraryVersion = '1.0.0'
     constraintLayoutVersion = '1.1.2'
@@ -74,14 +75,14 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.3'
+    unifyComponentsVersion = '1.1.6'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.0'
     unifyDialogVersion = '1.0.0'
     unifyDatePickerVersion = '0.0.1'
     unifyEmptyStateVersion = '1.0.2'
-    unifyGlobalErrorVersion = '1.0.1'
+    unifyGlobalErrorVersion = '1.0.4'
 
     gradlePlugin = [
             crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -132,11 +133,10 @@ ext {
             places           : "com.google.android.gms:play-services-places:${playServicePlace}",
             phone            : "com.google.android.gms:play-services-auth-api-phone:${playServiceAuthApiPhone}",
             mapsUtils        : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
-            ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
+            ads              : "com.google.android.gms:play-services-ads-identifier:${playServiceAds}",
             tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
             safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}",
-            measurementApi   : "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}",
     ]
 
     firebase = [
@@ -219,6 +219,7 @@ ext {
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.5",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
+            workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion"
     ]
 
     testDependencies = [

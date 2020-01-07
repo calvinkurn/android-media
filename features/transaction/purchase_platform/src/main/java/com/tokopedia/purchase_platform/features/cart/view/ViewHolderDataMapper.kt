@@ -28,22 +28,20 @@ class ViewHolderDataMapper @Inject constructor() {
     }
 
     fun mapDisabledItemHolderData(cartItemHolderData: CartItemHolderData, showDivider: Boolean): DisabledCartItemHolderData {
-        return cartItemHolderData.cartItemData.let {
-            val originData = it.originData
-            DisabledCartItemHolderData(
-                    originData.cartId,
-                    originData.productId,
-                    originData.productImage,
-                    originData.productName,
-                    originData.pricePlan,
-                    it.errorMessageTitle,
-                    originData.isWishlisted,
-                    it.warningMessageTitle,
-                    it.similarProductData,
-                    it.nicotineLiteMessageData,
-                    showDivider,
-                    it
-            )
-        }
+        return DisabledCartItemHolderData(
+                cartId = cartItemHolderData.cartItemData?.originData?.cartId ?: 0,
+                productId = cartItemHolderData.cartItemData?.originData?.productId ?: "0",
+                productImage = cartItemHolderData.cartItemData?.originData?.productImage ?: "",
+                productName = cartItemHolderData.cartItemData?.originData?.productName ?: "",
+                productPrice = cartItemHolderData.cartItemData?.originData?.pricePlan
+                        ?: 0.toDouble(),
+                error = cartItemHolderData.cartItemData?.errorMessageTitle,
+                isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
+                tickerMessage = cartItemHolderData.cartItemData?.warningMessageTitle,
+                similarProduct = cartItemHolderData.cartItemData?.similarProductData,
+                nicotineLiteMessageData = cartItemHolderData.cartItemData?.nicotineLiteMessageData,
+                showDivider = showDivider,
+                data = cartItemHolderData.cartItemData
+        )
     }
 }

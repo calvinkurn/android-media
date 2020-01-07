@@ -14,7 +14,7 @@ class EmptyDataStateViewHolder(view: View): AbstractViewHolder<NotificationEmpty
     private val txtMessage = view.findViewById<TextView>(R.id.txt_message)
 
     override fun bind(element: NotificationEmptyStateViewBean) {
-        txtMessage.text = getString(element.title)
+        txtMessage.text = if (element.title != 0) getString(element.title) else ""
         imgState.setImageResource(element.icon)
     }
 

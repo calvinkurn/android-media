@@ -1,12 +1,12 @@
 include ':features:discovery:home'
 
-//include ':features:content:feed_component'
-//include ':features:promo:gamification'
-//include ':features:digital:digitalproduct'
-//include ':features:payment:payment'
+include ':features:content:feed_component'
+include ':features:promo:gamification'
+include ':features:digital:digitalproduct'
+include ':features:payment:payment'
 include ':features:payment:common_payment'
 include ':features:discovery:home_dependencies_no_op'
-//include ':features:promo:loyalty'
+include ':features:promo:loyalty'
 include ':features:home:dynamicbanner'
 
 include ':features:user:otp'
