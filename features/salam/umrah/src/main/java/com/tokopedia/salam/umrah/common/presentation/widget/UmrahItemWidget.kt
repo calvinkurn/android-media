@@ -37,6 +37,13 @@ class UmrahItemWidget @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
+    fun setPermissionPdp(){
+        tg_widget_umrah_pdp_item_desc.text = resources.getString(R.string.umrah_pdp_permission_number,umrahItemWidgetModel.desc)
+        tg_widget_umrah_pdp_item_title.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+        tg_widget_umrah_pdp_item_title.setWeight(2)
+        tg_widget_umrah_pdp_item_desc.setTextColor(resources.getColor(R.color.umrah_green_permission))
+        tg_widget_umrah_pdp_item_desc.setWeight(2)
+    }
     private fun showLoading(){
         container_widget_umrah_pdp_item_shimmering.visibility = View.VISIBLE
         container_widget_umrah_pdp_item.visibility = View.GONE

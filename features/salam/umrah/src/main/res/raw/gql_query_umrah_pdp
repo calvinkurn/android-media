@@ -19,6 +19,12 @@ query UmrahProduct($slugName: String!){
       name
       logoUrl
       permissionOfUmrah
+      establishedSince
+      pilgrimsPerYear
+      ui{
+          establishedSince
+          pilgrimsPerYear
+       }
     }
     durationDays
     departureDate

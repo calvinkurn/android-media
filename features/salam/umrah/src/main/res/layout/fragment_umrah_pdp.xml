@@ -129,6 +129,18 @@
                             app:layout_constraintLeft_toLeftOf="@+id/iw_umrah_pdp_travel_agent"
                             app:layout_constraintTop_toBottomOf="@+id/iw_umrah_pdp_travel_agent" />
 
+                        <com.tokopedia.salam.umrah.common.presentation.widget.UmrahTravelAgentWidget
+                            android:id="@+id/uta_umrah_pdp_travel_agent"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintLeft_toLeftOf="@+id/v_umrah_pdp_separator"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/v_umrah_pdp_separator"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            />
+
                         <com.tokopedia.salam.umrah.pdp.presentation.widget.UmrahPdpGreenRectWidget
                             android:id="@+id/grw_umrah_pdp_hotel_type"
                             android:layout_width="0dp"
@@ -139,17 +151,39 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackgroundBorderless"
-                            app:layout_constraintLeft_toLeftOf="@+id/v_umrah_pdp_separator"
+                            app:layout_constraintLeft_toLeftOf="@+id/uta_umrah_pdp_travel_agent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/v_umrah_pdp_separator" />
+                            app:layout_constraintTop_toBottomOf="@+id/uta_umrah_pdp_travel_agent" />
+
+                        <include
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/partial_umrah_verified_ad"
+                            layout="@layout/partial_umrah_verified_ad"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toLeftOf="@+id/grw_umrah_pdp_hotel_type"
+                            app:layout_constraintTop_toBottomOf="@+id/grw_umrah_pdp_hotel_type"
+                            />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tg_umrah_pdp_information_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_20"
+                            android:text="@string/umrah_pdp_title_information"
+                            android:textColor="@color/Neutral_N700_96"
+                            app:layout_constraintLeft_toLeftOf="@+id/partial_umrah_verified_ad"
+                            app:layout_constraintTop_toBottomOf="@+id/partial_umrah_verified_ad"
+                            app:typographyType="heading_3"
+                            app:typographyWeight="bold" />
 
                         <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
                             android:id="@+id/iw_umrah_pdp_calendar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_16"
-                            app:layout_constraintLeft_toLeftOf="@+id/grw_umrah_pdp_hotel_type"
-                            app:layout_constraintTop_toBottomOf="@+id/grw_umrah_pdp_hotel_type" />
+                            app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_information_title"
+                            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_information_title" />
 
                         <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
                             android:id="@+id/iw_umrah_pdp_hotel"
@@ -364,19 +398,6 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/rv_umrah_pdp_faqs" />
-
-                        <include
-                            layout="@layout/partial_umrah_pdp_ad"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_24"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:layout_marginBottom="@dimen/dp_16"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/du_umrah_pdp_divider_2" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.core.widget.NestedScrollView>

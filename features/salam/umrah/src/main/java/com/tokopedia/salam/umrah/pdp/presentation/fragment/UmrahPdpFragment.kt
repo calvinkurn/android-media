@@ -30,6 +30,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahPdpTrackingUserAction
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentWidgetModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
@@ -208,16 +209,10 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadAdContainerBg()
         setupSwipeToRefresh(view)
 
         if (umrahProduct.title != "") setupAll()
         else requestData()
-    }
-
-    private fun loadAdContainerBg() {
-        val containerBg = context?.let { AppCompatResources.getDrawable(it, R.drawable.umrah_bg_pdp_ad) }
-        cl_umrah_pdp_ad.background = containerBg
     }
 
     private fun setupCollapsingToolbar() {
@@ -279,8 +274,19 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             imageUri = travelAgent.imageUrl
             desc = travelAgent.permissionOfUmrah
         }
+        val umrahTravelAgentWidgetModel : UmrahTravelAgentWidgetModel = UmrahTravelAgentWidgetModel().apply {
+            establishedSince = travelAgent.establishedSince
+            pilgrimsPerYear = travelAgent.pilgrimsPerYear
+            availableSeat = umrahProduct.availableSeat
+        }
+
         iw_umrah_pdp_travel_agent.umrahItemWidgetModel = umrahItemWidgetModel
         iw_umrah_pdp_travel_agent.buildView()
+        iw_umrah_pdp_travel_agent.setPermissionPdp()
+
+        uta_umrah_pdp_travel_agent.umrahTravelAgentModel = umrahTravelAgentWidgetModel
+        uta_umrah_pdp_travel_agent.buildView()
+
     }
 
     private fun setupHotelTypeItem() {
