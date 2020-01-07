@@ -36,9 +36,4 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
                 clientNumber, productId);
     }
 
-    @Override
-    public Observable<String> getHelpUrl(String categoryId) {
-        return categoryDetailDataSource.getHelpUrl(categoryId);
-    }
-
 }

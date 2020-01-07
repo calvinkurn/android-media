@@ -19,6 +19,7 @@
             android:label="Nomor Favorit"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
+
         <activity android:name=".product.view.activity.DigitalYoutubeActivity" />
 
         <activity

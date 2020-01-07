@@ -2,18 +2,16 @@ package com.tokopedia.digital.common.data.source;
 
 import android.content.Context;
 import android.content.res.Resources;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
-import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
@@ -184,11 +182,6 @@ public class CategoryDetailDataSource {
     @NonNull
     private Func1<RechargeResponseEntity, ProductDigitalData> getFuncTransformCategoryData() {
         return digitalCategoryDetailEntity -> productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity);
-    }
-
-    @Deprecated
-    public Observable<String> getHelpUrl(String categoryId) {
-        return Observable.just(DigitalUrl.DIGITAL_BANTUAN);
     }
 
     private String getCategoryRequestPayload(String categoryId) {

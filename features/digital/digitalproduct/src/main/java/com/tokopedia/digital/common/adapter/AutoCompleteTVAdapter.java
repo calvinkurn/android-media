@@ -1,9 +1,6 @@
-package com.tokopedia.digital.widget.view.adapter;
+package com.tokopedia.digital.common.adapter;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +9,15 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * @author rizkyfadillah on 9/26/2017.
- */
 
 public class AutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> implements Filterable {
 

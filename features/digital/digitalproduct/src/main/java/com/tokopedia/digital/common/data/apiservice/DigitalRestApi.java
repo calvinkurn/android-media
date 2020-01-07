@@ -43,10 +43,6 @@ public interface DigitalRestApi {
     @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<ResponseCheckoutData>>> checkout(@Body JsonObject requestBody);
 
-    @POST(TkpdBaseURL.DigitalApi.PATH_USSD)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> parsePulsaMessage(@Body JsonObject requestBody);
-
     @POST(TkpdBaseURL.DigitalApi.PATH_CANCEL_VOUCHER)
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> cancelVoucher(@Body JsonObject requestBody);

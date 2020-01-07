@@ -5,7 +5,7 @@ package com.tokopedia.common_digital.common.constant
  */
 object DigitalCache {
 
-    val NEW_DIGITAL_CATEGORY_DETAIL = "NEW_DIGITAL_CATEGORY_DETAIL"
+    @JvmField
     val NEW_DIGITAL_CATEGORY_AND_FAV = "NEW_DIGITAL_CATEGORY_AND_FAV"
 
 }

@@ -73,7 +73,7 @@ class HomeDataMapper(
                         } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT) {
                             homeData.spotlight.promoName = String.format("/ - p%s - spotlight banner", position.toString())
                             homeData.spotlight.channelId = channel.id
-                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET || channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
+                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
                             channel.promoName = String.format("/ - p%s - %s", position.toString(), channel.header.name)
                         } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
                             channel.setPosition(position)
@@ -82,11 +82,6 @@ class HomeDataMapper(
                         }
                     }
                     when (channel.layout) {
-                        DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET -> list.add(mappingDigitalWidget(
-                                context,
-                                channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-                                isCache
-                        ))
                         DynamicHomeChannel.Channels.LAYOUT_TOPADS -> list.add(mappingDynamicTopAds(channel, isCache))
                         DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> list.add(mappingSpotlight(homeData.spotlight, isCache))
                         DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> if (!isCache) {
@@ -181,15 +176,6 @@ class HomeDataMapper(
 
     private fun mappingToReviewViewModel(channel: DynamicHomeChannel.Channels): Visitable<*> {
         return ReviewViewModel()
-    }
-
-    private fun mappingDigitalWidget(context: Context, trackingDataForCombination: List<Any>, isCache: Boolean): Visitable<*> {
-        val digitalsViewModel = DigitalsViewModel(context.getString(R.string.digital_widget_title), 0)
-        if (!isCache) {
-            digitalsViewModel.isTrackingCombined = true
-            digitalsViewModel.trackingDataForCombination = trackingDataForCombination
-        }
-        return digitalsViewModel
     }
 
     private fun mappingDynamicTopAds(channel: DynamicHomeChannel.Channels, isCache: Boolean): Visitable<*> {

@@ -47,7 +47,7 @@
             android:paddingLeft="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
             android:paddingStart="@dimen/dp_10"
-            android:text="@string/title_empty_stock"
+            android:text="@string/digital_common_title_empty_stock"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone"

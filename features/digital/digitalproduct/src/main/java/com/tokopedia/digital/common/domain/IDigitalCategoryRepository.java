@@ -14,6 +14,4 @@ public interface IDigitalCategoryRepository {
 
     Observable<ProductDigitalData> getCategoryWithFavorit(String categoryId, String operatorId, String clientNumber, String productId);
 
-    Observable<String> getHelpUrl(String categoryId);
-
 }

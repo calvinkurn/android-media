@@ -7,7 +7,6 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
-import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 

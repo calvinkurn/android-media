@@ -29,7 +29,6 @@ import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.Attributes;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
-import com.tokopedia.digital.product.domain.interactor.DigitalGetHelpUrlUseCase;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
@@ -102,7 +101,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private RechargeAnalytics rechargeAnalytics;
     private IProductDigitalInteractor productDigitalInteractor;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
-    private DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase;
     private String slotKey = "com.android.phone.force.slot";
     private String accoutHandleKey = "android.telecom.extra.PHONE_ACCOUNT_HANDLE";
     private Handler ussdHandler;
@@ -118,14 +116,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
             UserSession userSession) {
         super(localCacheHandler, userSession);
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
-        this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
         this.userSession = userSession;
     }
 

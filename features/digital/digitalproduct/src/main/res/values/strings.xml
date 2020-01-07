@@ -1,30 +1,11 @@
 <resources>
     <string name="app_name">tkpddigital</string>
-    <string name="link_lihat_detail">Lihat Detail</string>
-    <string name="link_tutup">Tutup</string>
-    <string name="user_price_info">Masukkan jumlah nominal yang akan dibayar, %1$s sampai
+    <string name="digital_user_price_info">Masukkan jumlah nominal yang akan dibayar, %1$s sampai
         dengan %2$s</string>
-    <string name="error_input_price">Jumlah nominal yang anda masukan tidak sesuai</string>
-    <string name="hint_input_price">Contoh: 422500</string>
-    <string name="lihat_detail">Lihat Detail</string>
-    <string name="title_activity_cart_digital_module">Keranjang</string>
-    <string name="title_activity_category_list_digital_module">Pilih Produk</string>
+    <string name="digital_error_input_price">Jumlah nominal yang anda masukan tidak sesuai</string>
+    <string name="digital_hint_input_price">Contoh: 422500</string>
     <string name="alert_payment_canceled_or_failed_digital_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="alert_payment_canceled_digital_module">Pembayaran dibatalkan</string>
-    <string name="label_otp_verification_digital_module">Verifikasi Nomor Anda</string>
-    <string name="label_btn_call_otp_digital_module">lewat telepon</string>
-    <string name="label_or_call_otp_digital_module">atau</string>
-    <string name="label_btn_re_request_otp_digital_module">Kirim Ulang Kode Verifikasi</string>
-    <string name="label_hint_input_otp_digital_module">Masukkan Kode Verifikasi</string>
-    <string name="label_price_cart_digital">Harga</string>
-    <string name="label_discount_cart_digital">Diskon Promo</string>
-    <string name="label_total_payment_cart_digital">Total Pembayaran</string>
-    <string name="label_btn_next_cart_digital">LANJUT</string>
-    <string name="message_otp_verification_cancelled">Verifikasi kode keamanan dibatalkan</string>
-    <string name="msg_verification">Verifikasi</string>
-    <string name="tokocash_label_top_up">Top Up TokoCash</string>
-    <string name="title_topup_tokocash">Nominal Top Up</string>
-
 
     <string name="label_btn_buy_digital">Beli</string>
     <string name="label_btn_pay_digital">Bayar</string>
@@ -45,10 +26,7 @@
     <string name="button_copy">Salin</string>
     <string name="label_title_desc_promo_digital">Keterangan</string>
     <string name="label_title_price_info_digital">Harga</string>
-    <string name="error_message_product_inactive_digital_module">Product tidak aktif</string>
     <string name="error_message_product_out_of_stock_digital_module">Stok product kosong</string>
-    <string name="config_usd_service_description">This service records pop ups sent by your mobile operator, and saves them in Tokopedia. It is absolutely safe to use.</string>
-    <string name="not_applicable">NA</string>
     <string name="error_message_ussd_msg_not_parsed">Mohon maaf, pengecekan sisa pulsa anda tidak dapat dilakukan</string>
     <string name="error_message_ussd_operator_not_matched">Maaf, nomor yang dimasukan tidak sesuai dengan operator SIM anda</string>
     <string name="message_ussd_title">Cek Sisa Pulsa</string>
@@ -59,10 +37,6 @@
     <string name="msg_ussd_sim_number_change">Silakan masukkan nomor <b>%1$s</b> Anda dalam perangkat ini:</string>
     <string name="promo_category">Promo %1$s</string>
     <string name="other_promo">lainnya</string>
-
-    <string name="title_header_menu_digital_categories_transaction_list_digital_module">Transaksi Saya</string>
-    <string name="title_header_menu_digital_categories_favorite_number_digital_module">Nomor Favorit</string>
-    <string name="title_header_menu_digital_categories_subscription_digital_module">MyBills</string>
 
     <string name="ussd_batal">Batal</string>
     <string name="ok">Ok</string>
@@ -80,9 +54,6 @@
     <string name="title_tooltip_instan_payment">Bayar Instan</string>
     <string name="body_tooltip_instan_payment">Bayar hanya sekali klik, otomatis menggunakan Wallet yang ada di Tokopedia Anda (Ovo Points, Ovo Cash atau Saldo Tokopedia).
 </string>
-    <string name="error_message_product">Product List kosong</string>
-    <string name="error_message_operator">Operator tidak tersedia</string>
-    <string name="error_message_not_found_product">Produk yang anda pilih saat ini tidak tersedia</string>
     <string name="ussd_batal_label">Batal</string>
 
     <string name="input_number">Masukkan nomor</string>
@@ -91,7 +62,6 @@
     <string name="label_sim">SIM</string>
     <string name="label_no_signal">No signal</string>
     <string name="label_no_service">No service</string>
-    <string name="digital_product_help_menu_label">Bantuan</string>
 
     <string name="ussd_permission_allowed_label">both allowed</string>
     <string name="ussd_permission_denied_label">failed denied both of them</string>
@@ -104,7 +74,6 @@
     <string name="emoney_tap_card_instruction_title">Tempelkan Kartu Anda</string>
     <string name="emoney_tap_card_instruction_message">Tempelkan Kartu pada bagian belakang Smartphone Anda.</string>
     <string name="emoney_button_topup">Top-up E-Money</string>
-    <string name="emoney_label_check_balance">Silahkan cek sisa saldo Anda</string>
     <string name="activate_nfc">Aktifkan NFC</string>
     <string name="nfc_is_not_activated_label">NFC pada smartphone belum diaktifkan, silakan tekan tombol dibawah</string>
     <string name="reading_card_label_title">Sedang membaca kartu…</string>
@@ -117,38 +86,28 @@
     <string name="failed_read_card">Gagal membaca kartu</string>
     <string name="toolbar_title_etoll_check_balance">Cek Saldo</string>
     <string name="card_info_is_not_available_yet">Belum Tersedia</string>
-    <string name="success_update_balance">Informasi saldo berhasil diperbaharui</string>
     <string name="please_activate_nfc_from_settings">Silahkan aktifkan pengaturan NFC pada handphone Anda, untuk melanjutkan</string>
     <string name="activate">Aktifkan</string>
     <string name="cancel">Batalkan</string>
     <string name="nfc_permission_rationale_message">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
-    <string name="allow_nfc_permission">Izinkan</string>
-    <string name="deny_nfc_permission">Tolak</string>
-    <string name="nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
     <string name="nfc_tap_card_button_label_error">Coba Lagi</string>
 
     <string name="promo_tab_title">Promo</string>
     <string name="guide_tab_title">Panduan</string>
     <string name="digital_coupon_applied_ticker_message">Kode kupon telah dimasukkan. Silahkan pilih produk yang diinginkan, lalu check-out.</string>
-    <string name="digital_terminate_announcement">Mulai 01 Februari 2019 fitur "Produk Digital" di Aplikasi TopSeller resmi dinonaktifkan dan dipindahkan ke aplikasi Mitra Tokopedia. Ayo download di Google Play Store, aplikasinya hanya 1 MB!</string>
-    <string name="digital_list_device_consumer_app_prefix">android-%s</string>
-    <string name="digital_list_device_seller_app_prefix">seller_app-%s</string>
 
     <string name="digital_cart_total_payment_label">Total Pembayaran</string>
     <string name="digital_cart_checkout_pay_label">Bayar</string>
     <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
     <string name="digital_cart_detail_close_label">Tutup</string>
-    <string name="digital_cart_default_toolbar_title">Checkout</string>
     <string name="digital_cart_toolbart_title">Checkout</string>
     <string name="digital_cart_additional_payment_cost_label">Harga</string>
     <string name="digital_cart_additional_payment_promo_label">Promo</string>
     <string name="digital_cart_additional_payment_total_cost_label">Total Bayar</string>
     <string name="digital_cart_additional_payment_label">Pembayaran</string>
-    <string name="digital_cart_type_service_label">Jenis Layanan</string>
     <string name="digital_deal_buy_label">Beli</string>
     <string name="digital_cart_deal_free_label">Gratis</string>
     <string name="digital_deals_maximum_error_message">Anda hanya dapat menambahkan maksimum 5 penawaran spesial.</string>
-    <string name="digital_deal_special_deal_label">Penawaran Spesial</string>
     <string name="digital_cart_deal_selected_label">Deals Pilihan Saya</string>
     <string name="digital_deal_toolbar_title">Penawaran Spesial</string>
     <string name="digital_cart_checkout_skip_menu_label">Lewati</string>
@@ -160,10 +119,6 @@
     <string name="digital_cart_deals_showcase_special_detail">Tambahkan voucher spesial dan bayar sekaligus bersama produk sebelumnya.</string>
     <string name="digital_deal_empty_label">Oops! Hasil tidak ditemukan.</string>
     <string name="digital_deal_empty_detail_label">Cari deals di kategori lainnya.</string>
-    <string name="digital_channel_top_up_tagihan_title"><![CDATA[Top-up & Tagihan]]></string>
-    <string name="digital_my_channel_top_up_tagihan_title"><![CDATA[Top-up & Tagihanmu]]></string>
-    <string name="digital_channel_try_again">Coba Lagi</string>
-    <string name="digital_channel_error_default">Terjadi Kendala pada Server</string>
     <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
     <string name="digital_navigate_back_showcase">Kembali</string>
     <string name="digital_navigate_done_showcase">Selesai</string>
@@ -172,9 +127,6 @@
     <string name="digital_action_search">Cari</string>
     <string name="digital_check_remain_balance">Cek Sisa Pulsa</string>
     <string name="digital_check_balance">Cek Pulsa</string>
-    <string name="digital_title_buy">Beli</string>
-    <string name="digital_title_nominal">Nominal</string>
 
-    <string name="digital_egold_more_info">Pelajari lebih lanjut</string>
     <string name="digital_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>
 </resources>

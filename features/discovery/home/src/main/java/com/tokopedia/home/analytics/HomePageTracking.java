@@ -165,6 +165,10 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_IMPRESSION_ON_DYNAMIC_ICON = "impression on dynamic icon";
     public static final String SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus";
 
+    private static final String HOMEPAGE_INTERACTION = "userInteractionHomePage";
+    private static final String DIGITAL_HOMEPAGE = "homepage digital";
+    private static final String CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk";
+
     public static ContextAnalytics getTracker() {
         return TrackApp.getInstance().getGTM();
     }
@@ -1602,6 +1606,17 @@ public class HomePageTracking {
             }
         }
         return list;
+    }
+
+    public static void onClickDigitalSeeMore() {
+        if (getTracker() != null) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    HOMEPAGE_INTERACTION,
+                    DIGITAL_HOMEPAGE,
+                    CLICK_SEE_ALL_PRODUCTS,
+                    ""
+            ));
+        }
     }
 
     public static void sendTokopointTrackerClick() {

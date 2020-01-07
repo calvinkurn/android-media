@@ -105,7 +105,7 @@ public class InputPriceHolderView extends LinearLayout {
     }
 
     public void bindView(String minPayment, String maxPayment) {
-        inputPriceInfo.setText(String.format(context.getString(R.string.user_price_info),
+        inputPriceInfo.setText(String.format(context.getString(R.string.digital_user_price_info),
                 minPayment, maxPayment));
     }
 

@@ -8,8 +8,6 @@ import com.tokopedia.digital.product.view.activity.DigitalProductBaseDaggerActiv
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
-import com.tokopedia.digital.widget.view.fragment.DigitalWidgetFragment;
-import com.tokopedia.digital.widget.view.fragment.WidgetAllStyleRechargeFragment;
 
 import dagger.Component;
 
@@ -26,13 +24,9 @@ public interface DigitalProductComponent {
 
     void inject(DigitalProductBaseDaggerActivity digitalProductBaseDaggerActivity);
 
-    void inject(WidgetAllStyleRechargeFragment widgetAllStyleRechargeFragment);
-
     void inject(DigitalProductFragment digitalProductFragment);
 
     void inject(DigitalChooserOperatorFragment digitalChooserOperatorFragment);
 
     void inject(DigitalChooserProductFragment digitalChooserProductFragment);
-
-    void inject(DigitalWidgetFragment digitalWidgetFragment);
 }

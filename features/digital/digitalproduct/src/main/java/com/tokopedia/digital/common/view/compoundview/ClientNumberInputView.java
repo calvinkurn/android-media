@@ -26,8 +26,8 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.adapter.AutoCompleteTVAdapter;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.widget.view.adapter.AutoCompleteTVAdapter;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -47,7 +47,6 @@ public class ClientNumberInputView extends LinearLayout {
     private TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
-    private Context context;
     private AutoCompleteTVAdapter autoCompleteTVAdapter;
     private ClientNumber clientNumber;
 
@@ -67,8 +66,6 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     private void init(Context context) {
-        this.context = context;
-
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
 
         tvLabel = findViewById(R.id.tv_label_client_number);

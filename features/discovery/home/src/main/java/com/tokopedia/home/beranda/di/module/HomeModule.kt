@@ -3,8 +3,6 @@ package com.tokopedia.home.beranda.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
-import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper
-import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
 import com.tokopedia.dynamicbanner.di.PlayCardModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -156,18 +154,6 @@ class HomeModule {
     @Provides
     fun getKeywordSearchUseCase(@ApplicationContext context: Context?): GetKeywordSearchUseCase {
         return GetKeywordSearchUseCase(context!!)
-    }
-
-    @HomeScope
-    @Provides
-    fun provideStatusMapper(): StatusMapper {
-        return StatusMapper()
-    }
-
-    @HomeScope
-    @Provides
-    fun provideCategoryMapper(): CategoryMapper {
-        return CategoryMapper()
     }
 
     @Provides

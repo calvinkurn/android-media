@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:hint="@string/hint_input_price"/>
+                android:hint="@string/digital_hint_input_price"/>
 
             <TextView
                 android:id="@+id/error_input_price"
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_10"
                 android:textColor="@color/red_600"
-                android:text="@string/error_input_price"
+                android:text="@string/digital_error_input_price"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 

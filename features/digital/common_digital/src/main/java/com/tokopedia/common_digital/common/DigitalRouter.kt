@@ -17,7 +17,6 @@ interface DigitalRouter {
 
     companion object {
         val PAYMENT_SUCCESS = 5
-        val EXTRA_APPLINK_FROM_PUSH: String = "applink_from_notif"
     }
 
 }
