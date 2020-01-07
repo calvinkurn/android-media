@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -13,36 +14,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-
-import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -50,22 +45,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.analytics.screen.IndexScreenTracking;
-import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.PlayChannel;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
@@ -89,12 +82,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
@@ -112,8 +107,8 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
-import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -137,14 +132,16 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
+import timber.log.Timber;
 
-import static rx.schedulers.Schedulers.start;
+import static android.view.View.INVISIBLE;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -174,6 +171,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
     private boolean shouldDisplayReview = true;
+    private int playPosition = -1;
+    private PlayerView playerView;
+    private SimpleExoPlayer videoPlayer;
     private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
 
@@ -341,6 +341,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+//                onHandlingScrollVideoPlayer(newState);
+            }
+
+            @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
@@ -392,7 +398,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //to keep status bar icon visible
         statusBarBackground.getLayoutParams().height = ViewHelper.getStatusBarHeight(getActivity());
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusBarBackground.setVisibility(View.INVISIBLE);
+            statusBarBackground.setVisibility(INVISIBLE);
         } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             statusBarBackground.setVisibility(View.VISIBLE);
         } else {
@@ -446,16 +452,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 onGoToLogin();
             }
         });
-        stickyLoginView.setOnDismissListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
-                stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
+        stickyLoginView.setOnDismissListener(v -> {
+            stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
+            stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
 
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    updateEggBottomMargin(floatingEggButtonFragment);
-                }
+            FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+            if (floatingEggButtonFragment != null) {
+                updateEggBottomMargin(floatingEggButtonFragment);
             }
         });
     }
@@ -493,6 +496,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
+
         trackingQueue.sendAll();
         if (activityStateListener != null) {
             activityStateListener.onPause();
@@ -656,9 +660,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {
         // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-        if (getActivity() != null && isAdded() && getChildFragmentManager() != null) {
-            return (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
-        }
+//        if (getActivity() != null && isAdded() && getChildFragmentManager() != null) {
+//            return (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
+//        }
         return null;
     }
 
@@ -674,7 +678,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this
         );
-        adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
+        adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList());
+        getLifecycle().addObserver(adapter);
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -924,7 +929,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (needToPerformanceMonitoring()) setOnRecyclerViewLayoutReady();
         List<Visitable> list = new ArrayList<>(items);
         if (repositoryFlag == HomePresenter.FLAG_FROM_NETWORK) {
-            adapter.setItems( needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items));
+            adapter.setItems(new ArrayList(needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items)));
             presenter.getHeaderData(false);
             presenter.getFeedTabData();
             adapter.showLoading();
@@ -935,7 +940,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
         } else {
-            adapter.setItems(needToShowGeolocationComponent() ? list : removeGeolocationComponent(items));
+            adapter.setItems(new ArrayList(needToShowGeolocationComponent() ? list : removeGeolocationComponent(items)));
         }
     }
 
@@ -1083,7 +1088,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable) {
         this.feedTabVisitable = feedRecommendationVisitable;
-        List<Visitable> currentVisitables = adapter.getItems();
+        List currentVisitables = adapter.getItems();
 
         for (int i = 0; i < currentVisitables.size(); i++) {
             if (currentVisitables.get(i) instanceof HomeRecommendationFeedViewModel) {
@@ -1120,7 +1125,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             itemAfterGeoloc = removeGeolocationComponent(visitables);
         }
 
-        adapter.updateHomeQueryItems(itemAfterGeoloc);
+        adapter.updateHomeQueryItems(new ArrayList(itemAfterGeoloc));
 
         if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
             shouldDisplayReview = false;
@@ -1600,12 +1605,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showNotAllowedGeolocationSnackbar() {
         getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG)
-                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        HomePageTracking.eventClickOnAtur(getActivity());
-                        goToApplicationDetailActivity();
-                    }
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), view -> {
+                    HomePageTracking.eventClickOnAtur(getActivity());
+                    goToApplicationDetailActivity();
                 }).show();
     }
 
@@ -1652,7 +1654,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setPlayContentBanner(PlayCardHome playContentBanner, int adapterPosition) {
+    public void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition) {
         adapter.setPlayData(playContentBanner, adapterPosition);
     }
 
@@ -1758,6 +1760,139 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
         }
+    }
+
+    private void onHandlingScrollVideoPlayer(int newState){
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            Timber.tag(HomeFragment.class.getName()).d(TAG, "onScrollStateChanged: called.");
+            // There's a special case when the end of the list has been reached.
+            // Need to handle that with this bit of logic
+            if(!homeRecyclerView.canScrollVertically(1)){
+                playVideo(true);
+            }
+            else{
+                playVideo(false);
+            }
+        }
+    }
+
+    private void playVideo(boolean isEndOfList){
+        int targetPosition = -1;
+
+        int startPosition = ((LinearLayoutManager) Objects.requireNonNull(
+                homeRecyclerView.getLayoutManager())).findFirstCompletelyVisibleItemPosition();
+        int endPosition = ((LinearLayoutManager) homeRecyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+        if(!isEndOfList){
+            List<Integer> playPosition = new ArrayList<>();
+            for(int i = startPosition; i <= endPosition; i++){
+                if(adapter.getItemCount() >= endPosition && adapter.getItem(i) instanceof PlayCardViewModel){
+                    playPosition.add(i);
+                }
+            }
+            // doesn't item visible
+            if(!playPosition.isEmpty()) {
+
+                // if there is more than 2 list-items on the screen, set the difference to be 1
+                if (endPosition - startPosition > 1 && playPosition.size() > 1) {
+                    endPosition = startPosition + 1;
+                }
+
+                // something is wrong. return.
+                if (startPosition < 0 || endPosition < 0) {
+                    return;
+                }
+
+                // if there is more than 1 list-item on the screen
+                if (startPosition != endPosition && playPosition.size() > 1) {
+                    int startPositionVideoHeight = getVisibleVideoSurfaceHeight(playPosition.get(0));
+                    int endPositionVideoHeight = getVisibleVideoSurfaceHeight(playPosition.get(playPosition.size() - 1));
+
+                    targetPosition = startPositionVideoHeight > endPositionVideoHeight ? playPosition.get(0) : playPosition.get(playPosition.size() - 1);
+                } else {
+                    targetPosition = playPosition.get(0);
+                }
+            }
+        } else {
+            if(adapter.getItem(adapter.getItemCount() - 1) instanceof PlayCardViewModel) targetPosition = adapter.getItemCount() - 1;
+            else targetPosition = -1;
+        }
+
+        Timber.tag(HomeFragment.class.getName()).d("playVideo: target position: " + targetPosition);
+
+        // remove any old surface views from previously playing videos
+        if(playPosition != -1 && playPosition < startPosition || playPosition > endPosition){
+            playPosition = -1;
+            View child = homeRecyclerView.getChildAt(playPosition);
+            if (child == null) {
+                return;
+            }
+            PlayCardViewHolder holder = (PlayCardViewHolder) child.getTag();
+//            holder.reset();
+//            TokopediaPlayManager.Companion.getInstance(getContext()).stop();
+        }
+
+        // video is already playing so return
+        if (targetPosition == playPosition || targetPosition == -1) {
+            return;
+        }
+
+        if(adapter.getItem(targetPosition) instanceof PlayCardViewModel){
+            PlayCardViewModel model = (PlayCardViewModel) adapter.getItem(targetPosition);
+            // set the position of the list-item that is to be played
+            playPosition = targetPosition;
+
+            int currentPosition = targetPosition - ((LinearLayoutManagerWithSmoothScroller) homeRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+
+            View child = homeRecyclerView.getChildAt(currentPosition);
+            if (child == null) {
+                return;
+            }
+            PlayCardViewHolder holder = (PlayCardViewHolder) child.getTag();
+            if (holder == null) {
+                playPosition = -1;
+                return;
+            }
+//            TokopediaPlayManager.Companion.getInstance(getContext()).playVideoWithString(model.getUrl());
+//            TokopediaPlayManager.Companion.getInstance(getContext()).start();
+        }
+    }
+
+
+    /**
+     * Returns the visible region of the video surface on the screen.
+     * if some is cut off, it will return less than the @videoSurfaceDefaultHeight
+     * @param playPosition
+     * @return
+     */
+    public int getVisibleVideoSurfaceHeight(int playPosition) {
+        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        LinearLayoutManager layoutManager = ((LinearLayoutManager) homeRecyclerView.getLayoutManager());
+        int startPos = Objects.requireNonNull(layoutManager).findFirstCompletelyVisibleItemPosition();
+        int at = playPosition - startPos;
+        Log.d(HomeFragment.class.getName(), "getVisibleVideoSurfaceHeight: at: " + at);
+
+        View child = homeRecyclerView.getChildAt(at);
+        if (child == null) {
+            return 0;
+        }
+
+        int[] location = new int[2];
+        child.getLocationInWindow(location);
+
+        if (location[1] < 0) {
+            return location[1] + point.x;
+        } else {
+            return point.y - location[1];
+        }
+    }
+
+    @Override
+    public void onOpenPlayActivity(@NotNull View videoPlayer, String channelId) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), videoPlayer, "playlah");
+        startActivity(intent, options.toBundle());
     }
 
     private boolean needToPerformanceMonitoring() {

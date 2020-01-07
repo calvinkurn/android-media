@@ -136,7 +136,7 @@ dependencies {
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     androidTestImplementation 'androidx.test:rules:1.1.0'
-    androidTestImplementation rootProject.ext.playServicesDependencies.core
+    androidTestImplementation project(rootProject.ext.libraries.playCore)
     androidTestImplementation rootProject.ext.firebase.core
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
 }
