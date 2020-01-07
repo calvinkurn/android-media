@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.DatePickerUnify
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.kotlin.extensions.convertFormatDate
@@ -32,7 +31,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.START_DATE
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomSubFilter
@@ -121,62 +119,47 @@ class SomFilterFragment : BaseDaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(flag: String) {
         context?.let {  context ->
-            val minDate = GregorianCalendar(2010, 0, 1)
-            var dateMax = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            val minDate = Calendar.getInstance()
+            minDate.set(Calendar.YEAR, 2010)
+            val maxDate = Calendar.getInstance()
             val isEndDateFilled = currentFilterParams?.endDate?.isNotEmpty()
             isEndDateFilled?.let { isNotEmpty ->
                 if (isNotEmpty && flag.equals(START_DATE, true)) {
                     val splitEndDate = currentFilterParams?.endDate?.split('/')
                     splitEndDate?.let {
-                        dateMax = GregorianCalendar(it[2].toInt(), it[1].toInt(), it[0].toInt())
+                        maxDate.set(it[2].toInt(), it[1].toInt(), it[0].toInt())
                     }
                 }
             }
 
+            val currentDate = Calendar.getInstance()
+            val splitDate: List<String>?
+            val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
             if (flag.equals(START_DATE, true)) {
-                val splitStartDate = currentFilterParams?.startDate?.split('/')
-                splitStartDate?.let {
-                    val dateNow = GregorianCalendar(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
-                    val datePickerStart = DatePickerUnify(context, minDate, dateNow, dateMax)
-                    datePickerStart.setTitle(getString(R.string.mulai_dari))
-                    datePickerStart.show(fragmentManager, "")
-                    datePickerStart.datePickerButton.setOnClickListener {
-                        val resultDate = datePickerStart.getDate()
-                        val monthInt = resultDate[1]+1
-                        var monthStr = monthInt.toString()
-                        if (monthStr.length == 1) monthStr = "0$monthStr"
-
-                        var dateStr = resultDate[0].toString()
-                        if (dateStr.length == 1) dateStr = "0$dateStr"
-
-                        currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
-                        et_start_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                        datePickerStart.dismiss()
-                    }
-                    datePickerStart.setCloseClickListener { datePickerStart.dismiss() }
-                }
+                splitDate = currentFilterParams?.startDate?.split('/')
+                datePicker.setTitle(getString(R.string.mulai_dari))
             } else {
-                val splitEndDate = currentFilterParams?.endDate?.split('/')
-                splitEndDate?.let {
-                    val dateNow = GregorianCalendar(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
-                    val datePickerEnd = DatePickerUnify(context, minDate, dateNow, dateMax)
-                    datePickerEnd.setTitle(getString(R.string.sampai))
-                    datePickerEnd.show(fragmentManager, "")
-                    datePickerEnd.datePickerButton.setOnClickListener {
-                        val resultDate = datePickerEnd.getDate()
-                        val monthInt = resultDate[1]+1
-                        var monthStr = monthInt.toString()
-                        if (monthStr.length == 1) monthStr = "0$monthStr"
+                splitDate = currentFilterParams?.endDate?.split('/')
+                datePicker.setTitle(getString(R.string.sampai))
+            }
 
-                        var dateStr = resultDate[0].toString()
-                        if (dateStr.length == 1) dateStr = "0$dateStr"
+            splitDate?.let {
+                currentDate.set(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
+                datePicker.show(fragmentManager, "")
+                datePicker.datePickerButton.setOnClickListener {
+                    val resultDate = datePicker.getDate()
+                    val monthInt = resultDate[1]+1
+                    var monthStr = monthInt.toString()
+                    if (monthStr.length == 1) monthStr = "0$monthStr"
 
-                        currentFilterParams?.endDate = "$dateStr/$monthStr/${resultDate[2]}"
-                        et_end_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                        datePickerEnd.dismiss()
-                    }
-                    datePickerEnd.setCloseClickListener { datePickerEnd.dismiss() }
+                    var dateStr = resultDate[0].toString()
+                    if (dateStr.length == 1) dateStr = "0$dateStr"
+
+                    currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
+                    et_start_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                    datePicker.dismiss()
                 }
+                datePicker.setCloseClickListener { datePicker.dismiss() }
             }
         }
     }

@@ -1104,7 +1104,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(tfEndShopClosed: TextFieldUnify, viewBottomSheet: View) {
         context?.let { context ->
-            val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            val dateNow = Calendar.getInstance()
             val maxDate = Calendar.getInstance()
             maxDate.add(Calendar.YEAR, 100)
 
