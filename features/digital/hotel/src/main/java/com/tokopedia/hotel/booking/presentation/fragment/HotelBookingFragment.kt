@@ -248,7 +248,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     fun initGuestInfoEditText() {
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
                     arrayListOf(), object: TravelContactArrayAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return til_guest.editText.text.toString()

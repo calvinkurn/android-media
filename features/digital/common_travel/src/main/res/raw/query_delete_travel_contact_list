@@ -1,5 +1,0 @@
-mutation travelDeleteContact ($data: deleteContactArgs!) {
-    deleteContact(input: $data){
-        Success
-    }
-}

@@ -194,7 +194,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     fun initFirstNameAutoCompleteTv(context: Context) {
         travelContactArrayAdapter = TravelContactArrayAdapter(context,
-                com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(),
+                com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(),
                 object : TravelContactArrayAdapter.ContactArrayListener {
                     override fun getFilterText(): String {
                         return et_first_name.text.toString()

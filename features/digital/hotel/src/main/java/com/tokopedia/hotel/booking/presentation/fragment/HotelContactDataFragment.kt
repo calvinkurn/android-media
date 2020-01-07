@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.R
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
@@ -98,7 +97,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         til_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
 
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, R.layout.layout_travel_autocompletetv, arrayListOf(), this)
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
             (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
