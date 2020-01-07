@@ -654,6 +654,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, @NotNull int activityId,
                               @NotNull String activityName, @NonNull FollowCta followCta) {
+        if (followCta.getAuthorType().equals(FollowCta.AUTHOR_SHOP)) {
+            feedAnalytics.eventContentDetailClickShopNameAvatar(String.valueOf(activityId), followCta.getAuthorID());
+        } else {
+            feedAnalytics.eventContentDetailClickAffiliateNameAvatar(String.valueOf(activityId), followCta.getAuthorID());
+        }
         onGoToLink(redirectUrl);
     }
 
