@@ -22,11 +22,14 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.adapter.NumberListAdapter
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.design.text.SearchInputView
 import kotlinx.android.synthetic.main.view_digital_component_list.*
 import java.util.*
+import javax.inject.Inject
 
 open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         NumberListAdapter.OnClientNumberClickListener,
@@ -34,7 +37,6 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         SearchInputView.FocusChangeListener,
         SearchInputView.ResetListener {
 
-    private lateinit var callback: OnClientNumberClickListener
     private lateinit var numberListAdapter: NumberListAdapter
     private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
     private lateinit var clientNumberType: String
@@ -45,12 +47,6 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     private var number: String = ""
     protected lateinit var inputNumberActionType: InputNumberActionType
 
-//    @Inject
-//    lateinit var permissionCheckerHelper: PermissionCheckerHelper
-//    @Inject
-//    lateinit var topupAnalytics: DigitalTopupAnalytics
-
-
     override fun initInjector() {
 
     }
@@ -59,20 +55,15 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         return TopupBillsSearchNumberFragment::class.java.simpleName
     }
 
-    override fun onAttachActivity(context: Context) {
-        callback = context as OnClientNumberClickListener
-    }
-
-    fun setupArguments(arguments: Bundle?) {
+    private fun setupArguments(arguments: Bundle?) {
         arguments?.run {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
-            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
+            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST) ?: listOf()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         val view = inflater.inflate(R.layout.fragment_search_number, container, false)
         searchInputNumber = view.findViewById(R.id.siv_search_number)
         favNumberRecyclerView = view.findViewById(R.id.rvNumberList)
@@ -82,7 +73,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        setViewListener()
+//        setViewListener()
         searchInputNumber.searchTextView.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
     }
@@ -94,8 +85,10 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
 
     open fun initView() {
         setClientNumberInputType()
-        searchInputNumber.searchTextView.setText(number)
-        searchInputNumber.searchTextView.setSelection(number.length)
+        if (number.isNotEmpty()) {
+            searchInputNumber.searchTextView.setText(number)
+            searchInputNumber.searchTextView.setSelection(number.length)
+        }
         searchInputNumber.setListener(this)
         searchInputNumber.setFocusChangeListener(this)
         searchInputNumber.setResetListener(this)
@@ -118,23 +111,23 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setViewListener() {
-        searchInputNumber.searchTextView.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                var orderClientNumber = findNumber(textView.text.toString(), numberListAdapter.clientNumbers)
-                if (orderClientNumber != null && orderClientNumber.isFavorite) {
-                    inputNumberActionType = InputNumberActionType.FAVORITE
-                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
-                } else {
-                    inputNumberActionType = InputNumberActionType.MANUAL
-                    orderClientNumber = TopupBillsFavNumberItem(clientNumber = textView.text.toString())
-                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
-                }
-                return@OnEditorActionListener true
-            }
-            false
-        })
-    }
+//    private fun setViewListener() {
+//        searchInputNumber.searchTextView.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
+//            if (actionId == EditorInfo.IME_ACTION_DONE) {
+//                var orderClientNumber = findNumber(textView.text.toString(), numberListAdapter.clientNumbers)
+//                if (orderClientNumber != null && orderClientNumber.isFavorite) {
+//                    inputNumberActionType = InputNumberActionType.FAVORITE
+//                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
+//                } else {
+//                    inputNumberActionType = InputNumberActionType.MANUAL
+//                    orderClientNumber = TopupBillsFavNumberItem(clientNumber = textView.text.toString())
+//                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
+//                }
+//                return@OnEditorActionListener true
+//            }
+//            false
+//        })
+//    }
 
     private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TopupBillsFavNumberItem>()
@@ -185,7 +178,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     }
 
     override fun onSearchReset() {
-//        topupAnalytics.eventClearInputNumber()
+
     }
 
     override fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem) {
@@ -198,10 +191,10 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             }
         }
 
-        val intent = Intent()
-        intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
         activity?.run {
+            val intent = Intent()
+            intent.putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
+            intent.putExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
@@ -217,8 +210,6 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
 
-        const val REQUEST_CODE_CONTACT_PICKER = 75
-
         fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TopupBillsFavNumberItem>): Fragment {
             val fragment = TopupBillsSearchNumberFragment()
@@ -229,9 +220,5 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             fragment.arguments = bundle
             return fragment
         }
-    }
-
-    interface OnClientNumberClickListener {
-        fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionType: InputNumberActionType)
     }
 }

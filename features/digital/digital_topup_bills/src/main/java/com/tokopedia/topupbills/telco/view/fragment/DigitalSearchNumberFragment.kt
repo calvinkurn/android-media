@@ -107,7 +107,13 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
         }
     }
 
+    override fun onSearchReset() {
+        topupAnalytics.eventClearInputNumber()
+    }
+
     companion object {
+        const val REQUEST_CODE_CONTACT_PICKER = 75
+
         fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TopupBillsFavNumberItem>): Fragment {
             val fragment = DigitalSearchNumberFragment()

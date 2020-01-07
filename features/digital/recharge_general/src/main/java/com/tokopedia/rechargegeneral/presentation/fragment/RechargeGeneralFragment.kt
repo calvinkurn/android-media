@@ -197,8 +197,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
-                val favNumber = data?.getStringExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
-                favNumber?.let { renderClientNumber(favNumber) }
+                val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
+                favNumber?.let { renderClientNumber(favNumber.clientNumber) }
             }
         }
     }
@@ -409,9 +409,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun showFavoriteNumbersPage() {
         if (favoriteNumbers.isNotEmpty()) {
-            activity?.run {
+            context?.run {
                 startActivityForResult(
-                        TopupBillsSearchNumberActivity.newInstance(this,
+                        TopupBillsSearchNumberActivity.getCallingIntent(this,
                                 ClientNumberType.TYPE_INPUT_NUMERIC,
                                 clientNumber,
                                 favoriteNumbers), REQUEST_CODE_DIGITAL_SEARCH_NUMBER)

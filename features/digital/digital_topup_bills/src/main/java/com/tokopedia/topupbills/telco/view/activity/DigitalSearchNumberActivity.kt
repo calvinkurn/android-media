@@ -24,15 +24,6 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity() {
                 .newInstance(clientNumberType, number, numberList)
     }
 
-    override fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem,
-                                       inputNumberActionType: InputNumberActionType) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        intent.putExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
-
     companion object {
         fun newInstance(activity: Activity, clientNumberType: String,
                         number: String, numberList: List<TopupBillsFavNumberItem>): Intent {

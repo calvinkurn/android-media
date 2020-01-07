@@ -1,6 +1,6 @@
 package com.tokopedia.common.topupbills.view.activity
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -14,7 +14,7 @@ import java.util.*
  * @author rizkyfadillah on 10/4/2017.
  */
 
-open class TopupBillsSearchNumberActivity : BaseSimpleActivity(), TopupBillsSearchNumberFragment.OnClientNumberClickListener {
+open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
 
     protected lateinit var categoryId: String
     protected lateinit var clientNumberType: String
@@ -40,9 +40,9 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity(), TopupBillsSear
     override fun onCreate(savedInstanceState: Bundle?) {
         val extras = intent.extras
         extras?.let {
-            this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER)
-            this.number = extras.getString(EXTRA_NUMBER)
-            this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST)
+            this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER, "")
+            this.number = extras.getString(EXTRA_NUMBER, "")
+            this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST) ?: listOf()
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.digital_title_fav_number))
@@ -51,15 +51,6 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity(), TopupBillsSear
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return TopupBillsSearchNumberFragment
                 .newInstance(clientNumberType, number, numberList)
-    }
-
-    override fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem,
-                                       inputNumberActionType: TopupBillsSearchNumberFragment.InputNumberActionType) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        intent.putExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
     }
 
     companion object {
@@ -72,9 +63,9 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity(), TopupBillsSear
         const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
         const val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"
 
-        fun newInstance(activity: Activity, clientNumberType: String,
-                        number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
-            val intent = Intent(activity, TopupBillsSearchNumberActivity::class.java)
+        fun getCallingIntent(context: Context, clientNumberType: String,
+                             number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
+            val intent = Intent(context, TopupBillsSearchNumberActivity::class.java)
             intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumberType)
             intent.putExtra(EXTRA_NUMBER, number)
             intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
