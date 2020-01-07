@@ -23,8 +23,12 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
-import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.mapper.NotificationMapper
+import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.state.EmptySource
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.di.DaggerNotificationTransactionComponent
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationTransactionAdapter
@@ -32,9 +36,6 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.No
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
-import com.tokopedia.notifcenter.di.DaggerNotificationTransactionComponent
-import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
-import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.notifcenter.util.viewModelProvider
@@ -86,7 +87,9 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
-                _adapter.addElement(EmptyDataStateProvider.emptyData())
+                _adapter.addElement(EmptyDataStateProvider.emptyData(
+                        EmptySource.Transaction
+                ))
             }  else {
                 onSuccessNotificationData(it)
             }
@@ -285,8 +288,6 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         private const val PARAM_TEMPLATE_KEY = "template key"
 
         private const val REFRESH_DELAY = 1000L
-
-        private const val LIST_ITEM_STATE = "list_notif"
     }
 
 }
