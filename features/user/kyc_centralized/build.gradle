@@ -24,7 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

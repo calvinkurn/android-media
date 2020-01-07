@@ -20,10 +20,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'cache-api'
-    groupId = 'com.tokopedia.library'
+    artifactId = 'cache_api'
+    groupId = 'com.tokopedia.cacheapi'
     versionName = "0.0.1"
-    artifactName = "cache_api-release"
+    artifactName = "cache_api"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../publish_local.gradle'

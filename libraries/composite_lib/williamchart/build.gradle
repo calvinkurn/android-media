@@ -19,14 +19,14 @@ dependencies {
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 project.ext {
     artifactId = 'williamchart'
-    groupId = 'com.db.williamchart'
+    groupId = 'com.tokopedia.williamchart'
     versionName = "0.0.1"
-    artifactName = "williamchart-release"
+    artifactName = "williamchart"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../publish_local.gradle'

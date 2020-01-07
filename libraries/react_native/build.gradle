@@ -26,7 +26,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation project(rootProject.ext.features.reputation)
 
     implementation rootProject.ext.unifyDependencies.components

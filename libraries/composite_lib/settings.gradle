@@ -16,13 +16,10 @@ buildCache {
     }
 }
 include ":cache_manager"
-include ":use_case"
+include ":global_config"
+include ":graphql"
 include ":url"
 include ":user_session"
-include ":global_config"
+include ":use_case"
 include ":network"
-include ":graphql"
-include ":authentication"
-include ":akamai_bot_lib"
-include ":authentication_common"
-include ":analytic_constant"
+include ":williamchart"

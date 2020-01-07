@@ -21,7 +21,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.shopCommon)
@@ -32,7 +32,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.cameraview)
 
