@@ -26,6 +26,8 @@
     <string name="travel_salutation_mrs_string">Ny</string>
     <string name="travel_salutation_miss_string">Nn</string>
 
+    <string name="travel_title_sort_search">Urutkan</string>
+
     <string name="travel_departure_trip_price_value"><![CDATA[<b>%s</b> /org]]></string>
 
     <string name="phone_code_format">+%1$d</string>
