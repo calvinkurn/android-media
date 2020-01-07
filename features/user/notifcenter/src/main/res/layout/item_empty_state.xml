@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/empty_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_state"
-        android:layout_width="@dimen/dp_280"
-        app:layout_constraintBottom_toTopOf="@+id/txt_message"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:layout_height="@dimen/dp_210" />
-
-    <TextView
-        android:id="@+id/txt_message"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="kosong nih bos"
-        android:textStyle="bold"
-        android:textSize="@dimen/sp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/chorcoal_black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/img_state"
-        app:layout_constraintRight_toRightOf="@+id/img_state"
-        app:layout_constraintTop_toBottomOf="@+id/img_state"/>
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/img_state"
+            android:layout_width="@dimen/dp_280"
+            android:layout_height="@dimen/dp_210"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_20" />
+
+        <TextView
+            android:id="@+id/txt_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="kosong nih bos"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/chorcoal_black"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
