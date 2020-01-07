@@ -9,6 +9,8 @@ import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCa
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
@@ -54,8 +56,7 @@ import kotlin.coroutines.CoroutineContext
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                     private val coroutineDispatcher: CoroutineDispatcher,
-                    private val homeUseCase: HomeUseCase,
-                    private val homeDataMapper: HomeDataMapper) :
+                    private val homeUseCase: HomeUseCase) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     protected var compositeSubscription: CompositeSubscription
@@ -95,8 +96,10 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     private var isCache = true
 
+    private var homeDataMapper: HomeDataMapper? = null
+
     val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
-        val homeViewModelValue = homeDataMapper.mapToHomeViewModel(it, isCache)
+        val homeViewModelValue = homeDataMapper?.mapToHomeViewModel(it, isCache)
         if (!fetchFirstData) _trackingLiveData.value = Event(homeViewModelValue?.list?: listOf())
         else fetchFirstData = false
 
@@ -122,6 +125,13 @@ class HomePresenter(private val userSession: UserSessionInterface,
         super.detachView()
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
+        }
+    }
+
+    override fun attachView(view: HomeContract.View?) {
+        super.attachView(view)
+        view?.let {
+            homeDataMapper = HomeDataMapper(it.context, HomeVisitableFactoryImpl(), it.trackingQueue)
         }
     }
 

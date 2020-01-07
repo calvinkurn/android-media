@@ -23,11 +23,13 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.base.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.ProductImage
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
 class HomeDataMapper(
         private val context: Context,
-        private val homeVisitableFactory: HomeVisitableFactory
+        private val homeVisitableFactory: HomeVisitableFactory,
+        private val trackingQueue: TrackingQueue
 ) {
     fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel?{
         if (homeData == null) return null
@@ -153,7 +155,7 @@ class HomeDataMapper(
                                     isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
-                            if(!isCache) HomePageTracking.eventEnhanceImpressionBanner(context, channel)
+                            if(!isCache) trackingQueue.putEETracking(channel.enhanceImpressionBannerChannelMix)
                         }
                         DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
                             list.add(mappingDynamicChannel(
@@ -163,7 +165,7 @@ class HomeDataMapper(
                                     false,
                                     isCache
                             ))
-                            if(!isCache) HomePageTracking.eventEnhanceImpressionBannerGif(context, channel)
+                            if(!isCache) trackingQueue.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                         }
                         DynamicHomeChannel.Channels.LAYOUT_REVIEW -> if (!isCache) {
                             list.add(mappingToReviewViewModel(channel))

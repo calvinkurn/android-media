@@ -572,7 +572,7 @@ public class DynamicHomeChannel {
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", grid.getId(),
+                                                    "id", id+"_"+grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getAttribution(),
                                                     "creative_url", grid.getImageUrl(),

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
-import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
@@ -1052,33 +1051,28 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhanceImpressionBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    DataLayer.mapOf(
-                            EVENT, PROMO_VIEW,
-                            EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                            EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
-                            EVENT_LABEL, "",
-                            CHANNEL_ID, bannerChannel.getId(),
-                            ECOMMERCE, DataLayer.mapOf(
-                                    PROMO_VIEW, DataLayer.mapOf(
-                                            PROMOTIONS, DataLayer.listOf(
-                                                    DataLayer.mapOf(
-                                                            FIELD_ID, bannerChannel.getBanner().getId(),
-                                                            FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
-                                                            FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
-                                                            FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
-                                                            FIELD_POSITION, String.valueOf(1)
-                                                    )
-                                            )
-                                    )
+    public static HashMap<String, Object> getEventEnhanceImpressionBannerGif(DynamicHomeChannel.Channels bannerChannel) {
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                EVENT_LABEL, "",
+                CHANNEL_ID, bannerChannel.getId(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, bannerChannel.getBanner().getId(),
+                                                FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
+                                                FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
+                                                FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(1)
+                                        )
+                                )
+                        )
 
-                            )
-                    )
-            );
-        }
+                )
+        );
     }
 
     public static void eventEnhanceClickBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
