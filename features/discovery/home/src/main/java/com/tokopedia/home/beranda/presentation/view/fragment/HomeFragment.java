@@ -502,7 +502,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
-        getPlayer().setPlayWhenReady(false);
 
         trackingQueue.sendAll();
         if (activityStateListener != null) {
@@ -1907,34 +1906,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public ExoPlayer getPlayer() {
         return TokopediaPlayManager.Companion.getInstance(getContext()).getVideoPlayer();
-    }
-
-    @Override
-    public void playVideo(@NotNull String uri) {
-//        TokopediaPlayManager.Companion.getInstance(getContext()).playVideoWithString(uri);
-//        getPlayer().setPlayWhenReady(true);
-    }
-
-    @Override
-    public void addListener(@NotNull ExoListener listener) {
-//        getPlayer().addListener(new Player.EventListener(){
-//            @Override
-//            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-//                switch (playbackState) {
-//                    case Player.STATE_BUFFERING:
-//                        listener.onBuffering();
-//                        break;
-//                    case Player.STATE_ENDED:
-//                        listener.resetVideo();
-//                        break;
-//                    case Player.STATE_READY:
-//                        listener.playVideo();
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        });
     }
 
     private boolean needToPerformanceMonitoring() {
