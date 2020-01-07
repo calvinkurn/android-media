@@ -23,18 +23,22 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.networkDependencies.retrofit
-
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.testDependencies.androidAnnotation
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 }
 
 project.ext {

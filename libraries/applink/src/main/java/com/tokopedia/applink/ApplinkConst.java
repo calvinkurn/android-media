@@ -141,7 +141,7 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
-    String DIGITAL_SUBHOMEPAGE = "tokopedia://recharge";
+    String DIGITAL_RECHARGE = "tokopedia://recharge";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
@@ -278,6 +278,13 @@ public interface ApplinkConst {
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
     String DEALS_CATEGORY = "tokopedia://deals/category/page";
 
+    String SALAM_UMRAH_ORDER_DETAIL = "tokopedia://order-details/umroh";
+    String SALAM_UMRAH = "tokopedia://s/umroh";
+    String SALAM_UMRAH_SEARCH = "tokopedia://s/umroh/search";
+    String SALAM_UMRAH_PACKET = "tokopedia://s/umroh/paket/{category_id}";
+    String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
+    String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
+
     interface TokoPoints {
         String HOMEPAGE = "tokopedia://tokopoints";
         String HOMEPAGE2 = "tokopedia://tokopoints/";
@@ -374,6 +381,11 @@ public interface ApplinkConst {
         String INVOICE_STATUS_ID = "invoice_status_id";
         String INVOICE_STATUS = "invoice_status";
         String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
+    }
+
+    interface AttachInvoice {
+        String PARAM_MESSAGE_ID = "msgId";
+        String PARAM_OPPONENT_NAME = "opponentName";
     }
 
     interface Play {
