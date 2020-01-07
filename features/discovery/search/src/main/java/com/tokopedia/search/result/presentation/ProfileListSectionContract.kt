@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -14,6 +15,10 @@ interface ProfileListSectionContract {
         fun onErrorToggleFollow(errorMessage : String)
         fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel)
         fun onErrorGetProfileListData()
+        fun renderVisitableList(visitableList: List<Visitable<*>>)
+        fun clearVisitableList()
+        fun trackEmptySearchProfile()
+        fun hideLoading()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -22,5 +27,8 @@ interface ProfileListSectionContract {
         fun handleFollowAction(adapterPosition: Int,
                                userToFollowId: Int,
                                followedStatus: Boolean)
+        fun getNextPage(): Int
+        fun getHasNextPage(): Boolean
+        fun getTotalProfileCount(): Int
     }
 }

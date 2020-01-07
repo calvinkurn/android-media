@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.profile
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -7,9 +8,9 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kolcommon.model.FollowResponseModel
 import com.tokopedia.search.result.domain.model.SearchProfileModel
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
+import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -30,12 +31,28 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
     @Inject
     lateinit var profileListViewModelMapper: Mapper<SearchProfileModel, ProfileListViewModel>
 
+    private var nextPage = 0
+    private var hasNextPage = false
+    private var totalProfileCount = Integer.MAX_VALUE
+
     override fun initInjector() {
         val component = DaggerProfileListPresenterComponent.builder()
-            .baseAppComponent(view.getBaseAppComponent())
+            .baseAppComponent(view?.getBaseAppComponent())
             .build()
 
         component.inject(this)
+    }
+
+    override fun getNextPage(): Int {
+        return nextPage
+    }
+
+    override fun getHasNextPage(): Boolean {
+        return hasNextPage
+    }
+
+    override fun getTotalProfileCount(): Int {
+        return totalProfileCount
     }
 
     override fun handleFollowAction(adapterPosition: Int,
@@ -69,23 +86,25 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
 
     private fun followKolSubscriberOnNext(followResponseModel : FollowKolQuery?, adapterPosition: Int, followStatus: Boolean) {
         if(followResponseModel == null) {
-            view.onErrorToggleFollow()
+            view?.onErrorToggleFollow()
             return
         }
 
         if (followResponseModel.data.error != null) {
-            view.onSuccessToggleFollow(adapterPosition, (!followStatus))
+            view?.onSuccessToggleFollow(adapterPosition, (!followStatus))
         } else {
-            view.onErrorToggleFollow(followResponseModel.data.error ?: "")
+            view?.onErrorToggleFollow(followResponseModel.data.error ?: "")
         }
     }
 
     private fun followKolSubscriberOnError(e: Throwable?) {
         e?.printStackTrace()
-        view.onErrorToggleFollow()
+        view?.onErrorToggleFollow()
     }
 
     override fun requestProfileListData(query: String, page: Int) {
+        nextPage = page
+
         val startRow : Int = (page - 1) * SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE
 
         searchProfileListUseCase.execute(
@@ -122,14 +141,46 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
 
     private fun searchProfileOnNext(searchProfileModel: SearchProfileModel?, startRow: Int) {
         if(searchProfileModel == null) {
-            view.onErrorGetProfileListData()
+            view?.onErrorGetProfileListData()
             return
         }
 
+        handleSearchProfileSuccess(searchProfileModel, startRow)
+    }
+
+    private fun handleSearchProfileSuccess(searchProfileModel: SearchProfileModel, startRow: Int) {
         val profileListViewModel = profileListViewModelMapper.convert(searchProfileModel)
+
+        hasNextPage = profileListViewModel.isHasNextPage
+        totalProfileCount = profileListViewModel.totalSearchCount
+
+        if (hasSearchResult()) {
+            handleSearchProfileResult(profileListViewModel, startRow)
+        }
+        else {
+            handleSearchProfileEmptyResult(profileListViewModel)
+        }
+    }
+
+    private fun hasSearchResult(): Boolean {
+        return totalProfileCount > 0
+    }
+
+    private fun handleSearchProfileResult(profileListViewModel: ProfileListViewModel, startRow: Int) {
         profileListViewModelIncrementPosition(profileListViewModel, startRow)
 
-        view.onSuccessGetProfileListData(profileListViewModel)
+        view?.onSuccessGetProfileListData(profileListViewModel)
+    }
+
+    private fun handleSearchProfileEmptyResult(profileListViewModel: ProfileListViewModel) {
+        view?.trackEmptySearchProfile()
+        view?.hideLoading()
+        view?.clearVisitableList()
+
+        val emptyResultVisitableList = mutableListOf<Visitable<*>>()
+        emptyResultVisitableList.add(EmptySearchProfileViewModel())
+
+        view?.renderVisitableList(emptyResultVisitableList)
     }
 
     private fun profileListViewModelIncrementPosition(profileListViewModel : ProfileListViewModel, startRow : Int) {
@@ -142,6 +193,6 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
 
     private fun searchProfileOnError(e: Throwable?) {
         e?.printStackTrace()
-        view.onErrorGetProfileListData()
+        view?.onErrorGetProfileListData()
     }
 }

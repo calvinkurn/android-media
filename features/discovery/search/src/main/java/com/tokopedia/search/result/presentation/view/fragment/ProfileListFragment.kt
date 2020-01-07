@@ -57,17 +57,19 @@ class ProfileListFragment :
 
     lateinit var trackingQueue: TrackingQueue
 
-    var totalProfileCount : Int = Integer.MAX_VALUE
-
-    var isHasNextPage : Boolean = isLoadMoreEnabledByDefault
-
     var query : String = ""
 
     var searchParameter: SearchParameter? = null
 
-    var nextPage : Int = 1
-
     var hasLoadData = false
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.profile_list_recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.profile_list_swipe_refresh_layout
+    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -76,14 +78,6 @@ class ProfileListFragment :
             attachNavigationListener(it)
             attachRedirectionListener(it)
         }
-    }
-
-    override fun getRecyclerViewResourceId(): Int {
-        return R.id.profile_list_recycler_view
-    }
-
-    override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.profile_list_swipe_refresh_layout
     }
 
     private fun attachNavigationListener(context: Context) {
@@ -149,6 +143,12 @@ class ProfileListFragment :
     }
 
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
+        trackImpressionProfileList(profileListViewModel)
+
+        renderList(profileListViewModel.profileModelList, presenter.getHasNextPage())
+    }
+
+    private fun trackImpressionProfileList(profileListViewModel: ProfileListViewModel) {
         if (profileListViewModel.getListTrackingObject().isNotEmpty()) {
             if (::trackingQueue.isInitialized) {
                 SearchTracking.eventUserImpressionProfileResultInTabProfile(
@@ -158,31 +158,36 @@ class ProfileListFragment :
                 )
             }
         }
-
-        totalProfileCount = profileListViewModel.totalSearchCount
-        renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)
-
-        removeSearchPageLoading()
     }
 
+    @Deprecated("These logics need to be put in Presenter and Unit Tested")
     override fun renderList(list: List<ProfileViewModel>, hasNextPage: Boolean) {
         hideLoading()
+        clearVisitableList()
+        addTotalProfileCountViewModel()
+        renderVisitableList(list)
+        isLoadingInitialData = false
+    }
+
+    override fun clearVisitableList() {
         if (isLoadingInitialData) {
             clearAllData()
         } else {
             adapter.clearAllNonDataElement()
         }
+    }
+
+    private fun addTotalProfileCountViewModel() {
+        val nextPage = presenter.getNextPage()
+        val totalProfileCount = presenter.getTotalProfileCount()
         if (nextPage == 1 && totalProfileCount != 0) {
             adapter.addElement(TotalSearchCountViewModel(createTotalCountText(totalProfileCount)))
         }
-        adapter.addElement(list)
-        updateScrollListenerState(hasNextPage)
+    }
 
-        if (isListEmpty) {
-            adapter.addElement(emptyDataViewModel)
-        } else {
-            isLoadingInitialData = false
-        }
+    override fun renderVisitableList(visitableList: List<Visitable<*>>) {
+        adapter.addElement(visitableList)
+        updateScrollListenerState(presenter.getHasNextPage())
     }
 
     private fun createTotalCountText(totalCount : Int) : String {
@@ -217,8 +222,8 @@ class ProfileListFragment :
     }
 
     override fun loadData(page: Int) {
+        hasLoadData = true
         presenter.requestProfileListData(query, page)
-        this.nextPage = page
     }
 
     override fun onSuccessToggleFollow(adapterPosition: Int, enable: Boolean) {
@@ -288,32 +293,8 @@ class ProfileListFragment :
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
     }
 
-    override fun getEmptyDataViewModel(): Visitable<*> {
+    override fun trackEmptySearchProfile() {
         SearchTracking.eventSearchNoResult(activity, query, screenName, mapOf())
-
-        activity?.run {
-            return createProfileEmptySearchModel(
-                activity!!,
-                query,
-                getString(R.string.title_profile)
-            )
-        }
-
-        return EmptySearchProfileViewModel()
-    }
-
-    private fun createProfileEmptySearchModel(context: Context, query: String, sectionTitle: String): EmptySearchProfileViewModel {
-        val emptySearchModel = EmptySearchProfileViewModel()
-        emptySearchModel.imageRes = com.tokopedia.design.R.drawable.ic_empty_search
-        emptySearchModel.title = getEmptySearchTitle(context, sectionTitle)
-        emptySearchModel.content = String.format(context.getString(R.string.empty_search_content_template), query)
-        emptySearchModel.buttonText = context.getString(R.string.empty_search_button_text)
-        return emptySearchModel
-    }
-
-    private fun getEmptySearchTitle(context: Context, sectionTitle: String): String {
-        val templateText = context.getString(R.string.msg_empty_search_with_filter_1)
-        return String.format(templateText, sectionTitle).toLowerCase()
     }
 
     override fun onErrorGetProfileListData() {
@@ -321,11 +302,11 @@ class ProfileListFragment :
 
         if (!adapter.isContainData) {
             activity?.run {
-                NetworkErrorHelper.showEmptyState(activity, view) { loadData(nextPage) }
+                NetworkErrorHelper.showEmptyState(activity, view) { loadData(presenter.getNextPage()) }
             }
         } else {
             activity?.run {
-                NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
+                NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(presenter.getNextPage()) }.showRetrySnackbar()
             }
         }
     }

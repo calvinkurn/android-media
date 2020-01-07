@@ -60,6 +60,11 @@
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>
 
+    <string name="empty_search_profile_title">Oops, profil nggak ditemukan</string>
+    <string name="empty_search_profile_content">Coba kata kunci lain untuk menemukan profil yang kamu inginkan.</string>
+    <string name="empty_search_profile_button">Ganti Kata Kunci</string>
+    <string name="empty_search_profile_recommendation_title">Profil rekomendasi</string>
+
     <string name="post_count_value">%1$s post</string>
     <string name="btn_following_text">Following</string>
     <string name="btn_follow_text">Follow</string>

@@ -15,6 +15,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when` as mockitoWhen
 
+@Deprecated(message = "To be migrated into Spek Tests")
 class ProfileListPresenterTest {
 
     private abstract class MockSearchProfileMapper : Mapper<SearchProfileModel, ProfileListViewModel>
