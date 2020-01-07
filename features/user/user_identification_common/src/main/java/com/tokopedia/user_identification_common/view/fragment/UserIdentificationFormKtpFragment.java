@@ -12,12 +12,15 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.user_identification_common.KycUrl;
 import com.tokopedia.user_identification_common.R;
+import com.tokopedia.user_identification_common.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.user_identification_common.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.user_identification_common.view.viewmodel.UserIdentificationStepperModel;
+
+import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
+import static com.tokopedia.user_identification_common.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -26,8 +29,6 @@ import com.tokopedia.user_identification_common.view.viewmodel.UserIdentificatio
 public class UserIdentificationFormKtpFragment extends
         BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>
         implements UserIdentificationFormActivity.Listener {
-
-    private static int REQUEST_CODE_CAMERA_KTP = 1001;
 
     protected TextView subtitleBody;
 
@@ -66,26 +67,20 @@ public class UserIdentificationFormKtpFragment extends
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                analytics.eventClickNextKtpPage();
-//                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
-//                        PARAM_VIEW_MODE_KTP);
-//                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-//                startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
+                analytics.eventClickNextKtpPage();
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                        PARAM_VIEW_MODE_KTP);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });
-        ImageHandler.LoadImage(correctImage, KycUrl.KTP_OK);
-        ImageHandler.LoadImage(wrongImage, KycUrl.KTP_FAIL);
+//        ImageHandler.LoadImage(correctImage, KycUrl.KTP_OK);
+//        ImageHandler.LoadImage(wrongImage, KycUrl.KTP_FAIL);
+        ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_KTP);
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_ktp));
+                    .updateToolbarTitle(getString(R.string.title_kyc_info));
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

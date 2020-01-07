@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -20,6 +21,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import ai.advance.common.entity.BaseResultEntity;
 import ai.advance.liveness.R;
+import ai.advance.liveness.activity.ResultActivity;
 import ai.advance.liveness.lib.Detector;
 import ai.advance.liveness.lib.LivenessResult;
 import ai.advance.liveness.lib.LivenessView;
@@ -395,7 +397,9 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
     private void setResultData() {
         Activity activity = getActivity();
         if (activity != null) {
-            activity.setResult(Activity.RESULT_OK);
+            Intent intent = new Intent(getActivity(), ResultActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            activity.startActivity(intent);
             activity.finish();
         }
     }

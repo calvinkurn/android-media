@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="useridentification_common_4dp">4dp</dimen>
+    <dimen name="useridentification_common_6dp">6dp</dimen>
+    <dimen name="useridentification_common_17dp">17dp</dimen>
+    <dimen name="useridentification_common_17_9dp">17.9dp</dimen>
+    <dimen name="useridentification_common_25dp">25dp</dimen>
+    <dimen name="useridentification_common_33dp">33dp</dimen>
+    <dimen name="useridentification_common_50dp">50dp</dimen>
+    <dimen name="useridentification_common_51dp">51dp</dimen>
+    <dimen name="useridentification_common_56dp">56dp</dimen>
+    <dimen name="useridentification_common_60dp">60dp</dimen>
+    <dimen name="useridentification_common_72dp">72dp</dimen>
+    <dimen name="useridentification_common_98dp">98dp</dimen>
+    <dimen name="useridentification_common_110dp">110dp</dimen>
+    <dimen name="useridentification_common_120dp">120dp</dimen>
+    <dimen name="useridentification_common_124dp">124dp</dimen>
+    <dimen name="useridentification_common_132dp">132dp</dimen>
+    <dimen name="useridentification_common_144dp">144dp</dimen>
+    <dimen name="useridentification_common_216_5dp">216.5dp</dimen>
+    <dimen name="useridentification_common_268dp">268dp</dimen>
+    <dimen name="useridentification_common_272dp">272dp</dimen>
+    <dimen name="useridentification_common_288dp">288dp</dimen>
+
+    <dimen name="useridentification_common_3sp">3sp</dimen>
+    <dimen name="useridentification_common_5sp">5sp</dimen>
+    <dimen name="useridentification_common_6sp">6sp</dimen>
+    <dimen name="useridentification_common_11sp">11sp</dimen>
+    <dimen name="useridentification_common_17sp">17sp</dimen>
+</resources>

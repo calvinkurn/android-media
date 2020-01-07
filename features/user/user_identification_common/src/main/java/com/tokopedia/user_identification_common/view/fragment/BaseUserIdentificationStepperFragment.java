@@ -3,13 +3,14 @@ package com.tokopedia.user_identification_common.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
@@ -34,8 +35,9 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
 
     public final static String EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model";
 
-    protected ImageView correctImage;
-    protected ImageView wrongImage;
+//    protected ImageView correctImage;
+//    protected ImageView wrongImage;
+    protected ImageView onboardingImage;
     protected TextView title;
     protected TextView subtitle;
     protected TextView button;
@@ -80,8 +82,9 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     }
 
     protected void initView(View view) {
-        correctImage = view.findViewById(R.id.correct_image);
-        wrongImage = view.findViewById(R.id.wrong_image);
+//        correctImage = view.findViewById(R.id.correct_image);
+//        wrongImage = view.findViewById(R.id.wrong_image);
+        onboardingImage = view.findViewById(R.id.ktp_onboarding_image);
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         button = view.findViewById(R.id.button);
@@ -95,7 +98,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
                 stepperModel.setFaceFile(faceFile);
                 stepperListener.goToNextPage(stepperModel);
 
-            } else if (requestCode == REQUEST_CODE_CAMERA_KTP) {
+            } else
+            if (requestCode == REQUEST_CODE_CAMERA_KTP) {
                 String ktpFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
                 stepperModel.setKtpFile(ktpFile);
                 stepperListener.goToNextPage(stepperModel);
@@ -105,6 +109,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_file_too_big));
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_cant_be_accessed));
+        } else if (resultCode == KYCConstant.IS_LIVENESS_DETECTION_FAIL) {
+            NetworkErrorHelper.showRedSnackbar(getActivity(), "Gagal melakukan verifikasi wajah.");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

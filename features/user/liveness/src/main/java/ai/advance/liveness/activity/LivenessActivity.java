@@ -22,7 +22,7 @@ import ai.advance.liveness.lib.GuardianLivenessDetectionSDK;
 import ai.advance.liveness.lib.LivenessResult;
 
 public class LivenessActivity extends AppCompatActivity {
-    private static final int PERMISSIONS_REQUEST_CODE = 1001;
+    private static final int PERMISSIONS_REQUEST_CODE = 2020;
     private LivenessFragment mLivenessFragment;
 
     @Override

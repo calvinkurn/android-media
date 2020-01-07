@@ -4,61 +4,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Neutral_N0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/dp_16"
+        android:padding="@dimen/spacing_lvl4"
         android:visibility="visible">
 
         <ImageView
             android:id="@+id/main_image"
             android:layout_width="@dimen/kyc_status_image_width"
             android:layout_height="@dimen/kyc_status_image_height"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toTopOf="@+id/title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:fontFamily="sans-serif-medium"
-            android:lineSpacingExtra="@dimen/sp_4"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_18"
-            android:textStyle="normal"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl6"
             app:layout_constraintBottom_toTopOf="@+id/text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_image"
-            tools:text="Verifikasi Dokumen Data Diri" />
+            tools:text="Mari verifikasi data dirimu" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl5"
+            android:layout_marginRight="@dimen/spacing_lvl5"
             android:gravity="center_horizontal"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_16"
+            android:lineSpacingExtra="@dimen/useridentification_common_6sp"
+            android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title"
-            tools:text="Kamu hanya perlu updoad foto KTP dan verifikasi wajah."/>
+            tools:text="Kamu hanya perlu updoad foto KTP dan\n verifikasi wajah." />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="@dimen/layout_lvl6"
             android:gravity="center"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginLeft="@dimen/useridentification_common_51dp"
+            android:layout_marginRight="@dimen/useridentification_common_51dp"
+            android:layout_marginBottom="@dimen/useridentification_common_124dp"
             app:layout_constraintTop_toBottomOf="@id/text" />
 
 

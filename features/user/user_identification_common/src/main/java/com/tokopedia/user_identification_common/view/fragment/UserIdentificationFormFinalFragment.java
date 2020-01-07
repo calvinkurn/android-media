@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.R;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
@@ -48,7 +47,6 @@ import javax.inject.Inject;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
-import static com.tokopedia.user_identification_common.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
 import static com.tokopedia.user_identification_common.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
@@ -62,11 +60,12 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private ImageView imageKtp;
     private ImageView imageFace;
-    private TextView buttonKtp;
-    private TextView buttonFace;
+//    private TextView buttonKtp;
+//    private TextView buttonFace;
     private TextView info;
+    private TextView subtitle;
     private TextView uploadButton;
-    private Ticker ticker;
+//    private Ticker ticker;
     private ImageView errorImageView;
     private View progressBar;
     private UserIdentificationStepperModel stepperModel;
@@ -151,20 +150,23 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private void setContentView() {
         setImageKtp(stepperModel.getKtpFile());
         setImageFace(stepperModel.getFaceFile());
+        subtitle.setText(getResources().getString(R.string.form_final_subtitle));
         generateLink();
-        buttonKtp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
-            }
-        });
+//        buttonKtp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
+//            }
+//        });
 
-        buttonFace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCameraView(PARAM_VIEW_MODE_FACE, REQUEST_CODE_CAMERA_FACE);
-            }
-        });
+//        buttonFace.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                openCameraView(PARAM_VIEW_MODE_FACE, REQUEST_CODE_CAMERA_FACE);
+//                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
+//                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+//            }
+//        });
 
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,12 +208,13 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private void initView(View view) {
         imageKtp = view.findViewById(R.id.image_ktp);
         imageFace = view.findViewById(R.id.image_face);
-        buttonKtp = view.findViewById(R.id.change_ktp);
-        buttonFace = view.findViewById(R.id.change_face);
+//        buttonKtp = view.findViewById(R.id.change_ktp);
+//        buttonFace = view.findViewById(R.id.change_face);
+        subtitle = view.findViewById(R.id.text_subtitle);
         info = view.findViewById(R.id.text_info);
         uploadButton = view.findViewById(R.id.upload_button);
         progressBar = view.findViewById(R.id.progress_bar);
-        ticker = view.findViewById(R.id.user_identification_final_ticker);
+//        ticker = view.findViewById(R.id.user_identification_final_ticker);
         errorImageView = view.findViewById(R.id.user_identification_final_x_img);
     }
 
@@ -293,8 +296,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     public void showLoading() {
         imageKtp.setVisibility(View.GONE);
         imageFace.setVisibility(View.GONE);
-        buttonKtp.setVisibility(View.GONE);
-        buttonFace.setVisibility(View.GONE);
+//        buttonKtp.setVisibility(View.GONE);
+//        buttonFace.setVisibility(View.GONE);
         info.setVisibility(View.GONE);
         uploadButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -304,8 +307,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     public void hideLoading() {
         imageKtp.setVisibility(View.VISIBLE);
         imageFace.setVisibility(View.VISIBLE);
-        buttonKtp.setVisibility(View.VISIBLE);
-        buttonFace.setVisibility(View.VISIBLE);
+//        buttonKtp.setVisibility(View.VISIBLE);
+//        buttonFace.setVisibility(View.VISIBLE);
         info.setVisibility(View.VISIBLE);
         uploadButton.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
@@ -324,25 +327,27 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             checkKtp();
         });
         errorImageView.setVisibility(View.GONE);
-        ticker.setVisibility(View.GONE);
+//        ticker.setVisibility(View.GONE);
         info.setText(R.string.form_final_info);
         generateLink();
         hideLoading();
     }
 
     private void showKtpInvalidView(){
+        subtitle.setText(getResources().getString(R.string.form_final_subtitle_fail));
         uploadButton.setText(getResources().getString(R.string.user_identification_common_retake_photo));
         uploadButton.setOnClickListener(v -> {
             openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
         });
 
         errorImageView.setVisibility(View.VISIBLE);
-        ticker.setVisibility(View.VISIBLE);
+//        ticker.setVisibility(View.VISIBLE);
 
-        info.setText(R.string.form_reupload_info);
+//        info.setText(R.string.form_reupload_info);
+        info.setVisibility(View.INVISIBLE);
         generateLink();
-        buttonKtp.setVisibility(View.GONE);
-        buttonFace.setVisibility(View.GONE);
+//        buttonKtp.setVisibility(View.GONE);
+//        buttonFace.setVisibility(View.GONE);
     }
 
     @Override

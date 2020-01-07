@@ -48,6 +48,6 @@
         android:layout_marginLeft="@dimen/liveness_48"
         android:layout_marginTop="@dimen/liveness_90"
         android:layout_marginRight="@dimen/liveness_48"
-        android:text="@string/liveness_try_again" />
+        android:text="Finish" />
 
 </RelativeLayout>

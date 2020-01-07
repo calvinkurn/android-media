@@ -243,6 +243,10 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setVisibility(View.GONE);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
+        button.setText(R.string.kyc_pending_button);
+        button.setButtonVariant(UnifyButton.Variant.GHOST);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(v -> getActivity().onBackPressed());
         analytics.eventViewPendingPage();
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.view.fragment.NotFoundFragment;
 import com.tokopedia.user_identification_common.view.fragment.UserIdentificationFormFaceFragment;
@@ -23,6 +24,8 @@ import com.tokopedia.user_identification_common.view.viewmodel.UserIdentificatio
 
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.Unit;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -110,11 +113,35 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     @Override
     protected void onBackEvent() {
-        if (getListFragment().size() > 0 &&
-                getListFragment().get(currentPosition-1) != null &&
-                getListFragment().get(currentPosition-1) instanceof Listener){
-            ((Listener) getListFragment().get(currentPosition - 1)).trackOnBackPressed();
+        if(getListFragment().size()  == currentPosition){
+            DialogUnify dialog = new DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
+            dialog.setTitle("Keluar dari halaman ini?");
+            dialog.setDescription("Kalau keluar sekarang, dokumen yang\ningin kamu kirim tidak akan tersimpan.");
+            dialog.setPrimaryCTAText("Lanjut Kirim");
+            dialog.setSecondaryCTAText("Keluar");
+
+            dialog.setPrimaryCTAClickListener(() -> {
+                dialog.dismiss();
+                return Unit.INSTANCE;
+            });
+
+            dialog.setSecondaryCTAClickListener(() -> {
+                if (getListFragment().size() > 0 &&
+                        getListFragment().get(currentPosition-2) != null &&
+                        getListFragment().get(currentPosition-2) instanceof Listener){
+                    ((Listener) getListFragment().get(currentPosition - 2)).trackOnBackPressed();
+                }
+                return Unit.INSTANCE;
+            });
+            dialog.show();
+        } else {
+            if (getListFragment().size() > 0 &&
+                    getListFragment().get(currentPosition-1) != null &&
+                    getListFragment().get(currentPosition-1) instanceof Listener){
+                ((Listener) getListFragment().get(currentPosition - 1)).trackOnBackPressed();
+            }
         }
+
         super.onBackEvent();
     }
 
