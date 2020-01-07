@@ -380,7 +380,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
-        hotelCalendarDialog.show(fragmentManager, "test")
+        fragmentManager?.let { hotelCalendarDialog.show(it, "test") }
     }
 
     private fun showPromoContainer() {

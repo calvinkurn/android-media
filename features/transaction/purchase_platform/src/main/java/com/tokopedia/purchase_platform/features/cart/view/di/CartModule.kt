@@ -178,14 +178,15 @@ class CartModule {
                                   getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
-                                  seamlessLoginUsecase: SeamlessLoginUsecase): ICartListPresenter {
+                                  seamlessLoginUsecase: SeamlessLoginUsecase,
+                                  schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper,
                 compositeSubscription, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
                 getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
                 addToCartUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                updateInsuranceProductDataUsecase, seamlessLoginUsecase, schedulers
         )
     }
 

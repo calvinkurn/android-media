@@ -16,7 +16,6 @@
 
     <!--Digital Topup-->
     <string name="instant_loan_title">Dana Instan</string>
-    <string name="digital_topup_title">Digital Topup</string>
     <string name="title_image_search" >Pencarian Gambar</string>
     <string name="title_similar_search" >Pencarian Serupa</string>
     <string name="title_autocomplete" >Pencarian</string>
@@ -30,4 +29,11 @@
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
 
     <string name="opportunity_title">Peluang</string>
+    <string name="title_module_attachinvoice">Lampirkan Invoice</string>
+
+    <!--Seller Order Management-->
+    <string name="som_title">Seller Order Management</string>
+
+    <string name="user_identification_common_title">Verifikasi Data Diri</string>
+
 </resources>
