@@ -37,4 +37,8 @@ public class DimensionUtils {
         int dp = px / ((int)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return dp;
     }
+
+    public static float getDensityMatrix(Context context){
+        return context.getResources().getDisplayMetrics().density;
+    }
 }

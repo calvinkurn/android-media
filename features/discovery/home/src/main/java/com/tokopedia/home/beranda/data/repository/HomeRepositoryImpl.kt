@@ -1,16 +1,19 @@
 package com.tokopedia.home.beranda.data.repository
 
-import android.os.SystemClock
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.PlayRemoteDataSource
+import com.tokopedia.home.beranda.data.model.PlayLiveDynamicChannelEntity
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.helper.map
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import rx.Observable
 import java.util.*
@@ -20,7 +23,8 @@ import javax.inject.Inject
 class HomeRepositoryImpl @Inject constructor(
         private val homeDataSource: HomeDataSource,
         private val homeDao: HomeDao,
-        private val homeRemoteDataSource: HomeRemoteDataSource
+        private val homeRemoteDataSource: HomeRemoteDataSource,
+        private val playRemoteDataSource: PlayRemoteDataSource
 ): HomeRepository {
 
     private val timeout = TimeUnit.DAYS.toMillis(30)
@@ -49,4 +53,8 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override fun sendGeolocationInfo(): Observable<Response<String>> = homeDataSource.sendGeolocationInfo()
+
+    override fun getPlayChannel(): Flow<PlayLiveDynamicChannelEntity> = flow {
+        emit(playRemoteDataSource.getPlayData(page = 2))
+    }
 }
