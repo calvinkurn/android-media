@@ -13,7 +13,7 @@ import org.junit.Test
 /**
  * Created by mzennis on 2020-01-06.
  */
-class PlaySocketMapperUnitTest {
+class PlaySocketMapperTest {
 
     private lateinit var playSocketMapper: PlaySocketMapper
 
