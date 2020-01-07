@@ -109,6 +109,7 @@ ext {
 
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
+            sellerHome                      : ":features:merchant:seller_home",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
 //            shopEtalasePicker               : ":features:merchant:shop_etalase_picker_no_op",
