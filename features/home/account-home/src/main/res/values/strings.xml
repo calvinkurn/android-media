@@ -132,7 +132,7 @@
     <string name="title_menu_flight">Pesawat</string>
     <string name="title_menu_hotel">Hotel</string>
     <string name="title_menu_reksadana">Reksa Dana</string>
-    <string name="title_menu_event">Event</string>
+    <string name="title_menu_event"><![CDATA[Event & Hiburan]]></string>
     <string name="title_menu_gold">Emas</string>
     <string name="title_menu_gift_card">Gift Card</string>
     <string name="title_menu_insurance">Asuransi</string>
