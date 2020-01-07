@@ -50,10 +50,6 @@ public class TopAdsHome {
             return adRefKey;
         }
 
-        public void setAdRefKey(String adRefKey) {
-            this.adRefKey = adRefKey;
-        }
-
         public String getRedirect() {
             return redirect;
         }
@@ -64,10 +60,6 @@ public class TopAdsHome {
 
         public String getAdClickUrl() {
             return adClickUrl;
-        }
-
-        public void setAdClickUrl(String adClickUrl) {
-            this.adClickUrl = adClickUrl;
         }
 
         public Headline getHeadline() {
@@ -109,14 +101,6 @@ public class TopAdsHome {
         @SerializedName("badges")
         private List<?> badges;
 
-        public String getTemplateId() {
-            return templateId;
-        }
-
-        public void setTemplateId(String templateId) {
-            this.templateId = templateId;
-        }
-
         public String getName() {
             return name;
         }
@@ -147,14 +131,6 @@ public class TopAdsHome {
 
         public void setButtonText(String buttonText) {
             this.buttonText = buttonText;
-        }
-
-        public String getPromotedText() {
-            return promotedText;
-        }
-
-        public void setPromotedText(String promotedText) {
-            this.promotedText = promotedText;
         }
 
         public String getDescription() {
@@ -194,14 +170,6 @@ public class TopAdsHome {
 
             public void setFullUrl(String fullUrl) {
                 this.fullUrl = fullUrl;
-            }
-
-            public String getFullEcs() {
-                return fullEcs;
-            }
-
-            public void setFullEcs(String fullEcs) {
-                this.fullEcs = fullEcs;
             }
         }
 
@@ -295,32 +263,8 @@ public class TopAdsHome {
             return goldShop;
         }
 
-        public void setGoldShop(boolean goldShop) {
-            this.goldShop = goldShop;
-        }
-
-        public boolean isGoldShopBadge() {
-            return goldShopBadge;
-        }
-
-        public void setGoldShopBadge(boolean goldShopBadge) {
-            this.goldShopBadge = goldShopBadge;
-        }
-
-        public boolean isShopIsOfficial() {
-            return shopIsOfficial;
-        }
-
-        public void setShopIsOfficial(boolean shopIsOfficial) {
-            this.shopIsOfficial = shopIsOfficial;
-        }
-
         public ImageShop getImageShop() {
             return imageShop;
-        }
-
-        public void setImageShop(ImageShop imageShop) {
-            this.imageShop = imageShop;
         }
 
         public List<Product> getProduct() {
@@ -354,44 +298,16 @@ public class TopAdsHome {
                 this.cover = cover;
             }
 
-            public String getSUrl() {
-                return sUrl;
-            }
-
-            public void setSUrl(String sUrl) {
-                this.sUrl = sUrl;
-            }
-
             public String getXsUrl() {
                 return xsUrl;
-            }
-
-            public void setXsUrl(String xsUrl) {
-                this.xsUrl = xsUrl;
             }
 
             public String getCoverEcs() {
                 return coverEcs;
             }
 
-            public void setCoverEcs(String coverEcs) {
-                this.coverEcs = coverEcs;
-            }
-
             public String getSEcs() {
                 return sEcs;
-            }
-
-            public void setSEcs(String sEcs) {
-                this.sEcs = sEcs;
-            }
-
-            public String getXsEcs() {
-                return xsEcs;
-            }
-
-            public void setXsEcs(String xsEcs) {
-                this.xsEcs = xsEcs;
             }
         }
 
@@ -424,28 +340,12 @@ public class TopAdsHome {
                 this.name = name;
             }
 
-            public String getPriceFormat() {
-                return priceFormat;
-            }
-
-            public void setPriceFormat(String priceFormat) {
-                this.priceFormat = priceFormat;
-            }
-
             public String getApplinks() {
                 return applinks;
             }
 
             public void setApplinks(String applinks) {
                 this.applinks = applinks;
-            }
-
-            public Product.ImageProduct getImageProduct() {
-                return imageProduct;
-            }
-
-            public void setImageProduct(Product.ImageProduct imageProduct) {
-                this.imageProduct = imageProduct;
             }
 
             public static class ImageProduct {
@@ -481,14 +381,6 @@ public class TopAdsHome {
 
                 public void setImageUrl(String imageUrl) {
                     this.imageUrl = imageUrl;
-                }
-
-                public String getImageClickUrl() {
-                    return imageClickUrl;
-                }
-
-                public void setImageClickUrl(String imageClickUrl) {
-                    this.imageClickUrl = imageClickUrl;
                 }
             }
         }

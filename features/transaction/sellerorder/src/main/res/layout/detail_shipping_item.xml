@@ -136,7 +136,8 @@
                     app:typographyType="body_3"
                     android:layout_toLeftOf="@+id/driver_call_btn"
                     android:layout_toStartOf="@+id/driver_call_btn"
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true"
+                    android:inputType="none"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_driver_phone"
@@ -150,7 +151,8 @@
                     tools:text="@string/tv_driver_phone_example"
                     android:layout_toLeftOf="@+id/driver_call_btn"
                     android:layout_toStartOf="@+id/driver_call_btn"
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true"
+                    android:inputType="none"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_driver_license"
@@ -212,7 +214,8 @@
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_phone"
@@ -227,7 +230,8 @@
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_street"
@@ -244,9 +248,9 @@
             android:textColor="@color/Neutral_N700_96"
             tools:text="Wisma 77 Tower 2"
             android:lineSpacingMultiplier="0.8"
-            android:inputType="textMultiLine"
             android:scrollHorizontally="false"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_district"
@@ -260,40 +264,61 @@
             tools:text="Slipi, Jakarta Barat 14410"
             android:lineSpacingMultiplier="0.8"
             android:scrollHorizontally="false"
-            android:inputType="textMultiLine"
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_receiver_notes"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rl_som_dropshipper"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/dropshipper_bg"
             app:layout_constraintTop_toBottomOf="@+id/tv_receiver_district"
             app:layout_constraintStart_toStartOf="@+id/tv_receiver_district"
             android:layout_marginTop="@dimen/dp_8"
-            app:typographyWeight="reguler"
-            app:typographyType="body_3"
-            android:textColor="@color/Neutral_N700_96"
-            tools:text="Lantai 52"
-            app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:textIsSelectable="true"/>
+            android:layout_marginBottom="@dimen/dp_8"
+            android:padding="@dimen/dp_20">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_notes_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/catatan"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_receiver_district"
-            android:layout_marginTop="@dimen/dp_8"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            android:textColor="@color/Neutral_N700_44" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_som_dropshipper_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/som_dropshipper_label"
+                app:typographyWeight="reguler"
+                app:typographyType="body_3"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_som_dropshipper_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
+                app:typographyType="body_3"
+                android:layout_toRightOf="@+id/tv_som_dropshipper_label"
+                android:layout_toEndOf="@+id/tv_som_dropshipper_label"
+                android:layout_alignTop="@+id/tv_som_dropshipper_label"
+                android:layout_marginLeft="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_40"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_som_dropshipper_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
+                app:typographyType="body_3"
+                android:layout_alignStart="@id/tv_som_dropshipper_name"
+                android:layout_alignLeft="@id/tv_som_dropshipper_name"
+                android:layout_below="@id/tv_som_dropshipper_name"
+                android:layout_marginTop="@dimen/dp_3"/>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_booking_code"
@@ -301,7 +326,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@id/tv_notes_label"
+            app:layout_constraintTop_toBottomOf="@id/rl_som_dropshipper"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -356,7 +381,8 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_16"
                 tools:text="ABCDEFHIJK"
-                android:textIsSelectable="true"/>
+                android:textIsSelectable="true"
+                android:inputType="none"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/booking_code_see_btn"

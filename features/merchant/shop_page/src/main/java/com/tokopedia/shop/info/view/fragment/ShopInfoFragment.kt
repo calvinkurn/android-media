@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -238,7 +239,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     override fun initInjector() {
         DaggerShopInfoComponent.builder().shopInfoModule(ShopInfoModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
+                .shopComponent(ShopComponentInstance.getComponent(activity?.application))
                 .build().inject(this)
     }
 

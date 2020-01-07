@@ -3,7 +3,7 @@ package com.tokopedia.shop;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 
 /**

@@ -166,5 +166,9 @@
     <string name="shop_product_seller_empty_state_label"><![CDATA[Kata orang,<br/><b>jutaan mimpi</b><br/>berawal dari satu<br/>langkah kecil.<br/>Tambah produk <br/>pertamamu]]></string>
     <string name="text_shop_no_product">Toko belum memiliki produk</string>
     <string name="text_shop_no_product_follow">Mulai follow untuk mendapatkan update dari toko ini</string>
+    <string name="shop_menu_action_cart">Cart</string>
+    <string name="shop_menu_action_store_info">Info</string>
+    <string name="shop_header_action_follow">Follow</string>
+    <string name="shop_menu_search_placeholder_text">Cari barang di sini</string>
 
 </resources>

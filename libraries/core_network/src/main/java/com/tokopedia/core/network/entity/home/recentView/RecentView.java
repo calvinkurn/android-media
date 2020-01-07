@@ -95,44 +95,8 @@ public class RecentView extends RecyclerViewItem implements Parcelable {
         mLabels = labels;
     }
 
-    public Long getProductAvailable() {
-        return mProductAvailable;
-    }
-
-    public void setProductAvailable(Long product_available) {
-        mProductAvailable = product_available;
-    }
-
-    public Long getProductCurrency() {
-        return mProductCurrency;
-    }
-
-    public void setProductCurrency(Long product_currency) {
-        mProductCurrency = product_currency;
-    }
-
-    public Long getProductCurrencyId() {
-        return mProductCurrencyId;
-    }
-
-    public void setProductCurrencyId(Long product_currency_id) {
-        mProductCurrencyId = product_currency_id;
-    }
-
-    public Long getProductDepartmentId() {
-        return mProductDepartmentId;
-    }
-
-    public void setProductDepartmentId(Long product_department_id) {
-        mProductDepartmentId = product_department_id;
-    }
-
     public Long getProductEtalase() {
         return mProductEtalase;
-    }
-
-    public void setProductEtalase(Long product_etalase) {
-        mProductEtalase = product_etalase;
     }
 
     public Long getProductId() {
@@ -149,22 +113,6 @@ public class RecentView extends RecyclerViewItem implements Parcelable {
 
     public void setProductImage(String product_image) {
         mProductImage = product_image;
-    }
-
-    public Long getProductImage300() {
-        return mProductImage300;
-    }
-
-    public void setProductImage300(Long product_image_300) {
-        mProductImage300 = product_image_300;
-    }
-
-    public String getProductImageFull() {
-        return mProductImageFull;
-    }
-
-    public void setProductImageFull(String product_image_full) {
-        mProductImageFull = product_image_full;
     }
 
     public String getProductName() {
@@ -187,40 +135,12 @@ public class RecentView extends RecyclerViewItem implements Parcelable {
         return mProductPreorder;
     }
 
-    public void setProductPreorder(Long product_preorder) {
-        mProductPreorder = product_preorder;
-    }
-
     public String getProductPrice() {
         return mProductPrice;
     }
 
     public void setProductPrice(String product_price) {
         mProductPrice = product_price;
-    }
-
-    public Long getProductPriceNoIdr() {
-        return mProductPriceNoIdr;
-    }
-
-    public void setProductPriceNoIdr(Long product_price_no_idr) {
-        mProductPriceNoIdr = product_price_no_idr;
-    }
-
-    public Long getProductRatingDesc() {
-        return mProductRatingDesc;
-    }
-
-    public void setProductRatingDesc(Long product_rating_desc) {
-        mProductRatingDesc = product_rating_desc;
-    }
-
-    public Long getProductRatingPoint() {
-        return mProductRatingPoint;
-    }
-
-    public void setProductRatingPoint(Long product_rating_point) {
-        mProductRatingPoint = product_rating_point;
     }
 
     public Long getProductReturnable() {
@@ -231,36 +151,12 @@ public class RecentView extends RecyclerViewItem implements Parcelable {
         mProductReturnable = product_returnable;
     }
 
-    public Long getProductReviewCount() {
-        return mProductReviewCount;
-    }
-
-    public void setProductReviewCount(Long product_review_count) {
-        mProductReviewCount = product_review_count;
-    }
-
-    public Long getProductSoldCount() {
-        return mProductSoldCount;
-    }
-
-    public void setProductSoldCount(Long product_sold_count) {
-        mProductSoldCount = product_sold_count;
-    }
-
     public Long getProductStatus() {
         return mProductStatus;
     }
 
     public void setProductStatus(Long product_status) {
         mProductStatus = product_status;
-    }
-
-    public Long getProductTalkCount() {
-        return mProductTalkCount;
-    }
-
-    public void setProductTalkCount(Long product_talk_count) {
-        mProductTalkCount = product_talk_count;
     }
 
     public String getProductUrl() {
@@ -279,36 +175,12 @@ public class RecentView extends RecyclerViewItem implements Parcelable {
         mProductWholesale = product_wholesale;
     }
 
-    public Long getShopFeaturedShop() {
-        return mShopFeaturedShop;
-    }
-
-    public void setShopFeaturedShop(Long shop_featured_shop) {
-        mShopFeaturedShop = shop_featured_shop;
-    }
-
-    public Long getShopGoldStatus() {
-        return mShopGoldStatus;
-    }
-
-    public void setShopGoldStatus(Long shop_gold_status) {
-        mShopGoldStatus = shop_gold_status;
-    }
-
     public Long getShopId() {
         return mShopId;
     }
 
     public void setShopId(Long shop_id) {
         mShopId = shop_id;
-    }
-
-    public Long getShopIsOwner() {
-        return mShopIsOwner;
-    }
-
-    public void setShopIsOwner(Long shop_is_owner) {
-        mShopIsOwner = shop_is_owner;
     }
 
     public String getShopLocation() {

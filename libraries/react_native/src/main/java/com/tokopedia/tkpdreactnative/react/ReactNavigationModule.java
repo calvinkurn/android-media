@@ -86,7 +86,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
             ((ApplinkRouter) context.getApplicationContext())
                     .goToApplinkActivity(this.getCurrentActivity(), appLinks, ReactUtils.convertBundle(extra));
         } else {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, mobileUrl));
+            RouteManager.route(getCurrentActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, mobileUrl));
         }
     }
 

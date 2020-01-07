@@ -1,0 +1,14 @@
+{
+  "data": {
+    "kycStatus": null
+  },
+  "errors": [
+    {
+      "message": "your session has expired, please login again",
+      "path": [
+        "kycStatus"
+      ],
+      "extensions": {}
+    }
+  ]
+}
