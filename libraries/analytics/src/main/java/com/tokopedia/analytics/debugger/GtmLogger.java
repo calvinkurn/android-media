@@ -11,6 +11,7 @@ import com.tokopedia.analytics.debugger.data.source.GtmLogDBSource;
 import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
 import com.tokopedia.analytics.debugger.ui.activity.AnalyticsDebuggerActivity;
 
+import java.net.URLDecoder;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -50,12 +51,12 @@ public class GtmLogger implements AnalyticsLogger {
     @Override
     public void save(String name, Map<String, Object> mapData) {
         try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 
             AnalyticsLogData data = new AnalyticsLogData();
             data.setCategory((String) mapData.get("eventCategory"));
             data.setName(name);
-            data.setData(gson.toJson(mapData));
+            data.setData(URLDecoder.decode(gson.toJson(mapData), "UTF-8"));
 
             if (!TextUtils.isEmpty(data.getName()) && !data.getName().equals("null")) {
                 dbSource.insertAll(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
