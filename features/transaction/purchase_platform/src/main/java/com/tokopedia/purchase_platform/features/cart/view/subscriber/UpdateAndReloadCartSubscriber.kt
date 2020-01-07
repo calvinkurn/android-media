@@ -13,8 +13,7 @@ import rx.Subscriber
  */
 
 class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
-                                    private val presenter: ICartListPresenter?,
-                                    private val cartListData: CartListData?) : Subscriber<UpdateAndReloadCartListData>() {
+                                    private val presenter: ICartListPresenter?) : Subscriber<UpdateAndReloadCartListData>() {
     override fun onCompleted() {
 
     }
@@ -33,10 +32,10 @@ class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
     override fun onNext(updateAndReloadCartListData: UpdateAndReloadCartListData) {
         view?.let {
             it.hideProgressLoading()
-            updateAndReloadCartListData.cartListData?.let {
-                presenter?.setCartListData(it)
-                view.renderLoadGetCartDataFinish()
-                view.renderInitialGetCartListDataSuccess(updateAndReloadCartListData.cartListData)
+            updateAndReloadCartListData.cartListData?.let { cartListData ->
+                presenter?.setCartListData(cartListData)
+                it.renderLoadGetCartDataFinish()
+                it.renderInitialGetCartListDataSuccess(cartListData)
             }
         }
     }

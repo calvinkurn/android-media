@@ -329,7 +329,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(
                     updateAndReloadCartUseCase?.createObservable(requestParams)
-                            ?.subscribe(UpdateAndReloadCartSubscriber(it, this, cartListData))
+                            ?.subscribe(UpdateAndReloadCartSubscriber(it, this))
             )
         }
     }
