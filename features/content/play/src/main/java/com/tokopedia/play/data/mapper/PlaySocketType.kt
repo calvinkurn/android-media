@@ -11,6 +11,5 @@ enum class PlaySocketType(var value: String) {
     PinnedMessage("PINNED_MESSAGE"),
     QuickReply("QUICK_REPLY"),
     EventBanned("BANNED"),
-    EventFreeze("FREEZE"),
-    VideoStream("VIDEO_STREAM")
+    EventFreeze("FREEZE")
 }
