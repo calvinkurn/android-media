@@ -135,7 +135,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun setUpObserver() {
-        categoryLevelTwoViewModel.getCategoryChildren().observe(this, Observer {
+        categoryLevelTwoViewModel.getCategoryChildren().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -156,7 +156,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
         })
 
-        categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<MutableList<ListItem>> {
+        categoryLevelTwoViewModel.getCategoryHotlist().observe(viewLifecycleOwner, Observer<MutableList<ListItem>> {
             categoryHotlist.clear()
             categoryHotlist.addAll(it as List<ListItem>)
             hotlist.adapter?.notifyDataSetChanged()
