@@ -48,7 +48,6 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
             bannerViewModel.slides = bannerDataModel.slides
         }
         bannerViewModel.isCache = isCache
-        bannerViewModel.updatedTime = System.currentTimeMillis()
         return bannerViewModel
     }
 }
