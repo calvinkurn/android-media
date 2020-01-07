@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
@@ -33,6 +34,7 @@ import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentWidgetModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
+import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpGreenRectWidgetModel
@@ -54,6 +56,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_pdp_facilities.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_pdp.*
 import kotlinx.android.synthetic.main.fragment_umrah_pdp.view.*
@@ -71,6 +74,9 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     lateinit var umrahPdpViewModel: UmrahPdpViewModel
     @Inject
     lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private val umrahPdpImageViewPagerAdapter by lazy { UmrahPdpImageViewPagerAdapter() }
     private val umrahPdpHotelAdapter by lazy { UmrahPdpHotelAdapter() }
@@ -159,6 +165,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     }
 
     private fun setupAll() {
+        setupFAB()
         setupCollapsingToolbar()
         setupTopImages()
         setupPdpHeader()
@@ -176,6 +183,23 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         setupAdditionalInformation()
         initPackageAvailability()
         showData()
+    }
+
+    private fun setupFAB(){
+        fab_umrah_pdp_message.bringToFront()
+        fab_umrah_pdp_message.setOnClickListener {
+            if (userSessionInterface.isLoggedIn) {
+                context?.let {
+                    val intent = RouteManager.getIntent(it,
+                            ApplinkConst.TOPCHAT_ASKSELLER,
+                            "7298319", "Hai, Saya ingin bertanya mengenai paket umroh ini tokopedia://s/umroh/produk/${umrahProduct.slugName}",
+                            "seller", "Tokopedia Umroh", "")
+                    startActivity(intent)
+                }
+            } else {
+                goToLoginPage()
+            }
+        }
     }
 
     private fun enableSwipeToRefresh() {
@@ -577,5 +601,12 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     override fun onPause() {
         super.onPause()
         umrah_pdp_app_bar_layout.removeOnOffsetChangedListener(this)
+    }
+
+    private fun goToLoginPage() {
+        if (activity != null) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    UmrahHomepageFragment.REQUEST_CODE_LOGIN)
+        }
     }
 }

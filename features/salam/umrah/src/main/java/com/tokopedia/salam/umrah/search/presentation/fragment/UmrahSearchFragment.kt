@@ -21,6 +21,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -29,6 +31,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.DefaultOption
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
@@ -55,6 +58,7 @@ import com.tokopedia.salam.umrah.search.util.SearchOrCategory
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_search_sort.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_search.*
 import kotlinx.coroutines.Dispatchers
@@ -89,6 +93,9 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     @Inject
     lateinit var umrahTrackingAnalytics: UmrahTrackingAnalytics
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() = getComponent(UmrahSearchComponent::class.java).inject(this)
@@ -117,6 +124,24 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        fab_umrah_search_message.bringToFront()
+        fab_umrah_search_message.setOnClickListener {
+            if (userSessionInterface.isLoggedIn) {
+                context?.let {
+                    val intent = RouteManager.getIntent(it,
+                            ApplinkConst.TOPCHAT_ASKSELLER,
+                            "7298319", "",
+                            "seller", "Tokopedia Umroh", "")
+                    startActivity(intent)
+                }
+            } else {
+                goToLoginPage()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -356,6 +381,13 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
             UmrahSearchFilterFragment.selectedFilter = ParamFilter()
             isFilter = false
             umrahTrackingAnalytics.umrahSearchNCategoryBackClick(searchOrCategory)
+        }
+    }
+
+    private fun goToLoginPage() {
+        if (activity != null) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    UmrahHomepageFragment.REQUEST_CODE_LOGIN)
         }
     }
 
