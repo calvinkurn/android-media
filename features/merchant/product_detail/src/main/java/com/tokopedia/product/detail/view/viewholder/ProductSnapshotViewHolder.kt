@@ -47,7 +47,7 @@ class ProductSnapshotViewHolder(private val view: View,
         renderTradein(element.shouldShowTradein)
 
         view.tv_trade_in_promo.setOnClickListener {
-            listener.txtTradeinClicked(adapterPosition)
+            listener.txtTradeinClicked()
         }
 
         view.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }

@@ -12,12 +12,12 @@
 
     <ImageView
         android:id="@+id/pdp_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
         app:layout_constraintEnd_toStartOf="@+id/pdp_info_title"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
         android:visibility="invisible"
-        tools:visibility="invisible"
+        tools:visibility="visible"
         app:srcCompat="@drawable/ic_arrow_right_info" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -41,7 +41,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
         app:layout_constraintStart_toEndOf="@+id/pdp_icon"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pdp_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_icon"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         android:textColor="@color/charcoal_grey_88"
@@ -49,23 +50,24 @@
         android:visibility="invisible"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        tools:visibility="gone"
+        tools:visibility="visible"
         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_general_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_5"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
-        app:layout_constraintStart_toEndOf="@+id/pdp_icon"
-        app:layout_constraintStart_toStartOf="@+id/pdp_info_title"
-        app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:orientation="vertical"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="@dimen/dp_5"
-        android:visibility="gone"/>
+        app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
+        app:layout_constraintStart_toStartOf="@+id/pdp_icon"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
+        tools:visibility="visible" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/titleShimmering"
@@ -76,7 +78,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:width_weight="0.8"/>
+        app:width_weight="0.8"
+        tools:visibility="gone"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/descShimmering"
@@ -88,6 +91,7 @@
         android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintTop_toBottomOf="@+id/titleShimmering"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,16 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         name
         url
       }
+      txStats{
+        transactionSuccess
+        transactionReject
+        countSold
+       }
+      stats{
+        countView
+        countReview
+        countTalk
+      }
       shopID
       alias
       minOrder
@@ -152,7 +162,8 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         }
         ...on pdpDataInfo {
           title
-          applink
+          icon
+          isApplink
           content {
             icon
             text

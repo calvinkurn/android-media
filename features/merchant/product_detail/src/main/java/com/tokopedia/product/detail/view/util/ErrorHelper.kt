@@ -8,6 +8,9 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 object ErrorHelper {
 
@@ -22,11 +25,28 @@ object ErrorHelper {
         when (t) {
             is MessageErrorException -> {
                 shouldShowTobacoError = false
+                errorCode = when (t.errorCode) {
+                    CODE_PRODUCT_ERR_NOT_FOUND -> {
+                        GlobalError.PAGE_NOT_FOUND.toString()
+                    }
+                    else -> {
+                        CODE_ERR_GENERAL
+                    }
+                }
+            }
+            is TobacoErrorException -> {
+                shouldShowTobacoError = true
+                tobacoErrorData = TobacoErrorData(t.messages, t.title, t.button, t.url)
+            }
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                errorCode = GlobalError.NO_CONNECTION.toString()
+            }
+            is RuntimeException -> {
                 errorCode = when (t.localizedMessage.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> {
                         GlobalError.NO_CONNECTION.toString()
                     }
-                    ReponseStatus.NOT_FOUND -> {
+                    ReponseStatus.NOT_FOUND, CODE_PRODUCT_ERR_NOT_FOUND.toInt() -> {
                         GlobalError.PAGE_NOT_FOUND.toString()
                     }
                     ReponseStatus.INTERNAL_SERVER_ERROR -> {
@@ -35,20 +55,9 @@ object ErrorHelper {
                     else -> GlobalError.SERVER_ERROR.toString()
                 }
             }
-            is TobacoErrorException -> {
-                shouldShowTobacoError = true
-                tobacoErrorData = TobacoErrorData(t.messages, t.title, t.button, t.url)
-            }
             else -> {
                 shouldShowTobacoError = false
-                errorCode = when (errorCode) {
-                    CODE_PRODUCT_ERR_NOT_FOUND -> {
-                        GlobalError.PAGE_NOT_FOUND.toString()
-                    }
-                    else -> {
-                        CODE_ERR_GENERAL
-                    }
-                }
+                errorCode = CODE_ERR_GENERAL
             }
         }
 
