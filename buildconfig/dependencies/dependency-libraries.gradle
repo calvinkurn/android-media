@@ -2,14 +2,14 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.7-encrypt2",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.8",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.19-encrypt2",
-            network                 : "com.tokopedia.network:network:1.0.12-encrypt2",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.20",
+            network                 : "com.tokopedia.network:network:1.0.13",
             url                     : "com.tokopedia.url:url:1.0.2",
-            usecase                 : "com.tokopedia.usecase:usecase:1.0.2",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.8-encrypt2",
+            usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.6",
             akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.7-test",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2"
     ]
@@ -48,6 +48,7 @@ ext {
             logger                  : ":libraries:logger",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
+            playCore                : ":libraries:play_core",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",

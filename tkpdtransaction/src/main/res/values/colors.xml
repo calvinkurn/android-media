@@ -44,4 +44,6 @@
     <color name="detail_text_color">#31353b</color>
     <color name="tkpd_transaction_retry_failed_button">#5131353b</color>
 
+    <color name="orange">#ff5722</color>
+    <color name="green_template">#f3fef3</color>
 </resources>

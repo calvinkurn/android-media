@@ -4,11 +4,19 @@
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
     -->
-
+    <string name="title_salam">Salam</string>
+    <string name="title_umrah">Umrah</string>
     <!--host-->
-    <string name="host_order_detail_umrah" translatable="false">order-details</string>
+    <string name="umrah_host_order_detail" translatable="false">order-details</string>
+    <string name="umrah_host_s" translatable="false">s</string>
+
 
     <!--Umrah Path-->
-    <string name="path_umrah_order_detail" translatable="false">/umroh/.*\</string>
+    <string name="umrah_path_order_detail" translatable="false">/umroh/.*\</string>
+    <string name="umrah_path_search" translatable="false">/umroh/search</string>
+    <string name="umrah_path_category" translatable="false">/umroh/paket/.*\</string>
+    <string name="umrah_path_pdp" translatable="false">/umroh/produk/.*\</string>
+    <string name="umrah_home_page_path" translatable="false">/umroh</string>
+    <string name="umrah_checkout_path" translatable="false">/umroh/checkout</string>
 
 </resources>

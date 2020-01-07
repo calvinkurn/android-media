@@ -21,31 +21,24 @@ class UmrahSimpleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             if (isTitleBold) {
                 tg_umrah_title.weightType = Typography.BOLD
                 tg_umrah_title.setTypeface(null, Typeface.BOLD)
-                tg_umrah_title.setTextColor(resources.getColor(R.color.Neutral_N700_96))
+                tg_umrah_title.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
             } else {
                 tg_umrah_title.weightType = Typography.REGULAR
                 tg_umrah_title.setTypeface(null, Typeface.NORMAL)
-                tg_umrah_title.setTextColor(resources.getColor(R.color.Neutral_N700_44))
+                tg_umrah_title.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
             }
 
             if (item.description.isNotEmpty()) {
                 tg_umrah_desc.text = item.description
-                if (item.title == TOTAL_PEMBAYARAN) {
-                    tg_umrah_desc.setTextColor(resources.getColor(R.color.orange_500))
-                    tg_umrah_desc.setTypeface(null, Typeface.BOLD)
-                }else if(item.textColor.isNotEmpty()){
+                if (item.textColor.isNotEmpty()) {
                     tg_umrah_desc.setTextColor(Color.parseColor(item.textColor))
-                }else {
-                    tg_umrah_desc.setTextColor(resources.getColor(R.color.Neutral_N700_96))
+                } else {
+                    tg_umrah_desc.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
                 }
             } else {
                 tg_umrah_desc.visibility = View.GONE
             }
         }
-    }
-
-    companion object{
-        const val TOTAL_PEMBAYARAN = "Total Pembayaran"
     }
 
 }
