@@ -96,10 +96,10 @@ class HomePresenter(private val userSession: UserSessionInterface,
     private var isCache = true
 
     val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
-        if(fetchFirstData) fetchFirstData = false
         val homeViewModelValue = homeDataMapper.mapToHomeViewModel(it, isCache)
-
         if (!fetchFirstData) _trackingLiveData.value = Event(homeViewModelValue?.list?: listOf())
+        else fetchFirstData = false
+
         homeViewModelValue
     }
 
