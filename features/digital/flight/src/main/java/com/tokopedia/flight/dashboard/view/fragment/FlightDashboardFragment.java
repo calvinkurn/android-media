@@ -591,8 +591,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void renderBannerView(List<TravelCollectiveBannerModel.Banner> bannerList) {
         bannerLayout.setVisibility(View.VISIBLE);
         bannerView.setVisibility(View.VISIBLE);
-        bannerView.setCustomWidth(900);
-        bannerView.setCustomHeight(300);
+        bannerView.setCustomWidth(getResources().getDimensionPixelSize(R.dimen.banner_width));
+        bannerView.setCustomHeight(getResources().getDimensionPixelSize(R.dimen.banner_height));
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
         for (TravelCollectiveBannerModel.Banner bannerModel : bannerList) {
