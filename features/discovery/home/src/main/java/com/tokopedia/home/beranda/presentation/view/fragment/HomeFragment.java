@@ -542,14 +542,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.getUpdateNetworkLiveData().observe(this, resource -> {
             if(resource.getStatus() == Resource.Status.SUCCESS){
                 hideLoading();
-                if(presenter.getHomeLiveData().getValue() != null && !presenter.getHomeLiveData().getValue().getList().isEmpty()) {
-                    addImpressionToTrackingQueue(new ArrayList(presenter.getHomeLiveData().getValue().getList()));
-                }
             } else if(resource.getStatus() == Resource.Status.ERROR){
                 hideLoading();
                 showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(resource.getError()));
             } else {
                 showLoading();
+            }
+        });
+
+        presenter.getTrackingLiveData().observe(this, trackingDataEvent -> {
+            if (trackingDataEvent != null) {
+                addImpressionToTrackingQueue(new ArrayList(trackingDataEvent.getContentIfNotHandled()));
             }
         });
     }

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
@@ -14,6 +15,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.helper.map
 import com.tokopedia.home.beranda.presentation.view.HomeContract
@@ -95,11 +97,17 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
         if(fetchFirstData) fetchFirstData = false
-        homeDataMapper.mapToHomeViewModel(it, isCache)
+        val homeViewModelValue = homeDataMapper.mapToHomeViewModel(it, isCache)
+
+        if (!isCache) _trackingLiveData.value = Event(homeViewModelValue?.list?: listOf())
+        homeViewModelValue
     }
 
     private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
     val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
+
+    private val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
+    val trackingLiveData: LiveData<Event<List<Visitable<*>>>> get() = trackingLiveData
 
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
