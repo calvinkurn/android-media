@@ -31,7 +31,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val inspirationListener: HomeInspirationListener,
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
-                         private val videoPlayerListener: VideoPlayerListener,
                          private val homeReviewListener: HomeReviewListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
