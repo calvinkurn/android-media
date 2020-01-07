@@ -691,22 +691,24 @@ public class DynamicHomeChannel {
         }
 
         public HashMap<String, Object> getEnhanceImpressionBannerChannelMix() {
-            List<Object> list = convertPromoEnhanceBannerChannelMix();
             return (HashMap<String, Object>) DataLayer.mapOf(
                     "event", "promoView",
                     "eventCategory", "homepage",
-                    "eventAction", "impression on banner dynamic channel mix",
+                    "eventAction", "home banner impression",
                     "eventLabel", "",
-                    "channelId", id,
                     "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                            list.toArray(new Object[list.size()])
+                                        "promotions",
+                                    DataLayer.mapOf(
+                                            "id", channelId + "-" + getBanner().getId(),
+                                            "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().name,
+                                            "creative", getBanner().getAttribution(),
+                                            "creative_url", getBanner().getImageUrl(),
+                                            "position", String.valueOf(1)
                                     )
                             )
 
-                    ),
-                    "attribution", getHomeAttribution(1, getHeader().getName())
+                    )
             );
         }
 

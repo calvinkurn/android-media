@@ -578,8 +578,7 @@ public class HomePageTracking {
                                         legoAndCuratedList.toArray(new Object[legoAndCuratedList.size()])
                                 )
                         )
-                ),
-                "attribution", "2 - homeBanner"
+                )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
