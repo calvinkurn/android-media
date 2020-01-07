@@ -10,13 +10,22 @@ import com.tokopedia.tradein_common.repository.BaseRepository
 import javax.inject.Inject
 import javax.inject.Named
 
-class FindNavRepository @Inject constructor(@Named(FindNavConstants.GQL_NAV_SEARCH_PRODUCT) val productListQuery: String,
-                                            @Named(FindNavConstants.GQL_NAV_QUICK_FILTER) val quickFilterListQuery: String,
-                                            @Named(FindNavConstants.GQL_NAV_DYNAMIC_FILTER) val dynamicFilterListQuery: String,
-                                            @Named(FindNavConstants.GQL_NAV_RELATED_LINK) val relatedLinkListQuery: String) {
+class FindNavRepository @Inject constructor() {
 
     @Inject
     lateinit var baseRepository: BaseRepository
+
+    @field:[Inject Named(FindNavConstants.GQL_NAV_SEARCH_PRODUCT)]
+    lateinit var productListQuery: String
+
+    @field:[Inject Named(FindNavConstants.GQL_NAV_QUICK_FILTER)]
+    lateinit var quickFilterListQuery: String
+
+    @field:[Inject Named(FindNavConstants.GQL_NAV_DYNAMIC_FILTER)]
+    lateinit var dynamicFilterListQuery: String
+
+    @field:[Inject Named(FindNavConstants.GQL_NAV_RELATED_LINK)]
+    lateinit var relatedLinkListQuery: String
 
     suspend fun getProductList(reqParams: Map<String, String>): ProductListResponse {
         return baseRepository.getGQLData(productListQuery, ProductListResponse::class.java, reqParams) as ProductListResponse

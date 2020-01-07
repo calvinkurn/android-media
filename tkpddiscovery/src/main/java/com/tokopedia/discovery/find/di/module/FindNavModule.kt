@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.find.di.module
 
-import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
