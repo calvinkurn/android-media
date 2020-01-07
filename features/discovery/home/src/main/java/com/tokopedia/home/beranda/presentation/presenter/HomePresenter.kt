@@ -107,7 +107,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
 
     private val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
-    val trackingLiveData: LiveData<Event<List<Visitable<*>>>> get() = trackingLiveData
+    val trackingLiveData: LiveData<Event<List<Visitable<*>>>> get() = _trackingLiveData
 
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
