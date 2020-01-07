@@ -265,7 +265,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processToUpdateCartData(cartItemDataList: List<CartItemData>) {
+    override fun processUpdateCartData(cartItemDataList: List<CartItemData>) {
         view?.let {
             it.showProgressLoading()
 
@@ -296,9 +296,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processUpdateCartDataPromoStacking(cartItemDataList: List<CartItemData>,
-                                                    promoStackingData: PromoStackingData,
-                                                    goToDetail: Int) {
+    override fun processUpdateCartDataPromoGlobal(cartItemDataList: List<CartItemData>,
+                                                  promoStackingData: PromoStackingData,
+                                                  goToDetail: Int) {
         view?.let {
             it.showProgressLoading()
 
@@ -308,7 +308,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
-                            ?.subscribe(UpdateCartPromoGlobalSubscriber(it, this, cartListData, promoStackingData, goToDetail))
+                            ?.subscribe(UpdateCartPromoGlobalSubscriber(it, promoStackingData, goToDetail))
             )
         }
     }

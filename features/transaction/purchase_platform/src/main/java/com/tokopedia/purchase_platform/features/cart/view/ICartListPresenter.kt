@@ -36,11 +36,11 @@ interface ICartListPresenter {
 
     fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, appliedPromoCodeList: ArrayList<String>?, addWishList: Boolean, removeInsurance: Boolean)
 
-    fun processToUpdateCartData(cartItemDataList: List<CartItemData>)
+    fun processUpdateCartData(cartItemDataList: List<CartItemData>)
 
     fun processUpdateCartDataPromoMerchant(cartItemDataList: List<CartItemData>, shopGroupAvailableData: ShopGroupAvailableData)
 
-    fun processUpdateCartDataPromoStacking(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
+    fun processUpdateCartDataPromoGlobal(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
 
     fun processToUpdateAndReloadCartData(cartId: String)
 

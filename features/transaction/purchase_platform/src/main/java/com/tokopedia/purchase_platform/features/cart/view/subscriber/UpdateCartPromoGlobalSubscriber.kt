@@ -15,8 +15,6 @@ import rx.Subscriber
  */
 
 class UpdateCartPromoGlobalSubscriber(private val view: ICartListView?,
-                                      private val presenter: ICartListPresenter?,
-                                      private val cartListData: CartListData?,
                                       private val promoStackingData: PromoStackingData,
                                       private val stateGoTo: Int) : Subscriber<UpdateCartData>() {
     override fun onCompleted() {

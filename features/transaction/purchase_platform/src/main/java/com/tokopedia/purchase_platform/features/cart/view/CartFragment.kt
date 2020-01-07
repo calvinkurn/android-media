@@ -598,7 +598,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         cartAdapter.selectedInsuranceProductTitle)
             }
             if (selectedCartDataList != null) {
-                dPresenter.processToUpdateCartData(selectedCartDataList!!)
+                dPresenter.processUpdateCartData(selectedCartDataList!!)
             }
         } else {
             showToastMessageRed(message)
@@ -1078,7 +1078,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartItemData = selectedCartDataList
         if (cartItemData?.isNotEmpty() == true) {
             trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
-            dPresenter.processUpdateCartDataPromoStacking(cartItemData, cartPromoGlobal, GO_TO_LIST)
+            dPresenter.processUpdateCartDataPromoGlobal(cartItemData, cartPromoGlobal, GO_TO_LIST)
         } else {
             showToastMessageRed(getString(R.string.checkout_module_label_promo_no_item_checked))
         }
@@ -1118,7 +1118,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartItemData = selectedCartDataList
         if (cartItemData?.isNotEmpty() == true) {
             trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
-            dPresenter.processUpdateCartDataPromoStacking(cartItemData, dataGlobal, GO_TO_DETAIL)
+            dPresenter.processUpdateCartDataPromoGlobal(cartItemData, dataGlobal, GO_TO_DETAIL)
         }
     }
 
