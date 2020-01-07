@@ -43,7 +43,6 @@ dependencies {
     implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tkpdsession)
-    implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.resourcesCommon)
