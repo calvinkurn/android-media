@@ -6,17 +6,17 @@ import com.tokopedia.play_common.exception.UnsupportedVideoTypeException
 /**
  * Created by jegul on 29/11/19
  */
-sealed class TokopediaPlayVideoType {
+sealed class PlayVideoProtocol {
 
     abstract val uri: Uri
 
     companion object
 }
 
-data class Http(override val uri: Uri) : TokopediaPlayVideoType()
-data class Rtmp(override val uri: Uri) : TokopediaPlayVideoType()
+data class Http(override val uri: Uri) : PlayVideoProtocol()
+data class Rtmp(override val uri: Uri) : PlayVideoProtocol()
 
-fun TokopediaPlayVideoType.Companion.getVideoTypeByUri(uri: Uri): TokopediaPlayVideoType {
+fun PlayVideoProtocol.Companion.getVideoTypeByUri(uri: Uri): PlayVideoProtocol {
     return when (Scheme.getSchemeFromUri(uri)) {
         Scheme.Http, Scheme.Https -> Http(uri)
         Scheme.Rtmp -> Rtmp(uri)

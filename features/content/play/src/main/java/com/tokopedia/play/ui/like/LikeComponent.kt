@@ -5,8 +5,10 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
+import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -20,6 +22,18 @@ class LikeComponent(
 
     private val uiView = initView(container)
 
+    init {
+        launch {
+            bus.getSafeManagedFlow(ScreenStateEvent::class.java)
+                    .collect {
+                        when (it) {
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.LikeContent -> uiView.playLikeAnimation(it.shouldLike)
+                        }
+                    }
+        }
+    }
+
     override fun getContainerId(): Int {
         return uiView.containerId
     }
@@ -28,15 +42,15 @@ class LikeComponent(
         return bus.getSafeManagedFlow(LikeInteractionEvent::class.java)
     }
 
-    override fun onLikeClicked(view: LikeView) {
+    override fun onLikeClicked(view: LikeView, shouldLike: Boolean) {
         launch {
             bus.emit(
                     LikeInteractionEvent::class.java,
-                    LikeInteractionEvent.LikeClicked
+                    LikeInteractionEvent.LikeClicked(shouldLike)
             )
         }
     }
 
-    private fun initView(container: ViewGroup): UIView =
+    private fun initView(container: ViewGroup) =
             LikeView(container, this)
 }

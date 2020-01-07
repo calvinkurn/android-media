@@ -5,10 +5,10 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayVODType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -18,18 +18,29 @@ class PinnedComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
-) : UIComponent<PinnedInteractionEvent>, PinnedView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<PinnedInteractionEvent>, CoroutineScope by coroutineScope, PinnedView.Listener {
 
     private val uiView = initView(container)
+    private var shouldShow: Boolean = false
 
     init {
+        uiView.hide()
+
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetPinned -> uiView.setPinnedMessage(it.author, it.message)
-                            is ScreenStateEvent.SetVideo ->
-                                if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.SetPinned -> {
+                                shouldShow = if (it.pinnedMessage.shouldRemove) {
+                                    uiView.hide()
+                                    false
+                                } else {
+                                    uiView.show()
+                                    uiView.setPinnedMessage(it.pinnedMessage)
+                                    true
+                                }
+                            }
+                            is ScreenStateEvent.KeyboardStateChanged -> if (!it.isShown && shouldShow) uiView.show() else uiView.hide()
                         }
                     }
         }
@@ -43,12 +54,9 @@ class PinnedComponent(
         return bus.getSafeManagedFlow(PinnedInteractionEvent::class.java)
     }
 
-    override fun onPinnedActionClicked(pinnedView: PinnedView) {
+    override fun onPinnedActionClicked(view: PinnedView, applink: String, message: String) {
         launch {
-            bus.emit(
-                    PinnedInteractionEvent::class.java,
-                    PinnedInteractionEvent.ActionClicked
-            )
+            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedActionClicked(applink, message))
         }
     }
 

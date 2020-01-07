@@ -5,13 +5,15 @@
     <string name="play_duration_divider">/</string>
     <string name="play_live">Live</string>
     <string name="play_follow">Follow</string>
-    <string name="play_unfollow">Unfollow</string>
+    <string name="play_following">Following</string>
     <string name="play_try_again">Coba Lagi</string>
     <string name="play_watch_mode">Watch Mode</string>
+    <string name="play_message_socket_error">We are having trouble connecting with the server</string>
+    <string name="play_message_socket_reconnect">Connecting&#8230;</string>
 
     <!--mock-->
-    <string name="play_mock_view">2382</string>
-    <string name="play_mock_like">42 Likes</string>
+    <string name="play_mock_view">50</string>
+    <string name="play_mock_like">50 Likes</string>
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
     <string name="play_mock_stream_name">Review Australia Fabulous Shop Fashion Outlet</string>
     <string name="play_mock_shop_name">Yoenik Apparel</string>

@@ -8,9 +8,10 @@ ext {
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.3.50"
 
-    lifeCycleVersion = "2.0.0-rc01"
+    lifeCycleVersion = "2.1.0"
 
     supportLibraryVersion = '1.0.0'
+    constraintLayoutVersion = '1.1.2'
     playServiceVersion = '11.0.4'
     coroutineVersion = '1.3.3'
     retrofitVersion = '2.6.0'
@@ -67,8 +68,8 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     app = [
-        customerapp     : ":customerapp",
-        sellerapp       : ":sellerapp"
+            customerapp     : ":customerapp",
+            sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
@@ -83,8 +84,8 @@ ext {
     unifyGlobalErrorVersion = '1.0.1'
 
     gradlePlugin = [
-        crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
-        googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
+            crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
+            googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
     ]
 
     networkDependencies = [
@@ -112,7 +113,7 @@ ext {
             design              : "com.google.android.material:material:${supportLibraryVersion}",
             cardViewV7          : "androidx.cardview:cardview:${supportLibraryVersion}",
             exifinterface       : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
-            constraintLayout    : "androidx.constraintlayout:constraintlayout:1.1.2",
+            constraintLayout    : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
             preferenceV7        : "androidx.preference:preference:${supportLibraryVersion}",
             kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
             kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
@@ -215,7 +216,7 @@ ext {
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.4",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.5",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
     ]
@@ -278,15 +279,15 @@ ext {
     ]
 
     unifyDependencies = [
-       icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-       principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-       components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-       coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
-       calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
-       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
-       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
-       empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
-       global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
+            icon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
+            principles   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
+            components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
+            coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
+            calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
+            banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+            dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+            datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+            empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+            global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
     ]
 }

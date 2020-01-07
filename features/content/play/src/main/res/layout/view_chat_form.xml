@@ -10,9 +10,10 @@
         android:layout_height="@dimen/dp_40"
         android:background="@drawable/bg_play_chat_form"
         android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
         android:paddingTop="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_10"
+        app:layout_goneMarginEnd="@dimen/dp_0"
         >
 
         <EditText
@@ -20,15 +21,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:textColor="@color/Neutral_N0"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:hint="@string/play_chat_placeholder"
+            android:inputType="textVisiblePassword"
+            android:longClickable="false"
+            android:textColor="@color/Neutral_N0"
             android:textColorHint="@color/play_chat_text"
+            android:textCursorDrawable="@null"
             android:textSize="@dimen/sp_12"
-            android:lineHeight="@dimen/sp_20"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_send"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
         <androidx.appcompat.widget.AppCompatImageView

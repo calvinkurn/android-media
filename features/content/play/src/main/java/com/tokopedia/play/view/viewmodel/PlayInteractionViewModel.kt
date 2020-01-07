@@ -2,50 +2,95 @@ package com.tokopedia.play.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.tokopedia.play.ui.chatlist.model.PlayChat
-import kotlinx.coroutines.*
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.play.data.TotalLike
+import com.tokopedia.play.domain.GetTotalLikeUseCase
+import com.tokopedia.play.domain.PostFollowPartnerUseCase
+import com.tokopedia.play.domain.PostLikeUseCase
+import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
+import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 29/11/19
  */
-class PlayInteractionViewModel @Inject constructor() : ViewModel(), CoroutineScope {
+class PlayInteractionViewModel @Inject constructor(
+        private val getTotalLikeUseCase: GetTotalLikeUseCase,
+        private val postLikeUseCase: PostLikeUseCase,
+        private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
+        private val userSession: UserSessionInterface,
+        private val dispatchers: CoroutineDispatcherProvider
+) : BaseViewModel(dispatchers.main) {
 
     private val job = SupervisorJob()
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+    private val _observableTotalLikes = MutableLiveData<Result<TotalLike>>()
+    val observableTotalLikes: LiveData<Result<TotalLike>> = _observableTotalLikes
 
-    private val _observableChatList = MutableLiveData<PlayChat>()
-    val observableChatList: LiveData<PlayChat> = _observableChatList
+    private val _observableFollowPartner = MutableLiveData<Result<Boolean>>()
+    val observableFollowPartner: LiveData<Result<Boolean>> = _observableFollowPartner
 
-    private val listOfUser = listOf(
-            "Rifqi",
-            "Meyta",
-            "IJ",
-            "Yehez"
-    )
+    private val _observableLikeContent = MutableLiveData<Result<Boolean>>()
+    val observableLikeContent: LiveData<Result<Boolean>> = _observableLikeContent
 
-    private val listOfMessage = listOf(
-            "Great product!",
-            "I watched all of that till te end and i decided i will buy this dress.",
-            "Great, wellspoken review. Such a wonderful information. Thanks a lot!"
-    )
+    private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
+    val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
-    fun startObservingChatList() {
-        launch {
-            var id = 0
-            while (job.isActive) {
-                _observableChatList.value =
-                        PlayChat(
-                                ++id,
-                                listOfUser.random(),
-                                listOfMessage.random()
-                        )
-                delay(5000)
+    fun getTotalLikes(channelId: String) {
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                getTotalLikeUseCase.channelId = channelId
+                getTotalLikeUseCase.executeOnBackground()
             }
+            _observableTotalLikes.value = Success(response)
+        }) {
+            _observableTotalLikes.value = Fail(it)
+        }
+    }
+
+    fun doInteractionEvent(event: InteractionEvent) {
+        _observableLoggedInInteractionEvent.value = Event(
+                if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn
+                else LoginStateEvent.InteractionAllowed(event)
+        )
+    }
+
+    fun doLikeUnlike(channelId: String, shouldLike: Boolean) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                postLikeUseCase.params = PostLikeUseCase.createParam(channelId.toIntOrZero(), shouldLike)
+                postLikeUseCase.executeOnBackground()
+            }
+
+            _observableLikeContent.value = Success(response)
+        }) {
+            _observableLikeContent.value = Fail(it)
+        }
+    }
+
+    fun doFollow(shopId: Long, action: PartnerFollowAction) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                postFollowPartnerUseCase.params = PostFollowPartnerUseCase.createParam(shopId.toString(), action)
+                postFollowPartnerUseCase.executeOnBackground()
+            }
+
+            _observableFollowPartner.value = Success(response)
+        }) {
+            _observableFollowPartner.value = Fail(it)
         }
     }
 

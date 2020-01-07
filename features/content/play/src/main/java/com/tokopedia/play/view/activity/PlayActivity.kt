@@ -1,12 +1,10 @@
 package com.tokopedia.play.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -19,12 +17,6 @@ import javax.inject.Inject
  */
 class PlayActivity : BaseActivity() {
 
-    companion object {
-        fun createIntent(context: Context, channelId: Int) = Intent(context, PlayActivity::class.java).apply {
-            putExtra(PLAY_KEY_CHANNEL_ID, channelId.toString())
-        }
-    }
-
     @Inject
     lateinit var playLifecycleObserver: PlayLifecycleObserver
 
@@ -33,9 +25,7 @@ class PlayActivity : BaseActivity() {
         setContentView(R.layout.activity_play)
 
         inject()
-        lifecycle.addObserver(playLifecycleObserver)
-
-        initView()
+        setupPage()
         setupView()
     }
 
@@ -49,10 +39,14 @@ class PlayActivity : BaseActivity() {
     }
 
     private fun getFragment(): Fragment {
-        return PlayFragment.newInstance(intent?.getStringExtra(PLAY_KEY_CHANNEL_ID).orEmpty())
+        val channelId = intent?.data?.lastPathSegment
+        return PlayFragment.newInstance(channelId)
     }
 
-    private fun initView() {}
+    private fun setupPage() {
+        lifecycle.addObserver(playLifecycleObserver)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
 
     private fun setupView() {
         supportFragmentManager.beginTransaction()
