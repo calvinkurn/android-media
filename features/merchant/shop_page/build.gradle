@@ -81,6 +81,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.unifyDependencies.components
+    implementation project(rootProject.ext.features.productCard)
 
 }
 

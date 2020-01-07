@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +24,7 @@ public class StickySingleHeaderView extends FrameLayout
     private int mHeaderHeight = -1;
     private OnStickySingleHeaderAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private StaggeredGridLayoutManager layoutManagerStag;
 
     private int stickyPosition = 0;
     private RecyclerView.OnScrollListener onScrollListener;
@@ -41,7 +43,12 @@ public class StickySingleHeaderView extends FrameLayout
         super(context, attrs, defStyleAttr);
     }
 
-    public interface OnStickySingleHeaderAdapter{
+    public int getContainerHeight() {
+        mHeaderContainer.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+        return mHeaderContainer.getMeasuredHeight();
+    }
+
+    public interface OnStickySingleHeaderAdapter {
         int getStickyHeaderPosition();
         RecyclerView.ViewHolder createStickyViewHolder(ViewGroup parent);
         void bindSticky(RecyclerView.ViewHolder viewHolder);
@@ -63,7 +70,7 @@ public class StickySingleHeaderView extends FrameLayout
         mHeaderContainer.setClipToPadding(false);
         mHeaderContainer.setLayoutParams(
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        mHeaderContainer.setPadding(mRecyclerView.getPaddingLeft(),0, mRecyclerView.getPaddingRight(), 0);
+        mHeaderContainer.setPadding(mRecyclerView.getPaddingLeft(), 0, mRecyclerView.getPaddingRight(), 0);
         addView(mHeaderContainer);
         onScrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -78,7 +85,11 @@ public class StickySingleHeaderView extends FrameLayout
                     StickySingleHeaderView.this.adapter = (OnStickySingleHeaderAdapter) adapter;
                     StickySingleHeaderView.this.adapter.setListener(StickySingleHeaderView.this);
                     stickyPosition = StickySingleHeaderView.this.adapter.getStickyHeaderPosition();
-                    layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                    if (mRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+                        layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                    } else if (mRecyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+                        layoutManagerStag = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
+                    }
                 }
 
             }
@@ -93,10 +104,14 @@ public class StickySingleHeaderView extends FrameLayout
     }
 
     private void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        if (mHeaderHeight == -1 || adapter == null || layoutManager == null)
+        if (mHeaderHeight == -1 || adapter == null || (layoutManager == null && layoutManagerStag == null))
             return;
-
-        int firstCompletelyVisiblePosition = layoutManager.findFirstVisibleItemPosition();
+        int firstCompletelyVisiblePosition = -1;
+        if (layoutManager != null) {
+            firstCompletelyVisiblePosition = layoutManager.findFirstVisibleItemPosition();
+        } else {
+            firstCompletelyVisiblePosition = layoutManagerStag.findFirstVisibleItemPositions(null)[0];
+        }
         if (firstCompletelyVisiblePosition > -1) {
             if (firstCompletelyVisiblePosition > (stickyPosition - 1)) {
                 // make the etalase label always visible
