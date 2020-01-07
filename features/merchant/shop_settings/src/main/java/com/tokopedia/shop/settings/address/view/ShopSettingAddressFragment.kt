@@ -56,7 +56,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         context?.let { GraphqlClient.init(it) }
     }
@@ -109,7 +109,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (shopLocationViewModelList == null) {
             menu?.clear()
         } else {
@@ -122,7 +122,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         super.onDestroyView()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item?.itemId == R.id.menu_add) {
             createAddress()
             return true

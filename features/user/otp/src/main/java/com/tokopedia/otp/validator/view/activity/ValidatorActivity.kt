@@ -80,7 +80,7 @@ class ValidatorActivity : BaseSimpleActivity(), HasComponent<ValidatorComponent>
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState?.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpParams.otpType)
         outState?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpParams.email)

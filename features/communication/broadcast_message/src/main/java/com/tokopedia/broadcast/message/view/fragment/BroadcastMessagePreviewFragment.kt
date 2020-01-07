@@ -63,7 +63,7 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
         presenter.attachView(this)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         context?.let { GraphqlClient.init(it) }
     }

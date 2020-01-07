@@ -98,7 +98,7 @@ public class FingerprintModelGenerator {
     }
 
     private static String generateFingerprintData(Context context) {
-        Timber.w("P2" + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+        Timber.w("P2#FINGERPRINT#" + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
             + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
             + " | "+Build.TAGS);
 

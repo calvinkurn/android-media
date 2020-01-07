@@ -29,12 +29,14 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -143,6 +145,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
+        LogManager.init(this);
+        if (LogManager.instance != null) {
+            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        }
+        TimberWrapper.init(this);
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);

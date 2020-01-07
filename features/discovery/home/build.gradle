@@ -74,7 +74,7 @@ dependencies {
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    implementation rootProject.ext.dbDependencies.dbRoomCoroutine
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     // Unify

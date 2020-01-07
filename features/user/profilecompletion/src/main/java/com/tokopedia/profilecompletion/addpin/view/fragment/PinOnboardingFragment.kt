@@ -168,7 +168,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     override fun onDestroy() {
         super.onDestroy()
         addChangePinViewModel.getStatusPinResponse.removeObservers(this)
-        addChangePinViewModel.clear()
+        addChangePinViewModel.flush()
     }
 
     fun onBackPressed(){

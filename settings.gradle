@@ -1,3 +1,4 @@
+include ':top_ads_detail_sheet'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -20,7 +21,7 @@ buildCache {
 //apply from: "buildconfig/appcompile/compile-libraries-no-op.gradle"
  apply from: "buildconfig/appcompile/compile-customerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-customerapp-no-op.gradle"
-//apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
+apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
 //apply from: "buildconfig/appcompile/compile-testapp.gradle"
 

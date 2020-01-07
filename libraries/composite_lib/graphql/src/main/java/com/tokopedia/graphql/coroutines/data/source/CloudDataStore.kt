@@ -27,7 +27,7 @@ class CloudDataStore(private val api: GraphqlApiSuspend,
                 result = api.getResponseSuspend(requests.toMutableList())
             } catch (e: Throwable) {
                 if (e !is UnknownHostException && e!is SocketTimeoutException) {
-                    Timber.e(e, "P1$requests")
+                    Timber.e(e, "P1#REQUEST_ERROR_GQL#$requests")
                 }
                 throw e
             }

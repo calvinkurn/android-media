@@ -17,10 +17,6 @@ public interface TopChatRouter {
 
     boolean isIndicatorVisible();
 
-    String getChannelFragmentTag();
-
-    Fragment getChannelFragment(Bundle bundle);
-
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getShopPageIntent(Context context, String shopId);

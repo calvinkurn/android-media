@@ -9,7 +9,7 @@
     android:background="@drawable/bg_shadow_top">
 
     <LinearLayout android:id="@+id/btn_buy"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/orange_red"
         android:gravity="center"
@@ -18,8 +18,8 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/btn_promote_topads"
-        app:layout_constraintEnd_toStartOf="@+id/btn_promote_topads"
+        app:layout_constraintRight_toLeftOf="@+id/container_btn_promote_topads"
+        app:layout_constraintEnd_toStartOf="@+id/container_btn_promote_topads"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -45,24 +45,26 @@
 
     </LinearLayout>
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/btn_promote_topads"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:id="@+id/container_btn_promote_topads"
+        android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:text="@string/promote_topads"
-        android:gravity="center"
-        android:textColor="@color/color_href_link"
-        android:background="@drawable/rect_orange"
-        android:visibility="gone"
         tools:visibility="gone"
-        app:fontSize="title"
-        app:weight="medium"
-        app:layout_constraintLeft_toRightOf="@+id/btn_buy"
-        app:layout_constraintStart_toEndOf="@+id/btn_buy"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_buy"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/btn_buy"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/btn_promote_topads"
+            style="@style/BtnTopAdsPDPIklankan"
+            android:text="@string/promote_topads"
+            app:fontSize="title" />
+    </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_byme"

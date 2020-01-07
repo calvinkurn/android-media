@@ -133,6 +133,8 @@ include "features:promo:loyalty"
 include "features:promo:loyalty_common"
 
 include "features:top_ads:top_ads_autoads"
+include "features:top_ads:top_ads_detail_sheet"
+include "features:top_ads:top_ads_widget"
 include "features:top_ads:top_ads_dashboard"
 include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
@@ -178,6 +180,8 @@ include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
 include "features:discovery:smart_recycler_diffutil_helper"
 include "features:user:seamless_login"
+
+include 'features:fcm_common'
 
 include 'tkpdcore'
 include 'tkpdinbox'

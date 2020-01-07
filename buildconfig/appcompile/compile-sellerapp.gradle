@@ -13,7 +13,6 @@ include "features:communication:broadcast_message"
 include "features:communication:broadcast_message_common"
 
 include "features:content:affiliate_common"
-include "features:content:createpost"
 include "features:content:feed_component"
 include "features:content:kol"
 include "features:content:kol_common"
@@ -34,6 +33,10 @@ include "features:discovery:wishlist_common"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
+include "features:fintech:common_wallet"
+//include "features:fintech:saldo_details_no_op"
+
+include "features:fcm_common"
 
 include "features:im:common_promo"
 include "features:im:referral"
@@ -43,9 +46,12 @@ include "features:logistic:logisticdata"
 include "features:logistic:tracking"
 include "features:logistic:logisticcart"
 
+include "features:category:tradein"
+
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
+//include "features:merchant:gold_merchant_subscribe_no_op"
 include "features:merchant:power_merchant_subscribe"
 include "features:merchant:product_draft_database"
 include "features:merchant:product_detail"
@@ -60,12 +66,14 @@ include "features:merchant:shop_common"
 include "features:merchant:shop_page"
 //include "features:merchant:shop_page_no_op"
 include "features:merchant:shop_open"
+//include "features:merchant:shop_open_no_op"
 include "features:merchant:shop_settings"
 include "features:merchant:shop_etalase_picker"
 //include "features:merchant:shop_etalase_picker_no_op"
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"
+//include "features:operational:contact_us_no_op"
 
 include "features:payment:common_payment"
 include "features:payment:payment"
@@ -83,12 +91,14 @@ include "features:promo:promo_checkout"
 include "features:promo:promo_checkout_common"
 
 include "features:top_ads:top_ads_dashboard"
+//include "features:top_ads:top_ads_dashboard_no_op"
 include "features:top_ads:top_ads_management"
 include "features:top_ads:top_ads_autoads"
 //include "features:top_ads:top_ads_management_no_op"
 include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
+include "features:top_ads:top_ads_detail_sheet"
 
 include "features:transaction:atc_common"
 include "features:transaction:express_checkout"
@@ -98,6 +108,8 @@ include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 include "features:transaction:purchase_platform_common"
+
+include "features:top_ads:top_ads_widget"
 
 include "features:user:attachproduct"
 include "features:user:chat_common"
@@ -114,6 +126,7 @@ include "features:user:otp"
 include "features:user:phoneverification"
 include "features:user:settingbank"
 include "features:user:sessioncommon"
+include "features:user:stickylogin"
 include "features:user:talk"
 include "features:user:topchat"
 //include "features:user:topchat_no_op"
@@ -123,13 +136,13 @@ include "features:user:user_identification"
 include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:user:profilecompletion"
-include "features:user:stickylogin"
 
 include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:tradein_common"
 include "features:fintech:merchant_lending_widget"
 
+include 'tkpdloyalty'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpdtransaction'

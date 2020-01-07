@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".view.activity.SaldoDepositActivity"
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoDepositActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -34,7 +34,7 @@
             android:theme="@style/Theme.White.PopupTransparent"/>
 
         <activity
-            android:name=".view.activity.SaldoIntroActivity"
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
             android:label="@string/saldo_detail_title_header_saldo_intro"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent">

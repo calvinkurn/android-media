@@ -52,7 +52,7 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
     }
 
     private fun setDialogShowListener() {
-        dialog.setOnShowListener {
+        dialog?.setOnShowListener {
             bottomSheetInternal = view?.parent as FrameLayout
             context?.let {c ->
                 bottomSheetInternal?.let { b ->
@@ -81,12 +81,12 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
         }
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         closableCallBack?.onCloseClick(this)
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         closableCallBack?.onCloseClick(this)
     }

@@ -1,4 +1,4 @@
-query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
+query getPDPInfo($productID:Int!, $shopDomain: String!, $productKey: String!, $shopID:Int!){
     getPDPInfo(productID: $productID, shopDomain: $shopDomain, productKey: $productKey){
         basic {
             id
@@ -126,5 +126,17 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
           isActive
           imgURL
         }
+    }
+   	topAdsGetProductManage(type:1, shop_id:$shopID, item_id:$productID){
+			data {
+			  ad_id
+			  ad_type
+			  is_enable_ad
+			  item_id
+			  item_image
+			  item_name
+			  shop_id
+			  manage_link
+			}
     }
 }

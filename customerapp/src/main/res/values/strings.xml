@@ -180,4 +180,6 @@
     <string name="posted_product" translatable="false">Produk Dipost</string>
     <string name="title_af_dashboard_detail" translatable="false">Riwayat</string>
     <string name="text_button_sort" translatable="false">Sort</string>
+
+    <string name="saldo_webview_title">Tokopedia</string>
 </resources>

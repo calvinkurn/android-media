@@ -18,8 +18,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
 
-        <receiver android:name=".notification.ReviewNotificationUpdateExample" />
+        <service android:name=".presentation.service.DeleteFirebaseTokenService"
+            android:exported="false"/>
 
+        <receiver android:name=".notification.ReviewNotificationUpdateExample" />
     </application>
 
 </manifest>

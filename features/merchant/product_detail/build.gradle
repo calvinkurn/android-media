@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
+    implementation project(rootProject.ext.features.topAdsDetailSheet)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)

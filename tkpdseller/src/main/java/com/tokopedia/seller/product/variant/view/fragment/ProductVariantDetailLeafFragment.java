@@ -5,15 +5,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.design.text.CounterInputView;
@@ -21,18 +21,18 @@ import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.utils.LabelSwitch;
+import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
-import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
-import com.tokopedia.product.manage.item.common.util.StockTypeDef;
-import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
-import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher;
 
 import java.util.List;
 
@@ -42,8 +42,9 @@ import java.util.List;
 
 public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
-    public static final int MAX_STOCK = 10000;
+    public static final int MAX_STOCK = 999999;
     public static final int MIN_STOCK = 1;
+    public static final int MIN_STOCK_EDIT = 0;
     private OnProductVariantDetailLeafFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
 
@@ -65,6 +66,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         ProductVariantCombinationViewModel getProductVariantCombinationViewModel();
 
         String getVariantName();
+
+        boolean isAddStatus();
 
         @CurrencyTypeDef
         int getCurrencyTypeDef();
@@ -126,7 +129,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_variant_detail_leaf, container, false);
         VerticalLabelView lvTitle = view.findViewById(R.id.lv_title);
-        labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
+        labelSwitchStatus = view.findViewById(R.id.label_switch_product_status);
         counterInputViewStock = view.findViewById(R.id.counter_input_view_stock_total);
         etSku = view.findViewById(R.id.edit_text_sku);
         tvVariantStockInfo = view.findViewById(R.id.tv_variant_info);
@@ -155,7 +158,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         }
         counterInputPrice.addTextChangedListener(numberTextWatcher);
         counterInputPrice.setCounterValue(productVariantCombinationViewModel.getPriceVar());
-        if(listener.hasWholesale()){
+        if (listener.hasWholesale()) {
             counterInputPrice.setEnabled(false);
         }
 
@@ -163,45 +166,46 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
 
-        if (isStockLimited()) {
-            counterInputViewStock.setVisibility(View.VISIBLE);
-            counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
-            counterInputViewStock.addTextChangedListener(new AfterTextWatcher() {
-                @Override
-                public void afterTextChanged(Editable s) {
-                    counterInputViewStock.removeTextChangedListener(this);
-                    String sString = StringUtils.omitNonNumeric(s.toString());
-                    int stock;
-                    if (TextUtils.isEmpty(sString) || sString.equals("0")) {
-                        stock = 1;
-                    } else {
-                        stock = (int)counterInputViewStock.getDoubleValue();
-                    }
-                    counterInputViewStock.setValue(stock);
-                    checkStockValid(stock);
-                    counterInputViewStock.addTextChangedListener(this);
+        counterInputViewStock.setVisibility(View.VISIBLE);
 
-                    if (productVariantCombinationViewModel.getStock() == stock) {
-                        return;
-                    }
-                    productVariantCombinationViewModel.setStock(stock);
-                    if (stock == 0) {
-                        labelSwitchStatus.setChecked(false);
-                    } else {
-                        labelSwitchStatus.setChecked(true);
-                    }
-                }
-            });
+        if (listener.isAddStatus()) {
+            labelSwitchStatus.setChecked(true);
+            labelSwitchStatus.setClickable(false);
+            labelSwitchStatus.disableSwitch();
+            counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
+            if (productVariantCombinationViewModel.getStock() == 0) {
+                productVariantCombinationViewModel.setStock(1);
+            } else {
+                productVariantCombinationViewModel.setStock(productVariantCombinationViewModel.getStock());
+            }
+
         } else {
-            counterInputViewStock.setVisibility(View.GONE);
+            labelSwitchStatus.setChecked(productVariantCombinationViewModel.getStock() != 0);
+            counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
         }
 
-        labelSwitchStatus.setListenerValue(new CompoundButton.OnCheckedChangeListener() {
+        counterInputViewStock.addTextChangedListener(new AfterTextWatcher() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                onLabelSwitchStatusChanged(isChecked);
+            public void afterTextChanged(Editable s) {
+                int stock = (int) counterInputViewStock.getDoubleValue();
+
+                String sString = StringUtils.omitNonNumeric(s.toString());
+                if (TextUtils.isEmpty(sString) || sString.equals("0")) {
+                    if (listener.isAddStatus()) {
+                        stock = 1;
+                    }
+                }
+
+                checkStockValid(stock);
+                if (productVariantCombinationViewModel.getStock() == stock) {
+                    return;
+                }
+
+                productVariantCombinationViewModel.setStock(stock);
             }
         });
+
+        labelSwitchStatus.setListenerValue((buttonView, isChecked) -> onLabelSwitchStatusChanged(isChecked));
 
         labelSwitchStatus.setChecked(productVariantCombinationViewModel.isActive());
         onLabelSwitchStatusChanged(productVariantCombinationViewModel.isActive());
@@ -243,11 +247,17 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     }
 
     private boolean checkStockValid(int stock) {
+        int minStock;
+        if (listener.isAddStatus()) {
+            minStock = MIN_STOCK;
+        } else {
+            minStock = MIN_STOCK_EDIT;
+        }
+
         if (listener.getProductVariantCombinationViewModel().isActive() &&
                 isStockLimited()) {
-            if (stock < MIN_STOCK || stock > MAX_STOCK) {
-                counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
-                        getContext().getString(R.string.product_minimum_total_stock),
+            if (stock < minStock || stock > MAX_STOCK) {counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
+                        String.valueOf(minStock),
                         getContext().getString(R.string.product_maximum_total_stock)));
                 return false;
             }
@@ -290,27 +300,12 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
     private void onLabelSwitchStatusChanged(boolean isChecked) {
         setStockLabel(isChecked);
-        productVariantCombinationViewModel.setActive(isChecked);
-
-        // counter input for stock only visible for stock limited only
-        if (isStockLimited()) {
-            if (isChecked) {
-                if (((int) counterInputViewStock.getDoubleValue()) == 0) {
-                    counterInputViewStock.setValue(1);
-                }
-                counterInputViewStock.setEnabled(true);
-            } else {
-                counterInputViewStock.setValue(0);
-                counterInputViewStock.setEnabled(false);
-            }
-        } else {
-            productVariantCombinationViewModel.setStock(0);
-            if (isChecked) {
-                tvVariantStockInfo.setVisibility(View.VISIBLE);
-            } else {
-                tvVariantStockInfo.setVisibility(View.GONE);
-            }
+        if (listener.isAddStatus() && ((int) counterInputViewStock.getDoubleValue()) == 0) {
+            counterInputViewStock.setValue(1);
         }
+        productVariantCombinationViewModel.setActive(isChecked);
+        counterInputViewStock.setEnabled(true);
+
     }
 
     private boolean isStockLimited() {
@@ -319,9 +314,9 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
     private void setStockLabel(boolean isChecked) {
         if (isChecked) {
-            labelSwitchStatus.setSummary(getString(R.string.product_variant_status_available));
+            labelSwitchStatus.subTitleText(getString(R.string.label_always_active));
         } else {
-            labelSwitchStatus.setSummary(getString(R.string.product_variant_status_not_available));
+            labelSwitchStatus.subTitleText(getString(R.string.label_always_nonactive));
         }
     }
 

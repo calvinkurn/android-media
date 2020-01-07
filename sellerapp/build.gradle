@@ -275,6 +275,7 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.topAdsDashboard)
+    implementation project(rootProject.ext.features.topAdsWidget)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
     implementation project(rootProject.ext.features.report)
@@ -337,6 +338,8 @@ dependencies {
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.fcm_common)
+    implementation project(rootProject.ext.features.profileCompletion)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -347,6 +350,9 @@ dependencies {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
+    }
+    implementation(rootProject.ext.debugToolsDependencies.timber) {
+        exclude group: 'org.jetbrains', module: 'annotations'
     }
 
     implementation project(rootProject.ext.libraries.analytics)
@@ -373,6 +379,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.gson
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
@@ -380,6 +387,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.cpm)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
