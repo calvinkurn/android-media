@@ -192,7 +192,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
             if (processInfo.pid == android.os.Process.myPid()) {
-                return com.tokopedia.config.GlobalConfig.getPackageApplicationName().equals(processInfo.processName);
+                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
             }
         }
         return false;
