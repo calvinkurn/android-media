@@ -36,7 +36,7 @@ class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
             updateAndReloadCartListData.cartListData?.let {
                 presenter?.setCartListData(it)
                 view.renderLoadGetCartDataFinish()
-                view.renderInitialGetCartListDataSuccess(cartListData)
+                view.renderInitialGetCartListDataSuccess(updateAndReloadCartListData.cartListData)
             }
         }
     }

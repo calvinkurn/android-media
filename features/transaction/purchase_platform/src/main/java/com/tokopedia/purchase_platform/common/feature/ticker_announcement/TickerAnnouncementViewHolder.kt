@@ -2,8 +2,6 @@ package com.tokopedia.purchase_platform.common.feature.ticker_announcement
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.item_cart_ticker.view.*

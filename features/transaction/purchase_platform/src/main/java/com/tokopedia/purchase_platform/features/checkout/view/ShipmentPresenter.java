@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
