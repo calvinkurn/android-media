@@ -100,7 +100,8 @@
     <string name="digital_cart_checkout_pay_label">Bayar</string>
     <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
     <string name="digital_cart_detail_close_label">Tutup</string>
-    <string name="digital_cart_toolbart_title">Checkout</string>
+    <string name="digital_cart_toolbar_title">Checkout</string>
+    <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_cart_additional_payment_cost_label">Harga</string>
     <string name="digital_cart_additional_payment_promo_label">Promo</string>
     <string name="digital_cart_additional_payment_total_cost_label">Total Bayar</string>

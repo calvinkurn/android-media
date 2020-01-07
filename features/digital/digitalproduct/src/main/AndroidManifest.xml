@@ -9,14 +9,10 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity
-            android:name=".product.view.activity.DigitalUssdActivity"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.view.activity.DigitalSearchNumberActivity"
-            android:label="Nomor Favorit"
+            android:label="@string/digital_title_fav_number"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
@@ -67,7 +63,7 @@
         <activity
             android:name=".newcart.presentation.activity.DigitalCartActivity"
             android:theme="@style/Theme.White"
-            android:label="@string/digital_cart_toolbart_title"
+            android:label="@string/digital_cart_toolbar_title"
             android:screenOrientation="portrait" >
 
             <intent-filter android:autoVerify="true">
@@ -85,6 +81,24 @@
                     android:path="@string/path_telco_cart" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".product.view.activity.DigitalUssdActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.tokopedia.digital.product.service.USSDAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/config_accessibility_service"/>
+        </service>
+
     </application>
 
 </manifest>
