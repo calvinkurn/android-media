@@ -301,6 +301,11 @@ public class CategoryProductStyle99View extends
     private ClientNumberInputView.ActionListener getActionListenerClientNumberInputView() {
         return new ClientNumberInputView.ActionListener() {
             @Override
+            public void onButtonCameraPickerClicked() {
+
+            }
+
+            @Override
             public void onButtonContactPickerClicked() {
 
             }

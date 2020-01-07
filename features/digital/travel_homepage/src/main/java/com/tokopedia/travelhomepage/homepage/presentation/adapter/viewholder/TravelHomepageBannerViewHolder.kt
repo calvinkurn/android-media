@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.dynamic.BannerViewDynamicBackground
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment
@@ -21,7 +22,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
         BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
     private val bannerView: BannerViewDynamicBackground = itemView.findViewById(R.id.banner)
-    private lateinit var bannerList: List<TravelHomepageBannerModel.Banner>
+    private lateinit var bannerList: List<TravelCollectiveBannerModel.Banner>
     private var showAllUrl: String = ""
 
     init {
@@ -35,11 +36,11 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     override fun bind(element: TravelHomepageBannerModel) {
         if (element.isLoaded) {
             try {
-                bannerList = element.banners
+                bannerList = element.travelCollectiveBannerModel.banners
                 bannerView.shouldShowSeeAllButton(bannerList.isNotEmpty())
 
                 val promoUrls = arrayListOf<String>()
-                showAllUrl = element.meta.appUrl
+                showAllUrl = element.travelCollectiveBannerModel.meta.appUrl
                 for (slidesModel in bannerList) {
                     promoUrls.add(slidesModel.attribute.imageUrl)
                 }

@@ -24,7 +24,7 @@ import com.tokopedia.purchase_platform.common.insurance.utils.*
 import java.util.*
 
 
-class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActionlistener: InsuranceItemActionListener) : RecyclerView.ViewHolder(itemView) {
+class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActionlistener: InsuranceItemActionListener?) : RecyclerView.ViewHolder(itemView) {
     private val tvInsuranceApplicationDetails: TextView
 
     private val cbSelectInsurance: CheckBox
@@ -257,10 +257,10 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 tvChangeInsuranceApplicationDetails.show()
                 cbSelectInsurance.show()
                 cbSelectInsurance.setOnCheckedChangeListener { buttonView, isChecked ->
-                    insuranceItemActionlistener.sendEventChangeInsuranceState(isChecked, insuranceCartDigitalProduct.productInfo.title)
+                    insuranceItemActionlistener?.sendEventChangeInsuranceState(isChecked, insuranceCartDigitalProduct.productInfo.title)
                     if (!onBind) {
                         insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn = isChecked
-                        insuranceItemActionlistener.onInsuranceSelectStateChanges()
+                        insuranceItemActionlistener?.onInsuranceSelectStateChanges()
                     }
                 }
 
@@ -272,8 +272,8 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 ivDeleteInsurance.setOnClickListener {
                     val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
                     insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct)
-                    insuranceItemActionlistener.sendEventDeleteInsurance(insuranceCartDigitalProduct.productInfo.title)
-                    insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true)
+                    insuranceItemActionlistener?.sendEventDeleteInsurance(insuranceCartDigitalProduct.productInfo.title)
+                    insuranceItemActionlistener?.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true)
                 }
             } else {
                 tvChangeInsuranceApplicationDetails.hide()
@@ -331,7 +331,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
     private fun setValidateListener() {
         btnValidate!!.setOnClickListener { v ->
             if (validateViews()) {
-                insuranceItemActionlistener.updateInsuranceProductData(insuranceCartShops!!, updateInsuranceProductApplicationDetailsArrayList)
+                insuranceItemActionlistener?.updateInsuranceProductData(insuranceCartShops!!, updateInsuranceProductApplicationDetailsArrayList)
                 closeableBottomSheetDialog.dismiss()
             }
         }

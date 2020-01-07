@@ -150,6 +150,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String CLICK_PDP = "clickPDP";
     private static final String DIGITAL_HOMEPAGE = "digital - homepage";
     private static final String CLICK_UPDATE_SALDO = "click update saldo ";
+    private static final String CLICK_HOMEPAGE_OCR = "clickHomepage";
+    private static final String CATEGORY_OCR = "digital - native";
+    private static final String ACTION_OCR = "click camera icon";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -160,6 +163,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_CONTACT_PICKER = 1005;
     private static final int REQUEST_CODE_CART_DIGITAL = 1006;
     private static final int REQUEST_CODE_CHECK_SALDO_EMONEY = 1007;
+    private static final int REQUEST_CODE_CAMERA_OCR = 1008;
 
     private NestedScrollView mainHolderContainer;
     private ProgressBar pbMainLoading;
@@ -822,6 +826,14 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onButtonCameraPickerClicked() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_HOMEPAGE_OCR, CATEGORY_OCR, ACTION_OCR, ""));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CAMERA_OCR);
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_OCR);
+    }
+
+    @Override
     public void onProductDetailLinkClicked(String url) {
         RouteManager.route(getContext(), url);
     }
@@ -980,6 +992,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         presenter.processGetCategoryAndBannerData(
                                 categoryId, operatorId, productId, clientNumber);
                     }
+                }
+                break;
+            case REQUEST_CODE_CAMERA_OCR:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    String clientNumber = data.getStringExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR);
+                    showToastMessage(getString(R.string.digital_success_message_scan_ocr));
+                    digitalProductView.renderClientNumber(clientNumber);
                 }
                 break;
         }
