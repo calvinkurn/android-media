@@ -1,12 +1,10 @@
 package com.tokopedia.travelhomepage.destination.presentation.fragment
 
-import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -28,7 +26,15 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_travel_homepage_destination.*
 import javax.inject.Inject
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.travelhomepage.destination.widget.ImageViewPager
+import kotlinx.android.synthetic.main.layout_image_slider.view.*
+import android.widget.LinearLayout
+import android.graphics.Point
+import android.os.Build
+import android.widget.FrameLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
+
 
 /**
  * @author by jessica on 2019-12-20
@@ -42,8 +48,7 @@ OnViewHolderBindListener{
     lateinit var destinationViewModel: TravelDestinationViewModel
 
     var cityId: String = ""
-
-    var webUrl: String = "https://m.tokopedia.com/travel-entertainment/bandung/"
+    var webUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +90,25 @@ OnViewHolderBindListener{
         super.onViewCreated(view, savedInstanceState)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+
+        activity?.let {
+            val display = it.windowManager.defaultDisplay
+            val size = Point()
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    display.getRealSize(size)
+                } else display.getSize(size)
+            } catch (err: NoSuchMethodError) {
+                display.getSize(size)
+            }
+            val height = size.y
+
+            val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height * 4 / 5)
+            lp.collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
+            lp.parallaxMultiplier = 0.6f
+            toolbar_container.layoutParams = lp
+            toolbar_container.requestLayout()
+        }
 
         destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
 
@@ -145,9 +169,14 @@ OnViewHolderBindListener{
         destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), cityId)
     }
 
-    override fun onCitySummaryLoaded(imgUrls: List<String>) {
+    override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int) {
         if (imgUrls.isNotEmpty()) {
             travel_homepage_destination_view_pager.setImages(imgUrls)
+        }
+        travel_homepage_destination_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
+            override fun onImageClicked(position: Int) {
+                ImagePreviewSlider.instance.start(context, "lalalala", imgUrls, imgUrls, position, travel_homepage_destination_view_pager.image_banner)
+            }
         }
         travel_homepage_destination_view_pager.buildView()
     }
@@ -162,12 +191,6 @@ OnViewHolderBindListener{
 
     override fun onCityArticleVHBind() {
         destinationViewModel.getCityArticles(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article), cityId)
-    }
-
-    private fun openImagePreview(index: Int) {
-        context?.run {
-//            startActivity(ImagePreviewSliderActivity.getCallingIntent(this, "LALALA", imageList, thumbnailImageList, index))
-        }
     }
 
     companion object {

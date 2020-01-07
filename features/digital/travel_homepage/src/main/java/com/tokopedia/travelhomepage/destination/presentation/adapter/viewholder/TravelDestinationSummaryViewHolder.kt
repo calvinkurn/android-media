@@ -30,7 +30,7 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
                 for (img in element.images) {
                     list.add(img.imageUrl)
                 }
-                onViewHolderBindListener.onCitySummaryLoaded(list)
+                onViewHolderBindListener.onCitySummaryLoaded(list, 0)
 
                 destination_summary_title.text = Html.fromHtml(element.title)
                 destination_summary_description.text = element.description

@@ -7,30 +7,37 @@
     android:orientation="vertical"
     android:padding="@dimen/layout_lvl2">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/destination_summary_title"
+    <LinearLayout
+        android:id="@+id/peek_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
-        android:textSize="@dimen/fontSize_lvl7"
-        app:typographyType="heading_2"
-        tools:text="Jakarta, Indonesia" />
+        android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/arrow_up"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24"
-        android:layout_gravity="center"/>
-    
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:typographyType="body_2"
-        android:textColor="@color/Neutral_N700_68"
-        android:text="Geser ke atas"
-        android:layout_gravity="center"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/destination_summary_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl7"
+            app:typographyType="heading_2"
+            tools:text="Jakarta, Indonesia" />
+
+        <ImageView
+            android:id="@+id/arrow_up"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24"
+            android:layout_gravity="center"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            android:textColor="@color/Neutral_N700_68"
+            android:text="Geser ke atas"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/destination_summary_description"

@@ -19,6 +19,7 @@ import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
+import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
@@ -238,6 +239,12 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onTrackPopularDestinationClick(destination: TravelHomepageDestinationModel.Destination, position: Int) {
         travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position)
+    }
+
+    override fun onPopularDestinationClick(appUrl: String, webUrl: String) {
+        context?.let {
+            startActivity(TravelDestinationActivity.createInstance(it, webUrl))
+        }
     }
 
     companion object {

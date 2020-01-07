@@ -25,4 +25,6 @@ interface OnItemClickListener {
 
     fun onItemClick(appUrl: String, webUrl: String = "")
 
+    fun onPopularDestinationClick(appUrl: String, webUrl: String)
+
 }

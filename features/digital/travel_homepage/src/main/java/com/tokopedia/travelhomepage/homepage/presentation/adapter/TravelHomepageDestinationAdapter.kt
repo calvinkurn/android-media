@@ -41,10 +41,11 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                 image.loadImage(destination.attributes.imageUrl)
                 title.text = destination.attributes.title
                 subtitle.text = destination.attributes.subtitle
+                destination_container.invalidate()
             }
             if (listener != null) itemView.setOnClickListener {
                 listener.onTrackPopularDestinationClick(destination, position+1)
-                listener.onItemClick(destination.attributes.appUrl)
+                listener.onPopularDestinationClick(destination.attributes.appUrl, destination.attributes.webUrl)
             }
         }
 
