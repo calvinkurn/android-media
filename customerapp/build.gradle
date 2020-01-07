@@ -308,7 +308,6 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.commonTopupBills)
     implementation project(rootProject.ext.features.otp)
