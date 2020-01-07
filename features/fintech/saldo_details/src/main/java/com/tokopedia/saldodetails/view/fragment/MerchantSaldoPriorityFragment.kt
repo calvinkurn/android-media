@@ -61,9 +61,9 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
         val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_prioritas, container, false)
         val bundle = arguments
 
-        val saveInstanceCacheManagerId = bundle?.getInt(BUNDLE_PARAM_SELLER_DETAILS_ID) ?: 0
-        val saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCacheManagerId.toString())
-        sellerDetails = saveInstanceCacheManager.get<GqlDetailsResponse>(BUNDLE_PARAM_SELLER_DETAILS, GqlDetailsResponse::class.java)
+        val saveInstanceCacheManagerId = bundle?.getString(BUNDLE_PARAM_SELLER_DETAILS_ID) ?: ""
+        val saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCacheManagerId)
+        sellerDetails = saveInstanceCacheManager.get(BUNDLE_PARAM_SELLER_DETAILS, GqlDetailsResponse::class.java)
         initViews(view)
         return view
     }

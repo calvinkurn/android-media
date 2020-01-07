@@ -642,8 +642,8 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         val bundle = Bundle()
         saveInstanceCacheManager = SaveInstanceCacheManager(context!!, true)
         saveInstanceCacheManager!!.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response)
-        if (saveInstanceCacheManager!!.id != null) {
-            bundle.putInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, Integer.parseInt(saveInstanceCacheManager!!.id!!))
+        if (!saveInstanceCacheManager?.id.isNullOrBlank()) {
+            bundle.putString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, saveInstanceCacheManager?.id)
         }
         childFragmentManager
                 .beginTransaction()
@@ -656,9 +656,9 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
             merchantStatusLL!!.show()
             val bundle = Bundle()
             saveInstanceCacheManager = SaveInstanceCacheManager(context!!, true)
-            saveInstanceCacheManager!!.put(BUNDLE_PARAM_SELLER_DETAILS, gqlDetailsResponse)
-            if (saveInstanceCacheManager!!.id != null) {
-                bundle.putInt(BUNDLE_PARAM_SELLER_DETAILS_ID, Integer.parseInt(saveInstanceCacheManager!!.id!!))
+            saveInstanceCacheManager?.put(BUNDLE_PARAM_SELLER_DETAILS, gqlDetailsResponse)
+            if (!saveInstanceCacheManager?.id.isNullOrBlank()) {
+                bundle.putString(BUNDLE_PARAM_SELLER_DETAILS_ID, saveInstanceCacheManager?.id)
             }
             childFragmentManager
                     .beginTransaction()

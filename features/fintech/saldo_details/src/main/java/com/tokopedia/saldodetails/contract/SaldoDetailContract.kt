@@ -45,7 +45,7 @@ interface SaldoDetailContract {
 
         fun setBuyerSaldoBalance(amount: Long, text: String)
 
-        fun showSaldoPrioritasFragment(sellerDetails: GqlDetailsResponse?)
+        fun showSaldoPrioritasFragment(gqlDetailsResponse: GqlDetailsResponse?)
 
         fun hideSaldoPrioritasFragment()
 

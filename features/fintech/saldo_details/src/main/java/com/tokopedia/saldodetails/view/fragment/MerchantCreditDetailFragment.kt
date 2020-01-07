@@ -46,7 +46,6 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
 
     private var mclBlockedStatusTV: TextView? = null
     private var saveInstanceCacheManager: SaveInstanceCacheManager? = null
-    private var saveInstanceCachemanagerId: Int = 0
 
     @Inject
     lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
@@ -55,8 +54,8 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false)
         val bundle = arguments
-        saveInstanceCachemanagerId = bundle?.getInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID) ?: 0
-        saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCachemanagerId.toString())
+        val saveInstanceCachemanagerId = bundle?.getString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID) ?: ""
+        saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCachemanagerId)
         merchantCreditDetails = saveInstanceCacheManager!!.get<GqlMerchantCreditResponse>(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, GqlMerchantCreditResponse::class.java)
         initViews(view)
         if (merchantCreditDetails != null) {
