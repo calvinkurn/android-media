@@ -319,11 +319,11 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         }
 
         val newPlayer: TokopediaPlayerHelper? = getExoPlayerByPosition(currentSelected)
-        if(newPlayer == null){
+        if(newPlayer == null && currentSelected != -1 && getViewHolder(currentSelected) is PlayCardViewHolder){
             (getViewHolder(currentSelected) as PlayCardViewHolder).createHelper()
         } else {
-            newPlayer.preparePlayer()
-            newPlayer.playerPlay()
+            newPlayer?.preparePlayer()
+            newPlayer?.playerPlay()
         }
     }
 
