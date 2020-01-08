@@ -1,10 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,8 +25,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -39,6 +42,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.ImageUploadFragmen
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.ImageUploadFragmentPresenterImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +56,9 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 /**
  * Created by Nisie on 2/12/16.
  */
-public class ImageUploadPreviewFragment extends
-        BasePresenterFragment<ImageUploadFragmentPresenter>
+public class ImageUploadPreviewFragment extends BaseDaggerFragment
         implements ImageUploadPreviewFragmentView {
 
-    public static final String NAV_UPLOAD_IMAGE = "nav_upload_image";
     private static final int MAX_CHAR = 128;
     private static final String ARGS_IMAGE_LIST = "ARGS_IMAGE_LIST";
     private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
@@ -83,9 +86,26 @@ public class ImageUploadPreviewFragment extends
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
+    protected String getScreenName() {
+        return "";
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        setHasOptionsMenu(getOptionsMenuEnable());
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        initialPresenter();
         adapter = ImageUploadAdapter.createAdapter(getActivity().getApplicationContext());
         if (savedInstanceState != null) {
             adapter.addList(savedInstanceState.<ImageUpload>getParcelableArrayList(ARGS_IMAGE_LIST));
@@ -93,54 +113,44 @@ public class ImageUploadPreviewFragment extends
         }
     }
 
+    @Nullable
     @Override
-    protected boolean isRetainInstance() {
-        return true;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(getFragmentLayout(), container, false);
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        setViewListener();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        onFirstTimeLaunched();
+    }
+
+    private void onFirstTimeLaunched() {
         if (getArguments() != null) {
             presenter.setImages(getArguments());
         }
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
+    private boolean getOptionsMenuEnable() {
         return true;
     }
 
-    @Override
-    protected void initialPresenter() {
+    private void initialPresenter() {
         presenter = new ImageUploadFragmentPresenterImpl(this, getActivity().getBaseContext());
     }
 
-    @Override
-    protected void initialListener(Activity activity) {
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
+    private int getFragmentLayout() {
         return R.layout.fragment_image_upload_preview;
     }
 
-    @Override
-    protected void initView(View view) {
+    private void initView(View view) {
 
         previewImage = (ViewPager) view.findViewById(R.id.preview_image);
         submitButton = (TextView) view.findViewById(R.id.submit);
@@ -207,28 +217,19 @@ public class ImageUploadPreviewFragment extends
         return new ImageUploadAdapter.ProductImageListener() {
             @Override
             public View.OnClickListener onUploadClicked(final int position) {
-                return new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (adapter.getList().size() != 0) {
-                            adapter.getList().get(currentPosition).setDescription(description.getText().toString());
-                        }
-                        openImagePicker();
+                return view -> {
+                    if (adapter.getList().size() != 0) {
+                        adapter.getList().get(currentPosition).setDescription(description.getText().toString());
                     }
+                    openImagePicker();
                 };
             }
 
             @Override
             public View.OnClickListener onImageClicked(final int position, final ImageUpload image) {
-                return new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        adapter.getList().get(currentPosition).setDescription(description.getText().toString());
-                        setPreviewImage(image);
-
-
-                    }
+                return view -> {
+                    adapter.getList().get(currentPosition).setDescription(description.getText().toString());
+                    setPreviewImage(image);
                 };
             }
 
@@ -249,32 +250,19 @@ public class ImageUploadPreviewFragment extends
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         submitButton.setOnClickListener(onSubmitImageUpload());
     }
 
     private View.OnClickListener onSubmitImageUpload() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!adapter.getList().isEmpty()) {
-                    adapter.getList().get(currentPosition).setDescription(description.getText().toString());
-                    presenter.onSubmitImageUpload(getAdapter().getList());
-                } else {
-                    getActivity().finish();
-                }
+        return view -> {
+            if (!adapter.getList().isEmpty()) {
+                adapter.getList().get(currentPosition).setDescription(description.getText().toString());
+                presenter.onSubmitImageUpload(getAdapter().getList());
+            } else {
+                getActivity().finish();
             }
         };
-    }
-
-    @Override
-    protected void initialVar() {
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -402,7 +390,7 @@ public class ImageUploadPreviewFragment extends
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(ARGS_IMAGE_LIST, adapter.getList());
         outState.putString(ARGS_CAMERA_FILELOC,presenter.getCameraFileLoc());

@@ -30,7 +30,8 @@
         <activity
             android:name=".inbox.view.activity.ImageUploadPreviewActivity"
             android:label="@string/title_activity_image_upload"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".inbox.view.activity.InboxReputationReportActivity"
             android:label="@string/title_report"
