@@ -92,6 +92,7 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
         this@UmrahSeekbarRangeWidget.minThumbPosition = minThumbPosition
         this@UmrahSeekbarRangeWidget.maxThumbPosition = maxThumbPosition
         getTypographyView()
+        refreshTypographyDay()
     }
 
     private fun getTypographyView() {

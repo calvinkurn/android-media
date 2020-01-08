@@ -71,10 +71,6 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
     }
 
     override fun onBackPressed() {
-        if (fragment is OnBackListener) {
-            (fragment as OnBackListener).onBackPress()
-        }
-
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.umrah_checkout_dialog_title))
         dialog.setDescription(getString(R.string.umrah_checkout_dialog_desc))
@@ -86,7 +82,10 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
         }
 
         dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
+            if (fragment is OnBackListener) {
+                (fragment as OnBackListener).onBackPress()
+            }
+            dialog.dismiss()
             super.onBackPressed()
 
         }

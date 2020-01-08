@@ -793,11 +793,11 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         listDataPilgrims = mutableListOf()
         productModel = UmrahProductModel.UmrahProduct()
         listPaymentOptions = UmrahPaymentOptions()
-        trackingUmrahUtil.getClickBackCheckoutTracker()
     }
 
     override fun onBackPress() {
         resetVariable()
+        trackingUmrahUtil.getClickBackCheckoutTracker()
     }
 
 
