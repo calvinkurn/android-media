@@ -49,7 +49,8 @@ class PageErrorViewHolder(val view: View,
             errorDescription.text = tobacoErrorData.messages
             errorDescription.show()
 
-            ImageHandler.loadImage(view.context, errorIllustration, IMG_URL_ERROR_TOBACCO, R.drawable.ic_loading_image)
+            ImageHandler.LoadImage(errorIllustration, IMG_URL_ERROR_TOBACCO)
+            errorIllustration.adjustViewBounds = true
             errorIllustration.show()
 
             errorAction.text = tobacoErrorData.button

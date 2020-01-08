@@ -13,15 +13,15 @@
     <ImageView
         android:id="@+id/pdp_icon"
         android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_height="0dp"
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
         app:layout_constraintEnd_toStartOf="@+id/pdp_info_title"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_info_title"
         tools:src="@drawable/ic_product_fintech_qr_normal_24" />
 
     <ImageView
@@ -41,8 +41,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
         app:layout_constraintStart_toEndOf="@+id/pdp_icon"
-        app:layout_constraintTop_toTopOf="@+id/pdp_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/pdp_icon"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         android:textColor="@color/charcoal_grey_88"
@@ -57,7 +56,6 @@
         android:id="@+id/rv_general_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:orientation="vertical"
