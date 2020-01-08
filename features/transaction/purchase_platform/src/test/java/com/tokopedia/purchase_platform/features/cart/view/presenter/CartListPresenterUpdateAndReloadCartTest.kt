@@ -54,7 +54,6 @@ class CartListPresenterUpdateAndReloadCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
 
     Feature("update and reload cart list") {
 
@@ -71,6 +70,7 @@ class CartListPresenterUpdateAndReloadCartTest : Spek({
 
         Scenario("success update and reload empty cart") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val emptyCartListData = UpdateAndReloadCartListData()
 
             Given("empty data") {
@@ -95,6 +95,7 @@ class CartListPresenterUpdateAndReloadCartTest : Spek({
 
         Scenario("success update and reload cart") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val cartListData = UpdateAndReloadCartListData()
 
             Given("cart data") {
@@ -124,8 +125,9 @@ class CartListPresenterUpdateAndReloadCartTest : Spek({
             }
         }
 
-        Scenario("failed update and reload cart with exception") {
+        Scenario("failed update and reload cart with CartResponseErrorException") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Error"
 
             Given("cart data") {
@@ -155,12 +157,12 @@ class CartListPresenterUpdateAndReloadCartTest : Spek({
             }
         }
 
-        Scenario("failed update and reload cart with exception") {
+        Scenario("failed update and reload cart with other exception") {
 
-            val errorMessage = "Error"
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("cart data") {
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException(errorMessage))
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
             Given("attach view") {
@@ -181,7 +183,7 @@ class CartListPresenterUpdateAndReloadCartTest : Spek({
             Then("should render success") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(any())
                 }
             }
         }

@@ -53,7 +53,6 @@ class CartListPresenterUpdateCartForPromoGlobalTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list for promo global") {
 
@@ -70,6 +69,7 @@ class CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
         Scenario("success update cart and redirect to coupon list") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val updateCartData = UpdateCartData()
 
             Given("update cart data") {
@@ -95,6 +95,7 @@ class CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
         Scenario("success update cart and redirect to coupon detail") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val updateCartData = UpdateCartData()
             val promoStackingData = PromoStackingData()
 
@@ -121,6 +122,7 @@ class CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
         Scenario("failed update cart") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val updateCartData = UpdateCartData()
 
             Given("update cart data") {
@@ -146,6 +148,7 @@ class CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
         Scenario("failed update cart with exception") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Error"
 
             Given("update cart data") {

@@ -58,7 +58,6 @@ class CartListPresenterAddToCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
 
     Feature("add to cart") {
 
@@ -75,6 +74,7 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("success add to cart wishlist item") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val addToCartDataModel = AddToCartDataModel()
             val productModel = CartWishlistItemHolderData(id = "0", shopId = "0")
             val successMessage = "Success message add to cart"
@@ -110,6 +110,7 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart wishlist item") {
 
+            val view: ICartListView = mockk(relaxed = true)
             lateinit var addToCartDataModel: AddToCartDataModel
             val errorMessage = "Add to cart error"
 
@@ -143,6 +144,7 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart wishlist item with exception") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Add to cart error with exception"
 
             Given("add to cart data") {
@@ -167,6 +169,7 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("success add to cart recent view item") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val addToCartDataModel = AddToCartDataModel()
 
             Given("add to cart data") {
@@ -199,6 +202,7 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recent view item") {
 
+            val view: ICartListView = mockk(relaxed = true)
             lateinit var addToCartDataModel: AddToCartDataModel
             val errorMessage = "Add to cart error"
 
@@ -232,10 +236,10 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recent view item with exception") {
 
-            val errorMessage = "Add to cart error with exception"
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("add to cart data") {
-                every { addToCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException(errorMessage))
+                every { addToCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
             Given("attach view") {
@@ -249,13 +253,14 @@ class CartListPresenterAddToCartTest : Spek({
             Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(any())
                 }
             }
         }
 
         Scenario("success add to cart recommendation item") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val addToCartDataModel = AddToCartDataModel()
 
             Given("add to cart data") {
@@ -263,6 +268,7 @@ class CartListPresenterAddToCartTest : Spek({
                 val messages = arrayListOf<String>()
                 messages.add("Success message")
                 dataModel.message = messages
+                dataModel.success = 1
                 addToCartDataModel.status = AddToCartDataModel.STATUS_OK
                 addToCartDataModel.data = dataModel
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
@@ -287,6 +293,7 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recommendation item") {
 
+            val view: ICartListView = mockk(relaxed = true)
             lateinit var addToCartDataModel: AddToCartDataModel
             val errorMessage = "Add to cart error"
 
@@ -323,6 +330,7 @@ class CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart wishlist item with exception") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Add to cart error with exception"
 
             Given("add to cart data") {

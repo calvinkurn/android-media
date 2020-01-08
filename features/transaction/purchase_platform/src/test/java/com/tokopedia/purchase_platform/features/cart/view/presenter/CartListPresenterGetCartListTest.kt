@@ -58,7 +58,6 @@ class CartListPresenterGetCartListTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
 
     Feature("get cart list") {
 
@@ -75,6 +74,8 @@ class CartListPresenterGetCartListTest : Spek({
         val emptyCartListData = CartListData()
 
         Scenario("initial load success") {
+
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
@@ -104,6 +105,8 @@ class CartListPresenterGetCartListTest : Spek({
 
         Scenario("refresh load success") {
 
+            val view: ICartListView = mockk(relaxed = true)
+
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
             }
@@ -132,6 +135,7 @@ class CartListPresenterGetCartListTest : Spek({
 
         Scenario("initial load failed") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val context: FragmentActivity = mockk()
             val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
 
@@ -163,6 +167,7 @@ class CartListPresenterGetCartListTest : Spek({
 
         Scenario("refresh load failed") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val context: FragmentActivity = mockk()
             val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
 

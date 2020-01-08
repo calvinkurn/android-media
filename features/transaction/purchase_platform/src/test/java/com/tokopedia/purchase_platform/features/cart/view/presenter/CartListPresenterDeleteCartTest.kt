@@ -53,7 +53,6 @@ class CartListPresenterDeleteCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
 
     Feature("delete cart item") {
 
@@ -70,6 +69,7 @@ class CartListPresenterDeleteCartTest : Spek({
 
         Scenario("remove all cart data") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val emptyCartListData = CartListData()
 
             Given("success delete") {
@@ -100,6 +100,8 @@ class CartListPresenterDeleteCartTest : Spek({
 
         Scenario("remove some cart data") {
 
+            val view: ICartListView = mockk(relaxed = true)
+
             Given("success delete") {
                 val deleteCartData = DeleteCartData(isSuccess = true)
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
@@ -129,6 +131,7 @@ class CartListPresenterDeleteCartTest : Spek({
 
         Scenario("fail remove cart data") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "fail testing delete"
 
             Given("fail delete") {

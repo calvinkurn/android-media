@@ -53,7 +53,6 @@ class CartListPresenterUpdateCartForPromoMerchantTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list for promo merchant") {
 
@@ -70,6 +69,7 @@ class CartListPresenterUpdateCartForPromoMerchantTest : Spek({
 
         Scenario("success update cart") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val updateCartData = UpdateCartData()
             val shopGroupAvailableData = ShopGroupAvailableData()
 
@@ -96,6 +96,7 @@ class CartListPresenterUpdateCartForPromoMerchantTest : Spek({
 
         Scenario("failed update cart") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val updateCartData = UpdateCartData()
 
             Given("update cart data") {
@@ -121,6 +122,7 @@ class CartListPresenterUpdateCartForPromoMerchantTest : Spek({
 
         Scenario("failed update cart with CartResponseErrorException") {
 
+            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Error"
 
             Given("update cart data") {
@@ -145,7 +147,7 @@ class CartListPresenterUpdateCartForPromoMerchantTest : Spek({
 
         Scenario("failed update cart with other exception") {
 
-            val errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("update cart data") {
                 every { updateCartUseCase.createObservable(any()) } returns Observable.error(RuntimeException())
@@ -162,7 +164,7 @@ class CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(any())
                 }
             }
         }

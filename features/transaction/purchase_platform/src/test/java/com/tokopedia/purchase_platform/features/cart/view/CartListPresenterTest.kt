@@ -48,7 +48,6 @@ class CartListPresenterTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
-    val view: ICartListView = mockk(relaxed = true)
 
     Feature("calculate subtotal") {
 
@@ -191,6 +190,8 @@ class CartListPresenterTest : Spek({
 
         Scenario("no item selected") {
 
+            val view: ICartListView = mockk(relaxed = true)
+
             Given("attach view") {
                 cartListPresenter.attachView(view)
                 every { view.getAllAvailableCartDataList() } answers {
@@ -215,6 +216,8 @@ class CartListPresenterTest : Spek({
         }
 
         Scenario("some item selected") {
+
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("check some items") {
                 firstItemFirst.isSelected = true
@@ -249,6 +252,8 @@ class CartListPresenterTest : Spek({
 
         Scenario("some item error") {
 
+            val view: ICartListView = mockk(relaxed = true)
+
             Given("error in unselected items") {
                 firstItemFirst.isSelected = true
                 secondItemFirstData.isError = true
@@ -281,6 +286,8 @@ class CartListPresenterTest : Spek({
         }
 
         Scenario("all item selected") {
+
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("check all items") {
                 firstItemFirst.isSelected = true
@@ -316,6 +323,8 @@ class CartListPresenterTest : Spek({
         }
 
         Scenario("all item selected with wholesale price") {
+
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("check all items") {
                 firstItemFirst.isSelected = true
@@ -361,6 +370,8 @@ class CartListPresenterTest : Spek({
 
         Scenario("all item selected with invalid wholesale price") {
 
+            val view: ICartListView = mockk(relaxed = true)
+
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
@@ -404,6 +415,8 @@ class CartListPresenterTest : Spek({
 
         Scenario("all item selected with product variant") {
 
+            val view: ICartListView = mockk(relaxed = true)
+
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
@@ -445,6 +458,8 @@ class CartListPresenterTest : Spek({
         }
 
         Scenario("all item selected with same priced product variant") {
+
+            val view: ICartListView = mockk(relaxed = true)
 
             Given("check all items") {
                 firstItemFirst.isSelected = true

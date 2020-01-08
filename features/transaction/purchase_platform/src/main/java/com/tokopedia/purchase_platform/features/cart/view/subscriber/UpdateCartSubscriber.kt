@@ -103,8 +103,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
         var totalAmount = 0.0
         val maximalTotalAmountEligible = 1000000.0
         for (cartItemData in cartItemDataList) {
-            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity
-                    ?: 0) ?: 0.toDouble()
+            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity ?: 0) ?: 0.toDouble()
             totalAmount += itemPriceAmount
             if (cartItemData.originData?.isCod == false) return false
         }
