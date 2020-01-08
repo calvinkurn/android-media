@@ -58,6 +58,13 @@ class HomeDataMapper(
         }
         if (homeData.dynamicHomeChannel != null && homeData.dynamicHomeChannel.channels != null && !homeData.dynamicHomeChannel.channels.isEmpty()) {
             var position = 1
+            val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
+            val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
+            val PROMO_NAME_SPRINT = "/ - p%s - %s"
+            val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
+            val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
+            val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
+
             for (channel in homeData.dynamicHomeChannel.channels) {
                 if (channel.layout != null) {
                     if (!isCache) {
@@ -66,21 +73,30 @@ class HomeDataMapper(
                             channel.setPosition(position)
                         } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL) {
                         } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
-                            channel.promoName = String.format("/ - p%s - lego banner - %s", position.toString(), channel.header.name)
+                            channel.promoName = String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
                         } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE) {
-                            channel.promoName = String.format("/ - p%s - lego banner 3 image - %s", position.toString(), channel.header.name)
-                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_ORGANIC) {
-                            channel.promoName = String.format("/ - p%s - %s", position.toString(), channel.header.name)
-                            channel.setPosition(position)
-                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT) {
-                            homeData.spotlight.promoName = String.format("/ - p%s - spotlight banner", position.toString())
-                            homeData.spotlight.channelId = channel.id
-                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET || channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
-                            channel.promoName = String.format("/ - p%s - %s", position.toString(), channel.header.name)
-                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
-                            channel.setPosition(position)
-                        } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
-                            channel.setPosition(position)
+                            channel.promoName = String.format(PROMO_NAME_LEGO_3_IMAGE, position.toString(), channel.header.name)
+                        } else {
+                            if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_ORGANIC) {
+                                channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
+                                channel.setPosition(position)
+                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT) {
+                                homeData.spotlight.promoName = String.format(PROMO_NAME_SPOTLIGHT_BANNER, position.toString())
+                                homeData.spotlight.channelId = channel.id
+                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET || channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
+                                channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
+                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
+                                channel.setPosition(position)
+                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_REVIEW) {
+                                channel.setPosition(position)
+                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF) {
+                                channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.getHeader().getName())
+                                channel.setPosition(position)
+                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC ||
+                                    channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
+                                channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.getHeader().getName())
+                                channel.setPosition(position)
+                            }
                         }
                     }
                     when (channel.layout) {

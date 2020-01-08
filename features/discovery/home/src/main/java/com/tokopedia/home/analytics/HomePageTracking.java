@@ -95,7 +95,9 @@ public class HomePageTracking {
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK = "product recommendation click";
-    public static final String EVENT_LEGO_BANNER_IMPRESSION = "lego banner gif impression";
+    public static final String EVENT_LEGO_BANNER_IMPRESSION = "home banner impression";
+    public static final String EVENT_LEGO_BANNER = "lego banner gif impression";
+
     public static final String EVENT_LEGO_BANNER_CLICK = "lego banner gif click";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK_NON_LOGIN = "product recommendation click - non login";
     public static final String CLICK = "click";
@@ -1056,13 +1058,12 @@ public class HomePageTracking {
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
                 EVENT_LABEL, "",
-                CHANNEL_ID, bannerChannel.getId(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, bannerChannel.getBanner().getId(),
-                                                FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
+                                                FIELD_ID, bannerChannel.getBanner().getId()+"_"+bannerChannel.getId(),
+                                                FIELD_NAME, bannerChannel.getPromoName(),
                                                 FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
                                                 FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(1)
@@ -1257,7 +1258,7 @@ public class HomePageTracking {
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW_IRIS,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                EVENT_ACTION, EVENT_LEGO_BANNER,
                 EVENT_LABEL, "",
                 CHANNEL_ID, channel.getId(),
                 ECOMMERCE, DataLayer.mapOf(
