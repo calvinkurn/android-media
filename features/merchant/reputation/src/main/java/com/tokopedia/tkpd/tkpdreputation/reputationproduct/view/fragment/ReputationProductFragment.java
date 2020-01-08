@@ -24,16 +24,15 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.util.SelectableSpannedMovementMethod;
-import com.tokopedia.core.util.StarGenerator;
 import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.design.component.ticker.SelectableSpannedMovementMethod;
+import com.tokopedia.design.utils.LabelUtils;
+import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
@@ -66,6 +65,7 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.adapter.ImageUpl
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.listener.ReputationProductFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.ReputationProductViewFragmentPresenter;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.ReputationProductViewFragmentPresenterImpl;
+import com.tokopedia.tkpd.tkpdreputation.utils.StarGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -190,7 +190,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         holder.counterLike = (TextView) rootView.findViewById(R.id.counter_like);
         holder.counterDislike = (TextView) rootView.findViewById(R.id.counter_dislike);
         holder.overFlow = (ImageView) rootView.findViewById(R.id.btn_overflow);
-        labelHeader = LabelUtils.getInstance(getActivity(), holder.username);
+        labelHeader = LabelUtils.Companion.getInstance(getActivity(), holder.username);
         holder.viewLikeDislike = rootView.findViewById(R.id.view_like_dislike);
         holder.loading = (ProgressBar) rootView.findViewById(R.id.loading);
         holder.iconDislike = (ImageView) rootView.findViewById(R.id.icon_dislike);
@@ -210,7 +210,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         holderComment.date = (TextView) rootView.findViewById(R.id.create_time_comment);
         holderComment.buttonOverflow = (ImageView) rootView.findViewById(R.id.but_overflow_comment);
         holderComment.commentUsername = (TextView) rootView.findViewById(R.id.comment_username);
-        labelResponder = LabelUtils.getInstance(getActivity(), holderComment.commentUsername);
+        labelResponder = LabelUtils.Companion.getInstance(getActivity(), holderComment.commentUsername);
     }
 
     @Override
@@ -337,7 +337,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
                             listDesc.add(imageUpload.getDescription());
                         }
 
-                        Intent intent = new Intent(getActivity(), PreviewProductImage.class);
+                        Intent intent = new Intent(getActivity(), ImagePreviewActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putStringArrayList("fileloc", listImage);
                         bundle.putStringArrayList("image_desc", listDesc);

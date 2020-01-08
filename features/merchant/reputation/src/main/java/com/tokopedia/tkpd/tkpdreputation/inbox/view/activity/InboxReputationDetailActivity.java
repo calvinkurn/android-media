@@ -8,24 +8,18 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 
-import javax.inject.Inject;
 
 /**
  * @author by nisie on 8/19/17.
@@ -101,8 +95,8 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
 
     public static Intent getCallingIntent(Context context,

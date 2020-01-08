@@ -2,23 +2,16 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
 
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationReportFragment;
 
@@ -34,8 +27,8 @@ public class InboxReputationReportActivity extends BasePresenterActivity
     public static final String ARGS_REVIEW_ID = "ARGS_REVIEW_ID";
 
     @Override
-    public Object getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
 
     @Override

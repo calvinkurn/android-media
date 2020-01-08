@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.var.RecyclerViewItem;
 
-public class MostHelpfulReviewModel extends RecyclerViewItem implements Parcelable{
+public class MostHelpfulReviewModel implements Parcelable{
 
     @SerializedName("helpful_reviews_total")
     @Expose

@@ -13,15 +13,15 @@ import android.view.ViewGroup;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
@@ -233,7 +233,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
 }

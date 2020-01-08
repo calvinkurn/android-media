@@ -1,10 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;

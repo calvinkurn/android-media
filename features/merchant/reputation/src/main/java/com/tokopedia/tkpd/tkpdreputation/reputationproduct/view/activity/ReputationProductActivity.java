@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
 
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.fragment.ReputationProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
 

@@ -25,19 +25,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.util.LabelUtils;
-import com.tokopedia.core.util.ToolTipUtils;
+import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.design.utils.LabelUtils;
+import com.tokopedia.imagepreview.ImagePreviewActivity;
+import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractor;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractorImpl;
@@ -201,7 +201,7 @@ public class ReputationViewShop extends TActivity {
                             listDesc.add(imageUpload.getDescription());
                         }
 
-                        Intent intent = new Intent(ReputationViewShop.this, PreviewProductImage.class);
+                        Intent intent = new Intent(ReputationViewShop.this, ImagePreviewActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putStringArrayList("fileloc", listImage);
                         bundle.putStringArrayList("image_desc", listDesc);
@@ -229,7 +229,7 @@ public class ReputationViewShop extends TActivity {
         holder.counterLike = (TextView) findViewById(R.id.counter_like);
         holder.counterDislike = (TextView) findViewById(R.id.counter_dislike);
         holder.overFlow = (ImageView) findViewById(R.id.btn_overflow);
-        labelHeader = LabelUtils.getInstance(this, holder.username);
+        labelHeader = LabelUtils.Companion.getInstance(this, holder.username);
         holder.viewLikeDislike = findViewById(R.id.view_like_dislike);
         holder.iconDislike = (ImageView) findViewById(R.id.icon_dislike);
         holder.iconLike = (ImageView) findViewById(R.id.icon_like);
@@ -247,7 +247,7 @@ public class ReputationViewShop extends TActivity {
         holderComment.date = (TextView) findViewById(R.id.create_time_comment);
         holderComment.buttonOverflow = (ImageView) findViewById(R.id.but_overflow_comment);
         holderComment.commentUsername = (TextView) findViewById(R.id.comment_username);
-        labelResponder = LabelUtils.getInstance(this, holderComment.commentUsername);
+        labelResponder = LabelUtils.Companion.getInstance(this, holderComment.commentUsername);
 
         // Comment Post;
         holderComment.postCommentBox = (EditText) findViewById(R.id.reply_box);

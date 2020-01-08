@@ -22,9 +22,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.customView.TextDrawable;
+import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;

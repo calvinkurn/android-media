@@ -9,12 +9,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewProductModel extends RecyclerViewItem implements Parcelable{
+public class ReviewProductModel implements Parcelable{
 
     @SerializedName("review_update_time")
     @Expose

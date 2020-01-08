@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.customView.TextDrawable;
+import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFilterFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;

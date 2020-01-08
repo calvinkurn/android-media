@@ -41,10 +41,10 @@ import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -456,7 +456,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 ,new ImagePickerMultipleSelectionBuilder(
                 new ArrayList<>(),
                 null,
-                com.tokopedia.core2.R.string.empty_desc,
+                R.string.empty_desc,
                 MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);

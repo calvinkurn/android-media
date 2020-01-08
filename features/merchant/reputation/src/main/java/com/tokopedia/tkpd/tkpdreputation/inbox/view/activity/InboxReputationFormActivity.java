@@ -10,9 +10,9 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.customView.TextDrawable;
+import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.SmileyModel;

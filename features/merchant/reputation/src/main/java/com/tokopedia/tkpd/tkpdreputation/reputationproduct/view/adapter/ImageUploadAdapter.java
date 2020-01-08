@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 
 import java.io.File;
