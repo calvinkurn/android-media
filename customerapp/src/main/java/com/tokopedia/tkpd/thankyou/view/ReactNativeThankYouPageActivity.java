@@ -9,7 +9,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
@@ -109,7 +108,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
             public void onComplete(Task<InAppReviewInfo> request) {
                 if (request.isSuccessful()) {
                     inAppReviewRequest = request;
-                    Toast.makeText(ReactNativeThankYouPageActivity.this, "request successful", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -205,11 +203,10 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         FragmentManager manager = getSupportFragmentManager();
         if (isDigital() && manager != null) {
             if (inAppReviewManager != null && inAppReviewRequest != null) {
-                Toast.makeText(ReactNativeThankYouPageActivity.this, "launching", Toast.LENGTH_SHORT).show();
                 inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
                     @Override
                     public void onComplete(Task<Integer> task) {
-                        //setInAppReviewHasShownBefore();
+                        setInAppReviewHasShownBefore();
                         closeThankyouPage();
                     }
                 });
