@@ -161,6 +161,10 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             false
         }
 
+        textUseOtherMethod?.setOnClickListener {
+            onOtherMethodClick()
+        }
+
         buttonVerify?.setOnClickListener {
             analytics.eventClickVerifyButton(viewModel.otpType)
             if (viewModel.otpType == OTP_TYPE_REGISTER_PHONE_NUMBER) {
