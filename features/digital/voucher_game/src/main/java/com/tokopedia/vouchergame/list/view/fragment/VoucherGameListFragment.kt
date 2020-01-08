@@ -170,7 +170,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val operatorList = voucherGameViewModel.voucherGameList.value
-                    if (operatorList is Success) {
+                    if (operatorList is Success && operatorList.data.operators.isNotEmpty()) {
                         val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
                         with(operatorList.data) {
                             if (searchInputView.searchText.isNotEmpty()) {
@@ -319,7 +319,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
             voucherGameAnalytics.eventClickSearchResult(searchInputView.searchText)
 
             val operatorList = voucherGameViewModel.voucherGameList.value
-            if (operatorList is Success) {
+            if (operatorList is Success && operatorList.data.operators.isNotEmpty()) {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
                 voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
                         operatorList.data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))

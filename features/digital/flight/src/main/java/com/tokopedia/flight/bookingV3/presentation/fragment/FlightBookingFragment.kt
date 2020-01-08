@@ -380,7 +380,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
             bottomSheet.dismiss()
             finishActivityToSearchPage()
         }
-        bottomSheet.show(fragmentManager, getString(R.string.flight_booking_reprice_bottom_sheet_title))
+
+        fragmentManager?.let {
+            bottomSheet.show(it, getString(R.string.flight_booking_reprice_bottom_sheet_title))
+        }
     }
 
     private fun showCheckBookingDetailPopUp() {

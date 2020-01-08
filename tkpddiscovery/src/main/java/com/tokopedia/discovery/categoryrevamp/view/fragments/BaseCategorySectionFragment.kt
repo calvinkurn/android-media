@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
+import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -115,7 +117,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         }
     }
 
-
     protected fun getGridLayoutManager(): GridLayoutManager? {
         return gridLayoutManager
     }
@@ -129,7 +130,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     protected abstract fun getSortRequestCode(): Int
-
 
     private fun initLayoutManager() {
         linearLayoutManager = LinearLayoutManager(activity)
@@ -173,6 +173,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
             override fun onShareButtonClick() {
                 onShareButtonClicked()
             }
+
             override fun onFilterClick() {
                 openFilterActivity()
             }
@@ -180,8 +181,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
             override fun onSortClick() {
                 openSortActivity()
             }
-
-
         })
     }
 
@@ -196,9 +195,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         } else {
             openFilterPage()
         }
-
     }
-
 
     protected fun openBottomSheetFilter() {
         if (searchParameter == null || getFilters() == null) return
@@ -211,7 +208,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     protected fun openFilterPage() {
         if (searchParameter == null) return
-
         FilterSortManager.openFilterPage(getFilterTrackingData(), this, screenName, searchParameter.getSearchParameterHashMap())
     }
 
@@ -220,9 +216,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     private fun openSortActivity() {
-
         if (activity == null) return
-
         if (!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
             NetworkErrorHelper.showSnackbar(activity, activity!!.getString(R.string.error_sort_data_not_ready))
         }
@@ -238,6 +232,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController?.initFilterController(searchParameter?.getSearchParameterHashMap(), initializedFilterList)
         initSelectedSort()
+        updateDimension()
     }
 
     private fun showSortTickIfSelected(): Boolean {
@@ -257,9 +252,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (sorts == null) {
             return
         }
-
         this.sort.addAll(sorts)
-
     }
 
     private fun setFilterData(filters: List<Filter>) {
@@ -267,11 +260,8 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (filters == null) {
             return
         }
-
         this.filters.addAll(filters)
-
     }
-
 
     protected fun getFilters(): ArrayList<Filter>? {
         return filters
@@ -290,9 +280,29 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     fun setSelectedFilter(selectedFilter: HashMap<String, String>) {
         if (filterController == null || getFilters() == null) return
-
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController.initFilterController(selectedFilter, initializedFilterList)
+        updateDimension()
+
+    }
+
+    fun updateDimension() {
+        var param = ""
+        val filterParam = createParametersForQuery(getSelectedFilter())
+        val sortParam = createParametersForQuery(getSelectedSort())
+
+        if (filterParam.isNotEmpty()) {
+            param = filterParam
+        }
+
+        if (sortParam.isNotEmpty()) {
+            if (param.isNotEmpty()) {
+                param = "$param&$sortParam"
+            } else {
+                param = sortParam
+            }
+        }
+        getAdapter()?.setDimension(param)
     }
 
     protected fun addQuickFilter(option: Option, state: Boolean) {
@@ -303,7 +313,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         return if (filterController == null) HashMap() else HashMap(filterController.getActiveFilterMap())
 
     }
-
 
     private fun initSelectedSort() {
         if (sort == null) return
@@ -332,32 +341,26 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
 
     private fun switchCatalogcategory() {
-
         when (getAdapter()?.getCurrentLayoutType()) {
             CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeSingleGridView()
-
             }
             CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeListView()
-
             }
             CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
                 spanCount = 2
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeDoubleGridView()
-
             }
-
         }
-
     }
 
 
@@ -415,7 +418,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     fun setTotalSearchResultCountInteger(count: Int?) {
-        if(count!=null)
+        if (count != null)
             totalCountInt = count
     }
 
@@ -496,5 +499,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController.initFilterController(params, initializedFilterList)
+    }
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): String {
+        return ParamMapToUrl.generateUrlParamString(parameters)
     }
 }
