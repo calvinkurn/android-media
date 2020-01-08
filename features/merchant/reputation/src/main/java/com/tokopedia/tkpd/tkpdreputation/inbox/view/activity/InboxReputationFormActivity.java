@@ -3,15 +3,14 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
@@ -24,8 +23,7 @@ import java.util.ArrayList;
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationFormActivity extends BasePresenterActivity
-        implements HasComponent {
+public class InboxReputationFormActivity extends BaseSimpleActivity {
 
 
     public interface SkipListener {
@@ -53,19 +51,20 @@ public class InboxReputationFormActivity extends BasePresenterActivity
 
     SkipListener listener;
 
+    @Nullable
     @Override
-    protected void setupURIPass(Uri data) {
+    protected Fragment getNewFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null)
+            bundle.putAll(getIntent().getExtras());
 
+        return InboxReputationFormFragment.createInstance(bundle);
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        listener = (InboxReputationFormFragment) getNewFragment();
     }
 
     @Override
@@ -97,54 +96,6 @@ public class InboxReputationFormActivity extends BasePresenterActivity
             return true;
         } else
             return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null)
-            bundle.putAll(getIntent().getExtras());
-
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                (InboxReputationFormFragment.class.getSimpleName());
-        if (fragment == null && getIntent().getExtras().getBoolean(ARGS_IS_EDIT, false)) {
-            fragment = InboxReputationFormFragment.createInstance(bundle);
-        } else if (fragment == null) {
-            fragment = InboxReputationFormFragment.createInstance(bundle);
-        }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container,
-                fragment,
-                fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
-
-        listener = (InboxReputationFormFragment) fragment;
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public Object getComponent() {
-        return getApplicationComponent();
     }
 
     public static Intent getEditReviewIntent(Context context, String reviewId,
@@ -184,14 +135,4 @@ public class InboxReputationFormActivity extends BasePresenterActivity
             super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-        toolbar.setPadding(0,0,30,0);
-    }
 }
