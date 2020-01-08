@@ -1,7 +1,6 @@
 package com.tokopedia.otp.cotp.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -15,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -359,7 +357,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         textMessageVerify?.visibility = View.VISIBLE
         textMessageVerify?.text = MethodChecker.fromHtml(getString(R.string.not_received_code))
 
-        textOr?.visibility = View.VISIBLE
         textResend?.visibility = View.VISIBLE
         textResend?.text = MethodChecker.fromHtml(getString(R.string.cotp_miscall_verification_resend))
         textResend?.setOnClickListener {
@@ -371,13 +368,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             textInputOtp?.isError = false
             removeErrorOtp()
             requestOtp()
-        }
-
-        if (viewModel.canUseOtherMethod()) {
-            textUseOtherMethod?.visibility = View.VISIBLE
-            textUseOtherMethod?.setOnClickListener { onOtherMethodClick() }
-        } else {
-            textUseOtherMethod?.visibility = View.GONE
         }
     }
 
@@ -398,8 +388,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         if (viewModel.canUseOtherMethod()) {
             textResend?.visibility = View.GONE
-            textOr?.visibility = View.GONE
-            textUseOtherMethod?.visibility = View.GONE
 
             buttonVerify?.text = getString(R.string.cotp_miscall_verification_with_other_method)
             buttonVerify?.isEnabled = true
