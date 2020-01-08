@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
-import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -15,7 +14,10 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -41,7 +43,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -724,11 +725,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         val bottomSheetBuilder = BottomSheetBuilder(activity)
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.productName)
-        if (productManageViewModel.productStatus == StatusProductOption.EMPTY) {
-            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item_no_topads)
-        } else {
-            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item)
-        }
+
+        //TODO milhamj ask yehez
+//        if (productManageViewModel.productStatus == StatusProductOption.EMPTY) {
+//            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item_no_topads)
+//        } else {
+//            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item)
+//        }
 
         populateBottomSheetMenu(bottomSheetBuilder, productManageViewModel)
 
