@@ -194,11 +194,6 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
-import com.tokopedia.talk.common.TalkRouter;
-import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
-import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
-import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
-import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -295,7 +290,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
-        TalkRouter,
         TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
         UnifiedOrderListRouter,
@@ -1372,10 +1366,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
     }
 
-    @Override
-    public Intent getInboxTalkCallingIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.INBOX_TALK);
-    }
+//    @Override
+//    public Intent getInboxTalkCallingIntent(Context context) {
+//        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.INBOX_TALK);
+//    }
 
     @Override
     public Intent getManageAdressIntent(Context context) {
@@ -1496,12 +1490,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
-    @Override
-    public Intent getProductTalk(Context context, String productId) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK);
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId);
-        return intent;
-    }
+//    @Override
+//    public Intent getProductTalk(Context context, String productId) {
+//        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK);
+//        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId);
+//        return intent;
+//    }
 
     @Override
     public void eventClickFilterReview(Context context,
@@ -1540,20 +1534,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 
-    @Override
-    public Intent getShopTalkIntent(Context context, String shopId) {
-        return ShopTalkActivity.Companion.createIntent(context, shopId);
-    }
+//    @Override
+//    public Intent getShopTalkIntent(Context context, String shopId) {
+//        return ShopTalkActivity.Companion.createIntent(context, shopId);
+//    }
 
-    @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
-                                      String source) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK);
-        intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId);
-        intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId);
-        intent.putExtra(TalkDetailsActivity.SOURCE, source);
-        return intent;
-    }
+//    @Override
+//    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
+//                                      String source) {
+//        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK);
+//        intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId);
+//        intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId);
+//        intent.putExtra(TalkDetailsActivity.SOURCE, source);
+//        return intent;
+//    }
 
     @Override
     public String getAppsFlyerID() {

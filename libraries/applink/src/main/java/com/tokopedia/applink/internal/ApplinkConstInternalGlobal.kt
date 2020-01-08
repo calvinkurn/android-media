@@ -132,6 +132,13 @@ object ApplinkConstInternalGlobal {
     // TalkProductActivity
     // tokopedia-android-internal://global/product-talk
     @JvmField
+    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk?shopId={shopId}"
+    @JvmField
+    val PARAM_SHOP_ID = "shopId"
+
+    // TalkProductActivity
+    // tokopedia-android-internal://global/product-talk
+    @JvmField
     val PRODUCT_TALK = "$INTERNAL_GLOBAL/product-talk"
     @JvmField
     val PARAM_PRODUCT_ID = "product_id"

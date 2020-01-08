@@ -90,6 +90,7 @@ public interface TkpdCoreRouter {
     }
 
     static Intent getInboxTalkActivityIntentWrapper(Context mContext) {
+
         return RouterUtils.getRouterFromContext(mContext).getInboxTalkCallingIntent(mContext);
     }
 

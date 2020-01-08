@@ -43,19 +43,19 @@ class ShopTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         }
 
 
-        object DeepLinkIntents {
-            @JvmStatic
-            @DeepLink(ApplinkConst.SHOP_TALK)
-            fun getCallingIntent(context: Context, extras: Bundle): Intent {
-                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-                val shopId = extras.getString(APP_LINK_EXTRA_SHOP_ID, "")
-                return (context.applicationContext as TalkRouter).getShopTalkIntent(context, shopId)
-                        .setData(uri.build())
-                        .putExtras(extras)
-
-            }
-
-        }
+//        object DeepLinkIntents {
+//            @JvmStatic
+//            @DeepLink(ApplinkConst.SHOP_TALK)
+//            fun getCallingIntent(context: Context, extras: Bundle): Intent {
+//                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+//                val shopId = extras.getString(APP_LINK_EXTRA_SHOP_ID, "")
+//                return (context.applicationContext as TalkRouter).getShopTalkIntent(context, shopId)
+//                        .setData(uri.build())
+//                        .putExtras(extras)
+//
+//            }
+//
+//        }
 
     }
 

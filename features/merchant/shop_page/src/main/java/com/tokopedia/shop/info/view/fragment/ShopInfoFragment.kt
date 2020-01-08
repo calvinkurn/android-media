@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -199,8 +200,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     shopViewModel.isMyShop(shopId),
                     CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1, goldOS.isGold == 1))
 
-            val talkIntent = RouteManager.getIntent(context, ApplinkConst.SHOP_TALK, shopId) ?: return@run
-            startActivity(talkIntent)
+           RouteManager.route(context, ApplinkConstInternalGlobal.SHOP_TALK, shopId)
+//                    RouteManager.getIntent(context, ApplinkConst.SHOP_TALK, shopId) ?: return@run
+//            startActivity(talkIntent)
         }
     }
 

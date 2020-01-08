@@ -12,6 +12,7 @@ import android.util.Log;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -97,7 +98,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
-                intent = ((TkpdCoreRouter) context.getApplication()).getInboxTalkCallingIntent(context);
+                intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INBOX_TALK);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
                 AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.PRODUCT_DISCUSSION);

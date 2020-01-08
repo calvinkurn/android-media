@@ -20,6 +20,7 @@
     <string name="path_product_talk">/product-talk</string>
     <string name="path_detail_talk">/detail-talk</string>
     <string name="path_add_talk">/add-talk</string>
+    <string name="path_shop_talk">/shop-talk</string>
 
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>

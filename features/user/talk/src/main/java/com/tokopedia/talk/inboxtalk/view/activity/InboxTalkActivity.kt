@@ -58,15 +58,6 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
 
     }
 
-    object DeepLinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.TALK)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            return (context.applicationContext as TalkRouter).getInboxTalkCallingIntent(context)
-        }
-
-    }
-
     override fun getLayoutRes(): Int {
         return R.layout.activity_talk_inbox
     }

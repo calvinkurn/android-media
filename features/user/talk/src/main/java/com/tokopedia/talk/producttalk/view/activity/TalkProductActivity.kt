@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
@@ -69,9 +71,16 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             val productId = extras.getString(PRODUCT_ID, "")
-            return (context.applicationContext as TalkRouter).getProductTalk(context, productId)
-                    .setData(uri.build())
-                    .putExtras(extras)
+
+            return RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK)
+                        .apply {
+                            data = uri.build()
+                            putExtras(extras)
+                            putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId)
+                        }
+//            return (context.applicationContext as TalkRouter).getProductTalk(context, productId)
+//                    .setData(uri.build())
+//                    .putExtras(extras)
         }
 
     }

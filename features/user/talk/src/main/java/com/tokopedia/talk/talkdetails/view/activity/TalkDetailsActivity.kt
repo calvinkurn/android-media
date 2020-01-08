@@ -56,23 +56,23 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         }
     }
 
-    object DeepLinkIntents {
-        const val TALK_ID = "talk_id"
-        const val SHOP_ID = "shop_id"
-
-        @JvmStatic
-        @DeepLink(ApplinkConst.TALK_DETAIL)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val talkId = extras.getString(TALK_ID, "")
-            val shopId = extras.getString(SHOP_ID, "")
-            val source = SOURCE_DEEPLINK
-
-
-            return (context.applicationContext as TalkRouter).getTalkDetailIntent(context,
-                    talkId, shopId, source).putExtras(extras)
-        }
-
-    }
+//    object DeepLinkIntents {
+//        const val TALK_ID = "talk_id"
+//        const val SHOP_ID = "shop_id"
+//
+//        @JvmStatic
+//        @DeepLink(ApplinkConst.TALK_DETAIL)
+//        fun getCallingIntent(context: Context, extras: Bundle): Intent {
+//            val talkId = extras.getString(TALK_ID, "")
+//            val shopId = extras.getString(SHOP_ID, "")
+//            val source = SOURCE_DEEPLINK
+//
+//
+//            return (context.applicationContext as TalkRouter).getTalkDetailIntent(context,
+//                    talkId, shopId, source).putExtras(extras)
+//        }
+//
+//    }
 
     override fun getComponent(): TalkComponent {
         return DaggerTalkComponent.builder().baseAppComponent(
