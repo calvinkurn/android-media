@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -77,7 +78,14 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     }
 
     @Override
+    public void initInject() {
+        getComponent().inject(this);
+    }
+
+    @Override
     public void initView() {
+        getComponent().inject(this);
+        setTradeInParams();
         viewsTradeIn = new ArrayList<>();
         mTvValidTill = findViewById(R.id.tv_valid_till);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -122,6 +130,15 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             viewsTradeIn.add(tvexchange);
             viewsTradeIn.add(mTvPriceExchange);
             viewsTradeIn.add(divider1);
+        }
+    }
+
+    private void setTradeInParams() {
+        if (getIntent().hasExtra(TradeInParams.class.getSimpleName())) {
+            viewModel.setTradeInParams(getIntent().getParcelableExtra(TradeInParams.class.getSimpleName()));
+        }
+        if (getIntent().hasExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE)) {
+            viewModel.setTradeInType(getIntent().getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, 1));
         }
     }
 
