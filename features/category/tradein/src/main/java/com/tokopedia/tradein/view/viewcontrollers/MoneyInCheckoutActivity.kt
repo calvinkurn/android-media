@@ -58,6 +58,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
         const val STATUS_SUCCESS = 2
     }
 
+    override fun initInject() {
+        component.inject(this)
+    }
+
     override fun initView() {
         moneyInStringCancelled = getString(R.string.money_in_alert_payment_canceled)
         moneyInStringCancelledOrFailed = getString(R.string.money_in_alert_payment_canceled_or_failed)
@@ -85,7 +89,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
             }
 
         }
-        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
+        moneyInCheckoutViewModel.getPickupScheduleOption()
         setObservers()
         val terms = getString(R.string.checkout_terms_and_conditions_text)
         val spannableString = SpannableString(terms)
@@ -170,12 +174,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
             when (it) {
                 is ScheduleTimeError -> {
                     showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
+                        moneyInCheckoutViewModel.getPickupScheduleOption()
                     }
                 }
                 is CourierPriceError -> {
                     showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+                        moneyInCheckoutViewModel.getCourierRates(destination)
                     }
                 }
                 is MutationCheckoutError -> {
@@ -184,7 +188,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.FAILURE)
                     showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                        moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                        moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
                     }
                 }
             }
@@ -301,12 +305,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
 
         destination = "${(recipientAddress.district)}|${(recipientAddress.postalCode)}|${(recipientAddress.latitude)},${(recipientAddress.longitude)}"
         addrId = recipientAddress.addrId
-        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+        moneyInCheckoutViewModel.getCourierRates(destination)
 
         val btBuy = findViewById<Button>(R.id.bt_buy)
         btBuy.setOnClickListener {
             if (isTimeSet && isCourierSet) {
-                moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
                 sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                         TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
