@@ -31,7 +31,6 @@ ext {
             collapsingTabLayout     : ":libraries:collapsing_tab_layout",
             core_legacy             : ":libraries:core_legacy",
             coreNetwork             : ":libraries:core_network",
-            cpm                     : ":libraries:cpm",
             datePickerRange         : ":libraries:date_picker_range",
             dynamicFeatures         : ":libraries:dynamic_features",
             fingerprint             : ":libraries:fingerprint",

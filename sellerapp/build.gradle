@@ -379,7 +379,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJavaMath
 
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.libraries.cpm)
 
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
