@@ -39,10 +39,6 @@
             android:name=".shopreputation.ReputationViewShop"
             android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".reputationproduct.view.activity.ReputationProductActivity"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".createreputation.ui.activity.CreateReviewActivity"
