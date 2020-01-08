@@ -800,12 +800,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
         Calendar defaultDate = Calendar.getInstance();
 
         if (title.equalsIgnoreCase(MULAI_DARI)) {
-            String[] result = split(defStartDate);
-            defaultDate.set(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
+            String[] resultStartDate = split(defStartDate);
+            defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
 
         } else {
-            String[] result = split(defEndDate);
-            defaultDate.set(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
+            String[] resultEndDate = split(defEndDate);
+            defaultDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
         }
 
         datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
