@@ -367,7 +367,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
@@ -391,7 +390,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
-    implementation project(rootProject.ext.libraries.cpm)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -413,7 +411,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseAdapter)
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
@@ -425,6 +422,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -433,6 +431,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.maps
     implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.playServicesDependencies.auth

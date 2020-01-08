@@ -25,7 +25,6 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.videoRecorder)
     implementation project(rootProject.ext.libraries.imageuploader)
@@ -44,6 +43,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
