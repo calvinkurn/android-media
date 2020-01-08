@@ -24,6 +24,22 @@ public class SellerRouter {
         return RouterUtils.getDefaultRouter().getSellingActivityClass();
     }
 
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    public static Intent getActivitySellingTransactionNewOrder(Context context) {
+        return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionNewOrder(context);
+    }
+
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    public static Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionConfirmShipping(context);
+    }
+
     public static Intent getActivitySellingTransactionShippingStatus(Context context) {
         return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionShippingStatus(context);
     }

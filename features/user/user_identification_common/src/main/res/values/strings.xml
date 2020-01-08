@@ -56,9 +56,9 @@
     <string name="camera_face_subtitle">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
 
     <string name="change_button">Ubah</string>
-    <string name="form_final_info">Dengan klik “Kirim Dokumen” saya menyetujui\nsyarat &amp; ketentuan yang berlaku</string>
+    <string name="form_final_info">Dengan klik “Kirim Dokumen” saya menyetujui syarat &amp; ketentuan yang berlaku</string>
 
-    <string name="form_reupload_info">Dengan klik “Kirim Dokumen” saya menyetujui\nsyarat &amp; ketentuan yang berlaku</string>
+    <string name="form_reupload_info">Dengan klik “Kirim Dokumen” saya menyetujui syarat &amp; ketentuan yang berlaku</string>
 
     <string name="terms_and_condition">syarat &amp; ketentuan</string>
     <string name="upload_button">Kirim Dokumen</string>

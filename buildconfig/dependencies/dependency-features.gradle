@@ -27,7 +27,8 @@ ext {
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
 
-            digitalEmoney                  : ":features:digital:digital_emoney",
+            rechargeOcr                     : ":features:digital:rechargeocr",
+            digitalEmoney                   : ":features:digital:digital_emoney",
             digitalBrowse                   : ":features:digital:digital_browse",
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
@@ -42,6 +43,7 @@ ext {
             flightOrderList                 : ":features:digital:flight_orderlist",
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
+            travelCountryCode               : ":features:digital:travel_country_code",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
@@ -163,8 +165,10 @@ ext {
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
+            opportunity                     : ":features:transaction:opportunity",
 
             attachproduct                   : ":features:user:attachproduct",
+            attachinvoice                   : ":features:user:attachinvoice",
             changepassword                  : ":features:user:changepassword",
 //            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",
@@ -191,6 +195,7 @@ ext {
             seamlesslogin                   : ":features:user:seamless_login",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
+            kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
 

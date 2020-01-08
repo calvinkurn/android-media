@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderUnify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:whiteMode="false" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_2"
+        android:textSize="20sp"
+        android:textColor="#f531353b"
+        android:lineSpacingExtra="6sp"
+        android:gravity="center_horizontal"
+        tools:text="Tunggu sebentar, ya…"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:textSize="14sp"
+        android:textColor="@color/Neutral_N700_68"
+        android:lineSpacingExtra="6sp"
+        android:gravity="center_horizontal"
+        tools:text="Dokumenmu sedang di-upload"/>
+
+</LinearLayout>

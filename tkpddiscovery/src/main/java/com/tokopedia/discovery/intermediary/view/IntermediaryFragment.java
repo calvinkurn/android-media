@@ -163,8 +163,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private String parentCategory;
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryBrandsAdapter brandsAdapter;
-    private IntermediaryCategoryAdapter.CategoryListener categoryListener;
-    private IntermediaryBrandsAdapter.BrandListener brandListener;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     private List<BannerModel> bannerModelList;
     private boolean isUsedUnactiveChildren = false;

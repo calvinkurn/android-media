@@ -1,8 +1,0 @@
-user_session - 1.0.7 - SUCCESSFUL
-use_case - null - SUCCESSFUL
-url - 1.0.2 - SUCCESSFUL
-global_config - 1.0.3 - SUCCESSFUL
-network - 1.0.5 - SUCCESSFUL
-cache_manager - null - SUCCESSFUL
-akamai_bot_lib - 1.0.2 - SUCCESSFUL
-graphql - 1.0.9 - SUCCESSFUL

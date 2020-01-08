@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:background="@color/white">
+
+    <com.tokopedia.cameraview.CameraView
+        android:id="@+id/full_camera_view"
+        android:keepScreenOn="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cameraPlaySounds="true"/>
+
+    <ImageView
+        android:id="@+id/full_image_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <com.tokopedia.kyc_centralized.view.FocusedCameraKTPView
+        android:id="@+id/focused_view_ktp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <com.tokopedia.kyc_centralized.view.customview.FocusCameraFaceView
+        android:id="@+id/focused_view_face"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.UnifyImageButton
+        android:id="@+id/close_button"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyImageButtonType="main"
+        app:unifyImageButtonVariant="image"
+        app:srcCompat="@drawable/ic_kyc_arrow_back"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        app:typographyType="heading_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/useridentification_common_3sp"
+        android:textColor="@color/Neutral_N0"
+        android:textSize="@dimen/useridentification_common_17sp"
+        app:layout_constraintTop_toTopOf="@id/close_button"
+        app:layout_constraintBottom_toBottomOf="@id/close_button"
+        app:layout_constraintLeft_toRightOf="@id/close_button"
+        tools:text="Ambil Foto KTP" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/subtitle"
+        app:typographyType="body_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/useridentification_common_98dp"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/useridentification_common_6sp"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:textColor="@color/Neutral_N0"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="@string/camera_ktp_subtitle" />
+
+
+    <FrameLayout
+        android:id="@+id/image_button_shutter"
+        android:layout_width="@dimen/useridentification_common_56dp"
+        android:layout_height="@dimen/useridentification_common_56dp"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_shutter" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/image_button_flip"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
+        android:layout_marginLeft="@dimen/dp_50"
+        android:layout_marginStart="@dimen/dp_50"
+        app:layout_constraintBottom_toBottomOf="@+id/image_button_shutter"
+        app:layout_constraintLeft_toRightOf="@+id/image_button_shutter"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/image_button_shutter"
+        app:srcCompat="@drawable/ic_flip_camera_icon" />
+
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/recapture_button"
+            app:typographyType="heading_4"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:gravity="center"
+            android:text="@string/camera_recapture_text"
+            android:background="@drawable/white_button_ghost"
+            android:textColor="@color/white"
+            android:textSize="@dimen/fontSize_lvl3"
+            tools:text="Foto Ulang" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/next_button"
+            app:typographyType="heading_4"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:background="@drawable/white_button_filled"
+            android:gravity="center"
+            android:text="@string/camera_next_button"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/fontSize_lvl3" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout-->
+<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:layout_centerInParent="true">-->
+
+<!--<com.tokopedia.cameraview.CameraView-->
+<!--    android:id="@+id/full_camera_view"-->
+<!--    android:keepScreenOn="true"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    app:cameraPlaySounds="true"/>-->
+
+<!--<ImageView-->
+<!--    android:id="@+id/full_image_preview"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_gravity="center"-->
+<!--    android:adjustViewBounds="true"-->
+<!--    android:scaleType="centerCrop"-->
+<!--    android:visibility="gone" />-->
+
+<!--<com.tokopedia.user_identification_common.view.FocusedCameraKTPView-->
+<!--    android:id="@+id/focused_view_ktp"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:visibility="visible"/>-->
+
+<!--<com.tokopedia.user_identification_common.view.customview.FocusCameraFaceView-->
+<!--    android:id="@+id/focused_view_face"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:visibility="gone" />-->
+
+<!--<com.tokopedia.unifycomponents.UnifyImageButton-->
+<!--    android:id="@+id/close_button"-->
+<!--    android:layout_width="@dimen/layout_lvl6"-->
+<!--    android:layout_height="@dimen/layout_lvl6"-->
+<!--    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="parent"-->
+<!--    app:unifyImageButtonType="main"-->
+<!--    app:unifyImageButtonVariant="image"-->
+<!--    app:srcCompat="@drawable/ic_kyc_arrow_back"/>-->
+
+<!--<com.tokopedia.unifyprinciples.Typography-->
+<!--    android:id="@+id/title"-->
+<!--    app:typographyType="heading_4"-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:lineSpacingExtra="@dimen/useridentification_common_3sp"-->
+<!--    android:textColor="@color/white"-->
+<!--    android:textSize="@dimen/useridentification_common_17sp"-->
+<!--    app:layout_constraintTop_toTopOf="@id/close_button"-->
+<!--    app:layout_constraintBottom_toBottomOf="@id/close_button"-->
+<!--    app:layout_constraintLeft_toRightOf="@id/close_button"-->
+<!--    tools:text="Ambil Foto KTP" />-->
+
+<!--<com.tokopedia.unifyprinciples.Typography-->
+<!--    android:id="@+id/subtitle"-->
+<!--    app:typographyType="body_2"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginBottom="@dimen/useridentification_common_98dp"-->
+<!--    android:gravity="center"-->
+<!--    android:lineSpacingExtra="@dimen/useridentification_common_6sp"-->
+<!--    android:paddingLeft="@dimen/spacing_lvl4"-->
+<!--    android:paddingRight="@dimen/spacing_lvl4"-->
+<!--    android:textColor="@color/Neutral_N0"-->
+<!--    android:textSize="@dimen/fontSize_lvl3"-->
+<!--    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--    app:layout_constraintRight_toRightOf="parent"-->
+<!--    tools:text="@string/camera_ktp_subtitle" />-->
+
+<!--<FrameLayout-->
+<!--    android:id="@+id/image_button_shutter"-->
+<!--    android:layout_width="@dimen/useridentification_common_56dp"-->
+<!--    android:layout_height="@dimen/useridentification_common_56dp"-->
+<!--    android:layout_marginBottom="@dimen/spacing_lvl4"-->
+<!--    android:clickable="true"-->
+<!--    android:focusable="true"-->
+<!--    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--    app:layout_constraintRight_toRightOf="parent">-->
+
+<!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:srcCompat="@drawable/ic_shutter" />-->
+
+<!--</FrameLayout>-->
+
+<!--<ImageView-->
+<!--    android:id="@+id/image_button_flip"-->
+<!--    android:layout_width="@dimen/useridentification_common_25dp"-->
+<!--    android:layout_height="@dimen/useridentification_common_25dp"-->
+<!--    android:layout_marginLeft="@dimen/useridentification_common_50dp"-->
+<!--    android:layout_marginStart="@dimen/useridentification_common_50dp"-->
+<!--    app:layout_constraintBottom_toBottomOf="@+id/image_button_shutter"-->
+<!--    app:layout_constraintLeft_toRightOf="@+id/image_button_shutter"-->
+<!--    app:layout_constraintRight_toRightOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="@+id/image_button_shutter"-->
+<!--    app:srcCompat="@drawable/ic_flip_camera_icon" />-->
+
+
+<!--<LinearLayout-->
+<!--    android:id="@+id/button_layout"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="@dimen/layout_lvl6"-->
+<!--    android:layout_margin="@dimen/spacing_lvl4"-->
+<!--    android:orientation="horizontal"-->
+<!--    android:visibility="gone"-->
+<!--    android:weightSum="2"-->
+<!--    app:layout_constraintBottom_toBottomOf="parent">-->
+
+<!--    <com.tokopedia.unifyprinciples.Typography-->
+<!--        android:id="@+id/recapture_button"-->
+<!--        app:typographyType="heading_4"-->
+<!--        android:layout_width="@dimen/layout_lvl0"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_weight="1"-->
+<!--        android:layout_marginLeft="@dimen/spacing_lvl4"-->
+<!--        android:layout_marginRight="@dimen/spacing_lvl3"-->
+<!--        android:layout_marginStart="@dimen/spacing_lvl4"-->
+<!--        android:layout_marginEnd="@dimen/spacing_lvl3"-->
+<!--        android:gravity="center"-->
+<!--        android:text="@string/camera_recapture_text"-->
+<!--        android:background="@drawable/white_button_ghost"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="@dimen/fontSize_lvl3"-->
+<!--        tools:text="Foto Ulang" />-->
+
+<!--    <com.tokopedia.unifyprinciples.Typography-->
+<!--        android:id="@+id/next_button"-->
+<!--        app:typographyType="heading_4"-->
+<!--        android:layout_width="@dimen/layout_lvl0"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_weight="1"-->
+<!--        android:layout_marginLeft="@dimen/spacing_lvl3"-->
+<!--        android:layout_marginRight="@dimen/spacing_lvl4"-->
+<!--        android:layout_marginStart="@dimen/spacing_lvl3"-->
+<!--        android:layout_marginEnd="@dimen/spacing_lvl4"-->
+<!--        android:background="@drawable/white_button_filled"-->
+<!--        android:gravity="center"-->
+<!--        android:text="@string/camera_next_button"-->
+<!--        android:textColor="@color/medium_green"-->
+<!--        android:textSize="@dimen/fontSize_lvl3" />-->
+<!--</LinearLayout>-->
+
+<!--<ProgressBar-->
+<!--    android:id="@+id/progress_bar"-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_centerInParent="true"-->
+<!--    android:indeterminate="true"-->
+<!--    android:visibility="gone"-->
+<!--    app:layout_constraintTop_toTopOf="parent"-->
+<!--    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--    app:layout_constraintRight_toRightOf="parent"-->
+<!--    app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

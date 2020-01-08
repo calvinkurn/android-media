@@ -1,14 +1,15 @@
 package com.tokopedia.topads.keyword.view.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.topads.R;
@@ -26,7 +27,7 @@ public class KeywordAdapter extends RecyclerView.Adapter<KeywordAdapter.KeywordV
     private Context context;
     private int colorRed;
 
-    OnKeywordAdapterListener onKeywordAdapterListener;
+    private OnKeywordAdapterListener onKeywordAdapterListener;
 
     public interface OnKeywordAdapterListener {
         void onKeywordRemoved();

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color category="global-color" name="useridentification_common_00000000">#00000000</color>
+    <color category="global-color" name="useridentification_common_f531353b">#f531353b</color>
+    <color category="global-color" name="kyc_centralized_42b549">#42b549</color>
+</resources>

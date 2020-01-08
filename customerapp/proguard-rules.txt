@@ -207,6 +207,12 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
+-keepclassmembers class com.wandroid.traceroute.TraceRoute {
+    void clearResult();
+    void appendResult(***);
+    int execute(***);
+}
+
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }
@@ -373,3 +379,5 @@
 }
 
 -keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
+
+-dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
