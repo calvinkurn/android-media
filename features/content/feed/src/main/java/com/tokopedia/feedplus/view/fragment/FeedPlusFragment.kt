@@ -817,6 +817,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
             feedViewModel.doFollowKol(id, rowNumber)
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.FOLLOW)
         } else {
             onGoToLogin()
         }
@@ -825,6 +826,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
             feedViewModel.doUnfollowKol(id, rowNumber)
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNFOLLOW)
         } else {
             onGoToLogin()
         }
@@ -1288,7 +1290,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, contentList, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
             if (redirectLink.contains(FEED_DETAIL)) {
-                analytics.eventGoToFeedDetail(trackingPostModel.postId)
+                analytics.eventGoToFeedDetail(trackingPostModel.postId, trackingPostModel.recomId)
             } else if (contentList[contentPosition] is GridPostViewModel) {
                 val (itemList) = contentList[contentPosition] as GridPostViewModel
                 val (id, text, price) = itemList[productPosition]
@@ -1299,7 +1301,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 productPosition),
                         trackingPostModel.activityName,
                         trackingPostModel.postId,
-                        userIdInt
+                        userIdInt,
+                        trackingPostModel.recomId
                 )
             }
         }
@@ -1884,7 +1887,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     productList,
                     trackingPostModel.activityName,
                     trackingPostModel.postId,
-                    userIdInt
+                    userIdInt,
+                    trackingPostModel.recomId
             )
         } else if (postViewModel.contentList[0] is PollContentViewModel) {
             val (pollId) = postViewModel.contentList[0] as PollContentViewModel
@@ -1923,7 +1927,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 trackingPostModel.totalContent,
                 trackingPostModel.postId,
                 userIdInt,
-                positionInFeed
+                positionInFeed,
+                trackingPostModel.recomId
         )
     }
 
@@ -1959,7 +1964,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     element,
                     trackingPostModel.activityName,
                     trackingPostModel.mediaType,
-                    trackingPostModel.postId.toString()
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.recomId
             )
         }
     }
