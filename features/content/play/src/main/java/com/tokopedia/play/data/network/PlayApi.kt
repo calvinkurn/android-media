@@ -10,7 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 /**
- * Created by mzennis on 2019-12-03.Ø
+ * Created by mzennis on 2019-12-03.
  */
 
 interface PlayApi {
