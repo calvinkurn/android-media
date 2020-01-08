@@ -22,6 +22,8 @@ import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -174,6 +176,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(block = {
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", forceRefresh).also {
+                addStaticComponent(it)
                 getDynamicProductInfoP1 = it.layoutData
                 //Remove any unused component based on P1 / PdpLayout
                 removeDynamicComponent(it.listOfLayout)
@@ -186,6 +189,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _productLayout.value = Fail(it)
         }
+    }
+
+    private fun addStaticComponent(it: ProductDetailDataModel) {
+        if (isUserSessionActive && !isUserHasShop) {
+            it.listOfLayout.add(ProductOpenShopDataModel())
+        }
+        it.listOfLayout.add(ProductLastSeenDataModel())
     }
 
     private fun createTradeinParam(productInfoP1: DynamicProductInfoP1?, deviceId: String?): TradeInParams {

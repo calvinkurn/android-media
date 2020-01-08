@@ -27,6 +27,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         countView
         countReview
         countTalk
+        rating
       }
       shopID
       alias

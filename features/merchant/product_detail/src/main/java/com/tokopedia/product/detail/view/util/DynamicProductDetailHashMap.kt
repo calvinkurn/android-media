@@ -102,6 +102,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             socialProofMap?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
+                rating = it.basic.stats.rating
             }
 
             productInfoMap?.run {
@@ -208,7 +209,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
             socialProofMap?.run {
                 wishListCount = it.wishlistCount.count
-                rating = it.rating
             }
 
             productDiscussionMap?.run {

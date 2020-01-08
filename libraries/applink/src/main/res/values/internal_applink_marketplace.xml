@@ -25,7 +25,6 @@
     <string name="path_product_add_item" translatable="false">/product-add-item</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
-    <string name="path_dynamic_product_detail" translatable="false">/dynamic-product-detail</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
     <string name="path_product_edit_item" translatable="false">/product-edit-item/.*\\/</string>
     <string name="path_product_edit_variant_dashboard" translatable="false">/product-edit-variant-dashboard</string>

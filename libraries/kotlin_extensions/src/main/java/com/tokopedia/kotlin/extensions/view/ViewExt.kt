@@ -278,12 +278,12 @@ fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
 
 }
 
-fun View.isVisibleOnTheScreen(listener: ViewVisibilityListener) {
+fun View.isVisibleOnTheScreen(onViewVisible:() -> Unit, onViewNotVisible:() -> Unit) {
     viewTreeObserver.addOnScrollChangedListener {
         if (getVisiblePercent(this@isVisibleOnTheScreen) == -1) {
-            listener.onViewNotVisible()
+            onViewNotVisible.invoke()
         } else {
-            listener.onViewVisible()
+            onViewVisible.invoke()
         }
     }
 }
@@ -333,11 +333,6 @@ fun getScreenHeight(): Int {
 
 interface ViewHintListener {
     fun onViewHint()
-}
-
-interface ViewVisibilityListener {
-    fun onViewNotVisible()
-    fun onViewVisible()
 }
 
 fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {

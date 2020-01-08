@@ -162,6 +162,10 @@
     <string name="ft_max_installment_amount">Maks Pembelanjaan %s</string>
     <string name="pdp_installment_desc">Lihat Semua Metode</string>
 
+    <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
+    <string name="staging_pdp_category_applink">https://staging.tokopedia.com/p/</string>
+    <string name="staging_pdp_etalase_applink_builder">https://staging.tokopedia.com/%s/etalase</string>
+
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>
         <item>@string/ft_label_with_credit_card</item>

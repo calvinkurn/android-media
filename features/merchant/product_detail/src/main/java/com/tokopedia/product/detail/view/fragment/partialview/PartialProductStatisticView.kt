@@ -25,6 +25,13 @@ class PartialProductStatisticView private constructor(private val view: View) {
         }
     }
 
+    fun renderRatingNew(rating: String) {
+        with(view) {
+            tv_rating.text = rating
+            visible()
+        }
+    }
+
     fun renderRating(rating: Rating) {
         with(view) {
             tv_rating.text = rating.ratingScore

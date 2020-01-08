@@ -8,6 +8,7 @@ import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
@@ -261,7 +262,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
         Assert.assertEquals(viewModel.p2ShopDataResp.value?.shopCod, anyBoolean())
-
         //Make sure not called
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -277,6 +277,11 @@ class DynamicProductDetailViewModelTest {
         coVerify(inverse = true) {
             getProductInfoP3UseCase.executeOnBackground()
         }
+
+        Assert.assertTrue((viewModel.productLayout.value as Success).data.none {
+            it is ProductOpenShopDataModel
+        })
+
     }
 
     /**

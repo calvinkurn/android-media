@@ -207,7 +207,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
-    private val carouselProductPool = CarouselProductPool()
+    private val carouselProductPool: CarouselProductPool by lazy {
+        CarouselProductPool()
+    }
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -530,12 +532,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ProductInfoViewHolder
      */
     override fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String) {
+        val etalaseApplink = getString(R.string.pdp_etalase_applink_builder, viewModel.shopInfo?.shopCore?.domain)
+        val categoryApplink = getString(R.string.staging_pdp_category_applink)
         when {
-            applink.startsWith(ApplinkConst.SHOP_ETALASE) -> {
+            applink.startsWith(etalaseApplink) -> {
                 gotoEtalase(etalaseId, shopId)
             }
+            applink.startsWith(categoryApplink) -> {
+                goToCategory(categoryId)
+            }
             else -> {
-                openCategory(categoryId)
+                RouteManager.route(context, applink)
             }
         }
     }
@@ -658,9 +665,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun goToHomePageClicked() {
-        if (activity is ProductDetailActivity) {
-            (activity as ProductDetailActivity).goToHomePageClicked()
-        }
+        (activity as? ProductDetailActivity)?.goToHomePageClicked()
     }
 
     /**
@@ -775,9 +780,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onImageClicked(position: Int) {
         val isWishlisted = pdpHashMapUtil.snapShotMap.isWishlisted
         activity?.let {
-            val intent = ImagePreviewPdpActivity.createIntent(it, productId
-                    ?: "", isWishlisted, viewModel.getDynamicProductInfoP1?.data?.getImagePath()
-                    ?: arrayListOf(), null, position)
+            val intent = ImagePreviewPdpActivity.createIntent(it, productId.orEmpty(), isWishlisted,
+                    viewModel.getDynamicProductInfoP1?.data?.getImagePath()
+                            ?: arrayListOf(), null, position)
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_IMAGE_PREVIEW)
         }
     }
@@ -791,14 +796,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun showAlertCampaignEnded() {
-        Dialog(activity, Dialog.Type.LONG_PROMINANCE).apply {
-            setTitle(getString(R.string.campaign_expired_title))
-            setDesc(getString(R.string.campaign_expired_descr))
-            setBtnOk(getString(R.string.exp_dialog_ok))
-            setBtnCancel(getString(R.string.close))
-            setOnCancelClickListener { loadData(0); dismiss() }
-            setOnOkClickListener { dismiss(); }
-        }.show()
+        activity?.let {
+            Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
+                setTitle(getString(R.string.campaign_expired_title))
+                setDesc(getString(R.string.campaign_expired_descr))
+                setBtnOk(getString(R.string.exp_dialog_ok))
+                setBtnCancel(getString(R.string.close))
+                setOnCancelClickListener { loadData(0); dismiss() }
+                setOnOkClickListener { dismiss(); }
+            }.show()
+        }
     }
 
     override fun onFabWishlistClicked(isActive: Boolean) {
@@ -1125,7 +1132,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             productDetailTracking.trackTradeinBeforeDiagnotics()
     }
 
-    private fun openCategory(categoryId: String) {
+    private fun goToCategory(categoryId: String) {
         if (GlobalConfig.isCustomerApp()) {
             RouteManager.route(context,
                     ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,

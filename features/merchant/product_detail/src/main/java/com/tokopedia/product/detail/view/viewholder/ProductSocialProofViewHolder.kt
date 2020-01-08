@@ -34,13 +34,11 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         }
 
         element.rating?.run {
-            productStatsView.renderRating(this)
+            productStatsView.renderRatingNew(this.toString())
         }
         attributeInfoView.renderWishlistCount(element.wishListCount)
 
-        //TO-DO RENDER FROM STATS MODEL
         productStatsView.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked)
-        //TO-DO RENDER FROM STATS MODEL
         attributeInfoView.renderDataDynamicPdp(stats.countView, txStats)
 
 

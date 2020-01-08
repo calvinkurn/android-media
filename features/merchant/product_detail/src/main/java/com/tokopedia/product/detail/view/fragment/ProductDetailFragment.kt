@@ -68,6 +68,7 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -546,7 +547,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         fab_detail.setOnClickListener {
             if (productInfoViewModel.isUserSessionActive()) {
                 val productP3value = productInfoViewModel.productInfoP3resp.value
-                if (shopInfo != null && shopInfo?.isAllowManage == 1) {
+                if (shopInfo != null && shopInfo?.isAllowManage == ProductDetailCommonConstant.IS_ALLOW_MANAGE) {
                     if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
                         gotoEditProduct()
                     } else {
@@ -1603,6 +1604,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
+        performanceMonitoringP1.stopTrace()
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data

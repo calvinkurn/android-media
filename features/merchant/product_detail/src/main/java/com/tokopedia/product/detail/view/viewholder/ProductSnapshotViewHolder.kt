@@ -4,7 +4,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.ViewVisibilityListener
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
@@ -56,16 +55,11 @@ class ProductSnapshotViewHolder(private val view: View,
             element.shouldReinitVideoPicture = false
         }
 
-        view.view_picture_search_bar.isVisibleOnTheScreen(object : ViewVisibilityListener {
-            override fun onViewNotVisible() {
-                view.fab_detail.hide()
-                view.view_picture_search_bar.stopVideo()
-            }
-
-            override fun onViewVisible() {
-                view.fab_detail.show()
-            }
-
+        view.view_picture_search_bar.isVisibleOnTheScreen({
+            view.fab_detail.show()
+        }, {
+            view.fab_detail.hide()
+            view.view_picture_search_bar.stopVideo()
         })
     }
 

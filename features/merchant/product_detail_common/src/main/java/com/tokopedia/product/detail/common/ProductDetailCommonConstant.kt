@@ -35,6 +35,7 @@ object ProductDetailCommonConstant{
 
     const val DEFAULT_NUM_VOUCHER = 3
     const val DEFAULT_NUM_IMAGE_REVIEW = 4
+    const val IS_ALLOW_MANAGE = 1
 
     val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
             "last_active", "location", "terms", "allow_manage",

@@ -9,8 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT
@@ -62,11 +60,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
 
     private fun mapIntoModel(data: ProductDetailLayout): ProductDetailDataModel {
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.data.components)
-        if (isUserActive && !isUserHasShop) {
-            initialLayoutData.add(ProductOpenShopDataModel())
-        }
-        initialLayoutData.add(ProductLastSeenDataModel())
-
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data.data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData)
     }
