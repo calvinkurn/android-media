@@ -18,5 +18,7 @@ data class BlankSpaceConfig (
     var labelCredibility: Boolean = false,
     var freeOngkir: Boolean = false,
     var labelOffers: Boolean = false,
-    var twoLinesProductName: Boolean = false
+    var twoLinesProductName: Boolean = false,
+    var topAdsIcon: Boolean = false,
+    var labelPromo: Boolean = false
 )
