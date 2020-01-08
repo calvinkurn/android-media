@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_devopt" translatable="false">developeroption</string>
+    <string name="path_change_env_url" translatable="false">/changeurl/.*\</string>
+</resources>
