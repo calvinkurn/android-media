@@ -32,7 +32,7 @@ class BannedProdNavViewModel @Inject constructor() : ViewModel(), CoroutineScope
     private val mSeamlessLogin: MutableLiveData<Result<String>> by lazy { MutableLiveData<Result<String>>() }
     private var bannedProduct = MutableLiveData<Result<Data>>()
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun fetchBannedProduct() {
         launchCatchError(block = {
             val bannedResponse = categoryNavRepository.getCategoryDetail(categoryName)
