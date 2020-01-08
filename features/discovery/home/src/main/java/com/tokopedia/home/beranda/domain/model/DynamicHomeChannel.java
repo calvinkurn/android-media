@@ -324,7 +324,7 @@ public class DynamicHomeChannel {
                     Grid grid = grids[i];
                     list.add(
                             DataLayer.mapOf(
-                                    "id", channelId + "-" + grid.getId(),
+                                    "id", getId() +"_" + grid.getId(),
                                     "name", getPromoName(),
                                     "creative", grid.getAttribution(),
                                     "creative_url", grid.getImageUrl(),
@@ -691,22 +691,25 @@ public class DynamicHomeChannel {
         }
 
         public HashMap<String, Object> getEnhanceImpressionBannerChannelMix() {
-            List<Object> list = convertPromoEnhanceBannerChannelMix();
             return (HashMap<String, Object>) DataLayer.mapOf(
                     "event", "promoView",
                     "eventCategory", "homepage",
-                    "eventAction", "impression on banner dynamic channel mix",
+                    "eventAction", "home banner impression",
                     "eventLabel", "",
-                    "channelId", id,
                     "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
                                         "promotions", DataLayer.listOf(
-                                            list.toArray(new Object[list.size()])
+                                            DataLayer.mapOf(
+                                                    "id", getId() + "_" + getBanner().getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", getBanner().getAttribution(),
+                                                    "creative_url", getBanner().getImageUrl(),
+                                                    "position", String.valueOf(1)
+                                            )
                                     )
                             )
 
-                    ),
-                    "attribution", getHomeAttribution(1, getHeader().getName())
+                    )
             );
         }
 
