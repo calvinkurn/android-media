@@ -56,6 +56,17 @@
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@+id/description"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <View android:background="@drawable/home_gradient_action_play"
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -164,7 +175,7 @@
             android:layout_height="20dp"
             android:layout_gravity="bottom"
             android:animateLayoutChanges="true"
-            app:srcCompat="@drawable/ic_volume_up_white_24dp"/>
+            app:srcCompat="@drawable/ic_volume_mute_white_24dp"/>
     </FrameLayout>
 
 <!--    <ProgressBar-->

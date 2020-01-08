@@ -12,7 +12,6 @@ interface ExoPlayerControl {
     fun seekTo(windowIndex: Int, positionMs: Long)
     fun seekToDefaultPosition()
     fun setExoPlayerEventsListener(pExoPlayerListenerListener: ExoPlayerListener?)
-    fun setExoThumbListener(exoThumbListener: ExoThumbListener?)
     fun onActivityStart()
     fun onActivityResume()
     fun onActivityPause()

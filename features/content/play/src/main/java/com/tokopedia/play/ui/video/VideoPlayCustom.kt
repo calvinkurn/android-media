@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.customview
+package com.tokopedia.play.ui.video
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,28 +14,13 @@ import android.widget.FrameLayout
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoListener
-import com.tokopedia.home.R
-
+import com.tokopedia.play.R
 
 @SuppressLint("SyntheticAccessor")
-class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
+class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
     companion object{
-        private val playerLayoutId = R.layout.tokopedia_play_view
-
-        /** The buffering view is never shown.  */
-        private const val SHOW_BUFFERING_NEVER = 0
-        /**
-         * The buffering view is shown when the player is in the [buffering][Player.STATE_BUFFERING]
-         * state and [playWhenReady][Player.getPlayWhenReady] is `true`.
-         */
-        private const val SHOW_BUFFERING_WHEN_PLAYING = 1
-        /**
-         * The buffering view is always shown when the player is in the [ buffering][Player.STATE_BUFFERING] state.
-         */
-        private const val SHOW_BUFFERING_ALWAYS = 2
-
+        private val playerLayoutId = R.layout.video_play_custom
         const val ANIMATION_TRANSITION_NAME = "play_video"
-
     }
     private var componentListener: ComponentListener? = null
     private var overlayFrameLayout: FrameLayout? = null
@@ -44,23 +29,13 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
     private var player: Player? = null
     private var surfaceView: TextureView? = null
     private var textureViewRotation = 0
-    private var showBuffering = SHOW_BUFFERING_NEVER
-    private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+    private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
     constructor(context: Context) : this(context, null, 0)
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     init{
-        showBuffering = SHOW_BUFFERING_NEVER
-        if (attrs != null) {
-            val a = context.theme.obtainStyledAttributes(attrs, R.styleable.PlayerView, 0, 0)
-            try{
-                showBuffering = a.getInteger(R.styleable.PlayerView_show_buffering, showBuffering)
-            } finally {
-                a.recycle()
-            }
-        }
 
         LayoutInflater.from(context).inflate(playerLayoutId, this)
         componentListener = ComponentListener()
@@ -91,15 +66,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
     private fun onContentAspectRatioChanged(
             contentAspectRatio: Float,
             contentFrame: AspectRatioFrameLayout?) {
-        contentFrame?.setAspectRatio(2/1f)
-    }
-
-    private fun updateBuffering() {
-        bufferingView?.let{
-            val showBufferingSpinner = player != null && player!!.playbackState == Player.STATE_BUFFERING && (showBuffering == SHOW_BUFFERING_ALWAYS
-                    || showBuffering == SHOW_BUFFERING_WHEN_PLAYING && player!!.playWhenReady)
-            bufferingView?.visibility = if (showBufferingSpinner) View.VISIBLE else View.GONE
-        }
+        contentFrame?.setAspectRatio(contentAspectRatio)
     }
 
     private fun setResizeModeRaw(aspectRatioFrame: AspectRatioFrameLayout, resizeMode: Int) {
@@ -130,37 +97,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         }
     }
 
-    private fun applyCrop(textureView: TextureView, width: Float, height: Float): Float{
-        val mVideoHeight = height
-        val mVideoWidth = width
-        val viewWidth = contentFrame?.width ?: 0
-        val viewHeight = contentFrame?.height ?: 0
-        var scaleX = 1.0f
-        var scaleY = 1.0f
-
-        if (mVideoWidth > viewWidth && mVideoHeight > viewHeight) {
-            scaleX = mVideoWidth / viewWidth
-            scaleY = mVideoHeight / viewHeight
-        } else if (mVideoWidth < viewWidth && mVideoHeight < viewHeight) {
-            scaleY = viewWidth / mVideoWidth
-            scaleX = viewHeight / mVideoHeight
-        } else if (viewWidth > mVideoWidth) {
-            scaleY = viewWidth / mVideoWidth / (viewHeight / mVideoHeight)
-        } else if (viewHeight > mVideoHeight) {
-            scaleX = viewHeight / mVideoHeight / (viewWidth / mVideoWidth)
-        }
-
-        // Calculate pivot points, in our case crop from center
-
-        val pivotPointX: Int = textureView.width / 2
-        val pivotPointY: Int = textureView.height / 3
-        val matrix = Matrix()
-        matrix.setScale(scaleX, scaleY, pivotPointX.toFloat(), pivotPointY.toFloat())
-
-        textureView.setTransform(matrix)
-
-        return if (height == 0f || width == 0f) 1f else (contentFrame?.width?.toFloat() ?: 1f) / (contentFrame?.height?.toFloat() ?: 1f)
-    }
 
     fun getOverlayFrame() = overlayFrameLayout
 
@@ -177,7 +113,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 oldVideoComponent.clearVideoTextureView(surfaceView)
             }
         }
-        updateBuffering()
+
         this.player = player
         if (player != null) {
             val newVideoComponent = player.videoComponent
@@ -193,23 +129,23 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         // VideoListener implementation
         override fun onVideoSizeChanged(
                 width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
-            var videoAspectRatio = 1f
-            surfaceView?.let{ surfaceView ->
-                // Try to apply rotation transformation when our surface is a TextureView.
-                if (unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270) { // We will apply a rotation 90/270 degree to the output texture of the TextureView.
-                    // In this case, the output video's width and height will be swapped.
-                    videoAspectRatio = 1 / videoAspectRatio
+            var videoAspectRatio: Float = if (height == 0 || width == 0) 1f else width * pixelWidthHeightRatio / height
+            surfaceView?.let{
+                if (surfaceView is TextureView) { // Try to apply rotation transformation when our surface is a TextureView.
+                    if (unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270) { // We will apply a rotation 90/270 degree to the output texture of the TextureView.
+                        // In this case, the output video's width and height will be swapped.
+                        videoAspectRatio = 1 / videoAspectRatio
+                    }
+                    if (textureViewRotation != 0) {
+                        surfaceView!!.removeOnLayoutChangeListener(this)
+                    }
+                    textureViewRotation = unappliedRotationDegrees
+                    if (textureViewRotation != 0) { // The texture view's dimensions might be changed after layout step.
+                        // So add an OnLayoutChangeListener to apply rotation after layout step.
+                        surfaceView!!.addOnLayoutChangeListener(this)
+                    }
+                    applyTextureViewRotation(it, textureViewRotation)
                 }
-                if (textureViewRotation != 0) {
-                    surfaceView.removeOnLayoutChangeListener(this)
-                }
-                textureViewRotation = unappliedRotationDegrees
-                if (textureViewRotation != 0) { // The texture view's dimensions might be changed after layout step.
-                    // So add an OnLayoutChangeListener to apply rotation after layout step.
-                    surfaceView.addOnLayoutChangeListener(this)
-                }
-//                applyTextureViewRotation(surfaceView, textureViewRotation)
-                videoAspectRatio = applyCrop(surfaceView, width.toFloat(), height.toFloat())
             }
             onContentAspectRatioChanged(videoAspectRatio, contentFrame)
         }
@@ -220,12 +156,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         override fun onSurfaceSizeChanged(width: Int, height: Int) {
 
-        }
-
-        // Player.EventListener implementation
-
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            updateBuffering()
         }
 
         // OnLayoutChangeListener implementation
@@ -239,7 +169,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 oldTop: Int,
                 oldRight: Int,
                 oldBottom: Int) {
-//            applyTextureViewRotation(view as TextureView, textureViewRotation)
+            applyTextureViewRotation(view as TextureView, textureViewRotation)
         }
     }
 }

@@ -8,8 +8,7 @@ import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCa
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.model.KeywordSearchData
-import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
+import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.data.usecase.PlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
@@ -464,6 +463,10 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @InternalCoroutinesApi
     override fun getPlayBanner(adapterPosition: Int){
         launchCatchError(coroutineDispatcher, block = {
+//            Thread.sleep(200)
+//            view?.setPlayContentBanner(PlayChannel(
+//                    videoStream = VideoStream(config = Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+//            ), adapterPosition)
             playCardHomeUseCase.execute().collect{
                 view?.setPlayContentBanner(it.first(), adapterPosition)
             }

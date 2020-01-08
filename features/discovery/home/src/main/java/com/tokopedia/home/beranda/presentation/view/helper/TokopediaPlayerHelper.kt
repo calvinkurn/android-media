@@ -2,25 +2,18 @@ package com.tokopedia.home.beranda.presentation.view.helper
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
-import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
-import com.google.android.exoplayer2.source.BehindLiveWindowException
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
@@ -31,6 +24,8 @@ import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.util.ConnectionUtils
 import com.tokopedia.home.util.DimensionUtils
 import com.tokopedia.play_common.player.TokopediaPlayManager
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.io.IOException
 
@@ -105,7 +100,7 @@ class TokopediaPlayerHelper(
         // A MediaSource defines the media to be played, loads the media, and from which the loaded media can be read.
         // A MediaSource is injected via ExoPlayer.prepare at the start of playback.
         mVideosUris?.let {
-            TokopediaPlayManager.getInstance(context).playVideoWithUri(it[0], false)
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(context, it.first(),false)
 //            val mediaSources: MutableList<MediaSource> = mutableListOf()
 //            it.forEach {uri ->
 //                mediaSources.add(buildMediaSource(uri))
@@ -138,45 +133,6 @@ class TokopediaPlayerHelper(
         isResumePlayWhenReady = mPlayer?.playWhenReady ?: false
         mResumeWindow = mPlayer?.currentWindowIndex ?: C.INDEX_UNSET
         mResumePosition = Math.max(0, mPlayer?.contentPosition ?: 0)
-    }
-
-    private fun addThumbImageView() {
-        if (mThumbImage == null) {
-            val frameLayout: AspectRatioFrameLayout = exoPlayerView.findViewById(R.id.exo_content_frame)
-            mThumbImage = ImageView(context)
-            mThumbImage?.id = R.id.thumbImg
-            val params = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT)
-            params.gravity = Gravity.CENTER
-            mThumbImage?.layoutParams = params
-            mThumbImage?.setBackgroundColor(Color.BLACK)
-            frameLayout.addView(mThumbImage)
-            if (mExoThumbListener != null) {
-                mExoThumbListener?.onThumbImageViewReady(mThumbImage!!)
-            }
-        }
-    }
-
-    private fun removeThumbImageView() {
-        if (mThumbImage != null) {
-            val frameLayout: AspectRatioFrameLayout = exoPlayerView.findViewById(R.id.exo_content_frame)
-            frameLayout.removeView(mThumbImage)
-            mThumbImage = null
-        }
-    }
-
-    // Player events, internal handle
-    private fun onPlayerBuffering() {
-
-    }
-
-    private fun onPlayerPlaying() {
-        removeThumbImageView()
-    }
-
-    private fun onPlayerPaused() {
-        setProgressVisible(false)
     }
 
     private fun isDeviceHasRequirementAutoPlay(): Boolean{
@@ -212,11 +168,6 @@ class TokopediaPlayerHelper(
             return this
         }
 
-        fun setThumbImageViewEnabled(exoThumbListener: ExoThumbListener?): Builder {
-            mExoPlayerHelper.setExoThumbListener(exoThumbListener)
-            return this
-        }
-
         /**
          * If you have a list of videos set isToPrepareOnResume to be false
          * to prevent auto prepare on activity onResume/onCreate
@@ -246,11 +197,6 @@ class TokopediaPlayerHelper(
             return
         }
 
-        if (isThumbImageViewEnabled) {
-            addThumbImageView()
-        }
-
-        TokopediaPlayManager.deleteInstance()
         mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
 
 //        mPlayer = ExoPlayerFactory.newSimpleInstance(
@@ -265,11 +211,16 @@ class TokopediaPlayerHelper(
         mTempCurrentVolume = mPlayer?.volume ?: 0f
 
         mPlayer?.repeatMode = if(isRepeatModeOn) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
-        mPlayer?.playWhenReady = isAutoPlayOn
+        mPlayer?.playWhenReady = false
         mPlayer?.addListener(this)
 
         if (isToPrepare) {
-            preparePlayer()
+            runBlocking {
+                launch {
+                    Thread.sleep(1000)
+                    preparePlayer()
+                }
+            }
         }
     }
 
@@ -279,7 +230,7 @@ class TokopediaPlayerHelper(
         }
         createMediaSource()
         isPlayerPrepared = true
-        mPlayer?.prepare(mMediaSource)
+//        mPlayer?.prepare(mMediaSource)
 
         if (mResumeWindow != C.INDEX_UNSET) {
             mPlayer?.playWhenReady = isResumePlayWhenReady
@@ -293,21 +244,12 @@ class TokopediaPlayerHelper(
         }
         when (playbackState) {
             Player.STATE_READY -> if (playWhenReady) {
-                onPlayerPlaying()
                 mExoPlayerListener?.onPlayerPlaying(mPlayer?.currentWindowIndex ?: -1)
             } else {
-                onPlayerPaused()
                 mExoPlayerListener?.onPlayerPaused(mPlayer?.currentWindowIndex ?: -1)
             }
             Player.STATE_BUFFERING -> {
-                onPlayerBuffering()
                 mExoPlayerListener?.onPlayerBuffering(mPlayer?.currentWindowIndex ?: -1)
-            }
-            Player.STATE_ENDED -> {
-
-            }
-            Player.STATE_IDLE -> {
-
             }
             else -> Timber.tag(TokopediaPlayerHelper::class.java.name).e("onPlayerStateChanged unknown: $playbackState")
         }
@@ -372,28 +314,9 @@ class TokopediaPlayerHelper(
             Timber.tag(TokopediaPlayerHelper::class.java.name).e("$errorString")
         }
 
-        if (isBehindLiveWindow(error)) {
-            createPlayer(true)
-            Timber.tag(TokopediaPlayerHelper::class.java.name).e("isBehindLiveWindow is true")
-        }
-
         if (mExoPlayerListener != null) {
             mExoPlayerListener?.onPlayerError(errorString)
         }
-    }
-
-    private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean {
-        if (e.type != ExoPlaybackException.TYPE_SOURCE) {
-            return false
-        }
-        var cause: Throwable? = e.sourceException
-        while (cause != null) {
-            if (cause is BehindLiveWindowException) {
-                return true
-            }
-            cause = cause.cause
-        }
-        return false
     }
 
     override fun releasePlayer() {
@@ -401,18 +324,16 @@ class TokopediaPlayerHelper(
         mExoPlayerListener?.releaseExoPlayerCalled()
         if (mPlayer != null) {
             updateResumePosition()
-            removeThumbImageView()
             mPlayer?.removeListener(this)
             mPlayer?.release()
             mPlayer = null
         }
-        Timber.tag("TokopediaPlay").d("Status: Release Player")
     }
 
     override fun playerPause() {
         updateResumePosition()
-        removeThumbImageView()
         mPlayer?.playWhenReady = false
+        mPlayer = null
     }
 
     override fun playerPlay() {
@@ -434,11 +355,6 @@ class TokopediaPlayerHelper(
         mExoPlayerListener = pExoPlayerListenerListener;
     }
 
-    override fun setExoThumbListener(exoThumbListener: ExoThumbListener?) {
-        isThumbImageViewEnabled = true
-        mExoThumbListener = exoThumbListener
-    }
-
     override fun onActivityStart() {
         if (Util.SDK_INT > 23) {
             createPlayer(isToPrepareOnResume)
@@ -446,7 +362,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityResume() {
-        if ((Util.SDK_INT <= 23 || mPlayer == null)) {
+        if (mPlayer == null) {
             createPlayer(isToPrepareOnResume)
         }
     }

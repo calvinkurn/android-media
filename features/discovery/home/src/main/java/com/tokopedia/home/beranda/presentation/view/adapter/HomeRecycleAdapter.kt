@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -12,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
@@ -88,23 +85,19 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(listPlay.isNotEmpty()) {
-                        //find first index visible on screen
-                        val firstIndexVisible = mLayoutManager?.findFirstVisibleItemPosition() ?: -1
-                        
-                        // always play on first item
-                        val plays = listPlay.toList().sortedBy { it.second }
-                        val playData = plays.first()
+                    //find first index visible on screen
+                    val firstIndexVisible = mLayoutManager?.findFirstVisibleItemPosition() ?: -1
+                    val lastIndexVisible = mLayoutManager?.findLastVisibleItemPosition() ?: -1
+                    val positions = getPositionPlay().filter { it in firstIndexVisible..lastIndexVisible }
 
-                        // check if the view is completely visible on first item
-                        if (firstIndexVisible != -1 &&
-                            playData.second >= firstIndexVisible &&
-                            playData.second != currentSelected &&
-                            (getViewHolder(playData.second) as PlayCardViewHolder).wantsToPlay()
-                        ) {
-                            onSelectedItemChanged(playData.second)
-                        }
-                    }else {
+                    // check if the view is completely visible on first item
+                    if (firstIndexVisible != -1 &&
+                            positions.isNotEmpty() &&
+                            positions.first() != currentSelected &&
+                            (getViewHolder(positions.first()) as PlayCardViewHolder).wantsToPlay()
+                    ) {
+                        onSelectedItemChanged(positions.first())
+                    } else {
                         //if not any visible play, will reset
                         onSelectedItemChanged(-1)
                     }
@@ -188,10 +181,6 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         if (changedPosition != POSITION_UNDEFINED) {
             notifyItemChanged(changedPosition)
         }
-    }
-
-    private fun hasTicker(): Boolean {
-        return getItems().size > 1 && getItems()[1] is TickerViewModel
     }
 
     private fun hasHomeHeaderViewModel(): Int {
@@ -284,33 +273,16 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     private fun getExoPlayerByPosition(firstVisible: Int): TokopediaPlayerHelper? {
         val holder: AbstractViewHolder<out Visitable<*>>? = getViewHolder(firstVisible)
         return if (holder != null && holder is PlayCardViewHolder) {
-            holder.helper
+            holder.getHelper()
         } else {
             null
-        }
-    }
-
-    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-        super.onViewAttachedToWindow(holder)
-        if(holder is PlayCardViewHolder) {
-            listPlay[visitables[holder.adapterPosition]] = holder.adapterPosition
-//            if (!isFirstItemPlayed && currentSelected == -1) {
-//                isFirstItemPlayed = true
-//                currentSelected = holder.adapterPosition
-//            }
         }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
         if(holder is PlayCardViewHolder) {
-            if(holder.adapterPosition != -1 || holder.layoutPosition != -1) {
-                listPlay.remove(visitables[if(holder.adapterPosition == -1) holder.layoutPosition else holder.adapterPosition])
-                if(listPlay.isEmpty()) {
-                    currentSelected = -1
-                }
-            }
-            holder.helper?.playerPause()
+            holder.getHelper()?.playerPause()
         }
     }
 
@@ -318,6 +290,13 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         return mRecyclerView?.findViewHolderForAdapterPosition(position) as AbstractViewHolder<out Visitable<*>>?
     }
 
+    private fun getPositionPlay(): List<Int>{
+        val list = mutableListOf<Int>()
+        for (i in visitables.indices) {
+            if(visitables[i] is PlayCardViewModel) list.add(i)
+        }
+        return list
+    }
 
     private fun getAllExoPlayers(): ArrayList<TokopediaPlayerHelper> {
         val list: ArrayList<TokopediaPlayerHelper> = ArrayList()
@@ -331,13 +310,6 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     }
 
     // Activity LifeCycle
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    protected fun onStart() {
-        Timber.tag(HomeRecycleAdapter::class.java.name).i("onActivityStart")
-        for (exoPlayerHelper in getAllExoPlayers()) {
-            exoPlayerHelper.onActivityStart()
-        }
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     protected fun onResume() {
@@ -352,17 +324,9 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    protected fun onPause() {
-        Timber.tag(HomeRecycleAdapter::class.java.name).i("onActivityPause")
-        for (exoPlayerHelper in getAllExoPlayers()) {
-            exoPlayerHelper.onActivityPause()
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     protected fun onStop() {
-        Timber.tag(HomeRecycleAdapter::class.java.name).i("onActivityStop")
+        Timber.tag(HomeRecycleAdapter::class.java.name).i("onActivityDestroy")
         for (exoPlayerHelper in getAllExoPlayers()) {
             exoPlayerHelper.onActivityStop()
         }

@@ -142,6 +142,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 import static android.view.View.INVISIBLE;
+import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -1891,7 +1892,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onOpenPlayActivity(@NotNull View videoPlayer, String channelId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), videoPlayer, "playlah");
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), videoPlayer, ANIMATION_TRANSITION_NAME);
         startActivity(intent, options.toBundle());
     }
 

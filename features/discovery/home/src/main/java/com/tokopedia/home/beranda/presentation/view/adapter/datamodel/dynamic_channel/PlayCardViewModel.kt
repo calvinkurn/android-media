@@ -13,10 +13,6 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
     private var playCardHome: PlayChannel? = null
     private var channel: DynamicHomeChannel.Channels? = null
 
-    var url = "https://www.w3schools.com/html/mov_bbb.mp4"
-    var thumbnailUrl = "https://i.ytimg.com/vi/JQ5xItF40yA/maxresdefault.jpg"
-//    val url = "rtmp://fms.105.net/live/rmc1"
-
     override fun isCache(): Boolean {
         return isCache
     }
