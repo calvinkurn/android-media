@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+if (project.hasProperty("enable-shrinkresource")) {
+    apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
+}
 
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
@@ -126,8 +129,7 @@ buildscript {
 android {
 
     packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'
         pickFirst '**/x86/libc++_shared.so'
         pickFirst '**/arm64-v8a/libc++_shared.so'
@@ -193,6 +195,9 @@ android {
             ext.enableHansel = true
             minifyEnabled true
             zipAlignEnabled true
+            if (project.hasProperty("enable-shrinkresource")) {
+                shrinkResources true
+            }
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
@@ -262,8 +267,10 @@ android {
 
     // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
     // to disable dynamic feature, use command option -Pdisable-dynamic-feature
-    dynamicFeatures = getDynamicFeatureIfEnabled(project)
-    generateAssetFile(project, dynamicFeatures)
+    if (!project.hasProperty("enable-shrinkresource")) {
+        dynamicFeatures = getDynamicFeatureIfEnabled(project)
+        generateAssetFile(project, dynamicFeatures)
+    }
 }
 
 
@@ -286,21 +293,18 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
-    //implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.flightOrderList)
-    implementation project(rootProject.ext.features.umrah)
     implementation project(rootProject.ext.features.imagePreviewSlider)
+    implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.tkpddiscovery)
@@ -371,7 +375,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
@@ -395,7 +398,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
-    implementation project(rootProject.ext.libraries.cpm)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -417,7 +419,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseAdapter)
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
@@ -429,6 +430,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -437,13 +439,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
-
+    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.core
+    implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
@@ -458,9 +459,6 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.adapterRxJava
@@ -488,7 +486,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
-    implementation rootProject.ext.debugToolsDependencies.stetho
+
     implementation rootProject.ext.firebase.appIndexing
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"

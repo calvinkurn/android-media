@@ -8,7 +8,10 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core2.R;
 
-
+/**
+ * Only for sellerapp
+ */
+@Deprecated
 public class ShopStatisticDetail extends TActivity {
 
     public static final String EXTRA_SHOP_INFO = "shop_info";

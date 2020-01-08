@@ -18,11 +18,73 @@ import com.tokopedia.user_identification_common.KYCConstant;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_LEARN_MORE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_OPEN_SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_FIELD;
+import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_ACCOUNT_SELL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CURRENCY_CODE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ATTRIBUTION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_BRAND;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_CATEGORY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_DIMENSION_83;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_NAME;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_POSITION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_PRICE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_VARIAN;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ECOMMERCE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EMPTY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_ACCOUNT_PAGE_BUYER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CLICK_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_VIEW;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PROMO_CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PROMO_VIEW;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_CREATIVE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_CREATIVE_URL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_NAME;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_POSITION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
+import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.INBOX;
+import static com.tokopedia.home.account.AccountConstants.Analytics.LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NONE_OTHER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PRODUCTS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTIONS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTION_CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTION_VIEW;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TOP_NAV;
+import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_ACCOUNT_PROMOTION_NAME;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_BEBAS_ONGKIR;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_RECOMMENDATION_LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_TOPADS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_WISHLIST_PRODUCT;
 
 /**
  * Created by meta on 04/08/18.
- *
+ * <p>
  * Setting PIN : https://docs.google.com/spreadsheets/d/1H3CSARG5QtVACiffBxd2HJE7adKzAZ3xxmtEbR01Eho/edit?ts=5ca30084#gid=1785281730
  */
 public class AccountAnalytics {
@@ -32,6 +94,17 @@ public class AccountAnalytics {
     public AccountAnalytics(Context context) {
         this.context = context;
         userSessionInterface = new UserSession(context);
+    }
+
+    public void eventTokopediaPayClick(String event, String category, String action, String label) {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                event,
+                String.format("%s %s", AKUN_SAYA, category),
+                String.format("%s - %s - %s", AccountConstants.Analytics.CLICK, action, label),
+                label
+        ));
     }
 
     public void eventClickAccount(String title, String section, String item, boolean withUserId) {
@@ -246,7 +319,7 @@ public class AccountAnalytics {
             ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
     }
 
-    public static void clickOpenShopFree(){
+    public static void clickOpenShopFree() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_SELL,
@@ -255,7 +328,7 @@ public class AccountAnalytics {
         );
     }
 
-    public static void clickKnowMore(){
+    public static void clickKnowMore() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_SELL,
@@ -308,7 +381,7 @@ public class AccountAnalytics {
         String list =
                 String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getRecommendationType());
         if (recommendationItem.isTopAds()) {
-            list+=VALUE_PRODUCT_TOPADS;
+            list += VALUE_PRODUCT_TOPADS;
         }
         return DataLayer.mapOf(DATA_NAME, recommendationItem.getName(),
                 DATA_ID, recommendationItem.getProductId(),
@@ -318,14 +391,14 @@ public class AccountAnalytics {
                 DATA_VARIAN, NONE_OTHER,
                 LIST, list,
                 DATA_POSITION, String.valueOf(position),
-                DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:NONE_OTHER);
+                DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive() ? VALUE_BEBAS_ONGKIR : NONE_OTHER);
     }
 
     public void eventAccountProductClick(RecommendationItem recommendationItem, int position, String widgetTitle) {
         String list =
                 String.format(VALUE_PRODUCT_RECOMMENDATION_LIST, recommendationItem.getRecommendationType());
         if (recommendationItem.isTopAds()) {
-            list+=VALUE_PRODUCT_TOPADS;
+            list += VALUE_PRODUCT_TOPADS;
         }
         final Analytics tracker = TrackApp.getInstance().getGTM();
         if (tracker != null) {
@@ -349,7 +422,7 @@ public class AccountAnalytics {
                                             DATA_ATTRIBUTION, NONE_OTHER,
                                             DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive() ? VALUE_BEBAS_ONGKIR : NONE_OTHER
                                     )))
-                            )
+                    )
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }

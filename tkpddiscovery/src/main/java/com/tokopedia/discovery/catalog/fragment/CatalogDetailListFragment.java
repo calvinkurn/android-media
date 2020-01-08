@@ -3,26 +3,26 @@ package com.tokopedia.discovery.catalog.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.core2.R;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.ColoredFilterAdapter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SlideOffViewHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.discovery.catalog.adapter.CatalogDetailAdapter;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItem;
@@ -208,11 +208,6 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     }
 
     @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-
-    }
-
-    @Override
     public void navigateToActivity(Intent intent) {
 
     }
@@ -235,21 +230,6 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void showToastMessage(String message) {
-
-    }
-
-    @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void closeView() {
 
     }
 
