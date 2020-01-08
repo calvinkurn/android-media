@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -26,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
@@ -42,8 +40,6 @@ import com.tokopedia.tradein.Constants;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 
 import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -64,8 +60,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private boolean isShowingPermissionPopup;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
     private String errorDialogGTMLabel = "";
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -451,11 +445,5 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             }
         } else {
         }
-    }
-
-    @NotNull
-    @Override
-    public ViewModelProvider.Factory getVMFactory() {
-        return viewModelFactory;
     }
 }

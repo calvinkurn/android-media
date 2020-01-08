@@ -9,7 +9,6 @@ import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.tradein.repository.TradeInRepository
 import io.mockk.*
-import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.Dispatchers
@@ -33,9 +32,6 @@ class CheckMoneyInUseCaseTest {
     val resources: Resources = mockk()
 
     var checkMoneyInUseCase = spyk(CheckMoneyInUseCase(context, tradeInRepository))
-
-    @RelaxedMockK
-    lateinit var validateTradePDP: ValidateTradePDP
 
     var tradeInParams = TradeInParams()
 
@@ -92,7 +88,7 @@ class CheckMoneyInUseCaseTest {
     /**************************** checkMoneyIn() *******************************************/
 
     @Test(expected = ClassCastException::class)
-    fun processMessageException() {
+    fun checkMoneyInException() {
         val validateTradePDP: ValidateTradePDP? = null
         runBlocking {
             mockkStatic(GraphqlHelper::class)
@@ -105,7 +101,7 @@ class CheckMoneyInUseCaseTest {
     }
 
     @Test
-    fun processMessage() {
+    fun checkMoneyInMessage() {
         val validateTradePDP: ValidateTradePDP = mockk()
         runBlocking {
             mockkStatic(GraphqlHelper::class)

@@ -39,6 +39,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.tokopedia.common_tradein.utils.TradeInUtils;
 
+import javax.inject.Inject;
+
 
 public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> implements HasComponent<TradeInComponent> {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
@@ -62,6 +64,8 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     protected boolean isTncShowing = false;
     abstract protected int getMenuRes();
 
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -274,5 +278,11 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
                 baseAppComponent(((BaseMainApplication) getApplication()).
                         getBaseAppComponent()).
                 build();
+    }
+
+    @NotNull
+    @Override
+    public ViewModelProvider.Factory getVMFactory() {
+        return viewModelFactory;
     }
 }
