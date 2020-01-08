@@ -14,6 +14,8 @@ import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.view.fragment.OnBankSelectedListener
 import com.tokopedia.settingbank.banklist.v2.view.fragment.SettingBankFragment
 
+
+
 class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>, OnBankSelectedListener {
 
     val ADD_ACCOUNT_REQUEST_CODE =101
@@ -31,6 +33,8 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
     }
 
     companion object {
+        const val REQUEST_ON_DOC_UPLOAD = 102
+        const val UPALOAD_DOCUMENT_MESSAGE =  "UPALOAD_DOCUMENT_MESSAGE"
         fun createIntent(context: Context): Intent {
             return Intent(context, SettingBankActivity::class.java)
         }
@@ -48,6 +52,14 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
             fragment?.let {
                 if(fragment is SettingBankFragment){
                     fragment.loadUserBankAccountList()
+                }
+            }
+        }else if(requestCode == REQUEST_ON_DOC_UPLOAD && resultCode == Activity.RESULT_OK){
+            val message : String? = intent.getStringExtra(UPALOAD_DOCUMENT_MESSAGE)
+            val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+            fragment?.let {
+                if(fragment is SettingBankFragment){
+                    fragment.showToasterOnUI(message)
                 }
             }
         }

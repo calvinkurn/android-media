@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -24,6 +25,7 @@ import com.tokopedia.settingbank.banklist.v2.domain.SettingBankErrorHandler
 import com.tokopedia.settingbank.banklist.v2.domain.UploadDocumentPojo
 import com.tokopedia.settingbank.banklist.v2.util.AccountConfirmationType
 import com.tokopedia.settingbank.banklist.v2.util.ImageUtils
+import com.tokopedia.settingbank.banklist.v2.view.activity.SettingBankActivity
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.UploadDocumentViewModel
 import com.tokopedia.settingbank.banklist.v2.view.viewState.DocumentUploadEnd
 import com.tokopedia.settingbank.banklist.v2.view.viewState.DocumentUploadError
@@ -210,7 +212,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
                 is DocumentUploadStarted -> progressBar.visible()
                 is DocumentUploadEnd -> progressBar.gone()
                 is DocumentUploaded -> {
-                    showTickerMessage(it.message)
+                    setResultMessage(it.message)
                     activity?.finish()
                 }
                 is DocumentUploadError -> {
@@ -218,6 +220,16 @@ class AccountDocumentFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    private fun setResultMessage(message: String?) {
+        message?.let {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(SettingBankActivity.UPALOAD_DOCUMENT_MESSAGE, message)
+            intent.putExtras(bundle)
+            activity?.setResult(Activity.RESULT_OK, intent)
+        }
     }
 
     private fun showTickerMessage(message: String?) {
@@ -229,14 +241,14 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     }
 
     private fun showErrorOnUI(throwable: Throwable, retry: (() -> Unit)?) {
-        context?.let {context->
+        context?.let { context ->
             view?.let { view ->
                 retry?.let {
                     Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
                             Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
                             getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
                 } ?: run {
-                    Toaster.make(view,  SettingBankErrorHandler.getErrorMessage(context, throwable),
+                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
                             Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                 }
 

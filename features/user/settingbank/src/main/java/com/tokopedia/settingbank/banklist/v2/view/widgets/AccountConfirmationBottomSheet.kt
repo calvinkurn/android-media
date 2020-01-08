@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.banklist.v2.view.widgets
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,9 @@ import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.KYCInfo
 import com.tokopedia.settingbank.banklist.v2.util.AccountConfirmationType
 import com.tokopedia.settingbank.banklist.v2.view.activity.AccountDocumentActivity
+import com.tokopedia.settingbank.banklist.v2.view.activity.SettingBankActivity
 
-class AccountConfirmationBottomSheet(val context: Context,
+class AccountConfirmationBottomSheet(val activity: Activity,
                                      val kycInfo: KYCInfo,
                                      val settingAnalytics: BankSettingAnalytics) : CloseableBottomSheetDialog.CloseClickedListener {
 
@@ -26,13 +28,13 @@ class AccountConfirmationBottomSheet(val context: Context,
         this.bankAccount = bankAccount
         val view = createBottomSheetView()
         if (!::dialog.isInitialized)
-            dialog = CloseableBottomSheetDialog.createInstanceCloseableRounded(context, this)
-        dialog.setCustomContentView(view, context.resources.getString(R.string.sbank_confirm_bank_account), true)
+            dialog = CloseableBottomSheetDialog.createInstanceCloseableRounded(activity, this)
+        dialog.setCustomContentView(view, activity.resources.getString(R.string.sbank_confirm_bank_account), true)
         dialog.show()
     }
 
     private fun createBottomSheetView(): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_confirm_account, null)
+        val view = LayoutInflater.from(activity).inflate(R.layout.bottom_sheet_confirm_account, null)
         view.findViewById<View>(R.id.viewCompanyAccountClickable).setOnClickListener {
             openConfirmBankAccountActivity(AccountConfirmationType.COMPANY.accountType)
         }
@@ -62,7 +64,8 @@ class AccountConfirmationBottomSheet(val context: Context,
 
     private fun openConfirmBankAccountActivity(accountType: Int) {
         settingAnalytics.eventRekeningConfirmationClick()
-        context.startActivity(AccountDocumentActivity.createIntent(context, bankAccount, accountType, kycInfo.fullName))
+        activity.startActivityForResult(AccountDocumentActivity.createIntent(activity, bankAccount, accountType, kycInfo.fullName),
+                SettingBankActivity.REQUEST_ON_DOC_UPLOAD)
         this.dialog.dismiss()
     }
 
