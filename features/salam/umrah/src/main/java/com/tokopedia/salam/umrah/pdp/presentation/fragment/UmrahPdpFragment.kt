@@ -314,6 +314,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         iw_umrah_pdp_travel_agent.umrahItemWidgetModel = umrahItemWidgetModel
         iw_umrah_pdp_travel_agent.buildView()
         iw_umrah_pdp_travel_agent.setPermissionPdp()
+        iw_umrah_pdp_travel_agent.setVerifiedTravel()
 
         uta_umrah_pdp_travel_agent.umrahTravelAgentModel = umrahTravelAgentWidgetModel
         uta_umrah_pdp_travel_agent.buildView()

@@ -44,6 +44,11 @@ class UmrahItemWidget @JvmOverloads constructor(context: Context, attrs: Attribu
         tg_widget_umrah_pdp_item_desc.setTextColor(resources.getColor(R.color.umrah_green_permission))
         tg_widget_umrah_pdp_item_desc.setWeight(2)
     }
+
+    fun setVerifiedTravel(){
+        iv_umrah_verified_blue.visibility = View.VISIBLE
+    }
+
     private fun showLoading(){
         container_widget_umrah_pdp_item_shimmering.visibility = View.VISIBLE
         container_widget_umrah_pdp_item.visibility = View.GONE
