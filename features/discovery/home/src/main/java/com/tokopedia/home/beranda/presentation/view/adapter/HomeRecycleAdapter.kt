@@ -317,8 +317,11 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         for (exoPlayerHelper in getAllExoPlayers()) {
             exoPlayerHelper.onActivityResume()
         }
+
         val newPlayer: TokopediaPlayerHelper? = getExoPlayerByPosition(currentSelected)
-        if (newPlayer != null) {
+        if(newPlayer == null){
+            (getViewHolder(currentSelected) as PlayCardViewHolder).createHelper()
+        } else {
             newPlayer.preparePlayer()
             newPlayer.playerPlay()
         }

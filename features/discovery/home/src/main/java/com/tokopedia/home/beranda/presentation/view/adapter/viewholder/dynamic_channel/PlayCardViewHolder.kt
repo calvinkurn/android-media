@@ -88,7 +88,7 @@ class PlayCardViewHolder(
         }
     }
 
-    private fun createHelper() {
+    fun createHelper() {
         if(!ExoUtil.isDeviceHasRequirementAutoPlay(itemView.context)) return
 
         if(helper == null) {
