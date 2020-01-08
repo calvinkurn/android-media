@@ -87,7 +87,7 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/**'
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -335,6 +335,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
