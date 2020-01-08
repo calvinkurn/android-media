@@ -46,7 +46,7 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
 
     private fun onPointDetailNext(response: GraphqlResponse) {
         val data = response.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java)
-        this@PointHistoryViewModel.data.postValue(Success(data.tokoPoints))
+        this@PointHistoryViewModel.data.setValue(Success(data.tokoPoints))
     }
 
     fun onErrorButtonClicked(toString: String, context: Context) {
@@ -80,7 +80,7 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
     }
 
     override fun onEmptyList(rawObject: Any) {
-
+      listLoading.value = ErrorMessage("")
     }
 
     override fun onStartFirstPageLoad() {
