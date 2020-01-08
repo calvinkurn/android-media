@@ -80,9 +80,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var operatorId: Int = 0
     private var productId: String = ""
     private var operatorCluster: String = ""
-
-    private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
     private var clientNumber: String = ""
+    private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
+
+    private var enquiryLabel = ""
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
@@ -444,7 +445,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         val moreInfoBottomSheet = BottomSheetUnify()
         moreInfoBottomSheet.setTitle("Info")
-        moreInfoBottomSheet.setFullPage(false)
+        moreInfoBottomSheet.setFullPage(true)
         moreInfoBottomSheet.setChild(infoTextView)
         moreInfoBottomSheet.clearAction()
         moreInfoBottomSheet.setCloseClickListener {
@@ -502,8 +503,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
             product_view_pager.show()
         } else {
-            tab_layout.hide()
-            product_view_pager.hide()
+            hideFooterView()
         }
     }
 
@@ -573,16 +573,23 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun updateInputData(label: String, input: String) {
-        inputData[label] = input
-        toggleEnquiryButton()
+        if (label.isNotEmpty() && input.isNotEmpty()) {
+            inputData[label] = input
+            toggleEnquiryButton()
+        }
     }
 
     private fun toggleEnquiryButton() {
         enquiry_button.isEnabled = validateEnquiry()
+        // TODO: Temporary fix - set enquiry label after setEnabled() on UnifyButton
+        if (enquiryLabel.isNotEmpty()) enquiry_button.text = enquiryLabel
     }
 
     private fun setEnquiryButtonLabel(label: String) {
-        enquiry_button.text = label
+        if (label.isNotEmpty()) {
+            enquiryLabel = label
+            enquiry_button.text = enquiryLabel
+        }
     }
 
     private fun validateEnquiry(): Boolean {
