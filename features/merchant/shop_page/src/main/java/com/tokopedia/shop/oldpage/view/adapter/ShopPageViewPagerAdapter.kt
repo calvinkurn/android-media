@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.collection.SparseArrayCompat
 import androidx.viewpager.widget.PagerAdapter
 import android.view.ViewGroup
-import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity
@@ -17,7 +16,6 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                                var titles: Array<String>,
                                var shopId: String?,
                                val shopAttribution: String?,
-                               val router: ShopModuleRouter,
                                private val shopPageActivity: ShopPageActivity) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()
