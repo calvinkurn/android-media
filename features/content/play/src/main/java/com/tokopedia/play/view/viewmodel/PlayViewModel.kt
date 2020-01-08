@@ -160,8 +160,6 @@ class PlayViewModel @Inject constructor(
     private fun getPartnerInfo(channel: Channel) {
         val partnerType = PartnerType.getTypeByValue(channel.partnerType)
         val partnerId = channel.partnerId
-        if (partnerType == PartnerType.SHOP) getShopPartnerInfo(partnerId)
-
         if (partnerType == PartnerType.ADMIN) {
             _observablePartnerInfo.value = PartnerInfoUiModel(
                     id = partnerId,
@@ -170,22 +168,14 @@ class PlayViewModel @Inject constructor(
                     isFollowed = true
             )
             return
-        }
-
-        if (partnerType == PartnerType.INFLUENCER) {
-            _observablePartnerInfo.value = PartnerInfoUiModel(
-                    id = partnerId,
-                    name = "", //TODO("Get From Kol Api")
-                    type = partnerType,
-                    isFollowed = false //TODO("Get From Kol Api")
-            )
-            return
+        } else {
+            getPartnerInfo(partnerId, partnerType)
         }
     }
 
-    private fun getShopPartnerInfo(shopId: Long) = launchCatchError(block = {
+    private fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = launchCatchError(block = {
         val response = withContext(dispatchers.io) {
-            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(shopId.toString())
+            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
             getPartnerInfoUseCase.executeOnBackground()
         }
 

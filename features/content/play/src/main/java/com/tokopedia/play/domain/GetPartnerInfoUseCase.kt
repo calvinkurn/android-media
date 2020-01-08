@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ShopInfo
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -72,9 +73,9 @@ class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiReq
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
 
-        fun createParam(shopId: String, fields: List<String>? = DEFAULT_SHOP_FIELDS): RequestParams =
+        fun createParam(partnerId: Int, partnerType: PartnerType, fields: List<String>? = DEFAULT_SHOP_FIELDS): RequestParams =
                 RequestParams.create().apply {
-            putObject(PARAM_SHOP_IDS, shopId.toIntOrZero())
+            putObject(PARAM_SHOP_IDS, partnerId)
             putObject(PARAM_SHOP_FIELDS, fields)
         }
     }
