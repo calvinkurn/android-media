@@ -195,6 +195,18 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
                 cancellationModelList.set(1, temp);
             }
         }
+        if (selectedViewModel.size() > 1) {
+            Date firstJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    selectedViewModel.get(0).getFlightCancellationJourney().getDepartureTime());
+            Date secondJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    selectedViewModel.get(1).getFlightCancellationJourney().getDepartureTime());
+
+            if (firstJourney.after(secondJourney)) {
+                FlightCancellationViewModel temp = cancellationModelList.get(0);
+                selectedViewModel.set(0, cancellationModelList.get(1));
+                selectedViewModel.set(1, temp);
+            }
+        }
 
         getView().getPassengerRelations().putAll(passengerRelations);
         getView().setSelectedCancellationViewModel(selectedViewModel);
