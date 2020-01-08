@@ -798,13 +798,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
         Calendar maxDate = Calendar.getInstance();
         maxDate.add(Calendar.YEAR, 100);
         Calendar defaultDate = Calendar.getInstance();
+
+        if (title.equalsIgnoreCase(MULAI_DARI)) {
+            String[] result = split(defStartDate);
+            defaultDate.set(result[2].toInt(), result[1].toInt(), result[0].toInt());
+
+        } else {
+            String[] result = split(defEndDate);
+            defaultDate.set(result[2].toInt(), result[1].toInt(), result[0].toInt());
+        }
+
         datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
             @Override
             public void onDateChanged(long l) {
                 //
             }
         });
-        datePickerUnify.show(getFragmentManager(), "");
+
         if (title.equalsIgnoreCase(MULAI_DARI)) {
             datePickerUnify.setTitle(MULAI_DARI);
 
@@ -812,6 +822,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerUnify.setTitle(SAMPAI);
         }
 
+        datePickerUnify.show(getFragmentManager(), "");
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
