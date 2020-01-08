@@ -5,8 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_chat_list"
         android:layout_width="0dp"
-        android:layout_height="114dp"
-        >
+        android:layout_height="@dimen/play_chat_max_height">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat_list"

@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.chatlist
 
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,9 @@ import com.tokopedia.play.ui.chatlist.itemdecoration.ChatListItemDecoration
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.custom.ChatScrollDownView
 import timber.log.Timber
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.pxToDp
+
 
 /**
  * Created by jegul on 03/12/19
@@ -84,6 +88,12 @@ class ChatListView(
 
     override fun hide() {
         view.hide()
+    }
+
+    fun adjustHeight(height: Int) {
+//        val lp =  (view as ConstraintLayout).layoutParams as ConstraintLayout.LayoutParams
+//        lp.height = height.pxToDp(view.resources.displayMetrics)
+//        view.layoutParams = lp
     }
 
     fun showChat(chat: PlayChat) {

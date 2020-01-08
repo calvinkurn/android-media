@@ -120,7 +120,7 @@ class PlayViewModel @Inject constructor(
                     "vertical",
                     "live",
                     true,
-                    VideoStream.Config(streamUrl = "rtmp://fms.105.net/live/rmc1"))
+                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             setStateLiveOrVod(channel)
             if (channel.videoStream.isLive

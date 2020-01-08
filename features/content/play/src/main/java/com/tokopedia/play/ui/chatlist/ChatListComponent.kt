@@ -30,6 +30,7 @@ class ChatListComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.adjustHeight(96) else uiView.adjustHeight(0)
                             is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
