@@ -269,6 +269,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.sellerHome)
+    implementation project(rootProject.ext.features.sellerHomeDrawer)
     implementation project(rootProject.ext.features.mitraToppers)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
