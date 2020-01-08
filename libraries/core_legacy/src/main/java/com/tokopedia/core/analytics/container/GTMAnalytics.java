@@ -1188,7 +1188,8 @@ public class GTMAnalytics extends ContextAnalytics {
 
             @Override
             public void onError(Throwable e) {
-
+                Log.d("DevaraFikry", "Error: "+e.getMessage());
+                e.printStackTrace();
             }
 
             @Override
