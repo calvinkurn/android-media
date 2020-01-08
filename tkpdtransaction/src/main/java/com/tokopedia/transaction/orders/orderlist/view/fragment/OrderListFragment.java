@@ -800,7 +800,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         Calendar defaultDate = Calendar.getInstance();
 
         if (title.equalsIgnoreCase(MULAI_DARI)) {
-            String[] resultStartDate = split(defStartDate);
+            String[] resultStartDate = split(customStartDate);
             defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
 
         } else {
