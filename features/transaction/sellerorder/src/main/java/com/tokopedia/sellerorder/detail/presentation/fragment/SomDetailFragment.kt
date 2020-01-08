@@ -117,7 +117,6 @@ import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -543,7 +542,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
                 btSheet.setChild(infoLayout)
                 btSheet.setCloseClickListener { btSheet.dismiss() }
-                fragmentManager?.let{
                 btSheet.show(it, tagConfirm)
             }
         } else {
@@ -565,7 +563,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         fragmentManager?.let {
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
-            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
         }
     }
