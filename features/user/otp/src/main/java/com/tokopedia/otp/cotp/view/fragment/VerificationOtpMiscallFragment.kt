@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.common.di.DaggerOtpComponent
@@ -260,7 +262,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     override fun onLimitOTPReached(errorMessage: String) {
-        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.show()
         textMessageVerify?.text = errorMessage
         textMessageVerify?.setTextColor(MethodChecker.getColor(activity, R.color.red_500))
         setLimitReachedCountdownText()
@@ -281,11 +283,11 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         textInputOtp?.text?.clear()
         textInputOtp?.isError = true
-        textErrorVerify?.visibility = View.VISIBLE
+        textErrorVerify?.show()
         textErrorVerify?.text = errorMessage.substring(0, errorMessage.indexOf("("))
 
         if (errorMessage.contains(LIMIT_ERR_MSG)) {
-            buttonVerify?.visibility = View.VISIBLE
+            buttonVerify?.show()
             buttonVerify?.setText(R.string.other_method)
             buttonVerify?.setOnClickListener { onOtherMethodClick() }
         }
@@ -311,11 +313,11 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     override fun showLoadingProgress() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.show()
     }
 
     override fun dismissLoadingProgress() {
-        progressBar.visibility = View.GONE
+        progressBar.hide()
     }
 
     override fun isCountdownFinished(): Boolean {
@@ -333,7 +335,9 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             cacheHandler.applyEditor()
         }
 
-        textResend?.visibility = View.GONE
+        textResend?.hide()
+        textOr?.hide()
+        textUseOtherMethod?.hide()
         if (!isRunningTimer) {
             countDownTimer = object : CountDownTimer((cacheHandler.remainingTime * INTERVAL).toLong(), INTERVAL.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -354,10 +358,12 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     private fun setFinishedCountdownText() {
-        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.show()
         textMessageVerify?.text = MethodChecker.fromHtml(getString(R.string.not_received_code))
 
-        textResend?.visibility = View.VISIBLE
+        textOr?.show()
+        textUseOtherMethod?.show()
+        textResend?.show()
         textResend?.text = MethodChecker.fromHtml(getString(R.string.cotp_miscall_verification_resend))
         textResend?.setOnClickListener {
             analytics.eventClickResendOtp(viewModel.otpType)
@@ -379,7 +385,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     private fun removeErrorOtp() {
         textInputOtp?.isError = false
-        textErrorVerify?.visibility = View.INVISIBLE
+        textErrorVerify?.hide()
     }
 
     private fun setLimitReachedCountdownText() {
@@ -387,7 +393,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         textInputOtp?.isEnabled = false
 
         if (viewModel.canUseOtherMethod()) {
-            textResend?.visibility = View.GONE
+            textResend?.hide()
 
             buttonVerify?.text = getString(R.string.cotp_miscall_verification_with_other_method)
             buttonVerify?.isEnabled = true
@@ -398,7 +404,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     private fun setRunningCountdownText(countdown: String) {
-        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.show()
         textMessageVerify?.setOnClickListener(null)
 
         val text = String.format("%s <b> %s %s</b> %s",
