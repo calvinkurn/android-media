@@ -801,11 +801,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
         if (title.equalsIgnoreCase(MULAI_DARI)) {
             String[] result = split(defStartDate);
-            defaultDate.set(result[2].toInt(), result[1].toInt(), result[0].toInt());
+            defaultDate.set(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
 
         } else {
             String[] result = split(defEndDate);
-            defaultDate.set(result[2].toInt(), result[1].toInt(), result[0].toInt());
+            defaultDate.set(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
         }
 
         datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
