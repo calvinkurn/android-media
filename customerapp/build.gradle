@@ -93,8 +93,8 @@ def renameAPKFile(variant, density, versionCode) {
 }
 
 project.ext {
-    defaultVersionCode = 399001101;
-    defaultVersionName = "3.99";
+    defaultVersionCode = 341001101;
+    defaultVersionName = "3.41";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
             enableHermes: true,
