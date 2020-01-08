@@ -831,8 +831,21 @@ public class OrderListFragment extends BaseDaggerFragment implements
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
                 sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+
+                if (date[0] < 10) {
+                    datePickerEndDate = "0" + date[0] + "/" + date[1] + "/" + date[2];
+                } else {
+                    datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
+                }
+
             } else {
                 mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+
+                if (date[0] < 10) {
+                    datePickerStartDate = "0" + date[0] + "/" + date[1] + "/" + date[2];
+                } else {
+                    datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
+                }
             }
             datePickerUnify.dismiss();
         });
