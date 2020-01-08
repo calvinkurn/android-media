@@ -6,4 +6,6 @@
     <dimen name="toolbar_transition_range">32dp</dimen>
     <dimen name="toolbar_padding">24dp</dimen>
 
+    <dimen name="destination_content_peek_size">150dp</dimen>
+
 </resources>

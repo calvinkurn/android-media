@@ -34,6 +34,7 @@ import android.graphics.Point
 import android.os.Build
 import android.widget.FrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
 
 
 /**
@@ -48,6 +49,7 @@ OnViewHolderBindListener{
     lateinit var destinationViewModel: TravelDestinationViewModel
 
     var cityId: String = ""
+    var cityName: String = ""
     var webUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +76,8 @@ OnViewHolderBindListener{
             when (it) {
                 is Success -> {
                     cityId = it.data.cityId
-                    renderLayout(it.data.cityName)
+                    cityName = it.data.cityName
+                    renderLayout()
                     destinationViewModel.getInitialList()
                 }
             }
@@ -91,6 +94,11 @@ OnViewHolderBindListener{
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
 
+        destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
+        setUpContentPeekSize()
+    }
+
+    private fun setUpContentPeekSize() {
         activity?.let {
             val display = it.windowManager.defaultDisplay
             val size = Point()
@@ -103,18 +111,15 @@ OnViewHolderBindListener{
             }
             val height = size.y
 
-            val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height * 4 / 5)
+            val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height - resources.getDimensionPixelSize(R.dimen.destination_content_peek_size))
             lp.collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
             lp.parallaxMultiplier = 0.6f
             toolbar_container.layoutParams = lp
             toolbar_container.requestLayout()
         }
-
-        destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
-
     }
 
-    fun renderLayout(title: String) {
+    fun renderLayout() {
         (activity as TravelDestinationActivity).setSupportActionBar(travel_homepage_destination_toolbar)
         (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -132,7 +137,7 @@ OnViewHolderBindListener{
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsing_toolbar.title = title
+                    collapsing_toolbar.title = cityName
                     navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
@@ -175,7 +180,7 @@ OnViewHolderBindListener{
         }
         travel_homepage_destination_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
             override fun onImageClicked(position: Int) {
-                ImagePreviewSlider.instance.start(context, "lalalala", imgUrls, imgUrls, position, travel_homepage_destination_view_pager.image_banner)
+                ImagePreviewSlider.instance.start(context, cityName, imgUrls, imgUrls, position, travel_homepage_destination_view_pager.image_banner)
             }
         }
         travel_homepage_destination_view_pager.buildView()
