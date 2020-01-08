@@ -153,7 +153,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
-            scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager) {
+            scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager  as LinearLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
                     println("++ onLoadMore - nextOrderId = $nextOrderId")
