@@ -59,7 +59,6 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -69,7 +68,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -175,7 +173,7 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
-        ApplinkRouter, ImageUploaderRouter,
+        ApplinkRouter,
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, WithdrawRouter,
         TalkRouter, PhoneVerificationRouter,
@@ -187,7 +185,6 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        CharacterPerMinuteInterface,
         ResolutionRouter,
         MLPRouter {
 
@@ -751,11 +748,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
-    @Override
-    public Interceptor getAuthInterceptor() {
-        return new TkpdAuthInterceptor();
-    }
-
 
     @Override
     public FingerprintModel getFingerprintModel() {
@@ -1006,20 +998,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
-    }
-
-    @Override
-    public void saveCPM(@NonNull String cpm) {
-    }
-
-    @Override
-    public String getCPM() {
-        return "";
-    }
-
-    @Override
-    public boolean isEnable() {
-        return false;
     }
 
     @Override
