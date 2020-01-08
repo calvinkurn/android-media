@@ -178,7 +178,8 @@
           android:text="@string/or_small"
           android:textColor="@color/font_black_disabled_38"
           android:textSize="@dimen/sp_12"
-          android:textStyle="normal" />
+          android:textStyle="normal"
+          android:visibility="gone"/>
     
         <TextView
           android:id="@+id/textUseOtherMethod"
@@ -190,7 +191,8 @@
           android:text="@string/use_other_method"
           android:textColor="@color/tkpd_main_green"
           android:textSize="@dimen/sp_12"
-          android:textStyle="normal" />
+          android:textStyle="normal"
+          android:visibility="gone"/>
   
       </LinearLayout>
   
