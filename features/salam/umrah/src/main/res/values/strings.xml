@@ -244,9 +244,9 @@
         <item>Bus</item>
     </string-array>
 
-    <string name="umrah_pdp_travel_agent_available_seat">Kuota Paket <![CDATA[<br /><b>Terbatas &lt; %d</b>]]></string>
-    <string name="umrah_pdp_travel_agent_established">Tahun Berdiri <![CDATA[<br /><b>%d</b>]]></string>
-    <string name="umrah_pdp_travel_agent_pilgrims">Jamaah <![CDATA[<br /><b>%d</b>]]>/tahun</string>
+    <string name="umrah_pdp_travel_agent_available_seat">Kuota Paket <![CDATA[<br /><b>%s</b>]]></string>
+    <string name="umrah_pdp_travel_agent_established">Berdiri sejak <![CDATA[<br /><b>%d</b>]]></string>
+    <string name="umrah_pdp_travel_agent_pilgrims">Jamaah <![CDATA[<br /><b>%s</b>]]></string>
     <string name="umrah_pdp_add_verified_money_secured">Uang terjamin</string>
     <string name="umrah_pdp_add_verified_promise">Uang terjamin</string>
     <string name="umrah_pdp_title_information">Informasi Perjalanan</string>

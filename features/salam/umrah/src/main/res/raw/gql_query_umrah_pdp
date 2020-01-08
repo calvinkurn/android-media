@@ -6,6 +6,7 @@ query UmrahProduct($slugName: String!){
       hotelStars
       variant
       transitCity
+      availableSeat
     }
     id
     availableSeat

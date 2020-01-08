@@ -307,8 +307,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         }
         val umrahTravelAgentWidgetModel : UmrahTravelAgentWidgetModel = UmrahTravelAgentWidgetModel().apply {
             establishedSince = travelAgent.establishedSince
-            pilgrimsPerYear = travelAgent.pilgrimsPerYear
-            availableSeat = umrahProduct.availableSeat
+            pilgrimsPerYear = travelAgent.ui.pilgrimsPerYear
+            availableSeat = umrahProduct.ui.availableSeat
         }
 
         iw_umrah_pdp_travel_agent.umrahItemWidgetModel = umrahItemWidgetModel
