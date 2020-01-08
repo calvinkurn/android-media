@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.profile
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -12,6 +13,8 @@ import com.tokopedia.search.result.domain.model.SearchProfileModel
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
 import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
+import com.tokopedia.search.result.presentation.model.ProfileRecommendationTitleViewModel
+import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -21,6 +24,10 @@ import javax.inject.Named
 // This class is currently made 'public' due to Kotlin not having 'private package' access modifier
 // Please avoid using this class directly, and use ProfileListSectionContract.Presenter instead
 class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View>() , ProfileListSectionContract.Presenter {
+
+    companion object {
+        const val PARAM_USER_ID = "{user_id}"
+    }
 
     @field:[Inject Named(SearchConstant.SearchProfile.SEARCH_PROFILE_USE_CASE)]
     lateinit var searchProfileListUseCase : UseCase<SearchProfileModel>
@@ -167,26 +174,67 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
     }
 
     private fun handleSearchProfileResult(profileListViewModel: ProfileListViewModel, startRow: Int) {
-        profileListViewModelIncrementPosition(profileListViewModel, startRow)
+        profileViewModelListIncrementPosition(profileListViewModel.profileModelList, startRow)
 
         view?.onSuccessGetProfileListData(profileListViewModel)
     }
 
     private fun handleSearchProfileEmptyResult(profileListViewModel: ProfileListViewModel) {
-        view?.trackEmptySearchProfile()
-        view?.hideLoading()
-        view?.clearVisitableList()
+        val hasRecommendationProfile = profileListViewModel.recommendationProfileModelList.isNotEmpty()
+        val emptyResultVisitableList = createEmptyResultVisitableList(hasRecommendationProfile, profileListViewModel)
 
-        val emptyResultVisitableList = mutableListOf<Visitable<*>>()
-        emptyResultVisitableList.add(EmptySearchProfileViewModel())
-
-        view?.renderVisitableList(emptyResultVisitableList)
+        getViewToTrackEmptyResultEvents(hasRecommendationProfile, profileListViewModel)
+        getViewToPrepareRenderingList()
+        getViewToRenderVisitableList(emptyResultVisitableList)
     }
 
-    private fun profileListViewModelIncrementPosition(profileListViewModel : ProfileListViewModel, startRow : Int) {
+    private fun createEmptyResultVisitableList(
+            hasRecommendationProfile: Boolean,
+            profileListViewModel: ProfileListViewModel
+    ): List<Visitable<*>> {
+        val emptyResultVisitableList = mutableListOf<Visitable<*>>()
+
+        emptyResultVisitableList.addEmptySearchProfileViewModel()
+
+        if (hasRecommendationProfile) {
+            emptyResultVisitableList.addRecommendationProfiles(profileListViewModel)
+        }
+
+        return emptyResultVisitableList
+    }
+
+    private fun MutableList<Visitable<*>>.addEmptySearchProfileViewModel() {
+        this.add(EmptySearchProfileViewModel())
+    }
+
+    private fun MutableList<Visitable<*>>.addRecommendationProfiles(profileListViewModel: ProfileListViewModel) {
+        this.add(ProfileRecommendationTitleViewModel())
+
+        profileViewModelListIncrementPosition(profileListViewModel.recommendationProfileModelList, 1)
+        this.addAll(profileListViewModel.recommendationProfileModelList)
+    }
+
+    private fun getViewToTrackEmptyResultEvents(hasRecommendationProfile: Boolean, profileListViewModel: ProfileListViewModel) {
+        view?.trackEmptySearchProfile()
+
+        if (hasRecommendationProfile) {
+            view?.trackImpressionRecommendationProfile(profileListViewModel.getRecommendationListTrackingObject())
+        }
+    }
+
+    private fun getViewToPrepareRenderingList() {
+        view?.hideLoading()
+        view?.clearVisitableList()
+    }
+
+    private fun getViewToRenderVisitableList(visitableList: List<Visitable<*>>) {
+        view?.renderVisitableList(visitableList)
+    }
+
+    private fun profileViewModelListIncrementPosition(profileViewModelList : List<ProfileViewModel>, startRow : Int) {
         var position = startRow
 
-        for(item in profileListViewModel.profileModelList) {
+        for(item in profileViewModelList) {
             item.position = position++
         }
     }
@@ -194,5 +242,23 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
     private fun searchProfileOnError(e: Throwable?) {
         e?.printStackTrace()
         view?.onErrorGetProfileListData()
+    }
+
+    override fun onViewClickProfile(profileViewModel: ProfileViewModel) {
+        getViewToTrackClickProfile(profileViewModel)
+        getViewToRoutePage(ApplinkConst.PROFILE.replace(PARAM_USER_ID, profileViewModel.id))
+    }
+
+    private fun getViewToTrackClickProfile(profileViewModel: ProfileViewModel) {
+        if (profileViewModel.isRecommendation) {
+            view?.trackClickRecommendationProfile(profileViewModel)
+        }
+        else {
+            view?.trackClickProfile(profileViewModel)
+        }
+    }
+
+    private fun getViewToRoutePage(applink: String) {
+        view?.route(applink)
     }
 }

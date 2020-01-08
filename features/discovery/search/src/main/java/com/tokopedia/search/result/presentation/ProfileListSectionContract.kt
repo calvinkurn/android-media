@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
+import com.tokopedia.search.result.presentation.model.ProfileViewModel
 
 interface ProfileListSectionContract {
 
@@ -19,6 +20,10 @@ interface ProfileListSectionContract {
         fun clearVisitableList()
         fun trackEmptySearchProfile()
         fun hideLoading()
+        fun trackImpressionRecommendationProfile(recommendationProfileTrackingObjectList: List<Any>)
+        fun trackClickProfile(profileViewModel: ProfileViewModel)
+        fun trackClickRecommendationProfile(profileViewModel: ProfileViewModel)
+        fun route(applink: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -30,5 +35,6 @@ interface ProfileListSectionContract {
         fun getNextPage(): Int
         fun getHasNextPage(): Boolean
         fun getTotalProfileCount(): Int
+        fun onViewClickProfile(profileViewModel: ProfileViewModel)
     }
 }

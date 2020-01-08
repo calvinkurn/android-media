@@ -18,5 +18,16 @@ aceSearchProfile(params: $params) {
       followers
       post_count
     }
+    top_profile {
+      id
+      name
+      avatar
+      username
+      followed
+      iskol
+      isaffiliate
+      followers
+      post_count
+    }
   }
 }

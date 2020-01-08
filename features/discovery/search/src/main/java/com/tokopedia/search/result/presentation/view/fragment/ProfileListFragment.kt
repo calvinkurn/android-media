@@ -22,7 +22,6 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
-import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.search.result.presentation.model.TotalSearchCountViewModel
@@ -43,7 +42,20 @@ class ProfileListFragment :
     ProfileListener,
     EmptyStateListener {
 
-    private val PARAM_USER_ID = "{user_id}"
+    companion object {
+        private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
+        private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
+
+        fun newInstance(searchParameter: SearchParameter): ProfileListFragment {
+            val args = Bundle()
+            args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
+
+            val profileListFragment = ProfileListFragment()
+            profileListFragment.arguments = args
+
+            return profileListFragment
+        }
+    }
 
     @Inject
     lateinit var presenter: ProfileListSectionContract.Presenter
@@ -102,7 +114,6 @@ class ProfileListFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if(isVisibleToUser && canStartToLoadData()) {
-            hasLoadData = true
             onSwipeRefresh()
         }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
@@ -268,21 +279,6 @@ class ProfileListFragment :
         }
     }
 
-    companion object {
-        private val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
-        private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
-
-        fun newInstance(searchParameter: SearchParameter): ProfileListFragment {
-            val args = Bundle()
-            args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
-
-            val profileListFragment = ProfileListFragment()
-            profileListFragment.arguments = args
-
-            return profileListFragment
-        }
-    }
-
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
         searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER)
         query = searchParameter?.getSearchQuery() ?: ""
@@ -317,6 +313,16 @@ class ProfileListFragment :
         removeSearchPageLoading()
     }
 
+    override fun trackImpressionRecommendationProfile(recommendationProfileTrackingObjectList: List<Any>) {
+        if (::trackingQueue.isInitialized) {
+            SearchTracking.trackEventUserImpressionRecommendationProfile(
+                    trackingQueue,
+                    recommendationProfileTrackingObjectList,
+                    query
+            )
+        }
+    }
+
     override fun onEmptyButtonClicked() {
         SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
         redirectionListener.showSearchInputView()
@@ -339,16 +345,23 @@ class ProfileListFragment :
     }
 
     override fun onHandleProfileClick(profileModel: ProfileViewModel) {
-        SearchTracking.eventUserClickProfileResultInTabProfile(
-            profileModel.getTrackingObject(),
-            query)
-
-        launchProfilePage(profileModel.id)
+        presenter.onViewClickProfile(profileModel)
     }
 
-    private fun launchProfilePage(userId : String) {
-        val applink : String = ApplinkConst.PROFILE.replace(PARAM_USER_ID, userId)
+    override fun trackClickProfile(profileViewModel: ProfileViewModel) {
+        SearchTracking.eventUserClickProfileResultInTabProfile(
+                profileViewModel.getTrackingObject(),
+                query)
+    }
 
+    override fun trackClickRecommendationProfile(profileViewModel: ProfileViewModel) {
+        SearchTracking.trackEventUserClickRecommendationProfile(
+                profileViewModel.getRecommendationTrackingObject(),
+                query
+        )
+    }
+
+    override fun route(applink: String) {
         activity?.let {
             RouteManager.route(it, applink)
         }
