@@ -4,6 +4,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
@@ -129,6 +130,37 @@ class CartListPresenterDeleteCartTest : Spek({
             }
         }
 
+        Scenario("remove some cart data and insurance data") {
+
+            val view: ICartListView = mockk(relaxed = true)
+
+            Given("success delete") {
+                val deleteCartData = DeleteCartData(isSuccess = true)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process delete cart item") {
+                val firstCartItemData = CartItemData()
+                firstCartItemData.originData = CartItemData.OriginData()
+                val secondCartItemData = CartItemData()
+                secondCartItemData.originData = CartItemData.OriginData()
+                secondCartItemData.originData?.cartId = 1
+
+                cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
+                        arrayListOf(firstCartItemData), arrayListOf(), false, false)
+            }
+
+            Then("should success delete") {
+                verify {
+                    view.onDeleteCartDataSuccess(arrayListOf("0"))
+                }
+            }
+        }
+
         Scenario("fail remove cart data") {
 
             val view: ICartListView = mockk(relaxed = true)
@@ -155,6 +187,58 @@ class CartListPresenterDeleteCartTest : Spek({
                 }
             }
         }
+
+        Scenario("fail remove cart data with CartResponseErrorException") {
+
+            val view: ICartListView = mockk(relaxed = true)
+            val errorMessage = "fail testing delete"
+
+            Given("fail delete") {
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process delete cart item") {
+                val cartItemData = CartItemData()
+                cartItemData.originData = CartItemData.OriginData()
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+            }
+
+            Then("should show error message") {
+                verify {
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+
+        Scenario("fail remove cart data with other exception") {
+
+            val view: ICartListView = mockk(relaxed = true)
+
+            Given("fail delete") {
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process delete cart item") {
+                val cartItemData = CartItemData()
+                cartItemData.originData = CartItemData.OriginData()
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+            }
+
+            Then("should show error message") {
+                verify {
+                    view.showToastMessageRed(any())
+                }
+            }
+        }
+
     }
 
 })
