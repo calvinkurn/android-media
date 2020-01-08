@@ -202,8 +202,8 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
                     selectedViewModel.get(1).getFlightCancellationJourney().getDepartureTime());
 
             if (firstJourney.after(secondJourney)) {
-                FlightCancellationViewModel temp = cancellationModelList.get(0);
-                selectedViewModel.set(0, cancellationModelList.get(1));
+                FlightCancellationViewModel temp = selectedViewModel.get(0);
+                selectedViewModel.set(0, selectedViewModel.get(1));
                 selectedViewModel.set(1, temp);
             }
         }
