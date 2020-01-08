@@ -158,12 +158,26 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
             }
         }
         if ((permissionsToRequest as ArrayList<String>).isNotEmpty()) {
-            activity?.let {
-                ActivityCompat.requestPermissions(it,
-                        (permissionsToRequest as ArrayList<String>).toTypedArray(), REQUEST_CONTACTS__CAMERA_PERMISSION)
-            }
+            requestPermissions((permissionsToRequest as ArrayList<String>).toTypedArray(), REQUEST_CONTACTS__CAMERA_PERMISSION)
         } else {
             setSearchQueryListener()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.size == permissionsToRequest.size) {
+            var grantCount = 0
+            for (result in grantResults) {
+                if (result == PackageManager.PERMISSION_DENIED) {
+                    isPermissionGotDenied = true
+                    break
+                }
+                grantCount++
+            }
+            if (grantCount == grantResults.size) {
+                isPermissionGotDenied = false
+            }
         }
     }
 

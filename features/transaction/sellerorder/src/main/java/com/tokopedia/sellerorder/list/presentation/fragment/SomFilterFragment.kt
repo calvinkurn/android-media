@@ -145,7 +145,7 @@ class SomFilterFragment : BaseDaggerFragment() {
 
             splitDate?.let {
                 currentDate.set(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
-                datePicker.show(fragmentManager, "")
+                fragmentManager?.let { it1 -> datePicker.show(it1, "") }
                 datePicker.datePickerButton.setOnClickListener {
                     val resultDate = datePicker.getDate()
                     val monthInt = resultDate[1]+1

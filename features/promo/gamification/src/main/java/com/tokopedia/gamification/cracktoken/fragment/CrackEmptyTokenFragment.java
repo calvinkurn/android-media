@@ -23,6 +23,7 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
@@ -118,7 +119,16 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
             dailyPrizeLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImageAndCache(ivDailyPrize, homeSmallButton.getImageURL());
             ivDailyPrize.setOnClickListener(v -> {
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                String applink = homeSmallButton.getAppLink();
+                if (!TextUtils.isEmpty(applink)) {
+                    boolean isSupported = RouteManager.route(getActivity(), applink);
+                    if (!isSupported) {
+                        ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                    }
+                } else {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                }
+
             });
         }
         if (!TextUtils.isEmpty(tokenData.getHome().getEmptyState().getTitle())) {
@@ -160,12 +170,25 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
                         getMoreTokenBtn.getText().toString()
                 ));
 
-                ApplinkUtil.navigateToAssociatedPage(getActivity(),
-                        tokenData.getHome().getEmptyState().getButtonApplink(),
-                        tokenData.getHome().getEmptyState().getButtonURL(),
-                        CrackTokenActivity.class);
+                String applink = tokenData.getHome().getEmptyState().getButtonApplink();
+                if (!TextUtils.isEmpty(applink)) {
+                    boolean isSupported = RouteManager.route(getActivity(), applink);
+                    if (!isSupported) {
+                        navigateViaApplinkUtil();
+                    }
+                } else {
+                    navigateViaApplinkUtil();
+                }
             }
         });
+    }
+
+    private void navigateViaApplinkUtil() {
+        ApplinkUtil.navigateToAssociatedPage(getActivity(),
+                tokenData.getHome().getEmptyState().getButtonApplink(),
+                tokenData.getHome().getEmptyState().getButtonURL(),
+                CrackTokenActivity.class);
+
     }
 
     public int getStatusBarHeight() {
@@ -177,7 +200,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         return result;
     }
 
-    private int getScreenHeightWithoutStatusBar(){
+    private int getScreenHeightWithoutStatusBar() {
         int statusBarHeight = getStatusBarHeight();
         return getActivity().getResources().getDisplayMetrics().heightPixels - statusBarHeight;
     }
@@ -189,9 +212,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int screenHeight = getScreenHeightWithoutStatusBar();
-        int imageMarginTop = (int) (screenHeight - (screenHeight * TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
-
+        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
+        int imageMarginTop = imageMarginBottom - imageHeight;
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) tokenEmptyImage.getLayoutParams();
         ivFullLp.width = imageWidth;

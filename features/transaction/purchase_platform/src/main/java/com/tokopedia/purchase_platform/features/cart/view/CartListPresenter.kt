@@ -21,6 +21,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.*
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
@@ -46,8 +47,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -74,7 +73,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val getInsuranceCartUseCase: GetInsuranceCartUseCase?,
                                             private val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase?,
                                             private val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase?,
-                                            private val seamlessLoginUsecase: SeamlessLoginUsecase) : ICartListPresenter {
+                                            private val seamlessLoginUsecase: SeamlessLoginUsecase,
+                                            private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null
     private var cartListData: CartListData? = null
@@ -110,7 +110,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         getRecentViewUseCase?.unsubscribe()
         getWishlistUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
-        addToCartUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
         removeInsuranceProductUsecase?.unsubscribe()
         updateInsuranceProductDataUsecase?.unsubscribe()
@@ -399,7 +398,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     for (cartItemHolderDataTmp in allCartItemDataList) {
                         if (productId != cartItemHolderDataTmp.cartItemData?.originData?.productId &&
                                 parentId == cartItemHolderDataTmp.cartItemData?.originData?.parentId &&
-                                cartItemHolderDataTmp.cartItemData?.originData?.pricePlan == cartItemHolderDataTmp.cartItemData?.originData?.pricePlan) {
+                                cartItemHolderDataTmp.cartItemData?.originData?.pricePlan == cartItemHolderData.cartItemData?.originData?.pricePlan) {
                             itemQty += cartItemHolderDataTmp.cartItemData?.updatedData?.quantity
                                     ?: 0
                         }
@@ -933,11 +932,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
-        addToCartUseCase?.createObservable(requestParams)
-                ?.subscribeOn(Schedulers.io())
-                ?.unsubscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
+        compositeSubscription.add(addToCartUseCase?.createObservable(requestParams)
+                ?.subscribeOn(schedulers.io)
+                ?.unsubscribeOn(schedulers.io)
+                ?.observeOn(schedulers.main)
                 ?.subscribe(AddToCartSubscriber(view, this, productModel))
+        )
     }
 
     override fun generateAddToCartEnhanceEcommerceDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData,

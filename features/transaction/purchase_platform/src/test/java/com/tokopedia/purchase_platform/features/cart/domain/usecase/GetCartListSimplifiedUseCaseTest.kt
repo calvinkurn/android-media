@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.domain.usecase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedResponse
@@ -74,7 +75,7 @@ class GetCartListSimplifiedUseCaseTest : Spek({
             }
 
             Then("should contains custom error message") {
-                assertEquals(errorMessages.joinToString(), (onErrorEvents.first() as ResponseErrorException).message)
+                assertEquals(errorMessages.joinToString(), (onErrorEvents.first() as CartResponseErrorException).message)
             }
         }
 
