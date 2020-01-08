@@ -1025,15 +1025,6 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventEnhanceImpressionBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceImpressionBannerChannelMix()
-                    );
-        }
-    }
-
     public static void eventEnhanceImpressionPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {

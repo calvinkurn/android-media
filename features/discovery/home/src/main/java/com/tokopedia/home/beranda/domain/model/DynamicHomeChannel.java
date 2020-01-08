@@ -324,7 +324,7 @@ public class DynamicHomeChannel {
                     Grid grid = grids[i];
                     list.add(
                             DataLayer.mapOf(
-                                    "id", channelId + "_" + grid.getId(),
+                                    "id" +"_" + grid.getId(),
                                     "name", getPromoName(),
                                     "creative", grid.getAttribution(),
                                     "creative_url", grid.getImageUrl(),
@@ -700,7 +700,7 @@ public class DynamicHomeChannel {
                             "promoView", DataLayer.mapOf(
                                         "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", channelId + "_" + getBanner().getId(),
+                                                    "id" + "_" + getBanner().getId(),
                                                     "name", getPromoName(),
                                                     "creative", getBanner().getAttribution(),
                                                     "creative_url", getBanner().getImageUrl(),
