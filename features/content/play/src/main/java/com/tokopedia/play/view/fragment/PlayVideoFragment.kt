@@ -74,19 +74,15 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_play_video, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        val view = inflater.inflate(R.layout.fragment_play_video, container, false)
         initComponents(view as ViewGroup)
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -96,6 +92,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVideoProperty()
         observeOneTapOnboarding()
         observeKeyboardState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancel()
     }
 
     //region observe
@@ -160,6 +161,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
         return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
     private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {

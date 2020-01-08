@@ -42,6 +42,9 @@ class PlayFragment : BaseDaggerFragment() {
     companion object {
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
+        private const val VIDEO_FRAGMENT_TAG = "FRAGMENT_VIDEO"
+        private const val INTERACTION_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
+
         private const val ANIMATION_DURATION = 300L
         private const val FULL_SCALE_FACTOR = 1.0f
 
@@ -83,12 +86,12 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "2" // TODO remove default value, handle channel_id=1865, 80 staging live not found
         PlayAnalytics.sendScreen(channelId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         return inflater.inflate(R.layout.fragment_play, container, false)
     }
 
@@ -98,13 +101,17 @@ class PlayFragment : BaseDaggerFragment() {
         setupView(view)
         setupScreen(view)
 
-        childFragmentManager.beginTransaction()
-                .replace(flVideo.id, PlayVideoFragment.newInstance(channelId))
-                .commit()
+        if (childFragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG) == null) {
+            childFragmentManager.beginTransaction()
+                    .replace(flVideo.id, PlayVideoFragment.newInstance(channelId), VIDEO_FRAGMENT_TAG)
+                    .commit()
+        }
 
-        childFragmentManager.beginTransaction()
-                .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId))
-                .commit()
+        if (childFragmentManager.findFragmentByTag(INTERACTION_FRAGMENT_TAG) == null) {
+            childFragmentManager.beginTransaction()
+                    .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId))
+                    .commit()
+        }
 
         KeyboardWatcher().listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {

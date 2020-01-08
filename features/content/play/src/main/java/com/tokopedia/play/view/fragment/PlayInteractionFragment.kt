@@ -119,21 +119,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_play_interaction, container, false)
+        val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
+        initComponents(view as ViewGroup)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initComponents(view as ViewGroup)
         setupView(view)
-
         viewModel.getTotalLikes(channelId)
     }
 
@@ -184,8 +184,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeLoggedInInteractionEvent()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         job.cancel()
     }
 
@@ -244,7 +244,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeFollowShop() {
         viewModel.observableFollowPartner.observe(this, Observer {
-            if (it is Fail && !it.throwable.message.isNullOrEmpty()) {
+            if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
             }
         })
@@ -252,7 +252,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeLikeContent() {
         viewModel.observableLikeContent.observe(this, Observer {
-            if (it is Fail && !it.throwable.message.isNullOrEmpty()) {
+            if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
             }
         })
@@ -383,6 +383,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun initVideoControlComponent(container: ViewGroup): UIComponent<Unit> {
         return VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
     private fun initToolbarComponent(container: ViewGroup): UIComponent<PlayToolbarInteractionEvent> {

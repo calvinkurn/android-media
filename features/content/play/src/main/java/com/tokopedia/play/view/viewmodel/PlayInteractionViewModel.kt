@@ -18,10 +18,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -57,7 +54,7 @@ class PlayInteractionViewModel @Inject constructor(
             }
             _observableTotalLikes.value = Success(response)
         }) {
-            _observableTotalLikes.value = Fail(it)
+            if (it !is CancellationException) _observableTotalLikes.value = Fail(it)
         }
     }
 
@@ -77,7 +74,7 @@ class PlayInteractionViewModel @Inject constructor(
 
             _observableLikeContent.value = Success(response)
         }) {
-            _observableLikeContent.value = Fail(it)
+            if (it !is CancellationException) _observableLikeContent.value = Fail(it)
         }
     }
 
@@ -90,7 +87,7 @@ class PlayInteractionViewModel @Inject constructor(
 
             _observableFollowPartner.value = Success(response)
         }) {
-            _observableFollowPartner.value = Fail(it)
+            if (it !is CancellationException) _observableFollowPartner.value = Fail(it)
         }
     }
 

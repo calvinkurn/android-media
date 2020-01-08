@@ -36,6 +36,10 @@ class VideoView(container: ViewGroup) : UIView(container) {
         view.hide()
     }
 
+    fun onDestroy() {
+        pvVideo.player = null
+    }
+
     fun setPlayer(exoPlayer: ExoPlayer) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             pvVideo.videoSurfaceView.transitionName = ANIMATION_TRANSITION_NAME

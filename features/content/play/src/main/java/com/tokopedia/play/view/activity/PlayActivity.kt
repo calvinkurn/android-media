@@ -17,6 +17,10 @@ import javax.inject.Inject
  */
 class PlayActivity : BaseActivity() {
 
+    companion object {
+        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
+    }
+
     @Inject
     lateinit var playLifecycleObserver: PlayLifecycleObserver
 
@@ -49,8 +53,10 @@ class PlayActivity : BaseActivity() {
     }
 
     private fun setupView() {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragment, getFragment())
-                .commit()
+        if (supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG) == null) {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.fl_fragment, getFragment(), PLAY_FRAGMENT_TAG)
+                    .commit()
+        }
     }
 }

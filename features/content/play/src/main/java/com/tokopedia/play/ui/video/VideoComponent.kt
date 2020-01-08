@@ -1,6 +1,8 @@
 package com.tokopedia.play.ui.video
 
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -33,6 +35,11 @@ class VideoComponent(
                         }
                     }
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        uiView.onDestroy()
     }
 
     override fun getContainerId(): Int {

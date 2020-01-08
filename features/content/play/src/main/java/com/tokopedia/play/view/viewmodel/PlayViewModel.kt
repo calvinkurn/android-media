@@ -24,6 +24,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -115,13 +116,6 @@ class PlayViewModel @Inject constructor(
              * If Live => start web socket
              */
             getPartnerInfo(channel)
-            // TODO("remove, for testing")
-            channel.videoStream = VideoStream(
-                    "vertical",
-                    "live",
-                    true,
-                    VideoStream.Config(streamUrl = "rtmp://fms.105.net/live/rmc1"))
-
             setStateLiveOrVod(channel)
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
@@ -138,7 +132,7 @@ class PlayViewModel @Inject constructor(
             _observableEvent.value = mapEvent(channel)
         }) {
             //TODO("Change it later")
-            _observableGetChannelInfo.value = Fail(it)
+            if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
     }
 
