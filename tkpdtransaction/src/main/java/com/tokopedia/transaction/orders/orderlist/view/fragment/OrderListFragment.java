@@ -152,6 +152,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private String defEndDate = "";
     private String customStartDate = "";
     private String customEndDate = "";
+    private String datePickerStartDate = "";
+    private String datePickerEndDate = "";
     private boolean customFilter = false;
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -632,6 +634,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
         customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
 
+        datePickerStartDate = customStartDate;
+        datePickerEndDate = defEndDate;
     }
 
     @Override
@@ -792,20 +796,20 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
 
     private void showDatePicker(String title) {
-        String[] result = split(customStartDate);
         Calendar minDate = Calendar.getInstance();
         minDate.add(Calendar.YEAR, -3);
+
         Calendar maxDate = Calendar.getInstance();
         maxDate.add(Calendar.YEAR, 100);
-        Calendar defaultDate = Calendar.getInstance();
 
+        Calendar defaultDate = Calendar.getInstance();
         if (title.equalsIgnoreCase(MULAI_DARI)) {
-            String[] resultStartDate = split(customStartDate);
-            defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1])-1, Integer.parseInt(resultStartDate[0]));
+            String[] resultStartDate = split(datePickerStartDate);
+            defaultDate.set(Integer.parseInt(resultStartDate[2]), (Integer.parseInt(resultStartDate[1])-1), Integer.parseInt(resultStartDate[0]));
 
         } else {
-            String[] resultEndDate = split(defEndDate);
-            defaultDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1])-1, Integer.parseInt(resultEndDate[0]));
+            String[] resultEndDate = split(datePickerStartDate);
+            defaultDate.set(Integer.parseInt(resultEndDate[2]), (Integer.parseInt(resultEndDate[1])-1), Integer.parseInt(resultEndDate[0]));
         }
 
         datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
