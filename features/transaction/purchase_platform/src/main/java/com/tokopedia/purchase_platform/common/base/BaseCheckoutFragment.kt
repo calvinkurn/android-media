@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
  */
 abstract class BaseCheckoutFragment : TkpdBaseV4Fragment() {
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         setHasOptionsMenu(getOptionsMenuEnable())
     }

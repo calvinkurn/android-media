@@ -1955,7 +1955,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             promo, "cart", cartItemDataVoucherArrayList
                     )
                     merchantVoucherListBottomSheetFragment.actionListener = this@CartFragment
-                    merchantVoucherListBottomSheetFragment.show(fragmentManager, "")
+                    merchantVoucherListBottomSheetFragment.show(fragmentManager!!, "")
                 }
             }
         }
