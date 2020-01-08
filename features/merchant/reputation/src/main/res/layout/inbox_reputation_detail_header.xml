@@ -16,7 +16,7 @@
         android:paddingRight="@dimen/padding_activity"
         android:paddingTop="@dimen/dp_8">
 
-        <com.tokopedia.core.customView.RoundedCornerImageView
+        <ImageView
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/user_avatar"
             android:layout_height="@dimen/user_avatar"
