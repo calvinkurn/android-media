@@ -192,18 +192,11 @@ class TokopediaPlayerHelper(
     }
 
     override fun createPlayer(isToPrepare: Boolean) {
-
         if (mPlayer != null) {
             return
         }
-
+        TokopediaPlayManager.deleteInstance()
         mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-
-//        mPlayer = ExoPlayerFactory.newSimpleInstance(
-//                context,
-//                DefaultRenderersFactory(context),
-//                DefaultTrackSelector(),
-//                mLoadControl)
 
         exoPlayerView.setPlayer(mPlayer)
         isVideoMuted = true
@@ -214,14 +207,7 @@ class TokopediaPlayerHelper(
         mPlayer?.playWhenReady = false
         mPlayer?.addListener(this)
 
-        if (isToPrepare) {
-            runBlocking {
-                launch {
-                    Thread.sleep(1000)
-                    preparePlayer()
-                }
-            }
-        }
+        preparePlayer()
     }
 
     override fun preparePlayer() {
@@ -230,7 +216,6 @@ class TokopediaPlayerHelper(
         }
         createMediaSource()
         isPlayerPrepared = true
-//        mPlayer?.prepare(mMediaSource)
 
         if (mResumeWindow != C.INDEX_UNSET) {
             mPlayer?.playWhenReady = isResumePlayWhenReady
@@ -338,8 +323,12 @@ class TokopediaPlayerHelper(
 
     override fun playerPlay() {
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()){
-            Thread.sleep(3000)
-            mPlayer?.playWhenReady = true
+            runBlocking {
+                launch {
+                    Thread.sleep(1000)
+                    mPlayer?.playWhenReady = true
+                }
+            }
         }
     }
 

@@ -17,3 +17,4 @@
 #}
 
 -keep class com.facebook.hermes.unicode.** { *; }
+-dontwarn kotlinx.coroutines.flow.**

@@ -53,9 +53,10 @@ class PlayCardViewHolder(
         description.text = ""
 
         element.getPlayCardHome()?.let { model ->
-            createHelper()
             mVideoUrl = model.videoStream.config.streamUrl
             mThumbUrl = model.coverUrl
+
+            createHelper()
 
             playCardViewModel = element
 
@@ -99,6 +100,7 @@ class PlayCardViewHolder(
                     .setMutedVolume()
                     .setToPrepareOnResume(true)
                     .create()
+            helper?.playerPlay()
         }
 
         if(helper?.isPlayerNull() == true){
