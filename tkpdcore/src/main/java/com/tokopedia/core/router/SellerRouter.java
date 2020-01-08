@@ -12,16 +12,8 @@ import com.tokopedia.core.util.RouterUtils;
 @Deprecated
 public class SellerRouter {
 
-    public static Intent getActivityManageShop(Context context) {
-        return RouterUtils.getRouterFromContext(context).getIntentManageShop(context);
-    }
-
     public static Fragment getFragmentShopSettings(Context context) {
         return RouterUtils.getRouterFromContext(context).getFragmentShopSettings();
-    }
-
-    public static Fragment getFragmentSellingNewOrder(Context context) {
-        return RouterUtils.getRouterFromContext(context).getFragmentSellingNewOrder();
     }
 
     public static Intent getActivitySplashScreenActivity(Context context) {
@@ -32,10 +24,18 @@ public class SellerRouter {
         return RouterUtils.getDefaultRouter().getSellingActivityClass();
     }
 
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
     public static Intent getActivitySellingTransactionNewOrder(Context context) {
         return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionNewOrder(context);
     }
 
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
     public static Intent getActivitySellingTransactionConfirmShipping(Context context) {
         return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionConfirmShipping(context);
     }

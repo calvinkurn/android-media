@@ -1,10 +1,9 @@
 package com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.atc
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.profile.Profile
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.PromoSuggestion
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Donation
+import com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.profile.Profile
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -41,9 +40,6 @@ data class AtcData(
 
         @SerializedName("donation")
         val donation: Donation?,
-
-        @SerializedName("promo_suggestion")
-        val promoSuggestion: PromoSuggestion?,
 
         @SerializedName("autoapply")
         val autoapply: AutoApply?,

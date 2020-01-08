@@ -1,3 +1,13 @@
+/features/content/affiliate/            				@tokopedia/minion-dave
+/features/content/affiliate_common/     				@tokopedia/minion-dave
+/features/content/createpost/           				@tokopedia/minion-dave
+/features/content/explore/              				@tokopedia/minion-dave
+/features/content/feed/                 				@tokopedia/minion-dave
+/features/content/interest_pick/        				@tokopedia/minion-dave
+/features/content/kol/                  				@tokopedia/minion-dave
+/features/content/kol_common/           				@tokopedia/minion-dave
+/features/content/profile/              				@tokopedia/minion-dave
+/features/content/feed_component/       				@tokopedia/minion-dave
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -45,27 +55,31 @@
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
-/features/digital/flight/               @tokopedia/minion-mark
-/features/digital/train/                @tokopedia/minion-mark
-/features/digital/hotel/                @tokopedia/minion-mark
-/features/digital/flight_no_op/         @tokopedia/minion-mark
-/features/digital/digitalproduct        @tokopedia/minion-mark
-/features/digital/common_travel         @tokopedia/minion-mark
-/features/digital/common_digital        @tokopedia/minion-mark
-/features/digital/common_topup_bills    @tokopedia/minion-mark
-/features/digital/digital_homepage      @tokopedia/minion-mark
-/libraries/travel_calendar              @tokopedia/minion-mark
-/features/digital/travel_homepage       @tokopedia/minion-mark
-/features/digital/voucher_game          @tokopedia/minion-mark
-/features/digital/digital_emoney        @tokopedia/minion-mark
-/features/digital/imagepreviewslider    @tokopedia/minion-mark
-/features/salam/umrah                   @tokopedia/minion-mark
+/features/digital/flight/                               @tokopedia/minion-mark
+/features/digital/train/                                @tokopedia/minion-mark
+/features/digital/hotel/                                @tokopedia/minion-mark
+/features/digital/flight_no_op/                         @tokopedia/minion-mark
+/features/digital/digitalproduct                        @tokopedia/minion-mark
+/features/digital/common_travel                         @tokopedia/minion-mark
+/features/digital/common_digital                        @tokopedia/minion-mark
+/features/digital/common_topup_bills                    @tokopedia/minion-mark
+/features/digital/digital_homepage                      @tokopedia/minion-mark
+/libraries/travel_calendar                              @tokopedia/minion-mark
+/features/digital/travel_homepage                       @tokopedia/minion-mark
+/features/digital/voucher_game                          @tokopedia/minion-mark
+/features/digital/digital_emoney                        @tokopedia/minion-mark
+/features/digital/imagepreviewslider                    @tokopedia/minion-mark
+/features/salam/umrah                                   @tokopedia/minion-mark
+/features/digital/digital_topup_bills                   @tokopedia/minion-mark
+/features/digital/flight_orderlist                      @tokopedia/minion-mark
+/features/digital/rechargeocr                          @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
 /features/payment/pms/                          		@tokopedia/minion-bob
 /features/transaction/atc_common/               		@tokopedia/minion-bob
-/features/transaction/sellerorder/                  @tokopedia/minion-bob
+/features/transaction/opportunity/               		@tokopedia/minion-bob
+/features/transaction/sellerorder/                      @tokopedia/minion-bob
 /features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
@@ -81,7 +95,7 @@
 /features/user/topchat/                         		@tokopedia/minion-kevin
 /features/user/topchat_no_op/                   		@tokopedia/minion-kevin
 /features/user/groupchat/                       		@tokopedia/minion-kevin
-/features/user/profilecompletion/                         		@tokopedia/minion-kevin
+/features/user/profilecompletion/                       @tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
 /features/user/settingbank/                     		@tokopedia/minion-kevin
@@ -102,17 +116,8 @@
 /features/user/user_identification_common/      		@tokopedia/minion-kevin
 /features/user/user_identification_no_op/       		@tokopedia/minion-kevin
 /features/user/seamless_login/                          @tokopedia/minion-kevin
-
-/features/content/affiliate/            				@tokopedia/minion-stuart
-/features/content/affiliate_common/     				@tokopedia/minion-stuart
-/features/content/createpost/           				@tokopedia/minion-stuart
-/features/content/explore/              				@tokopedia/minion-stuart
-/features/content/feed/                 				@tokopedia/minion-stuart
-/features/content/feed_component/       				@tokopedia/minion-stuart
-/features/content/interest_pick/        				@tokopedia/minion-stuart
-/features/content/kol/                  				@tokopedia/minion-stuart
-/features/content/kol_common/           				@tokopedia/minion-stuart
-/features/content/profile/              				@tokopedia/minion-stuart
+/features/user/kyc_centralized/                         @tokopedia/minion-kevin
+/features/user/attachinvoice/                           @tokopedia/minion-kevin
 
 /features/digital/event                 				@tokopedia/minion-darth
 /features/operational/contact_us        				@tokopedia/minion-darth
@@ -133,7 +138,7 @@
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
 
-/libraries/adapter_delegate/							@tokopedia/minion-stuart
+/libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
@@ -146,7 +151,7 @@
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team
-/libraries/core_legacy/									@tokopedia/core-team
+/libraries/core_legacy/									@ricoharisin
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
@@ -169,8 +174,8 @@
 /libraries/react_native/								@tokopedia/core-team
 /libraries/remote_config/								@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
-/libraries/track/										@tokopedia/core-team
-/libraries/tracking_optimizer/							@tokopedia/core-team
+/libraries/track/										@ricoharisin
+/libraries/tracking_optimizer/							@ricoharisin
 /libraries/translator/									@tokopedia/core-team
 /libraries/travel_calendar/								@tokopedia/core-team
 /libraries/twitter_share/								@tokopedia/core-team
@@ -182,11 +187,12 @@
 /libraries/williamchart/								@tokopedia/core-team
 /libraries/youtubeutil/									@tokopedia/core-team
 
+/tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
-/tkpdloyalty/                                       	@tokopedia/core-team
 /tkpddigital/                                       	@tokopedia/core-team
 /tkpdinbox/                                         	@tokopedia/core-team
 /tkpdtransaction/                                   	@tokopedia/core-team
+/tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
 /tkpddesign/                                        	@nathaniel09 @hendrysetiadi89

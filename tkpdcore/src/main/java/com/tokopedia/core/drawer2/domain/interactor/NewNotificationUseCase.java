@@ -13,8 +13,9 @@ import rx.functions.Func2;
 
 /**
  * @author by nisie on 11/23/17.
+ * Only for sellerapp
  */
-
+@Deprecated
 public class NewNotificationUseCase extends UseCase<NotificationModel> {
 
     NotificationUseCase notificationUseCase;
