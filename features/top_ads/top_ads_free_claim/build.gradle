@@ -16,9 +16,10 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+
     implementation project(rootProject.ext.features.topAdsManagementCommon)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

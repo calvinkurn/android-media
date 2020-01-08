@@ -35,7 +35,6 @@ dependencies {
     implementation project(rootProject.ext.features.productShare)
 
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.topAdsFreeClaim)
     implementation project(rootProject.ext.libraries.applink)
@@ -50,6 +49,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.libraries.playCore)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
