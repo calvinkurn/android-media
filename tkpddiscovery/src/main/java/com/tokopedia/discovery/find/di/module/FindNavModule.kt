@@ -8,9 +8,6 @@ import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.find.di.scope.FindNavScope
 import com.tokopedia.discovery.find.util.FindNavConstants
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,12 +27,6 @@ class FindNavModule {
         return context
     }
 
-//    @FindNavScope
-//    @Provides
-//    fun provideGqlUseCase(): GraphqlUseCase {
-//        return GraphqlUseCase()
-//    }
-
     @FindNavScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
@@ -53,12 +44,6 @@ class FindNavModule {
     fun provideResources(context: Context): Resources {
         return context.resources
     }
-
-//    @FindNavScope
-//    @Provides
-//    fun provideGraphQlRepo(): GraphqlRepository {
-//        return GraphqlInteractor.getInstance().graphqlRepository
-//    }
 
     @FindNavScope
     @Provides

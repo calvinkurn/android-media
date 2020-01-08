@@ -192,46 +192,42 @@ class FindPageAnalytics {
     }
 
     fun eventClickRelatedSearch() {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_RELATED_SEARCH_ACTION_VALUE,
                 KEY_EVENT_LABEL, ""
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickPriceList() {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_PRICE_LIST_ACTION_VALUE,
                 KEY_EVENT_LABEL, ""
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickBackButton() {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_BACK_BUTTON_ACTION_VALUE,
                 KEY_EVENT_LABEL, ""
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickSearchKeyword(keyword: String) {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_SEARCH_KEYWORD_ACTION_VALUE,
                 KEY_EVENT_LABEL, keyword
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 }
