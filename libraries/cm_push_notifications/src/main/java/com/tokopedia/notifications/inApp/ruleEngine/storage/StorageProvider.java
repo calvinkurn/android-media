@@ -1,5 +1,6 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage;
 
+import com.tokopedia.notifications.inApp.CMInAppEncoderDecoder;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.InterfaceDataStore;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao;
@@ -16,7 +17,7 @@ public class StorageProvider implements InterfaceDataStore {
     private InAppDataDao inAppDataDao;
     private ElapsedTimeDao elapsedTimeDao;
 
-    public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao){
+    public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao) {
         this.inAppDataDao = inAppDataDao;
         this.elapsedTimeDao = elapsedTimeDao;
     }
@@ -26,6 +27,7 @@ public class StorageProvider implements InterfaceDataStore {
         Completable.fromAction(new Action0() {
             @Override
             public void call() {
+                CMInAppEncoderDecoder.INSTANCE.encodeCMInApp(value);
                 inAppDataDao.insert(value);
             }
         }).subscribeOn(Schedulers.io())
@@ -37,6 +39,9 @@ public class StorageProvider implements InterfaceDataStore {
         Completable.fromAction(new Action0() {
             @Override
             public void call() {
+                for (CMInApp inAppDataRecord : inAppDataRecords) {
+                    CMInAppEncoderDecoder.INSTANCE.encodeCMInApp(inAppDataRecord);
+                }
                 inAppDataDao.insert(inAppDataRecords);
             }
         }).subscribeOn(Schedulers.io())
@@ -45,7 +50,11 @@ public class StorageProvider implements InterfaceDataStore {
 
     @Override
     public List<CMInApp> getDataFromStore(String key) {
-        return inAppDataDao.getDataForScreen(key);
+        List<CMInApp> inappList = inAppDataDao.getDataForScreen(key);
+        for (CMInApp cmInApp : inappList) {
+            CMInAppEncoderDecoder.INSTANCE.decodeCMInApp(cmInApp);
+        }
+        return inappList;
     }
 
     @Override
@@ -61,7 +70,7 @@ public class StorageProvider implements InterfaceDataStore {
 
     @Override
     public ElapsedTime getElapsedTimeFromStore() {
-        return  elapsedTimeDao.getLastElapsedTime();
+        return elapsedTimeDao.getLastElapsedTime();
     }
 
     @Override
@@ -103,7 +112,7 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public void viewDismissed(final long id){
+    public void viewDismissed(final long id) {
         Completable.fromAction(new Action0() {
             @Override
             public void call() {

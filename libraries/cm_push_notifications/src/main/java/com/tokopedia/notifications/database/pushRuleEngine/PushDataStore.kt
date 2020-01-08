@@ -1,19 +1,14 @@
 package com.tokopedia.notifications.database.pushRuleEngine
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.notifications.common.StringDecryptTypeAdapter
-import com.tokopedia.notifications.common.StringEncryptTypeAdapter
+import com.tokopedia.notifications.common.CMPushEncoderDecoder
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
 
 class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPushDataStore {
     override suspend fun getNotificationById(notificationId: Int): BaseNotificationModel? {
         val baseNotificationModel = baseNotificationDao.getNotificationById(notificationId)
-        val modelToString = Gson().toJson(baseNotificationModel)
-        val gson = GsonBuilder().registerTypeAdapter(String::class.java, StringDecryptTypeAdapter.instance()).create()
-        return gson.fromJson(modelToString, BaseNotificationModel::class.java)
+        CMPushEncoderDecoder.decodeBaseNotificationModel(baseNotificationModel)
+        return baseNotificationModel
     }
 
     override suspend fun deleteNotification(olderThanExpiryMillis: Long, status: NotificationStatus) {
@@ -21,11 +16,8 @@ class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPus
     }
 
     override suspend fun insertNotification(baseNotificationModel: BaseNotificationModel) {
-        val modelToString = Gson().toJson(baseNotificationModel)
-        val gson = GsonBuilder().registerTypeAdapter(String::class.java, StringEncryptTypeAdapter.instance()).create()
-        val encryptedModel = gson.fromJson(modelToString, BaseNotificationModel::class.java)
-
-        return baseNotificationDao.insertNotificationModel(encryptedModel)
+        CMPushEncoderDecoder.encodeBaseNotificationModel(baseNotificationModel)
+        return baseNotificationDao.insertNotificationModel(baseNotificationModel)
     }
 
     override suspend fun getPendingNotificationList(currentMillis: Long): List<BaseNotificationModel> {
@@ -33,9 +25,8 @@ class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPus
     }
 
     private fun getDecryptedList(notificationList: List<BaseNotificationModel>): List<BaseNotificationModel> {
-        val listToString = Gson().toJson(notificationList)
-        val gson = GsonBuilder().registerTypeAdapter(String::class.java, StringDecryptTypeAdapter.instance()).create()
-        return gson.fromJson(listToString, object : TypeToken<List<BaseNotificationModel>>() {}.type)
+        notificationList.forEach { CMPushEncoderDecoder.decodeBaseNotificationModel(it) }
+        return notificationList
     }
 
     override suspend fun getNotificationByStatusList(status: NotificationStatus): List<BaseNotificationModel> {
