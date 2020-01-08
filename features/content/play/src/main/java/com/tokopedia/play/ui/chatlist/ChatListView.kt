@@ -1,6 +1,5 @@
 package com.tokopedia.play.ui.chatlist
 
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,6 @@ import com.tokopedia.play.ui.chatlist.itemdecoration.ChatListItemDecoration
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.custom.ChatScrollDownView
 import timber.log.Timber
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.kotlin.extensions.view.pxToDp
 
 
 /**
@@ -62,7 +59,7 @@ class ChatListView(
             if (!csDownView.isVisible) {
                 rvChatList.postDelayed({
                     rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
-                    Timber.tag("ChatList").d("Smooth Scroll to Posiiton ${chatAdapter.lastIndex}")
+                    Timber.tag("ChatList").d("Smooth Scroll to Position ${chatAdapter.lastIndex}")
                 }, 100)
             }
         }
