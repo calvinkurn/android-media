@@ -1,5 +1,12 @@
+/features/content/affiliate/            				@tokopedia/minion-dave
+/features/content/affiliate_common/     				@tokopedia/minion-dave
+/features/content/createpost/           				@tokopedia/minion-dave
 /features/content/explore/              				@tokopedia/minion-dave
 /features/content/feed/                 				@tokopedia/minion-dave
+/features/content/interest_pick/        				@tokopedia/minion-dave
+/features/content/kol/                  				@tokopedia/minion-dave
+/features/content/kol_common/           				@tokopedia/minion-dave
+/features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-dave
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
@@ -48,24 +55,25 @@
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
-/features/digital/flight/               @tokopedia/minion-mark
-/features/digital/train/                @tokopedia/minion-mark
-/features/digital/hotel/                @tokopedia/minion-mark
-/features/digital/flight_no_op/         @tokopedia/minion-mark
-/features/digital/digitalproduct        @tokopedia/minion-mark
-/features/digital/common_travel         @tokopedia/minion-mark
-/features/digital/common_digital        @tokopedia/minion-mark
-/features/digital/common_topup_bills    @tokopedia/minion-mark
-/features/digital/digital_homepage      @tokopedia/minion-mark
-/libraries/travel_calendar              @tokopedia/minion-mark
-/features/digital/travel_homepage       @tokopedia/minion-mark
-/features/digital/voucher_game          @tokopedia/minion-mark
-/features/digital/digital_emoney        @tokopedia/minion-mark
-/features/digital/imagepreviewslider    @tokopedia/minion-mark
-/features/salam/umrah                   @tokopedia/minion-mark
+/features/digital/flight/                               @tokopedia/minion-mark
+/features/digital/train/                                @tokopedia/minion-mark
+/features/digital/hotel/                                @tokopedia/minion-mark
+/features/digital/flight_no_op/                         @tokopedia/minion-mark
+/features/digital/digitalproduct                        @tokopedia/minion-mark
+/features/digital/common_travel                         @tokopedia/minion-mark
+/features/digital/common_digital                        @tokopedia/minion-mark
+/features/digital/common_topup_bills                    @tokopedia/minion-mark
+/features/digital/digital_homepage                      @tokopedia/minion-mark
+/libraries/travel_calendar                              @tokopedia/minion-mark
+/features/digital/travel_homepage                       @tokopedia/minion-mark
+/features/digital/voucher_game                          @tokopedia/minion-mark
+/features/digital/digital_emoney                        @tokopedia/minion-mark
+/features/digital/imagepreviewslider                    @tokopedia/minion-mark
+/features/salam/umrah                                   @tokopedia/minion-mark
 /features/digital/digital_topup_bills                   @tokopedia/minion-mark
-/features/digital/flight_orderlist
-/features/digital/recharge_general      @tokopedia/minion-mark
+/features/digital/flight_orderlist                      @tokopedia/minion-mark
+/features/digital/recharge_general                      @tokopedia/minion-mark
+/features/digital/rechargeocr                           @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -109,14 +117,8 @@
 /features/user/user_identification_common/      		@tokopedia/minion-kevin
 /features/user/user_identification_no_op/       		@tokopedia/minion-kevin
 /features/user/seamless_login/                          @tokopedia/minion-kevin
-
-/features/content/affiliate/            				@tokopedia/minion-stuart
-/features/content/affiliate_common/     				@tokopedia/minion-stuart
-/features/content/createpost/           				@tokopedia/minion-stuart
-/features/content/interest_pick/        				@tokopedia/minion-stuart
-/features/content/kol/                  				@tokopedia/minion-stuart
-/features/content/kol_common/           				@tokopedia/minion-stuart
-/features/content/profile/              				@tokopedia/minion-stuart
+/features/user/kyc_centralized/                         @tokopedia/minion-kevin
+/features/user/attachinvoice/                           @tokopedia/minion-kevin
 
 /features/digital/event                 				@tokopedia/minion-darth
 /features/operational/contact_us        				@tokopedia/minion-darth

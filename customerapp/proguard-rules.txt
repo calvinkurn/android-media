@@ -213,6 +213,26 @@
     int execute(***);
 }
 
+# InAppReview
+-keep class com.google.android.play.core.inappreview.InAppReviewManager {
+  public com.google.android.play.core.tasks.Task requestInAppReviewFlow();
+  public com.google.android.play.core.tasks.Task launchInAppReviewFlow(android.app.Activity, com.google.android.play.core.inappreview.InAppReviewInfo);
+}
+
+-keepnames class com.google.android.play.core.inappreview.InAppReviewInfo
+
+-keep class com.google.android.play.core.inappreview.InAppReviewManagerFactory {
+  <init>();
+
+  public static com.google.android.play.core.inappreview.InAppReviewManager create(android.content.Context);
+}
+
+-keep class com.google.android.play.core.inappreview.testing.FakeInAppReviewManager {
+  public <init>(android.content.Context);
+  public com.google.android.play.core.tasks.Task requestInAppReviewFlow();
+  public com.google.android.play.core.tasks.Task launchInAppReviewFlow(android.app.Activity, com.google.android.play.core.inappreview.InAppReviewInfo);
+}
+
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -102,6 +104,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        if (!isMainProcess()) {
+            return;
+        }
         UIBlockDebugger.init(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
@@ -178,6 +183,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
+    }
+
+    private boolean isMainProcess() {
+        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
+
+        if (manager == null || manager.getRunningAppProcesses() == null) return false;
+
+        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+            if (processInfo.pid == android.os.Process.myPid()) {
+                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
+            }
+        }
+        return false;
     }
 
     @Override

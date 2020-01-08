@@ -74,7 +74,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
@@ -112,7 +111,7 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
-import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping.view.*
+import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
@@ -303,6 +302,17 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun renderDetail() {
+        renderHeader()
+        renderProducts()
+        renderShipment()
+        renderPayment()
+        renderButtons()
+
+        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
+        somDetailAdapter.notifyDataSetChanged()
+    }
+
+    private fun renderHeader() {
         // header
         val dataHeader = SomDetailHeader(
                 detailResponse.statusId,
@@ -324,9 +334,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.onlineBooking.state,
                 detailResponse.bookingInfo.onlineBooking.barcodeType)
 
+        listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
+    }
+
+    private fun renderProducts() {
         // products
         val dataProducts = SomDetailProducts(detailResponse.listProduct)
+        listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
+    }
 
+    private fun renderShipment() {
         // shipping
         val receiverStreet = detailResponse.receiver.street
         var notesValue = ""
@@ -350,11 +367,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
-                notesValue,
                 detailResponse.flagOrderMeta.flagFreeShipping,
                 detailResponse.bookingInfo.driver.photo,
                 detailResponse.bookingInfo.driver.name,
                 detailResponse.bookingInfo.driver.phone,
+                detailResponse.dropshipper.name,
+                detailResponse.dropshipper.phone,
                 detailResponse.bookingInfo.driver.licenseNumber,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
                 detailResponse.bookingInfo.onlineBooking.state,
@@ -363,6 +381,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
                 isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
 
+        listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
+    }
+
+    private fun renderPayment() {
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,
                 detailResponse.paymentSummary.totalItem,
@@ -374,14 +396,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.paymentSummary.additionalPriceText,
                 detailResponse.paymentSummary.totalPriceText)
 
-        listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
-        listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
-        listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
+    }
 
-        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
-        somDetailAdapter.notifyDataSetChanged()
-
+    private fun renderButtons() {
         // buttons
         if (detailResponse.button.isNotEmpty()) {
             rl_btn_detail?.visibility = View.VISIBLE
@@ -442,7 +460,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
                 setUnlockVersion()
 
-                val dialogView = View.inflate(it, R.layout.dialog_accept_order_free_shipping, null)
+                val dialogView = View.inflate(it, R.layout.dialog_accept_order_free_shipping_som, null)
 
                 val msgReguler1 = getString(R.string.confirm_msg_1a)
                 val msgBold1 = getString(R.string.confirm_msg_1b)

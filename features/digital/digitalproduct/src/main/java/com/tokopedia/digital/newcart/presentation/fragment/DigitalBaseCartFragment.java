@@ -336,6 +336,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             switch (resultCode) {
                 case PaymentConstant.PAYMENT_SUCCESS:
                     if (getActivity() != null && getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
+
                         FragmentManager manager = getActivity().getSupportFragmentManager();
 
                         ((DigitalModuleRouter) getActivity().getApplicationContext())
