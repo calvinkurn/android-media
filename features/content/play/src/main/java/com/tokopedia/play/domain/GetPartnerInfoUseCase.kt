@@ -23,7 +23,6 @@ class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiReq
 
     override suspend fun executeOnBackground(): ShopInfo {
         val gqlRequest = GraphqlRequest(query, ShopInfo.Response::class.java, params.parameters)
-        gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())

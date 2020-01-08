@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class TotalLike(
-        @SerializedName("total_click")
-        val totalClick: String = ""
+        @SerializedName("total_like")
+        val totalLike: Int = 0,
+
+        @SerializedName("total_like_formatted")
+        val totalLikeFormatted: String = ""
 )

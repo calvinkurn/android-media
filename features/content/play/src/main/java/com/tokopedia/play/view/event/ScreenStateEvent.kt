@@ -21,6 +21,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     object ComposeChat : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()
     data class LikeContent(val shouldLike: Boolean) : ScreenStateEvent()
+    data class IsLikedContent(val isLiked: Boolean) : ScreenStateEvent()
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
 

@@ -19,7 +19,6 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, LikeContent.Response::class.java, params)
-        gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
@@ -44,7 +43,6 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
         private const val CONTENT_TYPE = "contentType"
         private const val LIKE_TYPE = "likeType"
 
-        private const val PLAY_FEED_CONTENT_TYPE = "1"
         private const val PLAY_FEED_SUCCESS = 1
 
         private val query = getQuery()
@@ -56,25 +54,9 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
             val contentType = "\$contentType"
             val likeType = "\$likeType"
 
-            /**
-             * TODO("uncomment this query")
-             *
             return """
-                mutation LikePost($postId: Int, $action: Int!, $contentId: Int!, $contentType, $likeType: Int!){
-                    do_like_kol_post(idPost: $postId, action: $action, contentId:$contentId, contentType: $contentType, likeType: $likeType) {
-                        error
-                        data {
-                            success
-                        }
-                    }
-                }
-            """.trimIndent()
-            */
-
-            // TODO("comment this query")
-            return """
-                mutation LikePost($postId: Int, $action: Int!){
-                    do_like_kol_post(idPost: $postId, action: $action) {
+                mutation PostLike($postId: Int, $action: Int, $contentId: Int, $contentType: Int, $likeType: Int){
+                    do_like_kol_post(idPost: $postId, action:$action, contentId:$contentId, contentType: $contentType, likeType: $likeType) {
                         error
                         data {
                             success
@@ -84,17 +66,13 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
             """.trimIndent()
         }
 
-        fun createParam(channelId: Int, action: Boolean): HashMap<String, Any> {
+        fun createParam(contentId: Int, contentType: Int, action: Boolean, isLive: Boolean): HashMap<String, Any> {
             return hashMapOf(
-                    POST_ID to 15063139, // TODO("leave idPost null")
-                    ACTION to if(action) 1 else 0
-                    /**
-                     * TODO("uncomment this params")
-                    ,
-                    CONTENT_ID to channelId,
-                    CONTENT_TYPE to PLAY_FEED_CONTENT_TYPE,
-                    LIKE_TYPE to if(action) 1 else 0
-                     */
+                    POST_ID to 0,
+                    ACTION to if(action) 1 else 0,
+                    CONTENT_ID to contentId,
+                    CONTENT_TYPE to contentType,
+                    LIKE_TYPE to if(isLive) 1 else 2
             )
         }
     }
