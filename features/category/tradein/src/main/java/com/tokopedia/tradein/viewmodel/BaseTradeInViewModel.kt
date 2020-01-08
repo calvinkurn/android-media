@@ -2,7 +2,6 @@
 package com.tokopedia.tradein.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.tradein.TradeInRepository
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
 open class BaseTradeInViewModel() : BaseViewModel() {
@@ -21,9 +20,5 @@ open class BaseTradeInViewModel() : BaseViewModel() {
 
     fun getErrormessage(): MutableLiveData<String> {
         return errorMessage
-    }
-
-    fun getMYRepository(): TradeInRepository {
-        return TradeInRepository()
     }
 }
