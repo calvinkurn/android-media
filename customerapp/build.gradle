@@ -329,7 +329,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.withdraw)
