@@ -134,17 +134,16 @@ class SomFilterFragment : BaseDaggerFragment() {
 
             val currentDate = Calendar.getInstance()
             val splitDate: List<String>?
-            val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
+
             if (flag.equals(START_DATE, true)) {
                 splitDate = currentFilterParams?.startDate?.split('/')
-                datePicker.setTitle(getString(R.string.mulai_dari))
             } else {
                 splitDate = currentFilterParams?.endDate?.split('/')
-                datePicker.setTitle(getString(R.string.sampai))
             }
 
             splitDate?.let {
                 currentDate.set(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
+                val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
                 fragmentManager?.let { it1 -> datePicker.show(it1, "") }
                 datePicker.datePickerButton.setOnClickListener {
                     val resultDate = datePicker.getDate()
@@ -158,6 +157,11 @@ class SomFilterFragment : BaseDaggerFragment() {
                     currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
                     et_start_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
                     datePicker.dismiss()
+                }
+                if (flag.equals(START_DATE, true)) {
+                    datePicker.setTitle(getString(R.string.mulai_dari))
+                } else {
+                    datePicker.setTitle(getString(R.string.sampai))
                 }
                 datePicker.setCloseClickListener { datePicker.dismiss() }
             }
