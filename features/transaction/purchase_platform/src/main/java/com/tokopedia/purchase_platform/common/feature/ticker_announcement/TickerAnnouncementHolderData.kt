@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.cartlist.viewmodel
+package com.tokopedia.purchase_platform.common.feature.ticker_announcement
 
 data class TickerAnnouncementHolderData(
         var id: String = "",
