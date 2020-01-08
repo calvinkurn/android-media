@@ -33,6 +33,8 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                 errorMessage = ErrorHandler.getErrorMessage(it.getActivityObject(), e)
             }
             it.renderErrorToShipmentForm(errorMessage ?: "")
+            // Todo : Remove this
+            presenter?.processInitialGetCartData(it.getCartId(), cartListData == null, false)
         }
     }
 
