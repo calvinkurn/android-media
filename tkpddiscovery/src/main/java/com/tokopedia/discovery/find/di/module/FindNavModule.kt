@@ -30,11 +30,11 @@ class FindNavModule {
         return context
     }
 
-    @FindNavScope
-    @Provides
-    fun provideGqlUseCase(): GraphqlUseCase {
-        return GraphqlUseCase()
-    }
+//    @FindNavScope
+//    @Provides
+//    fun provideGqlUseCase(): GraphqlUseCase {
+//        return GraphqlUseCase()
+//    }
 
     @FindNavScope
     @Provides
@@ -54,11 +54,11 @@ class FindNavModule {
         return context.resources
     }
 
-    @FindNavScope
-    @Provides
-    fun provideGraphQlRepo(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
+//    @FindNavScope
+//    @Provides
+//    fun provideGraphQlRepo(): GraphqlRepository {
+//        return GraphqlInteractor.getInstance().graphqlRepository
+//    }
 
     @FindNavScope
     @Provides

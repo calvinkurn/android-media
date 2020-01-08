@@ -53,9 +53,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.find_nav_fragment.*
-import kotlinx.android.synthetic.main.fragment_hotlist_nav.layout_no_data
-import kotlinx.android.synthetic.main.fragment_hotlist_nav.product_recyclerview
-import kotlinx.android.synthetic.main.fragment_hotlist_nav.quickfilter_recyclerview
 import kotlinx.android.synthetic.main.layout_find_related.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import java.util.*
@@ -68,7 +65,8 @@ private const val REQUEST_PRODUCT_ITEM_CLICK = 1002
 
 class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         BaseCategoryAdapter.OnItemChangeView,
-        QuickFilterListener, WishListActionListener {
+        QuickFilterListener, WishListActionListener,
+        FindRelatedLinkAdapter.RelatedLinkClickListener, FindPriceListAdapter.PriceListClickListener {
 
     private var findNavScreenName: String = "Find"
     @Inject
@@ -116,8 +114,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun addFragmentView() {
-        view?.findViewById<View>(R.id.swipe_refresh_layout)?.show()
-        view?.findViewById<View>(R.id.layout_banned_screen)?.hide()
+        view?.findViewById<View>(R.id.swipeRefreshLayout)?.show()
+        view?.findViewById<View>(R.id.layoutBannedScreen)?.hide()
     }
 
     override fun initFragmentView() {
@@ -137,7 +135,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun hideFragmentView() {
-        view?.findViewById<View>(R.id.swipe_refresh_layout)?.hide()
+        view?.findViewById<View>(R.id.swipeRefreshLayout)?.hide()
     }
 
     override fun onPause() {
@@ -158,8 +156,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     private fun setUpAdapter() {
         productTypeFactory = ProductTypeFactoryImpl(this)
         productNavListAdapter = ProductNavListAdapter(productTypeFactory, productList, this)
-        product_recyclerview.adapter = productNavListAdapter
-        product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
+        productRecyclerView.adapter = productNavListAdapter
+        productRecyclerView.layoutManager = getStaggeredGridLayoutManager()
         productNavListAdapter?.addShimmer()
     }
 
@@ -246,7 +244,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             showNoDataScreen(false)
             productList.addAll(list as ArrayList<Visitable<ProductTypeFactory>>)
             removeLoadingFromAdapter()
-            product_recyclerview.adapter?.notifyDataSetChanged()
+            productRecyclerView.adapter?.notifyDataSetChanged()
             isPagingAllowed = true
         } else {
             showNoDataScreen(true)
@@ -262,53 +260,53 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     private fun showProductPriceSection(productList: ArrayList<ProductsItem>) {
         if (productList.isNotEmpty()) {
             showPriceHeader()
-            price_list_recyclerview.adapter = FindPriceListAdapter(productList, this)
-            price_list_recyclerview.layoutManager = LinearLayoutManager(activity)
+            priceListRecyclerView.adapter = FindPriceListAdapter(productList, this)
+            priceListRecyclerView.layoutManager = LinearLayoutManager(activity)
         } else {
             hidePriceHeader()
         }
-        btn_read_more.setOnClickListener {
-            val layoutParams = layout_related.layoutParams
+        btnReadMore.setOnClickListener {
+            val layoutParams = layoutRelated.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            layout_related.layoutParams = layoutParams
-            btn_read_more.hide()
+            layoutRelated.layoutParams = layoutParams
+            btnReadMore.hide()
         }
     }
 
     private fun hidePriceHeader() {
-        price_list_header.hide()
-        data_updated_header.hide()
+        priceListHeader.hide()
+        dataUpdatedHeader.hide()
     }
 
     private fun showPriceHeader() {
-        price_list_header.show()
-        data_updated_header.show()
+        priceListHeader.show()
+        dataUpdatedHeader.show()
         val calendar = Calendar.getInstance()
         val currentMonthYear = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale("in", "ID")) + " ${calendar?.get(Calendar.YEAR)}"
         val dateUpdatedText = getString(R.string.find_data_updated_text, calendar.time.toFormattedString("DD/MM/YYYY"))
         val priceHeaderText = getString(R.string.find_price_header_text, findNavScreenName, currentMonthYear)
-        price_list_header.text = priceHeaderText
-        data_updated_header.text = dateUpdatedText
+        priceListHeader.text = priceHeaderText
+        dataUpdatedHeader.text = dateUpdatedText
     }
 
     private fun renderRelatedLink(relatedLinkList: ArrayList<RelatedLinkData>) {
         if (relatedLinkList.isNotEmpty()) {
-            related_header.show()
-            related_recyclerview.adapter = context?.let { FindRelatedLinkAdapter(it, relatedLinkList) }
+            relatedHeader.show()
+            relatedRecyclerView.adapter = context?.let { FindRelatedLinkAdapter(relatedLinkList, this) }
             val layoutManager = ChipsLayoutManager.newBuilder(activity)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
-            related_recyclerview.layoutManager = layoutManager
+            relatedRecyclerView.layoutManager = layoutManager
         } else {
-            related_header.hide()
+            relatedHeader.hide()
         }
     }
 
     private fun loadQuickFilters(list: ArrayList<Filter>) {
         quickFilterList.clear()
         quickFilterList.addAll(list)
-        quickfilter_recyclerview.adapter?.notifyDataSetChanged()
+        quickFilterRecyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun init() {
@@ -319,12 +317,12 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     private fun setUpBreadCrumb() {
-        home_bread_crumb.setOnClickListener {
+        homeBreadCrumb.setOnClickListener {
             findPageAnalytics.eventClickBreadCrumb(ApplinkConst.HOME)
             RouteManager.route(activity, ApplinkConst.HOME)
         }
         val breadCrumb = ">  $findNavScreenName"
-        find_bread_crumb.text = breadCrumb
+        findBreadCrumb.text = breadCrumb
     }
 
     private fun reloadFilter() {
@@ -340,9 +338,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     private fun attachLoadMoreButton() {
-        btn_load_more.setOnClickListener {
-            //to confirm what to send for destinationUrl
-            findPageAnalytics.eventClickViewAll("")
+        btnLoadMore.setOnClickListener {
+            findPageAnalytics.eventClickViewAll(findNavScreenName)
             if (isPagingAllowed) {
                 incrementPage()
                 fetchProducts(getPage())
@@ -372,8 +369,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             ""
         }
         quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, count)
-        quickfilter_recyclerview.adapter = quickFilterAdapter
-        quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
+        quickFilterRecyclerView.adapter = quickFilterAdapter
+        quickFilterRecyclerView.layoutManager = LinearLayoutManager(activity,
                 RecyclerView.HORIZONTAL, false)
     }
 
@@ -438,7 +435,11 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
-        findPageAnalytics.eventProductClick(item)
+        findPageAnalytics.eventProductClick(item, findNavScreenName)
+        openProductDetailPage(item, adapterPosition)
+    }
+
+    private fun openProductDetailPage(item: ProductsItem, adapterPosition: Int) {
         val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
@@ -468,22 +469,22 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onChangeList() {
-        product_recyclerview.requestLayout()
+        productRecyclerView.requestLayout()
     }
 
     override fun onChangeDoubleGrid() {
-        product_recyclerview.requestLayout()
+        productRecyclerView.requestLayout()
     }
 
     override fun onChangeSingleGrid() {
-        product_recyclerview.requestLayout()
+        productRecyclerView.requestLayout()
     }
 
     override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {
     }
 
     override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
-        findPageAnalytics.eventProductListViewImpression(viewedProductList, viewedTopAdsList)
+        findPageAnalytics.eventProductListViewImpression(viewedProductList, viewedTopAdsList, findNavScreenName)
     }
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
@@ -577,15 +578,25 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.show()
-            layout_related.hide()
-            btn_load_more.hide()
+            layoutNoData.show()
+            layoutRelated.hide()
+            btnLoadMore.hide()
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
         } else {
-            layout_no_data.hide()
-            layout_related.show()
-            btn_load_more.show()
+            layoutNoData.hide()
+            layoutRelated.show()
+            btnLoadMore.show()
         }
+    }
+
+    override fun onRelatedLinkClick(relatedLink: RelatedLinkData) {
+        findPageAnalytics.eventClickRelatedSearch()
+        RouteManager.route(context, relatedLink.url)
+    }
+
+    override fun onPriceListClick(product: ProductsItem, adapterPosition: Int) {
+        findPageAnalytics.eventClickPriceList()
+        openProductDetailPage(product, adapterPosition)
     }
 }

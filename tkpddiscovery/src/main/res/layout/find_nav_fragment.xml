@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,7 +17,7 @@
         tools:layout_editor_absoluteX="64dp">
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_recycler_view"
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -33,7 +33,7 @@
                     android:padding="@dimen/dp_12">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/home_bread_crumb"
+                        android:id="@+id/homeBreadCrumb"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/title_tokopedia"
@@ -42,7 +42,7 @@
                         app:typographyWeight="reguler" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/find_bread_crumb"
+                        android:id="@+id/findBreadCrumb"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_8"
@@ -54,7 +54,7 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/quickfilter_recyclerview"
+                    android:id="@+id/quickFilterRecyclerView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_12"
@@ -64,7 +64,7 @@
                     tools:scrollbars="horizontal" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/product_recyclerview"
+                    android:id="@+id/productRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_12"
@@ -73,7 +73,7 @@
                     android:dividerHeight="0dp" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btn_load_more"
+                    android:id="@+id/btnLoadMore"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_48"
                     android:layout_margin="@dimen/dp_12"
@@ -83,21 +83,21 @@
                     app:unifyButtonVariant="ghost" />
 
                 <FrameLayout
-                    android:id="@+id/layout_related"
+                    android:id="@+id/layoutRelated"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_200"
                     android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginBottom="@dimen/dp_48">
 
                     <include
-                        android:id="@+id/layout_find_related_data"
+                        android:id="@+id/layoutFindRelatedData"
                         layout="@layout/layout_find_related"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dp_40" />
 
                     <com.tokopedia.unifycomponents.UnifyButton
-                        android:id="@+id/btn_read_more"
+                        android:id="@+id/btnReadMore"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp_48"
                         android:layout_gravity="center_horizontal|bottom"
@@ -111,7 +111,7 @@
                 </FrameLayout>
 
                 <include
-                    android:id="@+id/layout_no_data"
+                    android:id="@+id/layoutNoData"
                     layout="@layout/layout_nav_no_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <include
-        android:id="@+id/layout_banned_screen"
+        android:id="@+id/layoutBannedScreen"
         layout="@layout/fragment_banned_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

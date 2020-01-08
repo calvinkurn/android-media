@@ -7,10 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.unifyprinciples.Typography
 
-class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var productListener: ProductCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var priceListClickListener: PriceListClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val VIEW_PRICE = 0
@@ -51,7 +50,7 @@ class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            VIEW_PRICE -> setRelatedLinkData(holder as PriceViewHolder, position)
+            VIEW_PRICE -> setPriceListData(holder as PriceViewHolder, position)
             else -> {
             }
         }
@@ -65,13 +64,16 @@ class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var
         }
     }
 
-    private fun setRelatedLinkData(viewHolder: PriceViewHolder, position: Int) {
+    private fun setPriceListData(viewHolder: PriceViewHolder, position: Int) {
         val product = productList[position]
         viewHolder.findItem.text = product.name.trim()
         viewHolder.findItemPrice.text = product.price
         viewHolder.findItem.setOnClickListener {
-            productListener.onItemClicked(product, viewHolder.adapterPosition)
+            priceListClickListener.onPriceListClick(product, viewHolder.adapterPosition)
         }
     }
 
+    interface PriceListClickListener {
+        fun onPriceListClick(product: ProductsItem, adapterPosition: Int)
+    }
 }

@@ -1,17 +1,15 @@
 package com.tokopedia.discovery.find.view.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.unifyprinciples.Typography
 
-class FindRelatedLinkAdapter(var context: Context, private var relatedLinkList: ArrayList<RelatedLinkData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FindRelatedLinkAdapter(private var relatedLinkList: ArrayList<RelatedLinkData>, private var relatedLinkClickListener: RelatedLinkClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val VIEW_RELATED_LINK = 0
@@ -68,8 +66,12 @@ class FindRelatedLinkAdapter(var context: Context, private var relatedLinkList: 
         val relatedLink = relatedLinkList[position]
         viewHolder.relatedLink.text = relatedLink.text
         viewHolder.relatedLink.setOnClickListener{
-            RouteManager.route(context, relatedLink.url)
+            relatedLinkClickListener.onRelatedLinkClick(relatedLink)
         }
+    }
+
+    interface RelatedLinkClickListener {
+        fun onRelatedLinkClick(relatedLink: RelatedLinkData)
     }
 
 }

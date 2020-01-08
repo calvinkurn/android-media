@@ -22,7 +22,7 @@ private const val KEY_IMPRESSIONS = "impressions"
 private const val KEY_NAME = "name"
 private const val KEY_ID = "id"
 private const val KEY_PRICE = "price"
-private const val KEY_BRAND = ""
+private const val KEY_BRAND = "brand"
 private const val KEY_CATEGORY = "category"
 private const val KEY_VARIANT = "variant"
 private const val KEY_LIST = "list"
@@ -39,8 +39,6 @@ private const val EVENT_VIEW_TYPE_ACTION_VALUE = "click view type"
 private const val EVENT_RELATED_SEARCH_ACTION_VALUE = "click pencarian terkait"
 private const val EVENT_PRICE_LIST_ACTION_VALUE = "click daftar harga"
 private const val EVENT_BACK_BUTTON_ACTION_VALUE = "click back button"
-private const val EVENT_SEARCH_BAR_ACTION_VALUE = "click search bar"
-private const val EVENT_HOME_ICON_ACTION_VALUE = "click home icon"
 private const val EVENT_SEARCH_KEYWORD_ACTION_VALUE = "click search"
 private const val KEY_CLICK = "click"
 private const val KEY_ACTION_FIELD = "actionField"
@@ -58,29 +56,27 @@ class FindPageAnalytics {
     }
 
     fun eventClickBreadCrumb(destinationUrl: String) {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_CLICK_BREADCRUMB_VALUE,
                 KEY_EVENT_LABEL, destinationUrl
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventProductListViewImpression(viewedProductList: List<Visitable<Any>>,
-                                       viewedTopAdsList: List<Visitable<Any>>) {
-        val tracker = getTracker()
+                                       viewedTopAdsList: List<Visitable<Any>>,
+                                       findNavScreenName: String) {
         val list = ArrayList<Map<String, Any>>()
         val itemList = ArrayList<Visitable<Any>>()
 
         itemList.addAll(viewedProductList)
         itemList.addAll(viewedTopAdsList)
-
+        var productListName: String
         for (element in itemList) {
             val item = element as ProductsItem
-            // please change product list name accordingly
-            val productListName = ""
+            productListName = getProductListName(item, findNavScreenName)
             val map = HashMap<String, Any>()
             map[KEY_NAME] = item.name
             map[KEY_ID] = item.id.toString()
@@ -100,13 +96,19 @@ class FindPageAnalytics {
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, CURRENCY_VALUE,
                 KEY_IMPRESSIONS, DataLayer.listOf(list)))
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun eventProductClick(product: ProductsItem) {
-        val tracker = getTracker()
-        // please change product list name accordingly
-        val productListName = ""
+    private fun getProductListName(item: ProductsItem, findNavScreenName: String): String {
+        var productListName = EVENT_FIND_VALUE + "/" + findNavScreenName + "/" + item.name
+        if (item.isTopAds) {
+            productListName += TOP_ADS_VALUE
+        }
+        return productListName
+    }
+
+    fun eventProductClick(product: ProductsItem, findNavScreenName: String) {
+        val productListName = getProductListName(product, findNavScreenName)
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_PRODUCT_CLICK_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
@@ -126,11 +128,10 @@ class FindPageAnalytics {
                 KEY_LIST, productListName,
                 KEY_POSITION, product.adapter_position
         )))))
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickWishList(productId: String, isWishListed: Boolean, isTopAds: Boolean) {
-        val tracker = getTracker()
         var eventAction: String = if (isWishListed) {
             EVENT_CLICK_WISHLIST_ACTION_VALUE
         } else {
@@ -147,51 +148,47 @@ class FindPageAnalytics {
                 KEY_EVENT_ACTION, eventAction,
                 KEY_EVENT_LABEL, productId
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickViewAll(destinationUrl: String) {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_VIEW_ALL_ACTION_VALUE,
                 KEY_EVENT_LABEL, destinationUrl
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickFilter() {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_FILTER_ACTION_VALUE,
                 KEY_EVENT_LABEL, ""
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickSort(sortValue: String) {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_SORT_ACTION_VALUE,
                 KEY_EVENT_LABEL, sortValue
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickViewType() {
-        val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_VIEW_TYPE_ACTION_VALUE,
                 KEY_EVENT_LABEL, ""
         )
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventClickRelatedSearch() {
@@ -222,28 +219,6 @@ class FindPageAnalytics {
                 KEY_EVENT, EVENT_CLICK_FIND_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
                 KEY_EVENT_ACTION, EVENT_BACK_BUTTON_ACTION_VALUE,
-                KEY_EVENT_LABEL, ""
-        )
-        tracker.sendEnhanceEcommerceEvent(map)
-    }
-
-    fun eventClickSearchBar() {
-        val tracker = getTracker()
-        val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_CLICK_FIND_VALUE,
-                KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
-                KEY_EVENT_ACTION, EVENT_SEARCH_BAR_ACTION_VALUE,
-                KEY_EVENT_LABEL, ""
-        )
-        tracker.sendEnhanceEcommerceEvent(map)
-    }
-
-    fun eventClickHomeIcon() {
-        val tracker = getTracker()
-        val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_CLICK_FIND_VALUE,
-                KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
-                KEY_EVENT_ACTION, EVENT_HOME_ICON_ACTION_VALUE,
                 KEY_EVENT_LABEL, ""
         )
         tracker.sendEnhanceEcommerceEvent(map)

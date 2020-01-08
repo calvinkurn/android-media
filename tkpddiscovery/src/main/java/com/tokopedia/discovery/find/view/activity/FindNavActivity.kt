@@ -78,11 +78,13 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun initToolbar() {
         actionUpButton.setOnClickListener {
+            findPageAnalytics.eventClickBackButton()
             onBackPressed()
         }
         etSearch.text = findNavScreenName
 
         searchButton.setOnClickListener {
+            findPageAnalytics.eventClickSearchKeyword(findSearchParam)
             moveToAutoCompleteActivity(findNavScreenName)
         }
     }
