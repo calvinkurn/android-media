@@ -726,13 +726,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.productName)
 
-        //TODO milhamj ask yehez
-//        if (productManageViewModel.productStatus == StatusProductOption.EMPTY) {
-//            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item_no_topads)
-//        } else {
-//            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item)
-//        }
-
         populateBottomSheetMenu(bottomSheetBuilder, productManageViewModel)
 
         val bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
