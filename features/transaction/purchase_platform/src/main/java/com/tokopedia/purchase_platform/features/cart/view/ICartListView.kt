@@ -29,6 +29,8 @@ interface ICartListView : CustomerView {
 
     fun getAllAvailableCartDataList(): List<CartItemData>
 
+    fun getAllSelectedCartDataList(): List<CartItemData>?
+
     fun getActivityObject(): FragmentActivity?
 
     fun getCartId(): String

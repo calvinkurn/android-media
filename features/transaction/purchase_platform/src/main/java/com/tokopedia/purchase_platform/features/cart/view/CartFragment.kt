@@ -204,9 +204,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return activity
     }
 
-    private val selectedCartDataList: List<CartItemData>?
-        get() = cartAdapter.selectedCartItemData
-
     private fun getDialogDeleteConfirmation(): DialogUnify? {
         activity?.apply {
             return DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -322,7 +319,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun updateCartAfterDetached() {
         val hasChanges = dPresenter.dataHasChanged()
         try {
-            val cartItemDataList = selectedCartDataList
+            val cartItemDataList = getAllSelectedCartDataList()
             activity?.let {
                 if (hasChanges && cartItemDataList?.isNotEmpty() == true && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                     val service = Intent(it, UpdateCartIntentService::class.java)
@@ -556,7 +553,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onToolbarRemoveAllCart() {
         sendAnalyticsOnClickRemoveButtonHeader()
-        val toBeDeletedCartItemDataList = selectedCartDataList
+        val toBeDeletedCartItemDataList = getAllSelectedCartDataList()
         val allCartItemDataList = cartAdapter.allCartItemData
         if (toBeDeletedCartItemDataList?.isNotEmpty() == true) {
             val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
@@ -597,9 +594,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         cartAdapter.selectedInsuranceProductId,
                         cartAdapter.selectedInsuranceProductTitle)
             }
-            if (selectedCartDataList != null) {
-                dPresenter.processUpdateCartData(selectedCartDataList!!)
-            }
+            dPresenter.processUpdateCartData()
         } else {
             showToastMessageRed(message)
             sendAnalyticsOnButtonCheckoutClickedFailed()
@@ -1075,7 +1070,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartPromoUseVoucherGlobalPromoClicked(cartPromoGlobal: PromoStackingData, position: Int) {
-        val cartItemData = selectedCartDataList
+        val cartItemData = getAllSelectedCartDataList()
         if (cartItemData?.isNotEmpty() == true) {
             trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
             dPresenter.processUpdateCartDataPromoGlobal(cartItemData, cartPromoGlobal, GO_TO_LIST)
@@ -1086,7 +1081,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onVoucherMerchantPromoClicked(`object`: Any) {
         if (`object` is ShopGroupAvailableData) {
-            selectedCartDataList?.let {
+            getAllSelectedCartDataList()?.let {
                 cartPageAnalytics.eventClickPilihMerchantVoucher()
                 dPresenter.processUpdateCartDataPromoMerchant(it, `object`)
             }
@@ -1115,7 +1110,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onClickDetailPromoGlobal(dataGlobal: PromoStackingData, position: Int) {
-        val cartItemData = selectedCartDataList
+        val cartItemData = getAllSelectedCartDataList()
         if (cartItemData?.isNotEmpty() == true) {
             trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
             dPresenter.processUpdateCartDataPromoGlobal(cartItemData, dataGlobal, GO_TO_DETAIL)
@@ -1554,6 +1549,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun getAllShopDataList(): List<CartShopHolderData> {
         return cartAdapter.allShopGroupDataList
+    }
+
+    override fun getAllSelectedCartDataList(): List<CartItemData>? {
+        return cartAdapter.selectedCartItemData
     }
 
     override fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean) {

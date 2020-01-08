@@ -4,16 +4,16 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
+import com.tokopedia.purchase_platform.features.cart.view.CartFragment
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,10 +29,10 @@ import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-07.
+ * Created by Irfan Khoirul on 2020-01-08.
  */
 
-class CartListPresenterUpdateCartTest : Spek({
+class CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -55,7 +55,7 @@ class CartListPresenterUpdateCartTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update cart list") {
+    Feature("update cart list for promo global") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -68,7 +68,7 @@ class CartListPresenterUpdateCartTest : Spek({
             )
         }
 
-        Scenario("success update cart") {
+        Scenario("success update cart and redirect to coupon list") {
 
             val updateCartData = UpdateCartData()
 
@@ -82,31 +82,25 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), PromoStackingData(), CartFragment.GO_TO_LIST)
             }
 
-            Then("should render success") {
+            Then("should render success and redirect to coupon list") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderToShipmentFormSuccess(any(), any(), any(), any())
+                    view.goToCouponList()
                 }
             }
         }
 
-        Scenario("success update cart with COD") {
+        Scenario("success update cart and redirect to coupon detail") {
 
             val updateCartData = UpdateCartData()
+            val promoStackingData = PromoStackingData()
 
             Given("update cart data") {
                 updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
-            }
-
-            Given("shop data list") {
-                every { view.getAllShopDataList() } answers {
-                    val cartShopHolderDataList = listOf<CartShopHolderData>()
-                    cartShopHolderDataList
-                }
             }
 
             Given("attach view") {
@@ -114,13 +108,13 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), promoStackingData, 0)
             }
 
-            Then("should render success") {
+            Then("should render success and redirect to coupon list") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderToShipmentFormSuccess(any(), any(), any(), any())
+                    view.goToDetailPromoStacking(promoStackingData)
                 }
             }
         }
@@ -139,42 +133,18 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), PromoStackingData(), 0)
             }
 
-            Then("should render error") {
+            Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(any())
+                    view.showToastMessageRed(any())
                 }
             }
         }
 
-        Scenario("failed update cart with CartResponseErrorException") {
-
-            val errorMessage = "Error"
-
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
-            }
-
-            Then("should render error") {
-                verify {
-                    view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(errorMessage)
-                }
-            }
-        }
-
-        Scenario("failed update cart with other exception") {
+        Scenario("failed update cart with exception") {
 
             val errorMessage = "Error"
 
@@ -187,13 +157,13 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), PromoStackingData(), 0)
             }
 
-            Then("should render error") {
+            Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(errorMessage)
+                    view.showToastMessageRed(any())
                 }
             }
         }

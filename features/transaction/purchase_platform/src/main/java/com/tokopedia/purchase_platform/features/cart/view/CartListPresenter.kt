@@ -265,17 +265,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processUpdateCartData(cartItemDataList: List<CartItemData>) {
+    override fun processUpdateCartData() {
         view?.let {
             it.showProgressLoading()
 
-            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
+            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList() ?: emptyList())
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
-                            ?.subscribe(UpdateCartSubscriber(view, this, cartListData, cartItemDataList))
+                            ?.subscribe(UpdateCartSubscriber(view, this))
             )
         }
     }
@@ -291,7 +291,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
-                            ?.subscribe(UpdateCartPromoMerchantSubscriber(it, this, cartListData, shopGroupAvailableData))
+                            ?.subscribe(UpdateCartPromoMerchantSubscriber(it, shopGroupAvailableData))
             )
         }
     }

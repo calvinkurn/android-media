@@ -14,8 +14,6 @@ import rx.Subscriber
  */
 
 class UpdateCartPromoMerchantSubscriber(private val view: ICartListView?,
-                                        private val presenter: ICartListPresenter?,
-                                        private val cartListData: CartListData?,
                                         private val shopGroupAvailableData: ShopGroupAvailableData) : Subscriber<UpdateCartData>() {
     override fun onCompleted() {
 

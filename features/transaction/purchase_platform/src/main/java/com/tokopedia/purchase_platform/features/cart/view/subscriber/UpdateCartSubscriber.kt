@@ -16,9 +16,7 @@ import rx.Subscriber
  */
 
 class UpdateCartSubscriber(private val view: ICartListView?,
-                           private val presenter: ICartListPresenter?,
-                           private val cartListData: CartListData?,
-                           private val cartItemDataList: List<CartItemData>) : Subscriber<UpdateCartData>() {
+                           private val presenter: ICartListPresenter?) : Subscriber<UpdateCartData>() {
 
     override fun onCompleted() {
 
@@ -43,11 +41,12 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                 it.renderErrorToShipmentForm(data.message ?: "")
             } else {
                 val checklistCondition = getChecklistCondition()
-                it.renderToShipmentFormSuccess(
-                        presenter?.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
-                        cartItemDataList,
-                        isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
-                        checklistCondition)
+                val cartItemDataList = it.getAllSelectedCartDataList()
+                cartItemDataList?.let { data ->
+                    it.renderToShipmentFormSuccess(
+                            presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
+                            data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
+                }
             }
         }
     }
@@ -104,7 +103,8 @@ class UpdateCartSubscriber(private val view: ICartListView?,
         var totalAmount = 0.0
         val maximalTotalAmountEligible = 1000000.0
         for (cartItemData in cartItemDataList) {
-            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity ?: 0) ?: 0.toDouble()
+            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity
+                    ?: 0) ?: 0.toDouble()
             totalAmount += itemPriceAmount
             if (cartItemData.originData?.isCod == false) return false
         }

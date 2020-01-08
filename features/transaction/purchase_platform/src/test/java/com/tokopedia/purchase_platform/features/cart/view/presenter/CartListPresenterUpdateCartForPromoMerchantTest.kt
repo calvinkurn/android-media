@@ -9,11 +9,11 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,10 +29,10 @@ import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-07.
+ * Created by Irfan Khoirul on 2020-01-08.
  */
 
-class CartListPresenterUpdateCartTest : Spek({
+class CartListPresenterUpdateCartForPromoMerchantTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -55,7 +55,7 @@ class CartListPresenterUpdateCartTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("update cart list") {
+    Feature("update cart list for promo merchant") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -71,6 +71,7 @@ class CartListPresenterUpdateCartTest : Spek({
         Scenario("success update cart") {
 
             val updateCartData = UpdateCartData()
+            val shopGroupAvailableData = ShopGroupAvailableData()
 
             Given("update cart data") {
                 updateCartData.isSuccess = true
@@ -82,45 +83,13 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), shopGroupAvailableData)
             }
 
-            Then("should render success") {
+            Then("should render success and show promo merchant bottomsheet") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderToShipmentFormSuccess(any(), any(), any(), any())
-                }
-            }
-        }
-
-        Scenario("success update cart with COD") {
-
-            val updateCartData = UpdateCartData()
-
-            Given("update cart data") {
-                updateCartData.isSuccess = true
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
-            }
-
-            Given("shop data list") {
-                every { view.getAllShopDataList() } answers {
-                    val cartShopHolderDataList = listOf<CartShopHolderData>()
-                    cartShopHolderDataList
-                }
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
-            }
-
-            Then("should render success") {
-                verify {
-                    view.hideProgressLoading()
-                    view.renderToShipmentFormSuccess(any(), any(), any(), any())
+                    view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
                 }
             }
         }
@@ -139,13 +108,13 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
             }
 
-            Then("should render error") {
+            Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(any())
+                    view.showToastMessageRed(any())
                 }
             }
         }
@@ -163,23 +132,23 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
             }
 
-            Then("should render error") {
+            Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(errorMessage)
+                    view.showToastMessageRed(errorMessage)
                 }
             }
         }
 
         Scenario("failed update cart with other exception") {
 
-            val errorMessage = "Error"
+            val errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException(errorMessage))
+                every { updateCartUseCase.createObservable(any()) } returns Observable.error(RuntimeException())
             }
 
             Given("attach view") {
@@ -187,17 +156,16 @@ class CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
             }
 
-            Then("should render error") {
+            Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(errorMessage)
+                    view.showToastMessageRed(errorMessage)
                 }
             }
         }
-
     }
 
 })
