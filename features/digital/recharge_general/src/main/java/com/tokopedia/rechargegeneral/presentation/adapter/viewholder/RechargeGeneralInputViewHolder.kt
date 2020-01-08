@@ -16,7 +16,6 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         inputView.setLabel(enquiryData.text)
         inputView.setHint("")
         if (enquiryData.style == INPUT_TYPE_FAVORITE_NUMBER) {
-//        if (enquiryData.name == "client_number") {
             inputView.isCustomInput = true
         } else {
             inputView.isCustomInput = false

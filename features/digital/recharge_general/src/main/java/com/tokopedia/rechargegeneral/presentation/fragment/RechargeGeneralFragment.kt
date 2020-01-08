@@ -445,7 +445,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         val moreInfoBottomSheet = BottomSheetUnify()
         moreInfoBottomSheet.setTitle("Info")
-        moreInfoBottomSheet.setFullPage(true)
         moreInfoBottomSheet.setChild(infoTextView)
         moreInfoBottomSheet.clearAction()
         moreInfoBottomSheet.setCloseClickListener {

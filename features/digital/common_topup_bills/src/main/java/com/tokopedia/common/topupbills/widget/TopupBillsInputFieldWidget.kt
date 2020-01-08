@@ -150,7 +150,8 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
     fun setInputType(type: String) {
         ac_input.inputType = when (type) {
             INPUT_NUMERIC ->  InputType.TYPE_CLASS_NUMBER
-            INPUT_ALPHANUMERIC ->  InputType.TYPE_CLASS_TEXT
+            INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
+            INPUT_TELCO -> InputType.TYPE_CLASS_PHONE
             else -> InputType.TYPE_CLASS_NUMBER
         }
     }
@@ -178,8 +179,9 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     companion object {
-        const val INPUT_NUMERIC = "input_numeric"
         const val INPUT_ALPHANUMERIC = "input_alphanumeric"
+        const val INPUT_NUMERIC = "input_numeric"
+        const val INPUT_TELCO = "input_tel"
 
         const val INFO_TOUCH_AREA_SIZE_PX = 20
     }
