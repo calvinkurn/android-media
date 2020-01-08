@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
-
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -15,14 +14,11 @@ import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.kotlin.util.DeviceChecker;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import timber.log.Timber;
 
 /**
@@ -119,6 +115,9 @@ public class FingerprintModelGenerator {
         if(context instanceof UserSessionInterface)
             isNakama = Utilities.isNakama((UserSessionInterface)context);
         String adsId = getGoogleAdId(context);
+        String deviceAvailableProcessor = DeviceChecker.INSTANCE.getAvailableProcessor(context.getApplicationContext());
+        String deviceMemoryClass = DeviceChecker.INSTANCE.getDeviceMemoryClassCapacity(context.getApplicationContext());
+        String deviceDpi = DeviceChecker.INSTANCE.getDeviceDpi(context.getApplicationContext());
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                 .uniqueId(adsId)
@@ -139,6 +138,9 @@ public class FingerprintModelGenerator {
                 .carrier(carrier)
                 .deviceLat(new LocationCache(context).getLatitudeCache())
                 .deviceLng(new LocationCache(context).getLongitudeCache())
+                .availableProcessor(deviceAvailableProcessor)
+                .deviceMemoryClassCapacity(deviceMemoryClass)
+                .deviceDpi(deviceDpi)
                 .build();
 
         return new Gson().toJson(fp);

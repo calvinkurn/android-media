@@ -20,4 +20,20 @@ object DeviceChecker {
                 runtime.availableProcessors() < MINIMUM_DEVICE_PROCESSORS ||
                 activityManager.memoryClass < MINIMUM_DEVICE_MEMORY
     }
+
+    fun getAvailableProcessor(context: Context?): String {
+        val runtime = Runtime.getRuntime()
+        if (context == null ) return ""
+        return runtime.availableProcessors().toString()
+    }
+
+    fun getDeviceMemoryClassCapacity(context: Context?): String {
+        val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+                ?: return ""
+        return activityManager.memoryClass.toString()
+    }
+
+    fun getDeviceDpi(context: Context?): String {
+        return context?.applicationContext?.resources?.displayMetrics?.density?.toString()?:""
+    }
 }
