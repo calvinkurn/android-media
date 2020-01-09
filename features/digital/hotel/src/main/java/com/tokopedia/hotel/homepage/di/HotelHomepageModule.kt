@@ -2,6 +2,7 @@ package com.tokopedia.hotel.homepage.di
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import dagger.Module
 import dagger.Provides
 
@@ -14,4 +15,7 @@ class HotelHomepageModule {
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
             MultiRequestGraphqlUseCase(graphqlRepository)
+
+    @Provides
+    fun provideHotelDispatcherProvider(): HotelDispatcherProvider = HotelDispatcherProvider()
 }

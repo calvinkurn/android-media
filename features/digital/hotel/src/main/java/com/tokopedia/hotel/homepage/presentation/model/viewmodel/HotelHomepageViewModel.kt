@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoData
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -24,7 +25,7 @@ import javax.inject.Inject
  * @author by furqan on 04/04/19
  */
 class HotelHomepageViewModel @Inject constructor(private val bannerUseCase: GetTravelCollectiveBannerUseCase,
-                                                 dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+                                                 dispatcher: HotelDispatcherProvider): BaseViewModel(dispatcher.Main) {
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
