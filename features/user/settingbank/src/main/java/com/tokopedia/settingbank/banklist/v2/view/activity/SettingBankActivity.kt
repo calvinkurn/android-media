@@ -59,6 +59,7 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
             val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
             fragment?.let {
                 if(fragment is SettingBankFragment){
+                    fragment.loadUserBankAccountList()
                     fragment.showToasterOnUI(message)
                 }
             }
