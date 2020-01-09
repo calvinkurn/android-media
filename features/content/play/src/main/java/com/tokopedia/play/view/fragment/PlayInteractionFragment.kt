@@ -666,7 +666,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetTotalLikes(totalLikes.totalLike)
+                            ScreenStateEvent.SetTotalLikes(totalLikes)
                     )
         }
     }
