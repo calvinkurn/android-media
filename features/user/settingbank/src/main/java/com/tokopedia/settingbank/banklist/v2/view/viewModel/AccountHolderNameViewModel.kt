@@ -18,6 +18,7 @@ class AccountHolderNameViewModel @Inject constructor(dispatcher: CoroutineDispat
     val textWatcherState = MutableLiveData<AccountNameTextWatcherState>()
 
     private var job: Job? = Job()
+    private val ACCOUNT_NAME_CHARACTER_RANGE = 3..128
 
     fun onValidateAccountName(text: String) {
         cancelCurrentJob()
@@ -40,7 +41,7 @@ class AccountHolderNameViewModel @Inject constructor(dispatcher: CoroutineDispat
 
     private fun isLengthCorrect(text: String): Boolean {
         return when (text.length) {
-            in 3..128 -> true
+            in ACCOUNT_NAME_CHARACTER_RANGE -> true
             else -> false
         }
     }

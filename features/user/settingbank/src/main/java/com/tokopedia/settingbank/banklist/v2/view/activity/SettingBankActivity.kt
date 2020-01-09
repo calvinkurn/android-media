@@ -55,12 +55,14 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
                 }
             }
         }else if(requestCode == REQUEST_ON_DOC_UPLOAD && resultCode == Activity.RESULT_OK){
-            val message : String? = intent.getStringExtra(UPALOAD_DOCUMENT_MESSAGE)
-            val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
-            fragment?.let {
-                if(fragment is SettingBankFragment){
-                    fragment.loadUserBankAccountList()
-                    fragment.showToasterOnUI(message)
+            data?.let {
+                val message : String? = data.getStringExtra(UPALOAD_DOCUMENT_MESSAGE)
+                val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+                fragment?.let {
+                    if(fragment is SettingBankFragment){
+                        fragment.loadUserBankAccountList()
+                        fragment.showToasterOnUI(message)
+                    }
                 }
             }
         }

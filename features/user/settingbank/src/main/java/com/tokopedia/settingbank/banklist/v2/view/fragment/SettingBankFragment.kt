@@ -289,7 +289,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     fun showToasterOnUI(message: String?) {
         message?.let {
-            view?.let { Toaster.make(it, message, Toaster.LENGTH_LONG) }
+            view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
         }
     }
 
