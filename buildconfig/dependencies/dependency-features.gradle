@@ -169,6 +169,7 @@ ext {
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
+            attachvoucher                   : ":features:user:attachvoucher",
             changepassword                  : ":features:user:changepassword",
 //            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",
