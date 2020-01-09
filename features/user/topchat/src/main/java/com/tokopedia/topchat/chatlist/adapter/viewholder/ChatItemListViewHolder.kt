@@ -36,7 +36,7 @@ class ChatItemListViewHolder(
 
     private val userName: Typography = itemView.findViewById(R.id.user_name)
     private val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
-    private val message: TextView = itemView.findViewById(com.tokopedia.chat_common.R.id.message)
+    private val message: TextView = itemView.findViewById(R.id.message)
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)

@@ -430,7 +430,7 @@ class ChatListActivity : BaseTabActivity()
         val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
         icon?.let {
             val wrappedDrawable = DrawableCompat.wrap(it)
-            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, R.color.Green_G500))
+            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, com.tokopedia.unifycomponents.R.color.Green_G500))
         }
     }
 

@@ -578,6 +578,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         return childFragmentManager
     }
 
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         private const val CHAT_TAB_TITLE = "chat_tab_title"
