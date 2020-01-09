@@ -5,17 +5,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.similarsearch.R
-import kotlinx.android.synthetic.main.similar_search_fragment_layout.view.*
 import kotlinx.android.synthetic.main.similar_search_original_product_layout.view.*
 
 internal class OriginalProductViewAnimator(
-        private val fragmentView: View
+        private val originalProductView: View
 ) {
     companion object {
         private const val MAXIMUM_VERTICAL_SCROLL_DISTANCE = 250
         private const val IMAGE_PRODUCT_BASE_SIZE = 80f
         private const val IMAGE_PRODUCT_EXTRA_SIZE = 16f
         private const val VISIBILITY_THRESHOLD = 0.5f
+        private const val ATC_BUTTONS_VERTICAL_SCROLL_DISTANCE = 75
+        private const val ATC_BUTTONS_COLLAPSED_VERTICAL_SCROLL_START_VISIBLE = 70
     }
 
     private var containerTravelDistance = 0
@@ -31,15 +32,15 @@ internal class OriginalProductViewAnimator(
     private var remainingVerticalScrollOffsetInPercent = 0f
 
     init {
-        fragmentView.cardViewOriginalProductSimilarSearch?.post(this::initializeAfterOriginalProductViewReady)
+        originalProductView.cardViewOriginalProductSimilarSearch?.post(this::initializeAfterOriginalProductViewReady)
     }
 
     private fun initializeAfterOriginalProductViewReady() {
-        buttonBuyMarginTop = fragmentView.buttonBuy.getMarginTop()
+        buttonBuyMarginTop = originalProductView.buttonBuy.getMarginTop()
         containerTravelDistance = getOriginalProductContainerTravelDistance()
         cardViewCollapsedHeight = getCardViewCollapsedHeight()
         constraintLayoutCollapsedHeight = getConstraintLayoutCollapsedHeight()
-        textViewPriceMarginTop = fragmentView.textViewPrice.getMarginTop()
+        textViewPriceMarginTop = originalProductView.textViewPrice.getMarginTop()
         textViewPriceTravelDistance = getTextViewPriceTravelDistance()
 
         isAnimatorInitialized = true
@@ -54,21 +55,21 @@ internal class OriginalProductViewAnimator(
     }
 
     private fun getOriginalProductContainerTravelDistance() =
-            (fragmentView.buttonBuy?.measuredHeight ?: 0) +
+            (originalProductView.buttonBuy?.measuredHeight ?: 0) +
                     buttonBuyMarginTop +
-                    ((fragmentView.constraintLayoutOriginalProduct?.paddingBottom ?: 0) * 2)
+                    ((originalProductView.constraintLayoutOriginalProduct?.paddingBottom ?: 0) * 2)
 
     private fun getCardViewCollapsedHeight() =
-            (fragmentView.cardViewOriginalProductSimilarSearch?.measuredHeight ?: 0) -
+            (originalProductView.cardViewOriginalProductSimilarSearch?.measuredHeight ?: 0) -
                     containerTravelDistance
 
     private fun getConstraintLayoutCollapsedHeight() =
-            (fragmentView.constraintLayoutOriginalProduct?.measuredHeight ?: 0) -
+            (originalProductView.constraintLayoutOriginalProduct?.measuredHeight ?: 0) -
                     containerTravelDistance
 
     private fun getTextViewPriceTravelDistance() =
-            (fragmentView.textViewProductName?.measuredHeight ?: 0) -
-                    (fragmentView.textViewProductNameCollapsed?.measuredHeight ?: 0)
+            (originalProductView.textViewProductName?.measuredHeight ?: 0) -
+                    (originalProductView.textViewProductNameCollapsed?.measuredHeight ?: 0)
 
     fun animateBasedOnScroll(verticalScrollDistance: Int) {
         if (!isAnimatorInitialized) return
@@ -89,8 +90,8 @@ internal class OriginalProductViewAnimator(
     }
 
     private fun getCurrentVerticalScrollOffsetInPercent() =
-        (currentVerticalScrollOffset.toFloat() / MAXIMUM_VERTICAL_SCROLL_DISTANCE)
-                .coerceAtMost(1.0f)
+            (currentVerticalScrollOffset.toFloat() / MAXIMUM_VERTICAL_SCROLL_DISTANCE)
+                    .coerceAtMost(1.0f)
 
     private fun resizeContainer() {
         resizeCardView()
@@ -101,14 +102,14 @@ internal class OriginalProductViewAnimator(
         val cardViewHeight =
                 cardViewCollapsedHeight + (remainingVerticalScrollOffsetInPercent * containerTravelDistance)
 
-        fragmentView.cardViewOriginalProductSimilarSearch?.layoutParams?.height = cardViewHeight.toInt()
+        originalProductView.cardViewOriginalProductSimilarSearch?.layoutParams?.height = cardViewHeight.toInt()
     }
 
     private fun resizeConstraintLayout() {
         val constraintLayoutHeight =
                 constraintLayoutCollapsedHeight + (remainingVerticalScrollOffsetInPercent * containerTravelDistance)
 
-        fragmentView.constraintLayoutOriginalProduct?.layoutParams?.height = constraintLayoutHeight.toInt()
+        originalProductView.constraintLayoutOriginalProduct?.layoutParams?.height = constraintLayoutHeight.toInt()
     }
 
     private fun transitioningChildViews() {
@@ -201,29 +202,55 @@ internal class OriginalProductViewAnimator(
         remainingVerticalScrollOffsetInPercent * containerTravelDistance
 
     private fun transitioningButtonsVisibility(constraintSet: ConstraintSet) {
-        constraintSet.setAlpha(R.id.buttonAddToCartCollapsed, currentVerticalScrollOffsetInPercent)
-        constraintSet.setAlpha(R.id.buttonBuy, remainingVerticalScrollOffsetInPercent)
-        constraintSet.setAlpha(R.id.buttonAddToCart, remainingVerticalScrollOffsetInPercent)
+        val addToCartCollapsedAlpha = getAddToCartCollapsedAlpha()
+        constraintSet.setAlpha(R.id.buttonAddToCartCollapsed, addToCartCollapsedAlpha)
+
+        val addToCartButtonsAlpha = getAddToCartButtonsAlpha()
+        constraintSet.setAlpha(R.id.buttonBuy, addToCartButtonsAlpha)
+        constraintSet.setAlpha(R.id.buttonAddToCart, addToCartButtonsAlpha)
     }
 
+    private fun getAddToCartCollapsedAlpha() =
+            (getCurrentVerticalOffsetATCCollapsed() / getMaximumVerticalScrollATCCollapsed())
+                    .coerceAtMost(1f)
+
+    private fun getCurrentVerticalOffsetATCCollapsed() =
+            (currentVerticalScrollOffset - ATC_BUTTONS_COLLAPSED_VERTICAL_SCROLL_START_VISIBLE)
+                    .toFloat()
+                    .coerceAtLeast(0f)
+
+    private fun getMaximumVerticalScrollATCCollapsed() =
+            MAXIMUM_VERTICAL_SCROLL_DISTANCE - ATC_BUTTONS_COLLAPSED_VERTICAL_SCROLL_START_VISIBLE
+
+    private fun getAddToCartButtonsAlpha() =
+            1.0f - getCurrentVerticalScrollOffsetATCButtonsInPercent()
+
+    private fun getCurrentVerticalScrollOffsetATCButtonsInPercent() =
+            (currentVerticalScrollOffset.toFloat() / ATC_BUTTONS_VERTICAL_SCROLL_DISTANCE)
+                    .coerceAtMost(1.0f)
+
     private fun setButtonsClickableBasedOnVisibility() {
-        fragmentView.buttonBuy?.isClickable = remainingVerticalScrollOffsetInPercent > VISIBILITY_THRESHOLD
-        fragmentView.buttonAddToCart?.isClickable = remainingVerticalScrollOffsetInPercent > VISIBILITY_THRESHOLD
-        fragmentView.buttonAddToCartCollapsed?.isClickable = currentVerticalScrollOffsetInPercent > VISIBILITY_THRESHOLD
+        originalProductView.buttonBuy?.isClickable = originalProductView.buttonBuy.getAlphaOrZero() > VISIBILITY_THRESHOLD
+        originalProductView.buttonAddToCart?.isClickable = originalProductView.buttonAddToCart.getAlphaOrZero() > VISIBILITY_THRESHOLD
+        originalProductView.buttonAddToCartCollapsed?.isClickable = originalProductView.buttonAddToCartCollapsed.getAlphaOrZero() > VISIBILITY_THRESHOLD
+    }
+
+    private fun View?.getAlphaOrZero(): Float {
+        return this?.alpha ?: 0f
     }
 
     private fun applyConstraintSet(apply: (constraintSet: ConstraintSet) -> Unit) {
         val constraintSet = ConstraintSet()
-        constraintSet.clone(fragmentView.constraintLayoutOriginalProduct)
+        constraintSet.clone(originalProductView.constraintLayoutOriginalProduct)
         apply(constraintSet)
-        constraintSet.applyTo(fragmentView.constraintLayoutOriginalProduct)
+        constraintSet.applyTo(originalProductView.constraintLayoutOriginalProduct)
     }
 
     private fun Float.toPx(): Int {
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 this,
-                fragmentView.resources.displayMetrics
+                originalProductView.resources.displayMetrics
         ).toInt()
     }
 }

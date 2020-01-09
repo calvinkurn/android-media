@@ -15,13 +15,21 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <include
-        android:id="@+id/cardViewOriginalProductSimilarSearch"
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/cardViewContainerOriginalProductSimilarSearch"-->
+<!--        android:layout_width="@dimen/dp_0"-->
+<!--        android:layout_height="wrap_content">-->
+
+    <com.tokopedia.similarsearch.originalproduct.OriginalProductView
+        android:id="@+id/originalProductView"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        layout="@layout/similar_search_original_product_layout" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+<!--    </androidx.cardview.widget.CardView>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSimilarSearch"
@@ -31,7 +39,7 @@
         android:clipToPadding="false"
         android:layout_gravity="bottom"
         android:descendantFocusability="blocksDescendants"
-        app:layout_constraintTop_toBottomOf="@id/cardViewOriginalProductSimilarSearch"
+        app:layout_constraintTop_toBottomOf="@id/originalProductView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
