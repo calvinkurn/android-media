@@ -288,6 +288,11 @@ public class SessionHandler {
         getUserSession(MainApplication.getAppContext()).setEmail(email);
     }
 
+    public String getAuthAccessToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
+    }
+
     public String getAuthRefreshToken() {
         return getUserSession(MainApplication.getAppContext()).getFreshToken();
     }

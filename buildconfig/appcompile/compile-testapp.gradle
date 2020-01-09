@@ -44,7 +44,6 @@ include "libraries:user_session"
 //include "libraries:sharecontent"
 include "libraries:track"
 //include "libraries:graph_view"
-include 'libraries:cpm'
 //include "libraries:linker"
 //include "libraries:webview"
 //include "libraries:collapsing_tab_layout"
@@ -64,5 +63,5 @@ include "features:common:resources_common"
 // digital home
 //include ":features:digital:digital_homepage"
 
-
+include 'libraries:play_core'
 include 'testapp'
