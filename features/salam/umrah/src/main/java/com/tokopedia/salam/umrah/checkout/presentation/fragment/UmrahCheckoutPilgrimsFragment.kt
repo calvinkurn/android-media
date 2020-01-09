@@ -237,7 +237,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     }
 
     private fun renderPilgrimsTitle() {
-        rv_umrah_checkout__pilgrims_title.listener = object : FilterChipAdapter.OnClickListener {
+        rv_umrah_checkout_pilgrims_title.listener = object : FilterChipAdapter.OnClickListener {
             override fun onChipClickListener(string: String, isSelected: Boolean) {
                 if (isSelected) {
                     pilgrimsData.title = getPessangerTitleShort(string)
@@ -246,11 +246,11 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
         }
 
         val entries = resources.getStringArray(R.array.umrah_checkout_pilgrims_titles)
-        rv_umrah_checkout__pilgrims_title.setItem(ArrayList(Arrays.asList(*entries)),
+        rv_umrah_checkout_pilgrims_title.setItem(ArrayList(Arrays.asList(*entries)),
                 initialSelectedItemPos = if (pilgrimsData.title.isNotEmpty()) getPassengerTitleId(pilgrimsData.title) else null)
 
-        rv_umrah_checkout__pilgrims_title.selectOnlyOneChip(true)
-        rv_umrah_checkout__pilgrims_title.canDiselectAfterSelect(false)
+        rv_umrah_checkout_pilgrims_title.selectOnlyOneChip(true)
+        rv_umrah_checkout_pilgrims_title.canDiselectAfterSelect(false)
     }
 
     private fun renderFilledUI() {
@@ -267,7 +267,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
 
     }
 
-    fun getPassengerTitle(): String = rv_umrah_checkout__pilgrims_title.getFirstSelectedItem()
+    fun getPassengerTitle(): String = rv_umrah_checkout_pilgrims_title.getFirstSelectedItem()
 
     fun getPessangerTitleShort(passengerTitle: String): String {
         return if (passengerTitle.equals(UmrahPilgrimsTitle.TUAN, true)) UmrahPilgrimsTitle.TUAN_SHORT
@@ -331,16 +331,16 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
         til_umrah_checkout_pilgrims_contact_first_name.editText.setText("")
         til_umrah_checkout_pilgrims_contact_last_name.editText.setText("")
         til_umrah_checkout_pilgrims_contact_date_birth.editText.setText("")
-        rv_umrah_checkout__pilgrims_title.onResetChip()
+        rv_umrah_checkout_pilgrims_title.onResetChip()
     }
 
 
     private fun renderPassengerTitle(passengerTitle: String) {
         when {
-            passengerTitle.equals(UmrahPilgrimsTitle.TUAN, true) -> rv_umrah_checkout__pilgrims_title.selectChipByPosition(0)
-            passengerTitle.equals(UmrahPilgrimsTitle.NYONYA, true) -> rv_umrah_checkout__pilgrims_title.selectChipByPosition(1)
-            passengerTitle.equals(UmrahPilgrimsTitle.NONA, true) -> rv_umrah_checkout__pilgrims_title.selectChipByPosition(2)
-            else -> rv_umrah_checkout__pilgrims_title.onResetChip()
+            passengerTitle.equals(UmrahPilgrimsTitle.TUAN, true) -> rv_umrah_checkout_pilgrims_title.selectChipByPosition(0)
+            passengerTitle.equals(UmrahPilgrimsTitle.NYONYA, true) -> rv_umrah_checkout_pilgrims_title.selectChipByPosition(1)
+            passengerTitle.equals(UmrahPilgrimsTitle.NONA, true) -> rv_umrah_checkout_pilgrims_title.selectChipByPosition(2)
+            else -> rv_umrah_checkout_pilgrims_title.onResetChip()
         }
     }
 
