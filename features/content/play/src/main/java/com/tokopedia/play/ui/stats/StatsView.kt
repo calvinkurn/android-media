@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.TotalViewUiModel
@@ -25,7 +26,8 @@ class StatsView(container: ViewGroup) : UIView(container) {
     private val tvTotalView = view.findViewById<Typography>(R.id.tv_total_views)
 
     fun setTotalLikes(totalLikes: String) {
-        tvTotalLikes.text = "$totalLikes Likes"
+        tvTotalLikes.text = if (totalLikes.toIntOrZero() > 1)
+            "$totalLikes Like" else "$totalLikes Likes"
     }
 
     fun setTotalViews(totalView: TotalViewUiModel) {
