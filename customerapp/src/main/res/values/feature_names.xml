@@ -6,7 +6,6 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
-    <string name="title_digital_topup">Digital Topup</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
     <string name="title_flight_travel">Tiket Pesawat</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
@@ -43,7 +42,6 @@
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="title_groupchat">Groupchat</string>
     <string name="groupchat_app_name">Play</string>
 
     <!--    Change Phone Number-->
@@ -68,11 +66,8 @@
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
     <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
 
-    <!-- Dynamic feature for Digital Subhomepage -->
-    <string name="digital_subhomepage_app_name"><![CDATA[Top-up & Tagihan]]></string>
-
-    <!-- Dynamic feature for Voucher Game -->
-    <string name="voucher_game_app_name">Cari Voucher</string>
+    <!-- Dynamic feature for Digital Recharge -->
+    <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
@@ -154,8 +149,6 @@
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
 
-
-
     <!-- Setting-Notif-->
     <string name="setting_notif_app_name">Setting Notif</string>
 
@@ -184,4 +177,33 @@
     <string name="title_take_opportunity">Ambil Peluang</string>
     <string name="title_sort_opportunity">Urutkan</string>
     <string name="title_filter_opportunity">Filter</string>
+
+    <!-- Dynamic feature for manage Seller Order Management-->
+    <string name="title_seller_order">Seller Order Management</string>
+    <string name="som_app_name">Seller Order Management</string>
+    <string name="title_som_list">Penjualan</string>
+    <string name="title_som_filter">Filter</string>
+    <string name="title_som_detail">Detail Pesanan</string>
+    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
+    <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="title_som_change_courier">Ganti Kurir</string>
+    <string name="title_som_scan_barcode">Scan Resi</string>
+    <string name="title_som_booking_code">Detail Kode Booking</string>
+
+
+    <!-- Dynamic feature for Umrah-->
+    <string name="salam_title_df">Salam</string>
+    <string name="umrah_title_df">Umrah</string>
+    <string name="umrah_search_title">Cari Paket Umrah</string>
+    <string name="umrah_label_filter">Filter</string>
+    <string name="umrah_label_pdp">Pilih Detail</string>
+    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
+    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+
+
+    <!-- Dynamic feature for user identification commmon-->
+    <string name="title_upload_user_identification_common">Upload Foto</string>
+
 </resources>

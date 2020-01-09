@@ -1,7 +1,6 @@
 package com.tokopedia.atc_variant.view
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -9,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -85,7 +85,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
 
-    var loadingProgressDialog: ProgressDialog? = null
+    var loadingProgressDialog: AlertDialog? = null
     val fragmentViewModel: FragmentViewModel by lazy {
         FragmentViewModel()
     }
@@ -1107,12 +1107,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
 
     fun showLoadingDialog(onCancelClicked: (() -> Unit)? = null) {
         if (loadingProgressDialog == null) {
-            loadingProgressDialog = activity?.createDefaultProgressDialog(
-                    getString(R.string.title_loading),
-                    cancelable = true,
-                    onCancelClicked = {
-                        onCancelClicked?.invoke()
-                    })
+            activity?.let {
+                loadingProgressDialog = AlertDialog.Builder(it)
+                        .setView(R.layout.atc_variant_progress_dialog_view)
+                        .setCancelable(false)
+                        .create()
+            }
         }
         loadingProgressDialog?.run {
             if (!isShowing) {

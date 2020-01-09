@@ -24,6 +24,7 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -113,7 +114,6 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -282,7 +282,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
-        ImageUploaderRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
         TopChatRouter,
@@ -619,11 +618,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
         HomeAnalytics.setUserAttribute(this, userAttributeData);
-    }
-
-    @Override
-    public Interceptor getAuthInterceptor() {
-        return new TkpdAuthInterceptor();
     }
 
     @Override
@@ -1575,6 +1569,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
         return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
     }
+
+    @Override
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+        ShakeDetectManager.getShakeDetectManager().onDestroy(screenName, baseActivity);
+    }
+
 
     @Override
     public String getDeviceId(Context context) {

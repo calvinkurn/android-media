@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 
 /**
@@ -24,9 +23,7 @@ interface ActionListener {
 
     fun onCartDataEnableToCheckout()
 
-    fun onCartDataDisableToCheckout(message: String)
-
-    fun onCartItemTickerErrorActionClicked(data: CartItemTickerErrorHolderData, position: Int)
+    fun onCartDataDisableToCheckout()
 
     fun onShowAllItem(appLink: String)
 

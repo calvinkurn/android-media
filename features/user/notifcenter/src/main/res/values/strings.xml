@@ -7,4 +7,95 @@
     <string name="notif_cancel">Batalkan</string>
     <string name="notif_no_info">Tidak ada info baru</string>
     <string name="notif_no_info_desc">Dapatkan info seputar transaksi penjualan &amp; pembelian, promo, event, update produk, fitur &amp; layanan terbaru untuk Anda.</string>
+
+
+    <string name="home">Home</string>
+    <string name="feed">Feed</string>
+    <string name="inbox">Inbox</string>
+    <string name="keranjang">Keranjang</string>
+    <string name="akun">Akun</string>
+    <string name="official">Official Store</string>
+
+    <string name="exit_message">Tekan sekali lagi untuk keluar</string>
+
+    <string name="chat">Chat</string>
+    <string name="chat_desc">Percakapan pribadi Anda</string>
+
+    <string name="diskusi">Diskusi</string>
+    <string name="diskusi_desc">Tanya jawab seputar Produk</string>
+
+    <string name="ulasan">Ulasan</string>
+    <string name="ulasan_desc">Berikan penilaian dan ulasan Produk</string>
+
+    <string name="pesan_bantuan">Pesan Bantuan</string>
+    <string name="pesan_bantuan_desc">Pantau status bantuan dari Tokopedia</string>
+
+    <string name="notifications">Notifikasi</string>
+
+    <string name="info_penjual">Info Penjual</string>
+    <string name="user_info">Info Pengguna</string>
+
+    <string name="penjualan">Penjualan</string>
+    <string name="pembelian">Pembelian</string>
+    <string name="komplain_saya">Komplain Saya</string>
+    <string name="update">Update</string>
+
+    <string name="info_terbaru">Info Terbaru</string>
+
+    <string name="menunggu_pembayaran">Menunggu Pembayaran</string>
+    <string name="menunggu_konfirmasi">Menunggu Konfirmasi</string>
+    <string name="pesanan_diproses">Pesanan Diproses</string>
+
+    <string name="pesanan_baru">Pesanan Baru</string>
+    <string name="siap_dikirim">Siap Dikirim</string>
+
+    <string name="sedang_dikirim">Sedang Dikirim</string>
+    <string name="sampai_tujuan">Sampai Tujuan</string>
+
+    <string name="sebagai_pembeli">Sebagai Pembeli</string>
+    <string name="sebagai_penjual">Sebagai Penjual</string>
+
+    <string name="title_showcase">Tampilan simpel, navigasi mudah!</string>
+    <string name="desc_showcase">Menu Tokopedia kini tampil lebih rapi. Jelajahi dan buktikan kemudahan navigasinya!</string>
+
+    <string name="previous">Sebelumnya</string>
+    <string name="next">Selanjutnya</string>
+    <string name="coupon_copy_text">Kode voucher tersalin</string>
+
+    <string name="navigation_home_label_longpress_beli">Cari</string>
+    <string name="navigation_home_label_longpress_share">Wishlist</string>
+    <string name="navigation_home_label_longpress_bayar">Tagihan</string>
+    <string name="navigation_home_label_longpress_jual">Jual</string>
+    <string name="text_title_filter">Filter</string>
+    <string name="text_title_reset">Reset</string>
+    <string name="text_button_show_filter">Tampilkan Hasil</string>
+    <string name="mark_all_as_read">Tandai semua dibaca</string>
+
+    <string name="seller_label">Untuk Penjual</string>
+    <string name="buyer_label">Untuk Pembeli</string>
+
+    <string name="title_counter_update_notification">" (%1$s)"</string>
+    <string name="title_notification_update">Update</string>
+    <string name="title_notification_activity">Transaksi</string>
+    <string name="title_setting">Setting</string>
+    <string name="exceed_ninety_nine">99+</string>
+
+    <string name="filter">Filter</string>
+    <string name="recom_go_to_wishlist">Lihat Wishlist</string>
+    <string name="wishlist_check_cart">LIHAT</string>
+
+    <string name="in_full">Selengkapnya</string>
+
+    <string name="notification_empty_message">Belum ada notifikasi</string>
+
+    <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
+    <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
+    <string name="coachicon_title_tabs">Cek notifikasi terbaru di sini</string>
+    <string name="coachicon_description_tabs">Dapatkan informasi transaksi dan promo terbaru untuk pembeli dan penjual di sini</string>
+    <string name="coachicon_title_notification_setting">Tampilan baru pengaturan notifikasi</string>
+    <string name="coachicon_description_notification_setting">Kini, kamu bisa atur notifikasi dari Tokopedia sesuai kebutuhan</string>
+    <string name="notif_transaction_for_you">Untuk Kamu</string>
+    <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
+    <string name="title_read_more">Lihat Semua</string>
+    <string name="no_notification_update_yet">Belum ada Notification</string>
 </resources>

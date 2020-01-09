@@ -95,6 +95,7 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation project(rootProject.ext.features.basemvvm)
 }
 
 project.ext {

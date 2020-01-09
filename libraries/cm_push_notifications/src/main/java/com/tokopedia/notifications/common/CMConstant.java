@@ -7,6 +7,7 @@ public interface CMConstant {
 
     interface RemoteKeys{
         String KEY_IS_INAPP_ENABLE = "app_cm_inapp_enable";
+        String KEY_IS_OFFLINE_PUSH_ENABLE = "app_cm_offline_push_enabled";
     }
 
 
@@ -89,6 +90,12 @@ public interface CMConstant {
         String PARENT_ID = "parentId";
         String CAMPAIGN_USER_TOKEN = "campaignUserToken";
         String ELEMENT_ID="id";
+
+        String NOTIFICATION_MODE = "isOffline";
+        String NOTIFICATION_START_TIME= "startTime";
+        String NOTIFICATION_END_TIME= "endTime";
+
+
     }
 
     interface ReceiverExtraData {

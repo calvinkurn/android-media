@@ -450,13 +450,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
             val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
 
             lottieCompositionLottieTask.addListener { result ->
-                Log.e("CRF LotieAnimFromUrl", "Success ".plus(animationUrl))
                 imgAnimationView.setComposition(result)
                 imgAnimationView.playAnimation()
             }
 
-            lottieCompositionLottieTask.addFailureListener { throwable ->
-                Log.e("CRF LotieAnimFromUrl", throwable.message) }
+            lottieCompositionLottieTask.addFailureListener { throwable -> }
         }
     }
 
