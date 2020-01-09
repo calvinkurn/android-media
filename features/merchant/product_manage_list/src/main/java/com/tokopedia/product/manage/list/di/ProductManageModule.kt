@@ -188,8 +188,8 @@ class ProductManageModule {
     @Named(GQL_FEATURED_PRODUCT)
     fun provideGqlMutationFeaturedProduct(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(
-            context.resources,
-            R.raw.gql_mutation_gold_manage_featured_product_v2
+                context.resources,
+                com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
         )
     }
 }

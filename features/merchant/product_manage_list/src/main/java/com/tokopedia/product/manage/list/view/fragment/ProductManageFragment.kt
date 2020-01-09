@@ -740,9 +740,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder, productManageViewModel: ProductManageViewModel) {
         val context: Context = this.context ?: return
 
-        bottomSheetBuilder.addItem(R.id.edit_product_menu, R.string.title_edit, R.drawable.ic_manage_product_edit)
-        bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, R.drawable.ic_manage_product_duplicate)
-        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, R.drawable.ic_manage_product_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
+        bottomSheetBuilder.addItem(R.id.edit_product_menu, com.tokopedia.product.manage.list.R.string.product_manage_title_edit, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_edit)
+        bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_duplicate)
+        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
 
         //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
         //Activate it later after the backend gql as soon after backend gql prod is up running.
@@ -756,12 +756,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 //                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_add_featured_product, R.drawable.ic_manage_featured_product)
 //        }
 
-        bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, R.drawable.ic_manage_product_set_cashback)
+        bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_set_cashback)
         if (productManageViewModel.productStatus != StatusProductOption.EMPTY) {
-            bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, R.drawable.ic_manage_product_topads)
+            bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_topads)
         }
-        bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, R.drawable.ic_manage_product_set_price)
-        bottomSheetBuilder.addItem(R.id.share_product_menu, R.string.title_share, R.drawable.ic_manage_product_share)
+        bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_set_price)
+        bottomSheetBuilder.addItem(R.id.share_product_menu, com.tokopedia.product.manage.list.R.string.product_manage_title_share, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_share)
 
     }
 

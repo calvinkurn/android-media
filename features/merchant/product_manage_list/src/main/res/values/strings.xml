@@ -101,5 +101,7 @@
     <string name="coachmark_title_btn">Klik dan ubah</string>
     <string name="coachmark_desc_btn">Pilih aktivitas produk yang ingin kamu ubah dengan klik tombol ‘Ubah Sekaligus’.</string>
 
+    <string name="product_manage_title_edit">Ubah</string>
+    <string name="product_manage_title_share">Bagikan</string>
 
 </resources>
