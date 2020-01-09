@@ -17,6 +17,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.seller.seller.info.domain.interactor.MarkReadNotificationUseCase.SELLER_TYPE_ID;
+
 /**
  * Created by normansyahputa on 12/5/17.
  */
@@ -92,7 +94,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
 
     public void markReadNotification(String infoId) {
         markReadNotificationUseCase.execute(
-                MarkReadNotificationUseCase.createRequestParams(String.valueOf(infoId), 2),
+                MarkReadNotificationUseCase.createRequestParams(String.valueOf(infoId), SELLER_TYPE_ID),
                 new Subscriber<NotificationUpdateActionResponse>() {
                     @Override
                     public void onCompleted() {}
