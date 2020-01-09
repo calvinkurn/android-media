@@ -152,7 +152,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         setHasOptionsMenu(true);
         setViewIds(view);
 
-        checkForCurrentLocation();
+//        checkForCurrentLocation();
         if (userSession.isLoggedIn()) {
             mPresenter.sendNSQEvent(userSession.getUserId(), "category-page");
         }
@@ -424,8 +424,11 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public String getCategoryUrl() {
+        String url;
         if (categoriesModel != null && !TextUtils.isEmpty(categoriesModel.getCategoryUrl())) {
-            return categoriesModel.getCategoryUrl();
+            String[] urls = categoriesModel.getCategoryUrl().split("\\?");
+            url = urls[0];
+            return url;
         } else {
             return "";
         }

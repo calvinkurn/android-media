@@ -207,6 +207,12 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
+-keepclassmembers class com.wandroid.traceroute.TraceRoute {
+    void clearResult();
+    void appendResult(***);
+    int execute(***);
+}
+
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }

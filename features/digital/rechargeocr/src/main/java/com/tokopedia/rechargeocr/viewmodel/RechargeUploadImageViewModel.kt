@@ -18,46 +18,31 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
                                                        private val dispatcher: CoroutineDispatcher = Dispatchers.IO)
     : BaseViewModel(dispatcher) {
 
-    val urlImage = MutableLiveData<String>()
     val resultDataOcr = MutableLiveData<String>()
     val errorActionOcr = MutableLiveData<String>()
-    val imagePathCropped = MutableLiveData<String>()
 
-    fun uploadImageRecharge(fileLocation: String?) {
+    fun uploadImageRecharge(pathFile: String, directoryPath: String, rawQuery: String) {
         launchCatchError(block = {
+            val imageFileCropped = RechargeCameraUtil.trimBitmap(pathFile, directoryPath)
+
             val dataUploadImage = withContext(dispatcher) {
-                rechargeUploadImageUseCase.execute(fileLocation)
+                rechargeUploadImageUseCase.execute(imageFileCropped)
             }
             var url = dataUploadImage.dataUploadImageData.picSrc
             if (url.contains(DEFAULT_RESOLUTION)) {
                 url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_500)
             }
-            urlImage.postValue(url)
-        }) {
-            urlImage.postValue("")
-        }
-    }
 
-    fun getResultOcr(rawQuery: String, imageSrc: String) {
-        launchCatchError(block = {
             val dataOcr = withContext(dispatcher) {
                 val mapParam = mutableMapOf<String, Any>()
-                mapParam[PARAM_IMAGE_OCR] = imageSrc
+                mapParam[PARAM_IMAGE_OCR] = url
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeOcrResponse::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeOcrResponse>()
+
             resultDataOcr.postValue(dataOcr.rechargeOcr.result)
         }) {
             errorActionOcr.postValue(it.message)
-        }
-    }
-
-    fun cropImage(pathFile: String, directoryPath: String) {
-        launchCatchError(block = {
-            val imageFileCropped = RechargeCameraUtil.trimBitmap(pathFile, directoryPath)
-            imagePathCropped.postValue(imageFileCropped)
-        }) {
-            imagePathCropped.postValue(pathFile)
         }
     }
 
