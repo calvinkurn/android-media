@@ -355,7 +355,7 @@ class PlayViewModel @Inject constructor(
 
     private fun mapEvent(channel: Channel) = EventUiModel(
             isBanned = false,
-            isFreeze = false,
+            isFreeze = channel.isFreeze,
             bannedMessage = channel.banned.message,
             bannedTitle = channel.banned.title,
             bannedButtonTitle = channel.banned.buttonTitle,
