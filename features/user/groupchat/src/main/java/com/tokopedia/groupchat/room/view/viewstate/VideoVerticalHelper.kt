@@ -1,6 +1,5 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
-import androidx.fragment.app.FragmentManager
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -9,13 +8,12 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -23,6 +21,7 @@ import com.tokopedia.videoplayer.state.*
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import com.tokopedia.videoplayer.view.player.VideoPlayerListener
+import timber.log.Timber
 
 /**
  * @author : Steven 28/05/19
@@ -107,7 +106,7 @@ class VideoVerticalHelper constructor (
     }
 
     private fun playVideoSource(sourceMedia: String) {
-        debug(TAG, "play video source $sourceMedia")
+        Timber.d("play video source $sourceMedia")
         sendViewToBack(playerView)
         val width = rootView.layoutParams.width
         val height = rootView.layoutParams.height
@@ -132,31 +131,31 @@ class VideoVerticalHelper constructor (
                         when(playbackState) {
                             Player.STATE_BUFFERING -> {
                                 showLoadingOnly()
-                                debug(TAG, "buffering vertical video")
+                                Timber.d("buffering vertical video")
                             }
                             Player.STATE_READY -> {
                                 hideContainer()
-                                debug(TAG, "ready vertical video")
+                                Timber.d("ready vertical video")
                             }
                             Player.STATE_ENDED -> {
                                 if(videoStreamViewModel.isActive) {
                                     showLoadingOnly()
                                     playVideo(videoSource)
-                                    debug(TAG, "ended vertical video active")
+                                    Timber.d("ended vertical video active")
                                 }else {
-                                    debug(TAG, "ended vertical video non-active")
+                                    Timber.d("ended vertical video non-active")
 //                                    showHasEnded()
                                 }
 
                             }
                             Player.STATE_IDLE -> {
-                                debug(TAG, "idle vertical video")
+                                Timber.d("idle vertical video")
                             }
                         }
                     }
 
                     override fun onPlayerError(error: PlayerException) {
-                        debug(TAG, "error vertical video $error")
+                        Timber.d("error vertical video $error")
                         showRetryOnly()
                     }
                 })

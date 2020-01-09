@@ -24,7 +24,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.goToFirst
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -62,6 +61,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -143,7 +143,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        debug(TAG, "$sightTag onViewCreated")
+        Timber.d("$sightTag onViewCreated")
         mViewCreated = true
         tryViewCreatedFirstSight()
         super.onViewCreated(view, savedInstanceState)
@@ -505,18 +505,18 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun onViewCreatedFirstSight(view: View?) {
-        debug(TAG, "$sightTag onViewCreatedFirstSight")
+        Timber.d("$sightTag onViewCreatedFirstSight")
         (activity as ChatListContract.Activity).notifyViewCreated()
         loadInitialData()
     }
 
     private fun onUserFirstSight() {
-        debug(TAG, "$sightTag onUserFirstSight")
+        Timber.d("$sightTag onUserFirstSight")
     }
 
 
     private fun onUserVisibleChanged(visible: Boolean) {
-        debug(TAG, "$sightTag onUserVisibleChanged $visible")
+        Timber.d("$sightTag onUserVisibleChanged $visible")
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
