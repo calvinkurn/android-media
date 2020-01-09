@@ -187,8 +187,10 @@ public class CategoryProductStyle3View extends
     private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
         ClientNumber clientNumber = operator.getClientNumberList().get(0);
-        clientNumber.setEmoney(data.getSlug().contains(SLUG_EMONEY) &&
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_OCR, true));
+        if (data.getSlug().contains(SLUG_EMONEY) &&
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_OCR, true)) {
+            clientNumber.setEmoney(true);
+        }
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
         clientNumberInputView.renderData(clientNumber);
         clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
