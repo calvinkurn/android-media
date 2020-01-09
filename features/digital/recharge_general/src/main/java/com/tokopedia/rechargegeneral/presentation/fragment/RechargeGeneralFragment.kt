@@ -221,8 +221,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (operatorId > 0) {
             operatorCluster = getClusterNameOfOperatorId(cluster, operatorId)
             renderOperatorCluster(cluster)
-            renderOperatorList(cluster.operatorGroups.first { it.name == operatorCluster }, cluster.text)
-            getProductList(menuId, operatorId)
+
+            val operatorGroup = cluster.operatorGroups.first { it.name == operatorCluster }
+            renderOperatorList(operatorGroup, cluster.text)
+            if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
         }
     }
 
@@ -264,7 +266,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderOperatorList(operatorGroup: RechargeGeneralOperatorCluster.CatalogOperatorGroup, label: String) {
         if (operatorGroup.operators.size == 1) {
             operator_select.hide()
+            // Get product data based on operator id
+            operatorId = operatorGroup.operators.first().id
             adapter.showLoading()
+            getProductList(menuId, operatorId)
         } else if (operatorGroup.operators.size > 1) {
             operator_select.show()
             operator_select.setLabel(label)
