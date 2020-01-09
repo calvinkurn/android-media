@@ -25,4 +25,18 @@ data class Header(
         val followCta: FollowCta = FollowCta(),
         @SerializedName("reportable")
         val reportable: Boolean = false
-)
+) {
+        fun copy(): Header {
+                return Header(avatar,
+                        avatarApplink,
+                        avatarBadgeImage,
+                        avatarDate,
+                        avatarDescription,
+                        avatarTitle,
+                        avatarWeblink,
+                        deletable,
+                        editable,
+                        followCta.copy(),
+                        reportable)
+        }
+}

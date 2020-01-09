@@ -1,13 +1,18 @@
 package com.tokopedia.feedplus.view.util
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+
 /**
  * @author by yoasfs on 2019-12-30
  */
 
-fun <T> MutableList<T>.copy() : MutableList<T> {
-    val arr = mutableListOf<T>()
-    for(i in this) {
-        arr.add(i)
+fun  MutableList<Visitable<*>>.copy() : MutableList<DynamicPostViewModel> {
+    val newList : MutableList<DynamicPostViewModel> = mutableListOf()
+    for (i in this) {
+        if (i is DynamicPostViewModel) {
+            newList.add(i.copy())
+        }
     }
-    return arr
+    return newList
 }
