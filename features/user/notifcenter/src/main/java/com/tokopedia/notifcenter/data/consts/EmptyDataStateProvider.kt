@@ -7,7 +7,7 @@ object EmptyDataStateProvider {
 
     fun emptyData(): NotificationEmptyStateViewBean {
         return NotificationEmptyStateViewBean(
-                R.drawable.bg_notif_empty_state_notification,
+                R.drawable.bg_notifcenter_empty_state,
                 R.string.notification_empty_message)
     }
 
