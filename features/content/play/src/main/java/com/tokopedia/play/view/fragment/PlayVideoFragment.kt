@@ -80,13 +80,9 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_play_video, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        val view = inflater.inflate(R.layout.fragment_play_video, container, false)
         initComponents(view as ViewGroup)
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
