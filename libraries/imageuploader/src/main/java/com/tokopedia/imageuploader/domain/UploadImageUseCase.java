@@ -15,7 +15,6 @@ import java.util.Map;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 

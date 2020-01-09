@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_cart_recent_view.view.*
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartRecentViewViewHolder(val view: View, val listener: ActionListener) : RecyclerView.ViewHolder(view) {
+class CartRecentViewViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
 
     var recentViewAdapter: CartRecentViewAdapter? = null
 

@@ -1042,7 +1042,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         btn.setText(data.getButtonText());
         ImageHandler.loadImageFitCenter(getContext(), boxImageView, data.getImageURL());
         AlertDialog alertDialog = adb.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.setCancelable(false);
         alertDialog.setCanceledOnTouchOutside(false);
         btn.setOnClickListener(v -> {

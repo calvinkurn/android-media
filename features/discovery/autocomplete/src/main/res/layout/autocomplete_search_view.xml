@@ -73,7 +73,7 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="4dp"
-                        app:srcCompat="@drawable/autocomplete_ic_camera" />
+                        app:srcCompat="@drawable/ic_product_action_camera_grayscale_24" />
 
                     <ImageView
                         android:id="@+id/action_empty_btn"

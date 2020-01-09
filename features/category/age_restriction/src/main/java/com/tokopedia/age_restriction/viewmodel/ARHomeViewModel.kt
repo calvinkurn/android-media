@@ -27,8 +27,6 @@ class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: Fetch
         }
     }
 
-
-
     fun fetchUserDOB() {
         progBarVisibility.value = true
         launchCatchError(

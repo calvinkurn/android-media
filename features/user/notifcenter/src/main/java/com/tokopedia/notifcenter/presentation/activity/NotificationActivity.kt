@@ -19,20 +19,17 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
-import com.tokopedia.notifcenter.listener.NotificationActivityListener
-import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
+import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.notifcenter.presentation.presenter.NotificationActivityPresenter
-import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.util.CacheManager
 import com.tokopedia.notifcenter.util.NotifPreference
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -164,7 +161,7 @@ class NotificationActivity : BaseTabActivity(),
                 clearNotifCounter(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
-                showOnBoarding(tab.position)
+
             }
         })
 
@@ -176,47 +173,6 @@ class NotificationActivity : BaseTabActivity(),
         viewPager.setCurrentItem(position, true)
         cacheManager.entry(KEY_TAB_POSITION, position)
         analytics.trackNotificationCenterTab(position)
-    }
-
-    private fun showOnBoarding(position: Int) {
-        val tag = javaClass.name + ".OnBoarding"
-        if (position != INDEX_NOTIFICATION_UPDATE || hasBeenShown(tag)) return
-        handler.post {
-            val coachMarkItems = getCoachMarkItems()
-            getNotificationUpdate()?.showOnBoarding(coachMarkItems, tag)
-        }
-    }
-
-    private fun hasBeenShown(tag: String): Boolean {
-        return CoachMarkPreference.hasShown(this, tag)
-    }
-
-    private fun getNotificationUpdate(): NotificationActivityListener? {
-        val notificationUpdateFragment = tabList[INDEX_NOTIFICATION_UPDATE].fragment
-        if (notificationUpdateFragment is NotificationActivityListener) {
-            return notificationUpdateFragment
-        }
-        return null
-    }
-
-    private fun getCoachMarkItems(): ArrayList<CoachMarkItem> {
-        val notificationSettingIcon = getNotificationSettingIconView()
-        return arrayListOf(
-                CoachMarkItem(
-                        tabLayout,
-                        getString(R.string.coachicon_title_tabs),
-                        getString(R.string.coachicon_description_tabs)
-                ),
-                CoachMarkItem(
-                        notificationSettingIcon,
-                        getString(R.string.coachicon_title_notification_setting),
-                        getString(R.string.coachicon_description_notification_setting)
-                )
-        )
-    }
-
-    private fun getNotificationSettingIconView(): View? {
-        return findViewById(R.id.notif_settting)
     }
 
     private fun clearNotifCounter(position: Int) {
