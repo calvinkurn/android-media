@@ -11,6 +11,11 @@
     <string name="play_message_socket_error">We are having trouble connecting with the server</string>
     <string name="play_message_socket_reconnect">Connecting&#8230;</string>
 
+    <plurals name="play_likes">
+        <item quantity="one">%s like</item>
+        <item quantity="other">%s likes</item>
+    </plurals>
+
     <!--mock-->
     <string name="play_mock_view">50</string>
     <string name="play_mock_like">50 Likes</string>

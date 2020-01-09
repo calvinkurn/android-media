@@ -15,7 +15,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -33,8 +36,6 @@ class PlayInteractionViewModel @Inject constructor(
     private val _observableFollowPartner = MutableLiveData<Result<Boolean>>()
     val observableFollowPartner: LiveData<Result<Boolean>> = _observableFollowPartner
 
-    private val _observableLikeContent = MutableLiveData<Result<Boolean>>()
-    val observableLikeContent: LiveData<Result<Boolean>> = _observableLikeContent
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
@@ -47,15 +48,11 @@ class PlayInteractionViewModel @Inject constructor(
 
     fun doLikeUnlike(contentId: Int, contentType: Int, shouldLike: Boolean, isLive: Boolean) {
         launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
+            withContext(dispatchers.io) {
                 postLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, shouldLike, isLive)
                 postLikeUseCase.executeOnBackground()
             }
-
-            _observableLikeContent.value = Success(response)
-        }) {
-            if (it !is CancellationException) _observableLikeContent.value = Fail(it)
-        }
+        }) {}
     }
 
     fun doFollow(shopId: Long, action: PartnerFollowAction) {

@@ -13,7 +13,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetChannelTitle(val title: String): ScreenStateEvent()
     data class SetPartnerInfo(val partnerInfo: PartnerInfoUiModel): ScreenStateEvent()
     data class SetTotalViews(val totalView: TotalViewUiModel): ScreenStateEvent()
-    data class SetTotalLikes(val totalLikes: String): ScreenStateEvent()
+    data class SetTotalLikes(val totalLikes: TotalLikeUiModel): ScreenStateEvent()
     data class SetPinned(val pinnedMessage: PinnedMessageUiModel) : ScreenStateEvent()
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
     data class IncomingChat(val chat: PlayChatUiModel) : ScreenStateEvent()
