@@ -47,8 +47,7 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     private String titleToolbar;
 
     public static Intent newInstanceProductChooser(
-            Activity activity, String categoryId, String operatorId, String titleChooser
-    ) {
+            Activity activity, String categoryId, String operatorId, String titleChooser) {
         Intent intent = new Intent(activity, DigitalChooserActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CATEGORY_ID, categoryId);
@@ -88,8 +87,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     }
 
     private void setupBundlePass(Bundle extras) {
-        Log.d("DigitalChooserActivity", String.valueOf(sizeAsParcel(extras)));
-
         this.categoryId = extras.getString(EXTRA_CATEGORY_ID);
         this.operatorId = extras.getString(EXTRA_OPERATOR_ID);
         this.productStyleView = extras.getString(EXTRA_PRODUCT_STYLE_VIEW);
@@ -146,7 +143,7 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
 
     private void invalidateHomeUpToolbarIndicator() {
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.design.R.drawable.ic_close_default));
         }
     }
 
