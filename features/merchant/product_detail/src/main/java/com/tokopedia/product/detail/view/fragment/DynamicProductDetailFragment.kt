@@ -522,26 +522,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onDestroy()
     }
 
-    /**
-     * ProductInfoViewHolder
-     */
-    override fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String) {
-        //TODO CHANGE THIS TO PROD
-        val etalaseApplink = getString(R.string.staging_pdp_etalase_applink_builder, viewModel.shopInfo?.shopCore?.domain)
-        val categoryApplink = getString(R.string.staging_pdp_category_applink)
-        when {
-            applink.startsWith(etalaseApplink) -> {
-                gotoEtalase(etalaseId, shopId)
-            }
-            applink.startsWith(categoryApplink) -> {
-                goToCategory(categoryId)
-            }
-            else -> {
-                RouteManager.route(context, applink)
-            }
-        }
-    }
-
     override fun gotoVideoPlayer(videos: List<Video>, index: Int) {
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
@@ -1121,23 +1101,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             productDetailTracking.trackTradeinAfterDiagnotics()
         else
             productDetailTracking.trackTradeinBeforeDiagnotics()
-    }
-
-    private fun goToCategory(categoryId: String) {
-        if (GlobalConfig.isCustomerApp()) {
-            RouteManager.route(context,
-                    ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                    categoryId)
-        }
-    }
-
-    private fun gotoEtalase(etalaseId: String, shopID: Int) {
-        val intent = RouteManager.getIntent(context, if (etalaseId.isNotBlank()) {
-            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
-        } else {
-            UriUtil.buildUri(ApplinkConst.SHOP, shopID.toString())
-        })
-        startActivity(intent)
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {

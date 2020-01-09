@@ -10,8 +10,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoData
-import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ProductInfoDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
@@ -33,12 +31,8 @@ class ProductInfoViewHolder(private val view: View,
         element.data?.let { data ->
             view.rv_info.apply {
                 val topData = data.find { it.row == "top" } ?: return@apply
-                val lastCategory = element.dynamicProductInfoP1?.basic?.category?.detail?.lastOrNull()
-                        ?: Category.Detail()
 
-                adapter = ProductInfoAdapter(topData.listOfContent, ProductInfoData(element.dynamicProductInfoP1?.basic?.menu?.id
-                        ?: "", element.dynamicProductInfoP1?.basic?.shopID
-                        ?: "", lastCategory.id), listener)
+                adapter = ProductInfoAdapter(topData.listOfContent)
 
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }

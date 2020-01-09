@@ -29,7 +29,6 @@ interface DynamicProductDetailListener {
      */
     fun gotoVideoPlayer(videos: List<Video>, index: Int)
     fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>)
-    fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String)
 
     /**
      * ProductDiscussionViewHolder
