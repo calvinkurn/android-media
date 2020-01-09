@@ -1370,10 +1370,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun renderProductInfoP2Login(p2Login: ProductInfoP2Login) {
+        topAdsGetProductManage = p2Login.topAdsGetProductManage
         shopInfo?.let { updateWishlist(it, p2Login.isWishlisted) }
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
         isWishlisted = p2Login.isWishlisted
-        actionButtonView.renderData(p2Login.isExpressCheckoutType)
+
+        actionButtonView.renderData(p2Login.isExpressCheckoutType,hasTopAds())
     }
 
 
@@ -1475,8 +1477,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
             actionButtonView.renderData(!data.basic.isActive(),
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
-                            || shopInfo.allowManage), (hasTopAds()),
-                    data.preorder)
+                            || shopInfo.allowManage), data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
             valuePropositionView.renderData(shopInfo.goldOS)
@@ -1645,7 +1646,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productId = data.basic.id.toString()
         productInfo = data
         et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
-        topAdsGetProductManage = productInfoP1.topAdsGetProductManage
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
@@ -1749,8 +1749,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
-                        || shopInfo?.allowManage == true), hasTopAds(),
-                data.preorder)
+                        || shopInfo?.allowManage == true), data.preorder)
         actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()
     }
