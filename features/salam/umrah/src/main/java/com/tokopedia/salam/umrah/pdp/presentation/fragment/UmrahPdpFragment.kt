@@ -150,7 +150,10 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                 }
             }
 
-            REQUEST_CODE_LOGIN-> context?.let { startChatUmroh(it) }
+            REQUEST_CODE_LOGIN->
+                if (resultCode == Activity.RESULT_OK) {
+                    context?.let { startChatUmroh(it) }
+                }
         }
     }
 
