@@ -87,18 +87,6 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
-        <service
-            android:name="com.tokopedia.digital.product.service.USSDAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/config_accessibility_service"/>
-        </service>
-
     </application>
 
 </manifest>
