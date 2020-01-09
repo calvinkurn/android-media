@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.video
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -14,15 +15,17 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by6jegul on 02/12/19
+ * Created by jegul on 02/12/19
  */
-class VideoComponent(
+open class VideoComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initUiView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initUiView(container)
+
     private val cornerRadius = 16f.dpToPx()
 
     init {
@@ -45,7 +48,7 @@ class VideoComponent(
         return emptyFlow()
     }
 
-    private fun initUiView(container: ViewGroup): VideoView =
+    open fun initUiView(container: ViewGroup): VideoView =
             VideoView(container)
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

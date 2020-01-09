@@ -17,7 +17,7 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
         if (webSocketResponse.type.isEmpty()) return null
 
         when(webSocketResponse.type) {
-            PlaySocketType.TotalClick.value -> {
+            PlaySocketType.TotalLike.value -> {
                 return mapToTotalClick()
             }
             PlaySocketType.TotalView.value -> {

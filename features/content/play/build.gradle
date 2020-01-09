@@ -41,6 +41,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.dialog
+
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {
