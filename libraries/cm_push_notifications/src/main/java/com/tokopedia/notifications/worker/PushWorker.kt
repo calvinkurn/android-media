@@ -3,7 +3,6 @@ package com.tokopedia.notifications.worker
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.work.*
-import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.image.downloaderFactory.PARENT_DIR
@@ -102,14 +101,19 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
 
     companion object {
         fun schedulePeriodicWorker() {
-            val pushWorker = PeriodicWorkRequest
-                    .Builder(PushWorker::class.java, PERIODIC_TIME_INTERVAL_MINUTE, TimeUnit.MINUTES)
-                    .setConstraints(Constraints.NONE)
-                    .build()
-            WorkManager.getInstance().enqueueUniquePeriodicWork(
-                    PUSH_WORKER_UNIQUE_NAME,
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    pushWorker)
+            try {
+
+                val pushWorker = PeriodicWorkRequest
+                        .Builder(PushWorker::class.java, PERIODIC_TIME_INTERVAL_MINUTE, TimeUnit.MINUTES)
+                        .setConstraints(Constraints.NONE)
+                        .build()
+                WorkManager.getInstance().enqueueUniquePeriodicWork(
+                        PUSH_WORKER_UNIQUE_NAME,
+                        ExistingPeriodicWorkPolicy.REPLACE,
+                        pushWorker)
+            } catch (e: Exception) {
+
+            }
         }
     }
 }
