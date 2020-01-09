@@ -345,10 +345,16 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         bundle?.let {
             if (it.containsKey(BrowseProductRouter.EXTRA_CATEGORY_URL)) {
                 categoryUrl = it.getString(BrowseProductRouter.EXTRA_CATEGORY_URL, "")
-                val urlParser = URLParser(categoryUrl)
-                departmentId = urlParser.getDepIDfromURI(this)
-                departmentName = ""
-                searchNavContainer?.onFilterSelected(true)
+                if (categoryUrl != null && categoryUrl?.contains("categoryName")!!) {
+                    departmentId = URLParser.getPathSegment(0, categoryUrl)
+                    departmentName = ""
+                } else {
+                    val urlParser = URLParser(categoryUrl)
+                    departmentId = urlParser.getDepIDfromURI(this)
+                    departmentName = ""
+                    searchNavContainer?.onFilterSelected(true)
+                }
+
             }
 
             if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
