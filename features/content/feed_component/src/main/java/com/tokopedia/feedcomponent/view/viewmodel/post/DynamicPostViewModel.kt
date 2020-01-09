@@ -37,7 +37,7 @@ data class DynamicPostViewModel(
                 title.copy(),
                 header.copy(),
                 postTag,
-                footer,
+                footer.copy(),
                 caption,
                 contentList,
                 template,
