@@ -1,8 +1,6 @@
 package com.tokopedia.play.ui.video
 
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -57,9 +55,4 @@ open class VideoComponent(
 
     open fun initUiView(container: ViewGroup): VideoView =
             VideoView(container)
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    protected fun onDestroy() {
-        uiView.release()
-    }
 }
