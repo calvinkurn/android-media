@@ -17,8 +17,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.salam.umrah.R
@@ -26,19 +24,18 @@ import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutPilgrims
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutPilgrimsActivity
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
-import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahPilgrimsTitle
 import com.tokopedia.salam.umrah.common.data.UmrahPilgrimsTitleType
 import com.tokopedia.salam.umrah.common.util.CommonParam
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorianID
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorian
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorianID
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
+import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
+import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_umrah_checkout_contact_data.*
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_pilgrims.*
-import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -91,7 +88,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -297,7 +294,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
 
     fun initFirstNameAutoCompleteTv(context: Context) {
         travelContactArrayAdapter = TravelContactArrayAdapter(context,
-                com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(),
+                com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(),
                 object : TravelContactArrayAdapter.ContactArrayListener {
                     override fun getFilterText(): String {
                         return ac_umrah_checkout_pilgrims_contact_first_name.text.toString()
@@ -339,13 +336,12 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
 
 
     private fun renderPassengerTitle(passengerTitle: String) {
-        if (passengerTitle.equals(UmrahPilgrimsTitle.TUAN, true))
-            rv_umrah_checkout__pilgrims_title.selectChipByPosition(0)
-        else if (passengerTitle.equals(UmrahPilgrimsTitle.NYONYA, true))
-            rv_umrah_checkout__pilgrims_title.selectChipByPosition(1)
-        else if (passengerTitle.equals(UmrahPilgrimsTitle.NONA, true))
-            rv_umrah_checkout__pilgrims_title.selectChipByPosition(2)
-        else rv_umrah_checkout__pilgrims_title.onResetChip()
+        when {
+            passengerTitle.equals(UmrahPilgrimsTitle.TUAN, true) -> rv_umrah_checkout__pilgrims_title.selectChipByPosition(0)
+            passengerTitle.equals(UmrahPilgrimsTitle.NYONYA, true) -> rv_umrah_checkout__pilgrims_title.selectChipByPosition(1)
+            passengerTitle.equals(UmrahPilgrimsTitle.NONA, true) -> rv_umrah_checkout__pilgrims_title.selectChipByPosition(2)
+            else -> rv_umrah_checkout__pilgrims_title.onResetChip()
+        }
     }
 
 

@@ -2,8 +2,8 @@ package com.tokopedia.common.travel.widget
 
 import android.content.Context
 import android.graphics.Rect
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 
 /**
  * @author by jessica on 2019-09-16
