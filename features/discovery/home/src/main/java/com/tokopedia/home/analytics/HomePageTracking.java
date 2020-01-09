@@ -1477,8 +1477,7 @@ public class HomePageTracking {
         return list;
     }
 
-    public static HashMap<String,Object> getBannerImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
-        List<Map<String, Object>> listBanner = convertSliderBannerImpressionDataLayer(bannerOverlaySlides);
+    public static HashMap<String,Object> getBannerImpressionDataLayer(BannerSlidesModel bannerOverlaySlide) {
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
@@ -1487,7 +1486,7 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
-                                        listBanner
+                                        convertSliderBannerImpressionDataLayer(bannerOverlaySlide)
                                 )
                         )
                 )
@@ -1516,8 +1515,7 @@ public class HomePageTracking {
         );
     }
 
-    public static HashMap<String, Object> getBannerOverlayPersoImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
-        List<Object> listBanner = convertOverlaySliderBannerImpressionDataLayer(bannerOverlaySlides);
+    public static HashMap<String, Object> getBannerOverlayPersoImpressionDataLayer(BannerSlidesModel bannerOverlaySlide) {
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
@@ -1525,50 +1523,30 @@ public class HomePageTracking {
                 EVENT_LABEL, LABEL_EMPTY,
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
-                                PROMOTIONS, DataLayer.listOf(
-                                        listBanner
-                                )
+                                PROMOTIONS, convertOverlaySliderBannerImpressionDataLayer(bannerOverlaySlide)
                         )
                 )
         );
     }
 
-    private static List<Object> convertOverlaySliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
-        List<Object> list = new ArrayList<>();
-        if (bannerSlidesModels != null) {
-            for (int i = 0; i < bannerSlidesModels.size(); i++) {
-                BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
-                list.add(
-                        DataLayer.mapOf(
-                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
-                                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
-                                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
-                                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
-                        )
-                );
-            }
-        }
-        return list;
+    private static Map<String, Object> convertOverlaySliderBannerImpressionDataLayer(BannerSlidesModel bannerSlidesModel) {
+        return DataLayer.mapOf(
+                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
+                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
+                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
+                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
+                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
+        );
     }
 
-    private static List<Map<String, Object>> convertSliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        if (bannerSlidesModels != null) {
-            for (int i = 0; i < bannerSlidesModels.size(); i++) {
-                BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
-                list.add(
-                        DataLayer.mapOf(
-                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
-                                FIELD_NAME, VALUE_NAME_PROMO,
-                                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
-                                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
-                        )
-                );
-            }
-        }
-        return list;
+    private static Map<String, Object> convertSliderBannerImpressionDataLayer(BannerSlidesModel bannerSlidesModel) {
+        return DataLayer.mapOf(
+                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
+                FIELD_NAME, VALUE_NAME_PROMO,
+                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
+                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
+                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
+        );
     }
 
     public static Map<String, Object> getEnhanceImpressionDynamicIconHomePage(List<HomeIconItem> homeIconItem) {

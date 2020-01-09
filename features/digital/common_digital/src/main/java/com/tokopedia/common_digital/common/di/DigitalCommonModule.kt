@@ -59,7 +59,7 @@ class DigitalCommonModule {
     @DigitalCommonScope
     @Provides
     @DigitalCommonChuckQualifier
-    fun provideChuckInterceptory(@ApplicationContext context: Context): Interceptor {
+    fun provideChuckInterceptor(@ApplicationContext context: Context): Interceptor {
         return ChuckInterceptor(context)
     }
 

@@ -137,12 +137,12 @@ public class ClientNumberInputView extends LinearLayout {
 
     public void enableImageOperator(String imageUrl) {
         imgOperator.setVisibility(VISIBLE);
-        ImageHandler.LoadImage(this.imgOperator, imageUrl);
+        setImgOperator(imageUrl);
     }
 
     public void disableImageOperator() {
         imgOperator.setVisibility(GONE);
-        ImageHandler.LoadImage(this.imgOperator, "");
+        setImgOperator("");
     }
 
     public void setInputTypeNumber() {

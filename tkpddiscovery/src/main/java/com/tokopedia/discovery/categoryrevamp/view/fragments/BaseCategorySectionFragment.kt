@@ -15,6 +15,7 @@ import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
+import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -231,6 +232,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController?.initFilterController(searchParameter?.getSearchParameterHashMap(), initializedFilterList)
         initSelectedSort()
+        updateDimension()
     }
 
     private fun showSortTickIfSelected(): Boolean {
@@ -278,9 +280,29 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     fun setSelectedFilter(selectedFilter: HashMap<String, String>) {
         if (filterController == null || getFilters() == null) return
-
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController.initFilterController(selectedFilter, initializedFilterList)
+        updateDimension()
+
+    }
+
+    fun updateDimension() {
+        var param = ""
+        val filterParam = createParametersForQuery(getSelectedFilter())
+        val sortParam = createParametersForQuery(getSelectedSort())
+
+        if (filterParam.isNotEmpty()) {
+            param = filterParam
+        }
+
+        if (sortParam.isNotEmpty()) {
+            if (param.isNotEmpty()) {
+                param = "$param&$sortParam"
+            } else {
+                param = sortParam
+            }
+        }
+        getAdapter()?.setDimension(param)
     }
 
     protected fun addQuickFilter(option: Option, state: Boolean) {
@@ -477,5 +499,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController.initFilterController(params, initializedFilterList)
+    }
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): String {
+        return ParamMapToUrl.generateUrlParamString(parameters)
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -203,4 +204,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
+    @Override
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+
+    }
 }
