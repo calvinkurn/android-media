@@ -2,22 +2,18 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
 
 
@@ -25,7 +21,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDeta
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationDetailActivity extends BasePresenterActivity implements HasComponent {
+public class InboxReputationDetailActivity extends BaseSimpleActivity implements HasComponent {
 
     public static final String ARGS_POSITION = "ARGS_POSITION";
     public static final String ARGS_TAB = "ARGS_TAB";
@@ -33,28 +29,9 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     public static final String REPUTATION_ID = "reputation_id";
     public static final String CACHE_PASS_DATA = InboxReputationDetailActivity.class.getName() + "-passData";
 
+    @Nullable
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
+    protected Fragment getNewFragment() {
         int tab = -1;
         boolean isFromApplink = false;
         String reputationId = "0";
@@ -66,37 +43,12 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
             reputationId = getIntent().getExtras().getString(REPUTATION_ID, "");
         }
 
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(InboxReputationDetailFragment
-                .class.getSimpleName());
-        if (fragment == null) {
-            fragment = InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
-        }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container,
-                fragment,
-                fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+        return InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
     }
 
     @Override
     public BaseAppComponent getComponent() {
-        return getBaseAppComponent();
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     public static Intent getCallingIntent(Context context,
@@ -119,23 +71,4 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
                 .putExtras(extras);
     }
 
-    @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_500));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
-
-        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700),
-                    PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
-    }
 }

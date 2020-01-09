@@ -76,17 +76,16 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private static final int REQUEST_EDIT_REVIEW = 102;
     private static final int REQUEST_REPORT_REVIEW = 103;
 
-    public static final int REQUEST_CODE_ON_SUCCESS_REVIEW = 104;
-    public static final int PUAS_SCORE = 2; // FROM API
+    private static final int PUAS_SCORE = 2; // FROM API
 
     private RecyclerView listProduct;
     private SwipeToRefresh swipeToRefresh;
     private InboxReputationDetailAdapter adapter;
     private ShareReviewDialog shareReviewDialog;
     private CallbackManager callbackManager;
-    View mainView;
+    private View mainView;
 
-    TkpdProgressDialog progressDialog;
+    private TkpdProgressDialog progressDialog;
 
     @Inject
     InboxReputationDetailPresenter presenter;
@@ -97,8 +96,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Inject
     UserSessionInterface userSession;
 
-    String reputationId = "0";
-    int role = 0;
+    private String reputationId = "0";
+    private int role = 0;
 
     public static InboxReputationDetailFragment createInstance(int tab,
                                                                boolean isFromApplink,
@@ -158,7 +157,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void setToolbar(String title, String subtitle){
-        Toolbar toolbar = getActivity().findViewById(R.id.app_bar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         toolbar.setSubtitle(subtitle);
     }
@@ -216,8 +215,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetInboxDetail(Throwable throwable) {
-        if (getActivity() != null
-                && mainView != null)
+        if (getActivity() != null && mainView != null)
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, ErrorHandler.getErrorMessage(getContext(), throwable),
                     () -> presenter.getInboxDetail(
                             reputationId,
