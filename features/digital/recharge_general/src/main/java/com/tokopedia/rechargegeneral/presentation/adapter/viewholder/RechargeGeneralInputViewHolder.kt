@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment.Companion.INPUT_TYPE_FAVORITE_NUMBER
 import java.util.regex.Pattern
@@ -28,7 +29,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
                     inputView.hideErrorMessage()
                     if (input.isNotEmpty()) listener.onFinishInput(enquiryData.name, input, adapterPosition)
                 } else {
-                    inputView.setErrorMessage("Input tidak sesuai")
+                    inputView.setErrorMessage(getString(R.string.input_error_message))
                 }
             }
 

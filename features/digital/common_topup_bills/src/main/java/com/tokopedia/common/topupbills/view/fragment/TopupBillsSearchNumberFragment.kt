@@ -73,7 +73,6 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-//        setViewListener()
         searchInputNumber.searchTextView.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
     }
@@ -110,24 +109,6 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             searchInputNumber.searchTextView.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
-
-//    private fun setViewListener() {
-//        searchInputNumber.searchTextView.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
-//            if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                var orderClientNumber = findNumber(textView.text.toString(), numberListAdapter.clientNumbers)
-//                if (orderClientNumber != null && orderClientNumber.isFavorite) {
-//                    inputNumberActionType = InputNumberActionType.FAVORITE
-//                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
-//                } else {
-//                    inputNumberActionType = InputNumberActionType.MANUAL
-//                    orderClientNumber = TopupBillsFavNumberItem(clientNumber = textView.text.toString())
-//                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
-//                }
-//                return@OnEditorActionListener true
-//            }
-//            false
-//        })
-//    }
 
     private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TopupBillsFavNumberItem>()
