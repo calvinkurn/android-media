@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
@@ -27,6 +29,7 @@ class PinnedView(
                     .findViewById(R.id.cl_pinned)
 
     private val tvPinnedMessage: TextView = view.findViewById(R.id.tv_pinned_message)
+    private val tvPinnedAction: TextView = view.findViewById(R.id.tv_pinned_action)
 
     override val containerId: Int = view.id
 
@@ -50,10 +53,12 @@ class PinnedView(
         )
         tvPinnedMessage.text = spannableString
 
-        view.findViewById<TextView>(R.id.tv_pinned_action)
-                .setOnClickListener {
-                    listener.onPinnedActionClicked(this, pinnedMessage.applink, tvPinnedMessage.text.toString())
-                }
+        if (!pinnedMessage.applink.isNullOrEmpty()) {
+            tvPinnedAction.visible()
+            tvPinnedAction.setOnClickListener {
+                listener.onPinnedActionClicked(this, pinnedMessage.applink, tvPinnedMessage.text.toString())
+            }
+        } else tvPinnedAction.gone()
     }
 
     interface Listener {
