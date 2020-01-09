@@ -22,7 +22,7 @@
             android:id="@+id/search_top_bar"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_44"
+            android:layout_height="wrap_content"
             android:paddingTop="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_4"
             android:gravity="center_vertical"
@@ -32,7 +32,7 @@
             <View
                 android:id="@+id/guideline_search_bar"
                 android:layout_width="@dimen/dp_1"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_1"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -52,7 +52,7 @@
             <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/searchTextView"
                 android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_36"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:background="@drawable/autocomplete_bg_input"

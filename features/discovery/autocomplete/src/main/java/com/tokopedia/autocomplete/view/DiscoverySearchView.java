@@ -169,37 +169,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         TransitionManager.beginDelayedTransition(mSearchTopBar);
         constraintSet.applyTo(mSearchTopBar);
-
-        TransitionSet transitionSet = new TransitionSet();
-        Transition fade = new Fade(Fade.MODE_IN);
-        transitionSet.addTransition(fade);
-        TransitionManager.beginDelayedTransition(mSuggestionView, fade);
-    }
-
-    private void setContainerAnimation() {
-        ScaleAnimation anim = new ScaleAnimation(0.5f, 1.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f);
-        anim.setDuration(250);
-        mSearchSrcTextView.setAnimation(anim);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mSearchIcon.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-
-        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.autocomplete_anim_slide_left);
-        mBackBtn.setAnimation(animation);
-
-        animation = AnimationUtils.loadAnimation(mContext, R.anim.autocomplete_anim_fade_in);
-        mSuggestionView.setAnimation(animation);
     }
 
     private void initCompositeSubscriber() {
@@ -731,7 +700,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         } else {
             mVoiceBtn.setVisibility(GONE);
             if (!isVoiceAvailable()) {
-                setMargin(mSearchSrcTextView, convertDpToPx(8), 0, convertDpToPx(16), 0);
+                setMargin(mSearchSrcTextView, convertDpToPx(8), 0, convertDpToPx(12), 0);
             }
         }
     }
