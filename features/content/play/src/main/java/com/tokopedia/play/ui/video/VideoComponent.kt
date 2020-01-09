@@ -1,6 +1,8 @@
 package com.tokopedia.play.ui.video
 
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -45,4 +47,9 @@ class VideoComponent(
 
     private fun initUiView(container: ViewGroup): VideoView =
             VideoView(container)
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    protected fun onDestroy() {
+        uiView.release()
+    }
 }

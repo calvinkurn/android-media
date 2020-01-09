@@ -41,4 +41,8 @@ class VideoView(container: ViewGroup) : UIView(container) {
         rflVideoWrapper.invalidate()
         rflVideoWrapper.requestLayout()
     }
+
+    fun release(){
+        pvVideo.release()
+    }
 }

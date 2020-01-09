@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil
 import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
 import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
+import com.tokopedia.home.beranda.presentation.view.helper.setValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -48,9 +49,8 @@ class PlayCardViewHolder(
     private var playCardViewModel: PlayCardViewModel ?= null
 
     override fun bind(element: PlayCardViewModel) {
-        title.text = element.getChannel()?.header?.name ?: "Play Channel"
-        description.hide()
-        description.text = ""
+        title.setValue(element.getChannel()?.header?.name ?: "Play Channel")
+        description.setValue("")
 
         element.getPlayCardHome()?.let { model ->
             mVideoUrl = model.videoStream.config.streamUrl
@@ -88,7 +88,7 @@ class PlayCardViewHolder(
         }
     }
 
-    fun createHelper() {
+    private fun createHelper() {
         if(!ExoUtil.isDeviceHasRequirementAutoPlay(itemView.context)) return
 
         if(helper == null) {
@@ -102,10 +102,21 @@ class PlayCardViewHolder(
                     .create()
             helper?.playerPlay()
         }
-
         if(helper?.isPlayerNull() == true){
             helper?.createPlayer(false)
         }
+    }
+
+    fun resume(){
+        helper?.onActivityResume()
+        thumbnailView.hide()
+        errorMessage.hide()
+    }
+
+    fun pause(){
+        helper?.onActivityPause()
+        thumbnailView.show()
+        volumeContainer?.hide()
     }
 
     fun getHelper() = helper
@@ -118,6 +129,8 @@ class PlayCardViewHolder(
 
     override fun onPlayerPaused(currentWindowIndex: Int) {
         errorMessage.hide()
+        thumbnailView.show()
+        volumeContainer?.hide()
     }
 
     override fun onPlayerBuffering(currentWindowIndex: Int) {
@@ -129,12 +142,14 @@ class PlayCardViewHolder(
         progressBar.hide()
         errorMessage.text = errorString
         thumbnailView.show()
+        volumeContainer?.hide()
         errorMessage.show()
     }
 
     override fun releaseExoPlayerCalled() {
         thumbnailView.show()
         progressBar.hide()
+        volumeContainer?.hide()
     }
 
     companion object {

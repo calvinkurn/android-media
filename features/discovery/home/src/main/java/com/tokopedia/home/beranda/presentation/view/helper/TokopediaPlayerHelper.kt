@@ -207,6 +207,8 @@ class TokopediaPlayerHelper(
         mPlayer?.playWhenReady = false
         mPlayer?.addListener(this)
 
+        isPlayerPrepared = false
+
         preparePlayer()
     }
 
@@ -313,19 +315,19 @@ class TokopediaPlayerHelper(
             mPlayer?.release()
             mPlayer = null
         }
+        TokopediaPlayManager.deleteInstance()
     }
 
     override fun playerPause() {
         updateResumePosition()
         mPlayer?.playWhenReady = false
-        mPlayer = null
     }
 
     override fun playerPlay() {
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()){
             runBlocking {
                 launch {
-                    Thread.sleep(1000)
+                    Thread.sleep(3000)
                     mPlayer?.playWhenReady = true
                 }
             }
@@ -351,21 +353,20 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityResume() {
-        if (mPlayer == null) {
-            createPlayer(isToPrepareOnResume)
-        }
+        mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
+        mPlayer?.addListener(this)
+        exoPlayerView.setPlayer(mPlayer)
+        playerPlay()
     }
 
     override fun onActivityPause() {
-        if (Util.SDK_INT <= 23) {
-            releasePlayer()
-        }
+        mPlayer?.removeListener(this)
+        exoPlayerView.setPlayer(null)
+        mPlayer = null
     }
 
     override fun onActivityStop() {
-        if (Util.SDK_INT > 23) {
-            releasePlayer()
-        }
+        releasePlayer()
     }
 
     override fun updateVideoMuted() {
@@ -373,7 +374,7 @@ class TokopediaPlayerHelper(
         if (isVideoMuted) {
             mPlayer?.volume = 0f
         } else {
-            mPlayer?.volume = mTempCurrentVolume
+            mPlayer?.volume = 100f
         }
     }
 

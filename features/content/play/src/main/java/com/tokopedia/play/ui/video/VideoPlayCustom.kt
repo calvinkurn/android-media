@@ -97,17 +97,10 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         }
     }
 
-
-    fun getOverlayFrame() = overlayFrameLayout
-
-    fun getPlay() = player
-
-    fun getSurfaceView() = surfaceView
-
     fun setPlayer(player: Player?){
         if (this.player != null) {
-            this.player!!.removeListener(componentListener)
-            val oldVideoComponent = this.player!!.videoComponent
+            this.player?.removeListener(componentListener)
+            val oldVideoComponent = this.player?.videoComponent
             if (oldVideoComponent != null) {
                 oldVideoComponent.removeVideoListener(componentListener)
                 oldVideoComponent.clearVideoTextureView(surfaceView)
@@ -123,6 +116,18 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             }
             player.addListener(componentListener)
         }
+    }
+
+
+
+    fun release(){
+        player?.removeListener(componentListener)
+        clearSurface()
+    }
+
+    private fun clearSurface(){
+        surfaceView?.surfaceTextureListener = null
+        surfaceView = null
     }
 
     inner class ComponentListener : Player.EventListener, VideoListener, OnLayoutChangeListener {

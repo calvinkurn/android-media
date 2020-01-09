@@ -29,11 +29,9 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
 
    companion object{
        //without ticker
-       const val POSITION_GEOLOCATION_WITHOUT_TICKER = 3
        const val POSITION_HEADER_WITHOUT_TICKER = 1
 
        //with ticker
-       const val POSITION_GEOLOCATION_WITH_TICKER = 4
        const val POSITION_HEADER_WITH_TICKER = 2
 
        const val POSITION_UNDEFINED = -1
@@ -41,8 +39,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
    }
    private var mRecyclerView: RecyclerView? = null
    private var currentSelected = -1
-   private var isFirstItemPlayed = false
-   private var mLayoutManager: LinearLayoutManager? = null
+    private var mLayoutManager: LinearLayoutManager? = null
    private val retryModel: RetryModel = RetryModel()
    private val listPlay = mutableMapOf<Visitable<*>, Int>()
 
@@ -97,10 +94,9 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                             (getViewHolder(positions.first()) as PlayCardViewHolder).wantsToPlay()
                     ) {
                         onSelectedItemChanged(positions.first())
-                    } else {
-                        //if not any visible play, will reset
-                        onSelectedItemChanged(-1)
                     }
+
+                    if(positions.isEmpty()) onSelectedItemChanged(-1)
                 }
             }
         })
@@ -312,24 +308,22 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     // Activity LifeCycle
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    protected fun onResume() {
-        Timber.tag(HomeRecycleAdapter::class.java.name).i("onActivityResume")
-        for (exoPlayerHelper in getAllExoPlayers()) {
-            exoPlayerHelper.onActivityResume()
+    fun onResume() {
+        if(currentSelected != -1 && (getViewHolder(currentSelected) is PlayCardViewHolder)){
+            (getViewHolder(currentSelected) as PlayCardViewHolder).resume()
+            getExoPlayerByPosition(currentSelected)?.playerPlay()
         }
+    }
 
-        val newPlayer: TokopediaPlayerHelper? = getExoPlayerByPosition(currentSelected)
-        if(newPlayer == null && currentSelected != -1 && getViewHolder(currentSelected) is PlayCardViewHolder){
-            (getViewHolder(currentSelected) as PlayCardViewHolder).createHelper()
-        } else {
-            newPlayer?.preparePlayer()
-            newPlayer?.playerPlay()
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        if (currentSelected != -1 && (getViewHolder(currentSelected) is PlayCardViewHolder)) {
+            (getViewHolder(currentSelected) as PlayCardViewHolder).pause()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    protected fun onStop() {
-        Timber.tag(HomeRecycleAdapter::class.java.name).i("onActivityDestroy")
+    fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
             exoPlayerHelper.onActivityStop()
         }

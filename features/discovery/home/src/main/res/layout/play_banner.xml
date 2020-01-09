@@ -85,19 +85,20 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="4dp"
-        tools:visibility="gone"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/title_play"/>
     <TextView
         android:id="@+id/viewer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2382"
         android:textSize="12sp"
         android:textColor="@android:color/white"
         android:drawableLeft="@drawable/ic_chip_home_play_viewers"
         android:layout_marginStart="6dp"
         android:layout_marginLeft="6dp"
+        android:visibility="visible"
+        tools:text="2382"
         app:layout_goneMarginStart="16dp"
         app:layout_goneMarginLeft="16dp"
         app:layout_goneMarginBottom="25dp"
@@ -124,7 +125,7 @@
         app:layout_constraintBottom_toTopOf="@+id/title_description"
         app:layout_constraintEnd_toStartOf="@+id/play"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Review Australia fabulous vintage and green" />
+        tools:text="Review Australia fabulous vintage and green" />
     <TextView
         android:id="@+id/title_description"
         android:layout_width="wrap_content"
@@ -139,7 +140,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Yoenik Apparel" />
+        tools:text="Yoenik Apparel" />
 
     <ImageView
         android:id="@+id/play"

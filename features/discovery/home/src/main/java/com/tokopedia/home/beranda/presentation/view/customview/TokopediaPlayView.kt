@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.customview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Matrix
-import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -38,7 +37,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
     }
     private var componentListener: ComponentListener? = null
-    private var overlayFrameLayout: FrameLayout? = null
     private var bufferingView: View? = null
     private var contentFrame: AspectRatioFrameLayout? = null
     private var player: Player? = null
@@ -89,15 +87,14 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
     }
 
     private fun onContentAspectRatioChanged(
-            contentAspectRatio: Float,
+            aspectRatio: Float,
             contentFrame: AspectRatioFrameLayout?) {
-        contentFrame?.setAspectRatio(2/1f)
+        contentFrame?.setAspectRatio(aspectRatio)
     }
 
     private fun updateBuffering() {
         bufferingView?.let{
-            val showBufferingSpinner = player != null && player!!.playbackState == Player.STATE_BUFFERING && (showBuffering == SHOW_BUFFERING_ALWAYS
-                    || showBuffering == SHOW_BUFFERING_WHEN_PLAYING && player!!.playWhenReady)
+            val showBufferingSpinner = player != null && player?.playbackState == Player.STATE_BUFFERING && player?.playWhenReady == true
             bufferingView?.visibility = if (showBufferingSpinner) View.VISIBLE else View.GONE
         }
     }
@@ -106,48 +103,22 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         aspectRatioFrame.resizeMode = resizeMode
     }
 
-    private fun applyTextureViewRotation(textureView: TextureView, textureViewRotation: Int) {
-        val textureViewWidth = textureView.width.toFloat()
-        val textureViewHeight = textureView.height.toFloat()
-        if (textureViewWidth == 0f || textureViewHeight == 0f || textureViewRotation == 0) {
-            textureView.setTransform(null)
-        } else {
-            val transformMatrix = Matrix()
-            val pivotX = textureViewWidth / 2
-            val pivotY = textureViewHeight / 2
-            transformMatrix.postRotate(textureViewRotation.toFloat(), pivotX, pivotY)
-            // After rotation, scale the rotated texture to fit the TextureView size.
-            val originalTextureRect = RectF(0f, 0f, textureViewWidth, textureViewHeight)
-            val rotatedTextureRect = RectF()
-            transformMatrix.mapRect(rotatedTextureRect, originalTextureRect)
-
-            transformMatrix.postScale(
-                    textureViewWidth / rotatedTextureRect.width(),
-                    textureViewHeight / rotatedTextureRect.height(),
-                    pivotX,
-                    pivotY)
-            textureView.setTransform(transformMatrix)
-        }
-    }
-
     private fun applyCrop(textureView: TextureView, width: Float, height: Float): Float{
-        val mVideoHeight = height
-        val mVideoWidth = width
         val viewWidth = contentFrame?.width ?: 0
         val viewHeight = contentFrame?.height ?: 0
         var scaleX = 1.0f
         var scaleY = 1.0f
 
-        if (mVideoWidth > viewWidth && mVideoHeight > viewHeight) {
-            scaleX = mVideoWidth / viewWidth
-            scaleY = mVideoHeight / viewHeight
-        } else if (mVideoWidth < viewWidth && mVideoHeight < viewHeight) {
-            scaleY = viewWidth / mVideoWidth
-            scaleX = viewHeight / mVideoHeight
-        } else if (viewWidth > mVideoWidth) {
-            scaleY = viewWidth / mVideoWidth / (viewHeight / mVideoHeight)
-        } else if (viewHeight > mVideoHeight) {
-            scaleX = viewHeight / mVideoHeight / (viewWidth / mVideoWidth)
+        if (width > viewWidth && height > viewHeight) {
+            scaleX = width / viewWidth
+            scaleY = height / viewHeight
+        } else if (width < viewWidth && height < viewHeight) {
+            scaleY = viewWidth / width
+            scaleX = viewHeight / height
+        } else if (viewWidth > width) {
+            scaleY = viewWidth / width / (viewHeight / height)
+        } else if (viewHeight > height) {
+            scaleX = viewHeight / height / (viewWidth / width)
         }
 
         // Calculate pivot points, in our case crop from center
@@ -161,17 +132,12 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         return if (height == 0f || width == 0f) 1f else (contentFrame?.width?.toFloat() ?: 1f) / (contentFrame?.height?.toFloat() ?: 1f)
     }
-
-    fun getOverlayFrame() = overlayFrameLayout
-
-    fun getPlay() = player
-
     fun getSurfaceView() = surfaceView
 
     fun setPlayer(player: Player?){
         if (this.player != null) {
-            this.player!!.removeListener(componentListener)
-            val oldVideoComponent = this.player!!.videoComponent
+            this.player?.removeListener(componentListener)
+            val oldVideoComponent = this.player?.videoComponent
             if (oldVideoComponent != null) {
                 oldVideoComponent.removeVideoListener(componentListener)
                 oldVideoComponent.clearVideoTextureView(surfaceView)
@@ -228,18 +194,8 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
             updateBuffering()
         }
 
-        // OnLayoutChangeListener implementation
-        override fun onLayoutChange(
-                view: View,
-                left: Int,
-                top: Int,
-                right: Int,
-                bottom: Int,
-                oldLeft: Int,
-                oldTop: Int,
-                oldRight: Int,
-                oldBottom: Int) {
-//            applyTextureViewRotation(view as TextureView, textureViewRotation)
+        override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+
         }
     }
 }
