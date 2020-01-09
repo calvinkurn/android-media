@@ -10,6 +10,9 @@ import com.tokopedia.changepassword.data.ChangePasswordUrl
 import com.tokopedia.changepassword.domain.ChangePasswordUseCase
 import com.tokopedia.changepassword.domain.mapper.ChangePasswordMapper
 import com.tokopedia.changepassword.view.presenter.ChangePasswordPresenter
+import com.tokopedia.logout.data.LogoutApi
+import com.tokopedia.logout.domain.mapper.LogoutMapper
+import com.tokopedia.logout.domain.usecase.LogoutUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.DebugInterceptor
@@ -83,8 +86,10 @@ class ChangePasswordDependencyInjector {
             val changePasswordUseCase = ChangePasswordUseCase(changePasswordApi,
                     changePasswordMapper)
 
+            val logoutApi: LogoutApi = retrofit.create(LogoutApi::class.java)
+            val logoutUseCase = LogoutUseCase(logoutApi, LogoutMapper(), userSession as UserSession)
 
-            return ChangePasswordPresenter(changePasswordUseCase, userSession)
+            return ChangePasswordPresenter(changePasswordUseCase, logoutUseCase, userSession)
         }
     }
 }

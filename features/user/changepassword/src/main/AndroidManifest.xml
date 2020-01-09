@@ -7,7 +7,7 @@
       android:supportsRtl="true">
         <activity
             android:name=".view.activity.ChangePasswordActivity"
-            android:label="@string/title_activity_change_password"
+            android:label="@string/change_password_app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.White">

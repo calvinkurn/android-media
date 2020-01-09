@@ -3,6 +3,7 @@ package com.tokopedia.changepassword.view.listener
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.user.session.UserSession
 
 /**
  * @author by nisie on 7/25/18.
@@ -29,16 +30,17 @@ interface ChangePasswordContract {
 
         fun onErrorConfirmPass(errorMessage: String?)
 
+        fun onSuccessLogout()
 
     }
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun submitChangePasswordForm(oldPassword: String,
-                                     newPassword: String,
-                                     confirmPassword: String)
+        fun submitChangePasswordForm(oldPassword: String, newPassword: String, confirmPassword: String)
 
         fun isValidForm(oldPassword: String, newPassword: String, confirmPassword: String): Boolean
+
+        fun doLogout(userSession: UserSession)
 
     }
 }

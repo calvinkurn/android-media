@@ -1,5 +1,7 @@
 package com.tokopedia.changepassword.view.fragment
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -8,9 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.changepassword.ChangePasswordRouter
@@ -27,13 +31,6 @@ import kotlinx.android.synthetic.main.fragment_change_password.*
  */
 class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment() {
     lateinit var presenter: ChangePasswordPresenter
-
-    companion object {
-
-        fun newInstance() = ChangePasswordFragment()
-
-    }
-
     lateinit var oldPasswordTextField : TextFieldUnify
     lateinit var newPasswordTextField : TextFieldUnify
     lateinit var confPasswordTextField : TextFieldUnify
@@ -72,7 +69,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         forgot_pass_tv?.setOnClickListener {
             onGoToForgotPass()
         }
-//        prepareHint()
         disableSubmitButton()
     }
 
@@ -94,122 +90,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        setViewListener()
-//    }
-//
-//    private fun setViewListener() {
-//        old_password_et.addTextChangedListener(watcherOldPassword(wrapper_old))
-//        new_password_et.addTextChangedListener(watcherNewPassword(wrapper_new))
-//        new_password_confirmation_et.addTextChangedListener(watcherConfPassword(wrapper_conf))
-//    }
-//
-//    private fun prepareHint() {
-//        showOldPasswordHint()
-//        showNewPasswordHint()
-//        showConfirmPasswordHint()
-//    }
-//
-//    private fun showConfirmPasswordHint() {
-//        setWrapperHint(wrapper_conf, "")
-//    }
-//
-//    private fun showNewPasswordHint() {
-//        setWrapperHint(wrapper_new, resources.getString(R.string.minimal_6_character))
-//
-//    }
-//
-//    private fun showOldPasswordHint() {
-//        setWrapperHint(wrapper_old, resources.getString(R.string.insert_password_not_other_pass))
-//    }
-//
-//    private fun setWrapperHint(wrapper: TkpdHintTextInputLayout?, hint: String?) {
-//        wrapper?.run {
-//            setErrorEnabled(false)
-//            setHelperEnabled(true)
-//            setHelper(hint)
-//        }
-//    }
-//
-//    private fun watcherOldPassword(wrapper: TkpdHintTextInputLayout): TextWatcher {
-//        return object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-//
-//            }
-//
-//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-//                if (s.isNotEmpty()) {
-//                    setWrapperError(wrapper, null)
-//                }
-//            }
-//
-//            override fun afterTextChanged(text: Editable) {
-//                showOldPasswordHint()
-//
-//                if (text.isNotEmpty()) {
-//                    setWrapperError(wrapper, null)
-//                }
-//                checkIsValidForm()
-//            }
-//        }
-//    }
-//
-//    private fun watcherConfPassword(wrapper: TkpdHintTextInputLayout): TextWatcher {
-//        return object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-//
-//            }
-//
-//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-//                if (s.isNotEmpty()) {
-//                    setWrapperError(wrapper, null)
-//                }
-//            }
-//
-//            override fun afterTextChanged(text: Editable) {
-//                if (text.isNotEmpty()) {
-//                    setWrapperError(wrapper, null)
-//                }
-//                checkIsValidForm()
-//            }
-//        }
-//    }
-//
-//    private fun watcherNewPassword(wrapper: TkpdHintTextInputLayout): TextWatcher {
-//        return object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-//
-//            }
-//
-//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-//                if (s.isNotEmpty()) {
-//                    setWrapperError(wrapper, null)
-//                }
-//            }
-//
-//            override fun afterTextChanged(text: Editable) {
-//                showNewPasswordHint()
-//
-//                if (text.isNotEmpty()) {
-//                    setWrapperError(wrapper, null)
-//                }
-//                checkIsValidForm()
-//            }
-//        }
-//    }
-
     private fun checkIsValidForm() {
-//        val oldPassword = old_password_et.text.toString().trim()
-//        val newPassword = new_password_et.text.toString().trim()
-//        val confirmPassword = new_password_confirmation_et.text.toString().trim()
-
-//        if (presenter.isValidForm(oldPassword, newPassword, confirmPassword)) {
-//            enableSubmitButton()
-//        } else {
-//            disableSubmitButton()
-//        }
-
         val oldPassword = oldPasswordTextField.textFieldInput.text.toString()
         val newPassword = newPasswordTextField.textFieldInput.text.toString()
         val confirmPassword = confPasswordTextField.textFieldInput.text.toString()
@@ -236,31 +117,8 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         submit_button.isEnabled = true
     }
 
-    private fun resetError() {
-//        showOldPasswordHint()
-//        showNewPasswordHint()
-//        showConfirmPasswordHint()
-//        setWrapperError(wrapper_old, null)
-//        setWrapperError(wrapper_new, null)
-//        setWrapperError(wrapper_conf, null)
-    }
-
-//    private fun setWrapperError(wrapper: TkpdHintTextInputLayout, s: String?) {
-//        if (s.isNullOrBlank()) {
-//            wrapper.error = s
-//            wrapper.setErrorEnabled(false)
-//        } else {
-//            wrapper.setErrorEnabled(true)
-//            wrapper.setHint("")
-//            wrapper.error = s
-//        }
-//    }
-
-
     private fun onSubmitClicked() {
         showLoading()
-        resetError()
-
         presenter.submitChangePasswordForm(
                 oldPasswordTextField.textFieldInput.text.toString(),
                 newPasswordTextField.textFieldInput.text.toString(),
@@ -268,6 +126,50 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     }
 
+    override fun onSuccessLogout() {
+
+
+
+        val stickyPref = activity?.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
+        stickyPref?.edit()?.clear()?.apply()
+
+        val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    private fun sendBroadcast() {
+        val intent = Intent(BROADCAST_LOGOUT)
+        context?.let {
+            LocalBroadcastManager.getInstance(it).sendBroadcast(intent)
+        }
+    }
+    // NOTE :: To logout after change password
+
+//    @Override
+//    public void logoutToHome(Activity activity) {
+//        //From DialogLogoutFragment
+//        if (activity != null) {
+//            new GlobalCacheManager().deleteAll();
+//            PersistentCacheManager.instance.delete();
+//            Router.clearEtalase(activity);
+//            TrackApp.getInstance().getMoEngage().logoutEvent();
+//            SessionHandler.clearUserData(activity);
+//            NotificationModHandler notif = new NotificationModHandler(activity);
+//            notif.dismissAllActivedNotifications();
+//            NotificationModHandler.clearCacheAllNotification(activity);
+//
+//            invalidateCategoryMenuData();
+//            onLogout(getApplicationComponent());
+//            mIris.setUserId("");
+//            setTetraUserId("");
+//
+//            Intent intent = getHomeIntent(activity);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//            AppWidgetUtil.sendBroadcastToAppWidget(activity);
+//        }
+//    }
 
     override fun showLoading() {
         progressBar.visibility = View.VISIBLE
@@ -292,8 +194,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onErrorOldPass(errorMessage: String?) {
         hideLoading()
-//        setWrapperHint(wrapper_old, "")
-//        setWrapperError(wrapper_old, errorMessage)
         oldPasswordTextField.setError(true)
         errorMessage?.let{
             oldPasswordTextField.setMessage(it)
@@ -302,8 +202,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onErrorNewPass(errorMessage: String?) {
         hideLoading()
-//        setWrapperHint(wrapper_new, "")
-//        setWrapperError(wrapper_new, errorMessage)
         newPasswordTextField.setError(true)
         errorMessage?.let{
             newPasswordTextField.setMessage(it)
@@ -312,8 +210,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onErrorConfirmPass(errorMessage: String?) {
         hideLoading()
-//        setWrapperHint(wrapper_conf, "")
-//        setWrapperError(wrapper_conf, errorMessage)
         confPasswordTextField.setError(true)
         errorMessage?.let{
             confPasswordTextField.setMessage(it)
@@ -362,5 +258,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 }
             }
         }
+    }
+
+    companion object {
+        private const val BROADCAST_LOGOUT = "BROADCAST_LOGOUT"
+        private const val STICKY_LOGIN_PREF = "sticky_login_widget.pref"
     }
 }

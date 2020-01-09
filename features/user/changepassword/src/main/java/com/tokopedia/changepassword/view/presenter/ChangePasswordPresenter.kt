@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.changepassword.domain.ChangePasswordUseCase
 import com.tokopedia.changepassword.domain.model.ChangePasswordDomain
 import com.tokopedia.changepassword.view.listener.ChangePasswordContract
+import com.tokopedia.logout.domain.model.LogoutDomain
+import com.tokopedia.logout.domain.usecase.LogoutUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -12,10 +14,11 @@ import rx.Subscriber
 /**
  * @author by nisie on 7/25/18.
  */
-class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordUseCase,
-                              val userSession: UserSessionInterface) :
-        ChangePasswordContract.Presenter,
-        BaseDaggerPresenter<ChangePasswordContract.View>() {
+class ChangePasswordPresenter(
+        private val changePasswordUseCase: ChangePasswordUseCase,
+        private val logoutUseCase: LogoutUseCase,
+        val userSession: UserSessionInterface
+) : ChangePasswordContract.Presenter, BaseDaggerPresenter<ChangePasswordContract.View>() {
 
     override fun submitChangePasswordForm(oldPassword: String,
                                           newPassword: String,
@@ -62,8 +65,30 @@ class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordU
                 && confirmPassword.isNotBlank()
     }
 
+    override fun doLogout(userSession: UserSession) {
+        logoutUseCase.execute(
+                LogoutUseCase.getParam(userSession), object : Subscriber<LogoutDomain>() {
+
+            override fun onCompleted() {
+            }
+
+            override fun onNext(t: LogoutDomain?) {
+                if (t?.is_success as Boolean && isViewAttached) {
+                    view.onSuccessLogout()
+                }
+            }
+
+            override fun onError(e: Throwable?) {
+                if (isViewAttached) {
+                    view.onErrorLogout(e?.message as String)
+                }
+            }
+        })
+    }
+
     override fun detachView() {
         super.detachView()
         changePasswordUseCase.unsubscribe()
+        logoutUseCase.unsubscribe()
     }
 }
