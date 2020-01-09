@@ -15,4 +15,8 @@ data class PostTagItemButtonCTA(
         @SerializedName("isDisabled")
         @Expose
         val isDisabled: Boolean = true
-)
+) {
+        fun copy(): PostTagItemButtonCTA {
+                return PostTagItemButtonCTA(text, textDisabled, isDisabled)
+        }
+}

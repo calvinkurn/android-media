@@ -32,17 +32,21 @@ data class DynamicPostViewModel(
     }
 
     fun copy(): DynamicPostViewModel {
+        val newTrackingList: MutableList<TrackingViewModel> = arrayListOf()
+        for (track in tracking) {
+            newTrackingList.add(track.copy())
+        }
         return DynamicPostViewModel(
                 id,
                 title.copy(),
                 header.copy(),
-                postTag,
+                postTag.copy(),
                 footer.copy(),
-                caption,
+                caption.copy(),
                 contentList,
                 template,
-                trackingPostModel,
-                tracking,
+                trackingPostModel.copy(),
+                newTrackingList,
                 feedType,
                 activityName,
                 impressHolder

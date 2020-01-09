@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.util
+package com.tokopedia.feedcomponent.util.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel

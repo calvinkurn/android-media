@@ -8,4 +8,8 @@ class TrackingViewModel(
         val viewURL: String = "",
         val type: String = "",
         val source: String = ""
-)
+) {
+    fun copy(): TrackingViewModel {
+        return TrackingViewModel(clickURL, viewURL, type, source)
+    }
+}

@@ -78,7 +78,6 @@ import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
-import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
@@ -92,7 +91,7 @@ import com.tokopedia.feedplus.view.listener.FeedPlus
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
-import com.tokopedia.feedplus.view.util.copy
+import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
