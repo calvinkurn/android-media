@@ -10,9 +10,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_info_detail.view.*
 
-class ProductGeneralItemAdapter(var listOfData: List<Content>) : RecyclerView.Adapter<ProductGeneralItemAdapter.ProductGeneralItemViewHolder>() {
+class ProductGeneralItemAdapter(var listOfData: List<Content>, val name: String, val listener: DynamicProductDetailListener) : RecyclerView.Adapter<ProductGeneralItemAdapter.ProductGeneralItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductGeneralItemViewHolder {
         return ProductGeneralItemViewHolder(LayoutInflater.from(parent.context)
@@ -28,6 +29,9 @@ class ProductGeneralItemAdapter(var listOfData: List<Content>) : RecyclerView.Ad
     inner class ProductGeneralItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(data: Content) {
+            view.setOnClickListener {
+                listener.onInfoClicked(name)
+            }
             if (data.icon.isNotEmpty()) {
                 ImageHandler.loadImage(view.context, view.ic_info_item, data.icon, R.drawable.ic_loading_image)
                 view.ic_info_item.show()

@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -29,12 +30,14 @@ class PageErrorViewHolder(val view: View,
         /*
          * If error code is product not found, button would be "Go To Homepage"
          */
-        if (element.errorCode == GlobalError.PAGE_NOT_FOUND.toString()) {
-            view.global_error_pdp.setActionClickListener {
+        when {
+            element.errorCode == GlobalError.PAGE_NOT_FOUND.toString() -> view.global_error_pdp.setActionClickListener {
                 listener.goToHomePageClicked()
             }
-        } else {
-            view.global_error_pdp.setActionClickListener {
+            element.shouldShowTobacoError -> view.global_error_pdp.setActionClickListener {
+                RouteManager.route(view.context, element.tobacoErrorData?.url)
+            }
+            else -> view.global_error_pdp.setActionClickListener {
                 listener.onRetryClicked(true)
             }
         }

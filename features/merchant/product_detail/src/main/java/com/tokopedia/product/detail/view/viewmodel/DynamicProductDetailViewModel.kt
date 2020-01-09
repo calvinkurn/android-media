@@ -76,7 +76,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                              private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
-
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
         get() = _productLayout
@@ -542,8 +541,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, forceRefresh: Boolean): ProductDetailDataModel {
         getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey)
-        getPdpLayoutUseCase.isUserActive = isUserSessionActive
-        getPdpLayoutUseCase.isUserHasShop = isUserHasShop
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         return getPdpLayoutUseCase.executeOnBackground()
     }

@@ -28,8 +28,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
                 }
     }
 
-    var isUserActive = false
-    var isUserHasShop = false
     var requestParams = RequestParams.EMPTY
     var forceRefresh = false
     val request by lazy {

@@ -26,18 +26,19 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
 
         element.data.run {
-            view.rv_general_info.adapter = ProductGeneralItemAdapter(this)
+            view.rv_general_info.adapter = ProductGeneralItemAdapter(this, element.name, listener)
+
+            if (element.isApplink) {
+                view.pdp_arrow_right.show()
+            } else {
+                view.pdp_arrow_right.hide()
+            }
+
         }
 
         view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
-        view.general_info_container.setOnClickListener {
+        view.setOnClickListener {
             listener.onInfoClicked(element.name)
-        }
-
-        if (element.isApplink) {
-            view.pdp_arrow_right.show()
-        } else {
-            view.pdp_arrow_right.hide()
         }
 
         if (element.parentIcon.isNotEmpty()) {
@@ -56,6 +57,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     private fun showLoading() {
+        view.pdp_arrow_right.visibility = View.GONE
         view.pdp_info_title.hide()
         view.rv_general_info.hide()
         view.titleShimmering.show()

@@ -2,24 +2,19 @@ package com.tokopedia.carouselproductcard
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Point
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
-import com.tokopedia.carouselproductcard.common.CarouselProductPool
 import com.tokopedia.carouselproductcard.helper.CarouselProductCardDefaultDecorator
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
-import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.carouselproductcard.model.CarouselProductCardModel
+import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.productcard.v2.ProductCardModel
+import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 
 class CarouselProductCardView: BaseCustomView {
 
@@ -27,11 +22,7 @@ class CarouselProductCardView: BaseCustomView {
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
 
-    /**
-     * If you're working with recyclerview, give it dedicated carouselProductPool for better performance
-     * because the calculation process of product card height can be expensive
-     */
-    var carouselProductPool: CarouselProductPool = CarouselProductPool()
+    var position: Int = 0
 
     constructor(context: Context): super(context) {
         init()
@@ -91,7 +82,6 @@ class CarouselProductCardView: BaseCustomView {
             it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
         }
 
-        val knownPosition = carouselProductPool.carouselAdaptersPositions[carouselModelId]
 
         carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
 
@@ -104,9 +94,10 @@ class CarouselProductCardView: BaseCustomView {
             submitProductCardCarouselData(it, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
         }
 
+
         carouselLayoutManager?.run {
             if (this is LinearLayoutManager) {
-                scrollToPositionWithOffset(knownPosition?:0,
+                scrollToPositionWithOffset(position?:0,
                         context.applicationContext.resources.getDimensionPixelOffset(
                                 R.dimen.dp_16
                         ))
@@ -160,22 +151,13 @@ class CarouselProductCardView: BaseCustomView {
     /**
      * Use this function onViewRecycled to retains scroll position
      */
-    fun onViewRecycled(carouselModelId: String) {
-        if (carouselModelId.isEmpty()) return
+    fun onViewRecycled() {
         carouselLayoutManager?.let {
             if (it is LinearLayoutManager) {
                 val positionState = it.findFirstCompletelyVisibleItemPosition()
-                carouselProductPool.carouselAdaptersPositions[carouselModelId] = positionState
+                position = positionState
             }
         }
-    }
-
-    /**
-     * Invalidate recyclerview to produce new adapter
-     */
-    fun invalidateRecyclerView() {
-        carouselProductPool.carouselAdapters.clear()
-        carouselLayoutManager = null
     }
 
     /**

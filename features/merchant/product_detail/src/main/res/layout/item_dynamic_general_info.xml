@@ -27,11 +27,11 @@
     <ImageView
         android:id="@+id/pdp_arrow_right"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/rv_general_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
-        android:visibility="invisible"
+        android:visibility="gone"
         tools:visibility="visible"
         app:srcCompat="@drawable/ic_arrow_right_info" />
 

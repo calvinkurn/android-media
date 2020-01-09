@@ -48,7 +48,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.carouselproductcard.common.CarouselProductPool
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -207,9 +206,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
-    private val carouselProductPool: CarouselProductPool by lazy {
-        CarouselProductPool()
-    }
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -247,7 +243,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         showLoading()
         updateStickyContent()
         loadProductData(true)
-        carouselProductPool.release()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -524,7 +519,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.moveToWarehouseResult.removeObservers(this)
         viewModel.moveToEtalaseResult.removeObservers(this)
         viewModel.clear()
-        carouselProductPool.release()
         super.onDestroy()
     }
 
@@ -532,7 +526,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ProductInfoViewHolder
      */
     override fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String) {
-        val etalaseApplink = getString(R.string.pdp_etalase_applink_builder, viewModel.shopInfo?.shopCore?.domain)
+        //TODO CHANGE THIS TO PROD
+        val etalaseApplink = getString(R.string.staging_pdp_etalase_applink_builder, viewModel.shopInfo?.shopCore?.domain)
         val categoryApplink = getString(R.string.staging_pdp_category_applink)
         when {
             applink.startsWith(etalaseApplink) -> {
@@ -644,10 +639,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String) {
         productDetailTracking.eventRecommendationImpression(
                 position, recomItem, viewModel.isUserSessionActive, pageName, title)
-    }
-
-    override fun getPdpCarouselPool(): CarouselProductPool {
-        return carouselProductPool
     }
 
     override fun loadTopads() {

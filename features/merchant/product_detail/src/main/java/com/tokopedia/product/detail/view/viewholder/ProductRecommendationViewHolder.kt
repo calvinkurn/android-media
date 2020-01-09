@@ -27,10 +27,6 @@ class ProductRecommendationViewHolder(private val view: View,
         val LAYOUT = R.layout.item_dynamic_recommendation
     }
 
-    init {
-        view.rvProductRecom.carouselProductPool = listener.getPdpCarouselPool()
-    }
-
     override fun bind(element: ProductRecommendationDataModel) {
         this.carouselModelId = element.name
         view.rvProductRecom.gone()
@@ -96,7 +92,7 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     override fun onViewRecycled() {
-        view.rvProductRecom.onViewRecycled(carouselModelId?:"")
+        view.rvProductRecom.onViewRecycled()
         super.onViewRecycled()
     }
 }

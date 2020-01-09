@@ -163,6 +163,7 @@
     <string name="pdp_installment_desc">Lihat Semua Metode</string>
 
     <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
+    <string name="pdp_category_applink">https://staging.tokopedia.com/p/</string>
     <string name="staging_pdp_category_applink">https://staging.tokopedia.com/p/</string>
     <string name="staging_pdp_etalase_applink_builder">https://staging.tokopedia.com/%s/etalase</string>
 
