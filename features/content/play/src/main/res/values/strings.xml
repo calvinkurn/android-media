@@ -12,7 +12,6 @@
     <string name="play_message_socket_reconnect">Connecting&#8230;</string>
 
     <plurals name="play_likes">
-        <item quantity="zero">%s like</item>
         <item quantity="one">%s like</item>
         <item quantity="other">%s likes</item>
     </plurals>

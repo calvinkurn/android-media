@@ -27,7 +27,6 @@ class StatsView(container: ViewGroup) : UIView(container) {
     private val tvTotalView = view.findViewById<Typography>(R.id.tv_total_views)
 
     fun setTotalLikes(totalLikes: TotalLikeUiModel) {
-        if (totalLikes.totalLike == 0) totalLikes.totalLike = 1
         tvTotalLikes.text = view.context.resources.getQuantityString(R.plurals.play_likes,
                 totalLikes.totalLike, totalLikes.totalLikeFormatted)
     }
