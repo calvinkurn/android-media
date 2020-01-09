@@ -18,6 +18,7 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
     private companion object {
 
         const val START_ANIMATED_PROGRESS = 0f
+        const val END_ANIMATED_PROGRESS = 1f
 
     }
 
@@ -65,6 +66,10 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
     fun playLikeAnimation(shouldLike: Boolean) {
         if (!shouldLike) animationLike.progress = 0f
         else animationLike.playAnimation()
+    }
+
+    fun setIsLiked(isLiked: Boolean) {
+        animationLike.progress = if (isLiked) END_ANIMATED_PROGRESS else START_ANIMATED_PROGRESS
     }
 
     interface Listener {

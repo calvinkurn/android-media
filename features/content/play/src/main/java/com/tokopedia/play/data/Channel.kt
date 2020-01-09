@@ -55,6 +55,12 @@ data class Channel(
         @SerializedName("moderator_thumb_url")
         val moderatorThumbUrl: String = "",
 
+        @SerializedName("content_id")
+        val contentId: Int = 0,
+
+        @SerializedName("content_type")
+        val contentType: Int = 1,
+
         @SerializedName("video_stream")
         var videoStream: VideoStream = VideoStream(), // TODO("testing purposes")
 

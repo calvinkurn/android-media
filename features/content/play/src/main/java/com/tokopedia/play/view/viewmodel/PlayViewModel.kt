@@ -11,7 +11,9 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.GetChannelInfoUseCase
+import com.tokopedia.play.domain.GetIsLikeUseCase
 import com.tokopedia.play.domain.GetPartnerInfoUseCase
+import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -34,6 +36,8 @@ class PlayViewModel @Inject constructor(
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
+        private val getTotalLikeUseCase: GetTotalLikeUseCase,
+        private val getIsLikeUseCase: GetIsLikeUseCase,
         private val playSocket: PlaySocket,
         private val userSessionInterface: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
@@ -54,6 +58,12 @@ class PlayViewModel @Inject constructor(
 
     private val _observableNewChat = MutableLiveData<PlayChat>()
     val observableNewChat: LiveData<PlayChat> = _observableNewChat
+
+    private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
+    val observableTotalLikes: LiveData<TotalLikeUiModel> = _observableTotalLikes
+
+    private val _observableIsLikeContent = MutableLiveData<Boolean>()
+    val observableIsLikeContent: LiveData<Boolean> = _observableIsLikeContent
 
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
     val observableTotalViews: LiveData<TotalViewUiModel> = _observableTotalViews
@@ -91,9 +101,11 @@ class PlayViewModel @Inject constructor(
     }
 
     var isLive: Boolean = false
+    var contentId: Int = 0
+    var contentType: Int = 0
 
     init {
-        initMockChat()
+//        initMockChat()
     }
 
     fun startCurrentVideo() {
@@ -130,6 +142,7 @@ class PlayViewModel @Inject constructor(
 //                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             setStateLiveOrVod(channel)
+            setContentIdAndType(channel)
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
@@ -143,10 +156,27 @@ class PlayViewModel @Inject constructor(
             _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = mapEvent(channel)
+
+            val totalLike = getTotalLikes(channel.contentId, channel.contentType)
+            _observableTotalLikes.value = mapTotalLikes(totalLike)
+
+            val isLiked= getIsLike(channel.contentId, channel.contentType)
+            _observableIsLikeContent.value = isLiked
+
         }) {
             //TODO("Change it later")
             if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
+    }
+
+    private suspend fun getTotalLikes(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
+        getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
+        getTotalLikeUseCase.executeOnBackground()
+    }
+
+    private suspend fun getIsLike(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
+        getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
+        getIsLikeUseCase.executeOnBackground()
     }
 
     fun destroy() {
@@ -167,8 +197,6 @@ class PlayViewModel @Inject constructor(
     private fun getPartnerInfo(channel: Channel) {
         val partnerType = PartnerType.getTypeByValue(channel.partnerType)
         val partnerId = channel.partnerId
-        if (partnerType == PartnerType.SHOP) getShopPartnerInfo(partnerId)
-
         if (partnerType == PartnerType.ADMIN) {
             _observablePartnerInfo.value = PartnerInfoUiModel(
                     id = partnerId,
@@ -177,22 +205,14 @@ class PlayViewModel @Inject constructor(
                     isFollowed = true
             )
             return
-        }
-
-        if (partnerType == PartnerType.INFLUENCER) {
-            _observablePartnerInfo.value = PartnerInfoUiModel(
-                    id = partnerId,
-                    name = "", //TODO("Get From Kol Api")
-                    type = partnerType,
-                    isFollowed = false //TODO("Get From Kol Api")
-            )
-            return
+        } else {
+            getPartnerInfo(partnerId, partnerType)
         }
     }
 
-    private fun getShopPartnerInfo(shopId: Long) = launchCatchError(block = {
+    private fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = launchCatchError(block = {
         val response = withContext(dispatchers.io) {
-            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(shopId.toString())
+            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
             getPartnerInfoUseCase.executeOnBackground()
         }
 
@@ -213,7 +233,7 @@ class PlayViewModel @Inject constructor(
                 }
                 when (result) {
                     is TotalLike -> {
-
+                        _observableTotalLikes.value = mapTotalLikes(result)
                     }
                     is TotalView -> {
                         _observableTotalViews.value = mapTotalViews(result)
@@ -260,6 +280,11 @@ class PlayViewModel @Inject constructor(
         isLive = channel.videoStream.isLive
     }
 
+    private fun setContentIdAndType(channel: Channel) {
+        contentId = channel.contentId
+        contentType = channel.contentType
+    }
+
     private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
             videoStream = mapVideoStream(channel.videoStream, channel.isActive),
@@ -295,8 +320,11 @@ class PlayViewModel @Inject constructor(
     private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList)
     private fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
 
+    private fun mapTotalLikes(totalLikeString: String) = TotalLikeUiModel(totalLikeString)
+    private fun mapTotalLikes(totalLike: TotalLike) = mapTotalLikes(totalLike.totalLikeFormatted)
+
     private fun mapTotalViews(totalViewString: String) = TotalViewUiModel(totalViewString)
-    private fun mapTotalViews(totalView: TotalView) = mapTotalViews(totalView.totalView)
+    private fun mapTotalViews(totalView: TotalView) = mapTotalViews(totalView.totalViewFormatted)
 
     private fun mapPartnerInfoFromShop(shopInfo: ShopInfo) = PartnerInfoUiModel(
             id = shopInfo.shopCore.shopId.toLong(),
@@ -319,6 +347,7 @@ class PlayViewModel @Inject constructor(
 
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
 
+    //TODO(Remove, ONLY FOR TESTING)
     private fun initMockChat() {
         launch(dispatchers.io) {
 

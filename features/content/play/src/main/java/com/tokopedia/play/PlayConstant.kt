@@ -13,7 +13,6 @@ const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
 const val KEY_GROUPCHAT_PREFERENCES = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter"
 const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
 
-const val PLAY_GET_VIDEO_STREAM = "${PLAY_GET_CHANNEL_INFO_V5}/video_stream"
 const val PLAY_GET_TOTAL_LIKES = "${PLAY_GET_CHANNEL_INFO_V5}/lope_lope"
 
 const val PARAM_SEND_TYPE = "type"

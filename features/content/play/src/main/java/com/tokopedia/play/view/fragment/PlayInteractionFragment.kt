@@ -212,13 +212,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeTotalLikes() {
-        viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is  Success -> {
-                    setTotalLikes(it.data.totalClick)
-                }
-            }
-        })
+        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer(::setTotalLikes))
     }
 
     private fun observeTotalViews() {
@@ -257,6 +251,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.observableLikeContent.observe(this, Observer {
             if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
+            }
+        })
+
+        playViewModel.observableIsLikeContent.observe(this, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.IsLikedContent(it)
+                        )
             }
         })
     }
@@ -501,21 +505,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int, @IdRes pinnedComponentId: Int) {
+        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
-
-//            val layoutParams = container.findViewById<View>(id).layoutParams as ConstraintLayout.LayoutParams
-//            layoutParams.constrainedHeight = true
 
             constraintSet.apply {
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, resources.getDimensionPixelOffset(R.dimen.dp_8))
                 connect(id, ConstraintSet.BOTTOM, quickReplyComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
-
-//                constrainMinHeight(id, ConstraintSet.WRAP_CONTENT)
-//                constrainMaxHeight(id, 114f.dpToPx().toInt())
             }
 
             constraintSet.applyTo(container)
@@ -624,7 +622,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutVideoControl(container, videoControlComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId)
         layoutChat(container, sendChatComponentId, likeComponentId)
-        layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId, pinnedComponentId)
+        layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId)
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId)
         layoutStats(container, statsComponentId, pinnedComponentId)
         layoutPlayButton(container, playButtonComponentId)
@@ -668,12 +666,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
 
-    private fun setTotalLikes(totalLikes: String) {
+    private fun setTotalLikes(totalLikes: TotalLikeUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetTotalLikes(totalLikes)
+                            ScreenStateEvent.SetTotalLikes(totalLikes.totalLike)
                     )
         }
     }
@@ -781,7 +779,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
-        viewModel.doLikeUnlike(channelId, shouldLike)
+        viewModel.doLikeUnlike(playViewModel.contentId,
+                playViewModel.contentType,
+                shouldLike,
+                playViewModel.isLive)
+
         sendEventLikeContent(shouldLike)
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
     }
@@ -824,7 +826,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         val chatListView = view?.findViewById<View>(chatListComponent.getContainerId())
         val chatListViewTotalHeight = if (chatListView != null) {
-            val height = resources.getDimensionPixelSize(R.dimen.play_max_chat_height)
+            val height = resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
             val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         } else 0
