@@ -4,6 +4,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.oldpage.di.module.OldShopPageModule;
 import com.tokopedia.shop.oldpage.di.scope.OldShopPageScope;
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
+import com.tokopedia.shop.pageheader.presentation.ShopPageFragment;
 
 import dagger.Component;
 
@@ -15,5 +16,6 @@ import dagger.Component;
 public interface OldShopPageComponent {
 
     void inject(ShopPageActivity shopInfoActivity);
+    void inject(ShopPageFragment shopPageFragment);
 
 }

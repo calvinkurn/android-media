@@ -10,7 +10,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/menu_action_info"
+        android:id="@+id/menu_action_shop_info"
         android:title="@string/shop_menu_action_store_info"
         android:icon="@drawable/ic_shop_info"
         app:showAsAction="always" />

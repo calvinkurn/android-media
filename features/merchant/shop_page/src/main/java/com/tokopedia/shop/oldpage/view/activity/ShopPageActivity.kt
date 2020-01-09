@@ -210,17 +210,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        remoteConfig = FirebaseRemoteConfigImpl(this)
+        shopPageTracking = ShopPageTrackingBuyer(
+                TrackingQueue(this))
         super.onCreate(savedInstanceState)
         if (isNewShopPageEnabled())
             return
         GraphqlClient.init(this)
         initInjector()
-        remoteConfig = FirebaseRemoteConfigImpl(this)
         cartLocalCacheHandler = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-        shopPageTracking = ShopPageTrackingBuyer(
-                TrackingQueue(this))
-
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
 
@@ -402,7 +401,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     //todo need to  change
-    private fun isNewShopPageEnabled() = false
+    private fun isNewShopPageEnabled() = true
 //            remoteConfig.getBoolean(ENABLE_NEW_SHOP_PAGE, true)
 
     private fun initInjector() {
@@ -412,8 +411,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun getNewFragment(): Fragment? {
         return if (isNewShopPageEnabled()) {
-            val shopPageActivityIntentData = intent.extras
-            ShopPageFragment.initInstance(shopPageActivityIntentData)
+            ShopPageFragment.initInstance()
         } else {
             null
         }
@@ -428,11 +426,15 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        if (isNewShopPageEnabled())
+            return true
         menuInflater.inflate(R.menu.menu_shop_page, menu)
         return true
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (isNewShopPageEnabled())
+            return true
         val userSession = UserSession(this)
         if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
             menu?.removeItem(R.id.action_cart)

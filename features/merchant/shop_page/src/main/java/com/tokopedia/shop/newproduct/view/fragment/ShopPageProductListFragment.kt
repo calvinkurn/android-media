@@ -53,6 +53,7 @@ import com.tokopedia.shop.newproduct.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.ShopPageFragment
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -806,8 +807,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             updateScrollListenerState(hasNextPage)
         }
         shopProductAdapter.notifyDataSetChanged()
-        if (activity is ShopPageActivity) {
-            (activity as? ShopPageActivity)?.stopPerformanceMonitor()
+        if (parentFragment is ShopPageFragment) {
+            (parentFragment as? ShopPageFragment)?.stopPerformanceMonitor()
         }
     }
 
