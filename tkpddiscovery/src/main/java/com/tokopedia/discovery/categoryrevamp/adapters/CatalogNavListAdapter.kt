@@ -27,6 +27,8 @@ class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
 
     var isShimmer: Boolean = false
 
+    override fun setDimension(dimension: String) {
+    }
 
     override fun getTypeFactory(): BaseProductTypeFactory {
         return catalogTypeFactory

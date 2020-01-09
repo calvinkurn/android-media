@@ -27,7 +27,6 @@ android {
 
 dependencies {
     // Feature
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
@@ -43,7 +42,6 @@ dependencies {
     implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tkpdsession)
-    implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -55,7 +53,6 @@ dependencies {
     // Library
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.collapsingTabLayout)
     implementation project(rootProject.ext.libraries.coreNetwork)
@@ -83,6 +80,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.banner
 
     // Tkpd internal
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
