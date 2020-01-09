@@ -12,8 +12,8 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.chatlist.adapter.ChatAdapter
 import com.tokopedia.play.ui.chatlist.itemdecoration.ChatListItemDecoration
-import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.custom.ChatScrollDownView
+import com.tokopedia.play.view.uimodel.PlayChatUiModel
 import timber.log.Timber
 
 /**
@@ -55,7 +55,7 @@ class ChatListView(
     private val adapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             csDownView.showIndicatorRed(rvChatList.canScrollDown)
-            if (!csDownView.isVisible) {
+            if (!csDownView.isVisible || chatAdapter.getItem(chatAdapter.lastIndex).isSelfMessage) {
                 rvChatList.postDelayed({
                     rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
                     Timber.tag("ChatList").d("Smooth Scroll to Position ${chatAdapter.lastIndex}")
@@ -86,7 +86,7 @@ class ChatListView(
         view.hide()
     }
 
-    fun showChat(chat: PlayChat) {
+    fun showChat(chat: PlayChatUiModel) {
         chatAdapter.addChat(chat)
     }
 

@@ -3,6 +3,8 @@
     <corners
         android:topLeftRadius="@dimen/dp_12"
         android:bottomLeftRadius="@dimen/dp_12"
+        android:topRightRadius="@dimen/dp_12"
+        android:bottomRightRadius="@dimen/dp_12"
         />
     <solid android:color="@color/play_pinned_chat_background"/>
 </shape>
