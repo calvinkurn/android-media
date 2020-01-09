@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 
 
 /**
@@ -106,7 +107,7 @@ fun View.hideLoading() {
     try {
         this.findViewById<View>(R.id.loadingView)!!.hide()
     } catch (e: NullPointerException) {
-        e.debugTrace()
+        Timber.d(e)
     }
 }
 
@@ -129,7 +130,7 @@ fun View.hideLoadingTransparent() {
     try {
         this.findViewById<View>(R.id.loadingTransparentView)!!.hide()
     } catch (e: NullPointerException) {
-        e.debugTrace()
+        Timber.d(e)
     }
 }
 

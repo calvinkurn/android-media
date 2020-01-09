@@ -9,38 +9,33 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.view.mapper.PostStatisticMapper
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract
 import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetailSubscriber
 import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
-import com.tokopedia.feedcomponent.view.mapper.PostStatisticMapper
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.kotlin.extensions.view.debugTrace
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase
-
-import java.util.ArrayList
-
-import javax.inject.Inject
-
 import rx.Subscriber
+import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 27/07/18.
@@ -318,8 +313,7 @@ class KolPostDetailPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                e.debugTrace()
-
+                Timber.d(e)
             }
         })
     }

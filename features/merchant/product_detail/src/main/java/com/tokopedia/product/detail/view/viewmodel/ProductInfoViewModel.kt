@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Intent
-import androidx.collection.ArrayMap
 import android.text.TextUtils
 import android.util.SparseArray
+import androidx.collection.ArrayMap
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -21,7 +21,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -85,6 +84,7 @@ import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -233,7 +233,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             p2Shop
         }
@@ -429,7 +429,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP2.productSpecificationResponse = productSpesification
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             productInfoP2
         }
@@ -478,7 +478,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     .getCartType.data.cartType
         }
     } catch (t: Throwable) {
-        t.debugTrace()
+        Timber.d(t)
     }
 
             p2Login
@@ -535,7 +535,7 @@ private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: Strin
         }
 
     } catch (t: Throwable) {
-        t.debugTrace()
+        Timber.d(t)
     }
     productInfoP3
 }
@@ -647,7 +647,7 @@ fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
     trackAffiliateUseCase.execute({
         //no op
     }) {
-        it.debugTrace()
+        Timber.d(it)
     }
 }
 

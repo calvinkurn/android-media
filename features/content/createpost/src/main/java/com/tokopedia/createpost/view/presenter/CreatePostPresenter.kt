@@ -15,7 +15,6 @@ import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.twitter_share.TwitterManager
@@ -25,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -116,7 +116,7 @@ class CreatePostPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        e?.debugTrace()
+                        Timber.d(e)
                     }
                 }
         )
