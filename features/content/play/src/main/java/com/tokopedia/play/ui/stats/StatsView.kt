@@ -27,7 +27,8 @@ class StatsView(container: ViewGroup) : UIView(container) {
 
     fun setTotalLikes(totalLikes: String) {
         tvTotalLikes.text = if (totalLikes.toIntOrZero() > 1)
-            "$totalLikes Likes" else "$totalLikes Like"
+            "$totalLikes ${view.context.getString(R.string.play_likes)}"
+        else "$totalLikes ${view.context.getString(R.string.play_likes)}"
     }
 
     fun setTotalViews(totalView: TotalViewUiModel) {

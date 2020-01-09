@@ -6,6 +6,8 @@
     <string name="play_live">Live</string>
     <string name="play_follow">Follow</string>
     <string name="play_following">Following</string>
+    <string name="play_like">Like</string>
+    <string name="play_likes">Likes</string>
     <string name="play_try_again">Coba Lagi</string>
     <string name="play_watch_mode">Watch Mode</string>
     <string name="play_message_socket_error">We are having trouble connecting with the server</string>
