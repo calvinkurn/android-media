@@ -20,6 +20,7 @@ import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.video.VideoComponent
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -50,10 +51,13 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private val job: Job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + dispatchers.main
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var dispatchers: CoroutineDispatcherProvider
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayVideoViewModel
