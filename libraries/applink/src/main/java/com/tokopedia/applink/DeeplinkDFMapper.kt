@@ -31,6 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -190,6 +191,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DFM_USER, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_SALAM, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_SALAM, R.string.title_salam))
+            add(DFP({ it.startsWith(NOTIFICATION) }, DFM_USER, R.string.title_notification_center))
         }
     }
 
