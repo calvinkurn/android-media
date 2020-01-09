@@ -3,11 +3,11 @@ package com.tokopedia.play.view.type
 /**
  * Created by jegul on 02/01/20
  */
-enum class KeyboardState {
+sealed class KeyboardState {
 
-    Shown,
-    Hidden;
+    data class Shown(val estimatedKeyboardHeight: Int) : KeyboardState()
+    object Hidden : KeyboardState()
 
     val isShown: Boolean
-        get() = this == Shown
+        get() = this is Shown
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.play.ui.videocontrol
 
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -31,16 +33,24 @@ class VideoControlComponent(
                             is ScreenStateEvent.VideoPropertyChanged -> {
                                 uiView.run {
                                     if (it.videoProp.type.isLive) uiView.hide()
-                                    else uiView.show()
+                                    else if (it.videoProp.type.isVod) uiView.show()
                                 }
                             }
                             is ScreenStateEvent.SetVideo -> {
                                 uiView.setPlayer(it.videoPlayer)
                             }
-                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.VideoStreamChanged -> {
+                                if (it.videoStream.videoType.isLive) uiView.hide()
+                                else if (it.videoStream.videoType.isVod) uiView.show()
+                            }
                         }
                     }
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        uiView.onDestroy()
     }
 
     override fun getContainerId(): Int {

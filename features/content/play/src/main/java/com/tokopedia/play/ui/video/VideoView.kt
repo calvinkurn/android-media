@@ -32,6 +32,11 @@ class VideoView(container: ViewGroup) : UIView(container) {
         view.hide()
     }
 
+    fun onDestroy() {
+        pvVideo.release()
+        pvVideo.setPlayer(null)
+    }
+
     fun setPlayer(exoPlayer: ExoPlayer) {
         pvVideo.setPlayer(exoPlayer)
     }
@@ -40,9 +45,5 @@ class VideoView(container: ViewGroup) : UIView(container) {
         rflVideoWrapper.setCornerRadius(cornerRadius)
         rflVideoWrapper.invalidate()
         rflVideoWrapper.requestLayout()
-    }
-
-    fun release(){
-        pvVideo.release()
     }
 }

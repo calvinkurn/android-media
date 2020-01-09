@@ -20,6 +20,7 @@ import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.video.VideoComponent
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -50,10 +51,13 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private val job: Job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + dispatchers.main
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var dispatchers: CoroutineDispatcherProvider
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayVideoViewModel
@@ -74,12 +78,12 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
         val view = inflater.inflate(R.layout.fragment_play_video, container, false)
         initComponents(view as ViewGroup)
         return view
@@ -92,6 +96,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVideoProperty()
         observeOneTapOnboarding()
         observeKeyboardState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancel()
     }
 
     //region observe
@@ -156,6 +165,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
         return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
     private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {

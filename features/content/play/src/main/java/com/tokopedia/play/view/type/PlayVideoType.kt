@@ -9,5 +9,8 @@ enum class PlayVideoType(val value: String) {
     Unknown("unknown");
 
     val isLive: Boolean
-    get() = this == Live
+        get() = this == Live
+
+    val isVod: Boolean
+        get() = this == VOD
 }

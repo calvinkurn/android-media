@@ -4,4 +4,8 @@
     <declare-styleable name="RoundedFrameLayout">
         <attr name="cornerRadius" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="MaximumHeightRecyclerView">
+        <attr name="maximumHeight" format="dimension"/>
+    </declare-styleable>
 </resources>

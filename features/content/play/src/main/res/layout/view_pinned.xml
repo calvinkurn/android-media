@@ -7,7 +7,6 @@
         android:id="@+id/cl_pinned"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_goneMarginBottom="@dimen/dp_0"
         tools:layout_width="match_parent"
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
