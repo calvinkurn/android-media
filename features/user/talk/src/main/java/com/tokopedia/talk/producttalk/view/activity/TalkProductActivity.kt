@@ -72,7 +72,7 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             val productId = extras.getString(PRODUCT_ID, "")
 
-            return RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK)
+            return RouteManager.getIntent(context, ApplinkConst.PRODUCT_TALK)
                         .apply {
                             data = uri.build()
                             putExtras(extras)

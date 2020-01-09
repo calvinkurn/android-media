@@ -656,7 +656,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK)
+                val intent = RouteManager.getIntent(context, ApplinkConst.TALK_DETAIL)
                 intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
                 intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId)
                 intent.putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_INBOX)

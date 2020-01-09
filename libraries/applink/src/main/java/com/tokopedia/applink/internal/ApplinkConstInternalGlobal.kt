@@ -132,9 +132,9 @@ object ApplinkConstInternalGlobal {
     // TalkProductActivity
     // tokopedia-android-internal://global/product-talk
     @JvmField
-    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk?shopId={shopId}"
+    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk"
     @JvmField
-    val PARAM_SHOP_ID = "shopId"
+    val PARAM_SHOP_ID = "shop_id"
 
     // TalkProductActivity
     // tokopedia-android-internal://global/product-talk
@@ -151,7 +151,7 @@ object ApplinkConstInternalGlobal {
     // AddTalkActivity
     // tokopedia-android-internal://global/add-talk
     @JvmField
-    val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
+    val ADD_TALK = "$INTERNAL_GLOBAL/add-talk?product_id={product_id}"
 
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender

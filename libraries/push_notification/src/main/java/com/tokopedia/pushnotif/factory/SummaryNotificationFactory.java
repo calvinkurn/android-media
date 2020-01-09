@@ -6,6 +6,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
@@ -73,7 +74,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
     private String getGenericApplinks(int notficationType) {
         if (notficationType == Constant.NotificationId.TALK) {
-            return ApplinkConst.TALK;
+            return ApplinkConstInternalGlobal.INBOX_TALK;
         } else {
             return ApplinkConst.TOPCHAT_IDLESS;
         }

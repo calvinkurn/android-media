@@ -200,9 +200,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     shopViewModel.isMyShop(shopId),
                     CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1, goldOS.isGold == 1))
 
-           RouteManager.route(context, ApplinkConstInternalGlobal.SHOP_TALK, shopId)
-//                    RouteManager.getIntent(context, ApplinkConst.SHOP_TALK, shopId) ?: return@run
-//            startActivity(talkIntent)
+           val talkIntent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SHOP_TALK).apply {
+               putExtra(ApplinkConstInternalGlobal.PARAM_SHOP_ID, shopId)
+           }
+            startActivity(talkIntent)
         }
     }
 

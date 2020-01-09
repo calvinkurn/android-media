@@ -20,6 +20,7 @@ public interface ApplinkConst {
     String HOST_CATEGORY_P = "p";
     String MESSAGE = "tokopedia://message";
     String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
+    String TALK_ADD = "tokopedia://talk/{product_id}";
     String TALK = "tokopedia://talk";
     String TALK_DETAIL = "tokopedia://talk/{talk_id}";
     String RIDE = "tokopedia://ride/uber";

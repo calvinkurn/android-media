@@ -17,7 +17,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
@@ -127,9 +126,9 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         super.onViewCreated(view, savedInstanceState)
 
         savedInstanceState?.run {
-            shopId = savedInstanceState.getString(ShopTalkActivity.EXTRA_SHOP_ID, "")
+            shopId = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, "")
         } ?: arguments?.run {
-            shopId = getString(ShopTalkActivity.EXTRA_SHOP_ID, "")
+            shopId = getString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, "")
         } ?: activity?.run {
             finish()
         }
@@ -242,7 +241,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK)
+                val intent = RouteManager.getIntent(context, ApplinkConst.TALK_DETAIL)
                 intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
                 intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId)
                 intent.putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_SHOP)
@@ -533,7 +532,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(ShopTalkActivity.EXTRA_SHOP_ID, shopId)
+        outState.putString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, shopId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

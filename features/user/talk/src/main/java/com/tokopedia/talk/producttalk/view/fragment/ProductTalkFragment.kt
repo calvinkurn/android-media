@@ -19,7 +19,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
@@ -221,7 +220,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
                 goToLogin()
                 return
             }
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_TALK)
+            val intent = RouteManager.getIntent(this, ApplinkConst.TALK_ADD)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId)
             this@ProductTalkFragment.startActivityForResult(intent, REQUEST_CREATE_TALK)
         }
@@ -366,7 +365,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK)
+                val intent = RouteManager.getIntent(context, ApplinkConst.TALK_DETAIL)
                 intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
                 intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId)
                 intent.putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_PDP)
