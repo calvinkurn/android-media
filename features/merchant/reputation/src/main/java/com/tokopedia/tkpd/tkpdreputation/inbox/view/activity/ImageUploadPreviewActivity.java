@@ -67,4 +67,9 @@ public class ImageUploadPreviewActivity extends BaseSimpleActivity {
             super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        toolbar.setPadding(0,0,20,0);
+    }
 }

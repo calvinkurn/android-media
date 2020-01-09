@@ -3,15 +3,14 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFilterFragment;
@@ -21,7 +20,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFrag
  * @author by nisie on 8/21/17.
  */
 
-public class InboxReputationFilterActivity extends BasePresenterActivity {
+public class InboxReputationFilterActivity extends BaseSimpleActivity {
 
     public interface ResetListener {
         void resetFilter();
@@ -39,33 +38,20 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
         return intent;
     }
 
+    @Nullable
     @Override
-    protected void setupURIPass(Uri data) {
+    protected Fragment getNewFragment() {
+        String timeFilter = getIntent().getStringExtra(InboxReputationFilterFragment
+                .SELECTED_TIME_FILTER);
+        String statusFilter = getIntent().getStringExtra(InboxReputationFilterFragment
+                .SELECTED_SCORE_FILTER);
+        int tab = getIntent().getIntExtra(InboxReputationFragment
+                .PARAM_TAB, -1);
 
-    }
+        Fragment fragment = InboxReputationFilterFragment.createInstance(timeFilter, statusFilter, tab);
+        listener = (InboxReputationFilterFragment) fragment;
 
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        return fragment;
     }
 
     @Override
@@ -94,59 +80,9 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
             return super.onOptionsItemSelected(item);
     }
 
-
     @Override
-    protected void initView() {
-        String timeFilter = getIntent().getStringExtra(InboxReputationFilterFragment
-                .SELECTED_TIME_FILTER);
-        String statusFilter = getIntent().getStringExtra(InboxReputationFilterFragment
-                .SELECTED_SCORE_FILTER);
-        int tab = getIntent().getIntExtra(InboxReputationFragment
-                .PARAM_TAB, -1);
-
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false);
-        }
-
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                (InboxReputationFilterFragment
-                        .class.getSimpleName());
-        if (fragment == null) {
-            fragment = InboxReputationFilterFragment.createInstance(timeFilter, statusFilter, tab);
-        }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container,
-                fragment,
-                fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
-
-        listener = (InboxReputationFilterFragment) fragment;
-    }
-
-    @Override
-    protected void setViewListener() {
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
         toolbar.setPadding(0,0,20,0);
     }
 }

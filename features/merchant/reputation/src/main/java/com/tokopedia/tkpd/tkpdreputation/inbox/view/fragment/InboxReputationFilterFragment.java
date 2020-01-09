@@ -101,16 +101,13 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         adapter = InboxReputationFilterAdapter.createInstance(getContext(),this, listOption);
         list.setAdapter(adapter);
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent data = new Intent();
-                data.putExtra(SELECTED_TIME_FILTER, timeFilter);
-                data.putExtra(SELECTED_SCORE_FILTER, scoreFilter);
-                getActivity().setResult(Activity.RESULT_OK, data);
-                getActivity().finish();
+        saveButton.setOnClickListener(view -> {
+            Intent data = new Intent();
+            data.putExtra(SELECTED_TIME_FILTER, timeFilter);
+            data.putExtra(SELECTED_SCORE_FILTER, scoreFilter);
+            getActivity().setResult(Activity.RESULT_OK, data);
+            getActivity().finish();
 
-            }
         });
     }
 
