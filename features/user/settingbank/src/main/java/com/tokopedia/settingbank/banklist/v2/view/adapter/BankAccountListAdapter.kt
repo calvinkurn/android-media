@@ -61,7 +61,6 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
             is BankAccountViewHolder -> holder.bind(bankList[position], bankAccountClickListener)
             is BankTNCViewHolder -> holder.bind(templateData)
         }
-
     }
 }
 

@@ -13,8 +13,6 @@ import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.view.fragment.AddBankFragment
 import com.tokopedia.settingbank.banklist.v2.view.fragment.OnBankSelectedListener
 
-const val ARG_BANK_DATA = "arg_bank_data"
-
 class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>, OnBankSelectedListener {
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
@@ -32,6 +30,7 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
     }
 
     companion object {
+        const val ARG_BANK_DATA = "arg_bank_data"
         fun createIntent(context: Context, bank: Bank): Intent {
             return Intent(context, AddBankActivity::class.java).apply {
                 putExtra(ARG_BANK_DATA, bank)
@@ -52,4 +51,5 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
             }
         }
     }
+
 }

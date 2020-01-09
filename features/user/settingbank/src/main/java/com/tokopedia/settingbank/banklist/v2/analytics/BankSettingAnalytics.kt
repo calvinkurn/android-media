@@ -167,8 +167,6 @@ class BankSettingAnalytics {
         const val E_ACTION_SELANJUTNYA_CLICK = "click selanjutnya"
         const val E_LABEL_SELANJUTNYA_FAMILY = "Family"
         const val E_LABEL_SELANJUTNYA_COMPANY = "Company"
-        const val E_LABEL_SELANJUTNYA_OTHER = "Others"
-
 
         const val E_ACTION_ON_CONFIRM_ACCOUNT_OPTION_SELECTED = "click rekening perusahaan"
         const val E_ACTION_CONFIRM_MY_ACCOUNT = "click ya rekening saya"

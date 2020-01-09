@@ -23,7 +23,7 @@ import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.*
-import com.tokopedia.settingbank.banklist.v2.view.activity.ARG_BANK_DATA
+import com.tokopedia.settingbank.banklist.v2.view.activity.AddBankActivity
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.*
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.settingbank.banklist.v2.view.widgets.BankTNCBottomSheet
@@ -71,8 +71,8 @@ class AddBankFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            if (it.containsKey(ARG_BANK_DATA))
-                arguments?.getParcelable<Bank>(ARG_BANK_DATA)?.let { bank ->
+            if (it.containsKey(AddBankActivity.ARG_BANK_DATA))
+                arguments?.getParcelable<Bank>(AddBankActivity.ARG_BANK_DATA)?.let { bank ->
                     this.bank = bank
                 }
         }
@@ -111,6 +111,7 @@ class AddBankFragment : BaseDaggerFragment() {
             when (it) {
                 is OnTNCSuccess -> openTNCBottomSheet(it.templateData)
                 is OnTNCError -> showErrorOnUI(it.throwable, null)
+                null->{}
             }
 
         })

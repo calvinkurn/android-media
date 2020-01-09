@@ -50,6 +50,8 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     private val DOC_TYPE_FAMILY = 2
     private val DOC_TYPE_OTHER = 3
 
+    private val MAX_FILE_SIZE = 2048
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
@@ -172,7 +174,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         context?.let {
             val builder = ImagePickerBuilder(pickerTitle,
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY, 2048,
+                    GalleryType.IMAGE_ONLY, MAX_FILE_SIZE,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                     ImagePickerEditorBuilder(
                             intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
