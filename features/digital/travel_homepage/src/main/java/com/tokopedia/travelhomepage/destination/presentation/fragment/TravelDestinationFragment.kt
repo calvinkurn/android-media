@@ -32,10 +32,9 @@ import kotlinx.android.synthetic.main.layout_image_slider.view.*
 import android.widget.LinearLayout
 import android.graphics.Point
 import android.os.Build
-import android.widget.FrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
-
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.usecase.coroutines.Fail
 
 /**
  * @author by jessica on 2019-12-20
@@ -65,6 +64,11 @@ OnViewHolderBindListener{
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_DESTINATION_WEB_URL, webUrl)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_travel_homepage_destination, container, false)
     }
@@ -80,6 +84,8 @@ OnViewHolderBindListener{
                     renderLayout()
                     destinationViewModel.getInitialList()
                 }
+
+                is Fail -> showNetworkErrorLayout()
             }
         })
 
@@ -87,12 +93,27 @@ OnViewHolderBindListener{
             clearAllData()
             it?.run { renderList(this) }
         })
+
+        destinationViewModel.isAllError.observe(this, Observer {
+            it?.let { isAllError ->
+                if (isAllError) showNetworkErrorLayout()
+            }
+        })
+    }
+
+    private fun showNetworkErrorLayout() {
+        NetworkErrorHelper.showEmptyState(context, view?.rootView) { destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+
+        if (savedInstanceState != null) {
+            webUrl = savedInstanceState.getString(SAVED_DESTINATION_WEB_URL, "")
+        }
 
         destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
         setUpContentPeekSize()
@@ -199,6 +220,9 @@ OnViewHolderBindListener{
     }
 
     companion object {
+
+        const val SAVED_DESTINATION_WEB_URL = "webUrl"
+
         fun getInstance(webUrl: String): TravelDestinationFragment = TravelDestinationFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_DESTINATION_WEB_URL, webUrl)

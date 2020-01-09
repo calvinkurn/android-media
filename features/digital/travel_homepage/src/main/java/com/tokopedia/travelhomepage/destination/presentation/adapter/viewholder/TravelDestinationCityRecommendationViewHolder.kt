@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.OnClickListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
@@ -25,7 +26,7 @@ class TravelDestinationCityRecommendationViewHolder(itemView: View, private val 
 
     override fun bind(element: TravelDestinationSectionViewModel) {
         if (element.isLoaded) {
-            if (element.list.isNotEmpty()) {
+            if (element.isSuccess && element.list.isNotEmpty()) {
                 with(itemView) {
                     destination_recommendation_title.text = element.title
                     if (!::recommendationAdapter.isInitialized) {
@@ -35,7 +36,11 @@ class TravelDestinationCityRecommendationViewHolder(itemView: View, private val 
                     } else {
                         recommendationAdapter.updateList(element.list)
                     }
+
+                    (destination_recommendation_title as View).setOnSystemUiVisibilityChangeListener {  }
                 }
+            } else {
+                itemView.hide()
             }
         } else {
             onViewHolderBindListener.onCityRecommendationVHBind()

@@ -25,7 +25,6 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
     override fun bind(element: TravelDestinationSummaryModel) {
         if (element.isLoaded) {
             with(itemView) {
-
                 var list = mutableListOf<String>()
                 for (img in element.images) {
                     list.add(img.imageUrl)

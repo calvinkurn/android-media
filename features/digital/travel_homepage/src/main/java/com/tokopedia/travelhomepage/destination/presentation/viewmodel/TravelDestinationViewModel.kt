@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 
 class TravelDestinationViewModel  @Inject constructor(
-        val graphqlRepository: GraphqlRepository,
+        private val graphqlRepository: GraphqlRepository,
         private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
@@ -40,6 +40,10 @@ class TravelDestinationViewModel  @Inject constructor(
     private val _travelDestinationCityModel = MutableLiveData<Result<TravelDestinationCityModel>>()
     val travelDestinationCityModel: LiveData<Result<TravelDestinationCityModel>>
         get() = _travelDestinationCityModel
+
+    private val _isAllError = MutableLiveData<Boolean>()
+    val isAllError: LiveData<Boolean>
+        get() = _isAllError
 
     private val mapper = TravelDestinationMapper()
 
@@ -61,7 +65,6 @@ class TravelDestinationViewModel  @Inject constructor(
         }
     }
 
-
     fun getDestinationSummaryData(query: String, cityId: String) {
         launchCatchError( block = {
             val data = withContext(Dispatchers.Default) {
@@ -78,7 +81,7 @@ class TravelDestinationViewModel  @Inject constructor(
                _travelDestinationItemList.postValue(updatedList)
            }
         }) {
-
+            _isAllError.postValue(true)
         }
     }
 
@@ -99,7 +102,13 @@ class TravelDestinationViewModel  @Inject constructor(
             }
 
         }) {
-
+            travelDestinationItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[CITY_RECOMMENDATION_ORDER].isLoaded = true
+                updatedList[CITY_RECOMMENDATION_ORDER].isSuccess = false
+                _travelDestinationItemList.postValue(updatedList)
+                checkIfAllError()
+            }
         }
 
     }
@@ -121,7 +130,13 @@ class TravelDestinationViewModel  @Inject constructor(
             }
 
         }) {
-
+            travelDestinationItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[CITY_DEALS_ORDER].isLoaded = true
+                updatedList[CITY_DEALS_ORDER].isSuccess = false
+                _travelDestinationItemList.postValue(updatedList)
+                checkIfAllError()
+            }
         }
     }
 
@@ -142,7 +157,26 @@ class TravelDestinationViewModel  @Inject constructor(
             }
 
         }) {
+            travelDestinationItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[CITY_ARTICLE_ORDER].isLoaded = true
+                updatedList[CITY_ARTICLE_ORDER].isSuccess = false
+                _travelDestinationItemList.postValue(updatedList)
+                checkIfAllError()
+            }
+        }
+    }
 
+    private fun checkIfAllError() {
+        travelDestinationItemList.value?.let {
+            var isSuccess = false
+            for (item in it) {
+                if (item.isSuccess || !item.isLoaded) {
+                    isSuccess = true
+                    break
+                }
+            }
+            if (!isSuccess) _isAllError.postValue(true)
         }
     }
 
