@@ -118,7 +118,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                         umrahTrackingAnalytics.umrahSearchNCategoryFilterClick(selectedFilter, searchOrCategory)
                         loadInitialData()
                         isFilter = true
-                        fab_umrah_search_message.hide()
+                        setHideFAB()
                     }
                 }
                 REQUEST_PDP -> loadInitialData()
@@ -146,7 +146,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        fab_umrah_search_message.hide()
+        setHideFAB()
     }
 
     private fun startChatUmrah(context: Context){
@@ -202,7 +202,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        fab_umrah_search_message.hide()
+        setHideFAB()
         umrahSearchViewModel.searchResult.observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -219,6 +219,10 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         })
         umrah_search_bottom_action_view.setButton1OnClickListener { openSortBottomSheets() }
         umrah_search_bottom_action_view.setButton2OnClickListener { openFilterFragment() }
+    }
+
+    private fun setHideFAB(){
+        fab_umrah_search_message.hide()
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.umrah_search_swipe_refresh_layout

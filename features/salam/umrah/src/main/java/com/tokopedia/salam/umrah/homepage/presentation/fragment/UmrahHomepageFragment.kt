@@ -58,7 +58,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         resetIsRequested()
-        fab_umrah_home_page_message.hide()
+        setHideFAB()
     }
 
     override fun initInjector() = getComponent(UmrahHomepageComponent::class.java)
@@ -120,7 +120,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        fab_umrah_home_page_message.hide()
+        setHideFAB()
         umrahHomepageViewModel.homePageModel.observe(this, Observer {
             clearAllData()
             it?.run {
@@ -155,6 +155,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         adapter.clearAllElements()
         showLoading()
         umrahHomepageViewModel.getIntialList(true)
+    }
+
+    private fun setHideFAB(){
+        fab_umrah_home_page_message.hide()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
