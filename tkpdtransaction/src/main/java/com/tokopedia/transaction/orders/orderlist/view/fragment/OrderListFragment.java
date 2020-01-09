@@ -800,6 +800,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
         String[] resultStartDate = split(datePickerStartDate);
         String[] resultEndDate = split(datePickerEndDate);
+        System.out.println("++ datePickerStartDate = "+datePickerStartDate);
+        System.out.println("++ datePickerEndDate = "+datePickerEndDate)
+
         if (title.equalsIgnoreCase(MULAI_DARI)) {
             minDate.set(Calendar.YEAR, 2017);
             defaultDate.set(Integer.parseInt(resultStartDate[2]), (Integer.parseInt(resultStartDate[1])-1), Integer.parseInt(resultStartDate[0]));
