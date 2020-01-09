@@ -20,8 +20,8 @@
 /features/home/navigation/                          	@tokopedia/minion-dave
 /features/home/navigation-common/                   	@tokopedia/minion-dave
 /features/home/searchbar/                           	@tokopedia/minion-dave
-/features/content/play/              				    @tokopedia/minion-dave
-/features/content/play-common/              			@tokopedia/minion-dave
+/features/content/play/                                 @tokopedia/minion-dave
+/features/content/play-common/                          @tokopedia/minion-dave
 
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
