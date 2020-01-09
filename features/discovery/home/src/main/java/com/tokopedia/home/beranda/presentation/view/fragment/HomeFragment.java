@@ -535,12 +535,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
                     presenter.setCache(true);
                 } else {
-                    showToasterWithAction(
-                            getString(R.string.msg_network_error),
-                            Toaster.TYPE_ERROR,
-                            getString(R.string.retry_label),
-                            view -> onRefresh()
-                    );
+                    showToaster(getString(R.string.msg_network_error), Toaster.TYPE_ERROR);
                 }
             }
         });
@@ -553,12 +548,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             } else if(resource.getStatus() == Resource.Status.ERROR){
                 hideLoading();
-                showToasterWithAction(
-                        getString(R.string.msg_network_error),
-                        Toaster.TYPE_ERROR,
-                        getString(R.string.retry_label),
-                        view -> onRefresh()
-                );
+                showToaster(getString(R.string.msg_network_error), Toaster.TYPE_ERROR);
             } else {
                 showLoading();
             }
@@ -575,12 +565,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
-                showToasterWithAction(
-                        com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()),
-                        Toaster.TYPE_ERROR,
-                        getString(R.string.retry_label),
-                        view -> onRefresh()
-                );
+                showToaster(getString(R.string.msg_network_error), Toaster.TYPE_ERROR);
             }
         }
     }
@@ -1775,7 +1760,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return homePerformanceMonitoringListener != null;
     }
 
+    private void showToaster(String message, int typeToaster){
+        showToasterWithAction(message, typeToaster, "", null);
+    }
+
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
-        if(getView() != null) Toaster.INSTANCE.make(getView(), message, Toaster.LENGTH_LONG, typeToaster, actionText, clickListener);
+        if(getView() != null) {
+            Toaster.INSTANCE.make(getView(), message, Toaster.LENGTH_SHORT, typeToaster, actionText, clickListener);
+        }
     }
 }
