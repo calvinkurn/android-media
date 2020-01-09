@@ -58,7 +58,7 @@ class ChatListView(
             if (!csDownView.isVisible) {
                 rvChatList.postDelayed({
                     rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
-                    Timber.tag("ChatList").d("Smooth Scroll to Posiiton ${chatAdapter.lastIndex}")
+                    Timber.tag("ChatList").d("Smooth Scroll to Position ${chatAdapter.lastIndex}")
                 }, 100)
             }
         }

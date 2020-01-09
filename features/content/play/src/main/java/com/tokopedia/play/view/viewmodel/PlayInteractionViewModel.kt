@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.play.data.TotalLike
-import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -18,7 +15,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
@@ -28,7 +24,6 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayInteractionViewModel @Inject constructor(
-        private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val postLikeUseCase: PostLikeUseCase,
         private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
         private val userSession: UserSessionInterface,
@@ -37,29 +32,13 @@ class PlayInteractionViewModel @Inject constructor(
 
     private val job = SupervisorJob()
 
-    private val _observableTotalLikes = MutableLiveData<Result<TotalLike>>()
-    val observableTotalLikes: LiveData<Result<TotalLike>> = _observableTotalLikes
-
     private val _observableFollowPartner = MutableLiveData<Result<Boolean>>()
     val observableFollowPartner: LiveData<Result<Boolean>> = _observableFollowPartner
 
     private val _observableLikeContent = MutableLiveData<Result<Boolean>>()
     val observableLikeContent: LiveData<Result<Boolean>> = _observableLikeContent
-
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
-
-    fun getTotalLikes(channelId: String) {
-        launchCatchError(block = {
-            val response = withContext(Dispatchers.IO) {
-                getTotalLikeUseCase.channelId = channelId
-                getTotalLikeUseCase.executeOnBackground()
-            }
-            _observableTotalLikes.value = Success(response)
-        }) {
-            _observableTotalLikes.value = Fail(it)
-        }
-    }
 
     fun doInteractionEvent(event: InteractionEvent) {
         _observableLoggedInInteractionEvent.value = Event(
@@ -68,10 +47,10 @@ class PlayInteractionViewModel @Inject constructor(
         )
     }
 
-    fun doLikeUnlike(channelId: String, shouldLike: Boolean) {
+    fun doLikeUnlike(contentId: Int, contentType: Int, shouldLike: Boolean, isLive: Boolean) {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                postLikeUseCase.params = PostLikeUseCase.createParam(channelId.toIntOrZero(), shouldLike)
+                postLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, shouldLike, isLive)
                 postLikeUseCase.executeOnBackground()
             }
 

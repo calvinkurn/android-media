@@ -133,8 +133,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         initComponents(view as ViewGroup)
         setupView(view)
-
-        viewModel.getTotalLikes(channelId)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -209,13 +207,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeTotalLikes() {
-        viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is  Success -> {
-                    setTotalLikes(it.data.totalClick)
-                }
-            }
-        })
+        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer(::setTotalLikes))
     }
 
     private fun observeTotalViews() {
@@ -254,6 +246,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.observableLikeContent.observe(this, Observer {
             if (it is Fail && !it.throwable.message.isNullOrEmpty()) {
                 showToast(it.throwable.message.orEmpty())
+            }
+        })
+
+        playViewModel.observableIsLikeContent.observe(this, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.IsLikedContent(it)
+                        )
             }
         })
     }
@@ -658,12 +660,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
 
-    private fun setTotalLikes(totalLikes: String) {
+    private fun setTotalLikes(totalLikes: TotalLikeUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetTotalLikes(totalLikes)
+                            ScreenStateEvent.SetTotalLikes(totalLikes.totalLike)
                     )
         }
     }
@@ -771,7 +773,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
-        viewModel.doLikeUnlike(channelId, shouldLike)
+        viewModel.doLikeUnlike(playViewModel.contentId,
+                playViewModel.contentType,
+                shouldLike,
+                playViewModel.isLive)
+
         sendEventLikeContent(shouldLike)
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
     }

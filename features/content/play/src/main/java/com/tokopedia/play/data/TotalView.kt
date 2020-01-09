@@ -9,5 +9,8 @@ import com.google.gson.annotations.SerializedName
 
 data class TotalView(
         @SerializedName("total_view")
-        val totalView: String = ""
+        val totalView: Int = 0,
+
+        @SerializedName("total_view_formatted")
+        val totalViewFormatted: String = ""
 )
