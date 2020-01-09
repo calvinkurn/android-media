@@ -15,7 +15,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 
-class MoneyInCheckoutViewModel() : BaseTradeInViewModel(), CoroutineScope {
+class MoneyInCheckoutViewModel() : BaseTradeInViewModel() {
 
     private val pickupScheduleOptionLiveData = MutableLiveData<Result<GetPickupScheduleOption>>()
     private val courierRatesLiveData = MutableLiveData<Result<RatesV4.Data>>()
@@ -26,15 +26,11 @@ class MoneyInCheckoutViewModel() : BaseTradeInViewModel(), CoroutineScope {
         private const val SUCCESS = 1
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
-
     fun getPickupScheduleOption(query: String) {
         launchCatchError(block = {
             val request = HashMap<String, String>()
 
-            val response = getMYRepository().getGQLData(query, MoneyInScheduleOptionResponse.ResponseData::class.java, request) as MoneyInScheduleOptionResponse.ResponseData
+            val response = getMYRepository().getGQLData(query, MoneyInScheduleOptionResponse.ResponseData::class.java, request)
             pickupScheduleOptionLiveData.value = Success(response.getPickupScheduleOption)
         }, onError = {
             it.printStackTrace()
@@ -54,7 +50,7 @@ class MoneyInCheckoutViewModel() : BaseTradeInViewModel(), CoroutineScope {
             input["lang"] = "en"
             request["input"] = input
 
-            val response = getMYRepository().getGQLData(query, MoneyInCourierResponse.ResponseData::class.java, request) as MoneyInCourierResponse.ResponseData
+            val response = getMYRepository().getGQLData(query, MoneyInCourierResponse.ResponseData::class.java, request)
             courierRatesLiveData.value = Success(response.ratesV4.data)
         }, onError = {
             it.printStackTrace()
@@ -101,7 +97,7 @@ class MoneyInCheckoutViewModel() : BaseTradeInViewModel(), CoroutineScope {
 
             request["params"] = params
 
-            val response = getMYRepository().getGQLData(query, MoneyInCheckoutMutationResponse.ResponseData::class.java, request) as MoneyInCheckoutMutationResponse.ResponseData
+            val response = getMYRepository().getGQLData(query, MoneyInCheckoutMutationResponse.ResponseData::class.java, request)
             if (response.checkoutGeneral.data.success == SUCCESS) {
                 checkoutDataLiveData.value = Success(response.checkoutGeneral.data.data)
             } else {

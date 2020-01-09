@@ -23,17 +23,13 @@ import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.json.JSONException
 import org.json.JSONObject
 import rx.Subscriber
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
-        CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
+        LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams: TradeInParams
@@ -142,7 +138,7 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
         variables["params"] = tradeInParams
         launchCatchError(block = {
             val query = GraphqlHelper.loadRawString(applicationContext.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
-            val response = getMYRepository().getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
+            val response = getMYRepository().getGQLData(query, ValidateTradePDP::class.java, variables)
             checkIfElligible(response, jsonObject)
         }, onError = {
             it.printStackTrace()
@@ -247,7 +243,4 @@ class TradeInHomeViewModel(val intent: Intent) : BaseTradeInViewModel(),
     fun initilizeAppContext(application: Application) {
         applicationContext = application
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 }

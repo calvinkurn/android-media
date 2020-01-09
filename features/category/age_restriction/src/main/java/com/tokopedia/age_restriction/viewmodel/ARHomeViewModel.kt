@@ -2,18 +2,14 @@ package com.tokopedia.age_restriction.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.age_restriction.usecase.FetchUserDobUseCase
 import com.tokopedia.age_restriction.data.UserDOBResponse
+import com.tokopedia.age_restriction.usecase.FetchUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: FetchUserDobUseCase,
-                                          private val userSession: UserSessionInterface) : BaseARViewModel(), CoroutineScope {
+                                          private val userSession: UserSessionInterface) : BaseARViewModel(){
 
     private val askUserLogin = MutableLiveData<Int>()
     private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
@@ -31,12 +27,14 @@ class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: Fetch
         }
     }
 
+
+
     fun fetchUserDOB() {
         progBarVisibility.value = true
         launchCatchError(
                 block = {
                     val response = fetchUserDobUseCase.getData(USER_DOB_PATH)
-                    processUserDOB(response.data)
+                    processUserDOB(response)
                 },
                 onError = {
                     warningMessage.value = it.localizedMessage
@@ -44,9 +42,6 @@ class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: Fetch
 
         )
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
     fun getAskUserLogin(): LiveData<Int> {
         return askUserLogin

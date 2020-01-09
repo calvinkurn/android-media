@@ -186,10 +186,10 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         super.onStart()
         arHomeViewModel.notFilled.observe(this, Observer<Int> {
             selection = notFilledDob
-            showAgeVerificationDialogFragment(getString(R.string.ar_text_adult_content),
+            showDialogFragment(getString(R.string.ar_text_adult_content),
                     getString(R.string.ar_text_dob_verify),
                     getString(R.string.ar_text_verify_dob),
-                    getString(R.string.ar_label_back))
+                    getString(R.string.ar_label_back), getResId())
             sendGeneralEvent(eventView,
                     event,
                     "view - adult pop up - not yet verified",
@@ -209,6 +209,8 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         })
     }
 
+    private fun getResId() = R.layout.age_restriction_verifcation_dialog
+
     private fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(event,
                 category,
@@ -216,20 +218,10 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                 label)
     }
 
-    private fun showDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String?) {
+    private fun showDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String?, layoutResId: Int = 0) {
         val fragmentManager = supportFragmentManager
         val accessDialog = AccessRequestFragmentDialog.newInstance()
-        accessDialog.setBodyText(bodyText)
-        accessDialog.setTitle(titleText)
-        accessDialog.setPositiveButton(positiveButton)
-        accessDialog.setNegativeButton(negativeButton)
-        accessDialog.show(fragmentManager, AccessRequestFragmentDialog.TAG)
-    }
-
-    private fun showAgeVerificationDialogFragment(titleText: String, bodyText: String, positiveButton: String, negativeButton: String) {
-        val fragmentManager = supportFragmentManager
-        val accessDialog = AccessRequestFragmentDialog.newInstance()
-        accessDialog.setLayoutResId(R.layout.age_restriction_verifcation_dialog)
+        accessDialog.setLayoutResId(layoutResId)
         accessDialog.setBodyText(bodyText)
         accessDialog.setTitle(titleText)
         accessDialog.setPositiveButton(positiveButton)

@@ -10,10 +10,10 @@ import javax.inject.Inject
 class FetchUserDobUseCase @Inject constructor(val repository: ARRepository) {
 
 
-    suspend fun getData(userDobPath: String): DataResponse<UserDOBResponse> {
-        return repository.getRestData(userDobPath,
+    suspend fun getData(userDobPath: String): UserDOBResponse {
+        return (repository.getRestData(userDobPath,
                 object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
-                RequestType.GET)?.getData() as DataResponse<UserDOBResponse>
+                RequestType.GET) as DataResponse<UserDOBResponse>).data
     }
 
 }

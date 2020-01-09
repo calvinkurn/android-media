@@ -1,12 +1,11 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.content.Context
+import android.app.Application
+import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import android.content.Intent
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.common_tradein.model.TradeInParams
@@ -16,14 +15,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
-class FinalPriceViewModel(@ApplicationContext val context: Context, val intent: Intent) : BaseTradeInViewModel(), LifecycleObserver, CoroutineScope {
+class FinalPriceViewModel(val context: Application, val intent: Intent) : BaseTradeInViewModel(), LifecycleObserver {
     val deviceDiagData: MutableLiveData<DeviceDataResponse> = MutableLiveData()
     val addressLiveData = MutableLiveData<AddressResult>()
     val STATUS_NO_ADDRESS: Int = 12324
@@ -95,7 +90,7 @@ class FinalPriceViewModel(@ApplicationContext val context: Context, val intent: 
                     "show_corner" to false,
                     "show_address" to true)
             val queryString = GraphqlHelper.loadRawString(context.resources, R.raw.tradein_address_corner)
-            val response = getMYRepository().getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData?
+            val response = getMYRepository().getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request)
             progBarVisibility.value = false
             response?.let {
                 it.keroGetAddress.data?.let { listAddress ->
@@ -117,9 +112,5 @@ class FinalPriceViewModel(@ApplicationContext val context: Context, val intent: 
             errorMessage.value = it.localizedMessage
         })
     }
-
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
 }
