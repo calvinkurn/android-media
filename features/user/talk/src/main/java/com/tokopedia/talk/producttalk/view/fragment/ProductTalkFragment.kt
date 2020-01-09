@@ -381,7 +381,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToLogin() {
         activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getLoginIntent(this)
+            val intent: Intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             activity!!.startActivityForResult(intent, REQUEST_GO_TO_LOGIN)
         }
     }
@@ -631,17 +631,17 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onChatClicked() {
         if (presenter.isLoggedIn()) {
             if (shopId.isNotBlank()) {
-                activity?.applicationContext?.run {
-                    val intent: Intent = (this as TalkRouter).getAskSellerIntent(
-                            this,
-                            shopId,
-                            shopName,
-                            "",
-                            productUrl,
-                            "product",
-                            shopAvatar)
-                    this@ProductTalkFragment.startActivity(intent)
-                }
+//                activity?.applicationContext?.run {
+//                    val intent: Intent = (this as TalkRouter).getAskSellerIntent(
+//                            this,
+//                            shopId,
+//                            shopName,
+//                            "",
+//                            productUrl,
+//                            "product",
+//                            shopAvatar)
+//                    this@ProductTalkFragment.startActivity(intent)
+//                }
             }
         } else {
             goToLogin()
@@ -651,15 +651,13 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfile()
         activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
-            this@ProductTalkFragment.startActivity(intent)
+            RouteManager.route(context, ApplinkConst.PROFILE, userId)
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
         activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
-            this@ProductTalkFragment.startActivity(intent)
+            RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }
 
@@ -759,8 +757,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun handleBranchIOLinkClick(url: String) {
         activity?.run {
-            val talkRouter = this.applicationContext as TalkRouter
-            val intent = talkRouter.getSplashScreenIntent(this)
+            val intent = RouteManager.getIntent(this, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)

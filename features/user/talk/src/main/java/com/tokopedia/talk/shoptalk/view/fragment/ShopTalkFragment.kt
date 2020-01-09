@@ -233,8 +233,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     private fun goToLogin() {
         context?.applicationContext?.run {
-            val intent = (this as TalkRouter).getLoginIntent(this)
-            this@ShopTalkFragment.startActivity(intent)
+            RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 
@@ -412,8 +411,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileFromShop()
         activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
-            this@ShopTalkFragment.startActivity(intent)
+            RouteManager.route(context, ApplinkConst.PROFILE, userId)
         }
     }
 
@@ -468,8 +466,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onGoToShopPage(shopId: String) {
         activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
-            this@ShopTalkFragment.startActivity(intent)
+            RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }
 
@@ -631,8 +628,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun handleBranchIOLinkClick(url: String) {
         activity?.run {
-            val talkRouter = this.applicationContext as TalkRouter
-            val intent = talkRouter.getSplashScreenIntent(this)
+            val intent = RouteManager.getIntent(this, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)
