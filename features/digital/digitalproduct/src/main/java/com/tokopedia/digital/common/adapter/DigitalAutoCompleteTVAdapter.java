@@ -19,7 +19,7 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> implements Filterable {
+public class DigitalAutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> implements Filterable {
 
     private Context context;
     private int resource;
@@ -27,7 +27,7 @@ public class AutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> imple
     private List<OrderClientNumber> allOrderClientNumbers;
     private List<OrderClientNumber> filteredOrderClientNumbers;
 
-    public AutoCompleteTVAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<OrderClientNumber> orderClientNumbers) {
+    public DigitalAutoCompleteTVAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<OrderClientNumber> orderClientNumbers) {
         super(context, resource, orderClientNumbers);
         this.context = context;
         this.resource = resource;

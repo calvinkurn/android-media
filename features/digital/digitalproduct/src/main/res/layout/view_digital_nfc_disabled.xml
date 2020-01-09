@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_32"
-        app:srcCompat="@drawable/ic_nfc_need_activation"/>
+        app:srcCompat="@drawable/digital_ic_nfc_need_activation"/>
 
     <TextView
         android:layout_width="wrap_content"

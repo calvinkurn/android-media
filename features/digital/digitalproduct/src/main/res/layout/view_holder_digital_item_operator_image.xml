@@ -21,7 +21,7 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_10"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_clear_widget"/>
+            tools:src="@drawable/digital_ic_clear_widget"/>
 
         <TextView
             android:id="@+id/operator_name"

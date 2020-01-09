@@ -20,7 +20,7 @@
             android:layout_height="@dimen/dp_60"
             android:layout_margin="@dimen/dp_10"
             android:background="@color/digital_operator_search_bar_color"
-            app:drawableLeftCompat="@drawable/search_operator"
+            app:drawableLeftCompat="@drawable/digital_search_operator"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/digital_action_search"
             android:inputType="text"

@@ -103,7 +103,7 @@
                 android:layout_marginRight="4dp"
                 android:layout_marginStart="@dimen/dp_10"
                 android:visibility="gone"
-                android:background="@drawable/ic_phonebook_widget" />
+                android:background="@drawable/digital_ic_phonebook_widget" />
 
             <Button
                 android:id="@+id/btn_camera_picker"
