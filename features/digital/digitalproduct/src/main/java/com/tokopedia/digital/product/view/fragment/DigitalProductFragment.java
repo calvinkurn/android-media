@@ -262,7 +262,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         digitalAnalytics = new DigitalAnalytics();
-        View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_product, container, false);
         initView(view);
         return view;
     }
@@ -1242,7 +1242,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .customView(R.layout.view_layout_showcase)
+                .customView(R.layout.view_digital_showcase)
                 .titleTextColorRes(R.color.white)
                 .spacingRes(R.dimen.digital_spacing_show_case)
                 .arrowWidth(R.dimen.digital_arrow_width_show_case)
@@ -1383,7 +1383,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     private View getTickerCouponApplied() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.include_digital_ticker_coupon_applied_view, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.view_digital_ticker_coupon_applied, null);
 
         TickerView tickerView = view.findViewById(R.id.ticker_view);
         setupTickerCouponApplied(tickerView);

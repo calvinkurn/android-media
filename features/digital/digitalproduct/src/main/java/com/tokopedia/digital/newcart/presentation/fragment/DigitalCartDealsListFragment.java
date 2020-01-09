@@ -71,7 +71,7 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_digital_cart_deals_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_deals_cart_list, container, false);
         return view;
     }
 

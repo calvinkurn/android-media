@@ -128,7 +128,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_digital_cart_deals, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_deals_cart, container, false);
         progressBar = view.findViewById(R.id.progress_bar);
         dealTabLayout = view.findViewById(R.id.tab_deal);
         dealViewPager = view.findViewById(R.id.pager_deals);

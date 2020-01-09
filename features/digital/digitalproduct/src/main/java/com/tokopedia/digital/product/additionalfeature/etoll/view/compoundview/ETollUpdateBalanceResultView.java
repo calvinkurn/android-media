@@ -47,7 +47,7 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.view_etoll_update_balance_result, this);
+        View view = inflate(getContext(), R.layout.view_digital_etoll_update_balance_result, this);
 
         eTollCardInfoView = view.findViewById(R.id.view_etoll_card_info);
         buttonTopup = view.findViewById(R.id.button_topup);

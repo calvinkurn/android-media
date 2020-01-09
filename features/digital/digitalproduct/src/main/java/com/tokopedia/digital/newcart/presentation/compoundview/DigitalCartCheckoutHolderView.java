@@ -46,7 +46,7 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
 
     private void initView(Context context) {
         View view = LayoutInflater.from(context).inflate(
-                R.layout.view_digital_cart_checkout_holder, this, true
+                R.layout.view_holder_digital_checkout, this, true
         );
 
         promoTickerView = view.findViewById(R.id.promo_ticker_view);

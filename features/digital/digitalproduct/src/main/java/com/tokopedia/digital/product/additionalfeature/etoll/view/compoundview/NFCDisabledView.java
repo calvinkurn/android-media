@@ -40,7 +40,7 @@ public class NFCDisabledView extends LinearLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.view_nfc_disabled, this);
+        View view = inflate(getContext(), R.layout.view_digital_nfc_disabled, this);
 
         Button buttonActivateNFC = view.findViewById(R.id.button_activate_nfc);
 

@@ -23,7 +23,7 @@ import java.util.List;
 public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE =
-            R.layout.view_holder_item_operator_name_image;
+            R.layout.view_holder_digital_item_operator_image;
 
     private Fragment hostFragment;
     private List<Operator> operatorList;

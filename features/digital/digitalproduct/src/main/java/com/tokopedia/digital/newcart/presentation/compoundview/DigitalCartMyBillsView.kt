@@ -42,7 +42,7 @@ class DigitalCartMyBillsView : BaseCustomView {
     }
 
     private fun init(context: Context) {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_digital_cart_my_bills_holder, this, true)
+        val view = LayoutInflater.from(context).inflate(R.layout.view_holder_digital_cart_my_bills, this, true)
         titleContainer = view.findViewById(R.id.rl_title_container)
         headerTitleTextView = view.findViewById(R.id.tv_header_title)
         subscriptionCheckbox = view.findViewById(R.id.cb_subscription)

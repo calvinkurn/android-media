@@ -116,7 +116,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
                 .BottomSheetFieldBuilder()
                 .setTitle(context.getString(R.string.title_tooltip_instan_payment))
                 .setBody(context.getString(R.string.body_tooltip_instan_payment))
-                .setImg(R.drawable.ic_digital_instant_payment)
+                .setImg(R.drawable.digital_ic_digital_instant_payment)
                 .build());
     }
 

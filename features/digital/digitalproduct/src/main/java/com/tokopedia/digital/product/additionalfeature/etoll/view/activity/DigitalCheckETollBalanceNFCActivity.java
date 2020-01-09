@@ -189,7 +189,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_check_etoll_balance_nfc;
+        return R.layout.activity_digital_etoll_check_balance;
     }
 
     @Override

@@ -55,7 +55,7 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
     @Override
     protected int getHolderLayoutId() {
-        return R.layout.view_widget_radio_choser;
+        return R.layout.view_digital_radio_choser;
     }
 
     @Override

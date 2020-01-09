@@ -88,7 +88,7 @@ public class DigitalChooserProductFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_chooser_operator_digital_module, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_chooser_operator, container, false);
         initView(view);
         initialVar();
         return view;

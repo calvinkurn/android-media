@@ -55,7 +55,7 @@ public class CheckPulsaBalanceView extends LinearLayout {
         checkBalanceProgressbar = findViewById(R.id.check_balance_progressbar);
         errorOperator = findViewById(R.id.tv_error_operator);
 
-        LayoutInflater.from(context).inflate(R.layout.view_holder_client_check_balance, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_holder_digital_ussd_check_balance, this, true);
     }
 
     public void hideProgressbar() {

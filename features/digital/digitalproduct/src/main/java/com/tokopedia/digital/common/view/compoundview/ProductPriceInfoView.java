@@ -40,7 +40,7 @@ public class ProductPriceInfoView extends RelativeLayout {
         this.context = context;
 
         LayoutInflater.from(context).inflate(
-                R.layout.view_holder_product_price_info_digital_module, this, true
+                R.layout.view_holder_digital_product_price_info, this, true
         );
 
         tvPriceOrigin = findViewById(R.id.tv_price_origin);

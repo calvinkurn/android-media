@@ -117,7 +117,7 @@ public class OperatorVerificationDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        return inflater.inflate(R.layout.dialog_fragment_usd_operator_verification, container);
+        return inflater.inflate(R.layout.dialog_digital_ussd_operator_verification, container);
 
     }
 

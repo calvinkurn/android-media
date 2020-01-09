@@ -46,7 +46,7 @@ public class TapETollCardView extends RelativeLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.view_tap_etoll_card, this);
+        View view = inflate(getContext(), R.layout.view_digital_etoll_tap_card, this);
 
         textTitle = view.findViewById(R.id.text_title);
         textLabel = view.findViewById(R.id.text_label);

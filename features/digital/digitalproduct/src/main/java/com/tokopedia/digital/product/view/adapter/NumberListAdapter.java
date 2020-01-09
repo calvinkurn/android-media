@@ -33,7 +33,7 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
     @Override
     public NumberListAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_autocomplete, parent, false);
+                .inflate(R.layout.view_digital_item_autocomplete, parent, false);
         return new ItemHolder(view);
     }
 
