@@ -514,12 +514,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void navigateToWebview() {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
-        startActivity(intent);
-    }
-
-    @Override
     public boolean isDigitalSmartcardEnabled() {
         return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
     }
@@ -1019,7 +1013,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             }
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_digital) {
-            presenter.onHelpMenuClicked();
+            RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -1236,7 +1230,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 getString(R.string.title_showcase_ussd),
                 getString(R.string.message_showcase_ussd),
                 ShowCaseContentPosition.UNDEFINED,
-                R.color.tkpd_main_green));
+                com.tokopedia.design.R.color.tkpd_main_green));
         showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
     }
 
@@ -1249,10 +1243,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
                 .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .textSizeRes(R.dimen.dp_12)
+                .textSizeRes(com.tokopedia.design.R.dimen.dp_12)
                 .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .prevStringRes(R.string.digital_navigate_back_showcase)
-                .nextStringRes(R.string.next)
+                .nextStringRes(com.tokopedia.showcase.R.string.next)
                 .finishStringRes(R.string.digital_navigate_done_showcase)
                 .useCircleIndicator(true)
                 .clickable(true)
@@ -1401,10 +1395,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
         tickerView.postDelayed(() -> {
             tickerView.setItemPadding(
-                    getResources().getDimensionPixelSize(R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(R.dimen.dp_15),
-                    getResources().getDimensionPixelSize(R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(R.dimen.dp_15)
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
             );
             tickerView.setItemTextAppearance(R.style.TextView_Micro);
         }, DEFAULT_POST_DELAYED_VALUE);

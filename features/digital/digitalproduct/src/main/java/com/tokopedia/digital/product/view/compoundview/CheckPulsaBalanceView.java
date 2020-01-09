@@ -86,7 +86,7 @@ public class CheckPulsaBalanceView extends LinearLayout {
                 tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + operatorName);
             }
         } else {
-            btnCheckBalance.setBackgroundColor(context.getResources().getColor(R.color.grey_hint));
+            btnCheckBalance.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.grey_hint));
             errorOperator.setVisibility(VISIBLE);
             errorOperator.setText(operatorErrorMsg);
             if (operatorName != null) {

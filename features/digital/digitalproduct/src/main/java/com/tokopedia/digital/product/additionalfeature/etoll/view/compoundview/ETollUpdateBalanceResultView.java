@@ -69,7 +69,7 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
     public void showError(String errorMessage) {
         textLabelProgressTitle.setVisibility(VISIBLE);
         textLabelProgressTitle.setText(getResources().getString(R.string.update_card_balance_failed_title));
-        textLabelProgressTitle.setTextColor(getResources().getColor(R.color.red_600));
+        textLabelProgressTitle.setTextColor(getResources().getColor(com.tokopedia.design.R.color.red_600));
         textLabelProgressMessage.setVisibility(VISIBLE);
         textLabelProgressMessage.setText(errorMessage);
         textLabelProgressMessage.setTextColor(getResources().getColor(R.color.digital_grey));
@@ -80,7 +80,7 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
 
     public void showLoading() {
         textLabelProgressTitle.setVisibility(VISIBLE);
-        textLabelProgressTitle.setTextColor(getResources().getColor(R.color.black));
+        textLabelProgressTitle.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black));
         textLabelProgressTitle.setText(getResources().getString(R.string.update_card_balance_progress_label_title));
         textLabelProgressMessage.setVisibility(VISIBLE);
         textLabelProgressMessage.setTextColor(getResources().getColor(R.color.digital_grey));

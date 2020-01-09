@@ -285,7 +285,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
                     checkoutHolderView.getCheckoutViewHeight() +
                     containerCategoryLabel.getMeasuredHeight() +
-                    getResources().getDimensionPixelOffset(R.dimen.dp_6);
+                    getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_6);
         }
 
         final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
@@ -309,7 +309,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_8), 0, 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), 0, 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );

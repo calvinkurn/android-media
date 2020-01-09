@@ -61,7 +61,7 @@ public class TapETollCardView extends RelativeLayout {
 
     public void showLoading() {
         textTitle.setText(getResources().getString(R.string.reading_card_label_title));
-        textTitle.setTextColor(getResources().getColor(R.color.black));
+        textTitle.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black));
         textLabel.setText(getResources().getString(R.string.reading_card_label_message));
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
@@ -73,7 +73,7 @@ public class TapETollCardView extends RelativeLayout {
 
     public void showInitialState() {
         textTitle.setText(getResources().getString(R.string.emoney_tap_card_instruction_title));
-        textTitle.setTextColor(getResources().getColor(R.color.black));
+        textTitle.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black));
         textLabel.setText(getResources().getString(R.string.emoney_tap_card_instruction_message));
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
@@ -94,7 +94,7 @@ public class TapETollCardView extends RelativeLayout {
 
     public void showErrorState(String errorMessage) {
         textTitle.setText(getResources().getString(R.string.emoney_tap_card_instruction_title));
-        textTitle.setTextColor(getResources().getColor(R.color.red_600));
+        textTitle.setTextColor(getResources().getColor(com.tokopedia.design.R.color.red_600));
         textLabel.setText(errorMessage);
         lottieAnimationView.setVisibility(GONE);
         imageviewError.setVisibility(VISIBLE);
