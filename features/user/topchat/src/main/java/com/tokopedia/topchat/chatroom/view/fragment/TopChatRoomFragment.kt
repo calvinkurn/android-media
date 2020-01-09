@@ -30,10 +30,7 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.InvoiceMenu
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -115,6 +112,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_CHAT = 114
     val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
     val REQUEST_ATTACH_INVOICE = 116
+    val REQUEST_ATTACH_VOUCHER = 117
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
@@ -204,6 +202,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             updateViewData(it)
+            checkCanAttachVoucher(it)
             presenter.connectWebSocket(messageId)
             presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                     onSuccessGetShopFollowingStatus())
@@ -214,6 +213,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
             fpm.stopTrace()
+        }
+    }
+
+    private fun checkCanAttachVoucher(room: ChatroomViewModel) {
+        if (room.isSeller()) {
+            addVoucherAttachmentMenu()
         }
     }
 
@@ -858,12 +863,23 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         pickImageToUpload()
     }
 
+    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
+        pickVoucherToUpload()
+    }
+
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE).apply {
             putExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
             putExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, opponentName)
         }
         startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
+    }
+
+    private fun pickVoucherToUpload() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER).apply {
+            putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId)
+        }
+        startActivityForResult(intent, REQUEST_ATTACH_VOUCHER)
     }
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
