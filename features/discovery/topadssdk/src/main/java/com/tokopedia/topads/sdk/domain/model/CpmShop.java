@@ -24,6 +24,9 @@ public class CpmShop implements Parcelable {
     private static final String KEY_TAGLINE = "tagline";
     private static final String KEY_SLOGAN = "slogan";
     private static final String KEY_PRODUCT = "product";
+    private static final String KEY_IMAGE_SHOP = "image_shop";
+    private static final String KEY_IS_OFFICIAL_STORE = "shop_is_official";
+    private static final String KEY_IS_POWER_MERCHANT = "gold_shop";
 
     @SerializedName(KEY_ID)
     private String id;
@@ -37,6 +40,12 @@ public class CpmShop implements Parcelable {
     private String slogan;
     @SerializedName(KEY_PRODUCT)
     private List<Product> products = new ArrayList<>();
+    @SerializedName(KEY_IMAGE_SHOP)
+    private ImageShop imageShop;
+    @SerializedName(KEY_IS_OFFICIAL_STORE)
+    private boolean isOfficial;
+    @SerializedName(KEY_IS_POWER_MERCHANT)
+    private boolean isPowerMerchant;
 
     public CpmShop(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
@@ -60,7 +69,17 @@ public class CpmShop implements Parcelable {
                 products.add(new Product(productArray.getJSONObject(i)));
             }
         }
+        if(!object.isNull(KEY_IMAGE_SHOP)){
+            setImageShop(new ImageShop(object.getJSONObject(KEY_IMAGE_SHOP)));
+        }
+        if(!object.isNull(KEY_IS_OFFICIAL_STORE)){
+            setOfficial(object.getBoolean(KEY_IS_OFFICIAL_STORE));
+        }
+        if(!object.isNull(KEY_IS_POWER_MERCHANT)){
+            setPowerMerchant(object.getBoolean(KEY_IS_POWER_MERCHANT));
+        }
     }
+
 
     protected CpmShop(Parcel in) {
         id = in.readString();
@@ -69,6 +88,9 @@ public class CpmShop implements Parcelable {
         tagline = in.readString();
         slogan = in.readString();
         products = in.createTypedArrayList(Product.CREATOR);
+        imageShop = in.readParcelable(ImageShop.class.getClassLoader());
+        isOfficial = in.readByte() != 0;
+        isPowerMerchant = in.readByte() != 0;
     }
 
     @Override
@@ -79,6 +101,9 @@ public class CpmShop implements Parcelable {
         dest.writeString(tagline);
         dest.writeString(slogan);
         dest.writeTypedList(products);
+        dest.writeParcelable(imageShop, flags);
+        dest.writeByte((byte) (isOfficial ? 1 : 0));
+        dest.writeByte((byte) (isPowerMerchant ? 1 : 0));
     }
 
     @Override
@@ -97,6 +122,30 @@ public class CpmShop implements Parcelable {
             return new CpmShop[size];
         }
     };
+
+    public boolean isPowerMerchant() {
+        return isPowerMerchant;
+    }
+
+    public void setPowerMerchant(boolean powerMerchant) {
+        isPowerMerchant = powerMerchant;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
+    public ImageShop getImageShop() {
+        return imageShop;
+    }
+
+    public void setImageShop(ImageShop imageShop) {
+        this.imageShop = imageShop;
+    }
 
     public List<Product> getProducts() {
         return products;

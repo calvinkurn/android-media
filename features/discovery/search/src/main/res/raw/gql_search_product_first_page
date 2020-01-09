@@ -268,11 +268,20 @@ query SearchProduct(
                     name
                     price_format
                     applinks
+                    product_rating
+                    product_cashback
+                    product_cashback_rate
+                    product_new_label
+                    count_review_format
                     image_product{
                         product_id
                         product_name
                         image_url
                         image_click_url
+                    }
+                    campaign {
+                        original_price
+                        discount_percentage
                     }
                 }
                 image_shop {
