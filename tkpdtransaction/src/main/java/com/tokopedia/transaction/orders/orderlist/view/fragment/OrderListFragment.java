@@ -294,7 +294,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
 
     protected void onFirstTimeLaunched() {
-
+        datePickerStartDate = customStartDate;
+        datePickerEndDate = defEndDate;
     }
 
 
@@ -633,9 +634,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         defEndDate = Utils.setFormat(format, format1, defaultDate.getEndRangeDate());
         customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
         customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
-
-        datePickerStartDate = customStartDate;
-        datePickerEndDate = defEndDate;
     }
 
     @Override
@@ -797,18 +795,18 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void showDatePicker(String title) {
         Calendar minDate = Calendar.getInstance();
-        minDate.add(Calendar.YEAR, -3);
-
         Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.YEAR, 100);
-
         Calendar defaultDate = Calendar.getInstance();
+
+        String[] resultStartDate = split(datePickerStartDate);
+        String[] resultEndDate = split(datePickerEndDate);
         if (title.equalsIgnoreCase(MULAI_DARI)) {
-            String[] resultStartDate = split(datePickerStartDate);
+            minDate.set(Calendar.YEAR, 2017);
             defaultDate.set(Integer.parseInt(resultStartDate[2]), (Integer.parseInt(resultStartDate[1])-1), Integer.parseInt(resultStartDate[0]));
+            maxDate.set(Integer.parseInt(resultEndDate[2]), (Integer.parseInt(resultEndDate[1])-1), Integer.parseInt(resultEndDate[0]));
 
         } else {
-            String[] resultEndDate = split(datePickerStartDate);
+            minDate.set(Integer.parseInt(resultStartDate[2]), (Integer.parseInt(resultStartDate[1])-1), Integer.parseInt(resultStartDate[0]));
             defaultDate.set(Integer.parseInt(resultEndDate[2]), (Integer.parseInt(resultEndDate[1])-1), Integer.parseInt(resultEndDate[0]));
         }
 
