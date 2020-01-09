@@ -11,7 +11,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -35,7 +34,6 @@ import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentWidgetModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
-import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpGreenRectWidgetModel
@@ -61,7 +59,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_pdp_facilities.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_pdp.*
 import kotlinx.android.synthetic.main.fragment_umrah_pdp.view.*
-import kotlinx.android.synthetic.main.partial_umrah_pdp_ad.*
 import kotlinx.android.synthetic.main.widget_umrah_pdp_green_rect.view.*
 import kotlinx.android.synthetic.main.widget_umrah_pdp_itinerary.view.*
 import javax.inject.Inject

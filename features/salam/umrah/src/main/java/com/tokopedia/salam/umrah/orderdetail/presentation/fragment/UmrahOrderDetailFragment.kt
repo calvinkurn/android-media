@@ -245,7 +245,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         when(buttonViewModel.label){
             BATALKAN_LABEL -> trackingUmrahUtil.umrahOrderDetailBatalkanPesanan()
         }
-        RouteManager.route(context, "${buttonViewModel.buttonLink}")
+        RouteManager.route(context, buttonViewModel.buttonLink)
     }
 
     private fun getTextFromHtml(htmlText: String): CharSequence =

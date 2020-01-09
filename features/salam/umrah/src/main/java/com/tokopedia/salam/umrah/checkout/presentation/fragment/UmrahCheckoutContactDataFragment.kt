@@ -15,7 +15,6 @@ import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.ContactUser
@@ -23,8 +22,6 @@ import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity.Companion.EXTRA_INITIAL_CONTACT_DATA
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
-import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
-import com.tokopedia.salam.umrah.common.util.UmrahPhoneTransform
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
@@ -92,7 +89,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 if (resultCode == Activity.RESULT_OK) {
                     val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
                             ?: TravelCountryPhoneCode()
-                    contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
+                    contactData.phoneCode = countryPhoneCode.countryPhoneCode
 
                     spinnerData.clear()
                     spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
@@ -275,7 +272,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         fun getInstance(contactData: ContactUser): UmrahCheckoutContactDataFragment =
                 UmrahCheckoutContactDataFragment().also {
                     it.arguments = Bundle().apply {
-                        putParcelable(UmrahCheckoutContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
+                        putParcelable(EXTRA_INITIAL_CONTACT_DATA, contactData)
                     }
                 }
     }

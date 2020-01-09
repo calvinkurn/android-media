@@ -20,11 +20,12 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
-import com.tokopedia.salam.umrah.homepage.data.*
+import com.tokopedia.salam.umrah.homepage.data.Products
+import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
+import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageModel
 import com.tokopedia.salam.umrah.homepage.di.UmrahHomepageComponent
 import com.tokopedia.salam.umrah.homepage.presentation.activity.UmrahHomepageActivity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHomepageFactoryImpl
-import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageCategoryViewHolder
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.homepage.presentation.viewmodel.UmrahHomepageViewModel
 import com.tokopedia.user.session.UserSessionInterface

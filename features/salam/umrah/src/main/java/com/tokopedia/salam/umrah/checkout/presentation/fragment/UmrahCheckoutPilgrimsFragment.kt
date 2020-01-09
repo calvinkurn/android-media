@@ -26,19 +26,16 @@ import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutPilgrims
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutPilgrimsActivity
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
-import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahPilgrimsTitle
 import com.tokopedia.salam.umrah.common.data.UmrahPilgrimsTitleType
 import com.tokopedia.salam.umrah.common.util.CommonParam
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorianID
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorian
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorianID
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_umrah_checkout_contact_data.*
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_pilgrims.*
-import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
