@@ -113,7 +113,7 @@ public class GTMAnalytics extends ContextAnalytics {
             pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         } catch (Exception e) {
             if (e != null && !TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2[GTMAnalytic Error]%s %s", e.getMessage(), stacktrace.toString());
+                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
             }
         }
     }
