@@ -15,7 +15,6 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.Toaster
@@ -160,16 +159,6 @@ fun View.showNormalToaster(successMessage: String, @StringRes actionMessage: Int
 fun View.showNormalToaster(successMessage: String, actionMessage: String?, action: () -> Unit) {
     actionMessage?.let { message ->
         Toaster.make(this, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, message)
-    }
-}
-
-fun View.showEmptyState(@StringRes errorMessage: Int, action: () -> Unit) {
-    this.showEmptyState(context.getString(errorMessage), action)
-}
-
-fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
-    NetworkErrorHelper.showEmptyState(this.context, this, errorMessage) {
-        action()
     }
 }
 

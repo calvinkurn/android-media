@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -32,7 +33,6 @@ import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.showEmptyState
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -415,7 +415,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
 
     override fun showEmptyState(throwable: Throwable) {
-        root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
+        NetworkErrorHelper.showEmptyState(root_view_pm.context, root_view_pm, ErrorHandler.getErrorMessage(context, throwable)) {
+            refreshData()
+        }
         hideLoading()
     }
 

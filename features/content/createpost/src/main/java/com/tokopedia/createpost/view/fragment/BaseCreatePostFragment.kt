@@ -61,6 +61,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -808,7 +809,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun onErrorGetProductSuggestion(t: Throwable) {
         context?.let {
-            t.debugTrace()
+            Timber.d(t)
             val errorMessage = ErrorHandler.getErrorMessage(context, t)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
             hideProductSuggestionLoading()

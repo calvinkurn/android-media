@@ -1,10 +1,10 @@
 package com.tokopedia.kotlin.extensions.view
 
-import androidx.annotation.DrawableRes
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.R
+import com.tokopedia.utils.resources.DrawableUtils
 
 /**
  * @author by milhamj on 30/11/18.
@@ -31,7 +31,7 @@ fun ImageView.loadImageWithoutPlaceholder(url: String) {
 }
 
 fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
-    this.setImageDrawable(MethodChecker.getDrawable(context, drawableId))
+    this.setImageDrawable(DrawableUtils.getDrawable(context, drawableId))
 }
 
 fun ImageView.clearImage() {
