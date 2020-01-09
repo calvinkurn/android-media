@@ -68,6 +68,10 @@ buildscript {
     }
 }
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     project.ext {
         defaultVersionCode = 221001101;
         defaultVersionName = "2.21";
@@ -221,6 +225,8 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+    implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.search)
 }
 
 repositories {
