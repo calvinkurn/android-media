@@ -816,6 +816,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         } else {
             if (title.equalsIgnoreCase(MULAI_DARI)) {
                 minDate.set(Calendar.YEAR, 2017);
+                defaultDate.set(2017, 0, 1);
             }
         }
 
@@ -836,29 +837,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
                 sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
-
-                datePickerEndDate = "";
-                if (date[0] < 10) {
-                    datePickerEndDate += "0";
-                }
-                datePickerEndDate += date[0] + "/";
-                if (date[1] < 10) {
-                    datePickerEndDate += "0";
-                }
-                datePickerEndDate += date[1] + "/" + date[2];
+                datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
 
             } else {
                 mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
-
-                datePickerStartDate = "";
-                if (date[0] < 10) {
-                    datePickerStartDate += "0";
-                }
-                datePickerStartDate += date[0] + "/";
-                if (date[1] < 10) {
-                    datePickerStartDate += "0";
-                }
-                datePickerStartDate = date[1] + "/" + date[2];
+                datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
             }
             datePickerUnify.dismiss();
         });
