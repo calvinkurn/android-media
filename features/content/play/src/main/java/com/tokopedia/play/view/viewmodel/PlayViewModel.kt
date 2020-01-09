@@ -104,8 +104,12 @@ class PlayViewModel @Inject constructor(
         return playManager.getDurationVideo()
     }
 
-    fun showKeyboard(isShown: Boolean) {
-        _observableKeyboardState.value = if (isShown) KeyboardState.Shown else KeyboardState.Hidden
+    fun showKeyboard(estimatedKeyboardHeight: Int) {
+        _observableKeyboardState.value = KeyboardState.Shown(estimatedKeyboardHeight)
+    }
+
+    fun hideKeyboard() {
+        _observableKeyboardState.value = KeyboardState.Hidden
     }
 
     fun getChannelInfo(channelId: String) {

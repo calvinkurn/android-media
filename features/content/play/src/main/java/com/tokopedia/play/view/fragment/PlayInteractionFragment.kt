@@ -12,8 +12,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -43,6 +45,7 @@ import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -264,7 +267,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
 
-                if (it.isShown) calculateInteractionHeightOnKeyboardShown()
+                if (it is KeyboardState.Shown) calculateInteractionHeightOnKeyboardShown(it.estimatedKeyboardHeight)
             }
         })
     }
@@ -804,12 +807,33 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
     }
 
-    private fun calculateInteractionHeightOnKeyboardShown() {
-        val statsViewY = view?.findViewById<View>(statsComponent.getContainerId())?.y?.toInt().orZero()
-        val pinnedView = view?.findViewById<View>(pinnedComponent.getContainerId())
-        val pinnedViewHeight = pinnedView?.height ?: 0
-        val interactionHeightOnKeyboardShown = statsViewY + pinnedViewHeight
+    private fun calculateInteractionHeightOnKeyboardShown(estimatedKeyboardHeight: Int) {
+        val sendChatView = view?.findViewById<View>(sendChatComponent.getContainerId())
+        val sendChatViewTotalHeight = if (sendChatView != null) {
+            val height = sendChatView.height
+            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        } else 0
 
-        if (interactionHeightOnKeyboardShown != -1) (parentFragment as? PlayFragment)?.onKeyboardShown(interactionHeightOnKeyboardShown)
+        val quickReplyView = view?.findViewById<View>(quickReplyComponent.getContainerId())
+        val quickReplyViewTotalHeight = if (quickReplyView != null && !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
+            val height = if (quickReplyView.height <= 0) view?.findViewById<View>(statsComponent.getContainerId())?.height.orZero() else quickReplyView.height
+            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        } else 0
+
+        val chatListView = view?.findViewById<View>(chatListComponent.getContainerId())
+        val chatListViewTotalHeight = if (chatListView != null) {
+            val height = resources.getDimensionPixelSize(R.dimen.play_max_chat_height)
+            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        } else 0
+
+        val statusBarHeight = view?.let { getStatusBarHeight(it.context) } ?: 0
+        val requiredMargin = resources.getDimensionPixelOffset(R.dimen.spacing_lvl4)
+
+        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
+
+        (parentFragment as? PlayFragment)?.onKeyboardShown(interactionTopmostY)
     }
 }

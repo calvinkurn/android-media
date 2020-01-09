@@ -115,13 +115,13 @@ class PlayFragment : BaseDaggerFragment() {
 
         KeyboardWatcher().listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                playViewModel.showKeyboard(true)
+                playViewModel.showKeyboard(estimatedKeyboardHeight)
                 ivClose.visible()
                 flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
 
             override fun onKeyboardHidden() {
-                playViewModel.showKeyboard(false)
+                playViewModel.hideKeyboard()
                 ivClose.invisible()
                 flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                 this@PlayFragment.onKeyboardHidden()
