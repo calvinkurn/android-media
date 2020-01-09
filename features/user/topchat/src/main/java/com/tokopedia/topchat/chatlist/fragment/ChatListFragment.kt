@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -25,7 +26,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
-import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -58,6 +58,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -209,7 +210,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> adapter?.deleteItem(itemPositionLongClicked)
-                is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
+                is Fail -> view?.let {
+                    Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
             }
         })
     }

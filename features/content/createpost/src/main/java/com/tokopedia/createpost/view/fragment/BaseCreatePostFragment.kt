@@ -433,10 +433,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.addAll(productIds)
             viewModel.adIdList.addAll(adIds)
         } else {
-            view?.showErrorToaster(
-                    getString(R.string.af_duplicate_product),
-                    getString(R.string.af_title_ok)
-            ) { }
+            view?.let {
+                Toaster.make(it, getString(R.string.af_duplicate_product), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.af_title_ok))
+            }
         }
     }
 
@@ -476,7 +475,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun handleDraftError(arguments: Bundle) {
         val errorMessage = arguments.getString(CREATE_POST_ERROR_MSG, "")
         if (errorMessage.isNotBlank()) {
-            view?.showErrorToaster(errorMessage)
+            view?.let {
+                Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
         }
     }
 

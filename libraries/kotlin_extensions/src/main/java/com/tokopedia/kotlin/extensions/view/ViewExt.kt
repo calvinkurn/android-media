@@ -13,11 +13,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
 
 
@@ -130,35 +127,6 @@ fun View.hideLoadingTransparent() {
         this.findViewById<View>(R.id.loadingTransparentView)!!.hide()
     } catch (e: NullPointerException) {
         Timber.d(e)
-    }
-}
-
-
-fun View.showErrorToaster(errorMessage: String) {
-    this.showErrorToaster(errorMessage, null as String?) { }
-}
-
-fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_try_again, action: () -> Unit) {
-    this.showErrorToaster(errorMessage, context.getString(actionMessage), action)
-}
-
-fun View.showErrorToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
-    actionMessage?.let { message ->
-        Toaster.make(this, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, message)
-    }
-}
-
-fun View.showNormalToaster(successMessage: String) {
-    this.showNormalToaster(successMessage, null as String?) { }
-}
-
-fun View.showNormalToaster(successMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
-    this.showNormalToaster(successMessage, context.getString(actionMessage), action)
-}
-
-fun View.showNormalToaster(successMessage: String, actionMessage: String?, action: () -> Unit) {
-    actionMessage?.let { message ->
-        Toaster.make(this, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, message)
     }
 }
 
