@@ -37,16 +37,13 @@ import rx.functions.Func1;
 public class CategoryDetailDataSource {
 
     private DigitalGqlApi digitalGqlApi;
-    private CacheManager cacheManager;
     private ProductDigitalMapper productDigitalMapper;
     private Context context;
 
     public CategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
-                                    CacheManager cacheManager,
                                     ProductDigitalMapper productDigitalMapper,
                                     Context context) {
         this.digitalGqlApi = digitalGqlApi;
-        this.cacheManager = cacheManager;
         this.productDigitalMapper = productDigitalMapper;
         this.context = context;
     }
@@ -84,7 +81,7 @@ public class CategoryDetailDataSource {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
             digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
-                    cacheManager.get(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
+                    PersistentCacheManager.instance.getString(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
                     new TypeToken<RechargeResponseEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
@@ -162,7 +159,7 @@ public class CategoryDetailDataSource {
 
     private Action1<RechargeResponseEntity> saveCategoryDetailToCache(final String categoryId) {
         return digitalCategoryDetailEntity -> {
-            cacheManager.save(
+            PersistentCacheManager.instance.put(
                     DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId,
                     CacheUtil.convertModelToString(digitalCategoryDetailEntity,
                             new TypeToken<RechargeResponseEntity>() {

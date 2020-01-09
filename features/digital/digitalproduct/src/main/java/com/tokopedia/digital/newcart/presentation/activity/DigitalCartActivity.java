@@ -1,21 +1,18 @@
 package com.tokopedia.digital.newcart.presentation.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import android.text.TextUtils;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.constant.DeeplinkConstant;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.applink.DigitalApplinkConstant;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponentInstance;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
@@ -29,80 +26,56 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         DigitalCartDefaultFragment.InteractionListener,
         DigitalCartDealsFragment.InteractionListener,
         DigitalCartMyBillsFragment.InteractionListener {
-    private DigitalCheckoutPassData cartPassData;
-    private DigitalSubscriptionParams subParams;
 
-    public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
-        return new Intent(context, DigitalCartActivity.class)
-                .putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
+    private DigitalCheckoutPassData processIntentDataCheckoutFromApplink(Context context, Uri uriData) {
+        DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
+        passData.setCategoryId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_CATEGORY_ID()));
+        passData.setClientNumber(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_CLIENT_NUMBER()));
+        passData.setOperatorId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_OPERATOR_ID()));
+        passData.setProductId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_PRODUCT_ID()));
+        passData.setPromo(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_IS_PROMO()));
+        String instantCheckoutParam = uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_INSTANT_CHECKOUT());
+        passData.setInstantCheckout(instantCheckoutParam != null ? instantCheckoutParam : "0");
+        passData.setIdemPotencyKey(generateATokenRechargeCheckout(context));
+        return passData;
     }
 
-    public static Intent newInstance(Context context, Bundle bundle) {
-        DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
-        passData.setAction(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_ACTION()));
-        passData.setCategoryId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_CATEGORY_ID()));
-        passData.setClientNumber(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_CLIENT_NUMBER()));
-        passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_OPERATOR_ID()));
-        passData.setProductId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_PRODUCT_ID()));
-        passData.setPromo(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IS_PROMO()));
-        String instantCheckoutParam = bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_INSTANT_CHECKOUT());
-        passData.setInstantCheckout(instantCheckoutParam != null ? instantCheckoutParam : "0");
-        passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_CAMPAIGN()));
-        passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_MEDIUM()));
-        passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_SOURCE()));
-        passData.setUtmContent(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_CONTENT()));
-        if (!TextUtils.isEmpty(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IDEM_POTENCY_KEY(), ""))) {
-            passData.setIdemPotencyKey(
-                    bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IDEM_POTENCY_KEY())
-            );
-        } else {
-            passData.setIdemPotencyKey(
-                    generateATokenRechargeCheckout(context)
-            );
-        }
-
-        // Add subscription applink parameter handling
-        Intent intent = new Intent(context, DigitalCartActivity.class);
+    private DigitalSubscriptionParams processIntentDataSubscription(Uri uriData) {
         DigitalSubscriptionParams subParams = new DigitalSubscriptionParams();
-        String showSubscribePopUpArg = bundle.getString(DigitalSubscriptionParams.ARG_SHOW_SUBSCRIBE_POP_UP);
-        String autoSubscribeArg = bundle.getString(DigitalSubscriptionParams.ARG_AUTO_SUBSCRIBE);
+        String showSubscribePopUpArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_SHOW_SUBSCRIBE_POP_UP);
+        String autoSubscribeArg = uriData.getQueryParameter(DigitalSubscriptionParams.ARG_AUTO_SUBSCRIBE);
         if (showSubscribePopUpArg != null) {
             subParams.setShowSubscribePopUp(Boolean.parseBoolean(showSubscribePopUpArg));
         }
         if (autoSubscribeArg != null) {
             subParams.setAutoSubscribe(Boolean.parseBoolean(autoSubscribeArg));
         }
-        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA, subParams);
-        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
-        return intent;
+        return subParams;
     }
 
-    private static String generateATokenRechargeCheckout(Context context) {
+    private String generateATokenRechargeCheckout(Context context) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthHelper.getMD5Hash(timeMillis);
         UserSession userSession = new UserSession(context);
         return userSession.getUserId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
-    @DeepLink({DigitalApplinkConstant.DIGITAL_CART})
-    public static Intent getApplinkInstance(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return DigitalCartActivity.newInstance(context, extras)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
-
     @Override
     protected Fragment getNewFragment() {
-        return DigitalCartDefaultFragment.newInstance(cartPassData, subParams);
-    }
+        Uri uriData = getIntent().getData();
+        DigitalCheckoutPassData cartPassData = null;
+        DigitalSubscriptionParams subParams = null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        cartPassData = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
-        subParams = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA);
-        super.onCreate(savedInstanceState);
+        if (uriData.getHost().equals(DeeplinkConstant.SCHEME_INTERNAL)) {
+            cartPassData = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
+            subParams = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA);
+        } else {
+            if (uriData.getQueryParameterNames().size() > 0) {
+                cartPassData = processIntentDataCheckoutFromApplink(getApplicationContext(), uriData);
+                subParams = processIntentDataSubscription(uriData);
+            }
+        }
+        return DigitalCartDefaultFragment.newInstance(cartPassData, subParams);
     }
 
     @Override

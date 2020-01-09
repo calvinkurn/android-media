@@ -3,8 +3,8 @@ package com.tokopedia.digital.common.data.source;
 import androidx.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
@@ -25,14 +25,11 @@ public class StatusDataSource {
     private final static String KEY_CATEGORY_LIST = "RECHARGE_CATEGORY_LIST";
 
     private DigitalRestApi digitalEndpointService;
-    private CacheManager cacheManager;
     private StatusMapper statusMapper;
 
     public StatusDataSource(DigitalRestApi digitalEndpointService,
-                            CacheManager globalCacheManager,
                             StatusMapper statusMapper) {
         this.digitalEndpointService = digitalEndpointService;
-        this.cacheManager = globalCacheManager;
         this.statusMapper = statusMapper;
     }
 
@@ -40,12 +37,12 @@ public class StatusDataSource {
         return digitalEndpointService.getStatus()
                 .map(getFuncTransformStatusEntity())
                 .map(status -> {
-                    String currentStatusString = cacheManager.get(KEY_STATUS_CURRENT);
+                    String currentStatusString = PersistentCacheManager.instance.getString(KEY_STATUS_CURRENT);
                     String statusString = CacheUtil.convertModelToString(status,
                             new TypeToken<StatusEntity>() {
                             }.getType());
                     if (currentStatusString != null && !currentStatusString.equals(statusString)) {
-                        cacheManager.delete(KEY_CATEGORY_LIST);
+                        PersistentCacheManager.instance.delete(KEY_CATEGORY_LIST);
 
                         saveStatusToCache(statusString);
                     } else if (currentStatusString == null) {
@@ -57,7 +54,7 @@ public class StatusDataSource {
     }
 
     private void saveStatusToCache(String statusString) {
-        cacheManager.save(
+        PersistentCacheManager.instance.put(
                 KEY_STATUS_CURRENT,
                 statusString,
                 0

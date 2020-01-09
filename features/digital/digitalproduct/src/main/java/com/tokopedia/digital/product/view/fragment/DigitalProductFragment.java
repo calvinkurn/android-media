@@ -47,7 +47,6 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -58,7 +57,6 @@ import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
@@ -83,7 +81,6 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -153,6 +150,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String CLICK_HOMEPAGE_OCR = "clickHomepage";
     private static final String CATEGORY_OCR = "digital - native";
     private static final String ACTION_OCR = "click camera icon";
+
+    public static final String PATH_TRANSACTION_LIST = "order-list/";
+    public static final String PATH_PRODUCT_LIST = "products/";
+    public static final String PATH_SUBSCRIPTIONS = "subscribe/";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -226,8 +227,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     ProductDigitalPresenter presenter;
     @Inject
     UserSession userSession;
-    @Inject
-    DigitalModuleRouter digitalModuleRouter;
     @Inject
     RechargeAnalytics rechargeAnalytics;
 
@@ -652,8 +651,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = ((DigitalModuleRouter) getContext().getApplicationContext())
-                .getLoginIntent(getActivity());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
     }
 
@@ -699,14 +697,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 userSession.getUserId());
 
         if (userSession.isLoggedIn()) {
-            if (getActivity().getApplication() instanceof DigitalRouter) {
-                DigitalRouter digitalModuleRouter =
-                        (DigitalRouter) getActivity().getApplication();
-                navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        REQUEST_CODE_CART_DIGITAL
-                );
-            }
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
         } else {
             interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
@@ -728,15 +721,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 userSession.getUserId());
 
         if (userSession.isLoggedIn()) {
-            if (getActivity().getApplication() instanceof DigitalRouter) {
-                DigitalRouter digitalModuleRouter =
-                        (DigitalRouter) getActivity().getApplication();
-                navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        REQUEST_CODE_CART_DIGITAL
-                );
-                getActivity().overridePendingTransition(0, 0);
-            }
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
         } else {
             interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
@@ -951,14 +938,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
-                    if (getActivity().getApplication() instanceof DigitalRouter) {
-                        DigitalRouter digitalModuleRouter =
-                                (DigitalRouter) getActivity().getApplication();
-                        navigateToActivityRequest(
-                                digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                REQUEST_CODE_CART_DIGITAL
-                        );
-                    }
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+                    intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassDataState);
+                    startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
                 }
                 break;
             case REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
@@ -1018,30 +1000,20 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
-            navigateToActivity(
-                    digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
-                    )
-            );
+            RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
+                    + PATH_PRODUCT_LIST);
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
-            navigateToActivity(
-                    digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                    + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
-                    )
-            );
+            RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
+                    + PATH_SUBSCRIPTIONS);
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             if (categoryDataState != null) {
                 digitalAnalytics.eventClickDaftarTransaksiEvent(categoryDataState.getName());
             }
             if (GlobalConfig.isSellerApp()) {
-                navigateToActivity(
-                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
-                );
+                RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
+                        + PATH_TRANSACTION_LIST);
             } else {
                 RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
             }

@@ -40,15 +40,15 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
     }
 
     private void setupView(View view) {
-        infoContainer = (LinearLayout) view.findViewById(R.id.info_container);
-        dealImageView = (AppCompatImageView) view.findViewById(R.id.iv_image);
-        brandTextView = (AppCompatTextView) view.findViewById(R.id.tv_brand_name);
-        titleTextView = (AppCompatTextView) view.findViewById(R.id.tv_title);
-        slashedPriceTextView = (AppCompatTextView) view.findViewById(R.id.tv_slashed_price);
-        priceTextView = (AppCompatTextView) view.findViewById(R.id.tv_price);
-        closeImageView = (AppCompatImageView) view.findViewById(R.id.iv_close);
-        checkImageView = (AppCompatImageView) view.findViewById(R.id.iv_check);
-        buyButton = (AppCompatButton) view.findViewById(R.id.btn_buy);
+        infoContainer = view.findViewById(R.id.info_container);
+        dealImageView = view.findViewById(R.id.iv_image);
+        brandTextView = view.findViewById(R.id.tv_brand_name);
+        titleTextView = view.findViewById(R.id.tv_title);
+        slashedPriceTextView = view.findViewById(R.id.tv_slashed_price);
+        priceTextView = view.findViewById(R.id.tv_price);
+        closeImageView = view.findViewById(R.id.iv_close);
+        checkImageView = view.findViewById(R.id.iv_check);
+        buyButton = view.findViewById(R.id.btn_buy);
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

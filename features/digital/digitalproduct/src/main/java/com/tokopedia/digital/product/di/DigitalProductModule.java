@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
@@ -161,10 +160,9 @@ public class DigitalProductModule {
     @Provides
     @DigitalProductScope
     CategoryDetailDataSource provideCategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
-                                                             CacheManager cacheManager,
                                                              ProductDigitalMapper productDigitalMapper,
                                                              @ApplicationContext Context context) {
-        return new CategoryDetailDataSource(digitalGqlApi, cacheManager, productDigitalMapper, context);
+        return new CategoryDetailDataSource(digitalGqlApi, productDigitalMapper, context);
     }
 
     @Provides
@@ -218,14 +216,14 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    StatusDataSource provideStatusDataSource(com.tokopedia.digital.common.data.apiservice.DigitalRestApi digitalRestApi, CacheManager cacheManager, StatusMapper statusMapper) {
-        return new StatusDataSource(digitalRestApi, cacheManager, statusMapper);
+    StatusDataSource provideStatusDataSource(com.tokopedia.digital.common.data.apiservice.DigitalRestApi digitalRestApi, StatusMapper statusMapper) {
+        return new StatusDataSource(digitalRestApi, statusMapper);
     }
 
     @Provides
     @DigitalProductScope
-    CategoryListDataSource provideCategoryListDataSource(com.tokopedia.digital.common.data.apiservice.DigitalRestApi digitalRestApi, CacheManager cacheManager, CategoryMapper categoryMapper) {
-        return new CategoryListDataSource(digitalRestApi, cacheManager, categoryMapper);
+    CategoryListDataSource provideCategoryListDataSource(com.tokopedia.digital.common.data.apiservice.DigitalRestApi digitalRestApi, CategoryMapper categoryMapper) {
+        return new CategoryListDataSource(digitalRestApi, categoryMapper);
     }
 
     @Provides

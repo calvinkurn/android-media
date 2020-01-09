@@ -1,17 +1,9 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,12 +15,23 @@ import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
@@ -91,8 +94,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Inject
     DigitalDealCheckoutPresenter presenter;
-    @Inject
-    DigitalModuleRouter digitalModuleRouter;
 
     public DigitalDealCheckoutFragment() {
         // Required empty public constructor
@@ -442,7 +443,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void navigateToDealDetailPage(String slug) {
-        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), slug, false, false, false, false));
+        Intent intent = RouteManager.getIntent(getActivity(),
+                ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
+        startActivity(intent);
     }
 
     @Override

@@ -90,7 +90,6 @@ import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.events.EventModuleRouter;
@@ -276,7 +275,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LogisticRouter,
         IHomeRouter,
         DiscoveryRouter,
-        DigitalModuleRouter,
         ApplinkRouter,
         ShopModuleRouter,
         LoyaltyModuleRouter,
@@ -682,48 +680,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return intent;
     }
 
-    @Override
-    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        return DigitalCartActivity.newInstance(this, passData);
-    }
-
-
-    @Override
-    public Intent instanceIntentDigitalCategoryList() {
-        return DigitalCategoryListActivity.newInstance(this);
-    }
-
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
-    }
-
-    @Override
-    public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
-        intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(Uri.encode(url), activity));
-        intent.putExtra(EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
-        return intent;
-    }
-
-    @Override
-    public String getTrackingClientId() {
-        return TrackingUtils.getClientID(getAppContext());
-    }
-
-    @Override
-    public Intent getDealDetailIntent(Activity activity,
-                                      String slug,
-                                      boolean enableBuy,
-                                      boolean enableRecommendation,
-                                      boolean enableShare,
-                                      boolean enableLike) {
-        Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
-        return intent;
-    }
-
-    @Override
-    public String getBranchAutoApply(Activity activity) {
-        return null;
     }
 
     @Override
@@ -734,16 +692,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         return MainParentActivity.class;
-    }
-
-    @Override
-    public String getAfUniqueId() {
-        return TrackingUtils.getAfUniqueId(MainApplication.getAppContext());
-    }
-
-    @Override
-    public String getAdsId() {
-        return TrackApp.getInstance().getGTM().getGoogleAdId();
     }
 
     @Override
@@ -960,11 +908,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
-    }
-
-    @Override
-    public void showForceLogoutDialog() {
-        ServerErrorHandler.showForceLogoutDialog();
     }
 
     @Override
@@ -1342,18 +1285,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToTokoCash(String appLinkBalance, Activity activity) {
-        WalletRouterUtil.navigateWallet(
-                activity.getApplication(),
-                activity,
-                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                appLinkBalance,
-                "",
-                new Bundle()
-        );
-    }
-
-    @Override
     public void goToSaldo(Context context) {
 
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
@@ -1450,11 +1381,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         mIris.setUserId("");
         setTetraUserId("");
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
     }
 
     @Override

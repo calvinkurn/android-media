@@ -1,4 +1,4 @@
-package com.tokopedia.digital.exception;
+package com.tokopedia.digital.common.exception;
 
 /**
  * @author anggaprasetiyo on 3/8/17.

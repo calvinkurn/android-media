@@ -27,4 +27,7 @@
     <dimen name="digital_youtube_thumbnail_width">250dp</dimen>
     <dimen name="digital_youtube_thumbnail_height">180dp</dimen>
 
+    <dimen name="spacing_show_case">12dp</dimen>
+    <dimen name="arrow_width_show_case">16dp</dimen>
+
 </resources>
