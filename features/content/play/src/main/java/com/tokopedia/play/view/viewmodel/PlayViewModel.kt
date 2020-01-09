@@ -165,8 +165,10 @@ class PlayViewModel @Inject constructor(
             val totalLike = getTotalLikes(channel.contentId, channel.contentType)
             _observableTotalLikes.value = mapTotalLikes(totalLike)
 
-            val isLiked = getIsLike(channel.contentId, channel.contentType)
-            _observableIsLikeContent.value = isLiked
+            if (userSessionInterface.isLoggedIn) {
+                val isLiked = getIsLike(channel.contentId, channel.contentType)
+                _observableIsLikeContent.value = isLiked
+            }
 
         }) {
             //TODO("Change it later")
