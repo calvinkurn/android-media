@@ -62,7 +62,7 @@ class PlayButtonComponent(
         }
         when (state) {
             TokopediaPlayVideoState.Playing -> uiView.hide()
-            TokopediaPlayVideoState.Pause -> uiView.show()
+            TokopediaPlayVideoState.Pause, TokopediaPlayVideoState.Ended -> uiView.show()
         }
     }
 }

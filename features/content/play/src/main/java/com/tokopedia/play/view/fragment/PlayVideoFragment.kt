@@ -105,7 +105,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     //region observe
     private fun observeVOD() {
-        playViewModel.observableVOD.observe(this, Observer {
+        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -117,7 +117,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(this, Observer {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             if (it.state is TokopediaPlayVideoState.Error)
                 view?.let { fragmentView ->
                     PlayAnalytics.errorState(channelId, it.state.error.localizedMessage, playViewModel.isLive)
@@ -136,11 +136,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeOneTapOnboarding() {
-        viewModel.observableOneTapOnboarding.observe(this, EventObserver { showOneTapOnboarding() })
+        viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
     }
 
     private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(this, Observer {
+        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
