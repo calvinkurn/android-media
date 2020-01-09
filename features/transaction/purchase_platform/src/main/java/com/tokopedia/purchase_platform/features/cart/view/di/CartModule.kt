@@ -53,8 +53,9 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @Provides

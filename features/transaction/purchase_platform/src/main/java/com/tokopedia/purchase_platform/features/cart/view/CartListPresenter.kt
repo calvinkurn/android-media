@@ -269,7 +269,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.let {
             it.showProgressLoading()
 
-            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList() ?: emptyList())
+            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList()
+                    ?: emptyList())
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
@@ -594,8 +595,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 }
                 view.showProgressLoading()
                 checkPromoStackingCodeUseCase?.setParams(promo)
-                checkPromoStackingCodeUseCase?.execute(RequestParams.create(),
-                        CheckPromoFirstStepAfterClashSubscriber(this.view, this, checkPromoStackingCodeMapper, type))
+                checkPromoStackingCodeUseCase?.createObservable(RequestParams.create())
+                        ?.subscribe(CheckPromoFirstStepAfterClashSubscriber(this.view, this, checkPromoStackingCodeMapper, type))
             }
         }
     }

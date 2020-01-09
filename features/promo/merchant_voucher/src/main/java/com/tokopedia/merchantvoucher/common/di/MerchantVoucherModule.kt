@@ -3,6 +3,7 @@ package com.tokopedia.merchantvoucher.common.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import dagger.Module
 import dagger.Provides
@@ -22,8 +23,9 @@ class MerchantVoucherModule {
 
     @Provides
     @MerchantVoucherScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
 }
