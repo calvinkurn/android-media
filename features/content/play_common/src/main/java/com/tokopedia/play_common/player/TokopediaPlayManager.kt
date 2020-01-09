@@ -4,21 +4,22 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.dash.DashMediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.play_common.type.Http
 import com.tokopedia.play_common.type.Rtmp
 import com.tokopedia.play_common.type.PlayVideoProtocol
-import com.tokopedia.play_common.type.getVideoTypeByUri
 
 /**
  * Created by jegul on 03/12/19
@@ -74,24 +75,22 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     }
 
     //region public method
-    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
+    fun safePlayVideoWithUri(context: Context, uri: Uri, autoPlay: Boolean = true) {
         if (uri != currentVideoUri) {
             currentVideoUri = uri
-            playVideoWithUri(uri, autoPlay)
+            playVideoWithUri(context, uri, autoPlay)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay)
+    fun safePlayVideoWithUriString(context: Context, uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(context, Uri.parse(uriString), autoPlay)
 
-    fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
-        val videoType = PlayVideoProtocol.getVideoTypeByUri(uri)
-        val mediaSource = getMediaSourceByProtocol(videoType)
+    private fun playVideoWithUri(context: Context, uri: Uri, autoPlay: Boolean = true) {
+        val mediaSource = getMediaSourceBySource(context, uri)
         videoPlayer.playWhenReady = autoPlay
         videoPlayer.prepare(mediaSource)
     }
 
-    fun playVideoWithString(uriString: String, autoPlay: Boolean = true) = playVideoWithUri(Uri.parse(uriString), autoPlay)
     //endregion
 
     //region player control
@@ -115,10 +114,15 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     //endregion
 
     //region private method
-    private fun getMediaSourceByProtocol(protocol: PlayVideoProtocol): MediaSource {
-        return ProgressiveMediaSource.Factory(
-                getExoDataSourceFactoryByProtocol(protocol)
-        ).createMediaSource(protocol.uri)
+    private fun getMediaSourceBySource(context: Context, uri: Uri?): MediaSource {
+        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "home"))
+        return when (val type = Util.inferContentType(uri)) {
+            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
+            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
+            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
+            else -> throw IllegalStateException("Unsupported type: $type")
+        }
     }
 
     private fun getExoDataSourceFactoryByProtocol(protocol: PlayVideoProtocol): DataSource.Factory {

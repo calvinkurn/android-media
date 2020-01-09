@@ -361,6 +361,10 @@
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 -dontwarn kotlinx.coroutines.flow.**inlined**
 
+#home
+ -dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
+ -dontwarn com.tokopedia.home.beranda.data.usecase.**inlined**
+
 # -- Unit Test
 -keep class junit.framework.** { *; }
 -keep class android.test.** { *; }

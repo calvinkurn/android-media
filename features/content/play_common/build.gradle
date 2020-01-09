@@ -22,6 +22,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 }
 

@@ -1,10 +1,12 @@
 package com.tokopedia.play.view.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
@@ -33,6 +35,8 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
+        @ApplicationContext
+        private val applicationContext: Context,
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -146,7 +150,7 @@ class PlayViewModel @Inject constructor(
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
-            playVideoStream(channel)
+            playVideoStream(applicationContext, channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
@@ -265,14 +269,14 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {
-        playManager.safePlayVideoWithUriString(urlString, isLive)
+    private fun startVideoWithUrlString(context: Context, urlString: String, isLive: Boolean) {
+        playManager.safePlayVideoWithUriString(context, urlString, isLive)
         if (_observableVOD.value == null) _observableVOD.value = playManager.videoPlayer
     }
 
-    private fun playVideoStream(channel: Channel) {
+    private fun playVideoStream(context: Context, channel: Channel) {
         if (channel.isActive) {
-            startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
+            startVideoWithUrlString(context, channel.videoStream.config.streamUrl, channel.videoStream.isLive)
         }
     }
 
