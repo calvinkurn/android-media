@@ -2,7 +2,6 @@ package com.tokopedia.play.view.event
 
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.ComponentEvent
-import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.*
 
 /**
@@ -17,7 +16,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetTotalLikes(val totalLikes: String): ScreenStateEvent()
     data class SetPinned(val pinnedMessage: PinnedMessageUiModel) : ScreenStateEvent()
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
-    data class IncomingChat(val chat: PlayChat) : ScreenStateEvent()
+    data class IncomingChat(val chat: PlayChatUiModel) : ScreenStateEvent()
     object ComposeChat : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()
     data class LikeContent(val shouldLike: Boolean) : ScreenStateEvent()

@@ -60,8 +60,8 @@ class PlayViewModel @Inject constructor(
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     val observableSocketInfo: LiveData<PlaySocketInfo> = _observableSocketInfo
 
-    private val _observableNewChat = MutableLiveData<PlayChat>()
-    val observableNewChat: LiveData<PlayChat> = _observableNewChat
+    private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
+    val observableNewChat: LiveData<PlayChatUiModel> = _observableNewChat
 
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
     val observableTotalLikes: LiveData<TotalLikeUiModel> = _observableTotalLikes
@@ -109,6 +109,7 @@ class PlayViewModel @Inject constructor(
     var contentType: Int = 0
 
     init {
+        //TODO(Remove, ONLY FOR TESTING)
 //        initMockChat()
     }
 
@@ -164,7 +165,7 @@ class PlayViewModel @Inject constructor(
             val totalLike = getTotalLikes(channel.contentId, channel.contentType)
             _observableTotalLikes.value = mapTotalLikes(totalLike)
 
-            val isLiked= getIsLike(channel.contentId, channel.contentType)
+            val isLiked = getIsLike(channel.contentId, channel.contentType)
             _observableIsLikeContent.value = isLiked
 
         }) {
@@ -193,8 +194,15 @@ class PlayViewModel @Inject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playSocket.send(cleanMessage, onSuccess = {
-            _observableNewChat.value = PlayChat("", "", cleanMessage,
-                    PlayChat.UserData(userSessionInterface.userId, userSessionInterface.name, userSessionInterface.profilePicture))
+            _observableNewChat.value = mapPlayChat(
+                    PlayChat(
+                            message = cleanMessage,
+                            user = PlayChat.UserData(
+                                    id = userSessionInterface.userId,
+                                    name = userSessionInterface.name,
+                                    image = userSessionInterface.profilePicture)
+                    )
+            )
         })
     }
 
@@ -243,7 +251,7 @@ class PlayViewModel @Inject constructor(
                         _observableTotalViews.value = mapTotalViews(result)
                     }
                     is PlayChat -> {
-                        _observableNewChat.value = result
+                        _observableNewChat.value = mapPlayChat(result)
                     }
                     is PinnedMessage -> {
                         val partnerName = _observablePartnerInfo.value?.name.orEmpty()
@@ -330,6 +338,14 @@ class PlayViewModel @Inject constructor(
     private fun mapTotalViews(totalViewString: String) = TotalViewUiModel(totalViewString)
     private fun mapTotalViews(totalView: TotalView) = mapTotalViews(totalView.totalViewFormatted)
 
+    private fun mapPlayChat(playChat: PlayChat) = PlayChatUiModel(
+            messageId = playChat.messageId,
+            userId = playChat.user.id,
+            name = playChat.user.name,
+            message = playChat.message,
+            isSelfMessage = playChat.user.id == userSessionInterface.userId
+    )
+
     private fun mapPartnerInfoFromShop(shopInfo: ShopInfo) = PartnerInfoUiModel(
             id = shopInfo.shopCore.shopId.toLong(),
             name = shopInfo.shopCore.name,
@@ -338,30 +354,31 @@ class PlayViewModel @Inject constructor(
     )
 
     private fun mapEvent(channel: Channel) = EventUiModel(
-                isBanned = false,
-                isFreeze = false,
-                bannedMessage = channel.banned.message,
-                bannedTitle = channel.banned.title,
-                bannedButtonTitle = channel.banned.buttonTitle,
-                freezeMessage = channel.freezeChannelState.desc,
-                freezeTitle = channel.freezeChannelState.title,
-                freezeButtonTitle = channel.freezeChannelState.btnTitle,
-                freezeButtonUrl = channel.freezeChannelState.btnAppLink
-        )
+            isBanned = false,
+            isFreeze = false,
+            bannedMessage = channel.banned.message,
+            bannedTitle = channel.banned.title,
+            bannedButtonTitle = channel.banned.buttonTitle,
+            freezeMessage = channel.freezeChannelState.desc,
+            freezeTitle = channel.freezeChannelState.title,
+            freezeButtonTitle = channel.freezeChannelState.btnTitle,
+            freezeButtonUrl = channel.freezeChannelState.btnAppLink
+    )
 
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
 
-    //TODO(Remove, ONLY FOR TESTING)
     private fun initMockChat() {
         launch(dispatchers.io) {
 
             var index = 0
-            while(isActive) {
+            while (isActive) {
                 delay(3000)
                 _observableNewChat.postValue(
-                        PlayChat(
-                                message = "test ${++index}",
-                                user = PlayChat.UserData(name = "YoMamen")
+                        mapPlayChat(
+                                PlayChat(
+                                        message = "test ${++index}",
+                                        user = PlayChat.UserData(name = "YoMamen")
+                                )
                         )
                 )
             }
