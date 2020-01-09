@@ -38,11 +38,11 @@ import javax.inject.Inject;
 public class InboxReputationReportFragment extends BaseDaggerFragment
         implements InboxReputationReport.View {
 
-    Button sendButton;
-    RadioGroup reportRadioGroup;
-    RadioButton otherRadioButton;
-    EditText otherReason;
-    TkpdProgressDialog progressDialog;
+    private Button sendButton;
+    private RadioGroup reportRadioGroup;
+    private RadioButton otherRadioButton;
+    private EditText otherReason;
+    private TkpdProgressDialog progressDialog;
 
     @Inject
     InboxReputationReportPresenter presenter;
@@ -89,12 +89,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        reportRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                setSendButton();
-            }
-        });
+        reportRadioGroup.setOnCheckedChangeListener((group, checkedId) -> setSendButton());
         otherReason.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -113,23 +108,13 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
             }
         });
 
-        otherReason.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                otherRadioButton.setChecked(true);
-            }
-        });
+        otherReason.setOnClickListener(view -> otherRadioButton.setChecked(true));
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.reportReview(
-                        getArguments().getString(InboxReputationReportActivity.ARGS_REVIEW_ID, ""),
-                        String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
-                        reportRadioGroup.getCheckedRadioButtonId(),
-                        otherReason.getText().toString());
-            }
-        });
+        sendButton.setOnClickListener(view -> presenter.reportReview(
+                getArguments().getString(InboxReputationReportActivity.ARGS_REVIEW_ID, ""),
+                String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
+                reportRadioGroup.getCheckedRadioButtonId(),
+                otherReason.getText().toString()));
     }
 
     private void setSendButton() {
