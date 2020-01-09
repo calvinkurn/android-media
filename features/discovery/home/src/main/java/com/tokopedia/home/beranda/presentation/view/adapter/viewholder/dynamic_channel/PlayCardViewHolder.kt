@@ -60,7 +60,7 @@ class PlayCardViewHolder(
 
             playCardViewModel = element
 
-            thumbnailView.loadImage(mThumbUrl, 250, 100, true)
+            thumbnailView.loadImage(mThumbUrl, 350, 150, true)
 
             broadcasterName.text = model.moderatorName
             titlePlay.text = model.title
