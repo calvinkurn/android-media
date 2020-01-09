@@ -357,7 +357,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         checkoutContainer.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             checkoutContainer.setElevation(60);
-            checkoutContainer.setBackgroundResource(android.R.color.white);
+            checkoutContainer.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
             checkoutContainer.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }

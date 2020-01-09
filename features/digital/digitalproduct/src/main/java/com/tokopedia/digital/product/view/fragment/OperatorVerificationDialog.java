@@ -276,7 +276,7 @@ public class OperatorVerificationDialog extends DialogFragment {
     private void setOkButtonEnable(boolean enable) {
         btnOk.setEnabled(enable);
         if (enable) {
-            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+            btnOk.setTextColor(ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.tkpd_main_green));
         } else {
             btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_200));
         }

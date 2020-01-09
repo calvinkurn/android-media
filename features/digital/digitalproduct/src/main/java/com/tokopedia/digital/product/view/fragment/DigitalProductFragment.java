@@ -1243,14 +1243,14 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
                 .customView(R.layout.view_digital_showcase)
-                .titleTextColorRes(R.color.white)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .spacingRes(R.dimen.digital_spacing_show_case)
                 .arrowWidth(R.dimen.digital_arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
                 .textSizeRes(R.dimen.dp_12)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .prevStringRes(R.string.digital_navigate_back_showcase)
                 .nextStringRes(R.string.next)
                 .finishStringRes(R.string.digital_navigate_done_showcase)
@@ -1370,15 +1370,15 @@ public class DigitalProductFragment extends BaseDaggerFragment
             checkETollBalanceView.setElevation(10);
             containerPromo.setElevation(10);
 
-            holderCheckBalance.setBackgroundResource(R.color.white);
-            holderProductDetail.setBackgroundResource(R.color.white);
-            checkETollBalanceView.setBackgroundResource(R.color.white);
-            containerPromo.setBackgroundResource(R.color.white);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.color.white);
+            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.color.white);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.color.white);
+            containerPromo.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
-            holderCheckBalance.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            holderProductDetail.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            checkETollBalanceView.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            containerPromo.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            containerPromo.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 
@@ -1396,7 +1396,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
         tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.green_200));
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_200));
         tickerView.buildView();
 
         tickerView.postDelayed(() -> {

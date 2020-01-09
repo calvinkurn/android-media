@@ -134,7 +134,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         presenter.onDealsCheckout();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             containerLayout.setElevation(60);
-            containerLayout.setBackgroundResource(android.R.color.white);
+            containerLayout.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
             containerLayout.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }
@@ -332,7 +332,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToExpand() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_up_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_up_grey)
             );
         }
     }
@@ -341,7 +341,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToCollapse() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_down_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_down_grey)
             );
         }
     }
