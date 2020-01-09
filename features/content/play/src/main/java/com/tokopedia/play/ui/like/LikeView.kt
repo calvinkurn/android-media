@@ -72,6 +72,10 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
         animationLike.progress = if (isLiked) END_ANIMATED_PROGRESS else START_ANIMATED_PROGRESS
     }
 
+    internal fun setClickable(isClickable: Boolean) {
+        vLikeClickArea.isClickable = isClickable
+    }
+
     interface Listener {
 
         fun onLikeClicked(view: LikeView, shouldLike: Boolean)
