@@ -121,7 +121,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         super.onActivityCreated(savedInstanceState)
         umrahHomepageViewModel.homePageModel.observe(this, Observer {
             clearAllData()
-            it?.run { renderList(this) }
+            it?.run {
+                fab_umrah_home_page_message.show()
+                renderList(this)
+            }
         })
 
         umrahHomepageViewModel.isError.observe(this, Observer {
@@ -144,6 +147,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     }
 
     private fun loadDataAll() {
+        fab_umrah_home_page_message.hide()
         resetIsRequested()
         isLoadingInitialData = true
         adapter.clearAllElements()
