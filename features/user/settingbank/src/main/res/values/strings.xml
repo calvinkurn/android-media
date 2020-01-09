@@ -2,7 +2,7 @@
     <string name="app_name">SettingBank</string>
     <string name="title_setting_bank">Rekening Bank</string>
     <string name="title_choose_bank">Pilih Bank</string>
-    <string name="add_bank_account">Tambah Rekening</string>
+    <string name="sbank_title_add_bank_account">Tambah Rekening</string>
     <string name="menu_make_main_account">Jadikan Rekening Utama</string>
     <string name="menu_edit">Ubah</string>
     <string name="menu_delete">Hapus</string>
