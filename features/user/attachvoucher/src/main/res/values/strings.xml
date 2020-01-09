@@ -1,3 +1,4 @@
 <resources>
-    <string name="title_attachvoucher">Attach Voucher</string>
+    <string name="title_attachvoucher">Lampirkan Voucher Toko</string>
+    <string name="title_attachvoucher_button_attach">Lampirkan</string>
 </resources>
