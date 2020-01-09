@@ -73,13 +73,13 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                         allSelectedItemShopCount++
                     } else {
                         var selectedItem = 0
-                        cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
-                            for (cartItemHolderData in it) {
+                        cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let { cartItemHolderDataList ->
+                            for (cartItemHolderData in cartItemHolderDataList) {
                                 if (!cartItemHolderData.isSelected) {
                                     selectedItem++
                                 }
                             }
-                            if (!selectPartialShopAndItem && selectedItem != it.size) {
+                            if (!selectPartialShopAndItem && selectedItem != cartItemHolderDataList.size) {
                                 selectPartialShopAndItem = true
                             }
                         }
@@ -87,7 +87,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                 }
                 if (selectPartialShopAndItem) {
                     checklistCondition = CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM
-                } else if (allSelectedItemShopCount < cartShopHolderDataList.size) {
+                } else if (allSelectedItemShopCount < it.size) {
                     checklistCondition = CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP
                 }
             }

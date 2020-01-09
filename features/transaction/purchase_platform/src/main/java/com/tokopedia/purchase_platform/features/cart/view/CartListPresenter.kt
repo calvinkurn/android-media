@@ -854,8 +854,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return checkoutMapData
     }
 
-    override fun setHasPerformChecklistChange() {
-        hasPerformChecklistChange = true
+    override fun setHasPerformChecklistChange(hasChangeState: Boolean) {
+        hasPerformChecklistChange = hasChangeState
     }
 
     override fun getHasPerformChecklistChange(): Boolean {

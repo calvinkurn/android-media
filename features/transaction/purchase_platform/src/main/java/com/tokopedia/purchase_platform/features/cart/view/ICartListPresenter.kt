@@ -74,7 +74,7 @@ interface ICartListPresenter {
 
     fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
 
-    fun setHasPerformChecklistChange()
+    fun setHasPerformChecklistChange(hasChangeState: Boolean)
 
     fun getHasPerformChecklistChange(): Boolean
 

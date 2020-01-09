@@ -198,6 +198,10 @@ class CartListPresenterUpdateCartTest : Spek({
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
+            Given("state user have not uncheck and recheck item") {
+                cartListPresenter.setHasPerformChecklistChange(false)
+            }
+
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
@@ -210,6 +214,36 @@ class CartListPresenterUpdateCartTest : Spek({
                 verify {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES)
+                }
+            }
+        }
+
+        Scenario("success update cart with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
+
+            val view: ICartListView = mockk(relaxed = true)
+            val updateCartData = UpdateCartData()
+
+            Given("update cart data") {
+                updateCartData.isSuccess = true
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            }
+
+            Given("state user have uncheck and recheck item") {
+                cartListPresenter.setHasPerformChecklistChange(true)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartData()
+            }
+
+            Then("should render success with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
+                verify {
+                    view.hideProgressLoading()
+                    view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES)
                 }
             }
         }
@@ -300,7 +334,7 @@ class CartListPresenterUpdateCartTest : Spek({
             }
         }
 
-        Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_ITEM") {
+        Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
 
             val view: ICartListView = mockk(relaxed = true)
             val updateCartData = UpdateCartData()
@@ -320,9 +354,13 @@ class CartListPresenterUpdateCartTest : Spek({
                                             cartItemData = null,
                                             isSelected = true
                                     ))
+                                    add(CartItemHolderData(
+                                            cartItemData = null,
+                                            isSelected = false
+                                    ))
                                 }
                             }
-                            isAllSelected = true
+                            isAllSelected = false
                         })
                         add(CartShopHolderData().apply {
                             shopGroupAvailableData = ShopGroupAvailableData().apply {
@@ -348,7 +386,7 @@ class CartListPresenterUpdateCartTest : Spek({
                 cartListPresenter.processUpdateCartData()
             }
 
-            Then("should render success with item change state ITEM_CHECKED_PARTIAL_ITEM") {
+            Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
                 verify {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM)
