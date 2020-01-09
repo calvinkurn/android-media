@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.text.TextUtils;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -24,7 +26,6 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
-import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -48,7 +49,6 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -67,7 +67,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.CustomerRouter;
@@ -311,6 +310,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
+    public static final String BROADCAST_LOGOUT = "BROADCAST_LOGOUT";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -345,6 +345,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initIris();
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        registerLocalBroadCastReceiver();
     }
 
     private void initDaggerInjector() {
@@ -404,6 +405,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
+    }
+
+    private void registerLocalBroadCastReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BROADCAST_LOGOUT);
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_LOGOUT)) {
+                    doLogoutAccount(getApplicationContext());
+                }
+            }
+        }, intentFilter);
     }
 
     @Override
@@ -1423,10 +1437,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FragmentFavorite.newInstance();
     }
 
-    public void doLogoutAccount(Activity activity) {
+    public void doLogoutAccount(Context activity) {
         new GlobalCacheManager().deleteAll();
         PersistentCacheManager.instance.delete();
-        Router.clearEtalase(activity);
+        clearEtalaseCache();
         TrackApp.getInstance().getMoEngage().logoutEvent();
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
