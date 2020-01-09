@@ -58,6 +58,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         resetIsRequested()
+        fab_umrah_home_page_message.hide()
     }
 
     override fun initInjector() = getComponent(UmrahHomepageComponent::class.java)
@@ -119,11 +120,13 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        fab_umrah_home_page_message.hide()
         umrahHomepageViewModel.homePageModel.observe(this, Observer {
             clearAllData()
             it?.run {
-                fab_umrah_home_page_message.show()
                 renderList(this)
+                if(this.get(UMRAH_SEARCH_PARAM_INDEX).isSuccess)
+                fab_umrah_home_page_message.show()
             }
         })
 
@@ -147,7 +150,6 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     }
 
     private fun loadDataAll() {
-        fab_umrah_home_page_message.hide()
         resetIsRequested()
         isLoadingInitialData = true
         adapter.clearAllElements()
@@ -225,6 +227,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         var isRequestedCategory = false
         var isRequestedSpinnerLike = false
         const val REQUEST_CODE_LOGIN = 400
+        const val UMRAH_SEARCH_PARAM_INDEX = 0
     }
 
     private fun goToLoginPage() {

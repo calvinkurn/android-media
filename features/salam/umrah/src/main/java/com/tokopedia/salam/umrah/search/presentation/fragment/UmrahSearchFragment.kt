@@ -118,6 +118,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                         umrahTrackingAnalytics.umrahSearchNCategoryFilterClick(selectedFilter, searchOrCategory)
                         loadInitialData()
                         isFilter = true
+                        fab_umrah_search_message.hide()
                     }
                 }
                 REQUEST_PDP -> loadInitialData()
@@ -141,6 +142,11 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                 goToLoginPage()
             }
         }
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        fab_umrah_search_message.hide()
     }
 
     private fun startChatUmrah(context: Context){
@@ -196,9 +202,13 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        fab_umrah_search_message.hide()
         umrahSearchViewModel.searchResult.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessGetResult(it.data)
+                is Success -> {
+                    onSuccessGetResult(it.data)
+                    fab_umrah_search_message.show()
+                }
                 is Fail -> {
                     NetworkErrorHelper.showEmptyState(context, view?.rootView, null, null, null, R.drawable.img_umrah_pdp_empty_state) {
                         loadInitialData()
