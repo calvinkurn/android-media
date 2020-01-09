@@ -2,11 +2,13 @@ package com.tokopedia.similarsearch
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -127,9 +129,20 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         recyclerViewSimilarSearch?.addOnScrollListener(animateOriginalProductViewListener)
     }
 
+    private var isShadowApplied = false
+
     private fun createAnimateOriginalProductViewListener(): RecyclerView.OnScrollListener {
         return object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (recyclerView.computeVerticalScrollOffset() > 0 && !isShadowApplied) {
+                    isShadowApplied = true
+                    originalProductView?.background = ContextCompat.getDrawable(context!!, R.drawable.similar_search_original_product_shadow)
+                }
+                else if (recyclerView.computeVerticalScrollOffset() == 0 && isShadowApplied){
+                    isShadowApplied = false
+                    originalProductView?.background = ColorDrawable(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.white))
+                }
+
                 originalProductView?.animateBasedOnScroll(dy)
             }
         }
