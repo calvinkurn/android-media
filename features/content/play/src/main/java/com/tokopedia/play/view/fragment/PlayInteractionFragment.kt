@@ -223,7 +223,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeChatList() {
-        playViewModel.observableChatList.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableNewChat.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -498,15 +498,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int) {
+        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int, @IdRes pinnedComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
+
+//            val layoutParams = container.findViewById<View>(id).layoutParams as ConstraintLayout.LayoutParams
+//            layoutParams.constrainedHeight = true
 
             constraintSet.apply {
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, resources.getDimensionPixelOffset(R.dimen.dp_8))
                 connect(id, ConstraintSet.BOTTOM, quickReplyComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
+
+//                constrainMinHeight(id, ConstraintSet.WRAP_CONTENT)
+//                constrainMaxHeight(id, 114f.dpToPx().toInt())
             }
 
             constraintSet.applyTo(container)
@@ -615,7 +621,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutVideoControl(container, videoControlComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId)
         layoutChat(container, sendChatComponentId, likeComponentId)
-        layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId)
+        layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId, pinnedComponentId)
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId)
         layoutStats(container, statsComponentId, pinnedComponentId)
         layoutPlayButton(container, playButtonComponentId)

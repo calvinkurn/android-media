@@ -24,9 +24,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -54,8 +52,8 @@ class PlayViewModel @Inject constructor(
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     val observableSocketInfo: LiveData<PlaySocketInfo> = _observableSocketInfo
 
-    private val _observableChatList = MutableLiveData<PlayChat>()
-    val observableChatList: LiveData<PlayChat> = _observableChatList
+    private val _observableNewChat = MutableLiveData<PlayChat>()
+    val observableNewChat: LiveData<PlayChat> = _observableNewChat
 
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
     val observableTotalViews: LiveData<TotalViewUiModel> = _observableTotalViews
@@ -94,6 +92,10 @@ class PlayViewModel @Inject constructor(
 
     var isLive: Boolean = false
 
+    init {
+        initMockChat()
+    }
+
     fun startCurrentVideo() {
         playManager.resumeCurrentVideo()
     }
@@ -116,6 +118,13 @@ class PlayViewModel @Inject constructor(
              * If Live => start web socket
              */
             getPartnerInfo(channel)
+            // TODO("remove, for testing")
+            channel.videoStream = VideoStream(
+                    "vertical",
+                    "live",
+                    true,
+                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+
             setStateLiveOrVod(channel)
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
@@ -146,7 +155,7 @@ class PlayViewModel @Inject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playSocket.send(cleanMessage, onSuccess = {
-            _observableChatList.value = PlayChat("", "", cleanMessage,
+            _observableNewChat.value = PlayChat("", "", cleanMessage,
                     PlayChat.UserData(userSessionInterface.userId, userSessionInterface.name, userSessionInterface.profilePicture))
         })
     }
@@ -206,7 +215,7 @@ class PlayViewModel @Inject constructor(
                         _observableTotalViews.value = mapTotalViews(result)
                     }
                     is PlayChat -> {
-                        _observableChatList.value = result
+                        _observableNewChat.value = result
                     }
                     is PinnedMessage -> {
                         val partnerName = _observablePartnerInfo.value?.name.orEmpty()
@@ -305,4 +314,20 @@ class PlayViewModel @Inject constructor(
         )
 
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
+
+    private fun initMockChat() {
+        launch(dispatchers.io) {
+
+            var index = 0
+            while(isActive) {
+                delay(3000)
+                _observableNewChat.postValue(
+                        PlayChat(
+                                message = "test ${++index}",
+                                user = PlayChat.UserData(name = "YoMamen")
+                        )
+                )
+            }
+        }
+    }
 }

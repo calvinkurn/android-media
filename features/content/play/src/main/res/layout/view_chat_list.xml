@@ -4,15 +4,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_chat_list"
-        android:layout_width="0dp"
-        android:layout_height="114dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         >
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.tokopedia.play.view.custom.MaximumHeightRecyclerView
             android:id="@+id/rv_chat_list"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
             android:overScrollMode="never"
+            app:maximumHeight="@dimen/play_max_chat_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
