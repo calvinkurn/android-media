@@ -1490,13 +1490,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
-//    @Override
-//    public Intent getProductTalk(Context context, String productId) {
-//        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK);
-//        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId);
-//        return intent;
-//    }
-
     @Override
     public void eventClickFilterReview(Context context,
                                        String filterName,
@@ -1533,21 +1526,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         mapEvent.put(KEY_PRODUCT_ID, productId);
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
-
-//    @Override
-//    public Intent getShopTalkIntent(Context context, String shopId) {
-//        return ShopTalkActivity.Companion.createIntent(context, shopId);
-//    }
-
-//    @Override
-//    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
-//                                      String source) {
-//        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK);
-//        intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId);
-//        intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId);
-//        intent.putExtra(TalkDetailsActivity.SOURCE, source);
-//        return intent;
-//    }
 
     @Override
     public String getAppsFlyerID() {
