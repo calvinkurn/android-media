@@ -6,14 +6,14 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class DiscoveryViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
 
@@ -23,17 +23,14 @@ class DiscoveryViewModel(application: Application) : BaseViewModel(application),
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    fun viewCreated() {
-        getDiscoveryData()
-    }
 
     fun getDiscoveryData() {
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    withContext(Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
                         val data = DiscoveryDataUseCase().getDiscoveryData(repository, pageIdentifier)
-                        data?.let {
+                        data.let {
                             discoveryResponse.postValue(Success(it))
                         }
                     }
@@ -45,5 +42,8 @@ class DiscoveryViewModel(application: Application) : BaseViewModel(application),
 
     }
 
-    fun getDiscoveryResponse():MutableLiveData<Result<DiscoveryResponse>> = discoveryResponse
+    fun getDiscoveryResponse(): MutableLiveData<Result<DiscoveryResponse>> = discoveryResponse
+
+
+
 }

@@ -2,13 +2,13 @@ package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
 
-data class ComponentsItem(
+data class ComponentsItem (
 
         @SerializedName("render_by_default")
         val renderByDefault: Boolean = false,
 
         @SerializedName("data")
-        val data: List<DataItem?>? = null,
+        val data: List<DataItem>? = null,
 
         @SerializedName("ab_modulo")
         val abModulo: String? = "",

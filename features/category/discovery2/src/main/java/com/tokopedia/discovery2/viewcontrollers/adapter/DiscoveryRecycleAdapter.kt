@@ -1,38 +1,48 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.interfaces.BannerListener
 
-class DiscoveryRecycleAdapter()
-    : RecyclerView.Adapter<AbstractViewHolder<BaseDataModel>>() {
+class DiscoveryRecycleAdapter(val fragment: Fragment)
+    : RecyclerView.Adapter<AbstractViewHolder>() {
 
-    private val componentList: ArrayList<BaseDataModel> = ArrayList()
+    var viewModel: DiscoveryListViewModel
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<BaseDataModel> {
-        val itemViewType: View =
-                LayoutInflater.from(parent.context).inflate(viewType, parent, false);
-        return DiscoveryHomeFactory.createViewHolder(viewType, itemViewType) as AbstractViewHolder<BaseDataModel>
+    init {
+        viewModel = ViewModelProviders.of(fragment).get(DiscoveryListViewModel::class.java)
+    }
+
+    private val componentList: ArrayList<ComponentsItem> = ArrayList()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
+        return DiscoveryHomeFactory.createViewHolder(parent, viewType) as AbstractViewHolder
+    }
+
+    override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
+        holder.bindView(fragment, viewModel.getViewModelList
+        (DiscoveryHomeFactory.createViewModel(getItemViewType(position))!!, componentList[position], position))
     }
 
     override fun getItemCount(): Int {
         return componentList.size
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<BaseDataModel>, position: Int) {
-        holder.bindView(componentList[position])
-    }
-
     override fun getItemViewType(position: Int): Int {
-        val id = DiscoveryHomeFactory.getComponentId(componentList[position].type())
+        val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: -1
     }
 
-    fun setDataList(dataList: List<BaseDataModel>) {
-        componentList.addAll(dataList)
+    fun setDataList(dataList: ArrayList<ComponentsItem>?) {
+        if (dataList != null) {
+            componentList.addAll(dataList)
+        }
         notifyDataSetChanged()
     }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.usecase.RequestParams
 
 class DiscoveryDataUseCase {
 
-    suspend fun getDiscoveryData(repository: BaseRepository, pageIdentifier: String):DiscoveryResponse{
+    suspend fun getDiscoveryData(repository: BaseRepository, pageIdentifier: String): DiscoveryResponse {
         val response = repository.getRestData(GenerateUrl.getUrl(pageIdentifier),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,

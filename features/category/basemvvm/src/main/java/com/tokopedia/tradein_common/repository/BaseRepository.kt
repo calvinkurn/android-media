@@ -22,7 +22,7 @@ import java.lang.reflect.Type
 import kotlin.coroutines.CoroutineContext
 
 
-class BaseRepository private constructor() : CoroutineScope {
+open class BaseRepository : CoroutineScope {
     private val restRepository: RestRepository
     private val graphqlRepository: GraphqlRepository
     private lateinit var userSession: UserSessionInterface
