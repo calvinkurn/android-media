@@ -67,7 +67,7 @@ class CartListPresenterPromoTest : Spek({
             )
         }
 
-        Scenario("apply promo global after clash success") {
+        Scenario("apply promo global after clash success and grey state") {
 
             val view: ICartListView = mockk(relaxed = true)
 
@@ -104,6 +104,47 @@ class CartListPresenterPromoTest : Spek({
                 verify {
                     view.hideProgressLoading()
                     view.onSuccessCheckPromoFirstStep(any())
+                }
+            }
+        }
+
+        Scenario("apply promo global after clash success and red state") {
+
+            val view: ICartListView = mockk(relaxed = true)
+
+            Given("success check first step") {
+                val promoStackUiModel = ResponseGetPromoStackUiModel().apply {
+                    status = "OK"
+                    data = DataUiModel().apply {
+                        clashings = ClashingInfoDetailUiModel().apply {
+                            isClashedPromos = false
+                        }
+                        message = MessageUiModel().apply {
+                            state = "red"
+                        }
+                    }
+                }
+                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.just(promoStackUiModel)
+            }
+
+            Given("data promo stack") {
+                every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process apply promo") {
+                val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
+                promoList.add(ClashingVoucherOrderUiModel(uniqueId = ""))
+                cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
                 }
             }
         }
