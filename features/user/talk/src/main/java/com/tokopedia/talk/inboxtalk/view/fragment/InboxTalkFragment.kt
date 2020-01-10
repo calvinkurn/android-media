@@ -163,7 +163,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
         filterMenuList = ArrayList()
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk), -1))
-        filterMenuList[0].iconEnd = R.drawable.ic_check
+        filterMenuList[0].iconEnd = com.tokopedia.design.R.drawable.ic_check
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_not_read), -1))
 
     }
@@ -179,7 +179,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
             context?.run {
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = filterMenuList
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { _, pos ->
                     onFilterClicked(pos, bottomMenu)
@@ -199,7 +199,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
             itemMenu.iconEnd = 0
             itemMenu.icon = -1
         }
-        filterMenuList[pos].iconEnd = R.drawable.ic_check
+        filterMenuList[pos].iconEnd = com.tokopedia.design.R.drawable.ic_check
         presenter.getInboxTalkWithFilter(filter, viewModel.screen)
         analytics.trackClickFilter(filter)
         filterMenu.dismiss()
@@ -497,7 +497,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
             if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
             bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                 onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
@@ -539,7 +539,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
             if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
             bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                 onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
@@ -616,7 +616,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfile()
         activity?.applicationContext?.run {
-            RouteManager.route(context, ApplinkConst.PROFILE, userId)
+            RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", userId))
         }
     }
 
@@ -654,10 +654,15 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConst.TALK_DETAIL)
-                intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
-                intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId)
-                intent.putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_INBOX)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK).apply {
+                    putExtras(
+                            Bundle().apply {
+                                putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+                                putExtra(TalkDetailsActivity.SHOP_ID, shopId)
+                                putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_INBOX)
+                            }
+                    )
+                }
                 this@InboxTalkFragment.startActivityForResult(
                         intent, REQUEST_GO_TO_DETAIL)
             }

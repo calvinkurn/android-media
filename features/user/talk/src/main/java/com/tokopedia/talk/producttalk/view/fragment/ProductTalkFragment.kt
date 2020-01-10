@@ -26,8 +26,6 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
-import com.tokopedia.talk.addtalk.view.activity.AddTalkActivity
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
@@ -220,7 +218,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
                 goToLogin()
                 return
             }
-            val intent = RouteManager.getIntent(this, ApplinkConst.TALK_ADD)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_TALK)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId)
             this@ProductTalkFragment.startActivityForResult(intent, REQUEST_CREATE_TALK)
         }
@@ -365,11 +363,15 @@ class ProductTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConst.TALK_DETAIL)
-                intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
-                intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId)
-                intent.putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_PDP)
-
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK).apply {
+                    putExtras(
+                            Bundle().apply {
+                                putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+                                putExtra(TalkDetailsActivity.SHOP_ID, shopId)
+                                putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_PDP)
+                            }
+                    )
+                }
                 this@ProductTalkFragment.startActivityForResult(
                         intent, REQUEST_GO_TO_DETAIL)
             }
@@ -401,7 +403,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
@@ -504,7 +506,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)

@@ -78,9 +78,6 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
                             putExtras(extras)
                             putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productId)
                         }
-//            return (context.applicationContext as TalkRouter).getProductTalk(context, productId)
-//                    .setData(uri.build())
-//                    .putExtras(extras)
         }
 
     }
@@ -95,6 +92,9 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
         return ProductTalkFragment.newInstance(intent.extras)
     }
+
+    override fun getToolbarResourceID(): Int = R.id.acitivty_talk_product_toolbar
+    override fun getParentViewResourceID() = R.id.talk_parent_view
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_talk_product

@@ -375,7 +375,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
@@ -427,7 +427,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
@@ -664,9 +664,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileInDetail(source)
-        activity?.applicationContext?.run {
-            RouteManager.route(context, ApplinkConst.PROFILE, userId)
-        }
+        RouteManager.route(context, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
     }
 
     override fun onGoToShopPage(shopId: String) {

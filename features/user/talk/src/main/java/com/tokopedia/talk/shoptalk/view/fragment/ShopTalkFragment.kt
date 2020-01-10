@@ -240,10 +240,16 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConst.TALK_DETAIL)
-                intent.putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
-                intent.putExtra(TalkDetailsActivity.SHOP_ID, shopId)
-                intent.putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_SHOP)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK).apply {
+                    putExtras(
+                            Bundle().apply {
+                                putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+                                putExtra(TalkDetailsActivity.SHOP_ID, shopId)
+                                putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_SHOP)
+                            }
+                    )
+                }
+
                 this@ShopTalkFragment.startActivityForResult(
                         intent, REQUEST_GO_TO_DETAIL)
             }
@@ -272,7 +278,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
@@ -410,9 +416,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileFromShop()
-        activity?.applicationContext?.run {
-            RouteManager.route(context, ApplinkConst.PROFILE, userId)
-        }
+        RouteManager.route(context, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
@@ -430,7 +434,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)

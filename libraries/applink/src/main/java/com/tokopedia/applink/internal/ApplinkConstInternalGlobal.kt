@@ -151,7 +151,7 @@ object ApplinkConstInternalGlobal {
     // AddTalkActivity
     // tokopedia-android-internal://global/add-talk
     @JvmField
-    val ADD_TALK = "$INTERNAL_GLOBAL/add-talk?product_id={product_id}"
+    val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
 
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender

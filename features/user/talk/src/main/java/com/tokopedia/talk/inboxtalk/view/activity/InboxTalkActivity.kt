@@ -129,11 +129,13 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         })
     }
 
+    override fun getToolbarResourceID(): Int = R.id.acitivty_talk_inbox_toolbar
+
     private fun setTabUnSelected(tab: TabLayout.Tab) {
         tab.customView?.run {
             val view: View = this
             val title: TextView = view.findViewById(R.id.title)
-            title.setTextColor(MethodChecker.getColor(this.context, R.color.black_38))
+            title.setTextColor(MethodChecker.getColor(this.context, com.tokopedia.design.R.color.black_38))
             title.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
         }
     }
@@ -142,7 +144,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         tab.customView?.run {
             val view: View = this
             val title: TextView = view.findViewById(R.id.title)
-            title.setTextColor(MethodChecker.getColor(this.context, R.color.medium_green))
+            title.setTextColor(MethodChecker.getColor(this.context, com.tokopedia.design.R.color.medium_green))
             title.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         }
     }
