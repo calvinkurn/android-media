@@ -82,11 +82,19 @@ class ShopPageFragment :
         HasComponent<OldShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener {
     override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {
-//        if (!isOfficial && !isPowerMerchant) {
+        if (!isOfficial && !isPowerMerchant) {
             view?.run {
-                Toaster.make(this, "Test", Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                Toaster.make(
+                        this,
+                        context.getString(R.string.text_regular_merchant_change_cover_message),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        context.getString(R.string.oke)
+                )
             }
-//        }
+        } else {
+
+        }
     }
 
     companion object {
