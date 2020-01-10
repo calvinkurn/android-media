@@ -64,7 +64,6 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         View.inflate(context, R.layout.tp_toolbar, this);
         tvToolbarTitle = findViewById(R.id.tv_tpToolbar_title);
         tvCouponCount = findViewById(R.id.tv_tpToolbar_couponCount);
-        ivLeaderBoard = findViewById(R.id.iv_tpToolbar_leaderboard);
         ivMyCoupon = findViewById(R.id.iv_tpToolbar_coupon);
 
         ivLeaderBoard.setOnClickListener(this);
@@ -125,9 +124,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         if (null == clickListener)
             return;
         int viewId = v.getId();
-        if (viewId == R.id.iv_tpToolbar_leaderboard) {
-            clickListener.onToolbarLeaderboardClick();
-        } else if (viewId == R.id.iv_tpToolbar_coupon) {
+        if (viewId == R.id.iv_tpToolbar_coupon) {
             clickListener.onToolbarMyCouponClick();
         }
     }
@@ -147,8 +144,8 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
         currentToolbarState = ToolbarState.TOOLBAR_DARK;
 
-        int whiteColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_white_color);
-        int greyColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_grey_color);
+        int whiteColor = MethodChecker.getColor(getContext(), R.color.tp_toolbar_navigation_white_color);
+        int greyColor = MethodChecker.getColor(getContext(), R.color.tp_toolbar_navigation_grey_color);
 
         couponCrossfader.reverseTransition(200);
         leaderboardCrossfader.reverseTransition(200);
@@ -178,8 +175,8 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
             return;
         currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT;
 
-        int whiteColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_white_color);
-        int greyColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_grey_color);
+        int whiteColor = MethodChecker.getColor(getContext(), R.color.tp_toolbar_navigation_white_color);
+        int greyColor = MethodChecker.getColor(getContext(), R.color.tp_toolbar_navigation_grey_color);
 
         couponCrossfader.reverseTransition(200);
         leaderboardCrossfader.reverseTransition(200);
@@ -235,7 +232,6 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
     }
 
     public interface OnTokoPointToolbarClickListener {
-        void onToolbarLeaderboardClick();
 
         void onToolbarMyCouponClick();
     }
