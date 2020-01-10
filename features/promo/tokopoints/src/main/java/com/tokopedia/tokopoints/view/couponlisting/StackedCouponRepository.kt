@@ -1,9 +1,7 @@
 package com.tokopedia.tokopoints.view.couponlisting
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.CouponFilterBase
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
@@ -14,7 +12,7 @@ import javax.inject.Inject
 class StackedCouponRepository @Inject constructor(private val repository: GraphqlRepository, private val map: Map<String, String>) {
 
     internal suspend fun getFilter(slug: String) = withContext(Dispatchers.IO) {
-        val variablesFilter = HashMap<String, Any>();
+        val variablesFilter = HashMap<String, Any>()
         variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug.toLowerCase());
         val filterRequest = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_COUPON_FILTER],
                 CouponFilterBase::class.java,variablesFilter,false)
