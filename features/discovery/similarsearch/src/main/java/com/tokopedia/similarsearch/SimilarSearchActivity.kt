@@ -31,8 +31,8 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
         return R.id.parentView
     }
 
-    override fun getToolbarResourceID(): Int {
-        return R.id.toolbar
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        setContentView(layoutRes)
     }
 
     override fun setupFragment(savedInstance: Bundle?) {

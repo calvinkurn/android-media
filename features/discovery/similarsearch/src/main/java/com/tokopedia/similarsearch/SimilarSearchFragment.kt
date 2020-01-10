@@ -2,13 +2,13 @@ package com.tokopedia.similarsearch
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +26,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
-import com.tokopedia.similarsearch.originalproduct.OriginalProductView
 import com.tokopedia.similarsearch.originalproduct.OriginalProductViewListener
 import com.tokopedia.similarsearch.productitem.SimilarProductItemListener
 import com.tokopedia.similarsearch.recyclerview.SimilarSearchAdapter
@@ -35,6 +34,7 @@ import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
+import kotlinx.android.synthetic.main.similar_search_toolbar_layout.*
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener, EmptyResultListener {
 
@@ -62,11 +62,34 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        configureToolbar()
         initViewModel()
         initViews()
         observeViewModelData()
 
         similarSearchViewModel?.onViewCreated()
+    }
+
+    private fun configureToolbar() {
+        activity?.run {
+            if (this !is AppCompatActivity) return
+
+            setSupportActionBar(toolbar)
+            configureSupportActionBar(supportActionBar)
+            configureToolbarOnClick()
+        }
+    }
+
+    private fun configureSupportActionBar(supportActionBar: ActionBar?) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
+        supportActionBar?.setHomeButtonEnabled(false)
+    }
+
+    private fun configureToolbarOnClick() {
+        imageViewBack?.setOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     private fun initViewModel() {
@@ -129,20 +152,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         recyclerViewSimilarSearch?.addOnScrollListener(animateOriginalProductViewListener)
     }
 
-    private var isShadowApplied = false
-
     private fun createAnimateOriginalProductViewListener(): RecyclerView.OnScrollListener {
         return object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.computeVerticalScrollOffset() > 0 && !isShadowApplied) {
-                    isShadowApplied = true
-                    originalProductView?.background = ContextCompat.getDrawable(context!!, R.drawable.similar_search_original_product_shadow)
-                }
-                else if (recyclerView.computeVerticalScrollOffset() == 0 && isShadowApplied){
-                    isShadowApplied = false
-                    originalProductView?.background = ColorDrawable(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.white))
-                }
-
                 originalProductView?.animateBasedOnScroll(dy)
             }
         }
