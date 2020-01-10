@@ -10,4 +10,9 @@ public interface Constant {
         int QUALITY_COMPRESS = 80;
     }
 
+    interface Notification {
+        String EXTRA_FROM_PUSH = "from_notif";
+        String GCM_NOTIFICATION = "GCM_NOTIFICATION";
+    }
+
 }

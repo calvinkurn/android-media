@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,26 +8,27 @@ import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -37,7 +39,7 @@ import java.util.List;
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends BaseTemporaryDrawerActivity implements HasComponent {
+public class InboxReputationActivity extends BaseTabActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
 
@@ -58,7 +60,12 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
 
     private boolean goToReputationHistory;
 
-    @DeepLink(Constants.Applinks.REPUTATION)
+    @Override
+    protected int getPageLimit() {
+        return OFFSCREEN_PAGE_LIMIT;
+    }
+
+    @DeepLink(ApplinkConst.REPUTATION)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, InboxReputationActivity.class)
@@ -75,41 +82,22 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         userSession = new UserSession(this);
         super.onCreate(savedInstanceState);
-        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+        clearCacheIfFromNotification();
     }
 
     @Override
-    protected void setupURIPass(Uri data) { }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) { }
-
-    @Override
-    protected void initialPresenter() { }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return false;
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        initView();
     }
 
     @Override
-    protected int getContentId() {
-        if (GlobalConfig.isSellerApp())
-            return super.getContentId();
-        return R.layout.layout_tab_secondary;
+    protected void setupFragment(Bundle savedinstancestate) {
+        super.setupFragment(savedinstancestate);
+        viewPager.setAdapter(getViewPagerAdapter());
     }
 
-    @Override
-    protected int getLayoutId() {
-        if (GlobalConfig.isSellerApp())
-            return R.layout.activity_inbox_reputation;
-        return 0;
-    }
-
-    @Override
-    protected void initView() {
-        super.initView();
-
+    private void initView() {
         viewPager = (ViewPager) findViewById(R.id.pager);
         indicator = (TabLayout) findViewById(R.id.indicator);
 
@@ -118,10 +106,9 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
         }
-        viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-        indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this));
 
         if (!GlobalConfig.isSellerApp()) {
             indicator.addTab(indicator.newTab().setText(getString(R.string
@@ -144,7 +131,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
             }
         }
 
-        wrapTabIndicatorToTitle(indicator, (int) CommonUtils.DptoPx(getApplicationContext(), MARGIN_START_END_TAB), (int) CommonUtils.DptoPx(getApplicationContext(), MARGIN_TAB));
+        wrapTabIndicatorToTitle(indicator, (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
     }
 
     public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
@@ -183,7 +170,8 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
         }
     }
 
-    protected SectionsPagerAdapter getViewPagerAdapter() {
+    @Override
+    protected PagerAdapter getViewPagerAdapter() {
         return new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator);
     }
 
@@ -204,28 +192,12 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     }
 
     @Override
-    protected void setViewListener() { }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() { }
-
-    @Override
-    protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.INBOX_REVIEW;
-    }
-
-    @Override
     public void onBackPressed() {
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
-            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            RouteManager.route(this, ApplinkConst.SellerApp.SELLER_APP_HOME);
             finish();
         } else if (isTaskRoot()) {
-            startActivity(HomeRouter.getHomeActivity(this));
+            RouteManager.route(this, ApplinkConst.HOME);
             finish();
         }
         super.onBackPressed();
@@ -234,6 +206,17 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
 
     @Override
     public BaseAppComponent getComponent() {
-        return getBaseAppComponent();
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    private void clearCacheIfFromNotification() {
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(Constant.Notification.EXTRA_FROM_PUSH)) {
+            if (intent.getBooleanExtra(Constant.Notification.EXTRA_FROM_PUSH, false)) {
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(100);
+                LocalCacheHandler.clearCache(this, Constant.Notification.GCM_NOTIFICATION);
+            }
+        }
     }
 }

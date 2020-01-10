@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.utils;
 
+import android.content.Context;
+import android.util.TypedValue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +14,10 @@ public class ReputationUtil {
             newMap.put(entry.getKey(), String.valueOf(entry.getValue()));
         }
         return newMap;
+    }
+
+    public static float DptoPx(Context context, int dp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
 }
