@@ -46,7 +46,10 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
     }
 
     private fun mapToTotalView(): TotalView {
-        return gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
+        val totalView = gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
+        if (totalView.totalViewFormatted.isEmpty())
+            totalView.totalViewFormatted = totalView.totalView.toString()
+        return totalView
     }
 
     private fun mapToIncomingChat(): PlayChat {
