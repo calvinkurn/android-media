@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,7 +16,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -41,7 +41,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     private RadioGroup reportRadioGroup;
     private RadioButton otherRadioButton;
     private EditText otherReason;
-    private TkpdProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Inject
     InboxReputationReportPresenter presenter;
@@ -114,6 +114,8 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
                 String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
                 reportRadioGroup.getCheckedRadioButtonId(),
                 otherReason.getText().toString()));
+
+        initProgressDialog();
     }
 
     private void setSendButton() {
@@ -134,6 +136,13 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
         }
     }
 
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("");
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -143,12 +152,8 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
-                    .NORMAL_PROGRESS);
-
-        if (progressDialog != null)
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing() && getActivity() != null)
+            progressDialog.show();
     }
 
     @Override
@@ -164,7 +169,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     public void removeLoadingProgress() {
-        if (progressDialog != null)
+        if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
 }

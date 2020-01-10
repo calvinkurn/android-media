@@ -4,6 +4,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,8 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.CallbackManager;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -31,6 +30,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -85,7 +85,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private CallbackManager callbackManager;
     private View mainView;
 
-    private TkpdProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Inject
     InboxReputationDetailPresenter presenter;
@@ -182,7 +182,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         listProduct.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listProduct.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(onRefresh());
-
+        initProgressDialog();
     }
 
     private SwipeRefreshLayout.OnRefreshListener onRefresh() {
@@ -192,6 +192,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 refreshPage();
             }
         };
+    }
+
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("");
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -286,17 +293,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingDialog() {
-        if (progressDialog == null && getActivity() != null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
-                    .NORMAL_PROGRESS);
-
-        if (progressDialog != null)
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing() && getActivity() != null)
+            progressDialog.show();
     }
 
     @Override
     public void finishLoadingDialog() {
-        if (progressDialog != null)
+        if(progressDialog.isShowing())
             progressDialog.dismiss();
     }
 

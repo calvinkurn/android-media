@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -38,14 +37,13 @@ import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
@@ -114,7 +112,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     ReviewTipsAdapter tipsAdapter;
     boolean isValidRating = false;
 
-    TkpdProgressDialog progressDialog;
+    ProgressDialog progressDialog;
     private ShareDialog shareDialog;
     private CallbackManager callbackManager;
     ArrayList<String> imageUrlOrPathList = new ArrayList<>();
@@ -404,6 +402,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
         checkButtonShouldEnabled();
         setTips();
+        initProgressDialog();
     }
 
     private void checkButtonShouldEnabled() {
@@ -412,6 +411,13 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         } else {
             sendButton.setEnabled(true);
         }
+    }
+
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("");
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
     }
 
     private void openImagePicker() {
@@ -488,12 +494,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null) {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        }
-
-        if (progressDialog != null)
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing() && getActivity() != null)
+            progressDialog.show();
     }
 
     @Override
@@ -513,7 +515,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoadingProgress() {
-        if (progressDialog != null)
+        if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
