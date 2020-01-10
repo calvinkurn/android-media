@@ -374,6 +374,7 @@ class ShopPageFragment :
                 shopPageErrorState.visibility = View.GONE
                 appBarLayout.visibility = View.INVISIBLE
                 viewPager.visibility = View.INVISIBLE
+                button_chat.hide()
             }
             VIEW_ERROR -> {
                 shopPageLoadingState.visibility = View.GONE
