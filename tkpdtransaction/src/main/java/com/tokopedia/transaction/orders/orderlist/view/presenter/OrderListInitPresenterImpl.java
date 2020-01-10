@@ -100,7 +100,8 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
                 // Show ticker
                 if (graphqlResponse != null) {
                     TickerResponse tickerResponse = graphqlResponse.getData(TickerResponse.class);
-                    view.updateTicker(tickerResponse);
+                    if(view != null)
+                        view.updateTicker(tickerResponse);
                 }
             }
         });
