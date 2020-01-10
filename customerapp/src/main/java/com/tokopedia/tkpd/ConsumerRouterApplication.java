@@ -102,7 +102,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
-import com.tokopedia.core_gamification.GamificationRouter;
+import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;

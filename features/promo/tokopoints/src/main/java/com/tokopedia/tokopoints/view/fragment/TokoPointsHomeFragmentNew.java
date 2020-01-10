@@ -44,7 +44,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.core_gamification.applink.ApplinkConstant;
+import com.tokopedia.promogamification.common.applink.ApplinkConstant;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.utils.CurrencyFormatUtil;

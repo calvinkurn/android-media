@@ -35,7 +35,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.core_gamification.applink.ApplinkConstant;
+import com.tokopedia.promogamification.common.applink.ApplinkConstant;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;

@@ -23,7 +23,7 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core_gamification.applink.ApplinkUtil;
+import com.tokopedia.promogamification.common.applink.*;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
