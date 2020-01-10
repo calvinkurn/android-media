@@ -125,6 +125,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_DONE = "selesai";
     private static final String  MULAI_DARI= "Mulai Dari";
     private static final String  SAMPAI= "Sampai";
+    private static final int DEFAULT_FILTER_YEAR = 2017;
+    private static final int DEFAULT_FILTER_MONTH = 0;
+    private static final int DEFAULT_FILTER_DATE = 1;
 
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
@@ -802,11 +805,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (!TextUtils.isEmpty(datePickerStartDate) && !TextUtils.isEmpty(datePickerEndDate)) {
             String[] resultStartDate = split(datePickerStartDate);
             String[] resultEndDate = split(datePickerEndDate);
-            System.out.println("++ datePickerStartDate = "+datePickerStartDate);
-            System.out.println("++ datePickerEndDate = "+datePickerEndDate);
 
             if (title.equalsIgnoreCase(MULAI_DARI)) {
-                minDate.set(2017, 0, 1);
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
 
                 defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
                 maxDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
@@ -817,17 +818,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
             }
         } else {
             if (title.equalsIgnoreCase(MULAI_DARI)) {
-                minDate.set(2017, 0, 1);
-                defaultDate.set(2017, 0, 1);
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+                defaultDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
             } else {
-                minDate.set(2017, 0, 1);
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
             }
         }
 
-        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, l -> {
-            //
-        });
-
+        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, null);
 
         if (title.equalsIgnoreCase(MULAI_DARI)) {
             datePickerUnify.setTitle(MULAI_DARI);
