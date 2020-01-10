@@ -143,7 +143,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.observableVOD.observe(this, Observer {
+        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -152,7 +152,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         )
             }
         })
-        playViewModel.observableVideoProperty.observe(this, Observer {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -162,7 +162,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
-        //TODO("propagate this to each of the observable")
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                  is Success -> {
@@ -233,15 +232,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observePinnedMessage() {
-        playViewModel.observablePinnedMessage.observe(this, Observer(::setPinnedMessage))
+        playViewModel.observablePinnedMessage.observe(viewLifecycleOwner, Observer(::setPinnedMessage))
     }
 
     private fun observeLoggedInInteractionEvent() {
-        viewModel.observableLoggedInInteractionEvent.observe(this, EventObserver(::handleLoginInteractionEvent))
+        viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
 
     private fun observeFollowShop() {
-        viewModel.observableFollowPartner.observe(this, Observer {
+        viewModel.observableFollowPartner.observe(viewLifecycleOwner, Observer {
             if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
             }
@@ -249,7 +248,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeLikeContent() {
-        playViewModel.observableIsLikeContent.observe(this, Observer {
+        playViewModel.observableIsLikeContent.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -261,7 +260,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(this, Observer {
+        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
