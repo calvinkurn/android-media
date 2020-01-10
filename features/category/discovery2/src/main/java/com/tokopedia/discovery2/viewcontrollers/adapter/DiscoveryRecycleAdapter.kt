@@ -8,7 +8,6 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.interfaces.BannerListener
 
 class DiscoveryRecycleAdapter(val fragment: Fragment)
     : RecyclerView.Adapter<AbstractViewHolder>() {

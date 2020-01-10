@@ -13,7 +13,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.utils.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.interfaces.BannerListener
 import kotlinx.android.synthetic.main.multi_banner_layout.view.*
 
 class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {

@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 import android.view.View
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.interfaces.BannerListener
 import kotlin.reflect.KFunction
 
 class ComponentHelpersHolder<E : AbstractViewHolder, T : DiscoveryBaseViewModel>(val viewHolder: KFunction<E>,
