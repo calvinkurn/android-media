@@ -95,6 +95,7 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
 
     //region player control
     fun resumeCurrentVideo() {
+        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) videoPlayer.seekTo(0)
         videoPlayer.playWhenReady = true
     }
 

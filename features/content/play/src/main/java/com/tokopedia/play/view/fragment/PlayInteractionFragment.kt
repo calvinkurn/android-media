@@ -43,6 +43,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -143,7 +144,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.observableVOD.observe(this, Observer {
+        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -152,7 +153,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         )
             }
         })
-        playViewModel.observableVideoProperty.observe(this, Observer {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -231,15 +232,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observePinnedMessage() {
-        playViewModel.observablePinnedMessage.observe(this, Observer(::setPinnedMessage))
+        playViewModel.observablePinnedMessage.observe(viewLifecycleOwner, Observer(::setPinnedMessage))
     }
 
     private fun observeLoggedInInteractionEvent() {
-        viewModel.observableLoggedInInteractionEvent.observe(this, EventObserver(::handleLoginInteractionEvent))
+        viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
 
     private fun observeFollowShop() {
-        viewModel.observableFollowPartner.observe(this, Observer {
+        viewModel.observableFollowPartner.observe(viewLifecycleOwner, Observer {
             if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
             }
@@ -247,7 +248,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeLikeContent() {
-        playViewModel.observableIsLikeContent.observe(this, Observer {
+        playViewModel.observableIsLikeContent.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -259,7 +260,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(this, Observer {
+        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
@@ -287,8 +288,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             if (view.alpha == whenAlpha) alpha(finalAlpha)
             duration = VISIBILITY_ANIMATION_DURATION
         }
-                .withStartAction { view.isClickable = false }
-                .withEndAction { view.isClickable = true }
+                .withStartAction {
+                    view.isClickable = false
+                    if (whenAlpha == VISIBLE_ALPHA) hideSystemUI()
+                    else showSystemUI()
+                }
+                .withEndAction {
+                    view.isClickable = true
+                }
     }
 
     //region Component Initialization
@@ -830,5 +837,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
 
         (parentFragment as? PlayFragment)?.onKeyboardShown(interactionTopmostY)
+    }
+
+    private fun hideSystemUI() {
+        PlayFullScreenHelper.hideSystemUi(requireActivity())
+    }
+
+    private fun showSystemUI() {
+        PlayFullScreenHelper.showSystemUi(requireActivity())
     }
 }

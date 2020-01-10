@@ -23,18 +23,13 @@ class LikeComponent(
     private val uiView = initView(container)
 
     init {
-        uiView.setClickable(false)
-
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.LikeContent -> uiView.playLikeAnimation(it.shouldLike)
-                            is ScreenStateEvent.IsLikedContent -> {
-                                uiView.setIsLiked(it.isLiked)
-                                uiView.setClickable(true)
-                            }
+                            is ScreenStateEvent.IsLikedContent -> uiView.setIsLiked(it.isLiked)
                         }
                     }
         }

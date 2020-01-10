@@ -30,6 +30,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
@@ -160,11 +161,15 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun setupScreen(view: View) {
-        view.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        setFullScreen()
+        setInsets(view)
+    }
 
+    private fun setFullScreen() {
+        PlayFullScreenHelper.showSystemUi(requireActivity())
+    }
+
+    private fun setInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             flInteraction.setPadding(v.paddingLeft, insets.systemWindowInsetTop, v.paddingRight, insets.systemWindowInsetBottom)
 

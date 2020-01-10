@@ -111,6 +111,8 @@ class PlayViewModel @Inject constructor(
     init {
         //TODO(Remove, ONLY FOR TESTING)
 //        initMockChat()
+
+        _observableVOD.value = playManager.videoPlayer
     }
 
     fun startCurrentVideo() {
@@ -280,7 +282,6 @@ class PlayViewModel @Inject constructor(
 
     private fun startVideoWithUrlString(context: Context, urlString: String, isLive: Boolean) {
         playManager.safePlayVideoWithUriString(context, urlString, isLive)
-        if (_observableVOD.value == null) _observableVOD.value = playManager.videoPlayer
     }
 
     private fun playVideoStream(context: Context, channel: Channel) {
