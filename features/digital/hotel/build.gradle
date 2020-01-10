@@ -18,6 +18,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.travelCountryCode)
+    implementation project(rootProject.ext.features.travelPassenger)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.imagePreviewSlider)
