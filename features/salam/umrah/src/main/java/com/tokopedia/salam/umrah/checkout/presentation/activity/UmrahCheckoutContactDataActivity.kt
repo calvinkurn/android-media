@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.salam.umrah.checkout.data.ContactUser
 import com.tokopedia.salam.umrah.checkout.di.DaggerUmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
