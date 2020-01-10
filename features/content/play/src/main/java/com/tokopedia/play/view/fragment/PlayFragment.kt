@@ -170,9 +170,7 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-            flInteraction.setPadding(v.paddingLeft, insets.systemWindowInsetTop, v.paddingRight, insets.systemWindowInsetBottom)
-
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
             val closeLp = ivClose.layoutParams as ViewGroup.MarginLayoutParams
             ivClose.setMargin(closeLp.leftMargin, insets.systemWindowInsetTop, closeLp.rightMargin, closeLp.bottomMargin)
 
