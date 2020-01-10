@@ -6,9 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Build;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 /**
  * @author by alvinatin on 07/11/18.
@@ -119,6 +120,6 @@ public class FocusCameraFaceView extends View {
 
         canvas.drawPath(mPath, mSemiBlackPaint);
         canvas.clipPath(mPath);
-        canvas.drawColor(Color.parseColor("#a642b549"));
+        canvas.drawColor(Color.parseColor("#ae000000"));
     }
 }

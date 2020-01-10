@@ -64,18 +64,13 @@ public class UserIdentificationFormKtpFragment extends
         subtitleBody.setText(MethodChecker.fromHtml(getString(R.string.ktp_body)));
         subtitleBody.setVisibility(View.VISIBLE);
         button.setText(R.string.ktp_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                analytics.eventClickNextKtpPage();
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
-                        PARAM_VIEW_MODE_KTP);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
-            }
+        button.setOnClickListener(v -> {
+            analytics.eventClickNextKtpPage();
+            Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                    PARAM_VIEW_MODE_KTP);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
+            startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
         });
-//        ImageHandler.LoadImage(correctImage, KycUrl.KTP_OK);
-//        ImageHandler.LoadImage(wrongImage, KycUrl.KTP_FAIL);
         ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_KTP);
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())

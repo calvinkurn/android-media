@@ -141,46 +141,37 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void populateView() {
-        shutterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnalyticClickShutter();
-                Fragment fragment = UserIdentificationCameraFragment.this;
-                permissionCheckerHelper.checkPermission(fragment,
-                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
-                            @Override
-                            public void onPermissionDenied(@NotNull String permissionText) {
+        shutterButton.setOnClickListener(v -> {
+            sendAnalyticClickShutter();
+            Fragment fragment = UserIdentificationCameraFragment.this;
+            permissionCheckerHelper.checkPermission(fragment,
+                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(@NotNull String permissionText) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onNeverAskAgain(@NotNull String permissionText) {
+                        @Override
+                        public void onNeverAskAgain(@NotNull String permissionText) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onPermissionGranted() {
-                                hideCameraButtonAndShowLoading();
-                                cameraView.takePicture();
-                            }
-                        }, "");
-            }
+                        @Override
+                        public void onPermissionGranted() {
+                            hideCameraButtonAndShowLoading();
+                            cameraView.takePicture();
+                        }
+                    }, "");
         });
 
-        switchCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnalyticClickFlipCamera();
-                toggleCamera();
-            }
+        switchCamera.setOnClickListener(v -> {
+            sendAnalyticClickFlipCamera();
+            toggleCamera();
         });
 
-        reCaptureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnalyticClickRecapture();
-                showCameraView();
-            }
+        reCaptureButton.setOnClickListener(v -> {
+            sendAnalyticClickRecapture();
+            showCameraView();
         });
 
         cameraListener = new CameraListener() {
@@ -220,19 +211,16 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
         cameraView.addCameraListener(cameraListener);
 
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getActivity() != null) {
-                    getActivity().setResult(Activity.RESULT_CANCELED);
-                }
-                if (isCameraVisible()) {
-                    sendAnalyticClickBackCamera();
-                } else {
-                    sendAnalyticClickCloseImagePreview();
-                }
-                getActivity().finish();
+        closeButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().setResult(Activity.RESULT_CANCELED);
             }
+            if (isCameraVisible()) {
+                sendAnalyticClickBackCamera();
+            } else {
+                sendAnalyticClickCloseImagePreview();
+            }
+            getActivity().finish();
         });
 
         nextButton.setOnClickListener(new View.OnClickListener() {

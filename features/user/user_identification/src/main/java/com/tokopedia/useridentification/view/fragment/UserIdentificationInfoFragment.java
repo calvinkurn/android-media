@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.dynamicfeatures.DFInstaller;
@@ -36,12 +35,13 @@ import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
+
+import static com.tokopedia.applink.DeeplinkDFMapper.DFM_FACE_DETECTION;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -333,7 +333,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void goToFormActivity() {
         if(getActivity() != null){
-            List<String> DFMList =  Arrays.asList(DeeplinkDFMapper.DFM_FACE_DETECTION);
+            ArrayList<String> DFMList =  new ArrayList<>();
+            DFMList.add(DFM_FACE_DETECTION);
             new DFInstaller().installOnBackground(getActivity().getApplicationContext(), DFMList, null, null);
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);

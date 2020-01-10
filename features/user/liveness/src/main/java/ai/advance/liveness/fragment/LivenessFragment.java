@@ -11,7 +11,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +43,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      * the circle mask view above livenessView
      * 蒙版控件
      */
-    protected ImageView mMaskImageView;
+//    protected ImageView mMaskImageView;
     /**
      * liveness function view
      * 活体检测功能控件
@@ -115,7 +114,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
     protected void findViews() {
         final FragmentActivity activity = getActivity();
         if (activity != null) {
-            mMaskImageView = activity.findViewById(R.id.mask_view);
+//            mMaskImageView = activity.findViewById(R.id.mask_view);
             mLivenessView = activity.findViewById(R.id.liveness_view);
 //            mTipImageView = activity.findViewById(R.id.tip_image_view);
 //            mTipTextView = activity.findViewById(R.id.tip_text_view);
@@ -375,7 +374,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
 //                mVoiceCheckBox.setVisibility(View.GONE);
 //                mTipImageView.setVisibility(View.GONE);
 //                mTipTextView.setVisibility(View.GONE);
-                mMaskImageView.setVisibility(View.GONE);
+//                mMaskImageView.setVisibility(View.GONE);
             }
 
             @Override

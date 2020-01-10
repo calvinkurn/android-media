@@ -59,23 +59,20 @@ public class ResultActivity extends AppCompatActivity {
         }
         mResultTextView.setText(isSuccess ? R.string.liveness_detection_success : R.string.liveness_detection_fail);
 
-        mTryAgainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isSuccess){
-                    String imagePath = saveToFile(mImageBitmap);
-                    if(isFileExists(imagePath)){
-                        Intent intent = new Intent();
-                        intent.putExtra("image_result", imagePath);
-                        setResult(RESULT_OK, intent);
-                    }else{
-                        setResult(-5);
-                    }
+        mTryAgainView.setOnClickListener(v -> {
+            if(isSuccess){
+                String imagePath = saveToFile(mImageBitmap);
+                if(isFileExists(imagePath)){
+                    Intent intent = new Intent();
+                    intent.putExtra("image_result", imagePath);
+                    setResult(RESULT_OK, intent);
                 }else{
-                    setResult(IS_LIVENESS_DETECTION_FAIL);
+                    setResult(-5);
                 }
-                finish();
+            }else{
+                setResult(IS_LIVENESS_DETECTION_FAIL);
             }
+            finish();
         });
         mIMediaPlayer = new IMediaPlayer(this);
         mIMediaPlayer.doPlay(isSuccess ? R.raw.detection_success : R.raw.detection_failed, false, 0);

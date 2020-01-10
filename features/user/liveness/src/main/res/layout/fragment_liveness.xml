@@ -20,87 +20,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/liveness_accent"
+    android:background="#ae000000"
     android:orientation="vertical"
     tools:ignore="MissingConstraints,ResourceName">
     <!--titleBar-->
 
+
+    <ai.advance.liveness.lib.LivenessView
+        android:id="@+id/liveness_view"
+        style="@style/liveness_preview"
+        app:layout_constraintTop_toTopOf="parent" />
+<!--        app:layout_constraintBottom_toTopOf="@+id/tip_text_view"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/back_view_camera_activity"/>-->
+<!--        app:layout_constraintVertical_chainStyle="packed" />-->
+
+    <ai.advance.liveness.BackgroundOverlay
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/mask_view"-->
+<!--        android:layout_height="272dp"-->
+<!--        android:layout_width="272dp"-->
+<!--        android:layout_marginTop="35dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/title"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:srcCompat="@drawable/liveness_ic_mask"-->
+<!--        />-->
+
     <ImageView
         android:id="@+id/back_view_camera_activity"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:padding="@dimen/spacing_lvl4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="centerInside"
-        app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintWidth_percent="0.17"
         app:srcCompat="@drawable/liveness_ic_icon_md_arrow_back" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/timer_text_view_camera_activity"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:gravity="center"-->
-<!--        android:minWidth="50dp"-->
-<!--        android:paddingLeft="@dimen/liveness_12"-->
-<!--        android:paddingTop="@dimen/liveness_2"-->
-<!--        android:paddingRight="@dimen/liveness_12"-->
-<!--        android:paddingBottom="@dimen/liveness_2"-->
-<!--        android:textColor="@color/liveness_accent_reverse"-->
-<!--        android:textSize="@dimen/liveness_text_28"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/back_view_camera_activity"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/back_view_camera_activity" />-->
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        app:typographyType="heading_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="3sp"
+        android:textColor="@color/Neutral_N0"
+        android:textSize="17sp"
+        app:layout_constraintTop_toTopOf="@id/back_view_camera_activity"
+        app:layout_constraintBottom_toBottomOf="@id/back_view_camera_activity"
+        app:layout_constraintLeft_toRightOf="@id/back_view_camera_activity"
+        tools:text="Verifikasi Wajah" />
 
 <!--    <CheckBox-->
 <!--        android:id="@+id/voice_check_box"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="right"-->
-<!--        android:layout_marginRight="@dimen/liveness_25"-->
 <!--        android:button="@drawable/liveness_selector_voice"-->
 <!--        android:padding="@dimen/liveness_5"-->
-<!--        android:visibility="invisible"-->
+<!--        android:visibility="visible"-->
 <!--        app:layout_constraintBottom_toTopOf="@+id/liveness_view"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintRight_toLeftOf="@id/timer_text_view_camera_activity"-->
 <!--        app:layout_constraintTop_toBottomOf="@+id/back_view_camera_activity" />-->
 
-    <ai.advance.liveness.lib.LivenessView
-        android:id="@+id/liveness_view"
-        style="@style/liveness_preview"
-        app:layout_constraintTop_toBottomOf="@+id/back_view_camera_activity"/>
-<!--        app:layout_constraintBottom_toTopOf="@+id/tip_text_view"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/back_view_camera_activity"/>-->
-<!--        app:layout_constraintVertical_chainStyle="packed" />-->
-
-    <ImageView
-        android:id="@+id/mask_view"
-        style="@style/liveness_preview"
-        app:layout_constraintBottom_toBottomOf="@+id/liveness_view"
-        app:layout_constraintTop_toTopOf="@+id/liveness_view"
-        app:srcCompat="@drawable/liveness_ic_mask" />
-
-<!--    <TextView-->
+<!--    <com.tokopedia.unifyprinciples.Typography-->
 <!--        android:id="@+id/tip_text_view"-->
-<!--        style="@style/liveness_horizontal_center"-->
-<!--        android:layout_width="0dp"-->
+<!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        android:background="@color/liveness_accent"-->
 <!--        android:gravity="center"-->
-<!--        android:textColor="@color/liveness_accent_reverse"-->
-<!--        android:textSize="@dimen/liveness_text_36"-->
+<!--        android:textColor="@color/Neutral_N0"-->
 <!--        app:layout_constraintBottom_toTopOf="@+id/tip_image_view"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/mask_view"-->
-<!--        app:layout_constraintWidth_percent="0.9" />-->
+<!--        tools:src="Tip Text Here"/>-->
 
 <!--    <ImageView-->
 <!--        android:id="@+id/tip_image_view"-->
 <!--        style="@style/liveness_horizontal_center"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintDimensionRatio="H,1:1"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/tip_text_view"-->
-<!--        app:layout_constraintWidth_percent="0.3" />-->
+<!--        android:layout_width="104dp"-->
+<!--        android:layout_height="104dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent" />-->
 
 <!--    <ProgressBar-->
 <!--        android:id="@+id/progress_layout"-->
@@ -112,4 +109,20 @@
 <!--        app:layout_constraintDimensionRatio="H,1:1"-->
 <!--        app:layout_constraintTop_toBottomOf="@+id/back_view_camera_activity"-->
 <!--        app:layout_constraintWidth_percent="0.15" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/timer_text_view_camera_activity"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:minWidth="50dp"-->
+<!--            android:paddingLeft="@dimen/liveness_12"-->
+<!--            android:paddingTop="@dimen/liveness_2"-->
+<!--            android:paddingRight="@dimen/liveness_12"-->
+<!--            android:paddingBottom="@dimen/liveness_2"-->
+<!--            android:textColor="@color/liveness_accent_reverse"-->
+<!--            android:textSize="@dimen/liveness_text_28"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/back_view_camera_activity"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/back_view_camera_activity" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

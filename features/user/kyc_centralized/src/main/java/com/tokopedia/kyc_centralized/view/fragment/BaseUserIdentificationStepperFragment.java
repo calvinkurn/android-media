@@ -35,8 +35,6 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
 
     public final static String EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model";
 
-//    protected ImageView correctImage;
-//    protected ImageView wrongImage;
     protected ImageView onboardingImage;
     protected TextView title;
     protected TextView subtitle;
@@ -82,8 +80,6 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     }
 
     protected void initView(View view) {
-//        correctImage = view.findViewById(R.id.correct_image);
-//        wrongImage = view.findViewById(R.id.wrong_image);
         onboardingImage = view.findViewById(R.id.ktp_onboarding_image);
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);

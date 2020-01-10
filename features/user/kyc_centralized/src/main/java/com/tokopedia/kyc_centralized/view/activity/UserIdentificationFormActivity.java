@@ -113,7 +113,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     @Override
     protected void onBackEvent() {
-        if(getListFragment().size()  == currentPosition){
+        if(getListFragment().size()  == currentPosition) {
             DialogUnify dialog = new DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
             dialog.setTitle("Keluar dari halaman ini?");
             dialog.setDescription("Kalau keluar sekarang, dokumen yang\ningin kamu kirim tidak akan tersimpan.");
@@ -126,20 +126,21 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
             });
 
             dialog.setSecondaryCTAClickListener(() -> {
-                if (getListFragment().size() > 0 &&
-                        getListFragment().get(currentPosition-2) != null &&
-                        getListFragment().get(currentPosition-2) instanceof Listener){
-                    ((Listener) getListFragment().get(currentPosition - 2)).trackOnBackPressed();
-                }
+                dialog.dismiss();
+                backToPreviousFragment();
                 return Unit.INSTANCE;
             });
             dialog.show();
-        } else {
-            if (getListFragment().size() > 0 &&
-                    getListFragment().get(currentPosition-1) != null &&
-                    getListFragment().get(currentPosition-1) instanceof Listener){
-                ((Listener) getListFragment().get(currentPosition - 1)).trackOnBackPressed();
-            }
+        }else{
+            backToPreviousFragment();
+        }
+    }
+
+    public void backToPreviousFragment(){
+        if (getListFragment().size() > 0 &&
+                getListFragment().get(currentPosition - 1) != null &&
+                getListFragment().get(currentPosition - 1) instanceof Listener) {
+            ((Listener) getListFragment().get(currentPosition - 1)).trackOnBackPressed();
         }
         super.onBackEvent();
     }

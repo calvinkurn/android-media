@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -58,6 +59,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         GetKtpStatusSubscriber.GetKtpStatusListener,
         UserIdentificationFormActivity.Listener {
 
+    private ConstraintLayout loadingLayout;
     private ImageView imageKtp;
     private ImageView imageFace;
 //    private TextView buttonKtp;
@@ -65,9 +67,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private TextView info;
     private TextView subtitle;
     private TextView uploadButton;
-//    private Ticker ticker;
     private ImageView errorImageView;
-    private View progressBar;
     private UserIdentificationStepperModel stepperModel;
 
     private StepperListener stepperListener;
@@ -148,6 +148,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private void setContentView() {
+        loadingLayout.setVisibility(View.GONE);
         setImageKtp(stepperModel.getKtpFile());
         setImageFace(stepperModel.getFaceFile());
         subtitle.setText(getResources().getString(R.string.form_final_subtitle));
@@ -204,6 +205,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private void initView(View view) {
+        loadingLayout = view.findViewById(R.id.user_identification_final_loading_layout);
         imageKtp = view.findViewById(R.id.image_ktp);
         imageFace = view.findViewById(R.id.image_face);
 //        buttonKtp = view.findViewById(R.id.change_ktp);
@@ -211,8 +213,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         subtitle = view.findViewById(R.id.text_subtitle);
         info = view.findViewById(R.id.text_info);
         uploadButton = view.findViewById(R.id.upload_button);
-        progressBar = view.findViewById(R.id.progress_bar);
-//        ticker = view.findViewById(R.id.user_identification_final_ticker);
         errorImageView = view.findViewById(R.id.user_identification_final_x_img);
     }
 
@@ -297,8 +297,9 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 //        buttonKtp.setVisibility(View.GONE);
 //        buttonFace.setVisibility(View.GONE);
         info.setVisibility(View.GONE);
+        subtitle.setVisibility(View.GONE);
         uploadButton.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        loadingLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -308,8 +309,9 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 //        buttonKtp.setVisibility(View.VISIBLE);
 //        buttonFace.setVisibility(View.VISIBLE);
         info.setVisibility(View.VISIBLE);
+        subtitle.setVisibility(View.GONE);
         uploadButton.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
+        loadingLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -325,7 +327,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             checkKtp();
         });
         errorImageView.setVisibility(View.GONE);
-//        ticker.setVisibility(View.GONE);
         info.setText(R.string.form_final_info);
         generateLink();
         hideLoading();
@@ -339,7 +340,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         });
 
         errorImageView.setVisibility(View.VISIBLE);
-//        ticker.setVisibility(View.VISIBLE);
 
         info.setText(R.string.form_reupload_info);
         generateLink();

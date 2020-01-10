@@ -49,20 +49,15 @@ public class UserIdentificationFormFaceFragment extends
         title.setText(R.string.face_title);
         subtitle.setText(R.string.face_subtitle);
         button.setText(R.string.face_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                analytics.eventClickNextSelfiePage();
+        button.setOnClickListener(v -> {
+            analytics.eventClickNextSelfiePage();
 //                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
 //                        PARAM_VIEW_MODE_FACE);
 //                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
 //                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
-            }
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
+            startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
         });
-//        ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK);
-//        ImageHandler.LoadImage(wrongImage, KycUrl.SELFIE_FAIL);
         ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_FACE);
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())
