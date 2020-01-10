@@ -6,4 +6,6 @@ import com.google.gson.annotations.SerializedName
 data class GetVoucherResponse(
         @SerializedName("getPublicMerchantVoucherList")
         val getPublicMerchantVoucherList: GetPublicMerchantVoucherList = GetPublicMerchantVoucherList()
-)
+) {
+    val vouchers: List<Voucher> get() = getPublicMerchantVoucherList.vouchers
+}

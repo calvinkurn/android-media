@@ -53,11 +53,11 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         viewModel.initializeArguments(arguments)
         setupRecyclerView()
         setupObserver()
         setupFilter()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun setupRecyclerView() {
@@ -67,6 +67,9 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     private fun setupObserver() {
         viewModel.filter.observe(viewLifecycleOwner, Observer { type ->
 
+        })
+        viewModel.vouchers.observe(viewLifecycleOwner, Observer { vouchers ->
+            renderList(vouchers)
         })
     }
 
@@ -87,7 +90,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     override fun onItemClicked(t: Visitable<*>?) {}
 
     override fun loadData(page: Int) {
-
+        if (page != 1) return
+        viewModel.loadVouchers()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AttachVoucherTypeFactory> {

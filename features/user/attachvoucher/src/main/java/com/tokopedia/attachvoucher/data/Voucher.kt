@@ -23,7 +23,7 @@ data class Voucher(
         @SerializedName("voucher_type")
         val voucherType: VoucherType = VoucherType()
 ) : Visitable<AttachVoucherTypeFactory> {
-    override fun type(typeFactory: AttachVoucherTypeFactory?): Int {
-        return -1
+    override fun type(typeFactory: AttachVoucherTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }
