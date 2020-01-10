@@ -831,6 +831,8 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("userId", sessionHandler.getLoginID());
         bundle.putString("clientId", getClientIDString());
         bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
+        if(!TextUtils.isEmpty(sessionHandler.getShopId()))
+            bundle.putString("shopId", sessionHandler.getShopId());
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
