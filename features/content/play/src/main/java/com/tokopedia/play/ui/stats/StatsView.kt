@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.view.uimodel.TotalLikeUiModel
 import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import com.tokopedia.unifyprinciples.Typography
 
@@ -24,8 +26,9 @@ class StatsView(container: ViewGroup) : UIView(container) {
     private val tvTotalLikes = view.findViewById<Typography>(R.id.tv_total_likes)
     private val tvTotalView = view.findViewById<Typography>(R.id.tv_total_views)
 
-    fun setTotalLikes(totalLikes: String) {
-        tvTotalLikes.text = "$totalLikes Likes"
+    fun setTotalLikes(totalLikes: TotalLikeUiModel) {
+        tvTotalLikes.text = view.context.resources.getQuantityString(R.plurals.play_likes,
+                totalLikes.totalLike, totalLikes.totalLikeFormatted)
     }
 
     fun setTotalViews(totalView: TotalViewUiModel) {

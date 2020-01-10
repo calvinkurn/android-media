@@ -55,7 +55,6 @@ import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -249,12 +248,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeLikeContent() {
-        viewModel.observableLikeContent.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) {
-                showToast(it.throwable.message.orEmpty())
-            }
-        })
-
         playViewModel.observableIsLikeContent.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -672,7 +665,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetTotalLikes(totalLikes.totalLike)
+                            ScreenStateEvent.SetTotalLikes(totalLikes)
                     )
         }
     }
