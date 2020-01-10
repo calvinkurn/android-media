@@ -1747,6 +1747,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
-        Toaster.INSTANCE.make(root, message, Toaster.LENGTH_SHORT, typeToaster, actionText, clickListener);
+        Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v ->{});
     }
 }
