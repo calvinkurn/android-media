@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_cart_recent_view_item.view.*
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionListener, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
+class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val LAYOUT = R.layout.item_cart_recent_view_item
@@ -60,18 +60,18 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
 
         itemView.img_wishlist.setOnClickListener {
             if (element.isWishlist) {
-                actionListener.onRemoveLastSeenFromWishlist(element.id)
+                actionListener?.onRemoveLastSeenFromWishlist(element.id)
             } else {
-                actionListener.onAddLastSeenToWishlist(element.id)
+                actionListener?.onAddLastSeenToWishlist(element.id)
             }
         }
 
         itemView.tv_atc.setOnClickListener {
-            actionListener.onButtonAddToCartClicked(element)
+            actionListener?.onButtonAddToCartClicked(element)
         }
 
         itemView.setOnClickListener {
-            actionListener.onRecentViewProductClicked(element.id)
+            actionListener?.onRecentViewProductClicked(element.id)
         }
 
     }

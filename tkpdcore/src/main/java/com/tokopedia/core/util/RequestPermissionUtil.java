@@ -3,17 +3,15 @@ package com.tokopedia.core.util;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.core2.R;
 
 import java.util.List;
-
-import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by Nisie on 8/5/16.
@@ -140,85 +138,6 @@ public class RequestPermissionUtil {
     public static void onNeverAskAgain(Context context, List<String> listPermission) {
         Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
 
-    }
-
-    @Deprecated
-    public static void onShowRationale(Context context, final PermissionRequest request,
-                                       String permission) {
-        new androidx.appcompat.app.AlertDialog.Builder(context)
-                .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .show();
-    }
-
-
-    @Deprecated
-    public static void onShowRationale(Context context, final PermissionRequest request,
-                                       List<String> permission) {
-        new androidx.appcompat.app.AlertDialog.Builder(context)
-                .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .show();
-    }
-
-    public static int getNeedPermissionMessage(List<String> permission) {
-        return R.string.need_permission_multi;
-    }
-
-    public static int getNeedPermissionMessage(String permission) {
-        switch (permission) {
-            case Manifest.permission.CAMERA:
-                return R.string.need_permission_camera;
-            case Manifest.permission.READ_EXTERNAL_STORAGE:
-                return R.string.need_permission_storage;
-            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                return R.string.need_permission_storage;
-            case Manifest.permission.READ_CONTACTS:
-                return R.string.need_permission_contacts;
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                return R.string.need_permission_location;
-            case Manifest.permission.GET_ACCOUNTS:
-                return R.string.need_permission_get_accounts;
-            case Manifest.permission.READ_SMS:
-            case Manifest.permission.RECEIVE_SMS:
-                return R.string.need_permission_SMS;
-            case Manifest.permission.SEND_SMS:
-                return R.string.need_permission_send_SMS;
-            case Manifest.permission.CALL_PHONE:
-                return R.string.need_permission_SMS;
-            default:
-                return R.string.need_permission_multi;
-        }
-    }
-
-    public static void onFinishActivityIfNeverAskAgain(Activity activity, String permission) {
-        if (ContextCompat.checkSelfPermission(activity, permission)
-                == PackageManager.PERMISSION_DENIED) {
-            RequestPermissionUtil.onNeverAskAgain(activity, permission);
-            activity.finish();
-        }
     }
 
     public static boolean checkHasPermission(Activity activity, String permission) {

@@ -1,18 +1,19 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.constant.TravelType;
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
+import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase;
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -27,6 +28,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClass
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -52,8 +54,6 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View>
         implements FlightDashboardContract.Presenter {
 
-    private static final String DEVICE_ID = "5";
-    private static final String CATEGORY_ID = FlightUrl.CATEGORY_ID;
     private static final int INDEX_DEPARTURE_TRIP = 0;
     private static final int INDEX_RETURN_TRIP = 1;
     private static final int INDEX_ID_AIRPORT_DEPARTURE_TRIP = 0;
@@ -69,7 +69,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
     private static final int MAX_DATE_ADDITION_YEAR = 1;
 
-    private BannerGetDataUseCase bannerGetDataUseCase;
+    private GetTravelCollectiveBannerUseCase getTravelCollectiveBannerUseCase;
     private FlightDashboardValidator validator;
     private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
@@ -83,7 +83,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase;
 
     @Inject
-    public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
+    public FlightDashboardPresenter(GetTravelCollectiveBannerUseCase travelCollectiveBannerUseCase,
                                     FlightDashboardValidator validator,
                                     GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
@@ -93,7 +93,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightSelectPassengerValidator passengerValidator,
                                     FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase,
                                     TravelTickerUseCase travelTickerUseCase) {
-        this.bannerGetDataUseCase = bannerGetDataUseCase;
+        this.getTravelCollectiveBannerUseCase = travelCollectiveBannerUseCase;
         this.validator = validator;
         this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
@@ -141,7 +141,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void initialize() {
         setupViewModel();
-        getBannerData();
 
         if (!getView().isFromApplink()) {
             actionLoadFromCache();
@@ -457,7 +456,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onDestroyView() {
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
         travelTickerUseCase.unsubscribe();
-        bannerGetDataUseCase.unsubscribe();
+        getTravelCollectiveBannerUseCase.unsubscribe();
         flightDeleteAllFlightSearchDataUseCase.unsubscribe();
         getFlightClassByIdUseCase.unsubscribe();
         detachView();
@@ -651,12 +650,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onBannerItemClick(int position, BannerDetail bannerDetail) {
+    public void onBannerItemClick(int position, TravelCollectiveBannerModel.Banner bannerDetail) {
         flightAnalytics.eventPromotionClick(position + 1, bannerDetail);
     }
 
-    private void getBannerData() {
-        bannerGetDataUseCase.execute(bannerGetDataUseCase.createRequestParams(DEVICE_ID, CATEGORY_ID), new Subscriber<List<BannerDetail>>() {
+    @Override
+    public void getBannerData(String query) {
+        getTravelCollectiveBannerUseCase.executeRx(query, getTravelCollectiveBannerUseCase.createRequestParams(TravelType.FLIGHT),
+                new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -670,10 +671,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             }
 
             @Override
-            public void onNext(List<BannerDetail> bannerDetailList) {
+            public void onNext(GraphqlResponse response) {
                 if (isViewAttached()) {
-                    if (bannerDetailList.size() > 0) {
-                        getView().renderBannerView(bannerDetailList);
+                    TravelCollectiveBannerModel.Response bannerResponse = response.getData(TravelCollectiveBannerModel.Response.class);
+                    if (bannerResponse.getResponse().getBanners().size() > 0) {
+                        getView().renderBannerView(bannerResponse.getResponse().getBanners());
                     } else {
                         getView().hideBannerView();
                     }
@@ -726,7 +728,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void actionOnPromoScrolled(int position, BannerDetail bannerData) {
+    public void actionOnPromoScrolled(int position, TravelCollectiveBannerModel.Banner bannerData) {
         flightAnalytics.eventPromoImpression(position, bannerData);
     }
 

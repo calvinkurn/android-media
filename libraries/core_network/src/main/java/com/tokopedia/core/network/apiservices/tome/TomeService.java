@@ -1,7 +1,7 @@
 package com.tokopedia.core.network.apiservices.tome;
 
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.url.TokopediaUrl;
 
 import retrofit2.Retrofit;
 
@@ -11,7 +11,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class TomeService extends AuthService<TomeApi> {
-    public static final String TAG = TomeService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

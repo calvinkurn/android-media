@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelPropertyRoom
@@ -23,13 +24,13 @@ import kotlin.math.roundToLong
  */
 class TrackingHotelUtil {
 
-    fun hotelBannerImpression(hotelPromoEntity: HotelPromoEntity, position: Int) {
+    fun hotelBannerImpression(hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int) {
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PROMO_VIEW
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = BANNER_IMPRESSION
-        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelPromoEntity.promoId}"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelPromoEntity.id}"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
                 PROMOTIONS_LABEL, getPromoList(hotelPromoEntity, position)
@@ -38,25 +39,25 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun getPromoList(hotelPromoEntity: HotelPromoEntity, position: Int): List<Any> {
+    fun getPromoList(hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int): List<Any> {
         val list = ArrayList<Map<String, Any>>()
 
         val map = HashMap<String, Any>()
-        map[ID_LABEL] = hotelPromoEntity.promoId
+        map[ID_LABEL] = hotelPromoEntity.id
         map[NAME_LABEL] = SLASH_HOTEL_LABEL
         map[POSITION_LABEL] = position
-        map[CREATIVE_LABEL] = "DG_${hotelPromoEntity.attributes.promoCode}"
+        map[CREATIVE_LABEL] = "DG_${hotelPromoEntity.attribute.promoCode}"
         list.add(map)
 
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelClickBanner(hotelPromoEntity: HotelPromoEntity, position: Int) {
+    fun hotelClickBanner(hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PROMO_CLICK
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CLICK_BANNER
-        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelPromoEntity.promoId}"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelPromoEntity.id}"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
                 PROMOTIONS_LABEL, getPromoList(hotelPromoEntity, position)

@@ -561,7 +561,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+    public void setRecommendation(Object rechargeWidgetResponse) {
 
     }
 
