@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -31,7 +31,7 @@
                     app:layout_collapseParallaxMultiplier="0.6"
                     tools:background="@color/Green_G500">
 
-                    <com.tokopedia.travelhomepage.destination.widget.ImageViewPager
+                    <com.tokopedia.travelhomepage.destination.widget.DestinationImageViewPager
                         android:id="@+id/travel_homepage_destination_view_pager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -64,30 +64,40 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <RelativeLayout
-            android:id="@+id/container_room_detail"
+        <LinearLayout
+            android:id="@+id/container_city_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="-16dp"
+            android:layout_marginTop="-68dp"
             android:background="@color/transparent"
+            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_white_travel_destination_content"
                 android:clipToPadding="false"
                 tools:background="@color/transparent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/indicator_banner_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_5"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"/>
 
                     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@drawable/bg_white_travel_destination_content"
                         android:nestedScrollingEnabled="false"
                         android:paddingBottom="@dimen/dp_32" />
 
@@ -95,7 +105,7 @@
 
             </androidx.core.widget.NestedScrollView>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

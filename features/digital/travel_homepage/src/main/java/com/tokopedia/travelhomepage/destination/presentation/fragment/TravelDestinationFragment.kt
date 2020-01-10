@@ -27,11 +27,12 @@ import kotlinx.android.synthetic.main.fragment_travel_homepage_destination.*
 import javax.inject.Inject
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.travelhomepage.destination.widget.ImageViewPager
+import com.tokopedia.travelhomepage.destination.widget.DestinationImageViewPager
 import kotlinx.android.synthetic.main.layout_image_slider.view.*
 import android.widget.LinearLayout
 import android.graphics.Point
 import android.os.Build
+import android.widget.ImageView
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,6 +51,8 @@ OnViewHolderBindListener{
     var cityId: String = ""
     var cityName: String = ""
     var webUrl: String = ""
+
+    var indicatorItems: ArrayList<ImageView> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +102,22 @@ OnViewHolderBindListener{
                 if (isAllError) showNetworkErrorLayout()
             }
         })
+    }
+
+    private fun buildViewPagerIndicator(imageCount: Int) {
+        indicator_banner_container.visibility = View.VISIBLE
+
+        indicatorItems.clear()
+        indicator_banner_container.removeAllViews()
+        for (count in 0 until imageCount) {
+            val pointView = ImageView(context)
+            pointView.setPadding(5,60,5,60)
+            if (count == 0) pointView.setImageResource(getIndicatorFocus())
+            else pointView.setImageResource(getIndicator())
+
+            indicatorItems.add(pointView)
+            indicator_banner_container.addView(pointView)
+        }
     }
 
     private fun showNetworkErrorLayout() {
@@ -199,13 +218,28 @@ OnViewHolderBindListener{
         if (imgUrls.isNotEmpty()) {
             travel_homepage_destination_view_pager.setImages(imgUrls)
         }
-        travel_homepage_destination_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
+        buildViewPagerIndicator(imgUrls.size)
+        travel_homepage_destination_view_pager.imageViewPagerListener = object : DestinationImageViewPager.ImageViewPagerListener {
+            override fun onImageScrolled(position: Int) {
+                scrollImageViewPagerIndicator(position)
+            }
+
             override fun onImageClicked(position: Int) {
                 ImagePreviewSlider.instance.start(context, cityName, imgUrls, imgUrls, position, travel_homepage_destination_view_pager.image_banner)
             }
         }
         travel_homepage_destination_view_pager.buildView()
     }
+
+    private fun scrollImageViewPagerIndicator(currentPosition: Int) {
+        for (i in 0 until indicatorItems.size) {
+            if (currentPosition != i) indicatorItems[i].setImageResource(getIndicator())
+            else indicatorItems[i].setImageResource(getIndicatorFocus())
+        }
+    }
+
+    private fun getIndicatorFocus(): Int = R.drawable.widget_image_view_indicator_focus
+    private fun getIndicator(): Int = R.drawable.widget_image_view_indicator
 
     override fun onCityRecommendationVHBind() {
         destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), cityId)

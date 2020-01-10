@@ -12,7 +12,7 @@ import com.tokopedia.travelhomepage.R
  * @author by jessica on 16/04/19
  */
 
-class ImageViewPagerAdapter(val images: MutableList<String>, val clickListener: ImageViewPager.ImageViewPagerListener?): RecyclerView.Adapter<ImageViewPagerAdapter.ViewHolder>() {
+class DestinationImageViewPagerAdapter(val images: MutableList<String>, val clickListener: DestinationImageViewPager.ImageViewPagerListener?): RecyclerView.Adapter<DestinationImageViewPagerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
         = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_image_slider, parent, false))

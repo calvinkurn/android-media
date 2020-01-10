@@ -6,24 +6,23 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.travelhomepage.R
+import kotlinx.android.synthetic.main.fragment_travel_homepage_destination.view.*
 import kotlinx.android.synthetic.main.widget_image_view_pager.view.*
 
 /**
  * @author by jessica on 16/04/19
  */
 
-class ImageViewPager: BaseCustomView {
+class DestinationImageViewPager: BaseCustomView {
 
-    var indicatorItems: ArrayList<ImageView> = arrayListOf()
     var imageUrls: ArrayList<String> = arrayListOf()
 
     var imageViewPagerListener: ImageViewPagerListener? = null
 
-    var imageViewPagerAdapter: ImageViewPagerAdapter? = null
-    get() = ImageViewPagerAdapter(imageUrls, imageViewPagerListener)
+    var destinationImageViewPagerAdapter: DestinationImageViewPagerAdapter? = null
+    get() = DestinationImageViewPagerAdapter(imageUrls, imageViewPagerListener)
 
     var currentPosition: Int = 0
 
@@ -39,6 +38,7 @@ class ImageViewPager: BaseCustomView {
 
     interface ImageViewPagerListener {
         fun onImageClicked(position: Int)
+        fun onImageScrolled(position: Int)
     }
 
     fun init() {
@@ -47,27 +47,14 @@ class ImageViewPager: BaseCustomView {
 
     fun buildView() {
         visibility = View.VISIBLE
-        indicator_banner_container.visibility = View.VISIBLE
 
-        indicatorItems.clear()
-        indicator_banner_container.removeAllViews()
         viewpager_banner_category.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         viewpager_banner_category.layoutManager = layoutManager
 
-        imageViewPagerAdapter = ImageViewPagerAdapter(arrayListOf(), imageViewPagerListener)
-        viewpager_banner_category.adapter = imageViewPagerAdapter
-
-        for (count in 0..imageUrls.size - 1) {
-            val pointView = ImageView(context)
-            pointView.setPadding(5,60,5,60)
-            if (count == 0) pointView.setImageResource(getIndicatorFocus())
-            else pointView.setImageResource(getIndicator())
-
-            indicatorItems.add(pointView)
-            indicator_banner_container.addView(pointView)
-        }
+        destinationImageViewPagerAdapter = DestinationImageViewPagerAdapter(arrayListOf(), imageViewPagerListener)
+        viewpager_banner_category.adapter = destinationImageViewPagerAdapter
 
         viewpager_banner_category.clearOnScrollListeners()
         viewpager_banner_category.addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -75,7 +62,7 @@ class ImageViewPager: BaseCustomView {
                 super.onScrolled(recyclerView, dx, dy)
                 currentPosition = (viewpager_banner_category.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
                 if (currentPosition != -1) viewpager_banner_category.smoothScrollToPosition(currentPosition)
-                setCurrentIndicator()
+                imageViewPagerListener?.onImageScrolled(currentPosition)
             }
         })
 
@@ -86,19 +73,10 @@ class ImageViewPager: BaseCustomView {
         snapHelper.attachToRecyclerView(viewpager_banner_category)
     }
 
-    fun setCurrentIndicator() {
-        for (i in 0..indicatorItems.size - 1) {
-            if (currentPosition != i) indicatorItems.get(i).setImageResource(getIndicator())
-            else indicatorItems.get(i).setImageResource(getIndicatorFocus())
-        }
-    }
-
     fun setImages(images: List<String>) {
         imageUrls.clear()
         imageUrls.addAll(images)
-        imageViewPagerAdapter?.addImages(images)
+        destinationImageViewPagerAdapter?.addImages(images)
     }
 
-    fun getIndicatorFocus(): Int = R.drawable.widget_image_view_indicator_focus
-    fun getIndicator(): Int = R.drawable.widget_image_view_indicator
 }
