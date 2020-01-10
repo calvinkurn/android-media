@@ -161,19 +161,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         )
             }
         })
-
-        //TODO("propagate this to each of the observable")
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                 is Success -> {
-                     setChannelTitle(it.data.title)
-                 }
-                is Fail -> {
-                    showToast("don't forget to handle when get channel info return error")
-                }
-            }
-        })
-
+        observerTitleChannel()
         observeQuickReply()
         observeVideoStream()
         observeToolbarInfo()
@@ -200,6 +188,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region observe
+    private fun observerTitleChannel() {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    setChannelTitle(it.data.title)
+                }
+            }
+        })
+    }
+
     private fun observeQuickReply() {
         playViewModel.observableQuickReply.observe(viewLifecycleOwner, Observer(::setQuickReply))
     }

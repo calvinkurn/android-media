@@ -18,7 +18,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
@@ -29,8 +32,11 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
@@ -68,6 +74,7 @@ class PlayFragment : BaseDaggerFragment() {
     private lateinit var ivClose: ImageView
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
+    private lateinit var globalError: GlobalError
 
     private val onKeyboardShownAnimator = AnimatorSet()
     private val onKeyboardHiddenAnimator = AnimatorSet()
@@ -87,7 +94,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "2" // TODO remove default value, handle channel_id=1865, 80 staging live not found
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "2132" // TODO remove default value, handle channel_id=1865, 80 staging live not found
         PlayAnalytics.sendScreen(channelId)
     }
 
@@ -133,6 +140,7 @@ class PlayFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
         observeSocketInfo()
+        observeErrorChannel()
         observeEventUserInfo()
     }
 
@@ -141,6 +149,7 @@ class PlayFragment : BaseDaggerFragment() {
             ivClose = findViewById(R.id.iv_close)
             flVideo = findViewById(R.id.fl_video)
             flInteraction = findViewById(R.id.fl_interaction)
+            globalError = findViewById(R.id.global_error)
         }
     }
 
@@ -192,6 +201,51 @@ class PlayFragment : BaseDaggerFragment() {
             }
         })
     }
+
+    private fun observeErrorChannel() {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Fail -> {
+                    showGlobalError(it.throwable)
+                }
+                is Success -> {
+                    globalError.gone()
+                }
+            }
+        })
+    }
+
+    private fun showGlobalError(throwable: Throwable) {
+        throwable.message?.let {
+            when(GlobalErrorCodeWrapper.wrap(it)) {
+                is GlobalErrorCodeWrapper.Unknown -> {
+                    return
+                }
+                is GlobalErrorCodeWrapper.NotFound -> {
+                    globalError.setType(GlobalError.PAGE_NOT_FOUND)
+                    globalError.setActionClickListener {
+                        activity?.let { activity ->
+                            RouteManager.route(activity, ApplinkConsInternalHome.INTERNAL_HOME)
+                        }
+                    }
+                }
+                is GlobalErrorCodeWrapper.PageFull -> {
+                    globalError.setType(GlobalError.PAGE_FULL)
+                    globalError.setActionClickListener {
+                        playViewModel.getChannelInfo(channelId)
+                    }
+                }
+                is GlobalErrorCodeWrapper.ServerError -> {
+                    globalError.setType(GlobalError.SERVER_ERROR)
+                    globalError.setActionClickListener {
+                        playViewModel.getChannelInfo(channelId)
+                    }
+                }
+            }
+            globalError.visible()
+        }
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

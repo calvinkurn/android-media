@@ -171,7 +171,6 @@ class PlayViewModel @Inject constructor(
             }
 
         }) {
-            //TODO("Change it later")
             if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
     }
