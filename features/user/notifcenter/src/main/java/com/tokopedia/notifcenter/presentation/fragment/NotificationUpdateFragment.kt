@@ -337,10 +337,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun showMessageAtcSuccess(message: String) {
         view?.let {
-            Toaster.showNormalWithAction(
+            Toaster.make(
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
                     getString(R.string.notifcenter_title_view),
                     onClickSeeButtonOnAtcSuccessToaster()
             )
