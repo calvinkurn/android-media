@@ -28,18 +28,17 @@ class CouponLisitingStackedViewModel @Inject constructor(private val respositor:
     val startAdapter = MutableLiveData<Resources<TokoPointPromosEntity>>()
     val inStackedAdapter = MutableLiveData<TokoPointPromosEntity>()
 
-    var category: String? = null
+    var category: Int? = null
 
-    fun getCoupons() {
-        category?.let {
-            startAdapter.value = Loading()
-        }
+    fun getCoupons(id: Int) {
+        category = id
+        startAdapter.value = Loading()
     }
 
     fun getList(pageNumber: Int) {
         launchCatchError(block = {
             category?.let {
-                val catalogListingOuter = respositor.getCouponList(pageNumber, category as String).getData<TokoPointPromosEntity>(TokoPointPromosEntity::class.java)
+                val catalogListingOuter = respositor.getCouponList(pageNumber, category as Int).getData<TokoPointPromosEntity>(TokoPointPromosEntity::class.java)
                 if (catalogListingOuter != null) {
                     if (catalogListingOuter.coupon.coupons != null) {
                         startAdapter.value = Success(catalogListingOuter)

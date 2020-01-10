@@ -118,7 +118,10 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
         view!!.findViewById<View>(R.id.text_empty_action).setOnClickListener { v -> RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
 
-        swipe_refresh_layout.setOnRefreshListener { presenter.getCoupons() }
+        swipe_refresh_layout.setOnRefreshListener {
+            val id = presenter.category
+            id?.let {  presenter.getCoupons(id) }
+        }
 
         addListObserver()
         addInStackedObserverList()
@@ -135,6 +138,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             when (it) {
                 is Loading -> {
                     mAdapter.resetAdapter()
+                    mAdapter.notifyDataSetChanged()
                     mAdapter.startDataLoading()
                 }
                 is Success -> mAdapter.onSuccess(it.data)

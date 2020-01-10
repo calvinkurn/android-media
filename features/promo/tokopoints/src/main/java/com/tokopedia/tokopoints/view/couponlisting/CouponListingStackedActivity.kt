@@ -138,8 +138,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
                     fragment?.apply {
                         if(isAdded ){
-                            presenter.category = data[position].id.toString()
-                            presenter.getCoupons()
+                            presenter.getCoupons(data[position].id)
                         }
                     }
                         AnalyticsTrackerUtil.sendEvent(activityContext,
@@ -190,8 +189,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         val fragment = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem) as CouponListingStackedFragment?
         fragment?.apply {
             if(isAdded ){
-                presenter.category = categoryId.toString()
-                presenter.getCoupons()
+                presenter.getCoupons(categoryId)
             }
         }
     }
