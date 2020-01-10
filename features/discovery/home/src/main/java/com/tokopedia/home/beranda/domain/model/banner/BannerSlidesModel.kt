@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.model.banner
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class BannerSlidesModel(
         @SerializedName("id")
@@ -43,7 +44,7 @@ data class BannerSlidesModel(
         val topadsViewUrl: String = "",
         @SerializedName("type")
         var type: String = ""
-){
+): ImpressHolder() {
 
     var isImpressed = false
     var position = -1
