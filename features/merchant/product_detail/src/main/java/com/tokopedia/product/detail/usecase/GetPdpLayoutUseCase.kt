@@ -17,7 +17,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                              private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
+                                                   private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
 
     companion object {
         fun createParams(productId: String, shopDomain: String, productKey: String): RequestParams =
@@ -44,10 +44,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         val data = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java)
         val blacklistMessage = data.data.basicInfo.blacklistMessage
 
-        if (data == null) {
-            throw RuntimeException()
-        } else if (error != null && error.isNotEmpty()) {
+        if (error != null && error.isNotEmpty()) {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+        } else if (data == null) {
+            throw RuntimeException()
         } else if (data.data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)

@@ -84,5 +84,6 @@ interface DynamicProductDetailListener {
      */
     fun onRetryClicked(forceRefresh:Boolean)
     fun goToHomePageClicked()
+    fun goToTobacooError(url: String)
 
 }
