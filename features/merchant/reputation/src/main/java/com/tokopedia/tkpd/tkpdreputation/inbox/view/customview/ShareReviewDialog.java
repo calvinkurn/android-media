@@ -22,7 +22,7 @@ import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ShareAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
