@@ -5,21 +5,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -38,8 +29,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
