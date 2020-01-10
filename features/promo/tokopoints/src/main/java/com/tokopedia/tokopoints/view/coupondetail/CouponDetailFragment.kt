@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 
@@ -20,9 +19,7 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.ViewFlipper
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -32,16 +29,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity
+import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.contract.CouponDetailContract
-import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
 import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
 import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment
@@ -215,7 +208,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     override fun onClick(source: View) {
         if (source.id == R.id.text_my_coupon) {
-            startActivity(CouponListingStackedActivity.getCallingIntent(activityContext))
+            val context = activityContext
+            context?.let { startActivity(CouponListingStackedActivity.getCallingIntent(context)) }
         }
     }
 
