@@ -144,32 +144,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
             LocalBroadcastManager.getInstance(it).sendBroadcast(intent)
         }
     }
-    // NOTE :: To logout after change password
-
-//    @Override
-//    public void logoutToHome(Activity activity) {
-//        //From DialogLogoutFragment
-//        if (activity != null) {
-//            new GlobalCacheManager().deleteAll();
-//            PersistentCacheManager.instance.delete();
-//            Router.clearEtalase(activity);
-//            TrackApp.getInstance().getMoEngage().logoutEvent();
-//            SessionHandler.clearUserData(activity);
-//            NotificationModHandler notif = new NotificationModHandler(activity);
-//            notif.dismissAllActivedNotifications();
-//            NotificationModHandler.clearCacheAllNotification(activity);
-//
-//            invalidateCategoryMenuData();
-//            onLogout(getApplicationComponent());
-//            mIris.setUserId("");
-//            setTetraUserId("");
-//
-//            Intent intent = getHomeIntent(activity);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            AppWidgetUtil.sendBroadcastToAppWidget(activity);
-//        }
-//    }
 
     override fun showLoading() {
         progressBar.visibility = View.VISIBLE

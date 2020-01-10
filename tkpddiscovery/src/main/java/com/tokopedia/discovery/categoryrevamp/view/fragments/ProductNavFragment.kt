@@ -22,21 +22,18 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
-import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
+import com.tokopedia.discovery.categoryrevamp.utils.CategoryApiParamBuilder.Companion.categoryApiParamBuilder
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
@@ -105,7 +102,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     private var productNavListAdapter: ProductNavListAdapter? = null
 
-    var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
+    private var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
 
     private var quickFilterList = ArrayList<Filter>()
     private var mDepartmentId: String = ""
@@ -117,7 +114,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     private var selectedFilterAdapter: SelectedFilterAdapter? = null
 
     private var mSelectedFilter = HashMap<String, String>()
-    var categoryUrl: String? = null
+    private var categoryUrl: String? = null
 
     companion object {
         private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
@@ -207,8 +204,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             setSelectedFilter(filter)
         }
         fetchProductData(getProductListParamMap(getPage()))
-        productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
-        productNavViewModel.fetchQuickFilters(getQuickFilterParams())
+        productNavViewModel.fetchSubCategoriesList(categoryApiParamBuilder.generateSubCategoryParam(mDepartmentId))
+        productNavViewModel.fetchQuickFilters(categoryApiParamBuilder.generateQuickFilterParam(mDepartmentId))
     }
 
     private fun getProductIntent(productId: String, warehouseId: String): Intent? {
@@ -267,9 +264,9 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     private fun attachScrollListener() {
         nested_recycler_view.setOnScrollChangeListener { v: NestedScrollView,
-                                                         scrollX: Int,
+                                                         _: Int,
                                                          scrollY: Int,
-                                                         oldScrollX: Int,
+                                                         _: Int,
                                                          oldScrollY: Int ->
 
             if (v.getChildAt(v.childCount - 1) != null) {
@@ -285,7 +282,6 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                         } else {
                             productNavListAdapter?.removeLoading()
                         }
-
                     }
 
                 }
@@ -320,7 +316,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                         }
                     }
                     hideRefreshLayout()
-                    reloadFilter(createFilterParam())
+                    reloadFilter(categoryApiParamBuilder.generateFilterParams(mDepartmentId))
                 }
 
                 is Fail -> {
@@ -383,14 +379,9 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                 is Success -> {
                     initQuickFilter(it.data as ArrayList)
                 }
-
-                is Fail -> {
-                }
             }
-
         })
     }
-
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
@@ -426,17 +417,6 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     }
 
-    private fun createFilterParam(): RequestParams {
-        val paramMap = RequestParams()
-        val daFilterQueryType = DAFilterQueryType()
-        daFilterQueryType.sc = mDepartmentId
-        paramMap.putString(CategoryNavConstants.SOURCE, "search_product")
-        paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
-        paramMap.putString(CategoryNavConstants.Q, "")
-        paramMap.putString(CategoryNavConstants.SOURCE, "directory")
-        return paramMap
-    }
-
     private fun reloadFilter(param: RequestParams) {
         productNavViewModel.fetchDynamicAttribute(param)
     }
@@ -449,72 +429,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
         productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
     }
 
-    private fun getQuickFilterParams(): RequestParams {
-        val quickFilterParam = RequestParams()
-        val daFilterQueryType = DAFilterQueryType()
-        daFilterQueryType.sc = mDepartmentId
-        quickFilterParam.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
-        quickFilterParam.putString(CategoryNavConstants.SOURCE, "quick_filter")
-        return quickFilterParam
-    }
-
-    private fun getSubCategoryParam(): RequestParams {
-        val subCategoryMap = RequestParams()
-        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, mDepartmentId)
-        subCategoryMap.putBoolean(CategoryNavConstants.INTERMEDIARY, false)
-        subCategoryMap.putBoolean(CategoryNavConstants.SAFESEARCH, false)
-        return subCategoryMap
-    }
-
     private fun getProductListParamMap(start: Int): RequestParams {
-        val param = RequestParams.create()
-        val searchProductRequestParams = RequestParams.create()
-        searchProductRequestParams.putString(CategoryNavConstants.START, (start * 10).toString())
-        searchProductRequestParams.putString(CategoryNavConstants.SC, mDepartmentId)
-        searchProductRequestParams.putString(CategoryNavConstants.DEVICE, "android")
-        searchProductRequestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-        searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
-        searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
-        if (mSelectedFilter.isNotEmpty()) {
-            searchProductRequestParams.putAllString(mSelectedFilter)
-            mSelectedFilter.clear()
-        } else {
-            searchProductRequestParams.putAllString(getSelectedFilter())
-        }
-        searchProductRequestParams.putAllString(getSelectedSort())
-        param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
-
-        val topAdsRequestParam = RequestParams.create()
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        topAdsRequestParam.putString(CategoryNavConstants.DEVICE, "android")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_SRC, "directory")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_PAGE, start.toString())
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_EP, "product")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_ITEM, "2")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_F_SHOP, "1")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, mDepartmentId)
-
-        topAdsRequestParam.putAllString(getSelectedSort())
-        if (mSelectedFilter.isNotEmpty()) {
-            topAdsRequestParam.putAllString(mSelectedFilter)
-            mSelectedFilter.clear()
-        } else {
-            topAdsRequestParam.putAllString(getSelectedFilter())
-        }
-        param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
-        return param
-    }
-
-    private fun createParametersForQuery(parameters: Map<String, Any>): String {
-        return ParamMapToUrl.generateUrlParamString(parameters)
-    }
-
-    private fun getUniqueId(): String {
-        return if (userSession.isLoggedIn)
-            AuthHelper.getMD5Hash(userSession.userId)
-        else
-            AuthHelper.getMD5Hash(gcmHandler.registrationId)
+        return categoryApiParamBuilder.generateProductListParam(start, mDepartmentId, userSession, gcmHandler, mSelectedFilter, getSelectedFilter(), getSelectedSort())
     }
 
     override fun onSwipeToRefresh() {
@@ -530,7 +446,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
         productNavListAdapter?.addShimmer()
         resetPage()
         fetchProductData(getProductListParamMap(getPage()))
-        productNavViewModel.fetchQuickFilters(getQuickFilterParams())
+        productNavViewModel.fetchQuickFilters(categoryApiParamBuilder.generateQuickFilterParam(mDepartmentId))
     }
 
     override fun OnDefaultItemClicked() {
@@ -567,18 +483,17 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                 CurrencyFormatHelper.convertRupiahToInt(item.price),
                 adapterPosition,
                 item.categoryBreadcrumb ?: "",
-                getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
+                categoryApiParamBuilder.getProductItemPath(item.categoryBreadcrumb
+                        ?: "", mDepartmentId),
+                getDimensionData()
+        )
+    }
 
+    private fun getDimensionData(): String {
+        return categoryApiParamBuilder.generateGTMDimensionData(getSelectedFilter(), getSelectedSort())
     }
 
     override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
-    }
-
-    private fun getProductItemPath(path: String, id: String): String {
-        if (path.isNotEmpty()) {
-            return "category/$path - $id"
-        }
-        return ""
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
@@ -631,7 +546,6 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             reloadData()
             catAnalyticsInstance.eventQuickFilterClicked(mDepartmentId, option, false)
         }
-
     }
 
     override fun isQuickFilterSelected(option: Option): Boolean {
