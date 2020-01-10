@@ -42,6 +42,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -547,9 +548,7 @@ class ShopPageFragment :
                 val homeFragment = HomeProductFragment.createInstance()
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
                 val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-                val shopReviewFragment = FeedShopFragment.createInstance(shopId
-                        ?: "", createPostUrl)
-
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
                 getShopInfoData()?.run {
                     homeFragment.setShopInfo(this)
                     shopPageProductFragment.setShopInfo(this)
@@ -559,9 +558,7 @@ class ShopPageFragment :
             isShowFeed -> {
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
                 val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-                val shopReviewFragment = FeedShopFragment.createInstance(shopId
-                        ?: "", createPostUrl)
-
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
                 getShopInfoData()?.run {
                     shopPageProductFragment.setShopInfo(this)
                 }
@@ -570,9 +567,7 @@ class ShopPageFragment :
             isOfficialStore -> {
                 val homeFragment = HomeProductFragment.createInstance()
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val shopReviewFragment = FeedShopFragment.createInstance(shopId
-                        ?: "", createPostUrl)
-
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
                 getShopInfoData()?.run {
                     homeFragment.setShopInfo(this)
                     shopPageProductFragment.setShopInfo(this)
@@ -581,9 +576,7 @@ class ShopPageFragment :
             }
             else -> {
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val shopReviewFragment = FeedShopFragment.createInstance(shopId
-                        ?: "", createPostUrl)
-
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
                 getShopInfoData()?.run {
                     shopPageProductFragment.setShopInfo(this)
                 }

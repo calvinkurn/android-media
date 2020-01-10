@@ -216,6 +216,7 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -1052,6 +1053,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setId(shopId)
                 .build();
         new DefaultShare(activity, shareData).show();
+    }
+
+    @Override
+    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
+        return ReviewShopFragment.createInstance(shopId, shopDomain);
     }
 
     @Override
