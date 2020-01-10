@@ -2,6 +2,8 @@
 <resources>
     <color name="warm_grey">#999999</color>
 
+    <color name="similar_search_app_title_color">#F531353B</color>
+
     <color name="similar_search_selected_product_title_color">#f531353b</color>
     <color name="similar_search_wishlist_background_color">#f3f4f5</color>
     <color name="similar_search_price_color">#fa591d</color>

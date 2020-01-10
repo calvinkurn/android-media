@@ -8,7 +8,7 @@ internal interface Event {
         const val PRODUCT_CLICK = "productClick"
         const val VIEW_SEARCH_RESULT = "viewSearchResult"
         const val CLICK_WISHLIST = "clickWishlist"
-        const val CLICK_SIMILAR_SEARCH = "clickSimilarSearch"
+        const val ADD_TO_CART = "addToCart"
     }
 }
 

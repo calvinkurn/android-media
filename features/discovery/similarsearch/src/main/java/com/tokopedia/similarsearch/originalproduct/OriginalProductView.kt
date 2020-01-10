@@ -1,25 +1,35 @@
 package com.tokopedia.similarsearch.originalproduct
 
+import android.content.Context
+import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
-import kotlinx.android.synthetic.main.similar_search_fragment_layout.view.*
 import kotlinx.android.synthetic.main.similar_search_original_product_layout.view.*
 
+internal class OriginalProductView
+    @JvmOverloads
+    constructor(context: Context, attributeSet: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0)
+    : BaseCustomView(context, attributeSet, defStyleAttr) {
 
-internal class OriginalProductView(
-        private val originalProductViewListener: OriginalProductViewListener
-) {
-
-    private val fragmentView = originalProductViewListener.getFragmentView()
-    private val context = fragmentView.context
+    private val inflatedView =
+            LayoutInflater
+                    .from(context)
+                    .inflate(R.layout.similar_search_original_product_layout, this, true)
     private var originalProductCardViewAnimator: OriginalProductViewAnimator? = null
+    private var originalProductViewListener: OriginalProductViewListener? = null
 
-    fun bindOriginalProductView(similarSearchOriginalProduct: Product) {
+    fun bindOriginalProductView(similarSearchOriginalProduct: Product, originalProductViewListener: OriginalProductViewListener) {
+        this.originalProductViewListener = originalProductViewListener
+
         initCardViewOriginalProduct()
         initImageProduct(similarSearchOriginalProduct)
         initButtonWishlist(similarSearchOriginalProduct)
@@ -31,49 +41,55 @@ internal class OriginalProductView(
         initOnButtonBuyClicked()
         initOnButtonAddToCartClicked()
 
-        originalProductCardViewAnimator = OriginalProductViewAnimator(fragmentView)
+        originalProductCardViewAnimator = OriginalProductViewAnimator(this)
     }
 
     private fun initCardViewOriginalProduct() {
-        fragmentView.cardViewOriginalProductSimilarSearch.visible()
-
-        fragmentView.cardViewOriginalProductSimilarSearch?.setOnClickListener {
-            originalProductViewListener.onItemClicked()
+        inflatedView.cardViewOriginalProductSimilarSearch?.setOnClickListener {
+            originalProductViewListener?.onItemClicked()
         }
     }
 
     private fun initImageProduct(similarSearchOriginalProduct: Product) {
-        ImageHandler.loadImageRounded2(context, fragmentView.imageProduct, similarSearchOriginalProduct.imageUrl, 8f)
+        ImageHandler.loadImageRounded2(context, inflatedView.imageProduct, similarSearchOriginalProduct.imageUrl, 6f.toPx())
+    }
+
+    private fun Float.toPx(): Float {
+        return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                this,
+                resources.displayMetrics
+        )
     }
 
     private fun initButtonWishlist(similarSearchOriginalProduct: Product) {
         updateWishlistStatus(similarSearchOriginalProduct.isWishlisted)
 
-        fragmentView.buttonWishlist?.setOnClickListener {
-            originalProductViewListener.onButtonWishlistClicked()
+        inflatedView.buttonWishlist?.setOnClickListener {
+            originalProductViewListener?.onButtonWishlistClicked()
         }
     }
 
     fun updateWishlistStatus(isWishlisted: Boolean) {
         if (isWishlisted) {
-            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
+            inflatedView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
         }
         else {
-            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
+            inflatedView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
         }
     }
 
     private fun initProductName(similarSearchOriginalProduct: Product) {
-        fragmentView.textViewProductName?.text = similarSearchOriginalProduct.name
-        fragmentView.textViewProductNameCollapsed?.text = similarSearchOriginalProduct.name
+        inflatedView.textViewProductName?.text = similarSearchOriginalProduct.name
+        inflatedView.textViewProductNameCollapsed?.text = similarSearchOriginalProduct.name
     }
 
     private fun initProductPrice(similarSearchOriginalProduct: Product) {
-        fragmentView.textViewPrice?.text = similarSearchOriginalProduct.price
+        inflatedView.textViewPrice?.text = similarSearchOriginalProduct.price
     }
 
     private fun initShopLocation(similarSearchOriginalProduct: Product) {
-        fragmentView.textViewShopLocation?.text = similarSearchOriginalProduct.shop.location
+        inflatedView.textViewShopLocation?.text = similarSearchOriginalProduct.shop.location
     }
 
     private fun initRating(similarSearchOriginalProduct: Product) {
@@ -86,17 +102,17 @@ internal class OriginalProductView(
     }
 
     private fun hideRating() {
-        fragmentView.linearLayoutImageRating?.visibility = View.GONE
+        inflatedView.linearLayoutImageRating?.visibility = View.GONE
     }
 
     private fun showRating(rating: Int) {
-        fragmentView.linearLayoutImageRating?.visibility = View.VISIBLE
+        inflatedView.linearLayoutImageRating?.visibility = View.VISIBLE
 
-        fragmentView.imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
-        fragmentView.imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
-        fragmentView.imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
-        fragmentView.imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
-        fragmentView.imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
+        inflatedView.imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
+        inflatedView.imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
+        inflatedView.imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
+        inflatedView.imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
+        inflatedView.imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
     }
 
     @DrawableRes
@@ -106,28 +122,30 @@ internal class OriginalProductView(
     }
 
     private fun initReview(similarSearchOriginalProduct: Product) {
-        fragmentView.textViewReviewCount?.shouldShowWithAction(similarSearchOriginalProduct.countReview != 0) {
-            fragmentView.textViewReviewCount?.text = context.getString(R.string.similar_search_original_product_review_count, similarSearchOriginalProduct.countReview.toString())
+        inflatedView.textViewReviewCount?.shouldShowWithAction(similarSearchOriginalProduct.countReview != 0) {
+            inflatedView.textViewReviewCount?.text = context.getString(R.string.similar_search_original_product_review_count, similarSearchOriginalProduct.countReview.toString())
         }
     }
 
     private fun initOnButtonBuyClicked() {
-        fragmentView.buttonBuy?.setOnClickListener {
-            originalProductViewListener.onButtonBuyClicked()
+        inflatedView.buttonBuy?.setOnClickListener {
+            originalProductViewListener?.onButtonBuyClicked()
         }
     }
 
     private fun initOnButtonAddToCartClicked() {
-        fragmentView.buttonAddToCart?.setOnClickListener {
-            originalProductViewListener.onButtonAddToCartClicked()
+        inflatedView.buttonAddToCart?.setOnClickListener {
+            originalProductViewListener?.onButtonAddToCartClicked()
         }
 
-        fragmentView.buttonAddToCartCollapsed?.setOnClickListener {
-            originalProductViewListener.onButtonAddToCartClicked()
+        inflatedView.buttonAddToCartCollapsed?.setOnClickListener {
+            originalProductViewListener?.onButtonAddToCartClicked()
         }
     }
 
     fun animateBasedOnScroll(dy: Int) {
-        originalProductCardViewAnimator?.animateBasedOnScroll(dy)
+        if (isVisible) {
+            originalProductCardViewAnimator?.animateBasedOnScroll(dy)
+        }
     }
 }

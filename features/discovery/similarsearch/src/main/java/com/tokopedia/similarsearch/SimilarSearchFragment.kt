@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +23,9 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
-import com.tokopedia.similarsearch.originalproduct.OriginalProductView
 import com.tokopedia.similarsearch.originalproduct.OriginalProductViewListener
 import com.tokopedia.similarsearch.productitem.SimilarProductItemListener
 import com.tokopedia.similarsearch.recyclerview.SimilarSearchAdapter
@@ -32,6 +34,7 @@ import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
+import kotlinx.android.synthetic.main.similar_search_toolbar_layout.*
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener, EmptyResultListener {
 
@@ -44,7 +47,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
-    private var originalProductView: OriginalProductView? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
     private var recyclerViewLayoutManager: RecyclerView.LayoutManager? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -60,11 +62,34 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        configureToolbar()
         initViewModel()
         initViews()
         observeViewModelData()
 
         similarSearchViewModel?.onViewCreated()
+    }
+
+    private fun configureToolbar() {
+        activity?.run {
+            if (this !is AppCompatActivity) return
+
+            setSupportActionBar(toolbar)
+            configureSupportActionBar(supportActionBar)
+            configureToolbarOnClick()
+        }
+    }
+
+    private fun configureSupportActionBar(supportActionBar: ActionBar?) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
+        supportActionBar?.setHomeButtonEnabled(false)
+    }
+
+    private fun configureToolbarOnClick() {
+        imageViewBack?.setOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     private fun initViewModel() {
@@ -163,19 +188,14 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initOriginalProductView(originalProduct: Product) {
-        view?.let { view ->
-            val selectedProductViewListener = createSelectedProductViewListener(view, originalProduct)
+        originalProductView?.visible()
 
-            originalProductView = OriginalProductView(selectedProductViewListener)
-            originalProductView?.bindOriginalProductView(originalProduct)
-        }
+        val originalProductViewListener = createOriginalProductViewListener(originalProduct)
+        originalProductView?.bindOriginalProductView(originalProduct, originalProductViewListener)
     }
 
-    private fun createSelectedProductViewListener(view: View, originalProduct: Product): OriginalProductViewListener {
+    private fun createOriginalProductViewListener(originalProduct: Product): OriginalProductViewListener {
         return object : OriginalProductViewListener {
-            override fun getFragmentView(): View {
-                return view
-            }
 
             override fun onItemClicked() {
                 routeToProductDetail(originalProduct.id)

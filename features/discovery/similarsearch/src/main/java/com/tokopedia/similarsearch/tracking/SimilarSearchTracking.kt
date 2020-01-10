@@ -86,7 +86,7 @@ internal object SimilarSearchTracking {
     fun trackEventClickBuy(productItem: Any) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        TrackAppUtils.EVENT, Event.CLICK_SIMILAR_SEARCH,
+                        TrackAppUtils.EVENT, Event.ADD_TO_CART,
                         TrackAppUtils.EVENT_CATEGORY, Category.SIMILAR_PRODUCT,
                         TrackAppUtils.EVENT_ACTION, Action.CLICK_BUY_ON_SIMILAR_SEARCH,
                         TrackAppUtils.EVENT_LABEL, "",
@@ -106,7 +106,7 @@ internal object SimilarSearchTracking {
     fun trackEventClickAddToCart(productItem: Any) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        TrackAppUtils.EVENT, Event.CLICK_SIMILAR_SEARCH,
+                        TrackAppUtils.EVENT, Event.ADD_TO_CART,
                         TrackAppUtils.EVENT_CATEGORY, Category.SIMILAR_PRODUCT,
                         TrackAppUtils.EVENT_ACTION, Action.CLICK_ADD_TO_CART_ON_SIMILAR_SEARCH,
                         TrackAppUtils.EVENT_LABEL, "",
