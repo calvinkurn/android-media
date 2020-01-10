@@ -633,17 +633,17 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onChatClicked() {
         if (presenter.isLoggedIn()) {
             if (shopId.isNotBlank()) {
-//                activity?.applicationContext?.run {
-//                    val intent: Intent = (this as TalkRouter).getAskSellerIntent(
-//                            this,
-//                            shopId,
-//                            shopName,
-//                            "",
-//                            productUrl,
-//                            "product",
-//                            shopAvatar)
-//                    this@ProductTalkFragment.startActivity(intent)
-//                }
+                activity?.applicationContext?.run {
+                    val intent = RouteManager.getIntent(this,
+                            ApplinkConst.TOPCHAT_ASKSELLER,
+                            shopId,
+                            shopName,
+                            "",
+                            productUrl,
+                            "product",
+                            shopAvatar)
+                    startActivity(intent)
+                }
             }
         } else {
             goToLogin()
