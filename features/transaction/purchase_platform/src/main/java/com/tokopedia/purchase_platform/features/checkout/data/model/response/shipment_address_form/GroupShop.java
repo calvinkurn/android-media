@@ -78,11 +78,11 @@ public class GroupShop {
     }
 
     public int getShippingId() {
-        return shippingId;
+        return 0;
     }
 
     public int getSpId() {
-        return spId;
+        return 0;
     }
 
     public Dropshiper getDropshiper() {
