@@ -810,13 +810,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 maxDate.set(Integer.parseInt(resultEndDate[2]), (Integer.parseInt(resultEndDate[1])-1), Integer.parseInt(resultEndDate[0]));
 
             } else {
-                minDate.set(Integer.parseInt(resultStartDate[2]), (Integer.parseInt(resultStartDate[1])-1), Integer.parseInt(resultStartDate[0]));
-                defaultDate.set(Integer.parseInt(resultEndDate[2]), (Integer.parseInt(resultEndDate[1])-1), Integer.parseInt(resultEndDate[0]));
+                minDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
+                defaultDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
             }
         } else {
             if (title.equalsIgnoreCase(MULAI_DARI)) {
                 minDate.set(Calendar.YEAR, 2017);
                 defaultDate.set(2017, 0, 1);
+            } else {
+                minDate.set(Calendar.YEAR, 2017);
             }
         }
 
