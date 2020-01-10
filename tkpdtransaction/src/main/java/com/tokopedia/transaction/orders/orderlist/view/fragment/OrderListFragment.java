@@ -125,6 +125,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_DONE = "selesai";
     private static final String  MULAI_DARI= "Mulai Dari";
     private static final String  SAMPAI= "Sampai";
+    private static final int DEFAULT_FILTER_YEAR = 2017;
+    private static final int DEFAULT_FILTER_MONTH = 0;
+    private static final int DEFAULT_FILTER_DATE = 1;
 
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
@@ -633,9 +636,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         defEndDate = Utils.setFormat(format, format1, defaultDate.getEndRangeDate());
         customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
         customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
-
-        datePickerStartDate = customStartDate;
-        datePickerEndDate = defEndDate;
     }
 
     @Override
@@ -739,6 +739,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerlayout.setVisibility(View.GONE);
             sampaiButton.setText(Utils.setFormat(format2, format, customEndDate));
             mulaiButton.setText(Utils.setFormat(format2, format, customStartDate));
+            datePickerStartDate = "";
+            datePickerEndDate = "";
         });
         if (customFilter) {
             radio2.setChecked(true);
@@ -797,27 +799,33 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void showDatePicker(String title) {
         Calendar minDate = Calendar.getInstance();
-        minDate.add(Calendar.YEAR, -3);
-
         Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.YEAR, 100);
-
         Calendar defaultDate = Calendar.getInstance();
-        if (title.equalsIgnoreCase(MULAI_DARI)) {
-            String[] resultStartDate = split(datePickerStartDate);
-            defaultDate.set(Integer.parseInt(resultStartDate[2]), (Integer.parseInt(resultStartDate[1])-1), Integer.parseInt(resultStartDate[0]));
 
+        if (!TextUtils.isEmpty(datePickerStartDate) && !TextUtils.isEmpty(datePickerEndDate)) {
+            String[] resultStartDate = split(datePickerStartDate);
+            String[] resultEndDate = split(datePickerEndDate);
+
+            if (title.equalsIgnoreCase(MULAI_DARI)) {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+
+                defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
+                maxDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
+
+            } else {
+                minDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
+                defaultDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
+            }
         } else {
-            String[] resultEndDate = split(datePickerStartDate);
-            defaultDate.set(Integer.parseInt(resultEndDate[2]), (Integer.parseInt(resultEndDate[1])-1), Integer.parseInt(resultEndDate[0]));
+            if (title.equalsIgnoreCase(MULAI_DARI)) {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+                defaultDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+            } else {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+            }
         }
 
-        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
-            @Override
-            public void onDateChanged(long l) {
-                //
-            }
-        });
+        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, null);
 
         if (title.equalsIgnoreCase(MULAI_DARI)) {
             datePickerUnify.setTitle(MULAI_DARI);
@@ -831,21 +839,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
                 sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
-
-                if (date[0] < 10) {
-                    datePickerEndDate = "0" + date[0] + "/" + date[1] + "/" + date[2];
-                } else {
-                    datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
-                }
+                datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
 
             } else {
                 mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
-
-                if (date[0] < 10) {
-                    datePickerStartDate = "0" + date[0] + "/" + date[1] + "/" + date[2];
-                } else {
-                    datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
-                }
+                datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
             }
             datePickerUnify.dismiss();
         });
