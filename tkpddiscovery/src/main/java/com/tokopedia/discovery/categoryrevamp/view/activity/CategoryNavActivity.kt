@@ -52,7 +52,6 @@ import javax.inject.Inject
 
 private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
 private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
-private const val EXTRA_CATEGORY_NAME = "categoryName"
 private const val EXTRA_PARENT_ID = " PARENT_ID"
 private const val EXTRA_PARENT_NAME = " PARENT_NAME"
 private const val STATE_GRID = 1
@@ -97,6 +96,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     companion object {
         private const val ORDER_BY = "ob"
         private const val SCREEN_NAME = "/p"
+        const val EXTRA_CATEGORY_NAME = "categoryName"
+
         fun isBannedNavigationEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
