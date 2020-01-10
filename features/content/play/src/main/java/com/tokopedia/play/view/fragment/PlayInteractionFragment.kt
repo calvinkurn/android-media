@@ -43,6 +43,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -288,8 +289,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             if (view.alpha == whenAlpha) alpha(finalAlpha)
             duration = VISIBILITY_ANIMATION_DURATION
         }
-                .withStartAction { view.isClickable = false }
-                .withEndAction { view.isClickable = true }
+                .withStartAction {
+                    view.isClickable = false
+                    if (whenAlpha == VISIBLE_ALPHA) hideSystemUI()
+                    else showSystemUI()
+                }
+                .withEndAction {
+                    view.isClickable = true
+                }
     }
 
     //region Component Initialization
@@ -831,5 +838,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
 
         (parentFragment as? PlayFragment)?.onKeyboardShown(interactionTopmostY)
+    }
+
+    private fun hideSystemUI() {
+        PlayFullScreenHelper.hideSystemUi(requireActivity())
+    }
+
+    private fun showSystemUI() {
+        PlayFullScreenHelper.showSystemUi(requireActivity())
     }
 }
