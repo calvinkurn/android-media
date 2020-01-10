@@ -22,21 +22,11 @@
             android:id="@+id/search_top_bar"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:paddingTop="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_4"
             android:gravity="center_vertical"
-            android:background="@android:color/white"
-            android:animateLayoutChanges="true">
-
-            <View
-                android:id="@+id/guideline_search_bar"
-                android:layout_width="@dimen/dp_1"
-                android:layout_height="@dimen/dp_1"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+            android:background="@android:color/white">
 
             <ImageView
                 android:id="@+id/action_up_btn"
@@ -44,10 +34,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_12"
                 app:srcCompat="@drawable/autocomplete_ic_back"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="@id/guideline_search_bar"/>
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
             <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/searchTextView"
@@ -94,7 +83,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dp_4"
                 app:srcCompat="@drawable/ic_product_action_camera_grayscale_24"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintTop_toTopOf="@id/searchTextView"
                 app:layout_constraintBottom_toBottomOf="@id/searchTextView"
                 app:layout_constraintRight_toRightOf="@id/searchTextView"/>
@@ -108,7 +96,6 @@
                 android:layout_marginRight="@dimen/dp_4"
                 android:visibility="gone"
                 app:srcCompat="@drawable/autocomplete_ic_clear"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintTop_toTopOf="@id/searchTextView"
                 app:layout_constraintBottom_toBottomOf="@id/searchTextView"
                 app:layout_constraintRight_toRightOf="@id/searchTextView"/>
@@ -120,7 +107,6 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_16"
                 app:srcCompat="@drawable/autocomplete_ic_audio"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -137,7 +123,6 @@
                 android:visibility="gone"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

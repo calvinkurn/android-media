@@ -26,9 +26,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
@@ -154,21 +151,19 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         initCompositeSubscriber();
 
-        mSearchTopBar.post(new Runnable() {
+        mSuggestionView.post(new Runnable() {
             @Override
             public void run() {
-                setConstraintAnimation();
+                setSuggestionViewAnimation();
             }
         });
     }
 
-    private void setConstraintAnimation() {
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(mSearchTopBar);
-        constraintSet.connect(R.id.action_up_btn, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, convertDpToPx(12));
-
-        TransitionManager.beginDelayedTransition(mSearchTopBar);
-        constraintSet.applyTo(mSearchTopBar);
+    private void setSuggestionViewAnimation() {
+        TransitionSet transitionSet = new TransitionSet();
+        Transition fade = new Fade(Fade.MODE_IN);
+        transitionSet.addTransition(fade);
+        TransitionManager.beginDelayedTransition(mSuggestionView, fade);
     }
 
     private void initCompositeSubscriber() {

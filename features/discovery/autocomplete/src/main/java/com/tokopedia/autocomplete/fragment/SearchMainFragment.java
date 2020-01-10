@@ -171,7 +171,6 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
         stopTracePerformanceMonitoring();
         adapter.setDefaultViewModel(defaultAutoCompleteViewModel);
         adapter.setSuggestionViewModel(tabAutoCompleteViewModel);
-        setLayoutAnimation(recyclerView);
         if (defaultAutoCompleteViewModel.getList().isEmpty()) {
             recyclerView.scrollToPosition(1);
         } else {
@@ -261,12 +260,5 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
         if (performanceMonitoring != null) {
             performanceMonitoring.stopTrace();
         }
-    }
-
-    private void setLayoutAnimation(final RecyclerView recyclerView) {
-        Context context = recyclerView.getContext();
-        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.autocomplete_anim_recycler_view);
-        recyclerView.setLayoutAnimation(controller);
-        recyclerView.scheduleLayoutAnimation();
     }
 }
