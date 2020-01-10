@@ -804,7 +804,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             System.out.println("++ datePickerEndDate = "+datePickerEndDate);
 
             if (title.equalsIgnoreCase(MULAI_DARI)) {
-                minDate.set(Calendar.YEAR, 2017);
+                minDate.set(2017, 0, 1);
 
                 defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
                 maxDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
@@ -815,10 +815,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
             }
         } else {
             if (title.equalsIgnoreCase(MULAI_DARI)) {
-                minDate.set(Calendar.YEAR, 2017);
+                minDate.set(2017, 0, 1);
                 defaultDate.set(2017, 0, 1);
             } else {
-                minDate.set(Calendar.YEAR, 2017);
+                minDate.set(2017, 0, 1);
             }
         }
 
