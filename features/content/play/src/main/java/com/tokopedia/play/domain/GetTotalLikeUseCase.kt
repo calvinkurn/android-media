@@ -4,7 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.TotalLikeContent
 import com.tokopedia.usecase.coroutines.UseCase
@@ -27,13 +26,14 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: MultiReque
         val gqlResponse = gqlUseCase.executeOnBackground()
         val response = gqlResponse.getData<TotalLikeContent.Response>(TotalLikeContent.Response::class.java)
 
-        if (response.totalLikeContent.error.isEmpty()) {
+        if (response != null &&
+                response.totalLikeContent.error.isEmpty()) {
             response.totalLikeContent.data?.let {
                 return TotalLike(it.like.value, if (it.like.fmt.isEmpty()) "0" else it.like.fmt)
             }
             return TotalLike(0, "0")
         } else {
-            throw MessageErrorException(response.totalLikeContent.error)
+            return TotalLike(0, "0")
         }
     }
 
