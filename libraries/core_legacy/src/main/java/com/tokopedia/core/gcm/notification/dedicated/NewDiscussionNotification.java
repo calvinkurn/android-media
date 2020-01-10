@@ -3,13 +3,10 @@ package com.tokopedia.core.gcm.notification.dedicated;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.R;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
@@ -26,7 +23,7 @@ public class NewDiscussionNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                RouteManager.getIntent(mContext, ApplinkConstInternalGlobal.INBOX_TALK)
+                TkpdCoreRouter.getInboxTalkActivityIntentWrapper(mContext)
         );
         mNotificationPass.title = String.format(
                 "%s %s",
