@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager
 import com.tokopedia.core.drawer2.view.DrawerHelper
+import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
 import com.tokopedia.user.session.UserSession
 
 open class SellerDrawerPresenterActivity : BaseSimpleActivity()
@@ -28,10 +29,21 @@ open class SellerDrawerPresenterActivity : BaseSimpleActivity()
 
         //TODO : Change DrawerHelper
         drawerCache = LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE)
+        drawerCache = LocalCacheHandler(this, SellerHomeDrawerHelper.DRAWER_CACHE)
     }
 
     override fun getNewFragment(): Fragment? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    fun initializeDrawer() {
+
+    }
+
+    fun setupDrawer() {
+
+    }
+
+    fun getDrawerHelper(): SellerHomeDrawerHelper? = null
 
 }
