@@ -39,7 +39,6 @@ include "libraries:williamchart"
 include "libraries:youtubeutil"
 include "libraries:track"
 include "libraries:graph_view"
-include 'libraries:cpm'
 include "libraries:linker"
 include "libraries:webview"
 include "libraries:collapsing_tab_layout"
@@ -49,5 +48,6 @@ include "libraries:videouploader"
 include "libraries:translator"
 include "libraries:instrumentation_test"
 include "libraries:traceroute"
+include "libraries:play_core"
 
 

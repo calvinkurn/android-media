@@ -42,17 +42,4 @@
     <declare-styleable name="DepartureLabelView">
         <attr name="dlv_icon" format="reference" />
     </declare-styleable>
-
-    <string name="mister">Tuan</string>
-    <string name="misiz">Nyonya</string>
-    <string name="miss">Nona</string>
-    <string-array name="travel_adult_spinner_titles">
-        <item>@string/mister</item>
-        <item>@string/misiz</item>
-        <item>@string/miss</item>
-    </string-array>
-    <string-array name="travel_child_infant_spinner_titles">
-        <item>@string/mister</item>
-        <item>@string/miss</item>
-    </string-array>
 </resources>
