@@ -33,14 +33,13 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     TextView tvCouponCount, tvToolbarTitle;
 
-    ImageView ivLeaderBoard, ivMyCoupon;
+    ImageView ivMyCoupon;
     Context mContext;
 
 
-    Drawable backArrowWhite, leaderboardWhiteDrawable,
-            couponWhiteDrawable, leaderboardGreyDrawable, couponGreyDrawable;
+    Drawable backArrowWhite, couponWhiteDrawable, couponGreyDrawable;
 
-    private TransitionDrawable leaderboardCrossfader, couponCrossfader;
+    private TransitionDrawable couponCrossfader;
     private OnTokoPointToolbarClickListener clickListener;
 
 
@@ -66,7 +65,6 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         tvCouponCount = findViewById(R.id.tv_tpToolbar_couponCount);
         ivMyCoupon = findViewById(R.id.iv_tpToolbar_coupon);
 
-        ivLeaderBoard.setOnClickListener(this);
         ivMyCoupon.setOnClickListener(this);
 
         initDrawableResources();
@@ -93,21 +91,12 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
         backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back_tokopoints);
 
-        leaderboardWhiteDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_leaderboard);
-        leaderboardGreyDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_tp_leaderboard_grey);
-
         couponWhiteDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_my_coupon_white);
         couponGreyDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_my_coupon_grey);
-
-        leaderboardCrossfader = new TransitionDrawable(new Drawable[]{leaderboardGreyDrawable, leaderboardWhiteDrawable});
-
         couponCrossfader = new TransitionDrawable(new Drawable[]{couponGreyDrawable, couponWhiteDrawable});
 
         setNavigationIcon(backArrowWhite);
         ivMyCoupon.setImageDrawable(couponCrossfader);
-        ivLeaderBoard.setImageDrawable(leaderboardCrossfader);
-
-        leaderboardCrossfader.startTransition(0);
         couponCrossfader.startTransition(0);
     }
 
@@ -148,7 +137,6 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         int greyColor = MethodChecker.getColor(getContext(), R.color.tp_toolbar_navigation_grey_color);
 
         couponCrossfader.reverseTransition(200);
-        leaderboardCrossfader.reverseTransition(200);
         toggleNavigationIconColor(whiteColor, greyColor);
 
         ObjectAnimator colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
@@ -179,7 +167,6 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         int greyColor = MethodChecker.getColor(getContext(), R.color.tp_toolbar_navigation_grey_color);
 
         couponCrossfader.reverseTransition(200);
-        leaderboardCrossfader.reverseTransition(200);
         toggleNavigationIconColor(greyColor, whiteColor);
 
         ObjectAnimator colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor);
