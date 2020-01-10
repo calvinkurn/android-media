@@ -1,25 +1,25 @@
 package com.tokopedia.shop.oldpage.view.activity
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
@@ -66,8 +66,8 @@ import com.tokopedia.shop.oldpage.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.ShopPageFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.track.TrackApp
@@ -162,28 +162,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                     .putExtras(extras)
-        }
-
-        @DeepLink(ApplinkConst.SHOP_INFO)
-        @JvmStatic
-        fun getCallingIntentInfoSelected(context: Context, extras: Bundle): Intent {
-            return Intent(context, ShopPageActivity::class.java)
-                    .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
-                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
-                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
-                    .putExtras(extras)
-        }
-
-        @DeepLink(ApplinkConst.SHOP_NOTE)
-        @JvmStatic
-        fun getCallingIntentNoteSelected(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, ShopPageActivity::class.java)
-                    .setData(uri.build())
-                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
-                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
         }
 
         @DeepLink(ApplinkConst.SHOP_HOME)
@@ -281,7 +259,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
                     val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(tab.position)
                     if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
-                        shopInfoFragment.updateShopInfo(it)
+                        shopInfoFragment.setShopInfo(it.mapToShopInfoData())
                     }
                 }
             }
