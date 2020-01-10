@@ -77,7 +77,7 @@
     <string name="tp_exp_info">Points dan Loyalty memiliki masa berlaku yang berbeda:</string>
     <string name="tp_loyalty_info"><b>Loyalty</b> adalah hadiah yang Anda peroleh setelah bertransaksi di Tokopedia tanpa harus memecahkan Lucky Egg.</string>
     <string name="tp_point_info"><b>Points</b> adalah hadiah yang Anda peroleh dari program menarik Tokopedia seperti bermain games di Tokopedia Seru dan program lainnya.</string>
-    <string name="tp_history_header"><b>Tukarkan Points</b> dengan Kupon menarik dan tingkatkan Loyalty untuk mendapatkan keuntungan yang lebih banyak.</string>
+    <string name="tp_history_header">Tukarkan Points dengan Kupon menarik dan tingkatkan Loyalty untuk mendapatkan keuntungan yang lebih banyak.</string>
     <string name="tp_title_history_bottomshet">Beda Points dan Loyalty</string>
     <string name="tp_btn_history_bottomshet">Cek Info Points &amp; Loyalty</string>
     <string name="tp_ph_point">Points: </string>
