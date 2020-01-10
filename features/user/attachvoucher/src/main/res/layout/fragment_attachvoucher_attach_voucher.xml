@@ -6,13 +6,42 @@
     android:background="@color/white"
     android:focusableInTouchMode="true">
 
+    <LinearLayout
+        android:id="@+id/filterContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/filterCashBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSize="medium"
+            app:chipText="Cashback"
+            app:chipType="alternate" />
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/filterFreeOngkir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            app:chipSize="medium"
+            app:chipText="Gratis Ongkir"
+            app:chipType="alternate" />
+    </LinearLayout>
+
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/flAttach"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/filterContainer">
 
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/recycler_view"

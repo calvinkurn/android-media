@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -48,23 +49,29 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_attachvoucher_attach_voucher, container, false).also {
-            viewModel.initializeArguments(arguments)
-            setupRecyclerView(it)
-            setupObserver()
-        }
+        return inflater.inflate(R.layout.fragment_attachvoucher_attach_voucher, container, false)
     }
 
-    private fun setupRecyclerView(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.initializeArguments(arguments)
+        setupRecyclerView()
+        setupObserver()
+        setupFilter()
+    }
+
+    private fun setupRecyclerView() {
 
     }
 
     private fun setupObserver() {
+        viewModel.filter.observe(viewLifecycleOwner, Observer { type ->
 
+        })
     }
 
-    private fun isFirstPage(): Boolean {
-        return currentPage == 1
+    private fun setupFilter() {
+
     }
 
     override fun getScreenName(): String = screenName
