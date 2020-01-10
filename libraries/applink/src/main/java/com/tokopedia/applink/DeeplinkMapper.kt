@@ -75,8 +75,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationSalamUmrah(deeplink, context)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL,true) ->
                         getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
-                    deeplink.startsWith(ApplinkConst.Gamification.CRACK) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
-                    deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     else -> {
                         if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
                             getRegisteredCategoryNavigation(getSegments(deeplink),deeplink)
