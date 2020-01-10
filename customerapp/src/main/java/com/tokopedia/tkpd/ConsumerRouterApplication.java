@@ -1366,11 +1366,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
     }
 
-//    @Override
-//    public Intent getInboxTalkCallingIntent(Context context) {
-//        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.INBOX_TALK);
-//    }
-
     @Override
     public Intent getManageAdressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);

@@ -13,7 +13,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.view.fragment.ProductTalkFragment
@@ -93,7 +92,7 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         return ProductTalkFragment.newInstance(intent.extras)
     }
 
-    override fun getToolbarResourceID(): Int = R.id.acitivty_talk_product_toolbar
+    override fun getToolbarResourceID(): Int = R.id.activity_talk_product_toolbar
     override fun getParentViewResourceID() = R.id.talk_parent_view
 
     override fun getLayoutRes(): Int {
