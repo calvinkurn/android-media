@@ -15,8 +15,8 @@ tagOs()
 tagIde()
 tagCiOrLocal()
 addCiMetadata()
-addGitMetadata()
 enableBuildScanInput()
+addGitMetadata()
 
 // Add here other scripts, if needed
 //apply from:"${rootProject.projectDir}/<<other-script.gradle>>"
@@ -24,6 +24,7 @@ enableBuildScanInput()
 
 void setup() {
     buildScan.server = "http://172.21.57.32"
+    buildScan.publishAlways()
 }
 
 void tagOs() {
@@ -47,28 +48,30 @@ void tagCiOrLocal() {
 }
 
 void addCiMetadata() {
-    if (System.getenv('BUILD_URL')) {
-        buildScan.link 'Jenkins build', System.getenv('BUILD_URL')
-    }
-    if (System.getenv('BUILD_NUMBER')) {
-        buildScan.value 'CI build number', System.getenv('BUILD_NUMBER')
-    }
-    if (System.getenv('NODE_NAME')) {
-        def agentName = System.getenv('NODE_NAME') == 'master' ? 'master-node' : System.getenv('NODE_NAME')
-        buildScan.tag agentName
-        buildScan.value 'CI node name', agentName
-    }
-    if (System.getenv('JOB_NAME')) {
-        def jobNameLabel = 'CI job'
-        def jobName = System.getenv('JOB_NAME')
-        buildScan.value jobNameLabel, jobName
-        addCustomValueSearchLink 'CI job build scans', [(jobNameLabel): jobName]
-    }
-    if (System.getenv('STAGE_NAME')) {
-        def stageNameLabel = 'CI stage'
-        def stageName = System.getenv('STAGE_NAME')
-        buildScan.value stageNameLabel, stageName
-        addCustomValueSearchLink 'CI stage build scans', [(stageNameLabel): stageName]
+    if (isCi()) {
+        if (System.getenv('BUILD_URL')) {
+            buildScan.link 'Jenkins build', System.getenv('BUILD_URL')
+        }
+        if (System.getenv('BUILD_NUMBER')) {
+            buildScan.value 'CI build number', System.getenv('BUILD_NUMBER')
+        }
+        if (System.getenv('NODE_NAME')) {
+            def agentName = System.getenv('NODE_NAME') == 'master' ? 'master-node' : System.getenv('NODE_NAME')
+            buildScan.tag agentName
+            buildScan.value 'CI node name', agentName
+        }
+        if (System.getenv('JOB_NAME')) {
+            def jobNameLabel = 'CI job'
+            def jobName = System.getenv('JOB_NAME')
+            buildScan.value jobNameLabel, jobName
+            addCustomValueSearchLink 'CI job build scans', [(jobNameLabel): jobName]
+        }
+        if (System.getenv('STAGE_NAME')) {
+            def stageNameLabel = 'CI stage'
+            def stageName = System.getenv('STAGE_NAME')
+            buildScan.value stageNameLabel, stageName
+            addCustomValueSearchLink 'CI stage build scans', [(stageNameLabel): stageName]
+        }
     }
 }
 
@@ -95,11 +98,9 @@ void addGitMetadata() {
             }
         }
         if (gitBranchName) {
-            tag gitBranchName
             value 'Git branch', gitBranchName
         }
         if (gitStatus) {
-            tag 'Dirty'
             value 'Git status', gitStatus
         }
     }
