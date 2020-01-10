@@ -1,23 +1,246 @@
 <resources>
+    <string name="app_name">Umrah</string>
 
     <string name="umrah_order_detail_status_label">Status</string>
     <string name="umrah_order_detail_detail_title">Detail Umroh</string>
     <string name="umrah_order_detail_show_detail">Lihat Detail</string>
 
     <string name="umrah_my_umrah_show_detail">Lihat Detail</string>
-    <string name="umrah_order_detail_jamaah_info_label">Informasi Jemaah</string>
+
+    <string name="umrah_home_page_bg_label">Bayar umroh di Tokopedia bisa dicicil tanpa bunga</string>
+    <string name="umrah_home_page_activity_label">Tokopedia Umroh - Paket Umroh Terlengkap %s</string>
+    <string name="umrah_home_page_search_label">Cari Paket Umrah</string>
+    <string name="umrah_home_page_search_depart_month_label">Bulan Keberangkatan</string>
+    <string name="umrah_home_page_search_depart_city_label">Kota Keberangkatan</string>
+    <string name="umrah_home_page_search_price_label">Harga</string>
+    <string name="umrah_home_page_search_spinner_month_label">Kapan Saja</string>
+    <string name="umrah_home_page_search_spinner_price_label">Semua Harga</string>
+    <string name="umrah_home_page_search_spinner_city_label">Mana Saja</string>
+    <string name="umrah_home_page_choose_packet_label">Paket Pilihan</string>
+    <string name="umrah_home_page_best_deals_label">Deals Terbaik Bulan Ini</string>
+    <string name="umrah_home_page_depart_next_month_label">Berangkat Bulan Depan</string>
+    <string name="umrah_home_page_hotel_stars">Hotel Bintang %s</string>
+    <string name="umrah_home_page_rupiah_curreny">Rp</string>
+    <string name="umrah_home_page_days_duration">Hari %s</string>
+    <string name="umrah_home_page_start_from">Mulai dari</string>
+    <string name="umrah_home_page_departure_back_date">%s - %s</string>
+
+
+    <string name="umrah_homepage_pax_all_in">/pax</string>
+    <string name="umrah_homepage_dream_fund_title">Wujudkan Umrah dengan Menabung di Dana Impian</string>
+    <string name="umrah_homepage_save_now">Tabung Sekarang ></string>
+    <string name="umrah_search_filter_departure_period">Bulan Keberangkatan</string>
+    <string name="umrah_see_all">Lihat Semua</string>
+    <string name="umrah_search_filter_travel_duration">Durasi Perjalanan (Hari)</string>
+
+    <string name="umrah_dana_impian_link">https://www.tokopedia.com/reksa-dana/dana-impian?fromUmroh=true&amp;category_id=7&amp;target_amount=5000000&amp;name=Tabungan%20Umroh</string>
+
     <string name="umrah_common_booking_code_label">Kode Booking</string>
+    <string name="umrah_common_start_from">Mulai dari %s</string>
+    <string name="umrah_common_start_from_non_currency">Mulai dari</string>
+
+
+    <string name="umrah_order_detail_jamaah_info_label">Informasi Jemaah</string>
+    <string name="umrah_order_detail_ticker_example">Dana Pembayaran akan dikembalikan ke \n Saldo Tokopedia/OVO/Limit Kartu Kredit</string>
     <string name="umrah_order_detail_show_label">LIHAT</string>
     <string name="umrah_order_detail_show_e_voucher_label">Lihat E-Voucher</string>
     <string name="umrah_order_detail_payment_info_label">Informasi Pembayaran</string>
-    <string name="my_umrah_widget_next_step_label">Selanjutnya:</string>
     <string name="umrah_order_detail_activity_label">Detail Pesanan</string>
-    <string name="umrah_order_detail_ticker_example">Dana Pembayaran akan dikembalikan ke \n Saldo Tokopedia/OVO/Limit Kartu Kredit</string>
+    <string name="umrah_order_detail_condition_agreement">Pelajari tentang kebijakan pembatalan &amp; refund</string>
+    <string name="umrah_order_detail_condition_agreement_link">pembatalan &amp; refund</string>
     <string name="umrah_order_detail_link_pusat_bantuan">Pusat Bantuan</string>
     <string name="umrah_order_detail_old_value_quetion_mark">\?</string>
     <string name="umrah_order_detail_new_value_quetion_mark"><![CDATA[\? <br>]]></string>
-    <string name="umrah_order_detail_condition_agreement">Pelajari tentang kebijakan pembatalan &amp; refund</string>
-    <string name="umrah_order_detail_condition_agreement_link">pembatalan &amp; refund</string>
+
+    <string name="my_umrah_widget_next_step_label">Selanjutnya:</string>
+    <string name="umrah_search_filter_package_price">Harga Paket</string>
+    <string name="umrah_search_filter_departure_city">Kota Keberangkatan</string>
+    <string name="umrah_search_filter_package_price_maximum">Harga Maksimum</string>
+    <string name="umrah_search_filter_package_price_minimum">Harga Minimum</string>
+    <string name="umrah_search_filter_max_string_format_with_plus">Rp%s+</string>
+    <string name="umrah_search_filter_max_string_format">Rp%s</string>
+    <string name="umrah_search_duration_days" formatted="false">%s Hari</string>
+    <string name="umrah_pdp_read_more">Baca Selengkapnya</string>
+    <string name="umrah_dream_fund_progress_title">Tabungan Umrah</string>
+    <string name="umrah_dream_fund_progress_not_started_yet">Belum Dimulai</string>
+    <string name="umrah_search_empty_title">Paket yang Kamu Cari Tidak Ditemukan</string>
+    <string name="umrah_search_empty_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal.</string>
+    <string name="umrah_empty_button">Cari Paket Lainnya</string>
+    <string name="umrah_search_filter_empty_subtitle">Coba ubah Filter dan cari sekali lagi, yuk!</string>
+    <string name="umrah_search_filter_empty_button">Ubah Filter</string>
+    <string name="umrah_homepage_pax">/pax</string>
+    <string name="umrah_search_hotel_rating_x">Hotel Bintang %s</string>
+    <string name="umrah_search_sort_by">Urutkan Berdasarkan</string>
+    <string name="umrah_search_seekbar_number_7">7</string>
+    <string name="umrah_search_title">Cari Paket Umrah</string>
+    <string name="umrah_dream_fund_progress_percentage">%d%%</string>
+    <string name="umrah_pdp_accommodation_title">Akomodasi</string>
+    <string name="umrah_pdp_airline_title">Rute Penerbangan</string>
+    <string name="umrah_pdp_itinerary_title">Rencana Perjalanan</string>
+    <string name="umrah_pdp_facilities_title">Fasilitas</string>
+    <string name="umrah_pdp_non_facilities_title">Fasilitas Tidak Termasuk</string>
+    <string name="umrah_pdp_ad_title">Keuntungan Umrah di Tokopedia</string>
+    <string name="umrah_pdp_ad_guaranteed_security">Keamanan Terjamin</string>
+    <string name="umrah_pdp_ad_certainly_depart">Pasti Berangkat</string>
+    <string name="umrah_pdp_ad_full_refund">Pengembalian Penuh</string>
+    <string name="umrah_pdp_total_price_label">Harga Total</string>
+    <string name="umrah_pdp_buy_packet_label">Beli Paket</string>
+    <string name="umrah_pdp_itinerary_day">Hari %d</string>
+    <string name="umrah_pdp_facility_bullet">\u2022</string>
+    <string name="umrah_pdp_hotel_type_x">Hotel Tipe %s</string>
+    <string name="umrah_pdp_calendar">%s - %s</string>
+    <string name="umrah_pdp_airline_header">%s, %s</string>
+    <string name="umrah_pdp_duration">Durasi %d Hari (%d Malam)</string>
+    <string name="umrah_pdp_hotel_check_in">Menginap %s - %s</string>
+    <string name="umrah_pdp_direct_flight">Penerbangan Langsung</string>
+    <string name="umrah_pdp_detail_jamaah">Jamaah</string>
+    <string name="umrah_pdp_detail_choose_room_label">Pilih Kamar</string>
+    <string name="umrah_pdp_detail_purchase_summary_title">Ringkasan Pembayaran</string>
+    <string name="umrah_pdp_detail_purchase_summary_passenger">Penumpang</string>
+    <string name="umrah_pdp_detail_purchase_summary_price_total_label">Total Pembayaran</string>
+    <string name="umrah_pdp_detail_next">Lanjutkan</string>
+    <string name="umrah_pdp_detail_choose_room_desc">%s %s</string>
+    <string name="umrah_pdp_detail_total_passenger">%d Jamaah</string>
+    <string name="umrah_pdp_detail_purchase_summary_total_passenger">x%d Jamaah</string>
+    <string name="umrah_pdp_empty_package_label">Paket Habis</string>
+    <string name="umrah_pdp_change_search">Ganti Pencarian</string>
+    <string name="umrah_pdp_faq_title">FAQ</string>
+    <!--    <string name="umrah_tracking_product_impression_dimension110">sort: %s_filter</string>-->
 
 
+    <string name="umrah_checkout_order_title">Pemesanan</string>
+    <string name="umrah_checkout_order_desctiption">E-booking dan informasi lain terkait pesanan ini seperti tagihan, jadwal, persiapan dll akan dikirimkan ke kontak ini </string>
+    <string name="umrah_checkout_order_list_title_pilgrims">Daftar Jamaah</string>
+    <string name="umrah_checkout_order_description_pilgrims">Calon jamaah harus menyiapkan dan upload syarat kelengkapan dokumen umrah sebelum keberangkatan. Lihat detail</string>
+    <string name="umrah_checkout_order_description_pilgrims_click">Lihat detail</string>
+    <string name="umrah_checkout_order_pilgrims_fill_data">Isi Data</string>
+    <string name="umrah_checkout_order_pilgrims">Jamaah</string>
+    <string name="umrah_checkout_order_pilgrims_count">%d Jamaah</string>
+    <string name="umrah_checkout_order_pilgrims_count_list">Jamaah %d </string>
+
+    <string name="umrah_checkout_summary_title">Ringkasan Pembayaran</string>
+    <string name="umrah_checkout_summary_total_title">Total Pembayaran</string>
+    <string name="umrah_checkout_summary_pay_type_title">Tipe Pembayaran</string>
+    <string name="umrah_checkout_summary_full_paid_title">Bayar Penuh</string>
+    <string name="umrah_checkout_summary_downpayment_title">Uang Muka</string>
+    <string name="umrah_checkout_summary_downpayment_desc">Tagihan dicicil tanpa riba</string>
+
+    <string name="umrah_checkout_summary_installment_label">Pilihan Cicilan</string>
+    <string name="umrah_checkout_summary_installment_next">Tanggal Selanjutnya %s</string>
+    <string name="umrah_checkout_aggrement_condition">Saya telah menyetujui syarat dan ketentuan yang berlaku pada Tokopedia Umrah.</string>
+    <string name="umrah_checkout_agreement_condition_click">syarat dan ketentuan</string>
+    <string name="umrah_checkout_footer_title">Total Tagihan</string>
+    <string name="umrah_checkout_footer_choose_payment">Pilih Pembayaran</string>
+
+    <string name="umrah_checkout_bottom_sheet_contact_title">Informasi Kontak</string>
+    <string name="umrah_checkout_bottom_sheet_contact_label_name">Nama Lengkap (Sesuai KTP/SIM/Paspor)</string>
+    <string name="umrah_checkout_bottom_sheet_contact_label_email">Email</string>
+    <string name="umrah_checkout_bottom_sheet_contact_label_phone">Nomor Telepon</string>
+    <string name="umrah_checkout_bottom_sheet_contact_phone_minimum">Minimum 9 Digit</string>
+
+    <string name="umrah_checkout_bottom_sheet_installment_title">"Pilih Cicilan"</string>
+    <string name="umrah_checkout_bottom_sheet_button">Simpan</string>
+    <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_first">Nama Depan (Sesuai KTP/SIM/Paspor)</string>
+    <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_last">Nama Belakang (Sesuai KTP/SIM/Paspor)</string>
+    <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_first_label">Nama Depan</string>
+    <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_last_label">Nama Belakang</string>
+    <string name="umrah_checkout_bottom_sheet_pilgrims_label_date_birth">Tanggal Lahir</string>
+    <string name="umrah_checkout_pilgrims_app_name">Isi Data Jamaah</string>
+    <string name="umrah_checkout_app_name">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_app_name">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_app_name">Pilihan Cicilan</string>
+
+    <string name="umrah_checkout_pilgrims_title_label">Sapaan</string>
+    <array name="umrah_checkout_pilgrims_titles">
+        <item>Tuan</item>
+        <item>Nyonya</item>
+        <item>Nona</item>
+    </array>
+    <string name="umrah_checkout_installment_button_next">Lanjutkan</string>
+    <string name="umrah_checkout_term_condition_bottom_sheet_title">Syarat &amp; Ketentuan</string>
+    <string name="umrah_checkout_mandatory_document_bottom_sheet_title">Dokumen Wajib</string>
+    <string name="umrah_checkout_mandatory_document_bottom_sheet_desc">Dokumen berikut harus diupload setelah pembayaran berhasil sebagai syarat pengajuan visa Saudi Arabia.</string>
+    <array name="umrah_checkout_mandatory_document_title">
+        <item>1. KTP</item>
+        <item>2. Paspor</item>
+        <item>3. Kartu Keluarga</item>
+        <item>4. Surat Nikah</item>
+        <item>5. Buku Meningitis</item>
+    </array>
+    <array name="umrah_checkout_mandatory_document">
+        <item>Setiap calon jamaah harus memiliki KTP Indonesia dan mengupload foto KTP.</item>
+        <item>Setiap calon jamaah harus memiliki Paspor Indonesia dan mengupload foto Paspor.</item>
+        <item>Setiap calon jamaah harus memiliki Kartu Keluarga dan mengupload foto Kartu
+            Keluarga.
+        </item>
+        <item>Bagi calon jamaah suami istri harus memiliki Surat Nikah dan mengupload foto Surat
+            Nikah.
+        </item>
+        <item>Setiap calon jamaah harus memiliki Buku Meningitis, bisa didapatkan setelah melakukan
+            suntik meningitis di Kantor Kesehatan Pelabuhan yang tersebar diberbagai kota.
+        </item>
+    </array>
+    <string name="umroh_checkout_birth_date">Tanggal Lahir</string>
+
+    <string name="umrah_checkout_payment_option_label_installment">Cicilan</string>
+    <string name="umrah_chekcout_payment_option_label_due_date">Jatuh Tempo</string>
+    <string name="umrah_checkout_payment_option_label_price">Biaya</string>
+    <string name="umrah_checkout_payment_option_ticker_desc">Cicilan belum termasuk <b>uang muka</b>. Seluruh cicilan wajib lunas <b>maks. H-30</b> keberangkatan.</string>
+    <string name="umrah_checkout_progress_dialog">Sedang diproses</string>
+
+    <string name="umrah_pdp_additional_information_title">Informasi Tambahan</string>
+    <string name="umrah_checkout_validation_error">Harap Lengkapi Data anda</string>
+    <string name="umrah_checkout_dialog_title">Yakin Batal Pesan?</string>
+    <string name="umrah_checkout_dialog_desc">Paket umrah ini bisa tidak tersedia di waktu lain. Lanjut pesan untuk tetap membeli paket umrah ini?</string>
+    <string name="umrah_checkout_dialog_cancel_desc">Batalkan</string>
+    <string name="umrah_checkout_dialog_ok_desc">Lanjut Pesan</string>
+    <string name="umrah_checkout_pilgrims_title">%s %s %s</string>
+
+    <string name="umrah_checkout_contact_name_error">Nama belum diisi</string>
+    <string name="umrah_checkout_contact_email_error">Format e-mail salah</string>
+    <string name="umrah_checkout_contact_phone_error">Nomor telepon minimum 9 digit</string>
+    <string name="umrah_checkout_contact_phone_code_and_phone_number">%s%s</string>
+
+    <string name="umrah_checkout_pilgrims_first_name_error">Nama Depan Kosong</string>
+    <string name="umrah_checkout_pilgrims_last_name_error">Nama Belakang Kosong</string>
+    <string name="umrah_checkout_pilgrims_date_birth_error">Tanggal Lahir Kosong</string>
+    <string name="umrah_checkout_pilgrims_title_error">Harap Pilih Title Anda</string>
+    <string name="umrah_checkout_error_confirmation">OK</string>
+    <string name="umrah_include_visa_and_equipments"><![CDATA[Termasuk visa & perlengkapan]]></string>
+
+    <string name="umrah_share">Bagikan</string>
+    <string name="umrah_help">Bantuan</string>
+    <string name="umrah_salam">Tokopedia Salam</string>
+    <string name="umrah_cancel">Batal</string>
+    <string name="umrah_menu_title">Menu</string>
+
+    <string name="umrah_pdp_link_share">https://m.tokopedia.com/s/umroh/produk/%s</string>
+    <string name="umrah_salam_app_link">https://m.tokopedia.com/salam</string>
+    <string name="umrah_help_link">https://www.tokopedia.com/help</string>
+    <string name="umrah_link">https://m.tokopedia.com/s/umroh</string>
+    <string name="umrah_progress_dialog">Sedang diproses…</string>
+
+    <string name="umrah_label_filter">Filter</string>
+    <string name="umrah_label_pdp">Pilih Detail</string>
+    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
+    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+    <string name="umrah_last_path_segment_search">search</string>
+
+    <string name="umrah_checkout_error_title">Pemesanan Umroh Gagal</string>
+    <string name="umrah_empty_state_desc">Maaf, paket umrah yang kamu pilih sudah
+ dipesan oleh orang lain. Insya allah niat baik pasti tetap bisa berangkat umrah. Yuk, cek paket lainnya!</string>
+    <string name="umrah_checkout_error_btn">Cari Paket Umroh</string>
+    <string name="umrah_pdp_additional_information_bullet">\u2022\t%s\n</string>
+    <string name="umrah_pdp_empty_state_title">Paket Umroh Habis</string>
+    <string name="umrah_search_empty_state_package_name">com.tokopedia.tkpd</string>
+    <string name="umrah_pdp_hotel_stay_dates">Menginap %s</string>
+    <string-array name="umrah_pdp_list_desc_facility">
+        <item>Visa</item>
+        <item>Insurance</item>
+        <item>Air Zam-zam 5 Liter</item>
+        <item>Makanan</item>
+        <item>Bus</item>
+    </string-array>
 </resources>

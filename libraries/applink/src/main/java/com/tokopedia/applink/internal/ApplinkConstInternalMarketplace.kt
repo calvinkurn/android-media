@@ -164,11 +164,19 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
+    // NotificationActivity
+    @JvmField
+    val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
+
     // PowerMerchantSubscribeActivity
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
     @JvmField
     val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
+    // AttachInvoiceActivity
+    @JvmField
+    val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
 }

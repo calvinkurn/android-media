@@ -25,6 +25,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val bannerView: BannerViewDynamicBackground = itemView.findViewById(R.id.banner)
     private val context: Context = itemView.context
     private var slidesList: List<BannerSlidesModel>? = null
+    private var isCache = true
 
     init {
         bannerView.onPromoAllClickListener = this
@@ -39,11 +40,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         try {
             slidesList = element.slides
             slidesList?.let {
-                if(!element.isCache) {
-                    bannerView.addOnImpressionListener(
-                            element, OnBannerImpressedListener(it, listener)
-                    )
-                }
+                this.isCache = element.isCache
+                bannerView.resetImpressionStatus()
                 bannerView.shouldShowSeeAllButton(it.isNotEmpty())
 
                 val promoUrls = ArrayList<String>()
@@ -76,6 +74,21 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             slidesList?.let {
                 HomeTrackingUtils.homeSlidingBannerImpression(context, it[position], position)
                 listener.onPromoScrolled(it[position])
+
+                if (!isCache) {
+                    if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
+                            !it[position].isInvoke) {
+                        listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
+                                it[position]
+                        ))
+                        it[position].invoke()
+                    } else if (!it[position].isInvoke) {
+                        listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
+                                it[position]
+                        ))
+                        it[position].invoke()
+                    }
+                }
             }
         }
     }
@@ -104,35 +117,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         bannerView.startAutoScrollBanner()
     }
 
-    class OnBannerImpressedListener(private val bannerSlidesModel: List<BannerSlidesModel>,
-                                                    private val listener: HomeCategoryListener) : ViewHintListener {
-        override fun onViewHint() {
-            val overlayBannerSlides = arrayListOf<BannerSlidesModel>()
-            val generalBannerSlides = arrayListOf<BannerSlidesModel>()
-
-            bannerSlidesModel.forEach{
-                if (it.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
-                    overlayBannerSlides.add(it)
-                } else {
-                    generalBannerSlides.add(it)
-                }
-            }
-            if (overlayBannerSlides.isNotEmpty()) {
-                listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
-                        overlayBannerSlides
-                ))
-            }
-            if (generalBannerSlides.isNotEmpty()) {
-                listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
-                        generalBannerSlides
-                ))
-            }
-        }
-    }
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_banner
-        const val ATTRIBUTION = "attribution"
     }
 }

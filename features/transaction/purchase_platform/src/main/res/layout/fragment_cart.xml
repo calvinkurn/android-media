@@ -5,7 +5,6 @@
     android:id="@+id/ll_cart_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/checkout_module_color_background"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -27,7 +26,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@color/white"
             android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
@@ -51,20 +49,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/bottom_layout_shadow"
-                    android:layout_below="@+id/card_header"
-                    android:orientation="vertical">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_cart"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
+                    android:layout_above="@+id/bottom_layout"
+                    android:layout_alignParentTop="true" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_header"
@@ -73,7 +63,7 @@
                     android:layout_alignParentTop="true"
                     android:clickable="false"
                     android:visibility="gone"
-                    app:cardElevation="@dimen/dp_2"
+                    app:cardElevation="@dimen/dp_3"
                     tools:visibility="visible">
 
                     <include layout="@layout/item_select_all"/>
@@ -95,21 +85,11 @@
                     android:orientation="vertical"
                     tools:visibility="visible">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/grey_shadow" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         tools:visibility="visible">
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
-                            android:background="@color/grey_shadow" />
 
                         <LinearLayout
                             android:layout_width="match_parent"

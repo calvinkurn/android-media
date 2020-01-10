@@ -2,14 +2,14 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.network.entity.topPicks.Toppick;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;

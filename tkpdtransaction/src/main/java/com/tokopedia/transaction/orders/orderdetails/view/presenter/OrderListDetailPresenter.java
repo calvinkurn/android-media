@@ -40,6 +40,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationResponse;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -77,6 +78,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String TAB_ID = "tabId";
     private static final String CATEGORY_PRODUCT = "Kategori Produk";
     private static final int DEFAULT_TAB_ID = 1;
+    private static final String DEVICE_ID = "device_id";
+    private static final String CATEGORY_IDS = "category_ids";
+    private static final int DEFAULT_DEVICE_ID = 5;
+
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -97,6 +102,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private boolean isdownloadable = false;
     private OrderDetails details;
     private List<Body> retryBody = new ArrayList<>();
+    ArrayList<String> categoryList;
+    String category;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -154,9 +161,51 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
-                    RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
-                    getView().setRecommendation(rechargeWidgetResponse);
+
+                    if (orderCategory.equalsIgnoreCase("marketplace")) {
+                        List<Items> list = orderDetails.getItems();
+                        categoryList = new ArrayList<>();
+                        for (Items item : list) {
+                            categoryList.add(Integer.toString(item.getCategoryID()));
+                            categoryList.add(Integer.toString(item.getCategoryL1()));
+                            categoryList.add(Integer.toString(item.getCategoryL2()));
+                            categoryList.add(Integer.toString(item.getCategoryL3()));
+                        }
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            category = String.join(",", category);
+                        } else {
+                            category = category.toString().substring(1, category.toString().length() - 1);
+                        }
+                    } else {
+                        RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                        getView().setRecommendation(rechargeWidgetResponse);
+                    }
                 }
+                getRecommendation();
+            }
+        });
+
+    }
+
+    public void getRecommendation() {
+        orderDetailsUseCase = new GraphqlUseCase();
+        orderDetailsUseCase.clearRequest();
+        orderDetailsUseCase.addRequest(makegraphqlRequestForMPRecommendation());
+        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
+                getView().setRecommendation(recommendationResponse);
+
             }
         });
     }
@@ -630,6 +679,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
         return graphqlRequestForRecommendation;
+    }
+
+    private GraphqlRequest makegraphqlRequestForMPRecommendation() {
+        GraphqlRequest graphqlRequestForMPRecommendation;
+        Map<String, Object> variable = new HashMap<>();
+        variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
+        variable.put(CATEGORY_IDS, category);
+        graphqlRequestForMPRecommendation = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.recommendation_mp), RecommendationResponse.class, variable);
+        return graphqlRequestForMPRecommendation;
     }
 
     public boolean isValidUrl(String invoiceUrl) {

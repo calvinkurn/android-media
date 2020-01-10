@@ -9,22 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
-import com.tokopedia.core2.R;
-
 /**
  * Created by ricoharisin on 8/4/15.
  */
 public class ToolTipUtils {
 
-    private Context context;
     private View contentView;
-    private View anchorView;
     private LayoutInflater inflater;
 
     public ToolTipUtils(Context context, View view) {
         inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        this.context = context;
-        this.anchorView = view;
     }
 
     public void setLayout(int resID) {
@@ -34,24 +28,6 @@ public class ToolTipUtils {
     public View getView() {
         return contentView;
     }
-
-    public void showToolTip() {
-        final PopupWindow pw = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        pw.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        pw.setOutsideTouchable(true);
-        pw.setFocusable(false);
-        pw.showAsDropDown(anchorView);
-        pw.setTouchInterceptor(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                pw.dismiss();
-                return true;
-            }
-        });
-
-    }
-
-
 
     public interface ToolTipListener {
         void setView(View view);

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/umrah_search_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/umrah_search_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_64"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
+            android:clipToPadding="false"/>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <com.tokopedia.design.button.BottomActionView
+        android:id="@+id/umrah_search_bottom_action_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:visibility="gone"
+        app:bav_icon_1="@drawable/ic_system_action_sort_grayscale_24"
+        app:bav_icon_2="@drawable/ic_system_action_filter_grayscale_24"
+        app:bav_1_display="true"
+        app:bav_label_1="@string/travel_title_sort_search"
+        app:bav_label_2="@string/label_filter"
+        app:bav_2_display="true"
+        app:layout_anchor="@+id/umrah_search_recycler_view"
+        app:layout_anchorGravity="bottom|center_horizontal" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
