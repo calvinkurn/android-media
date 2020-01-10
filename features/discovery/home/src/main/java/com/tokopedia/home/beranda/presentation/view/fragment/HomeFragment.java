@@ -13,18 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-
-import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -50,13 +38,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.analytics.screen.IndexScreenTracking;
-import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -112,8 +97,8 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
-import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -145,8 +130,6 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
 
-import static rx.schedulers.Schedulers.start;
-
 /**
  * @author by errysuprayogi on 11/27/17.
  */
@@ -175,7 +158,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
     private boolean shouldDisplayReview = true;
-    private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -535,7 +517,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
                     presenter.setCache(true);
                 } else {
-                    showToaster(getString(R.string.msg_network_error), Toaster.TYPE_ERROR);
+                    showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
                 }
             }
         });
@@ -548,7 +530,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             } else if(resource.getStatus() == Resource.Status.ERROR){
                 hideLoading();
-                showToaster(getString(R.string.msg_network_error), Toaster.TYPE_ERROR);
+                showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             } else {
                 showLoading();
             }
@@ -565,7 +547,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
-                showToaster(getString(R.string.msg_network_error), Toaster.TYPE_ERROR);
+                showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             }
         }
     }
@@ -1765,8 +1747,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
-        if(getView() != null) {
-            Toaster.INSTANCE.make(getView().getRootView(), message, Toaster.LENGTH_SHORT, typeToaster, actionText, clickListener);
-        }
+        Toaster.INSTANCE.make(root, message, Toaster.LENGTH_SHORT, typeToaster, actionText, clickListener);
     }
 }
