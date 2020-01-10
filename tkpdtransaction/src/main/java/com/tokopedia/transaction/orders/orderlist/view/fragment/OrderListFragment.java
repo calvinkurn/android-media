@@ -736,6 +736,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerlayout.setVisibility(View.GONE);
             sampaiButton.setText(Utils.setFormat(format2, format, customEndDate));
             mulaiButton.setText(Utils.setFormat(format2, format, customStartDate));
+            datePickerStartDate = "";
+            datePickerEndDate = "";
         });
         if (customFilter) {
             radio2.setChecked(true);
