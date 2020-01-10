@@ -40,6 +40,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.RecommendationTracking;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
@@ -1020,8 +1021,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTrackingGTMEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
-        SearchTracking.trackGTMEventSearchAttempt(query, hasProductList, category);
+    public void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel) {
+        SearchTracking.trackGTMEventSearchAttempt(generalSearchTrackingModel);
     }
 
     @Override
@@ -1181,8 +1182,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTrackingForNoResult(String resultCode, String alternativeKeyword) {
-        SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), alternativeKeyword, resultCode);
+    public void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess) {
+        SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), alternativeKeyword, resultCode, keywordProcess);
     }
 
     private void finishActivity() {

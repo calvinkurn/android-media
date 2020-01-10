@@ -29,6 +29,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -309,7 +310,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         else
             webview.setWebViewClient(webViewClient);
         webview.setWebChromeClient(new SimpleWebViewWithFilePickerFragment.MyWebViewClient());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
             CommonUtils.dumper("webviewconf debugging = true");
         }
