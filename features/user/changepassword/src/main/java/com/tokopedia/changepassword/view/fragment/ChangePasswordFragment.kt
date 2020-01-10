@@ -127,15 +127,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun onSuccessLogout() {
-
-
-
         val stickyPref = activity?.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
         stickyPref?.edit()?.clear()?.apply()
 
-        val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        sendBroadcast()
     }
 
     private fun sendBroadcast() {
