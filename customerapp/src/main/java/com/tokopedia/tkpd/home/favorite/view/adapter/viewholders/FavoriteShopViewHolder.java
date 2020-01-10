@@ -82,16 +82,8 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     void onShopLayoutClicked() {
         eventFavoriteShop();
-
-        FragmentManager manager = ((FragmentActivity) context).getSupportFragmentManager();
-
-        if (manager != null) {
-            FragmentTransaction transaction = manager.beginTransaction();
-
-            transaction.add(android.R.id.content, ShopPageFragment.initInstance(null));
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
+        Intent intent = ShopPageActivity.createIntent(context, favoriteShop.getShopId());
+        context.startActivity(intent);
     }
 
     public void eventFavoriteShop() {
