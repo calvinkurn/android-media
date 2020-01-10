@@ -5,4 +5,10 @@
     <color name="play_pinned_chat_background">#B331353B</color>
     <color name="play_pinned_action_background">#00B736</color>
     <color name="play_loading_overlay_background">#B331353B</color>
+
+    <!--Toolbar Background-->
+    <color name="play_toolbar_gradient_darker">#80000000</color>
+    <color name="play_toolbar_gradient_lighter">#00FFFFFF</color>
+
+    <color name="play_video_background">#26292E</color>
 </resources>
