@@ -416,7 +416,9 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileFromShop()
-        RouteManager.route(context, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
+        activity?.applicationContext?.run {
+            RouteManager.route(this, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
+        }
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
