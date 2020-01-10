@@ -5,7 +5,5 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowSoftInputMode">stateAlwaysHidden|stateHidden</item>
-        <!--Temporary since we still do not support landscape-->
-        <item name="android:screenOrientation">sensorPortrait</item>
     </style>
 </resources>
