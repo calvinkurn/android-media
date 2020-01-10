@@ -444,9 +444,9 @@ class ShopPageFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_action_search -> redirectToShopSearchProduct()
-            R.id.menu_action_settings -> onClickCart()
+//            R.id.menu_action_settings -> onClickCart()
             R.id.menu_action_cart -> onClickCart()
-            R.id.menu_action_shop_info -> onClickCart()
+//            R.id.menu_action_shop_info -> onClickCart()
         }
         return super.onOptionsItemSelected(item)
     }
