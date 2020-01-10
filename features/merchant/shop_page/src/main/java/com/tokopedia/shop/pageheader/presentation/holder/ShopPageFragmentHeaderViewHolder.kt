@@ -2,17 +2,9 @@ package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
-import android.text.TextPaint
-import android.text.style.ClickableSpan
 import android.view.View
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -26,7 +18,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.extension.formatToSimpleNumber
@@ -51,6 +42,12 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_main_profile_location.text = shopInfo.location
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
         ImageHandler.loadImage(view.context, view.shop_page_main_profile_background, shopInfo.shopAssets.cover, R.drawable.ic_loading_image)
+        view.shop_page_main_profile_background.setOnClickListener {
+            listener.changeShopCover(
+                    TextApiUtils.isValueTrue(shopInfo.goldOS.isOfficial.toString()),
+                    shopInfo.goldOS.isGoldBadge == 1
+            )
+        }
         when {
             TextApiUtils.isValueTrue(shopInfo.goldOS.isOfficial.toString()) -> displayOfficial()
             shopInfo.goldOS.isGoldBadge == 1 -> {
@@ -313,6 +310,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         fun requestOpenShop(shopId: Int, moderateNotes: String)
         fun goToHowActivate()
         fun goToHelpCenter(url: String)
+        fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean)
     }
 
 

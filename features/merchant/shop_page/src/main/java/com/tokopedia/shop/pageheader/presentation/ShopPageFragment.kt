@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -68,6 +69,7 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -79,6 +81,13 @@ class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<OldShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener {
+    override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {
+//        if (!isOfficial && !isPowerMerchant) {
+            view?.run {
+                Toaster.make(this, "Test", Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            }
+//        }
+    }
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -325,9 +334,9 @@ class ShopPageFragment :
     }
 
     private fun initSearchInputView() {
-        if(isMyShop){
+        if (isMyShop) {
             searchBarLayout.hide()
-        }else{
+        } else {
             searchBarLayout.show()
             searchBarText.setOnClickListener {
                 redirectToShopSearchProduct()
@@ -474,12 +483,12 @@ class ShopPageFragment :
             shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             updateUIByShopName(shopCore.name)
             setupTabs()
-            if(!isMyShop){
+            if (!isMyShop) {
                 button_chat.show()
                 button_chat.setOnClickListener {
                     goToChatSeller()
                 }
-            }else{
+            } else {
                 button_chat.hide()
             }
             activity?.run {
@@ -549,7 +558,7 @@ class ShopPageFragment :
                 val homeFragment = HomeProductFragment.createInstance()
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
                 val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
                 getShopInfoData()?.run {
                     homeFragment.setShopInfo(this)
                     shopPageProductFragment.setShopInfo(this)
@@ -559,7 +568,7 @@ class ShopPageFragment :
             isShowFeed -> {
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
                 val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
                 getShopInfoData()?.run {
                     shopPageProductFragment.setShopInfo(this)
                 }
@@ -568,7 +577,7 @@ class ShopPageFragment :
             isOfficialStore -> {
                 val homeFragment = HomeProductFragment.createInstance()
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
                 getShopInfoData()?.run {
                     homeFragment.setShopInfo(this)
                     shopPageProductFragment.setShopInfo(this)
@@ -577,7 +586,7 @@ class ShopPageFragment :
             }
             else -> {
                 val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity,shopId, shopDomain)
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
                 getShopInfoData()?.run {
                     shopPageProductFragment.setShopInfo(this)
                 }
@@ -630,7 +639,7 @@ class ShopPageFragment :
     private fun updateFavouriteResult() {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
-                                putExtra(SHOP_STATUS_FAVOURITE, shopPageFragmentHeaderViewHolder.isShopFavourited())
+                putExtra(SHOP_STATUS_FAVOURITE, shopPageFragmentHeaderViewHolder.isShopFavourited())
             })
         }
     }
@@ -696,7 +705,7 @@ class ShopPageFragment :
     }
 
     fun goToChatSeller() {
-        context?.let {context ->
+        context?.let { context ->
             (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                 shopPageTracking.clickMessageSeller(CustomDimensionShopPage.create(it.shopCore.shopID,
                         it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
