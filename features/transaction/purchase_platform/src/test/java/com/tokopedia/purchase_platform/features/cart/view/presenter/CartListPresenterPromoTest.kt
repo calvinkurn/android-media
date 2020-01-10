@@ -158,6 +158,27 @@ class CartListPresenterPromoTest : Spek({
                 every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
             }
 
+            Given("cart list data") {
+                cartListPresenter.setCartListData(CartListData().apply {
+                    shopGroupAvailableDataList = mutableListOf<ShopGroupAvailableData>().apply {
+                        add(ShopGroupAvailableData().apply {
+                            cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                                add(CartItemHolderData(cartItemData = CartItemData().apply {
+                                    originData = CartItemData.OriginData().apply {
+                                        productId = "X"
+                                    }
+                                    updatedData = CartItemData.UpdatedData().apply {
+                                        quantity = 1
+                                    }
+                                }))
+                            }
+                            cartString = "12345-abcde"
+                            shopId = "X"
+                        })
+                    }
+                })
+            }
+
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
@@ -203,6 +224,30 @@ class CartListPresenterPromoTest : Spek({
                 every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
             }
 
+            Given("cart list data") {
+                cartListPresenter.setCartListData(CartListData().apply {
+                    shopGroupAvailableDataList = mutableListOf<ShopGroupAvailableData>().apply {
+                        add(ShopGroupAvailableData().apply {
+                            cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                                add(CartItemHolderData(cartItemData = CartItemData().apply {
+                                    originData = CartItemData.OriginData().apply {
+                                        productId = "1"
+                                    }
+                                    updatedData = CartItemData.UpdatedData().apply {
+                                        quantity = 1
+                                    }
+                                }))
+                            }
+                            voucherOrdersItemData = VoucherOrdersItemData().apply {
+                                code = "codeMerchant"
+                            }
+                            cartString = "12345-abcde"
+                            shopId = "99999"
+                        })
+                    }
+                })
+            }
+
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
@@ -210,7 +255,8 @@ class CartListPresenterPromoTest : Spek({
             When("process apply promo") {
                 val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
                 promoList.add(ClashingVoucherOrderUiModel().apply {
-                    uniqueId = "12345"
+                    code = "codeMerchant"
+                    uniqueId = "12345-abcde"
                 })
                 cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
             }
@@ -250,13 +296,37 @@ class CartListPresenterPromoTest : Spek({
                 every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
             }
 
+            Given("cart list data") {
+                cartListPresenter.setCartListData(CartListData().apply {
+                    shopGroupAvailableDataList = mutableListOf<ShopGroupAvailableData>().apply {
+                        add(ShopGroupAvailableData().apply {
+                            cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                                add(CartItemHolderData(cartItemData = CartItemData().apply {
+                                    originData = CartItemData.OriginData().apply {
+                                        productId = "1"
+                                    }
+                                    updatedData = CartItemData.UpdatedData().apply {
+                                        quantity = 1
+                                    }
+                                }))
+                            }
+                            voucherOrdersItemData = VoucherOrdersItemData().apply {
+                                code = "codeMerchant"
+                            }
+                            cartString = "12345-abcde"
+                            shopId = "99999"
+                        })
+                    }
+                })
+            }
+
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
 
             When("process apply promo") {
                 val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
-                promoList.add(ClashingVoucherOrderUiModel(uniqueId = ""))
+                promoList.add(ClashingVoucherOrderUiModel(uniqueId = "12345-abcde", code = "codeMerchant"))
                 cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
             }
 
