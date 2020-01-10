@@ -1,6 +1,6 @@
 <manifest xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.dfuser">
+    package="com.tokopedia.df.user">
 
     <dist:module
         dist:onDemand="false"

@@ -49,6 +49,7 @@ class SaleViewHolder(
 
         btnLoadMore.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SELLER_HISTORY)
+            listener.sendTrackingData(element.title, btnLoadMore.text.toString())
         }
     }
 

@@ -22,7 +22,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
@@ -87,6 +86,7 @@ import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -284,7 +284,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     p2Shop.tradeinResponse = tradeinResponse
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             p2Shop
         }
@@ -480,7 +480,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP2.productSpecificationResponse = productSpesification
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             productInfoP2
         }
@@ -529,7 +529,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .getCartType.data.cartType
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
 
             p2Login
@@ -586,7 +586,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
         } catch (t: Throwable) {
-            t.debugTrace()
+            Timber.d(t)
         }
         productInfoP3
     }
@@ -693,14 +693,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
-        trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
-        trackAffiliateUseCase.execute({
-            //no op
-        }) {
-            it.debugTrace()
-        }
+fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
+    trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
+    trackAffiliateUseCase.execute({
+        //no op
+    }) {
+        Timber.d(it)
     }
+}
 
     fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
         val requestParams = RequestParams.create()

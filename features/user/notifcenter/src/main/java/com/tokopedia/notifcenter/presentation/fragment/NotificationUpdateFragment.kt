@@ -24,28 +24,27 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.listener.NotificationActivityListener
+import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
-import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
-import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
-import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
-import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
-import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
@@ -59,12 +58,12 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         NotificationUpdateContract.View,
         NotificationItemListener,
         NotificationUpdateFilterAdapter.FilterAdapterListener,
-        NotificationActivityListener,
         NotificationUpdateLongerTextFragment.LongerContentListener {
 
     private var cursor = ""
     private var lastItem = 0
     private var markAllReadCounter = 0L
+    private var _isFirstLoaded = true
 
     private lateinit var bottomActionView: BottomActionView
 
@@ -76,11 +75,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         return NotificationUpdateTypeFactoryImpl(this)
     }
 
-    @Inject
-    lateinit var presenter: NotificationUpdatePresenter
-
-    @Inject
-    lateinit var analytics: NotificationUpdateAnalytics
+    @Inject lateinit var presenter: NotificationUpdatePresenter
+    @Inject lateinit var analytics: NotificationUpdateAnalytics
 
     private var notificationUpdateListener: NotificationUpdateListener? = null
 
@@ -155,20 +151,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
     }
 
-    override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>, tag: String) {
-        if (!::filterRecyclerView.isInitialized) return
-        coachMarkItems.add(
-                1 ,
-                CoachMarkItem(
-                        filterRecyclerView,
-                        getString(R.string.coachicon_title_filter),
-                        getString(R.string.coachicon_description_filter)
-                )
-        )
-        val coachMark = CoachMarkBuilder().build()
-        coachMark.show(activity, tag, coachMarkItems)
-    }
-
     override fun updateFilter(filter: HashMap<String, Int>) {
         presenter.updateFilter(filter)
         cursor = ""
@@ -200,13 +182,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun onItemClicked(datum: Visitable<*>?) {
+    override fun onItemClicked(datum: Visitable<*>?) {}
 
-    }
-
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         activity?.let {
@@ -241,6 +219,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             hideLoading()
             _adapter.removeEmptyState()
 
+            if (_isFirstLoaded && it.list.isEmpty()) {
+                filterRecyclerView.hide()
+            }
+
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 _adapter.addElement(EmptyDataStateProvider.emptyData())
@@ -252,6 +234,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                 if (swipeToRefresh.isRefreshing) {
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
+
+                _isFirstLoaded = false
+                filterRecyclerView.show()
 
                 _adapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)

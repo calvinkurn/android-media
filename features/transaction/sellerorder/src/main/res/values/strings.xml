@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sellerorder</string>
+    <string name="som_app_name">Seller Order Management</string>
     <string name="title_som_list">Penjualan</string>
     <string name="title_som_filter">Filter</string>
     <string name="title_som_detail">Detail Pesanan</string>
@@ -239,5 +239,7 @@
         ]]>
     </string>
     <string name="som_penalty_subtitle">Apakah Anda yakin ingin membatalkan pesanan?</string>
+
+    <string name="som_dropshipper_label">Dropshipper</string>
 
 </resources>

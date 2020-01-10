@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -32,6 +31,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries: Map<String, String>,
@@ -219,7 +219,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
             }
 
         } catch (t: Throwable) {
-            t.debugTrace()
+            Timber.d(t)
         }
 
         return productInfoP2

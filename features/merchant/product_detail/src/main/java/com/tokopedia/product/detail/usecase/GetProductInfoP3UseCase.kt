@@ -4,13 +4,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.UserCodStatus
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<String, String>,
@@ -64,7 +64,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
             }
 
         } catch (t: Throwable) {
-            t.debugTrace()
+            Timber.d(t)
         }
 
         return productInfoP3

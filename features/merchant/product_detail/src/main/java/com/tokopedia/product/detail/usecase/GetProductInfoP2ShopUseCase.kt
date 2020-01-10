@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
@@ -15,6 +14,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Map<String, String>,
@@ -112,7 +112,7 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
             }
 
         } catch (t: Throwable) {
-            t.debugTrace()
+            Timber.d(t)
         }
 
         return p2Shop
