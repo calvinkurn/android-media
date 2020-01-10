@@ -12,10 +12,15 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -90,13 +95,35 @@ class CartListPresenterPromoTest : Spek({
                 every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
             }
 
+            Given("cart list data") {
+                cartListPresenter.setCartListData(CartListData().apply {
+                    shopGroupAvailableDataList = mutableListOf<ShopGroupAvailableData>().apply {
+                        add(ShopGroupAvailableData().apply {
+                            cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                                add(CartItemHolderData(cartItemData = CartItemData().apply {
+                                    originData = CartItemData.OriginData().apply {
+                                        productId = "1"
+                                    }
+                                    updatedData = CartItemData.UpdatedData().apply {
+                                        quantity = 1
+                                    }
+                                }))
+                            }
+                            cartString = "12345-abcde"
+                            shopId = "99999"
+                        })
+                    }
+                })
+            }
+
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
 
             When("process apply promo") {
                 val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
-                promoList.add(ClashingVoucherOrderUiModel(uniqueId = ""))
+                promoList.add(ClashingVoucherOrderUiModel(uniqueId = "", code = "codeGlobal"))
+
                 cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
             }
 
@@ -121,6 +148,98 @@ class CartListPresenterPromoTest : Spek({
                         }
                         message = MessageUiModel().apply {
                             state = "red"
+                        }
+                    }
+                }
+                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.just(promoStackUiModel)
+            }
+
+            Given("data promo stack") {
+                every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process apply promo") {
+                val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
+                promoList.add(ClashingVoucherOrderUiModel(uniqueId = "", code = "codeGlobal"))
+                cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
+                }
+            }
+        }
+
+        Scenario("apply promo merchant after clash success and grey state") {
+
+            val view: ICartListView = mockk(relaxed = true)
+
+            Given("success check first step") {
+                val promoStackUiModel = ResponseGetPromoStackUiModel().apply {
+                    status = "OK"
+                    data = DataUiModel().apply {
+                        clashings = ClashingInfoDetailUiModel().apply {
+                            isClashedPromos = false
+                        }
+                        voucherOrders = mutableListOf<VoucherOrdersItemUiModel>().apply {
+                            add(VoucherOrdersItemUiModel().apply {
+                                message = MessageUiModel().apply {
+                                    state = "grey"
+                                }
+                            })
+                        }
+                    }
+                }
+                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.just(promoStackUiModel)
+            }
+
+            Given("data promo stack") {
+                every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+            }
+
+            When("process apply promo") {
+                val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
+                promoList.add(ClashingVoucherOrderUiModel().apply {
+                    uniqueId = "12345"
+                })
+                cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
+            }
+
+            Then("should render success") {
+                verify {
+                    view.hideProgressLoading()
+                    view.onSuccessCheckPromoFirstStep(any())
+                }
+            }
+        }
+
+        Scenario("apply promo merchant after clash success and red state") {
+
+            val view: ICartListView = mockk(relaxed = true)
+
+            Given("success check first step") {
+                val promoStackUiModel = ResponseGetPromoStackUiModel().apply {
+                    status = "OK"
+                    data = DataUiModel().apply {
+                        clashings = ClashingInfoDetailUiModel().apply {
+                            isClashedPromos = false
+                        }
+                        voucherOrders = mutableListOf<VoucherOrdersItemUiModel>().apply {
+                            add(VoucherOrdersItemUiModel().apply {
+                                message = MessageUiModel().apply {
+                                    state = "red"
+                                }
+                            })
                         }
                     }
                 }

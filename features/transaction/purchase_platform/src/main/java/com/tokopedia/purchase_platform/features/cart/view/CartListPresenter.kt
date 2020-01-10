@@ -560,16 +560,16 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             // New promo list is array, but it will always be 1 item
             if (newPromoList.size > 0) {
-                val (code, uniqueId) = newPromoList[0]
-                if (TextUtils.isEmpty(uniqueId)) {
+                val clashingVoucherOrderUiModel = newPromoList[0]
+                if (clashingVoucherOrderUiModel.uniqueId.isEmpty()) {
                     // This promo is global promo
                     val codes = ArrayList<String>()
-                    codes.add(code)
+                    codes.add(clashingVoucherOrderUiModel.code)
                     promo.codes = codes
 
                     val currentApplyCode = CurrentApplyCode()
-                    if (code.isNotEmpty()) {
-                        currentApplyCode.code = code
+                    if (clashingVoucherOrderUiModel.code.isNotEmpty()) {
+                        currentApplyCode.code = clashingVoucherOrderUiModel.code
                         currentApplyCode.type = PARAM_GLOBAL
                     }
                     promo.currentApplyCode = currentApplyCode
@@ -577,14 +577,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     // This promo is merchant/logistic promo
                     promo.orders?.let {
                         for (order in it) {
-                            if (uniqueId == order.uniqueId) {
+                            if (clashingVoucherOrderUiModel.uniqueId == order.uniqueId) {
                                 val codes = ArrayList<String>()
-                                codes.add(code)
+                                codes.add(clashingVoucherOrderUiModel.code)
                                 order.codes = codes
 
                                 val currentApplyCode = CurrentApplyCode()
-                                if (code.isNotEmpty()) {
-                                    currentApplyCode.code = code
+                                if (clashingVoucherOrderUiModel.code.isNotEmpty()) {
+                                    currentApplyCode.code = clashingVoucherOrderUiModel.code
                                     currentApplyCode.type = type
                                 }
                                 promo.currentApplyCode = currentApplyCode
@@ -1185,7 +1185,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo {
         val orders = ArrayList<Order>()
-        cartListData?.shopGroupAvailableDataList?.let { shopGroupAvailableDataList ->
+        getCartListData()?.shopGroupAvailableDataList?.let { shopGroupAvailableDataList ->
             for (shopGroupAvailableData in shopGroupAvailableDataList) {
                 val order = Order()
                 val productDetails = ArrayList<ProductDetail>()
@@ -1193,8 +1193,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     for (cartItemHolderData in cartItemHolderDataList) {
                         val productDetail = ProductDetail()
                         try {
-                            productDetail.productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId
-                                    ?: "0")
+                            productDetail.productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId ?: "0")
                         } catch (e: NumberFormatException) {
                             e.printStackTrace()
                             productDetail.productId = 0
@@ -1204,7 +1203,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         productDetails.add(productDetail)
                     }
                 }
-                if (shopGroupAvailableData.voucherOrdersItemData != null && !TextUtils.isEmpty(shopGroupAvailableData.voucherOrdersItemData?.code)) {
+                if (shopGroupAvailableData.voucherOrdersItemData != null && !shopGroupAvailableData.voucherOrdersItemData?.code.isNullOrEmpty()) {
                     val merchantPromoCodes = ArrayList<String>()
                     merchantPromoCodes.add(shopGroupAvailableData.voucherOrdersItemData?.code ?: "")
                     if (merchantPromoCodes.size > 0) {
