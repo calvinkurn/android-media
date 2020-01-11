@@ -387,7 +387,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     protected void setViewListener() {
-        refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        refreshHandler = new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), this);
         refreshHandler.setPullEnabled(true);
         layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setSpanSizeLookup(onSpanSizeLookup());
