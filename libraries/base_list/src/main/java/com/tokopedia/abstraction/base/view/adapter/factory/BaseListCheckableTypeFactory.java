@@ -1,6 +1,6 @@
-package com.tokopedia.baselist.adapter.factory;
+package com.tokopedia.abstraction.base.view.adapter.factory;
 
-import com.tokopedia.baselist.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
 /**
  * Created by alvarisi on 12/21/17.

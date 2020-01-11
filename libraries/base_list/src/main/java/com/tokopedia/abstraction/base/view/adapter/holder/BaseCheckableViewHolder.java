@@ -1,10 +1,10 @@
-package com.tokopedia.baselist.adapter.holder;
+package com.tokopedia.abstraction.base.view.adapter.holder;
 
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.tokopedia.baselist.adapter.Visitable;
-import com.tokopedia.baselist.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 public abstract class BaseCheckableViewHolder<T extends Visitable> extends AbstractViewHolder<T> implements CompoundButton.OnCheckedChangeListener {
 

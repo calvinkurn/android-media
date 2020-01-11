@@ -1,4 +1,4 @@
-package com.tokopedia.baselist.adapter.holder;
+package com.tokopedia.abstraction.base.view.adapter.holder;
 
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;

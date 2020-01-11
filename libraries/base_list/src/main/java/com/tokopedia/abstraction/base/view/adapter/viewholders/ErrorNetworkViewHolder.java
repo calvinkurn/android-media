@@ -1,4 +1,4 @@
-package com.tokopedia.baselist.adapter.viewholders;
+package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 
-import com.tokopedia.baselist.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 

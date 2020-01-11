@@ -1,8 +1,8 @@
-package com.tokopedia.baselist.adapter.viewholders;
+package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import android.view.View;
 
-import com.tokopedia.baselist.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 
 /**
  * Created by zulfikarrahman on 3/9/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.baselist.listener;
+package com.tokopedia.abstraction.base.view.listener;
 
 import android.content.Context;
 import androidx.annotation.NonNull;

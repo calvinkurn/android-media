@@ -1,4 +1,4 @@
-package com.tokopedia.baselist.adapter.model;
+package com.tokopedia.abstraction.base.view.adapter.model;
 
 /**
  * Created by alvarisi on 12/22/17.

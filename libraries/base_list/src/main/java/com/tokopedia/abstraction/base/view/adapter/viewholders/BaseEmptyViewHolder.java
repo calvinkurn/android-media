@@ -1,4 +1,4 @@
-package com.tokopedia.baselist.adapter.viewholders;
+package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -7,9 +7,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.baselist.R;
-import com.tokopedia.baselist.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.baselist.R;
 import com.tokopedia.design.image.ImageLoader;
 
 

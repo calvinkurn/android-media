@@ -1,4 +1,4 @@
-package com.tokopedia.baselist.adapter.adapter;
+package com.tokopedia.abstraction.base.view.adapter.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -6,13 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.baselist.adapter.Visitable;
-import com.tokopedia.baselist.adapter.factory.AdapterTypeFactory;
-import com.tokopedia.baselist.adapter.model.ErrorNetworkModel;
-import com.tokopedia.baselist.adapter.model.LoadingModel;
-import com.tokopedia.baselist.adapter.model.LoadingMoreModel;
-import com.tokopedia.baselist.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.baselist.adapter.viewholders.HideViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

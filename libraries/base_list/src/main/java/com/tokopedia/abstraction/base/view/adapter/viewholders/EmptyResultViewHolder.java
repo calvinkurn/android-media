@@ -1,11 +1,11 @@
-package com.tokopedia.baselist.adapter.viewholders;
+package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import android.view.View;
 
 import androidx.annotation.LayoutRes;
 
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.baselist.R;
-import com.tokopedia.baselist.adapter.model.EmptyResultViewModel;
 
 
 /**
