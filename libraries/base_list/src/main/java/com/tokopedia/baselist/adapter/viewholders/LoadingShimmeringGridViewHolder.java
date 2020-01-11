@@ -2,7 +2,6 @@ package com.tokopedia.baselist.adapter.viewholders;
 
 import android.view.View;
 
-import com.tokopedia.abstraction.R;
 import com.tokopedia.baselist.adapter.model.LoadingModel;
 
 /**
@@ -10,7 +9,7 @@ import com.tokopedia.baselist.adapter.model.LoadingModel;
  */
 
 public class LoadingShimmeringGridViewHolder extends AbstractViewHolder<LoadingModel> {
-    public static final int LAYOUT = R.layout.item_shimmering_grid;
+    public static final int LAYOUT = com.tokopedia.design.R.layout.item_shimmering_grid;
 
     public LoadingShimmeringGridViewHolder(View itemView) {
         super(itemView);

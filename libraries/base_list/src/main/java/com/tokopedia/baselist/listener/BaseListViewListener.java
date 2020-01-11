@@ -3,6 +3,8 @@ package com.tokopedia.baselist.listener;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+
 import java.util.List;
 
 /**

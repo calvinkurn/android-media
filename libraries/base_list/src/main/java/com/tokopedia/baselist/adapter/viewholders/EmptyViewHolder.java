@@ -3,7 +3,7 @@ package com.tokopedia.baselist.adapter.viewholders;
 import androidx.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.abstraction.R;
+import com.tokopedia.baselist.R;
 import com.tokopedia.baselist.adapter.model.EmptyModel;
 
 

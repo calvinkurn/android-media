@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.tokopedia.abstraction.R;
+import com.tokopedia.baselist.R;
 import com.tokopedia.baselist.adapter.model.LoadingMoreModel;
 
 

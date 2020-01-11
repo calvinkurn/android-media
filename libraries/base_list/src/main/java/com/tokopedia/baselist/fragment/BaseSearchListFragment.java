@@ -9,7 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.R;
+
+import com.tokopedia.baselist.R;
 import com.tokopedia.baselist.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.baselist.adapter.Visitable;
 import com.tokopedia.design.text.SearchInputView;
