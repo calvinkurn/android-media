@@ -1,21 +1,21 @@
-package com.tokopedia.abstraction.base.view.adapter.factory;
+package com.tokopedia.baselist.adapter.factory;
 
 import androidx.annotation.CallSuper;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
+import com.tokopedia.baselist.adapter.exception.TypeNotSupportedException;
+import com.tokopedia.baselist.adapter.model.EmptyModel;
+import com.tokopedia.baselist.adapter.model.EmptyResultViewModel;
+import com.tokopedia.baselist.adapter.model.ErrorNetworkModel;
+import com.tokopedia.baselist.adapter.model.LoadingModel;
+import com.tokopedia.baselist.adapter.model.LoadingMoreModel;
+import com.tokopedia.baselist.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.baselist.adapter.viewholders.EmptyResultViewHolder;
+import com.tokopedia.baselist.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.baselist.adapter.viewholders.ErrorNetworkViewHolder;
+import com.tokopedia.baselist.adapter.viewholders.HideViewHolder;
+import com.tokopedia.baselist.adapter.viewholders.LoadingMoreViewHolder;
+import com.tokopedia.baselist.adapter.viewholders.LoadingViewholder;
 
 
 /**

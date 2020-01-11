@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.fragment;
+package com.tokopedia.baselist.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,15 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.baselist.adapter.Visitable;
+import com.tokopedia.baselist.adapter.adapter.BaseListAdapter;
+import com.tokopedia.baselist.adapter.factory.AdapterTypeFactory;
+import com.tokopedia.baselist.adapter.model.EmptyModel;
+import com.tokopedia.baselist.adapter.model.ErrorNetworkModel;
+import com.tokopedia.baselist.adapter.model.LoadingModel;
+import com.tokopedia.baselist.listener.BaseListViewListener;
+import com.tokopedia.baselist.listener.EndlessLayoutManagerListener;
+import com.tokopedia.baselist.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;

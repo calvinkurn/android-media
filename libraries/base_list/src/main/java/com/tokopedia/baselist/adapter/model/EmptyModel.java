@@ -1,11 +1,11 @@
-package com.tokopedia.abstraction.base.view.adapter.model;
+package com.tokopedia.baselist.adapter.model;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
+import com.tokopedia.baselist.adapter.Visitable;
+import com.tokopedia.baselist.adapter.factory.AdapterTypeFactory;
+import com.tokopedia.baselist.adapter.viewholders.EmptyResultViewHolder;
 
 /**
  * @author Kulomady on 1/25/17.

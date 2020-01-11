@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.adapter;
+package com.tokopedia.baselist.adapter;
 
 /**
  * @author kulomady on 1/24/17.

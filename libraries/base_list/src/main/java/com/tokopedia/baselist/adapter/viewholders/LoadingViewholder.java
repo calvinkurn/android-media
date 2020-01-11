@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.adapter.viewholders;
+package com.tokopedia.baselist.adapter.viewholders;
 
 import androidx.annotation.LayoutRes;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.baselist.adapter.model.LoadingModel;
 
 
 /**

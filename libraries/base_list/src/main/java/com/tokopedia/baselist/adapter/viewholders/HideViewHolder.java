@@ -1,10 +1,10 @@
-package com.tokopedia.abstraction.base.view.adapter.viewholders;
+package com.tokopedia.baselist.adapter.viewholders;
 
 import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.baselist.adapter.Visitable;
 
 public class HideViewHolder extends AbstractViewHolder<Visitable> {
 

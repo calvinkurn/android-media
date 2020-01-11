@@ -1,8 +1,8 @@
-package com.tokopedia.abstraction.base.view.adapter.model;
+package com.tokopedia.baselist.adapter.model;
 
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
+import com.tokopedia.baselist.adapter.Visitable;
+import com.tokopedia.baselist.adapter.factory.AdapterTypeFactory;
 
 /**
  * @author Kulomady on 1/25/17.

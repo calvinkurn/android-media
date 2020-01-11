@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.adapter.exception;
+package com.tokopedia.baselist.adapter.exception;
 
 /**
  * @author kulomady on 1/24/17.
