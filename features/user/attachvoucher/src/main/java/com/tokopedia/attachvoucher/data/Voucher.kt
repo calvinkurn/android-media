@@ -1,29 +1,39 @@
 package com.tokopedia.attachvoucher.data
 
-
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
+import com.tokopedia.merchantvoucher.common.gql.data.*
 
-data class Voucher(
-        @SerializedName("amount")
-        val amount: Amount = Amount(),
-        @SerializedName("banner")
-        val banner: Banner = Banner(),
-        @SerializedName("minimum_spend")
-        val minimumSpend: Int = 0,
-        @SerializedName("tnc")
-        val tnc: String = "",
-        @SerializedName("valid_thru")
-        val validThru: String = "",
-        @SerializedName("voucher_code")
-        val voucherCode: String = "",
-        @SerializedName("voucher_name")
-        val voucherName: String = "",
-        @SerializedName("voucher_type")
-        val voucherType: VoucherType = VoucherType()
-) : Visitable<AttachVoucherTypeFactory> {
+class Voucher(
+        voucherId: Int,
+        voucherName: String?,
+        voucherCode: String?,
+        merchantVoucherType: MerchantVoucherType?,
+        merchantVoucherAmount: MerchantVoucherAmount?,
+        minimumSpend: Int,
+        merchantVoucherOwner: MerchantVoucherOwner,
+        validThru: String,
+        tnc: String?,
+        merchantVoucherBanner: MerchantVoucherBanner?,
+        merchantVoucherStatus: MerchantVoucherStatus?,
+        restrictedForLiquidProduct: Boolean
+) : MerchantVoucherModel(
+        voucherId,
+        voucherName,
+        voucherCode,
+        merchantVoucherType,
+        merchantVoucherAmount,
+        minimumSpend,
+        merchantVoucherOwner,
+        validThru,
+        tnc,
+        merchantVoucherBanner,
+        merchantVoucherStatus,
+        restrictedForLiquidProduct
+), Visitable<AttachVoucherTypeFactory> {
+
     override fun type(typeFactory: AttachVoucherTypeFactory): Int {
         return typeFactory.type(this)
     }
+
 }

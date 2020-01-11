@@ -8,7 +8,7 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDe
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 
 
-data class MerchantVoucherModel(
+open class MerchantVoucherModel(
         @SerializedName("voucher_id")
         @Expose
         var voucherId: Int,

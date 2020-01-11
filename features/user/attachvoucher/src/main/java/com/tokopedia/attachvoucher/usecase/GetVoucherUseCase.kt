@@ -37,23 +37,36 @@ class GetVoucherUseCase @Inject constructor(
     private val query = """
         query getPublicMerchantVoucherList($$paramShopId: Int!) {
           getPublicMerchantVoucherList(shop_id:$$paramShopId) {
-            vouchers{
+            vouchers {
+              merchant_voucher_id
+              voucher_id
               voucher_name
+              voucher_code
+              minimum_spend
+              minimum_spend_formatted
+              in_use_expiry
+              valid_thru
+              tnc
+              restricted_for_liquid_product
+              owner {
+                owner_id
+                identifier
+              }
               voucher_type {
                 voucher_type
                 identifier
               }
-              voucher_code
-              amount{
+              amount {
                 amount_type
                 amount
               }
-              minimum_spend
-              valid_thru
-              tnc
-              banner{
+              banner {
                 desktop_url
                 mobile_url
+              }
+              status {
+                status
+                identifier
               }
             }
           }
