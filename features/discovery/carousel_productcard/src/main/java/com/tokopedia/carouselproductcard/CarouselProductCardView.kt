@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 
 class CarouselProductCardView: BaseCustomView {
 
-    private var carouselAdapter: CarouselProductCardAdapter? = null
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
 
@@ -85,17 +84,12 @@ class CarouselProductCardView: BaseCustomView {
 
         carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
 
-        if (carouselAdapter == null) {
-            carouselAdapter = CarouselProductCardAdapter()
-            setupCarouselProductCardRecyclerView(carouselAdapter!!)
-        }
+        val carouselAdapter = CarouselProductCardAdapter()
+        setupCarouselProductCardRecyclerView(carouselAdapter)
 
-        carouselAdapter?.let {
-            submitProductCardCarouselData(it, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
-        }
+        submitProductCardCarouselData(carouselAdapter, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
 
-
-        carouselLayoutManager?.run {
+        carouselLayoutManager.run {
             if (this is LinearLayoutManager) {
                 scrollToPositionWithOffset(position?:0,
                         context.applicationContext.resources.getDimensionPixelOffset(
