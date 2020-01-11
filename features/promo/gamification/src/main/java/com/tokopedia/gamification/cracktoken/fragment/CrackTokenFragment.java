@@ -72,6 +72,7 @@ import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.image.ImageUtils;
 
 import java.util.List;
 
@@ -408,14 +409,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         String backgroundUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
         ObjectKey signature = new ObjectKey(tokenUser.getBackgroundAsset().getVersion());
-        ImageHandler.loadImageWithSignature(ivContainer, backgroundUrl, signature, isLoaded -> {
+        ImageUtils.loadImageWithSignature(ivContainer, backgroundUrl, signature, isLoaded -> {
 
             if (isLoaded) {
                 float imageMatrixValues[] = new float[9];
                 ivContainer.getImageMatrix().getValues(imageMatrixValues);
                 widgetTokenView.initImageBound(imageMatrixValues[0], imageMatrixValues[5]);
             }
-            return isLoaded;
+            return null;
         });
 
         if (TextUtils.isEmpty(homeSmallButton.getImageURL())) {

@@ -44,6 +44,7 @@ import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView;
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.utils.image.ImageUtils;
 
 import javax.inject.Inject;
 
@@ -166,11 +167,11 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         String imageUrl = tokenData.getHome().getEmptyState().getImageUrl();
         ObjectKey signature = new ObjectKey(String.valueOf(tokenData.getHome().getEmptyState().getVersion()));
 
-        ImageHandler.loadImageWithSignature(ivContainer, backgroundUrl, signature, loaded -> {
+        ImageUtils.loadImageWithSignature(ivContainer, backgroundUrl, signature, loaded -> {
             if (loaded) {
                 setPercentageTokenImage();
             }
-            return loaded;
+            return null;
         });
         ImageHandler.loadImageWithSignature(tokenEmptyImage, imageUrl, signature);
 
