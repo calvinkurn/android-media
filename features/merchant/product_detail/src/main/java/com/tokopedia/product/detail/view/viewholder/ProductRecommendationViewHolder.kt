@@ -53,6 +53,7 @@ class ProductRecommendationViewHolder(private val view: View,
                 parentView = view,
                 isScrollable = true,
                 carouselModelId = carouselModelId,
+                recyclerViewPool = listener.getParentRecyclerViewPool(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = product.recommendationItemList[adapterPosition]

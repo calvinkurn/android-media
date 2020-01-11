@@ -26,6 +26,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
@@ -618,6 +619,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String) {
         productDetailTracking.eventRecommendationImpression(
                 position, recomItem, viewModel.isUserSessionActive, pageName, title)
+    }
+
+    override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
+        return getRecyclerView(view).recycledViewPool
     }
 
     override fun loadTopads() {

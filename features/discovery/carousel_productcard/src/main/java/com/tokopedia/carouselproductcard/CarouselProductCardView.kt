@@ -69,7 +69,8 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemLongClickListener: CarouselProductCardListener.OnItemLongClickListener? = null,
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
-            carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null) {
+            carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null,
+            recyclerViewPool: RecyclerView.RecycledViewPool? = null) {
 
         if (productCardModelList.isEmpty()) return
 
@@ -86,6 +87,8 @@ class CarouselProductCardView: BaseCustomView {
 
         val carouselAdapter = CarouselProductCardAdapter()
         setupCarouselProductCardRecyclerView(carouselAdapter)
+
+        recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
 
         submitProductCardCarouselData(carouselAdapter, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
 
