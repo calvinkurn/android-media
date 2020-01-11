@@ -184,7 +184,7 @@ class PartialSnapshotView(private val view: View,
 
     private fun showCountDownTimer(campaign: CampaignModular) {
         try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val endDateTimeMs = campaign.getEndDataInt * PartialHeaderView.ONE_SECOND
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
