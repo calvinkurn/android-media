@@ -146,6 +146,7 @@
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
 /libraries/base_adapter/								@tokopedia/core-team
+/libraries/base_list/							        @tokopedia/core-team
 /libraries/base_list_seller/							@tokopedia/core-team
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
