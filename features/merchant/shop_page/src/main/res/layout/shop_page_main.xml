@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/mainLayout"
@@ -93,11 +93,11 @@
 
                     <include
                         layout="@layout/partial_new_shop_page_header"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="bottom"
-                        app:layout_scrollFlags="scroll" />
+                        app:layout_scrollFlags="scroll"
+                        tools:visibility="gone" />
 
                     <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tabLayout"
@@ -132,13 +132,13 @@
 
     <com.tokopedia.design.image.RoundedCornerImageView
         android:id="@+id/button_chat"
-        android:layout_margin="@dimen/dp_16"
-        android:layout_gravity="bottom|right"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:srcCompat="@drawable/ic_chat_floating_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Q#WEEQE" />
+        android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/dp_16"
+        android:text="Q#WEEQE"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_chat_floating_button"
+        tools:visibility="visible" />
 </FrameLayout>
 

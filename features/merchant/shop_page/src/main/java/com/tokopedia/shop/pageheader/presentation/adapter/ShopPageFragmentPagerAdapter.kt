@@ -26,8 +26,8 @@ internal class ShopPageFragmentPagerAdapter(
         fragmentManager: FragmentManager
 ) : FragmentStatePagerAdapter(fragmentManager) {
     private val registeredFragments = SparseArrayCompat<Fragment>()
-    var listTitleIcon = listOf<Int>()
-    var listFragment = listOf<Fragment>()
+    private var listTitleIcon = listOf<Int>()
+    private var listFragment = listOf<Fragment>()
 
     private companion object {
         val tabViewLayout = R.layout.shop_page_tab_view
@@ -53,7 +53,7 @@ internal class ShopPageFragmentPagerAdapter(
         }
     }
 
-    fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
+    private fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
         ContextCompat.getDrawable(
                 this,
                 listTitleIcon[position]

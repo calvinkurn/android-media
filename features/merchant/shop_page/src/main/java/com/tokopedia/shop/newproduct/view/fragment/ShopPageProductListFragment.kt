@@ -934,4 +934,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
         this.shopId = shopInfo.shopCore.shopID
     }
+
+    fun getSelectedEtalaseId(): String {
+        return shopProductAdapter.shopProductEtalaseListViewModel?.let {
+            it.selectedEtalaseId
+        } ?: ""
+    }
 }

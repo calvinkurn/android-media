@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -61,6 +62,7 @@ import com.tokopedia.shop.oldpage.view.ShopPageViewModel
 import com.tokopedia.shop.oldpage.view.activity.ShopWebViewActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
@@ -93,7 +95,7 @@ class ShopPageFragment :
                 )
             }
         } else {
-
+            redirectToSettingProfileShop()
         }
     }
 
@@ -147,6 +149,7 @@ class ShopPageFragment :
     var shopAttribution: String? = null
     var isShowFeed: Boolean = false
     var isOfficialStore: Boolean = false
+    var isGoldMerchant: Boolean = false
     var createPostUrl: String = ""
     private var tabPosition = 0
     lateinit var stickyLoginView: StickyLoginView
@@ -207,11 +210,16 @@ class ShopPageFragment :
         viewPager.offscreenPageLimit = PAGE_LIMIT
         tabLayout.setupWithViewPager(viewPager)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                viewPagerAdapter.handleSelectedTab(tab,true)
+            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                viewPagerAdapter.handleSelectedTab(tab,false)
+            }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
+                viewPagerAdapter.handleSelectedTab(tab,true)
                 (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                     shopPageTracking.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
                             titles[tab.position],
@@ -349,9 +357,9 @@ class ShopPageFragment :
             searchBarText.setOnClickListener {
                 redirectToShopSearchProduct()
             }
-        }
-        searchBarSort.setOnClickListener {
-            openShopProductSortPage()
+            searchBarSort.setOnClickListener {
+                openShopProductSortPage()
+            }
         }
     }
 
@@ -434,7 +442,6 @@ class ShopPageFragment :
         }
     }
 
-
     private fun showCartBadge(menu: Menu?) {
         context?.let {
             val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
@@ -452,14 +459,38 @@ class ShopPageFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_action_search -> redirectToShopSearchProduct()
-//            R.id.menu_action_settings -> onClickCart()
-            R.id.menu_action_cart -> onClickCart()
-//            R.id.menu_action_shop_info -> onClickCart()
+            R.id.menu_action_settings -> redirectToShopSettingsPage()
+            R.id.menu_action_cart -> redirectToCartPage()
+            R.id.menu_action_shop_info -> redirectToShopInfoPage()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onClickCart() {
+    private fun redirectToShopInfoPage() {
+        view?.run {
+            Toaster.make(
+                    this,
+                    "Open Shop Info",
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    context.getString(R.string.oke)
+            )
+        }
+    }
+
+    private fun redirectToShopSettingsPage() {
+        view?.run {
+            Toaster.make(
+                    this,
+                    "Open Shop Settings",
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    context.getString(R.string.oke)
+            )
+        }
+    }
+
+    private fun redirectToCartPage() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickCartButton(shopViewModel.isMyShop(it.shopCore.shopID),
                     CustomDimensionShopPage.create(it.shopCore.shopID,
@@ -488,6 +519,7 @@ class ShopPageFragment :
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
+            isGoldMerchant = (goldOS.isGoldBadge == 1)
             shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             updateUIByShopName(shopCore.name)
             setupTabs()
@@ -632,7 +664,7 @@ class ShopPageFragment :
     private fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
         val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
-            //            shopPageViewHolder.updateViewModerateStatus(statusModerate, it, shopViewModel.isMyShop(it.shopCore.shopID))
+            shopPageFragmentHeaderViewHolder.updateViewModerateStatus(statusModerate, it, shopViewModel.isMyShop(it.shopCore.shopID))
         }
     }
 
@@ -654,7 +686,7 @@ class ShopPageFragment :
 
     private fun onErrorToggleFavourite(e: Throwable) {
         activity?.run {
-            //        shopPageViewHolder.updateFavoriteButton()
+            shopPageFragmentHeaderViewHolder.updateFavoriteButton()
             if (e is UserNotLoginException) {
                 val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
@@ -680,10 +712,33 @@ class ShopPageFragment :
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
             }
+        } else if (requestCode == REQUEST_CODE_SORT) {
+            data?.let {
+                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                redirectToShopSearchProductResultPage(sortName)
+            }
         } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
                 goToCart()
             }
+        }
+    }
+
+    private fun redirectToShopSearchProductResultPage(sortName: String) {
+        if (getShopInfoData() == null)
+            return
+        var selectedEtalaseId = ""
+        for (pos in 0 until viewPagerAdapter.count) {
+            val fragment = viewPagerAdapter.getRegisteredFragment(pos)
+            if (fragment is ShopPageProductListFragment) {
+                selectedEtalaseId = fragment.getSelectedEtalaseId()
+            }
+        }
+        if (selectedEtalaseId.isNotEmpty()) {
+            shopPageTracking.clickSortBy(isMyShop,
+                    sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
+            startActivity(ShopProductListActivity.createIntent(activity, shopId,
+                    "", selectedEtalaseId, "", sortName))
         }
     }
 
@@ -850,6 +905,17 @@ class ShopPageFragment :
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
             viewPager.setPadding(0, 0, 0, 0)
+        }
+    }
+
+    private fun redirectToSettingProfileShop() {
+        view?.run {
+            Toaster.make(
+                    this,
+                    "To Shop Profile Setting",
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
+            )
         }
     }
 }
