@@ -170,6 +170,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener,
         PromoNotEligibleActionListener, InsuranceItemActionListener {
 
+    private static int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
@@ -1312,7 +1313,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromRequestCodeCourierOptions(requestCode, data);
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
             onResultFromRequestCodeAddressOptions(resultCode, data);
-        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+        } else if (requestCode == LOYALTY_ACTIVITY_REQUEST_CODE) {
             onResultFromRequestCodeLoyalty(resultCode, data);
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data);
@@ -1791,7 +1792,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Promo promo = generateCheckPromoFirstStepParam();
 
         Intent intent = getIntentToPromoList(promo);
-        startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     @NotNull
@@ -2042,10 +2043,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Promo promo = generateCheckPromoFirstStepParam();
         if (dataGlobal.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
             Intent intent = getIntentToPromoDetail(promo, dataGlobal);
-            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             Intent intent = getIntentToPromoList(promo);
-            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 
