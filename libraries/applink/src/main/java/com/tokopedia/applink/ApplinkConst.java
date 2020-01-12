@@ -417,8 +417,8 @@ public interface ApplinkConst {
     }
 
     interface DigitalInstantDebit {
-        String INSTANT_DEBIT_BCA_APPLINK = "tokopedia://instantdebitbca"
-        String INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK = "tokopedia://editbcaoneklik"
+        String INSTANT_DEBIT_BCA_APPLINK = "tokopedia://instantdebitbca";
+        String INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK = "tokopedia://editbcaoneklik";
     }
 
     interface Transaction {
