@@ -1,7 +1,8 @@
 package com.tokopedia.core;
 
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import junit.framework.TestCase;
 

@@ -21,7 +21,6 @@ import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
@@ -30,6 +29,7 @@ import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.validator.CacheApiTKPDResponseValidator;
 import com.tokopedia.network.interceptor.DebugInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import javax.inject.Named;
@@ -202,9 +202,9 @@ public class OkHttpClientModule {
     @ApplicationScope
     @Provides
     public OkHttpClient provideOkHttpClientNoAuthNoFingerprint(TkpdBaseInterceptor tkpdBaseInterceptor,
-                                                  OkHttpRetryPolicy okHttpRetryPolicy,
-                                                  ChuckInterceptor chuckInterceptor,
-                                                  DebugInterceptor debugInterceptor) {
+                                                               OkHttpRetryPolicy okHttpRetryPolicy,
+                                                               ChuckInterceptor chuckInterceptor,
+                                                               DebugInterceptor debugInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientNoAuthNoFingerPrint(tkpdBaseInterceptor,
                 okHttpRetryPolicy,
