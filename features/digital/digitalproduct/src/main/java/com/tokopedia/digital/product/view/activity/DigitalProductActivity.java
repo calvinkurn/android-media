@@ -4,24 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
+
+import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.Objects;
 
-import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_PRODUCT;
 import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 
 /**
@@ -49,7 +47,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({DIGITAL_PRODUCT})
+    @DeepLink({ApplinkConst.Digital.DIGITAL_PRODUCT})
     public static Intent getcallingIntent(Context context, Bundle extras) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);

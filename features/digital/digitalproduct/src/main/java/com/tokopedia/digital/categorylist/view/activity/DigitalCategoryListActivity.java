@@ -6,10 +6,9 @@ import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment;
 
-import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL;
-import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_CATEGORY;
 import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 
 /**
@@ -26,7 +25,7 @@ public class DigitalCategoryListActivity extends BaseSimpleActivity {
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({DIGITAL_CATEGORY, DIGITAL})
+    @DeepLink({ApplinkConst.Digital.DIGITAL_CATEGORY, ApplinkConst.Digital.DIGITAL})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         int isCouponApplied = 0;
         if (extras.containsKey(KEY_IS_COUPON_APPLIED_APPLINK)) {

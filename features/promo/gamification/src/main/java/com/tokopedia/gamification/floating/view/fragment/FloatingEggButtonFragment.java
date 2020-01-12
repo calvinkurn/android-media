@@ -40,10 +40,10 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.di.GamificationComponent;
@@ -412,7 +412,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onClick(View v) {
 
-                RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION,null);
+                RouteManager.route(getActivity(), ApplinkConst.Gamification.GAMIFICATION,null);
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
                 trackingEggClick(tokenData.getId(), tokenData.getName());
             }

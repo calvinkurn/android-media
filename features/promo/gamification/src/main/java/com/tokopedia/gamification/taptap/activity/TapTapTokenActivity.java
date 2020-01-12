@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.taptap.fragment.TapTapTokenFragment;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 
@@ -18,7 +19,7 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
 
 
     @SuppressWarnings("unused")
-    @DeepLink(ApplinkConstant.GAMIFICATION2)
+    @DeepLink(ApplinkConst.Gamification.GAMIFICATION2)
     public static Intent getcallingIntent(Context context, Bundle extras) {
         return TapTapTokenActivity.newInstance(context);
     }

@@ -4,18 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
+
+import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.applink.DigitalApplinkConstant;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponentInstance;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
@@ -84,7 +85,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         return userSession.getUserId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
-    @DeepLink({DigitalApplinkConstant.DIGITAL_CART})
+    @DeepLink({ApplinkConst.Digital.DIGITAL_CART})
     public static Intent getApplinkInstance(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return DigitalCartActivity.newInstance(context, extras)
