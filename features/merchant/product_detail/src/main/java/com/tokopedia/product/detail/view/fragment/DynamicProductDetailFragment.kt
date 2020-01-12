@@ -665,7 +665,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         context?.let {
             val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
-            RouteManager.route(it, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId.toString())
+            ImageReviewGalleryActivity.moveTo(activity, productId)
         }
     }
 
