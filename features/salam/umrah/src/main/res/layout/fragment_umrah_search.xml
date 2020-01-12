@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
@@ -12,16 +11,34 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/umrah_search_recycler_view"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_64"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
-            android:clipToPadding="false"/>
+            android:layout_height="wrap_content">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/umrah_search_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_64" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_umrah_search_message"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_gravity="bottom|right"
+                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:backgroundTint="@color/green_300"
+                android:clickable="true"
+                app:backgroundTint="@color/green_300"
+                app:fabCustomSize="@dimen/dp_48"
+                app:srcCompat="@drawable/ic_umrah_message" />
+
+        </FrameLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <com.tokopedia.design.button.BottomActionView
@@ -30,12 +47,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone"
+        app:bav_1_display="true"
+        app:bav_2_display="true"
         app:bav_icon_1="@drawable/ic_system_action_sort_grayscale_24"
         app:bav_icon_2="@drawable/ic_system_action_filter_grayscale_24"
-        app:bav_1_display="true"
         app:bav_label_1="@string/travel_title_sort_search"
         app:bav_label_2="@string/label_filter"
-        app:bav_2_display="true"
         app:layout_anchor="@+id/umrah_search_recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal" />
 
