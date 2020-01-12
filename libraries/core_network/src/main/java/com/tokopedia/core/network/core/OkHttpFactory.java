@@ -1,7 +1,6 @@
 package com.tokopedia.core.network.core;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -21,6 +20,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.interceptor.DebugInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
