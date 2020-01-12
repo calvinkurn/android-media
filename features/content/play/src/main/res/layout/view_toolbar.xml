@@ -12,8 +12,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_play_back_white"
@@ -74,8 +74,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_more"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/dp_2"
             android:layout_marginRight="@dimen/dp_2"
             app:layout_constraintBottom_toBottomOf="@id/tv_stream_name"
