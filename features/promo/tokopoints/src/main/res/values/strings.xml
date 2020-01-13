@@ -92,7 +92,7 @@
     <string name="tnc_coupon_catalog"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="how_to_use_coupon_catalog">Cara Pakai</string>
     <string name="tp_gift_btn_text">Hadiahin</string>
-    <string name="tp_default_gift_text">Hadiahin kupon ini ke temanmu!</string>
+    <string name="tp_default_gift_text">Mau kirim kupon ini ke temanmu?</string>
     <string name="tp_title_kirim_coupon">Kirim Kupon</string>
     <string name="tp_coupon_name">Kupon Travel Cashback hingga Rp300.000</string>
     <string name="tp_pesan">Pesan:</string>
