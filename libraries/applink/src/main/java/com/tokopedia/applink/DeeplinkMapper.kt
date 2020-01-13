@@ -21,6 +21,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
+import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -43,6 +44,7 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
+                    deeplink.startsWith(ApplinkConst.SALAM_UMRAH_SHOP, true) -> getRegisteredNavigationSalamUmrahShop(deeplink, context)
                     deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
                         getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
@@ -70,13 +72,13 @@ object DeeplinkMapper {
                         getRegisteredNavigationMoneyIn(deeplink)
                     deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
                         getRegisteredNavigationForFintech(deeplink)
-                    deeplink.startsWith(ApplinkConst.SALAM_UMRAH,true) ->
+                    deeplink.startsWith(ApplinkConst.SALAM_UMRAH, true) ->
                         getRegisteredNavigationSalamUmrah(deeplink, context)
-                    deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL,true) ->
+                    deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL, true) ->
                         getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
                     else -> {
-                        if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
-                            getRegisteredCategoryNavigation(getSegments(deeplink),deeplink)
+                        if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
+                            getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
                         } else if (query?.isNotEmpty() == true) {
                             val tempDL = if (deeplink.contains('?')) {
                                 deeplink.substring(0, deeplink.indexOf('?'))
@@ -136,7 +138,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
         val trimDeeplink = trimDeeplink(deeplink)
         val mappedDeeplink = when (trimDeeplink) {
-            ApplinkConst.PRODUCT_ADD ->  ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_NOTIFICATION -> ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
@@ -175,7 +177,13 @@ object DeeplinkMapper {
         return ""
     }
 
-    private fun trimDeeplink(deeplink:String) = deeplink.substringBeforeLast("/")
+    private fun trimDeeplink(deeplink: String): String {
+        return if (deeplink.endsWith("/")) {
+            deeplink.substringBeforeLast("/")
+        } else {
+            deeplink
+        }
+    }
 
     private fun getSegments(deeplink: String): List<String> {
         return Uri.parse(deeplink).pathSegments
@@ -184,14 +192,14 @@ object DeeplinkMapper {
     private fun specialNavigationMapper(deeplink: String, host: String): Boolean {
         val uri = Uri.parse(deeplink)
         return uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME
-                && uri.host == host
-                && uri.pathSegments.size > 0
+            && uri.host == host
+            && uri.pathSegments.size > 0
     }
 
     private fun getCreateReviewInternal(deeplink: String): String {
         val parsedUri = Uri.parse(deeplink)
         val segments = parsedUri.pathSegments
-        val rating = parsedUri.getQueryParameter("rating")?: "5"
+        val rating = parsedUri.getQueryParameter("rating") ?: "5"
 
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
