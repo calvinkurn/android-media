@@ -6,7 +6,7 @@
         android:id="@+id/v_gradient_background"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@drawable/bg_play_gradient"
+        android:background="@drawable/bg_play_top_gradient_black"
         />
 
 </merge>
