@@ -39,6 +39,7 @@ import com.tokopedia.play.ui.quickreply.QuickReplyComponent
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
+import com.tokopedia.play.ui.sizecontainer.SizeContainerComponent
 import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
@@ -112,6 +113,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var immersiveBoxComponent: UIComponent<*>
     private lateinit var videoControlComponent: UIComponent<*>
     private lateinit var gradientBackgroundComponent: UIComponent<*>
+    private lateinit var sizeContainerComponent: UIComponent<*>
     private lateinit var toolbarComponent: UIComponent<*>
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
@@ -199,10 +201,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun setInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
 
-            val toolbarView = view.findViewById<View>(toolbarComponent.getContainerId())
-            toolbarView.setPadding(toolbarView.paddingLeft, insets.systemWindowInsetTop, toolbarView.paddingRight, toolbarView.paddingBottom)
-
-            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, offset16 + insets.systemWindowInsetBottom)
+            val sizeContainerView = view.findViewById<View>(sizeContainerComponent.getContainerId())
+            val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
+            sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
+            sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
 
             insets
         }
@@ -320,6 +322,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
+        sizeContainerComponent = initSizeContainerComponent(container)
         gradientBackgroundComponent = initGradientBackgroundComponent(container)
         sendChatComponent = initSendChatComponent(container)
         likeComponent = initLikeComponent(container)
@@ -335,6 +338,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         layoutView(
                 container = container,
+                sizeContainerComponentId = sizeContainerComponent.getContainerId(),
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
                 statsComponentId = statsComponent.getContainerId(),
@@ -415,6 +419,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
+    private fun initSizeContainerComponent(container: ViewGroup): UIComponent<Unit> {
+        return SizeContainerComponent(container)
+    }
+
     private fun initGradientBackgroundComponent(container: ViewGroup): UIComponent<Unit> {
         return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
@@ -492,6 +500,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //region layouting
     private fun layoutView(
             container: ViewGroup,
+            @IdRes sizeContainerComponentId: Int,
             @IdRes sendChatComponentId: Int,
             @IdRes likeComponentId: Int,
             @IdRes statsComponentId: Int,
@@ -504,6 +513,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             @IdRes immersiveBoxComponentId: Int,
             @IdRes quickReplyComponentId: Int
     ) {
+
+        fun layoutSizeContainer(container: ViewGroup, @IdRes id: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            }
+
+            constraintSet.applyTo(container)
+        }
 
         fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int) {
             val constraintSet = ConstraintSet()
@@ -573,7 +597,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutVideoControl(container: ViewGroup, @IdRes id: Int, @IdRes toolbarComponentId: Int) {
+        fun layoutVideoControl(container: ViewGroup, @IdRes id: Int, @IdRes toolbarComponentId: Int, @IdRes sizeContainerComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
@@ -581,7 +605,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.apply {
                 connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
                 connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
             }
 
             constraintSet.applyTo(container)
@@ -602,15 +626,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutToolbar(container: ViewGroup, @IdRes id: Int) {
+        fun layoutToolbar(container: ViewGroup, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, offset16)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, offset16)
-                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, offset16)
+                connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
+                connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
+                connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP, offset16)
             }
 
             constraintSet.applyTo(container)
@@ -660,8 +684,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        layoutToolbar(container, toolbarComponentId)
-        layoutVideoControl(container, videoControlComponentId, toolbarComponentId)
+        layoutSizeContainer(container, sizeContainerComponentId)
+        layoutToolbar(container, toolbarComponentId, sizeContainerComponentId)
+        layoutVideoControl(container, videoControlComponentId, toolbarComponentId, sizeContainerComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId, toolbarComponentId)
         layoutChat(container, sendChatComponentId, likeComponentId, toolbarComponentId)
         layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId, toolbarComponentId)
