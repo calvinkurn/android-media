@@ -3,6 +3,7 @@ package com.tokopedia.attachvoucher.view.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
@@ -18,7 +19,11 @@ class AttachVoucherViewModel @Inject constructor(
 
     var filter: MutableLiveData<Int> = MutableLiveData()
     var vouchers: MutableLiveData<List<Voucher>> = MutableLiveData()
-    var filteredVouchers: LiveData<List<Voucher>> = MutableLiveData()
+    var filteredVouchers: LiveData<List<Voucher>> = Transformations.map(filter) {
+        vouchers.value?.filter { voucher ->
+            (filter.value == NO_FILTER || filter.value == voucher.type)
+        } ?: emptyList()
+    }
 
     fun initializeArguments(arguments: Bundle?) {
         if (arguments == null) return
@@ -34,10 +39,6 @@ class AttachVoucherViewModel @Inject constructor(
         }
     }
 
-    fun clearFilter() {
-
-    }
-
     fun loadVouchers() {
         if (shopId.isEmpty()) return
         getVouchersUseCase.getVouchers(
@@ -49,6 +50,7 @@ class AttachVoucherViewModel @Inject constructor(
 
     private fun onSuccessGetVouchers(getVoucherResponse: GetVoucherResponse) {
         vouchers.value = getVoucherResponse.vouchers
+        filter.value = NO_FILTER
     }
 
     private fun onErrorGetVouchers(throwable: Throwable) {

@@ -85,7 +85,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun observeVoucherResponse() {
-        viewModel.vouchers.observe(viewLifecycleOwner, Observer { vouchers ->
+        viewModel.filteredVouchers.observe(viewLifecycleOwner, Observer { vouchers ->
+            clearAllData()
             renderList(vouchers)
         })
     }

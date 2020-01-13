@@ -33,6 +33,7 @@ class Voucher(
 ), Visitable<AttachVoucherTypeFactory> {
 
     val availableAmount: String get() = merchantVoucherAmount?.amount?.toInt()?.toString() ?: ""
+    val type: Int? get() = merchantVoucherType?.type
 
     override fun type(typeFactory: AttachVoucherTypeFactory): Int {
         return typeFactory.type(this)
