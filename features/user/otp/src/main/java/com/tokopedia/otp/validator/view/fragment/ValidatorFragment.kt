@@ -321,13 +321,17 @@ class ValidatorFragment: BaseDaggerFragment(){
         inputVerifyCode.text.clear()
         inputVerifyCode.requestFocus()
         inputVerifyCode.requestFocusFromTouch()
-        throwable.message?.let {
-            analytics.trackFailedClickOkResendButton(it)
-            analytics.trackFailedClickResendButton(it)
-            if (it.isEmpty()) {
-                NetworkErrorHelper.showSnackbar(activity)
-            } else {
-                NetworkErrorHelper.showSnackbar(activity, it)
+        throwable.let {message ->
+            message.message?.let {
+                analytics.trackFailedClickOkResendButton(it)
+                analytics.trackFailedClickResendButton(it)
+            }
+
+            view?.let {
+                val error = ErrorHandlerSession.getErrorMessage(message, context, true)
+                NetworkErrorHelper.showEmptyState(context, it, error) {
+                    requestCode(true)
+                }
             }
         }
     }
