@@ -47,7 +47,7 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
 
     private fun mapToTotalView(): TotalView {
         val totalView = gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
-        if (totalView.totalViewFormatted.isEmpty())
+        if (totalView.totalViewFormatted.isNullOrEmpty())
             totalView.totalViewFormatted = totalView.totalView.toString()
         return totalView
     }
