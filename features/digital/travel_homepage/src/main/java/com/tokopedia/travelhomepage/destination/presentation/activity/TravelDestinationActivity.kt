@@ -14,6 +14,7 @@ import com.tokopedia.travelhomepage.destination.presentation.fragment.TravelDest
 class TravelDestinationActivity : BaseSimpleActivity(), HasComponent<TravelDestinationComponent> {
 
     private lateinit var travelDestinationComponent: TravelDestinationComponent
+    var cityId: String = ""
 
     override fun getComponent(): TravelDestinationComponent {
         if (!::travelDestinationComponent.isInitialized) {
@@ -23,9 +24,15 @@ class TravelDestinationActivity : BaseSimpleActivity(), HasComponent<TravelDesti
     }
 
     override fun getNewFragment(): Fragment = TravelDestinationFragment.getInstance(
-            intent.getStringExtra(EXTRA_DESTINATION_WEB_URL))
+            intent.getStringExtra(EXTRA_DESTINATION_WEB_URL) ?: "", cityId)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val uri = intent.data
+        if (uri != null) {
+            if (!uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty()) cityId = uri.getQueryParameter(PARAM_CITY_ID) ?: ""
+        }
+
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
@@ -39,6 +46,7 @@ class TravelDestinationActivity : BaseSimpleActivity(), HasComponent<TravelDesti
 
     companion object {
         const val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
+        const val PARAM_CITY_ID = "city_id"
 
         fun createInstance(context: Context, webUrl: String = ""): Intent =
                 Intent(context, TravelDestinationActivity::class.java)

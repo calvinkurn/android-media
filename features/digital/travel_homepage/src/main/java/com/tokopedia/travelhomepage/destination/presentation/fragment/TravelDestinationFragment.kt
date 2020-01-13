@@ -37,6 +37,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.PARAM_CITY_ID
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_RECOMMENDATION_ORDER
@@ -71,6 +72,7 @@ OnViewHolderBindListener{
 
         arguments?.let {
             webUrl = it.getString(EXTRA_DESTINATION_WEB_URL, "")
+            cityId = it.getString(PARAM_CITY_ID, "")
         }
     }
 
@@ -139,7 +141,11 @@ OnViewHolderBindListener{
             webUrl = savedInstanceState.getString(SAVED_DESTINATION_WEB_URL, "")
         }
 
-        destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
+        if (cityId.isEmpty()) {
+            destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
+        } else {
+            destinationViewModel.getInitialList()
+        }
     }
 
     private fun setUpContentPeekSize(peekSize: Int) {
@@ -230,7 +236,8 @@ OnViewHolderBindListener{
         destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), cityId)
     }
 
-    override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int) {
+    override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int, cityName: String) {
+        if (this.cityName.isEmpty()) this.cityName = cityName
         renderLayout()
         setUpContentPeekSize(peekSize)
         if (imgUrls.isNotEmpty()) {
@@ -286,10 +293,12 @@ OnViewHolderBindListener{
     companion object {
 
         const val SAVED_DESTINATION_WEB_URL = "webUrl"
+        const val SAVED_CITY_ID = "cityId"
 
-        fun getInstance(webUrl: String): TravelDestinationFragment = TravelDestinationFragment().also {
+        fun getInstance(webUrl: String, cityId: String): TravelDestinationFragment = TravelDestinationFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_DESTINATION_WEB_URL, webUrl)
+                putString(PARAM_CITY_ID, cityId)
             }
         }
     }

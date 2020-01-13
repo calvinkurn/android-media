@@ -44,7 +44,7 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
                 anim1.repeatMode = Animation.REVERSE
                 arrow_up.animation = anim1
 
-                onViewHolderBindListener.onCitySummaryLoaded(list, peek_layout.height)
+                onViewHolderBindListener.onCitySummaryLoaded(list, peek_layout.height, element.title)
             }
         } else {
             onViewHolderBindListener.onCitySummaryVHBind()
