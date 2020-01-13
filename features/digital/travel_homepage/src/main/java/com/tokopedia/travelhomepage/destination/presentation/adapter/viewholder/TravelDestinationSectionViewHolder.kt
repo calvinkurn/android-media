@@ -10,6 +10,9 @@ import com.tokopedia.travelhomepage.destination.listener.OnClickListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.presentation.adapter.TravelDestinationSectionAdapter
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.ORDER_LIST_ORDER
 import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.view.*
 
 /**
@@ -48,12 +51,17 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
                     }
                 }
             } else {
-                itemView.hide()
+                itemView.section_layout.hide()
+                itemView.shimmering.hide()
             }
         } else {
             itemView.shimmering.show()
             itemView.section_layout.hide()
-            onViewHolderBindListener.onCityDealsVHBind()
+            when (element.type) {
+                CITY_EVENT_ORDER -> onViewHolderBindListener.onCityEventVHBind()
+                CITY_DEALS_ORDER -> onViewHolderBindListener.onCityDealsVHBind()
+                ORDER_LIST_ORDER -> onViewHolderBindListener.onOrderListVHBind()
+            }
         }
     }
 

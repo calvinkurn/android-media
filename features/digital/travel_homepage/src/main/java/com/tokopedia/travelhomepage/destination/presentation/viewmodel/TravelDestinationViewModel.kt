@@ -13,8 +13,8 @@ import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
 import com.tokopedia.travelhomepage.destination.model.mapper.TravelDestinationMapper
 import com.tokopedia.travelhomepage.destination.usecase.GetEmptyViewModelsUseCase
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
-import com.tokopedia.travelhomepage.homepage.presentation.viewmodel.TravelHomepageViewModel.Companion.PARAM_PRODUCT
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -85,27 +85,27 @@ class TravelDestinationViewModel  @Inject constructor(
         }
     }
 
-    fun getCityRecommendationData(query: String, cityId: String) {
+    fun getCityRecommendationData(query: String, cityId: String, product: String, order: Int) {
         launchCatchError(block ={
             val data = withContext(Dispatchers.Default) {
-                val param = mapOf(PARAM_PRODUCT to "ALL", PARAM_CITY_ID to cityId.toInt())
+                val param = mapOf(PARAM_PRODUCT to product, PARAM_CITY_ID to cityId.toInt())
                 val graphqlRequest = GraphqlRequest(query, TravelHomepageRecommendationModel.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TravelHomepageRecommendationModel.Response>()
 
             travelDestinationItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[CITY_RECOMMENDATION_ORDER] = mapper.mapToSectionViewModel(data.response, CITY_RECOMMENDATION_ORDER)
-                updatedList[CITY_RECOMMENDATION_ORDER].isLoaded = true
-                updatedList[CITY_RECOMMENDATION_ORDER].isSuccess = true
+                updatedList[order] = mapper.mapToSectionViewModel(data.response, order)
+                updatedList[order].isLoaded = true
+                updatedList[order].isSuccess = true
                 _travelDestinationItemList.postValue(updatedList)
             }
 
         }) {
             travelDestinationItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[CITY_RECOMMENDATION_ORDER].isLoaded = true
-                updatedList[CITY_RECOMMENDATION_ORDER].isSuccess = false
+                updatedList[order].isLoaded = true
+                updatedList[order].isSuccess = false
                 _travelDestinationItemList.postValue(updatedList)
                 checkIfAllError()
             }
@@ -135,6 +135,32 @@ class TravelDestinationViewModel  @Inject constructor(
                 updatedList[CITY_DEALS_ORDER].isLoaded = true
                 updatedList[CITY_DEALS_ORDER].isSuccess = false
                 _travelDestinationItemList.postValue(updatedList)
+                checkIfAllError()
+            }
+        }
+    }
+
+    fun getOrderList(query: String, cityId: String) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success", PARAM_CITY_ID to cityId.toInt())
+                val graphqlRequest = GraphqlRequest(query, TravelHomepageOrderListModel.Response::class.java, param)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TravelHomepageOrderListModel.Response>()
+
+                travelDestinationItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[ORDER_LIST_ORDER] = mapper.mapToSectionViewModel(data.response)
+                updatedList[ORDER_LIST_ORDER].isLoaded = true
+                updatedList[ORDER_LIST_ORDER].isSuccess = true
+                _travelDestinationItemList.value = updatedList
+            }
+        }) {
+            travelDestinationItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[ORDER_LIST_ORDER].isLoaded = true
+                updatedList[ORDER_LIST_ORDER].isSuccess = false
+                _travelDestinationItemList.value = updatedList
                 checkIfAllError()
             }
         }
@@ -184,9 +210,16 @@ class TravelDestinationViewModel  @Inject constructor(
         const val PARAM_WEBURLS = "webURLs"
         const val PARAM_CITY_ID = "cityID"
 
-        val SUMMARY_ORDER = 0
-        val CITY_RECOMMENDATION_ORDER = 1
-        val CITY_DEALS_ORDER = 2
-        val CITY_ARTICLE_ORDER = 3
+        const val SUMMARY_ORDER = 0
+        const val ORDER_LIST_ORDER = 1
+        const val CITY_RECOMMENDATION_ORDER = 2
+        const val CITY_EVENT_ORDER = 3
+        const val CITY_DEALS_ORDER = 4
+        const val CITY_ARTICLE_ORDER = 5
+
+        const val PARAM_PAGE = "page"
+        const val PARAM_PER_PAGE = "perPage"
+        const val PARAM_FILTER_STATUS = "filterStatus"
+        const val PARAM_PRODUCT = "product"
     }
 }

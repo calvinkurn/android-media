@@ -9,8 +9,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.OnClickListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.ORDER_LIST_ORDER
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
 
 /**
@@ -40,7 +39,7 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
 
     override fun getItemViewType(position: Int): Int {
         val item = list[position]
-        return if (type == TYPE_ORDER_LIST) {
+        return if (type == ORDER_LIST_ORDER) {
             if (item.subtitle.isBlank()) ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE else ViewHolder.ORDER_LAYOUT
         } else {
             if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT

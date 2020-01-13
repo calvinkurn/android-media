@@ -28,7 +28,7 @@ data class TravelDestinationSectionViewModel(
     )
 
     companion object {
-        val PREFIX_STYLE_STRIKETHROUGH = "strikethrough"
-        val PREFIX_STYLE_NORMAL = "normal"
+        const val PREFIX_STYLE_STRIKETHROUGH = "strikethrough"
+        const val PREFIX_STYLE_NORMAL = "normal"
     }
 }

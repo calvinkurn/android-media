@@ -36,6 +36,10 @@ import android.widget.ImageView
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_RECOMMENDATION_ORDER
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.android.synthetic.main.layout_travel_destination_shimmering.*
 import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
@@ -87,7 +91,6 @@ OnViewHolderBindListener{
                 is Success -> {
                     cityId = it.data.cityId
                     cityName = it.data.cityName
-                    renderLayout()
                     destinationViewModel.getInitialList()
                 }
 
@@ -173,6 +176,7 @@ OnViewHolderBindListener{
         shimmering_back_icon.setOnClickListener { activity?.onBackPressed() }
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
+            var isShowMoveUpLayout = true
             var scrollRange = -1
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -187,6 +191,15 @@ OnViewHolderBindListener{
                     collapsing_toolbar.title = " "
                     navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
+                }
+
+                if (verticalOffset < -50) {
+                    arrow_up?.hide()
+                    tv_move_up?.hide()
+                    isShowMoveUpLayout = false
+                } else if (!isShowMoveUpLayout) {
+                    arrow_up?.show()
+                    tv_move_up?.show()
                 }
 
                 (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
@@ -218,6 +231,7 @@ OnViewHolderBindListener{
     }
 
     override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int) {
+        renderLayout()
         setUpContentPeekSize(peekSize)
         if (imgUrls.isNotEmpty()) {
             travel_homepage_destination_view_pager.setImages(imgUrls)
@@ -247,15 +261,26 @@ OnViewHolderBindListener{
     private fun getIndicator(): Int = R.drawable.widget_image_view_indicator
 
     override fun onCityRecommendationVHBind() {
-        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), cityId)
+        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
+                cityId, "ALL", CITY_RECOMMENDATION_ORDER)
     }
 
     override fun onCityDealsVHBind() {
-        destinationViewModel.getCityDeals(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), cityId)
+        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
+                cityId, "DEALS", CITY_DEALS_ORDER)
     }
 
     override fun onCityArticleVHBind() {
         destinationViewModel.getCityArticles(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article), cityId)
+    }
+
+    override fun onOrderListVHBind() {
+        destinationViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list), cityId)
+    }
+
+    override fun onCityEventVHBind() {
+        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
+                cityId, "EVENTS", CITY_EVENT_ORDER)
     }
 
     companion object {

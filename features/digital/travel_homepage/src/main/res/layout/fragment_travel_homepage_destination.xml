@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -26,7 +26,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/toolbar_container"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.6"
                     tools:background="@color/Green_G500">
@@ -64,25 +64,24 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/container_city_detail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="-72dp"
             android:background="@color/transparent"
-            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:clipToPadding="false"
                 tools:background="@color/transparent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -96,7 +95,7 @@
                     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/bg_white_travel_destination_content"
                         android:nestedScrollingEnabled="false"
                         android:paddingBottom="@dimen/dp_32" />
@@ -105,14 +104,14 @@
 
             </androidx.core.widget.NestedScrollView>
 
-        </LinearLayout>
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/layout_travel_destination_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/layout_travel_destination_shimmering"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <include
-        android:id="@+id/layout_travel_destination_shimmering"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/layout_travel_destination_shimmering" />
 
 </RelativeLayout>
