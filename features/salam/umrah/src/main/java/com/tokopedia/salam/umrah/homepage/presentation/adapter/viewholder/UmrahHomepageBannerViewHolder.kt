@@ -22,7 +22,10 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                 umrah_banner_shimmering.hide()
                 banner_umrah_home_page.apply {
                     show()
-                    customWidth = Resources.getSystem().displayMetrics.widthPixels-120
+                    val width = Resources.getSystem().displayMetrics.widthPixels-120
+                    customWidth = width
+                    customHeight = width/3
+
                     setBannerIndicator(GREEN_INDICATOR)
                     val listImageUrl = UmrahHomepageBannerMapper.bannerMappertoString(element.data)
                     setPromoList(listImageUrl)
