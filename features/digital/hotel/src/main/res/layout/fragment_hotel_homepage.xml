@@ -201,6 +201,46 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/hotel_container_last_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hotel_homepage_last_search_title"
+                    app:fontSize="title"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_hotel_homepage_all_last_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/hotel_show_all_text"
+                    android:textColor="@color/green_500"
+                    app:fontSize="micro" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_hotel_homepage_last_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/hotel_container_promo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -237,7 +277,7 @@
                 android:id="@+id/banner_hotel_homepage_promo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"/>
+                android:clipToPadding="false" />
 
         </LinearLayout>
 
