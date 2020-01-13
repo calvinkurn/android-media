@@ -194,6 +194,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                         if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
                             val itemPromoData = it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)
                             promoCode = itemPromoData.promoCode
+                            hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
+
                             when (itemPromoData.state) {
                                 TickerCheckoutView.State.EMPTY -> {
                                     promoCode = ""
@@ -479,7 +481,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     val intent: Intent
                     if (promoCode.isNotEmpty()) {
                         val requestCode: Int
-                        if (cart.appliedVoucher.isCoupon == 1) {
+                        if (hotelCart.appliedVoucher.isCoupon == 1) {
                             intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
                             intent.putExtra(COUPON_EXTRA_IS_USE, true)
                             intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
@@ -490,7 +492,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                             intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, true)
                             requestCode = REQUST_CODE_PROMO_LIST
                         }
-                        intent.putExtra(COUPON_EXTRA_CART_ID, cart.cartID)
+                        intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
                         startActivityForResult(intent, requestCode)
                     }
                 }
