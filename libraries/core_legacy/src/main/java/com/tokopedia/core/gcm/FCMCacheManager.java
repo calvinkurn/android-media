@@ -11,14 +11,9 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
-import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -27,18 +22,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-
 /**
  * @author by Herdi_WORK on 13.12.16.
  */
 
 public class FCMCacheManager {
-    public static final String GCM_ID = com.tokopedia.user.session.Constants.GCM_ID;
+    public static final String GCM_ID = "gcm_id";
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
-    public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
     private String NOTIFICATION_CODE = "tkp_code";
-    private static final String GCM_STORAGE = com.tokopedia.user.session.Constants.GCM_STORAGE;
+    private static final String GCM_STORAGE = "GCM_STORAGE";
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
@@ -175,39 +167,6 @@ public class FCMCacheManager {
         cache.applyEditor();
     }
 
-    public static boolean isFcmExpired(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        long lastFCMUpdate = cache.getLong(GCM_ID_TIMESTAMP, 0);
-        if (lastFCMUpdate <= 0) {
-            FCMCacheManager.storeFcmTimestamp(context);
-            return false;
-        }
-
-        return (System.currentTimeMillis() - lastFCMUpdate) >= GCM_ID_EXPIRED_TIME;
-    }
-
-    public static void checkAndSyncFcmId(final Context context) {
-        if (FCMCacheManager.isFcmExpired(context)) {
-            updateGcmId(context);
-        }
-    }
-
-    /**
-     * Only call this method when you need to update GCM Id.
-     * Do not change this method**/
-    public static void updateGcmId(Context context) {
-        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
-        if (sessionHandler.isV4Login()) {
-            IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
-            FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
-            tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
-            tokenUpdate.setOsType(String.valueOf(1));
-            tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
-            tokenUpdate.setUserId(sessionHandler.getLoginID());
-            fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
-        }
-    }
-
     public static String getRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         return cache.getString(GCM_ID, "");
@@ -230,48 +189,14 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationIdWithTemp(Context context) {
-        String gcmId = getAndTrimOldString(context, GCM_STORAGE, GCM_ID, "");
-        if (gcmId.equals("")) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        if (cache.getString("gcm_id", "").equals("")) {
             String tempID = getTempFcmId();
-            setString(context, GCM_STORAGE, GCM_ID, tempID);
+            cache.putString("gcm_id", tempID);
+            cache.applyEditor();
             return tempID;
         }
-        return gcmId;
-    }
-
-    static String getString(Context context, String prefName, String keyName, String defValue) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
-    }
-
-    static void cleanKey(Context context,  String prefName, String keyName){
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.remove(keyName).apply();
-    }
-
-    static void setString(Context context,String prefName, String keyName, String value) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(keyName, value);
-        editor.apply();
-    }
-
-    static String getAndTrimOldString(Context context, String prefName, String keyName, String defValue) {
-
-        String oldprefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-        String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
-
-        String oldValue = getString(context, oldprefName, oldKeyName, defValue);
-
-        if(oldValue != null && !oldValue.equals(defValue)){
-            cleanKey(context, oldprefName, oldKeyName);
-            setString(context, prefName, keyName, oldValue);
-            return oldValue;
-        }
-
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
+        return cache.getString("gcm_id", "");
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {
