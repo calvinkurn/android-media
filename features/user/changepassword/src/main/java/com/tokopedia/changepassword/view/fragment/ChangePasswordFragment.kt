@@ -104,16 +104,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun disableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
-                .bg_button_disabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.grey_500))
         submit_button.isEnabled = false
     }
 
     private fun enableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
-                .button_curvy_green))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.white))
         submit_button.isEnabled = true
     }
 
