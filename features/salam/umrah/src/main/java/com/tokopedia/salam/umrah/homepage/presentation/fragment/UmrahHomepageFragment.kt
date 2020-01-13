@@ -21,6 +21,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
 import com.tokopedia.salam.umrah.homepage.data.Products
+import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageModel
 import com.tokopedia.salam.umrah.homepage.di.UmrahHomepageComponent
@@ -148,6 +149,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         isRequestedCategory = false
         isDreamFundViewed = false
         isRequestedSpinnerLike = false
+        isRequestedBanner = false
     }
 
     private fun loadDataAll() {
@@ -225,12 +227,28 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onImpressionFeaturedCategory(headerTitle: String, product: Products, position: Int, positionDC: Int) {
         trackingUmrahUtil.umrahImpressionFeaturedCategoryTracker(headerTitle,product, position, positionDC)
     }
+
+    override fun onBindBannerVH(isLoadedFromCloud: Boolean) {
+        umrahHomepageViewModel.getBannerData(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_umrah_home_page_search_parameter), isLoadedFromCloud,
+                GraphqlHelper.loadRawString(resources, R.raw.dummy_response_banner)
+                )
+    }
+
+    override fun onClickBanner(banner: UmrahBanner, position: Int) {
+        trackingUmrahUtil.umrahClickBannerTracker(banner, position)
+    }
+
+    override fun onImpressionBanner(banner: UmrahBanner, position: Int) {
+        trackingUmrahUtil.umrahImpressionBannerTracker(banner,position)
+    }
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false
         var isDreamFundViewed = false
         var isRequestedCategory = false
         var isRequestedSpinnerLike = false
+        var isRequestedBanner = false
         const val REQUEST_CODE_LOGIN = 400
         const val UMRAH_SEARCH_PARAM_INDEX = 0
     }
