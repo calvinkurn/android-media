@@ -16,7 +16,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/Green_G500" />
+        tools:background="@color/Green_G500"
+        android:scaleType="fitXY"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_travel_destination_recommendation_item_subtitle"

@@ -29,7 +29,6 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
                 for (img in element.images) {
                     list.add(img.imageUrl)
                 }
-                onViewHolderBindListener.onCitySummaryLoaded(list, 0)
 
                 destination_summary_title.text = Html.fromHtml(element.title)
                 destination_summary_description.text = element.description
@@ -44,6 +43,8 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
                 anim1.repeatCount = -1
                 anim1.repeatMode = Animation.REVERSE
                 arrow_up.animation = anim1
+
+                onViewHolderBindListener.onCitySummaryLoaded(list, peek_layout.height)
             }
         } else {
             onViewHolderBindListener.onCitySummaryVHBind()

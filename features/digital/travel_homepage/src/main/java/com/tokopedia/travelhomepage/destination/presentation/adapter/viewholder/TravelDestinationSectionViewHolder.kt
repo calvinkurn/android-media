@@ -23,11 +23,12 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
 
     override fun bind(element: TravelDestinationSectionViewModel) {
         if (element.isLoaded) {
-            if (element.list.isNotEmpty()) {
-                itemView.section_layout.visibility = View.VISIBLE
-                itemView.shimmering.visibility = View.GONE
+            if (element.isSuccess && element.list.isNotEmpty()) {
 
                 with(itemView) {
+                    section_layout.show()
+                    shimmering.hide()
+
                     section_title.text = element.title
                     if (element.seeAllUrl.isNotBlank()) {
                         section_see_all.show()
@@ -47,12 +48,11 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
                     }
                 }
             } else {
-                itemView.section_layout.hide()
-                itemView.shimmering.hide()
+                itemView.hide()
             }
         } else {
-            itemView.shimmering.visibility = View.VISIBLE
-            itemView.section_layout.visibility = View.GONE
+            itemView.shimmering.show()
+            itemView.section_layout.hide()
             onViewHolderBindListener.onCityDealsVHBind()
         }
     }

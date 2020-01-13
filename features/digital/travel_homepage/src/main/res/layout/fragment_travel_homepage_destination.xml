@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fitsSystemWindows="true">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -67,8 +67,8 @@
         <LinearLayout
             android:id="@+id/container_city_detail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="-68dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-72dp"
             android:background="@color/transparent"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -76,7 +76,7 @@
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 tools:background="@color/transparent">
 
@@ -108,5 +108,11 @@
         </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <include
+        android:id="@+id/layout_travel_destination_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/layout_travel_destination_shimmering" />
 
 </RelativeLayout>

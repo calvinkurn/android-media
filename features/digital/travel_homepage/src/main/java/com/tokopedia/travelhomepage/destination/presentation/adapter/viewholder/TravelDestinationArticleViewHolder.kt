@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.OnClickListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
@@ -28,6 +29,8 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
         if (element.isLoaded) {
             with(itemView) {
                 if (element.isSuccess) {
+                    layout_shimmering.hide()
+                    layout_content.show()
                     tv_travel_destination_article_title.text = element.meta.title
                     tv_travel_destination_article_see_all.text = "Lihat Semua"
                     setOnClickListener { onClickListener.clickAndRedirect(element.meta.appUrl, element.meta.webUrl) }
@@ -52,6 +55,8 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
                 }
             }
         } else {
+            itemView.layout_content.hide()
+            itemView.layout_shimmering.show()
             onViewHolderBindListener.onCityArticleVHBind()
         }
     }

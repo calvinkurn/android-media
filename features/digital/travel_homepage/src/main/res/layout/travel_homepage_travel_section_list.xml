@@ -60,7 +60,7 @@
     <include android:id="@+id/shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/travel_homepage_travel_section_shimmering"
+        layout="@layout/layout_travel_destination_section_shimmering"
         android:visibility="gone"
         />
 

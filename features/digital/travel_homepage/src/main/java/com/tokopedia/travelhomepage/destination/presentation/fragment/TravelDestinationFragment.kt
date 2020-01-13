@@ -35,7 +35,10 @@ import android.os.Build
 import android.widget.ImageView
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.usecase.coroutines.Fail
+import kotlinx.android.synthetic.main.layout_travel_destination_shimmering.*
+import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
 
 /**
  * @author by jessica on 2019-12-20
@@ -121,8 +124,7 @@ OnViewHolderBindListener{
     }
 
     private fun showNetworkErrorLayout() {
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) { destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl )
-        }
+        NetworkErrorHelper.showEmptyState(context, view?.rootView) { destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl ) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -135,10 +137,9 @@ OnViewHolderBindListener{
         }
 
         destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
-        setUpContentPeekSize()
     }
 
-    private fun setUpContentPeekSize() {
+    private fun setUpContentPeekSize(peekSize: Int) {
         activity?.let {
             val display = it.windowManager.defaultDisplay
             val size = Point()
@@ -151,7 +152,7 @@ OnViewHolderBindListener{
             }
             val height = size.y
 
-            val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height - resources.getDimensionPixelSize(R.dimen.destination_content_peek_size))
+            val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height - peekSize - resources.getDimensionPixelSize(R.dimen.destination_content_peek_size))
             lp.collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
             lp.parallaxMultiplier = 0.6f
             toolbar_container.layoutParams = lp
@@ -159,7 +160,7 @@ OnViewHolderBindListener{
         }
     }
 
-    fun renderLayout() {
+    private fun renderLayout() {
         (activity as TravelDestinationActivity).setSupportActionBar(travel_homepage_destination_toolbar)
         (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -168,6 +169,8 @@ OnViewHolderBindListener{
         (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
+
+        shimmering_back_icon.setOnClickListener { activity?.onBackPressed() }
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
@@ -215,6 +218,7 @@ OnViewHolderBindListener{
     }
 
     override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int) {
+        setUpContentPeekSize(peekSize)
         if (imgUrls.isNotEmpty()) {
             travel_homepage_destination_view_pager.setImages(imgUrls)
         }
@@ -229,6 +233,7 @@ OnViewHolderBindListener{
             }
         }
         travel_homepage_destination_view_pager.buildView()
+        layout_travel_destination_shimmering.hide()
     }
 
     private fun scrollImageViewPagerIndicator(currentPosition: Int) {
