@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import androidx.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -18,6 +17,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
