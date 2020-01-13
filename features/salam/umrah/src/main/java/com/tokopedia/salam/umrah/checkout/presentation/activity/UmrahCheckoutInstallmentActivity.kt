@@ -2,12 +2,10 @@ package com.tokopedia.salam.umrah.checkout.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.transition.Scene
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.salam.umrah.checkout.data.Schemes
-import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutPilgrims
 import com.tokopedia.salam.umrah.checkout.di.DaggerUmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutInstallmentFragment

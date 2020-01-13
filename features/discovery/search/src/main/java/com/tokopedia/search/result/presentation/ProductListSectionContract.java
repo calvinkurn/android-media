@@ -5,6 +5,7 @@ import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -80,7 +81,7 @@ public interface ProductListSectionContract {
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
-        void sendTrackingGTMEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
+        void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
 
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 
@@ -106,7 +107,7 @@ public interface ProductListSectionContract {
 
         void redirectSearchToAnotherPage(String applink);
 
-        void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
+        void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
         void setDefaultLayoutType(int defaultView);
 
