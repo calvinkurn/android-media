@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTransactionAnalytics
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
@@ -65,8 +66,15 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     /*
     * last item of recyclerView;
-    * for tracking purpose*/
+    * for tracking purpose
+    * */
     private var lastListItem = 0
+
+    /*
+     * track mark all as read counter
+     * counting notification item to as read
+     * */
+    private var markAllReadCounter = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = viewModelProvider(viewModelFactory)
@@ -84,7 +92,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         }
 
         btnFilter?.setButton1OnClickListener {
-            Toast.makeText(context, "HAHAHA", Toast.LENGTH_SHORT).show()
+            viewModel.markAllReadNotification()
         }
 
         swipeRefresh?.setOnRefreshListener {
@@ -125,6 +133,9 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         viewModel.lastNotificationId.observe(this, Observer {
             viewModel.getNotification(it)
         })
+        viewModel.markAllNotification.observe(this, Observer {
+            onSuccessMarkAllRead()
+        })
     }
 
     override fun onPause() {
@@ -135,6 +146,12 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     override fun onDestroyView() {
         trackScrollListToBottom()
         super.onDestroyView()
+    }
+
+    private fun onSuccessMarkAllRead() {
+        _adapter.markAllAsRead()
+        markAllReadCounter = 0L
+        btnFilter?.showWithCondition(markAllReadCounter != 0L)
     }
 
     private fun onListLastScroll(view: View) {
