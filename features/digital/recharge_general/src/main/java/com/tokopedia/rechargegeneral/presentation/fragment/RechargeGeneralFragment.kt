@@ -149,11 +149,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (viewModel.operatorCluster.value is Success) {
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, it.position)
                 operatorId = it.operatorId
-                // TODO: Remove temporary enquiry params
                 productId = it.productId.toString()
                 clientNumber = it.clientNumber
-//                productId = "291"
-//                clientNumber = "102111106111"
                 renderOperators((viewModel.operatorCluster.value as Success).data)
             }
         })
@@ -562,8 +559,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onFinishInput(label: String, input: String, position: Int) {
-        rechargeGeneralAnalytics.eventInputManualNumber(categoryId, operatorId, position)
-        updateInputData(label, input)
+        updateInputData(label, input, position)
     }
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget, position: Int, data: List<RechargeGeneralProductSelectData>?) {
@@ -576,11 +572,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun updateInputData(label: String, input: String) {
+    private fun updateInputData(label: String, input: String, position: Int) {
         if (label.isNotEmpty() && input.isNotEmpty()) {
+            rechargeGeneralAnalytics.eventInputManualNumber(categoryId, operatorId, position)
             inputData[label] = input
-            toggleEnquiryButton()
+        } else {
+            inputData.remove(label)
         }
+        toggleEnquiryButton()
     }
 
     private fun toggleEnquiryButton() {

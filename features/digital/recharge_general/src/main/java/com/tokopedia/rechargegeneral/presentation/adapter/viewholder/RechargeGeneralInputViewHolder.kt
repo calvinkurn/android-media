@@ -25,12 +25,15 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
 
         inputView.actionListener = object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
-                if (input.isEmpty() || verifyField(enquiryData.validations, input)) {
+                var inputData = input
+                // Reset input if it is not valid
+                if (inputData.isEmpty() || verifyField(enquiryData.validations, input)) {
                     inputView.hideErrorMessage()
-                    if (input.isNotEmpty()) listener.onFinishInput(enquiryData.name, input, adapterPosition)
                 } else {
                     inputView.setErrorMessage(getString(R.string.input_error_message))
+                    inputData = ""
                 }
+                listener.onFinishInput(enquiryData.name, inputData, adapterPosition)
             }
 
             // Setup favorite number input

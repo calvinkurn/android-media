@@ -2,6 +2,7 @@ package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
 import android.graphics.Rect
+import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -13,10 +14,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import org.jetbrains.annotations.NotNull
+import java.util.*
 
 /**
  * Created by resakemal on 20/08/19.
@@ -39,6 +42,8 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         if (value != null) input_info.show() else input_info.hide()
     }
 
+    private var delayTextChanged: Long = DEFAULT_DELAY_TEXT_CHANGED_MILLIS
+
     init {
         View.inflate(context, getLayout(), this)
 
@@ -59,28 +64,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
             error_label.visibility = View.GONE
         }
 
-        ac_input.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count == 0 || isCustomInput) {
-                    btn_clear_input.visibility = View.GONE
-                } else {
-                    if (count > 1) {
-                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputMethodManager.showSoftInput(ac_input, InputMethod.SHOW_FORCED)
-                    }
-                    btn_clear_input.visibility = View.VISIBLE
-                }
-            }
-
-        })
+        ac_input.addTextChangedListener(getTextWatcher())
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -147,6 +131,58 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         return R.layout.view_voucher_game_input_field
     }
 
+    private fun getTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            var timer: Timer? = Timer()
+
+            override fun afterTextChanged(s: Editable?) {
+                runTimer(s.toString())
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Reset timer if it is still ongoing
+                timer?.cancel()
+
+                if (s.isNullOrEmpty() || isCustomInput) {
+                    btn_clear_input.visibility = View.GONE
+                } else {
+                    if (count > 1) {
+                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.showSoftInput(ac_input, InputMethod.SHOW_FORCED)
+                    }
+                    btn_clear_input.visibility = View.VISIBLE
+                }
+            }
+
+            private fun runTimer(input: String) {
+                // Setup timer
+                timer = Timer()
+                timer?.schedule(object: TimerTask() {
+                    override fun run() {
+                        triggerListener(input)
+                    }
+                }, DEFAULT_DELAY_TEXT_CHANGED_MILLIS)
+            }
+
+            private fun triggerListener(input: String) {
+                actionListener?.run {
+                    val mainHandler = Handler(ac_input.context.mainLooper)
+                    val myRunnable = Runnable { onFinishInput(input) }
+                    mainHandler.post(myRunnable)
+                }
+            }
+
+        }
+    }
+
+    fun setDelayTextChanged(delay: Long) {
+        delayTextChanged = delay
+    }
+
     fun setInputType(type: String) {
         ac_input.inputType = when (type) {
             INPUT_NUMERIC ->  InputType.TYPE_CLASS_NUMBER
@@ -184,5 +220,6 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         const val INPUT_TELCO = "input_tel"
 
         const val INFO_TOUCH_AREA_SIZE_PX = 20
+        const val DEFAULT_DELAY_TEXT_CHANGED_MILLIS: Long = 300
     }
 }

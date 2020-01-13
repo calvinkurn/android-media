@@ -7,8 +7,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/dp_12"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_12"
     app:layout_constraintVertical_chainStyle="packed">
 
