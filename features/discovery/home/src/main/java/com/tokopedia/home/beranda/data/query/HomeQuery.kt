@@ -109,9 +109,6 @@ object HomeQuery{
               }
               banner {
                 id
-                galaxy_attribution
-                persona
-                brand_id
                 title
                 description
                 url
