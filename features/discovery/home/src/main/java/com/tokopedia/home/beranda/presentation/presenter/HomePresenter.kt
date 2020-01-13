@@ -2,18 +2,22 @@ package com.tokopedia.home.beranda.presentation.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.helper.map
 import com.tokopedia.home.beranda.presentation.view.HomeContract
@@ -52,8 +56,7 @@ import kotlin.coroutines.CoroutineContext
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                     private val coroutineDispatcher: CoroutineDispatcher,
-                    private val homeUseCase: HomeUseCase,
-                    private val homeDataMapper: HomeDataMapper) :
+                    private val homeUseCase: HomeUseCase) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     protected var compositeSubscription: CompositeSubscription
@@ -93,17 +96,25 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     private var isCache = true
 
+    private var homeDataMapper: HomeDataMapper? = null
+
     val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
-        if(fetchFirstData) fetchFirstData = false
-        homeDataMapper.mapToHomeViewModel(it, isCache)
+        val homeViewModelValue = homeDataMapper?.mapToHomeViewModel(it, isCache)
+        if (!fetchFirstData) _trackingLiveData.value = Event(homeViewModelValue?.list?: listOf())
+        else fetchFirstData = false
+
+        homeViewModelValue
     }
 
     private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
     val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
 
+    private val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
+    val trackingLiveData: LiveData<Event<List<Visitable<*>>>> get() = _trackingLiveData
+
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
-    private var fetchFirstData = false
+    private var fetchFirstData = true
     private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(3) // 3 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
@@ -117,8 +128,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    override fun onFirstLaunch() {
-        fetchFirstData = true
+    override fun attachView(view: HomeContract.View?) {
+        super.attachView(view)
+        view?.let {
+            homeDataMapper = HomeDataMapper(it.context, HomeVisitableFactoryImpl(userSession), it.trackingQueue)
+        }
     }
 
     override fun onResume() {

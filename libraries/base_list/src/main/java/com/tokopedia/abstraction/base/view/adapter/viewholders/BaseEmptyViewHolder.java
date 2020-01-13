@@ -7,9 +7,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.baselist.R;
 import com.tokopedia.design.image.ImageLoader;
 
 

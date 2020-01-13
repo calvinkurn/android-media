@@ -136,7 +136,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         }
         recyclerView.addOnScrollListener(onScrollListener);
         if (swipeToRefresh != null) {
-            new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), new RefreshHandler.OnRefreshHandlerListener() {
                 @Override
                 public void onRefresh(View view) {
                     onPullToRefresh();
