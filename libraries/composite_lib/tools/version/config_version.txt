@@ -1,9 +1,5 @@
-// time config days, hours
-Day=0
-Hour=0
-Minute=30
-
 // incrementCount number Major.MinorPatch
-Head=123456789
+Head=1000000
 Mid=10
 Tail=100
+Step=1

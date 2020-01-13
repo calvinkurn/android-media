@@ -4,51 +4,42 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import android.text.Html
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ScrollView
-import android.widget.Toast
-
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
-import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.AppUtil
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.design.component.Menus
+import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
-import com.tokopedia.design.component.Tooltip
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
-import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
+import com.tokopedia.topads.common.TopAdsWebViewActivity
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
-import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.common.TopAdsWebViewActivity
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter
+import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
+import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardTrackerConstant
@@ -60,7 +51,6 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
-import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
@@ -72,12 +62,7 @@ import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.partial_top_ads_shop_info.*
 import kotlinx.android.synthetic.main.top_ads_dashboard_empty_layout.*
-import okhttp3.Route
-import java.lang.StringBuilder
-
-import java.util.Calendar
-import java.util.Date
-
+import java.util.*
 import javax.inject.Inject
 
 /**
