@@ -87,8 +87,8 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
         }
     }
 
-    fun hideTitle(value: Boolean) {
-        promo_list_widget.hideTitle(value)
+    fun toggleTitle(value: Boolean) {
+        promo_list_widget.toggleTitle(value)
     }
 
     override fun getScreenName(): String {

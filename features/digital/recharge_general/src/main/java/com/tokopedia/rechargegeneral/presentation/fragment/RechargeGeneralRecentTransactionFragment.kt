@@ -61,8 +61,8 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
         // TODO: Add tracking
     }
 
-    fun hideTitle(value: Boolean) {
-        recent_transaction_widget.hideTitle(value)
+    fun toggleTitle(value: Boolean) {
+        recent_transaction_widget.toggleTitle(value)
     }
 
     override fun getScreenName(): String {

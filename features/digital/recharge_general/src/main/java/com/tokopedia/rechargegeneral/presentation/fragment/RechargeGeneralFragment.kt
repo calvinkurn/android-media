@@ -80,7 +80,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var operatorId: Int = 0
     private var productId: String = ""
     private var operatorCluster: String = ""
-    private var clientNumber: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
 
     private var enquiryLabel = ""
@@ -121,7 +120,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             when(it) {
                 is Success -> {
                     loading_view.hide()
-                    renderOperators(it.data)
+                    renderInitialData(it.data)
 //                    trackSearchResultCategories(it.data)
 
                     // For enquiry testing
@@ -150,13 +149,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, it.position)
                 operatorId = it.operatorId
                 productId = it.productId.toString()
-                clientNumber = it.clientNumber
-                renderOperators((viewModel.operatorCluster.value as Success).data)
+                inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
+                renderInitialData((viewModel.operatorCluster.value as Success).data)
             }
-        })
-
-        sharedViewModel.promoItem.observe(this, Observer {
-
         })
     }
 
@@ -213,7 +208,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
     }
 
-    private fun renderOperators(cluster: RechargeGeneralOperatorCluster) {
+    private fun renderInitialData(cluster: RechargeGeneralOperatorCluster) {
         if (operatorId == 0) operatorId = getFirstOperatorId(cluster)
         if (operatorId > 0) {
             operatorCluster = getClusterNameOfOperatorId(cluster, operatorId)
@@ -238,6 +233,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 override fun onFinishInput(input: String) {
                     if (operatorCluster != input) {
                         operatorCluster = input
+                        resetInputData()
                         rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryId, operatorCluster)
 
                         cluster.operatorGroups.find { it.name == input }?.let {
@@ -277,6 +273,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         if (operatorId != it.id) {
                             // Save operator id for enquiry
                             operatorId = it.id
+                            resetInputData()
                             rechargeGeneralAnalytics.eventChooseOperator(categoryId, operatorId)
 
                             adapter.showLoading()
@@ -304,8 +301,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun setupInputAndProduct(productData: RechargeGeneralProductData) {
-        resetInputData()
-
         val dataList: MutableList<Visitable<RechargeGeneralAdapterFactory>> = mutableListOf()
         if (productData.enquiryFields.isNotEmpty()) {
             val enquiryFields = productData.enquiryFields.toMutableList()
@@ -320,15 +315,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 val itr = enquiryFields.listIterator()
                 while (itr.hasNext()) {
                     val item = itr.next()
-                    if (item.name == PARAM_CLIENT_NUMBER) {
-                        if (favoriteNumbers.isNotEmpty()) {
-                            item.style = INPUT_TYPE_FAVORITE_NUMBER
-                        }
-                        if (clientNumber.isNotEmpty()) {
-                            item.value = clientNumber
-                            clientNumber = ""
-                        }
-
+                    if (item.name == PARAM_CLIENT_NUMBER && favoriteNumbers.isNotEmpty()) {
+                        item.style = INPUT_TYPE_FAVORITE_NUMBER
                     }
                     if (inputData.containsKey(item.name)) {
                         item.value = inputData[item.name]!!
@@ -429,7 +417,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 startActivityForResult(
                         TopupBillsSearchNumberActivity.getCallingIntent(this,
                                 ClientNumberType.TYPE_INPUT_NUMERIC,
-                                clientNumber,
+                                inputData[PARAM_CLIENT_NUMBER] ?: "",
                                 favoriteNumbers), REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         }
@@ -494,13 +482,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     }
 
                     override fun onPageSelected(pos: Int) {
-//                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
+
                     }
                 })
 
                 // Hide widget title
-                recentTransactionFragment?.run { hideTitle(false) }
-                promoListFragment?.run { hideTitle(false) }
+                recentTransactionFragment?.run { toggleTitle(false) }
+                promoListFragment?.run { toggleTitle(false) }
             }
             product_view_pager.show()
         } else {
@@ -509,7 +497,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderClientNumber(number: String) {
-        clientNumber = number
+        inputData[PARAM_CLIENT_NUMBER] = number
         if (adapter.data.isNotEmpty()) {
             adapter.data.forEachIndexed { index, productInput ->
                 if (productInput is RechargeGeneralProductInput && productInput.name == PARAM_CLIENT_NUMBER) {
@@ -620,7 +608,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
-        if (favoriteNumbers.isNotEmpty() && clientNumber.isEmpty()) {
+        if (favoriteNumbers.isNotEmpty()) {
             renderClientNumber(favoriteNumbers[0].clientNumber)
         }
     }

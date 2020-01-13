@@ -87,7 +87,7 @@ class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
         }
     }
 
-    fun hideTitle(value: Boolean) {
+    fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
 
