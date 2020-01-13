@@ -114,13 +114,13 @@ class PlayFragment : BaseDaggerFragment() {
 
         if (childFragmentManager.findFragmentByTag(INTERACTION_FRAGMENT_TAG) == null) {
             childFragmentManager.beginTransaction()
-                    .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId))
+                    .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId), INTERACTION_FRAGMENT_TAG)
                     .commit()
         }
 
         if (childFragmentManager.findFragmentByTag(ERROR_FRAGMENT_TAG) == null) {
             childFragmentManager.beginTransaction()
-                    .replace(flGlobalError.id, PlayErrorFragment.newInstance(channelId))
+                    .replace(flGlobalError.id, PlayErrorFragment.newInstance(channelId), ERROR_FRAGMENT_TAG)
                     .commit()
         }
 
