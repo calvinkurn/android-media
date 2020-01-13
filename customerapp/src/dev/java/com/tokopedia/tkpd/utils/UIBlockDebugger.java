@@ -13,9 +13,9 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class UIBlockDebugger {
     public static void init(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("UI_BLOCK_DEBUGGER", MODE_PRIVATE);
-        if(pref.getBoolean("isEnabled", false)) {
-            BlockCanary.install(context, new BlockCanaryContext()).start();
-        }
+//        SharedPreferences pref = context.getSharedPreferences("UI_BLOCK_DEBUGGER", MODE_PRIVATE);
+//        if(pref.getBoolean("isEnabled", false)) {
+//            BlockCanary.install(context, new BlockCanaryContext()).start();
+//        }
     }
 }
