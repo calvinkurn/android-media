@@ -95,7 +95,7 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
 
 companion object {
     @JvmOverloads
-    fun newInstance(fragment: Fragment, isCloseable: Boolean, title: String = "", closableCallBack: ClosableCallback? = null,@CloseableBottomSheetState state : Int) = CloseableBottomSheetFragment(fragment, isCloseable, title=title, closableCallBack = closableCallBack,mState = state)
+    fun newInstance(fragment: Fragment, isCloseable: Boolean, title: String = "", @CloseableBottomSheetState state : Int, closableCallBack: ClosableCallback? = null) = CloseableBottomSheetFragment(fragment, isCloseable, title=title, closableCallBack = closableCallBack,mState = state)
     const val STATE_FULL = 1
     const val STATE_PARTIAL = 2
     const val STATE_FIT =3

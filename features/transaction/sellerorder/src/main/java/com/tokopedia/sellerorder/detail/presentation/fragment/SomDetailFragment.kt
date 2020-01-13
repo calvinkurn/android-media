@@ -840,6 +840,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             adapter = somBottomSheetStockEmptyAdapter
         }
 
+        viewBottomSheet.tf_extra_notes?.visibility = View.VISIBLE
         viewBottomSheet.tf_extra_notes?.setLabelStatic(true)
         viewBottomSheet.tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
         viewBottomSheet.tf_extra_notes?.setPlaceholder(getString(R.string.empty_stock_extra_placeholder))
@@ -1124,7 +1125,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(tfEndShopClosed: TextFieldUnify, viewBottomSheet: View) {
         context?.let { context ->
-            val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            val dateNow = Calendar.getInstance()
             val maxDate = Calendar.getInstance()
             maxDate.add(Calendar.YEAR, 100)
 

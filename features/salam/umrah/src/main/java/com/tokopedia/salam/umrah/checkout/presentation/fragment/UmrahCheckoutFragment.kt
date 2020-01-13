@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam
-import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -33,7 +32,6 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.*
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity
-import com.tokopedia.salam.umrah.common.data.UmrahProductModel.UmrahProduct.TravelAgent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_DEPART_DATE
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_DOWN_PAYMENT_PRICE
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_PRICE
@@ -44,17 +42,23 @@ import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutAct
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutInstallmentActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutPilgrimsActivity
-import com.tokopedia.salam.umrah.checkout.presentation.adapter.*
+import com.tokopedia.salam.umrah.checkout.presentation.adapter.UmrahCheckoutMandatoryDocumentAdapter
+import com.tokopedia.salam.umrah.checkout.presentation.adapter.UmrahCheckoutPilgrimsListAdapter
+import com.tokopedia.salam.umrah.checkout.presentation.adapter.UmrahCheckoutSummaryListAdapter
+import com.tokopedia.salam.umrah.checkout.presentation.adapter.UmrahCheckoutTermConditionAdapter
 import com.tokopedia.salam.umrah.checkout.presentation.adapter.viewholder.UmrahPilgrimsEmptyViewHolder
 import com.tokopedia.salam.umrah.checkout.presentation.adapter.viewholder.UmrahPilgrimsFilledViewHolder
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.*
-import com.tokopedia.salam.umrah.common.util.*
+import com.tokopedia.salam.umrah.common.data.UmrahProductModel.UmrahProduct.TravelAgent
+import com.tokopedia.salam.umrah.common.util.CommonParam
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
+import com.tokopedia.salam.umrah.common.util.UmrahHotelRating
+import com.tokopedia.salam.umrah.common.util.UmrahHotelVariant
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
-import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpDetailActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -793,11 +797,11 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         listDataPilgrims = mutableListOf()
         productModel = UmrahProductModel.UmrahProduct()
         listPaymentOptions = UmrahPaymentOptions()
-        trackingUmrahUtil.getClickBackCheckoutTracker()
     }
 
     override fun onBackPress() {
         resetVariable()
+        trackingUmrahUtil.getClickBackCheckoutTracker()
     }
 
 
