@@ -37,15 +37,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/global_error"
-        android:background="@color/Neutral_N0"
-        android:gravity="center"
-        android:visibility="gone"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/fl_global_error"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
