@@ -11,4 +11,6 @@
     <color name="play_toolbar_gradient_lighter">#00FFFFFF</color>
 
     <color name="play_video_background">#26292E</color>
+    <color name="play_error_background">#26292e</color>
+    <color name="play_error_text_color">#aeffffff</color>
 </resources>
