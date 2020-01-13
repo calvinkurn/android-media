@@ -36,12 +36,13 @@ class ValidatorViewModel @Inject constructor(
     val otpValidateResponse: LiveData<Result<OtpValidateData>>
         get() = mutableOtpValidateResponse
 
-    fun otpRequestEmail(otpType: String, email: String, isResend: Boolean){
+    fun otpRequestEmail(otpType: String, email: String, isResend: Boolean, otpDigit: Int){
         rawQueries[ValidatorQueryConstant.QUERY_OTP_REQUEST]?.let { query ->
             val params = mapOf(
                     ValidatorQueryConstant.PARAM_OTP_TYPE to otpType,
                     ValidatorQueryConstant.PARAM_MODE to MODE_EMAIL,
-                    ValidatorQueryConstant.PARAM_EMAIL to email
+                    ValidatorQueryConstant.PARAM_EMAIL to email,
+                    ValidatorQueryConstant.PARAM_OTP_DIGIT to otpDigit
             )
 
             otpRequestUseCase.setTypeClass(OtpRequestPojo::class.java)

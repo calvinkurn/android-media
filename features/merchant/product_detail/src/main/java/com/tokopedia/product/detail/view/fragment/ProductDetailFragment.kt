@@ -48,6 +48,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -1848,7 +1849,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onDiscussionClicked() {
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString())
+                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productInfo?.basic?.id.toString())
+            }
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         productInfo?.run {

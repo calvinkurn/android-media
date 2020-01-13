@@ -114,7 +114,6 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -195,11 +194,6 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
-import com.tokopedia.talk.common.TalkRouter;
-import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
-import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
-import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
-import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -283,7 +277,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
-        ImageUploaderRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
         TopChatRouter,
@@ -297,7 +290,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
-        TalkRouter,
         TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
         UnifiedOrderListRouter,
@@ -620,11 +612,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
         HomeAnalytics.setUserAttribute(this, userAttributeData);
-    }
-
-    @Override
-    public Interceptor getAuthInterceptor() {
-        return new TkpdAuthInterceptor();
     }
 
     @Override
@@ -1380,11 +1367,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context context) {
-        return InboxTalkActivity.Companion.createIntent(context);
-    }
-
-    @Override
     public Intent getManageAdressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);
     }
@@ -1504,11 +1486,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getProductTalk(Context context, String productId) {
-        return TalkProductActivity.Companion.createIntent(context, productId);
-    }
-
-    @Override
     public void eventClickFilterReview(Context context,
                                        String filterName,
                                        String productId) {
@@ -1543,17 +1520,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         );
         mapEvent.put(KEY_PRODUCT_ID, productId);
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
-    }
-
-    @Override
-    public Intent getShopTalkIntent(Context context, String shopId) {
-        return ShopTalkActivity.Companion.createIntent(context, shopId);
-    }
-
-    @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
-                                      String source) {
-        return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override
@@ -1668,4 +1634,33 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return baseDaggerFragment;
     }
 
+    @Override
+    public Intent getActivitySellingTransactionNewOrder(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentSeller(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginGoogleIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginFacebookIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginWebviewIntent(Context context, String name, String url) {
+        return null;
+    }
 }
