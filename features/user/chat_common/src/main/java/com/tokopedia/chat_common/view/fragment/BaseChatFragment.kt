@@ -267,13 +267,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return emptyList()
     }
 
-    override fun onClickAttachProduct(menu: AttachmentMenu) {
+    override fun onClickAttachProduct(menu: AttachmentMenu) { }
 
-    }
+    override fun onClickAttachImage(menu: AttachmentMenu) { }
 
-    override fun onClickAttachImage(menu: AttachmentMenu) {
-
-    }
+    override fun onClickAttachInvoice(menu: AttachmentMenu) { }
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
 

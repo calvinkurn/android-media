@@ -10,10 +10,8 @@ package com.tokopedia.core.network.entity.discovery;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.interfaces.Convert;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.util.PagingHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,8 +33,6 @@ public class BrowseCatalogModel {
     public String serverProcessTime;
 
     public class Result {
-        @SerializedName("has_catalog")
-        public String hasCatalog;
 
         @SerializedName("share_url")
         public String shareUrl;
@@ -44,14 +40,8 @@ public class BrowseCatalogModel {
         @SerializedName("catalogs")
         public Catalogs[] catalogs;
 
-        @SerializedName("st")
-        String st;
-
         @SerializedName("paging")
         public PagingHandler.PagingHandlerModel paging;
-
-        @SerializedName("total_record")
-        String totalRecord;
 
         @SerializedName("category")
         public List<Breadcrumb> breadcrumb;
@@ -86,33 +76,5 @@ public class BrowseCatalogModel {
         public CatalogModel from(Catalogs data) {
             return new CatalogModel(data);
         }
-
-        public static List<CatalogModel> toCatalogItemList(Catalogs... datas) {
-            ArrayList<CatalogModel> result = new ArrayList<>();
-            for (Catalogs s :
-                    datas) {
-                result.add(s.from(s));
-            }
-            return result;
-        }
-
     }
-
-    /**
-     * use this for listener
-     */
-    public static final class BrowseCatalogContainer implements ObjContainer<BrowseCatalogModel> {
-
-        BrowseCatalogModel browseCatalogModel;
-
-        public BrowseCatalogContainer(BrowseCatalogModel browseCatalogModel) {
-            this.browseCatalogModel = browseCatalogModel;
-        }
-
-        @Override
-        public BrowseCatalogModel body() {
-            return browseCatalogModel;
-        }
-    }
-
-    }
+}

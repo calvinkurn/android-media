@@ -86,7 +86,7 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -102,9 +102,21 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="4dp"
                 android:layout_marginStart="@dimen/dp_10"
+                android:visibility="gone"
                 android:background="@drawable/ic_phonebook_widget" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/btn_camera_picker"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_marginEnd="4dp"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="4dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:visibility="visible"
+                android:background="@drawable/ic_product_action_camera_grayscale_24" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

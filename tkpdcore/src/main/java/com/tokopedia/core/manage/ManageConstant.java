@@ -5,6 +5,5 @@ package com.tokopedia.core.manage;
  */
 public interface ManageConstant {
     String STATUS_MESSAGE = "status_message";
-    int MANAGE_PROFILE = 100;
     int MANAGE_NOTIFICATION = 103;
 }

@@ -7,4 +7,5 @@
     <color name="green_text">#03ac0e</color>
     <color name="grey_text">#31353b</color>
     <color name="grey_shadow">#20ededed</color>
+    <color name="dropshipper_bg">#FDF0DC</color>
 </resources>

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -38,7 +39,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailV
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
@@ -302,7 +303,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_first_photo_preview.setOnClickListener {
                         onPhotoClicked()
-                        openImagePreview(imageIndex)
+                        openImagePreview(imageList, imageIndex, iv_first_photo_preview)
                     }
                     imageCounter++
                 }
@@ -310,7 +311,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_second_photo_preview.setOnClickListener {
                         onPhotoClicked()
-                        openImagePreview(imageIndex)
+                        openImagePreview(imageList, imageIndex, iv_second_photo_preview)
                     }
                     imageCounter++
                 }
@@ -318,7 +319,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_third_photo_preview.setOnClickListener {
                         onPhotoClicked()
-                        openImagePreview(imageIndex)
+                        openImagePreview(imageList, imageIndex, iv_third_photo_preview)
                     }
                     imageCounter++
                 }
@@ -327,7 +328,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                 iv_main_photo_preview.setOnClickListener {
                     onPhotoClicked()
-                    openImagePreview(imageIndex)
+                    openImagePreview(imageList, imageIndex, iv_main_photo_preview)
                 }
                 imageCounter++
             }
@@ -515,10 +516,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun openImagePreview(index: Int) {
-        context?.run {
-            startActivity(ImagePreviewSliderActivity.getCallingIntent(this, hotelName, imageList, thumbnailImageList, index))
-        }
+    private fun openImagePreview(imageList: MutableList<String>, index: Int, imageViewTransitionFrom: ImageView?) {
+        ImagePreviewSlider.instance.start(context, hotelName, imageList, thumbnailImageList, index, imageViewTransitionFrom)
     }
 
     override fun onErrorRetryClicked() {

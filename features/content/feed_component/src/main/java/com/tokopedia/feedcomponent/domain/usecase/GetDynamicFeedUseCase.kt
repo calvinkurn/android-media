@@ -98,4 +98,8 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
             }
         }
     }
+
+    fun clearCache() {
+        graphqlUseCase.clearCache()
+    }
 }

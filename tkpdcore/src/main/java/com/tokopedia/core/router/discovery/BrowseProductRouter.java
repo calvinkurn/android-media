@@ -24,18 +24,14 @@ public class BrowseProductRouter {
     public static final String EXTRAS_DISCOVERY_ALIAS = "EXTRAS_DISCOVERY_ALIAS";
     public static final String EXTRAS_HOTLIST_URL = "HOTLIST_URL";
 
-    public static final String VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT = "search_product";
     public static final String VALUES_DYNAMIC_FILTER_DIRECTORY = "directory";
 
 
     public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hot_product";
 
-    public final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
 
     private static final String BROWSE_PRODUCT_ACTIVITY
             = "com.tokopedia.discovery.activity.BrowseProductActivity";
-    private static final String CATEGORY_NAVIGATION_ACTIVITY
-            = "com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity";
     private static final String BROWSE_HOTLIST_ACTIVITY
             = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity";
 
@@ -44,14 +40,6 @@ public class BrowseProductRouter {
         GRID_1, GRID_2, GRID_3
     }
 
-
-    public static Intent getDefaultBrowseIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, BROWSE_PRODUCT_ACTIVITY);
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, VALUES_DEFAULT_DEPARTMENT_ID);
-        intent.putExtras(bundle);
-        return intent;
-    }
     public static Intent getBrowseProductIntent(Context context, String alias) {
         Intent intent = RouterUtils.getActivityIntent(context, BROWSE_PRODUCT_ACTIVITY);
         Bundle bundle = new Bundle();
@@ -67,19 +55,4 @@ public class BrowseProductRouter {
         intent.putExtras(bundle);
         return intent;
     }
-
-    public static Intent getCategoryNavigationIntent(Context context) {
-        Intent intent =  RouterUtils.getActivityIntent(context, CATEGORY_NAVIGATION_ACTIVITY);
-        return intent;
-
-    }
-
-//    public static Fragment getCatalogDetailListFragment(Context context) {
-//        Fragment fragment = Fragment.instantiate(context, CATALOG_DETAIL_LIST_FRAGMENT);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("catalog_id", catalogId);
-//        fragment.setArguments(bundle);
-//        return fragment;
-//    }
-
 }
