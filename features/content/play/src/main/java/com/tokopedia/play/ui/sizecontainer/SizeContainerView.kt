@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.gradientbg
+package com.tokopedia.play.ui.sizecontainer
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +9,13 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
 /**
- * Created by jegul on 10/01/20
+ * Created by jegul on 13/01/20
  */
-class GradientBackgroundView(container: ViewGroup) : UIView(container) {
+class SizeContainerView(container: ViewGroup) : UIView(container) {
 
     private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_gradient_background, container, true)
-                    .findViewById(R.id.cl_play_gradient)
+            LayoutInflater.from(container.context).inflate(R.layout.view_size_container, container, true)
+                    .findViewById(R.id.space_size)
 
     override val containerId: Int = view.id
 
