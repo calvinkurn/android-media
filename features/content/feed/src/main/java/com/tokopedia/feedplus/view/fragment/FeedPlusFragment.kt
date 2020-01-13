@@ -897,12 +897,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             val comment = footer.comment
-            try {
-                val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
-                comment.fmt = commentValue.toString()
-            } catch (ignored: NumberFormatException) {
+            if (comment.value == 0) {
+                comment.fmt = totalNewComment.toString()
+            } else {
+                try {
+                    val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
+                    comment.fmt = commentValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
             }
-
             comment.value = comment.value + totalNewComment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
         }
@@ -1506,12 +1509,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) + 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
+                if (like.value == 0) {
+                    like.fmt = "1"
+                } else {
+                    try {
+                        val likeValue = Integer.valueOf(like.fmt) + 1
+                        like.fmt = likeValue.toString()
+                    } catch (ignored: NumberFormatException) {
+                    }
                 }
-
                 like.value = like.value + 1
             } else {
                 try {
