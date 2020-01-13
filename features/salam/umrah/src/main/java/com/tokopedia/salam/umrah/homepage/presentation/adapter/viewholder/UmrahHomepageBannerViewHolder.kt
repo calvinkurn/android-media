@@ -1,7 +1,10 @@
 package com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder
 
+import android.content.res.Resources
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
@@ -19,11 +22,19 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                 umrah_banner_shimmering.hide()
                 banner_umrah_home_page.apply {
                     show()
+                    customWidth = Resources.getSystem().displayMetrics.widthPixels-120
+                    setBannerIndicator(GREEN_INDICATOR)
                     val listImageUrl = UmrahHomepageBannerMapper.bannerMappertoString(element.data)
                     setPromoList(listImageUrl)
-                    setOnPromoClickListener {  }
-                    setOnPromoScrolledListener {  }
+                    setOnPromoClickListener {
+                        onBindListener.onClickBanner(element.data[it], it)
+                        RouteManager.route(context, element.data[it].applinkUrl)
+                    }
+                    setOnPromoScrolledListener {
+                        onBindListener.onImpressionBanner(element.data[it],it)
+                    }
                     buildView()
+
                 }
 
 
@@ -34,7 +45,7 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                     onBindListener.onBindBannerVH(element.isLoadFromCloud)
                     UmrahHomepageFragment.isRequestedBanner = true
                 }  else{
-                    val aatssss= 0
+
                 }
             }
         }
@@ -42,5 +53,6 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
 
     companion object{
         val LAYOUT = R.layout.partial_umrah_home_page_banner
+        val GREEN_INDICATOR = 1
     }
 }

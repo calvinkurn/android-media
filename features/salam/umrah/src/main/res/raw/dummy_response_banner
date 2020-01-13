@@ -1,0 +1,36 @@
+{
+"data":[
+    {
+    "id":"1",
+    "service":"UMRAHCATALOG",
+    "location": "homepage",
+    "webUrl":"m.tokopedia.com/s/umroh/produk",
+    "imageUrl":"https://ecs7.tokopedia.net/img/attachment/2020/1/10/59253604/59253604_eabb2692-4e97-4ef3-8756-067183d3a2e5.jpg",
+    "applinkUrl":"tokopedia://s/umroh/produk/umroh-barokah-9-hari-14-maret-2020-44d70e09"
+    },
+    {
+       "id":"2",
+        "service":"UMRAHCATALOG",
+        "location": "homepage",
+        "webUrl":"m.tokopedia.com/s/umroh/produk",
+        "imageUrl":"https://ecs7.tokopedia.net/img/attachment/2020/1/10/59253604/59253604_eabb2692-4e97-4ef3-8756-067183d3a2e5.jpg",
+        "applinkUrl":"tokopedia://s/umroh/produk/umroh-barokah-9-hari-14-maret-2020-44d70e09"
+   },
+   {
+          "id":"3",
+           "service":"UMRAHCATALOG",
+           "location": "homepage",
+           "webUrl":"m.tokopedia.com/s/umroh/produk",
+           "imageUrl":"https://ecs7.tokopedia.net/img/attachment/2020/1/10/59253604/59253604_eabb2692-4e97-4ef3-8756-067183d3a2e5.jpg",
+           "applinkUrl":"tokopedia://s/umroh/produk/umroh-barokah-9-hari-14-maret-2020-44d70e09"
+    },
+    {
+                "id":"3",
+                 "service":"UMRAHCATALOG",
+                 "location": "homepage",
+                 "webUrl":"m.tokopedia.com/s/umroh/produk",
+                 "imageUrl":"https://ecs7.tokopedia.net/img/attachment/2020/1/10/59253604/59253604_eabb2692-4e97-4ef3-8756-067183d3a2e5.jpg",
+                 "applinkUrl":"tokopedia://s/umroh/produk/umroh-barokah-9-hari-14-maret-2020-44d70e09"
+    }
+]
+}
