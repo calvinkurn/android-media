@@ -272,6 +272,7 @@ public class OrderListActivity extends BaseSimpleActivity
                     }
                 });
                 tickerAnnouncement.setAutoSliderActive(true);
+                tickerAnnouncement.setAutoSlideDelay(5000);
                 tickerAnnouncement.addPagerView(tickerPagerAdapter, tickerData);
             } else {
                 String url = TICKER_URL + tickersItemList.get(0).getId();
