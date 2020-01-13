@@ -52,7 +52,7 @@ public interface SearchEventTracking {
         String IMPRESSION_SORT_PRICE_MIN_TICKER = "impression - sort terendah ticker";
         String CLICK_SORT_PRICE_MIN_TICKER = "click - sort terendah ticker";
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
-        String CLICK_SEARCH = "click - search";
+        String GENERAL_SEARCH = "general search";
         String CLICK_CHANGE_KEYWORD = "click ganti kata kunci";
         String IMPRESSION_SHOP = "impression - shop";
         String IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative";
@@ -73,7 +73,7 @@ public interface SearchEventTracking {
         String KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s";
         String TOPADS = "topads";
         String GENERAL = "general";
-        String KEYWORD = "keyword: %s";
+        String KEYWORD_TREATMENT_RESPONSE = "keyword: %s - treatment: %s - response: %s";
     }
 
     interface MOENGAGE {

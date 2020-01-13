@@ -58,6 +58,7 @@ internal class SearchShopViewModel(
     private val searchParameter = searchParameter.toMutableMap()
     private val loadingMoreModel = LoadingMoreModel()
     private var hasLoadData = false
+    private var totalShopRetrieved = 0
     private var hasNextPage = false
     private var isEmptySearchShop = false
     private var isFilterDataAvailable = false
@@ -178,25 +179,36 @@ internal class SearchShopViewModel(
     private fun processSearchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
-        updateIsHasNextPage(searchShopModel)
         updateIsSearchShopEmpty(searchShopModel)
+        updateTotalSearchShopRetrieved(searchShopModel)
+        updateIsHasNextPage(searchShopModel)
 
         val visitableList = createVisitableListFromModel(searchShopModel)
 
         updateSearchShopListWithNewData(visitableList)
         updateSearchShopLiveDataStateToSuccess()
 
-        postImpressionTrackingEvent(visitableList)
+        postImpressionTrackingEvent(searchShopModel, visitableList)
         postEmptySearchTrackingEvent()
-        postRecommendationItemTrackingEvent(visitableList)
-    }
-
-    private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
-        hasNextPage = searchShopModel.aceSearchShop.paging.uriNext.isNotEmpty()
+        postRecommendationImpressionTrackingEvent(searchShopModel, visitableList)
     }
 
     private fun updateIsSearchShopEmpty(searchShopModel: SearchShopModel) {
         isEmptySearchShop = searchShopModel.aceSearchShop.shopList.isEmpty()
+    }
+
+    private fun updateTotalSearchShopRetrieved(searchShopModel: SearchShopModel) {
+        val currentShopListSize = if (!isEmptySearchShop) {
+            searchShopModel.aceSearchShop.shopList.size
+        } else {
+            searchShopModel.aceSearchShop.topShopList.size
+        }
+
+        totalShopRetrieved += currentShopListSize
+    }
+
+    private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
+        hasNextPage = totalShopRetrieved < searchShopModel.aceSearchShop.totalShop
     }
 
     private fun createVisitableListFromModel(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -214,16 +226,14 @@ internal class SearchShopViewModel(
         val emptySearchViewModel = ShopEmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), false)
         visitableList.add(emptySearchViewModel)
 
-        if (hasShopRecommendation(searchShopModel)) {
+        if (searchShopModel.hasRecommendationShopList()) {
             val shopRecommendationVisitableList = createShopRecommendationVisitableList(searchShopModel)
             visitableList.addAll(shopRecommendationVisitableList)
         }
 
-        return visitableList
-    }
+        addLoadingMoreModel(visitableList)
 
-    private fun hasShopRecommendation(searchShopModel: SearchShopModel): Boolean {
-        return searchShopModel.aceSearchShop.topShopList.isNotEmpty()
+        return visitableList
     }
 
     private fun createShopRecommendationVisitableList(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -232,11 +242,17 @@ internal class SearchShopViewModel(
         val recommendationTitleViewModel = ShopRecommendationTitleViewModel()
         shopRecommendationVisitableList.add(recommendationTitleViewModel)
 
-        val searchShopViewModel = shopViewModelMapper.convert(searchShopModel)
-        setShopItemPositionWithStartPosition(0, searchShopViewModel.recommendationShopItemList)
-        shopRecommendationVisitableList.addAll(searchShopViewModel.recommendationShopItemList)
+        val searchShopViewModelList = createShopRecommendationItemViewModelList(searchShopModel)
+        shopRecommendationVisitableList.addAll(searchShopViewModelList)
 
         return shopRecommendationVisitableList
+    }
+
+    private fun createShopRecommendationItemViewModelList(searchShopModel: SearchShopModel): List<Visitable<*>> {
+        val shopViewModel = shopViewModelMapper.convert(searchShopModel)
+        setShopItemPosition(shopViewModel.recommendationShopItemList)
+
+        return shopViewModel.recommendationShopItemList
     }
 
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -333,7 +349,9 @@ internal class SearchShopViewModel(
         searchShopLiveData.postValue(Success(searchShopMutableList))
     }
 
-    private fun postImpressionTrackingEvent(visitableList: List<Visitable<*>>) {
+    private fun postImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
+        if (!searchShopModel.hasShopList()) return
+
         val dataLayerShopItemList = mutableListOf<Any>()
         val dataLayerShopItemProductList = mutableListOf<Any>()
 
@@ -364,7 +382,9 @@ internal class SearchShopViewModel(
         }
     }
 
-    private fun postRecommendationItemTrackingEvent(visitableList: List<Visitable<*>>) {
+    private fun postRecommendationImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
+        if (!searchShopModel.hasRecommendationShopList()) return
+
         val dataLayerShopItemList = mutableListOf<Any>()
         val dataLayerShopItemProductList = mutableListOf<Any>()
 
@@ -459,9 +479,10 @@ internal class SearchShopViewModel(
     }
 
     private fun updateEmptySearchInVisitableList() {
-        val shopEmptySearchViewModel = searchShopMutableList.find { it is ShopEmptySearchViewModel } as ShopEmptySearchViewModel
-
-        shopEmptySearchViewModel.isFilterActive = filterController.isFilterActive()
+        val shopEmptySearchViewModelIndex = searchShopMutableList.indexOfFirst { it is ShopEmptySearchViewModel }
+        searchShopMutableList[shopEmptySearchViewModelIndex] = ShopEmptySearchViewModel(
+                SHOP_TAB_TITLE, getSearchParameterQuery(), filterController.isFilterActive()
+        )
     }
 
     private fun catchGetDynamicFilterException(e: Throwable?) {
@@ -491,25 +512,36 @@ internal class SearchShopViewModel(
     private fun onSearchMoreShopSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
+        updateTotalSearchShopRetrieved(searchShopModel)
         updateIsHasNextPage(searchShopModel)
 
-        val visitableList = createSearchShopList(searchShopModel)
+        val visitableList = createSearchMoreShopVisitableList(searchShopModel)
 
         updateSearchShopListWithNewData(visitableList)
         updateSearchShopLiveDataStateToSuccess()
 
-        postImpressionTrackingEvent(visitableList)
+        postImpressionTrackingEvent(searchShopModel, visitableList)
+        postRecommendationImpressionTrackingEvent(searchShopModel, visitableList)
     }
 
-    private fun createSearchShopList(searchShopModel: SearchShopModel): List<Visitable<*>> {
+    private fun createSearchMoreShopVisitableList(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val shopViewModelList = createShopItemViewModelList(searchShopModel)
-        visitableList.addAll(shopViewModelList)
-
+        addSearchShopViewModelList(searchShopModel, visitableList)
         addLoadingMoreModel(visitableList)
 
         return visitableList
+    }
+
+    private fun addSearchShopViewModelList(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
+        if (searchShopModel.hasRecommendationShopList()) {
+            val searchShopViewModelList = createShopRecommendationItemViewModelList(searchShopModel)
+            visitableList.addAll(searchShopViewModelList)
+        }
+        else {
+            val shopViewModelList = createShopItemViewModelList(searchShopModel)
+            visitableList.addAll(shopViewModelList)
+        }
     }
 
     fun onViewClickRetry() {
@@ -533,6 +565,7 @@ internal class SearchShopViewModel(
     private fun clearDataBeforeReload() {
         searchShopMutableList.clear()
 
+        totalShopRetrieved = 0
         hasNextPage = false
         isEmptySearchShop = false
         isFilterDataAvailable = false

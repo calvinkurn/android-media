@@ -32,15 +32,7 @@ internal class HandleViewClickProductPreviewTest: Spek({
                 searchShopViewModel.onViewClickProductPreview(shopItemProduct)
             }
 
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            When("View Click Shop") {
-                searchShopViewModel.onViewClickProductPreview(shopItemProduct)
-            }
-
-            Then("should post route to shop page with applink") {
+            Then("should post route to product page with applink") {
                 val routePageEventLiveData = searchShopViewModel.getRoutePageEventLiveData().value
 
                 routePageEventLiveData?.getContentIfNotHandled() shouldBe shopItemProduct.applink
@@ -77,14 +69,6 @@ internal class HandleViewClickProductPreviewTest: Spek({
             }
 
             When("View Click Product Preview") {
-                searchShopViewModel.onViewClickProductPreview(shopItemProduct)
-            }
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            When("View Click Shop") {
                 searchShopViewModel.onViewClickProductPreview(shopItemProduct)
             }
 
