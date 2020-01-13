@@ -6,6 +6,8 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+        jcenter()
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -61,6 +63,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
