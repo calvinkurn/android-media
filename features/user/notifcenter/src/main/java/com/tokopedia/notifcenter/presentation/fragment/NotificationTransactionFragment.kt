@@ -1,10 +1,13 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
+import android.animation.LayoutTransition
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -73,6 +76,31 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onListLastScroll(view)
+        initObservable()
+
+        //enable transition of filter type on kitkat above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            btnFilter?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+        }
+
+        btnFilter?.setButton1OnClickListener {
+            Toast.makeText(context, "HAHAHA", Toast.LENGTH_SHORT).show()
+        }
+
+        swipeRefresh?.setOnRefreshListener {
+            swipeRefresh?.isRefreshing = true
+            fetchUpdateFilter(hashMapOf())
+
+            /*
+            * add some delay for 1 sec to
+            * preventing twice swipe to refresh*/
+            Handler().postDelayed({
+                loadInitialData()
+            }, REFRESH_DELAY)
+        }
+    }
+
+    private fun initObservable() {
         viewModel.errorMessage.observe(this, onViewError())
         viewModel.infoNotification.observe(this, Observer {
             if (NotificationMapper.isHasShop(it)) {
@@ -97,18 +125,6 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         viewModel.lastNotificationId.observe(this, Observer {
             viewModel.getNotification(it)
         })
-
-        swipeRefresh?.setOnRefreshListener {
-            swipeRefresh?.isRefreshing = true
-            fetchUpdateFilter(hashMapOf())
-
-            /*
-            * add some delay for 1 sec to
-            * preventing twice swipe to refresh*/
-            Handler().postDelayed({
-                loadInitialData()
-            }, REFRESH_DELAY)
-        }
     }
 
     override fun onPause() {
