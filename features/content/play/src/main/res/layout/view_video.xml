@@ -12,7 +12,7 @@
             android:id="@+id/pv_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Neutral_N700_96"
+            android:background="@color/play_video_background"
             tools:parentTag="android.widget.FrameLayout"
             />
 

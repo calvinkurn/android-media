@@ -70,15 +70,17 @@ class PlayFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_12) }
+
+    private val onKeyboardShownAnimator = AnimatorSet()
+    private val onKeyboardHiddenAnimator = AnimatorSet()
+
     private lateinit var playViewModel: PlayViewModel
 
     private lateinit var ivClose: ImageView
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
     private lateinit var globalError: GlobalError
-
-    private val onKeyboardShownAnimator = AnimatorSet()
-    private val onKeyboardHiddenAnimator = AnimatorSet()
 
     override fun getScreenName(): String = "Play"
 
@@ -170,11 +172,9 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-            flInteraction.setPadding(v.paddingLeft, insets.systemWindowInsetTop, v.paddingRight, insets.systemWindowInsetBottom)
-
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
             val closeLp = ivClose.layoutParams as ViewGroup.MarginLayoutParams
-            ivClose.setMargin(closeLp.leftMargin, insets.systemWindowInsetTop, closeLp.rightMargin, closeLp.bottomMargin)
+            ivClose.setMargin(closeLp.leftMargin, offset12 + insets.systemWindowInsetTop, closeLp.rightMargin, closeLp.bottomMargin)
 
             insets
         }
@@ -299,7 +299,7 @@ class PlayFragment : BaseDaggerFragment() {
         onKeyboardShownAnimator.cancel()
 
         val currentHeight = flVideo.height
-        val destHeight = bottomMostBounds.toFloat() - MARGIN_CHAT_VIDEO
+        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
         val scaleFactor = destHeight / currentHeight
         val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
         val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
@@ -307,8 +307,8 @@ class PlayFragment : BaseDaggerFragment() {
         animatorX.duration = ANIMATION_DURATION
 
         flVideo.pivotX = (flVideo.width / 2).toFloat()
-        val marginTopX = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val marginTopXt = marginTopX * scaleFactor
+        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+        val marginTopXt = marginTop * scaleFactor
         flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
         onKeyboardShownAnimator.apply {
             playTogether(animatorX, animatorY)

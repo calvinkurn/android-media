@@ -13,7 +13,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/spacing_lvl4"
             android:layout_height="@dimen/spacing_lvl4"
-            app:srcCompat="@drawable/ic_play_white_eye"
+            app:srcCompat="@drawable/ic_play_eye_white"
             />
 
         <com.tokopedia.unifyprinciples.Typography
