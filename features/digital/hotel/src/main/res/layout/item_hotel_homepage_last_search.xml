@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/dp_78"
+    android:layout_height="wrap_content"
+    android:id="@+id/item_hotel_last_search_container"
     android:layout_marginRight="@dimen/dp_8"
-    android:padding="@dimen/dp_8">
+    android:padding="@dimen/dp_16">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -25,6 +26,8 @@
             android:id="@+id/tg_hotel_homepage_name_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:ellipsize="end"
             android:text="Jakarta"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/iv_hotel_homepage_last_search"
@@ -37,8 +40,10 @@
             android:id="@+id/tg_hotel_homepage_date_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
+            android:ellipsize="end"
+            android:lines="2"
             android:text="22 Feb 2018 - 24 Feb 2019"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_hotel_homepage_last_search"
             app:typographyType="body_3"
@@ -46,14 +51,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_hotel_homepage_desc_last_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 Kamar, 2 Tamu"
+            android:textColor="@color/Neutral_N700_44"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:typographyType="body_3"
-            android:textColor="@color/Neutral_N700_20"
-            android:text="1 Kamar, 2 Tamu"
-            tools:text="1 Kamar, 2 Tamu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            tools:text="1 Kamar, 2 Tamu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
