@@ -18,6 +18,7 @@ class HotelLastSearchAdapter(private var viewModels: List<String>) : RecyclerVie
     override fun getItemCount(): Int = viewModels.size
 
     override fun onBindViewHolder(holder: HotelLastSearchViewHolder, position: Int) {
+        holder.bind()
     }
 
 }
