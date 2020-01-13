@@ -387,7 +387,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJavaMath
 
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.libraries.cpm)
     implementation project(rootProject.ext.libraries.logger)
 
     implementation(rootProject.ext.miscDependencies.imagecropper) {
