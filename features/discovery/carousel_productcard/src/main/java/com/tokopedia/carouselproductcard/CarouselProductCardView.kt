@@ -85,14 +85,6 @@ class CarouselProductCardView: BaseCustomView {
 
 
         carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-
-        val carouselAdapter = CarouselProductCardAdapter()
-        setupCarouselProductCardRecyclerView(carouselAdapter)
-
-        recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
-
-        submitProductCardCarouselData(carouselAdapter, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
-
         carouselCardSavedStatePosition?.let { sparseIntArray ->
             carouselLayoutManager.run {
                 if (this is LinearLayoutManager) {
@@ -104,6 +96,13 @@ class CarouselProductCardView: BaseCustomView {
                 }
             }
         }
+
+        val carouselAdapter = CarouselProductCardAdapter()
+        setupCarouselProductCardRecyclerView(carouselAdapter)
+
+        recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
+
+        submitProductCardCarouselData(carouselAdapter, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
     }
 
     private fun submitProductCardCarouselData(newCarouselAdapter: CarouselProductCardAdapter,
