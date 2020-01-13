@@ -138,14 +138,21 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
             return true;
         } else {
             String[] splittedCurrentVersionName = GlobalVersionName.split(".");
-            String currentMinorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[1] : "00" ;
+            String currentMajorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[0] : "00";
+            String currentMinorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[1] : "00";
+            int currentMajorVersionInt = Integer.parseInt(currentMajorVersion);
             int currentMinorVersionInt = Integer.parseInt(currentMinorVersion);
 
             String[] splittedSavedVersionName = savedVersion.split(".");
+            String savedMajorVersion = splittedSavedVersionName.length > 0 ? splittedSavedVersionName[0]: "00";
             String savedMinorVersion = splittedSavedVersionName.length > 0 ? splittedSavedVersionName[1]: "00";
+            int savedMajorVersionInt = Integer.parseInt(savedMajorVersion);
             int savedMinorVersionInt = Integer.parseInt(savedMinorVersion);
 
-            if (currentMinorVersionInt - savedMinorVersionInt >= 4) {
+            if (currentMajorVersionInt - savedMajorVersionInt >= 1) {
+                sharedPreferences.edit().putString(SAVED_VERSION, GlobalVersionName).apply();
+                return true;
+            } else if (currentMinorVersionInt - savedMinorVersionInt >= 4) {
                 sharedPreferences.edit().putString(SAVED_VERSION, GlobalVersionName).apply();
                 return true;
             } else {

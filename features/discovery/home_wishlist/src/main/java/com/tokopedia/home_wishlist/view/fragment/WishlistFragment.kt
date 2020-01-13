@@ -378,7 +378,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     private fun updateScrollListenerState(hasNextPage: Boolean) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
     }
 
     private fun updateScrollFlagForSearchView(isSearch: Boolean){
@@ -579,8 +578,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun disableScrollFlagsSearch(){
-        val layoutParam = collapse?.layoutParams as AppBarLayout.LayoutParams
-        layoutParam.scrollFlags = 0
+        val layoutParam = collapse?.layoutParams as? AppBarLayout.LayoutParams
+        layoutParam?.scrollFlags = 0
         collapse?.layoutParams = layoutParam
     }
 

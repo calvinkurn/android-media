@@ -7,9 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,6 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.OneOnClick;
@@ -29,15 +30,12 @@ import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
-import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
-import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.developer_options.R;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -171,8 +169,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             getSharedPreferences(CACHE_FREE_RETURN).edit().clear().apply();
             Toast.makeText(this, "Reset Onboarding", Toast.LENGTH_SHORT).show();
         });
-
-        testOnBoarding.setOnClickListener(v -> startActivityForResult(InboxRouter.getFreeReturnOnBoardingActivityIntent(getBaseContext(), "1234"), 789));
 
         SharedPreferences rnSharedPref = getSharedPreferences(SP_REACT_DEVELOPMENT_MODE);
         if (rnSharedPref.contains(IS_RELEASE_MODE)) {

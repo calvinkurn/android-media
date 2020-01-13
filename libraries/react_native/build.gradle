@@ -49,7 +49,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.reactNative
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.miscDependencies.codePushReactNative
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger

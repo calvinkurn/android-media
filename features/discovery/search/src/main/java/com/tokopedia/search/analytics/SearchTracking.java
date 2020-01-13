@@ -586,6 +586,24 @@ public class SearchTracking {
         );
     }
 
+    public static void trackEventImpressionSortPriceMinTicker(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.IMPRESSION_SORT_PRICE_MIN_TICKER,
+                keyword
+        );
+    }
+
+    public static void trackEventClickSortPriceMinTicker(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_SORT_PRICE_MIN_TICKER,
+                keyword
+        );
+    }
+
     public static void trackEventClickGoToBrowserBannedProductsWithResult(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,

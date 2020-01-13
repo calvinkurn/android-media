@@ -59,6 +59,7 @@ import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.developer_options.stetho.StethoUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -138,6 +139,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initReact();
 
         super.onCreate();
+
+        StethoUtil.initStetho(this);
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -390,13 +393,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 md = MessageDigest.getInstance("MD5");
                 md.update(bytes);
                 byte[] byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA");
                 md.update(bytes);
                 byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA256");

@@ -1,23 +1,22 @@
 package com.tokopedia.common.travel.database;
 
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.DatabaseConfiguration;
 import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import android.content.Context;
-import androidx.annotation.NonNull;
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 /**
  * Created by nabillasabbaha on 15/08/18.
  */
-@Database(entities = {TravelPassengerTable.class, CountryPhoneCodeTable.class}, version = 1)
+@Database(entities = {TravelPassengerTable.class}, version = 1)
 public abstract class CommonTravelRoomDb extends RoomDatabase {
 
     public abstract TravelPassengerDao travelPassengerDao();
-
-    public abstract CountryPhoneCodeDao countryPhoneCodeDao();
 
     @NonNull
     @Override

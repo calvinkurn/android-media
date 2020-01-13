@@ -405,7 +405,8 @@ open class DynamicPostViewHolder(v: View,
             }
             else -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
-                itemView.likeText.setText(R.string.kol_action_like)
+                val text : String  = if (like.fmt.isNotEmpty()) like.fmt else getString(R.string.kol_action_like)
+                itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
                 )
@@ -415,8 +416,10 @@ open class DynamicPostViewHolder(v: View,
 
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
-                if (comment.value == 0) getString(R.string.kol_action_comment)
-                else comment.fmt
+                if (comment.value == 0) if(comment.fmt.isNotEmpty()) comment.fmt else getString(R.string.kol_action_comment)
+                else {
+                    if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
+                }
     }
 
     private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String, authorType: String) {

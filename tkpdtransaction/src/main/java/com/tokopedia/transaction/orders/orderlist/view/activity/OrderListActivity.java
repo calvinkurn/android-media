@@ -49,6 +49,20 @@ public class OrderListActivity extends BaseSimpleActivity
 
     }
 
+    @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
+    public static Intent getOrderList(Context context, Bundle extras) {
+        String url = extras.getString("url");
+        Uri uri = Uri.parse(url);
+        String category;
+        if (uri.getQueryParameter("tab") != null)
+            category = uri.getQueryParameter("tab");
+        else
+            category = OrderCategory.MARKETPLACE;
+        extras.putString(ORDER_CATEGORY, category);
+        Intent intent = new Intent(context, OrderListActivity.class);
+        return intent.putExtras(extras);
+    }
+
     @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
     public static Intent getProcessedIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);

@@ -53,7 +53,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.chips
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

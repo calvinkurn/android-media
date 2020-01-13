@@ -31,7 +31,7 @@ class FlightCancellationRefundDetailMiddleAdapter(var items: MutableList<Cancell
 
     class CancellationRefundDetailMiddleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val title: TextView = itemView.findViewById(com.tokopedia.design.R.id.tv_title)
+        private val title: TextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_title)
         private val rvItems: RecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.rv_item)
 
         fun bindData(info: CancellationTitleContentEntity) {

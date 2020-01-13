@@ -58,6 +58,9 @@ import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
+import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
@@ -68,9 +71,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
-import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

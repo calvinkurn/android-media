@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
@@ -85,7 +86,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation rootProject.ext.debugToolsDependencies.stetho
+    debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.playServicesDependencies.analytics
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore

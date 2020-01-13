@@ -3,8 +3,10 @@ package com.tokopedia.purchase_platform.features.cart.domain.usecase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapperV3
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -18,7 +20,8 @@ import javax.inject.Named
 
 class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifiedQuery") private val queryString: String,
                                                        private val graphqlUseCase: GraphqlUseCase,
-                                                       private val cartMapperV3: CartMapperV3) : UseCase<CartListData>() {
+                                                       private val cartSimplifiedMapper: CartSimplifiedMapper,
+                                                       private val schedulers: ExecutorSchedulers) : UseCase<CartListData>() {
 
     companion object {
         const val PARAM_SELECTED_CART_ID = "PARAM_SELECTED_CART_ID"
@@ -38,18 +41,20 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
         val graphqlRequest = GraphqlRequest(queryString, ShopGroupSimplifiedGqlResponse::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
-            if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
-                cartMapperV3.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)
-            } else {
-                if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.isNotEmpty()) {
-                    throw ResponseErrorException(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.joinToString())
-                } else {
-                    throw ResponseErrorException()
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map {
+                    val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
+                    if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
+                        cartSimplifiedMapper.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)
+                    } else {
+                        if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.isNotEmpty()) {
+                            throw CartResponseErrorException(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.joinToString())
+                        } else {
+                            throw ResponseErrorException()
+                        }
+                    }
                 }
-            }
-        }
-
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
     }
 }

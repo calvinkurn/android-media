@@ -6,6 +6,8 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
 
+    val liteUrl get() = playStoreData.redirectUrl
+
     /**
      * Constructor for API response.
      *

@@ -44,6 +44,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
@@ -67,7 +68,6 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.vi
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber

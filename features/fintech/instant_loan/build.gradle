@@ -35,7 +35,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.networkDependencies.glide
@@ -46,10 +46,8 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.chips
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

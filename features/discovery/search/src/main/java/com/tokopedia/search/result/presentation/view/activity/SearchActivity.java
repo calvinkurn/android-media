@@ -699,13 +699,6 @@ public class SearchActivity extends BaseActivity
         outState.putParcelable(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER_MODEL);
-    }
-
     private void changeGrid() {
         if (searchNavigationClickListener != null) {
             searchNavigationClickListener.onChangeGridClick();

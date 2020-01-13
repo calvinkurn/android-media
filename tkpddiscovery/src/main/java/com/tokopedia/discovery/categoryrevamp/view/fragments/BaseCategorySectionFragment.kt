@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -115,7 +116,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         }
     }
 
-
     protected fun getGridLayoutManager(): GridLayoutManager? {
         return gridLayoutManager
     }
@@ -129,7 +129,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     protected abstract fun getSortRequestCode(): Int
-
 
     private fun initLayoutManager() {
         linearLayoutManager = LinearLayoutManager(activity)
@@ -173,6 +172,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
             override fun onShareButtonClick() {
                 onShareButtonClicked()
             }
+
             override fun onFilterClick() {
                 openFilterActivity()
             }
@@ -180,8 +180,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
             override fun onSortClick() {
                 openSortActivity()
             }
-
-
         })
     }
 
@@ -196,9 +194,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         } else {
             openFilterPage()
         }
-
     }
-
 
     protected fun openBottomSheetFilter() {
         if (searchParameter == null || getFilters() == null) return
@@ -211,7 +207,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     protected fun openFilterPage() {
         if (searchParameter == null) return
-
         FilterSortManager.openFilterPage(getFilterTrackingData(), this, screenName, searchParameter.getSearchParameterHashMap())
     }
 
@@ -220,9 +215,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     private fun openSortActivity() {
-
         if (activity == null) return
-
         if (!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
             NetworkErrorHelper.showSnackbar(activity, activity!!.getString(R.string.error_sort_data_not_ready))
         }
@@ -257,9 +250,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (sorts == null) {
             return
         }
-
         this.sort.addAll(sorts)
-
     }
 
     private fun setFilterData(filters: List<Filter>) {
@@ -267,11 +258,8 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (filters == null) {
             return
         }
-
         this.filters.addAll(filters)
-
     }
-
 
     protected fun getFilters(): ArrayList<Filter>? {
         return filters
@@ -304,7 +292,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     }
 
-
     private fun initSelectedSort() {
         if (sort == null) return
 
@@ -332,53 +319,47 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
 
     private fun switchCatalogcategory() {
-
         when (getAdapter()?.getCurrentLayoutType()) {
             CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeSingleGridView()
-
             }
             CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeListView()
-
             }
             CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
                 spanCount = 2
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeDoubleGridView()
-
             }
-
         }
-
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object : FilterSortManager.Callback {
-            override fun onFilterResult(queryParams: MutableMap<String, String>?, selectedFilters: MutableMap<String, String>?, selectedOptions: MutableList<Option>?) {
+            override fun onFilterResult(queryParams: Map<String, String>?, selectedFilters: Map<String, String>?, selectedOptions: List<Option>?) {
 
             }
 
-            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?, autoApplyFilter: String?) {
-                setSelectedSort(HashMap(selectedSort))
-                selectedSort.let {
+            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) {
+                setSelectedSort(HashMap(selectedSort?.toMutableMap() ?: mutableMapOf()))
+                selectedSort?.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
                 }
 
                 clearDataFilterSort()
                 reloadData()
-                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort["ob"]?.toInt())
+                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort?.get("ob")?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
-                        selectedSort["ob"]?.toInt() ?: 0)
+                        selectedSort?.get("ob")?.toInt() ?: 0)
             }
         })
     }
@@ -415,7 +396,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     fun setTotalSearchResultCountInteger(count: Int?) {
-        if(count!=null)
+        if (count != null)
             totalCountInt = count
     }
 

@@ -44,6 +44,8 @@ public interface SearchEventTracking {
         String IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY = "impression - banned product ticker - empty";
         String CLICK_BANNED_PRODUCT_TICKER_EMPTY = "click - banned product ticker - empty";
         String IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related";
+        String IMPRESSION_SORT_PRICE_MIN_TICKER = "impression - sort terendah ticker";
+        String CLICK_SORT_PRICE_MIN_TICKER = "click - sort terendah ticker";
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
         String CLICK_SEARCH = "click - search";
     }

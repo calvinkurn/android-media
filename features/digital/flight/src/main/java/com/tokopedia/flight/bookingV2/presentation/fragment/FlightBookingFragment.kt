@@ -3,6 +3,7 @@ package com.tokopedia.flight.bookingV2.presentation.fragment
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -205,6 +206,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
             flightBookingPresenter.onChangePassengerButtonClicked(viewModel, departureDate)
         }
     }
+
+    override fun getViewContext(): Context = requireContext()
 
     override fun getContactName(): String = widget_partial_traveller_info.getContactName()
 

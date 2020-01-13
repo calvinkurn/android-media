@@ -832,6 +832,7 @@ final class ProductListPresenter
         if (!getView().isTickerHasDismissed()
                 && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
+            getView().trackEventImpressionSortPriceMinTicker();
         }
 
         if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {

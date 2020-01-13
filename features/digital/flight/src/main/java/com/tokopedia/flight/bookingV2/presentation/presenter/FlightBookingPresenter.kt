@@ -1,8 +1,7 @@
 package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import android.util.Patterns
-import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
@@ -30,6 +29,9 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewMo
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.travel.country_code.data.TravelPhoneCodeEntity
+import com.tokopedia.travel.country_code.domain.TravelCountryCodeUseCase
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
@@ -46,7 +48,7 @@ import javax.inject.Inject
  * @author by furqan on 04/03/19
  */
 class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: FlightAddToCartV11UseCase,
-                                                 private val getPhoneCodeUseCase: GetPhoneCodeUseCase,
+                                                 private val getPhoneCodeUseCase: TravelCountryCodeUseCase,
                                                  val flightAnalytics: FlightAnalytics,
                                                  val userSession: UserSessionInterface,
                                                  val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
@@ -399,7 +401,6 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             compositeSubscription.unsubscribe()
         }
         flightAddToCartUseCase.unsubscribe()
-        getPhoneCodeUseCase.unsubscribe()
         flightSearchJourneyByIdUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
         detachView()
@@ -593,12 +594,20 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 }
             }
 
-    private fun getDefaultPhoneDataObservable(): Observable<CountryPhoneCode> =
-            getPhoneCodeUseCase.createObservable(getPhoneCodeUseCase.createRequest("Indonesia"))
-                    .flatMap {
-                        Observable.from(it)
-                    }
-                    .first()
+    private fun getDefaultPhoneDataObservable(): Observable<TravelCountryPhoneCode> =
+            getPhoneCodeUseCase.createObservable(GraphqlHelper.loadRawString(view.getViewContext().resources, com.tokopedia.travel.country_code.R.raw.query_travel_get_all_country))
+                    .flatMap(Func1 { graphqlResponse ->
+                        val data = graphqlResponse.getData<TravelPhoneCodeEntity.Response>(TravelPhoneCodeEntity.Response::class.java)
+                        var observableData: Observable<TravelCountryPhoneCode> = Observable.just(TravelCountryPhoneCode())
+                        if (data != null) {
+                            val phoneData = data.travelGetAllCountries.countries.find { it.id == "ID" || it.attributes.name == "Indonesia" }
+                            phoneData?.let {
+                                observableData = Observable.just(TravelCountryPhoneCode(phoneData.id, phoneData.attributes.name, phoneData.attributes.phoneCode))
+                            }
+                        }
+
+                        observableData
+                    })
 
     private fun transform(phoneRawString: String): String {
         var phoneString: String = checkStart(phoneRawString)

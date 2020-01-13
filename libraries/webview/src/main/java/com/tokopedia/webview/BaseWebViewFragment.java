@@ -397,9 +397,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
                 && getActivity()!= null) {
             if (getActivity().isTaskRoot()) {
-                getActivity().finish();
-            } else {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
+            } else {
+                getActivity().finish();
             }
             return true;
         } else if (url.contains(PLAY_GOOGLE_URL)) {

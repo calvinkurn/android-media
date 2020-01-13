@@ -7,7 +7,6 @@ import com.tokopedia.common.travel.database.CommonTravelRoomDb;
 import com.tokopedia.common.travel.database.TravelPassengerDao;
 import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.domain.provider.TravelScheduler;
-import com.tokopedia.common.travel.database.CountryPhoneCodeDao;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -31,11 +30,6 @@ public class CommonTravelModule {
     @Provides
     TravelPassengerDao provideTravelPassengerDao(CommonTravelRoomDb commonTravelRoomDb) {
         return commonTravelRoomDb.travelPassengerDao();
-    }
-
-    @Provides
-    CountryPhoneCodeDao provideCountryPhoneCodeDao(CommonTravelRoomDb commonTravelRoomDb) {
-        return commonTravelRoomDb.countryPhoneCodeDao();
     }
 
     @Provides

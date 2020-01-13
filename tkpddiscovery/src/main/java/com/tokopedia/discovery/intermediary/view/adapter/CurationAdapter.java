@@ -2,14 +2,14 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.network.entity.topPicks.Toppick;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
@@ -82,13 +82,11 @@ public class CurationAdapter extends
 
         TextView itemTitle;
         RecyclerView recycler_view_list;
-        TextView viewAll;
 
         ItemRowHolder(View view) {
             super(view);
             this.itemTitle = (TextView) view.findViewById(R.id.itemTitle);
             this.recycler_view_list = (RecyclerView) view.findViewById(R.id.recycler_view_list);
-            this.viewAll = (TextView) view.findViewById(R.id.view_all);
         }
 
     }

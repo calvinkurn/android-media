@@ -16,8 +16,6 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
@@ -189,14 +187,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void generateSellerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
-    public void initDbFlow() {
-        try {
-            FlowManager.getConfig();
-        } catch (IllegalStateException e) {
-            FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
-        }
     }
 
     private void initCacheApi() {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -25,7 +26,7 @@ import com.tokopedia.officialstore.category.di.OfficialStoreCategoryModule
 import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeContainerAdapter
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
-import com.tokopedia.officialstore.common.RecyclerViewScrollListener
+import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,6 +51,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var viewPager: ViewPager? = null
+    private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var keyCategory = "0"
@@ -155,7 +157,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             tabAdapter.categoryList.add(category)
         }
         tabAdapter.notifyDataSetChanged()
-        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
+        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories), appbarCategory!!)
         val categorySelected = getSelectedCategory(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
 
@@ -200,6 +202,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         viewPager = view.findViewById(R.id.viewpager)
+        appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
     }

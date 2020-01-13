@@ -149,10 +149,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
 
         public ViewHolder(View itemView) {
             super(itemView);
-            titleTextView = (TextView) itemView.findViewById(com.tokopedia.design.R.id.tv_title);
+            titleTextView = (TextView) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.tv_title);
             contentTextView = (TextView) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.tv_content);
             arrowImageView = (ImageView) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.iv_arrow);
-            containerLinearLayout = (LinearLayout) itemView.findViewById(com.tokopedia.design.R.id.container);
+            containerLinearLayout = (LinearLayout) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.container);
         }
 
         public void bind(final SimpleViewModel viewModel) {

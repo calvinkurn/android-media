@@ -50,6 +50,8 @@ public interface ProductListSectionContract {
 
         void trackEventImpressionBannedProducts(boolean isEmptySearch);
 
+        void trackEventImpressionSortPriceMinTicker();
+
         void backToTop();
 
         void addLoading();
