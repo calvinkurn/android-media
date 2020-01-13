@@ -3,6 +3,7 @@ package com.tokopedia.carouselproductcard
 import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
+import android.util.SparseIntArray
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,8 +21,7 @@ class CarouselProductCardView: BaseCustomView {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
-
-    var position: Int = 0
+    private val positionList = SparseIntArray()
 
     constructor(context: Context): super(context) {
         init()
@@ -70,7 +70,8 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
             carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null,
-            recyclerViewPool: RecyclerView.RecycledViewPool? = null) {
+            recyclerViewPool: RecyclerView.RecycledViewPool? = null,
+            viewHolderPosition: Int) {
 
         if (productCardModelList.isEmpty()) return
 
@@ -94,7 +95,8 @@ class CarouselProductCardView: BaseCustomView {
 
         carouselLayoutManager.run {
             if (this is LinearLayoutManager) {
-                scrollToPositionWithOffset(position?:0,
+                val position = positionList.get(viewHolderPosition, 0)
+                scrollToPositionWithOffset(position,
                         context.applicationContext.resources.getDimensionPixelOffset(
                                 R.dimen.dp_16
                         ))
@@ -148,11 +150,11 @@ class CarouselProductCardView: BaseCustomView {
     /**
      * Use this function onViewRecycled to retains scroll position
      */
-    fun onViewRecycled() {
+    fun onViewRecycled(viewHolderPosition: Int) {
         carouselLayoutManager?.let {
             if (it is LinearLayoutManager) {
                 val positionState = it.findFirstCompletelyVisibleItemPosition()
-                position = positionState
+                positionList.put(viewHolderPosition, positionState)
             }
         }
     }
