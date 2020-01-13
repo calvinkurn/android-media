@@ -36,4 +36,9 @@ class AttachVoucherAdapter(private val baseListAdapterTypeFactory: AttachVoucher
     override fun isChecked(element: Voucher): Boolean {
         return selectedInvoice.value == element
     }
+
+    fun clearSelected() {
+        selectedInvoice.value = null
+        selectedInvoicePosition = RecyclerView.NO_POSITION
+    }
 }
