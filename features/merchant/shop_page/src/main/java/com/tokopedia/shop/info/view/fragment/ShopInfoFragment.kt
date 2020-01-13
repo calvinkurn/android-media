@@ -104,7 +104,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     override fun onDestroy() {
         shopViewModel.shopNotesResp.removeObservers(this)
         shopViewModel.shopStatisticsResp.removeObservers(this)
-        shopViewModel.clear()
+        shopViewModel.flush()
         super.onDestroy()
     }
 

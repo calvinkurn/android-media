@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">top_ads_detail_sheet</string>
+    <string name="aktif">Aktif</string>
+    <string name="tidak_aktif">Tidak Aktif</string>
+    <string name="promote_topads">Iklankan</string>
+    <string name="rincian_topads">Rincian Iklan</string>
+    <string name="tampil">Tampil</string>
+    <string name="klik">Klik</string>
+    <string name="terjual">Terjual</string>
+    <string name="status">Status</string>
+    <string name="detail_iklan">Detail Iklan</string>
+    <string name="ke_dashboard_topads">Ke Dashboard TopAds</string>
+    <string name="rincian_iklan">Rincian Iklan</string>
+</resources>
