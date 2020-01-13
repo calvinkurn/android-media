@@ -1,17 +1,18 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
+import com.tokopedia.baselist.R;
 import com.tokopedia.design.text.SearchInputView;
 
 import java.util.List;

@@ -1,11 +1,11 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.tokopedia.abstraction.R;
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 
 
@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 
 public class LoadingViewholder extends AbstractViewHolder<LoadingModel> {
     @LayoutRes
-    public final static int LAYOUT = R.layout.item_shimmering_list;
+    public final static int LAYOUT = com.tokopedia.design.R.layout.item_shimmering_list;
 
     public LoadingViewholder(View itemView) {
         super(itemView);

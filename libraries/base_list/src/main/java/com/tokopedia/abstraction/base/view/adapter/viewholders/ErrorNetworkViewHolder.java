@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 
-import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
@@ -19,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel> {
     @LayoutRes
-    public final static int LAYOUT = R.layout.partial_empty_page_error;
+    public final static int LAYOUT = com.tokopedia.abstraction.R.layout.partial_empty_page_error;
     private ImageView ivIcon;
     private TextView tvMessage;
     private TextView tvSubMessage;
@@ -29,10 +28,10 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     public ErrorNetworkViewHolder(View itemView) {
         super(itemView);
         context = itemView.getContext();
-        ivIcon = itemView.findViewById(R.id.iv_icon);
-        tvMessage = itemView.findViewById(R.id.message_retry);
-        tvSubMessage = itemView.findViewById(R.id.sub_message_retry);
-        tvRetryButton = itemView.findViewById(R.id.button_retry);
+        ivIcon = itemView.findViewById(com.tokopedia.abstraction.R.id.iv_icon);
+        tvMessage = itemView.findViewById(com.tokopedia.abstraction.R.id.message_retry);
+        tvSubMessage = itemView.findViewById(com.tokopedia.abstraction.R.id.sub_message_retry);
+        tvRetryButton = itemView.findViewById(com.tokopedia.abstraction.R.id.button_retry);
     }
 
     @Override
