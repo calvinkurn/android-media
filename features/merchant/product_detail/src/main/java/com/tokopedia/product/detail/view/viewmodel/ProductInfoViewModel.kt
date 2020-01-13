@@ -83,6 +83,7 @@ import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -231,7 +232,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             p2Shop
         }
@@ -426,9 +427,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     val productSpesification: ProductSpecificationResponse = gqlResponse.getData(ProductSpecificationResponse::class.java)
                     productInfoP2.productSpecificationResponse = productSpesification
                 }
-
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             productInfoP2
         }
@@ -476,19 +476,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .topAdsPDPAffiliate.data.affiliate.firstOrNull()
                 }
 
-                if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-                    p2Login.cartType = response
-                            .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                            .getCartType.data.cartType
-                }
-
-                if (response.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
-                    p2Login.topAdsGetProductManage = response
-                            .getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage ?: TopAdsGetProductManage()
-                }
-            } catch (t: Throwable) {
-                t.debugTrace()
-            }
+        if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
+            p2Login.cartType = response
+                    .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
+                    .getCartType.data.cartType
+        }
+    } catch (t: Throwable) {
+        Timber.d(t)
+    }
 
             p2Login
         }
@@ -543,11 +538,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         .result.userCodStatus.isCod
             }
 
-        } catch (t: Throwable) {
-            t.debugTrace()
-        }
-        productInfoP3
+    } catch (t: Throwable) {
+        Timber.d(t)
     }
+    productInfoP3
+}
 
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
         launchCatchError(block = {
@@ -651,14 +646,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
-        trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
-        trackAffiliateUseCase.execute({
-            //no op
-        }) {
-            it.debugTrace()
-        }
+fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
+    trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
+    trackAffiliateUseCase.execute({
+        //no op
+    }) {
+        Timber.d(it)
     }
+}
 
     fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
         val requestParams = RequestParams.create()

@@ -2,7 +2,6 @@ package com.tokopedia.salam.umrah.search.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat

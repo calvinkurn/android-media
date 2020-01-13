@@ -4,6 +4,7 @@ ext {
     tkpdInternalLibDependencies = [
             authentication          : "com.tokopedia.authentication:authentication:1.0.8",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
+            cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.1",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
             graphql                 : "com.tokopedia.graphql:graphql:1.0.20",
             network                 : "com.tokopedia.network:network:1.0.13",
@@ -11,7 +12,8 @@ ext {
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6",
             akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.7-test",
-            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2"
+            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2",
+            williamchart            : "com.tokopedia.williamchart:williamchart:0.0.1"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -23,14 +25,12 @@ ext {
             baseListSeller          : ":libraries:base_list_seller",
             bannerDynamic           : ":libraries:banner_dynamic",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
-            cacheApi                : ":libraries:cache_api",
             cameraview              : ":libraries:cameraview",
             cmPushNotifications     : ":libraries:cm_push_notifications",
             commonNetwork           : ":libraries:common_network",
             collapsingTabLayout     : ":libraries:collapsing_tab_layout",
             core_legacy             : ":libraries:core_legacy",
             coreNetwork             : ":libraries:core_network",
-            cpm                     : ":libraries:cpm",
             datePickerRange         : ":libraries:date_picker_range",
             dynamicFeatures         : ":libraries:dynamic_features",
             fingerprint             : ":libraries:fingerprint",

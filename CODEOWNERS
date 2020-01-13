@@ -36,6 +36,7 @@
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
 /features/merchant/gold_merchant_subscribe/             @tokopedia/minion-stuart
+/features/merchant/power_merchant_subscribe/            @tokopedia/minion-stuart
 /features/merchant/product_detail/                      @tokopedia/minion-stuart
 /features/merchant/product_draft_database/              @tokopedia/minion-stuart
 /features/merchant/product_manage_item/                 @tokopedia/minion-stuart
@@ -67,13 +68,15 @@
 /features/digital/digital_homepage                      @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
 /features/digital/travel_homepage                       @tokopedia/minion-mark
+/features/digital/travel_country_code                   @tokopedia/minion-mark
+/features/digital/travel_passenger                      @tokopedia/minion-mark
 /features/digital/voucher_game                          @tokopedia/minion-mark
 /features/digital/digital_emoney                        @tokopedia/minion-mark
 /features/digital/imagepreviewslider                    @tokopedia/minion-mark
 /features/salam/umrah                                   @tokopedia/minion-mark
 /features/digital/digital_topup_bills                   @tokopedia/minion-mark
 /features/digital/flight_orderlist                      @tokopedia/minion-mark
-/features/digital/rechargeocr                          @tokopedia/minion-mark
+/features/digital/rechargeocr                           @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
