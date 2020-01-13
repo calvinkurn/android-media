@@ -37,13 +37,13 @@ class HotelClosedSortBottomSheets : BottomSheets() {
 
     override fun title(): String = title
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<AppCompatImageView>(com.tokopedia.design.R.id.btn_close)
-        btnClose.setOnClickListener { dismiss() }
+        val btnClose = getDialog()?.findViewById<AppCompatImageView>(com.tokopedia.design.R.id.btn_close)
+        btnClose?.setOnClickListener { dismiss() }
 
-        val title = getDialog().findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
-        title.typeface = Typeface.DEFAULT_BOLD
+        val title = getDialog()?.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
+        title?.typeface = Typeface.DEFAULT_BOLD
     }
 
     override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
