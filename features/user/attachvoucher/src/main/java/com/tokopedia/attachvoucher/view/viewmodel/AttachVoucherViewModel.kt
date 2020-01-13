@@ -25,7 +25,7 @@ class AttachVoucherViewModel @Inject constructor(
         shopId = arguments.getString(ApplinkConst.AttachVoucher.PARAM_SHOP_ID) ?: ""
     }
 
-    fun setFilter(filterType: Int) {
+    fun toggleFilter(filterType: Int) {
         val currentFilter = filter.value
         if (currentFilter == filterType) {
             filter.value = NO_FILTER

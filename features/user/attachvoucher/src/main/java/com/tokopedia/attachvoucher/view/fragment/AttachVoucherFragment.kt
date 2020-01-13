@@ -15,11 +15,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
 import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactoryImpl
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.fragment_attachvoucher_attach_voucher.*
 import javax.inject.Inject
 
@@ -67,12 +69,28 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun setupObserver() {
-        viewModel.filter.observe(viewLifecycleOwner, Observer { type ->
+        observeFilter()
+        observeVoucherResponse()
+        observeVoucherState()
+    }
 
+    private fun observeFilter() {
+        viewModel.filter.observe(viewLifecycleOwner, Observer { type ->
+            when (type) {
+                VoucherType.CASH_BACK -> setActiveFilter(filterCashBack, filterFreeOngkir)
+                VoucherType.FREE_ONGKIR -> setActiveFilter(filterFreeOngkir, filterCashBack)
+                AttachVoucherViewModel.NO_FILTER -> clearFilter()
+            }
         })
+    }
+
+    private fun observeVoucherResponse() {
         viewModel.vouchers.observe(viewLifecycleOwner, Observer { vouchers ->
             renderList(vouchers)
         })
+    }
+
+    private fun observeVoucherState() {
         adapter.selectedInvoice.observe(viewLifecycleOwner, Observer { voucher ->
             if (voucher != null) {
                 enableAttachButton(voucher)
@@ -94,7 +112,22 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun setupFilter() {
+        filterCashBack?.setOnClickListener {
+            viewModel.toggleFilter(VoucherType.CASH_BACK)
+        }
+        filterFreeOngkir?.setOnClickListener {
+            viewModel.toggleFilter(VoucherType.FREE_ONGKIR)
+        }
+    }
 
+    private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {
+        selected?.chipType = ChipsUnify.TYPE_SELECTED
+        deselected?.chipType = ChipsUnify.TYPE_ALTERNATE
+    }
+
+    private fun clearFilter() {
+        filterCashBack?.chipType = ChipsUnify.TYPE_ALTERNATE
+        filterFreeOngkir?.chipType = ChipsUnify.TYPE_ALTERNATE
     }
 
     override fun getScreenName(): String = screenName
