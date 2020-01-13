@@ -56,7 +56,7 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
-import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
@@ -1042,7 +1042,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         btn.setText(data.getButtonText());
         ImageHandler.loadImageFitCenter(getContext(), boxImageView, data.getImageURL());
         AlertDialog alertDialog = adb.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.setCancelable(false);
         alertDialog.setCanceledOnTouchOutside(false);
         btn.setOnClickListener(v -> {

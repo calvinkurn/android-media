@@ -1,16 +1,14 @@
 package com.tokopedia.salam.umrah.pdp.presentation.adapter
 
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
 import kotlinx.android.synthetic.main.item_umrah_pdp_featured_facility.view.*
+
 /**
  * @author by M on 30/10/19
  */
@@ -32,7 +30,6 @@ class UmrahPdpFeaturedFacilityAdapter : RecyclerView.Adapter<UmrahPdpFeaturedFac
             with(itemView){
                 tg_umrah_pdp_facility_header.text = umrahPdpFeaturedFacilityModel.header
                 iv_umrah_pdp_facility_logo.loadImageDrawable(umrahPdpFeaturedFacilityModel.iconDrawable)
-//                iv_umrah_pdp_facility_logo.loadImage(umrahPdpFeaturedFacilityModel.iconUrl)
             }
         }
     }
