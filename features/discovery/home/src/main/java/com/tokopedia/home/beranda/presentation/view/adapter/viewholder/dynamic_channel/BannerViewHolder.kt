@@ -36,6 +36,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                     promoUrls.add(slidesModel.imageUrl)
                 }
                 val bannerView = itemView.findViewById<HomePageBannerView>(R.id.home_page_banner)
+                bannerView?.setListener(this)
                 bannerView?.showSeeAllPromo(it.isNotEmpty())
                 bannerView?.buildView(promoUrls)
             }

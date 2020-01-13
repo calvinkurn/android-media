@@ -32,13 +32,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
     private var indicatorView: LinearLayout? = null
     private var seeAllPromoView: TextView? = null
     private var isAutoSlideActive = false
-    private var jumpPosition: Int = -1
-    private var currentPosition = -1
-
-    // Current ViewPager Display Page
     private var currentItem = 0
-    // Are you sliding to the left?
-    private var isDraggingToLeft = false
     private var lastItem = 0
     private var listener: HomePageBannerListener? = null
     private val indicatorItems = mutableListOf<ImageView>()
@@ -61,6 +55,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         seeAllPromoView = view.findViewById(R.id.see_all_promo)
         viewPager = view.findViewById(R.id.viewpager_banner)
         viewPager?.setCurrentItem(1, false)
+        seeAllPromoView?.setOnClickListener { listener?.onPromoAllClick() }
     }
 
     fun showSeeAllPromo(isShow: Boolean){
@@ -74,7 +69,6 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
     fun buildView(imagesUrl: List<String>){
         adapter = HomePageBannerAdapter()
         viewPager?.offscreenPageLimit = 5
-        currentPosition = -1
         buildIndicator(imagesUrl.size)
         adapter?.setItem(imagesUrl)
         resetImpressions()

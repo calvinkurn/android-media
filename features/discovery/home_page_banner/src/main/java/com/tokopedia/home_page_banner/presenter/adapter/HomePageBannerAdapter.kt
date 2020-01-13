@@ -4,7 +4,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_page_banner.presenter.adapter.viewHolder.HomePageBannerViewHolder
 
-class HomePageBannerAdapter : RecyclerView.Adapter<HomePageBannerViewHolder>(){
+class HomePageBannerAdapter(
+        private val clickCallback: (Int) -> Unit
+) : RecyclerView.Adapter<HomePageBannerViewHolder>(){
     private val imagesUrl = mutableListOf<String>()
     private var firstInitial = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomePageBannerViewHolder {
@@ -19,7 +21,7 @@ class HomePageBannerAdapter : RecyclerView.Adapter<HomePageBannerViewHolder>(){
 
     override fun onBindViewHolder(holder: HomePageBannerViewHolder, position: Int) {
         val imagePosition = getImagesUrl(position)
-        return holder.bind(imageUrl = imagesUrl[imagePosition])
+        return holder.bind(imageUrl = imagesUrl[imagePosition], clickListener = clickCallback)
     }
 
     private fun getImagesUrl(position: Int): Int{
