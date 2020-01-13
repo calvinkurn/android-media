@@ -24,7 +24,7 @@ class HotelLastSearchViewHolder(val view: View) : RecyclerView.ViewHolder(view) 
     val container = view.findViewById<CardUnify>(R.id.item_hotel_last_search_container)
 
     fun bind() {
-        container.layoutParams.height = container.layoutParams.width * 2 / 3
+//        container.layoutParams.height = container.layoutParams.width * 2 / 3
     }
 
     companion object {

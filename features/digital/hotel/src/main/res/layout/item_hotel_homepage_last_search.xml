@@ -2,10 +2,11 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_hotel_last_search_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/item_hotel_last_search_container"
     android:layout_marginRight="@dimen/dp_8"
+    android:minHeight="@dimen/dp_78"
     android:padding="@dimen/dp_16">
 
     <androidx.constraintlayout.widget.ConstraintLayout
