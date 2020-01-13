@@ -1,13 +1,14 @@
 package com.tokopedia.graphql.data;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.FingerprintManager;
+import com.tokopedia.graphql.TestingInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
@@ -22,11 +23,9 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -48,6 +47,12 @@ public class GraphqlClient {
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
+
+                TestingInterceptorProvider provider = new TestingInterceptorProvider();
+                Interceptor interceptor = provider.getGqlTestingInterceptor(context.getApplicationContext());
+                if (interceptor != null) {
+                    tkpdOkHttpBuilder.addInterceptor(interceptor);
+                }
             }
 
             sRetrofit = CommonNetwork.createRetrofit(

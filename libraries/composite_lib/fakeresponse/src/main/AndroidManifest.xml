@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.rahullohra.fakeresponse">
+
+    <application>
+        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.BaseActivity"
+            android:theme="@style/FakeNoActionBar" />
+        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity"
+            android:theme="@style/FakeNoActionBar" />
+        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity"
+            android:theme="@style/FakeNoActionBar"
+            android:taskAffinity="fakeresponse.gqlTesting"
+            android:launchMode="singleTask">
+            <intent-filter >
+                <action android:name="${applicationId}.fakeresponse.gqlTesting" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/gql_menu_reset"
+        android:title="@string/gql_reset" />
+
+    <item
+        android:id="@+id/gql_menu_clear_records"
+        android:title="@string/gql_clear_records" />
+
+
+</menu>

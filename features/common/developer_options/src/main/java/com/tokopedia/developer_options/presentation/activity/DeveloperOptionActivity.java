@@ -36,15 +36,13 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.developer_options.R;
+import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {
@@ -96,6 +94,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
+    private TextView tvFakeResponse;
 
     @Override
     public String getScreenName() {
@@ -105,10 +104,10 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools() && getIntent()!=null && getIntent().getData()!=null) {
+        if (GlobalConfig.isAllowDebuggingTools() && getIntent() != null && getIntent().getData() != null) {
             userSession = new UserSession(this);
             Uri uri = getIntent().getData();
-            if(uri.getHost().equals(DEVELOPEROPTION)) {
+            if (uri.getHost().equals(DEVELOPEROPTION)) {
                 handleUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
@@ -122,9 +121,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void handleUri(Uri uri) {
-        if(uri.getLastPathSegment().startsWith(STAGING)){
+        if (uri.getLastPathSegment().startsWith(STAGING)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.STAGING);
-        } else if (uri.getLastPathSegment().startsWith(LIVE)){
+        } else if (uri.getLastPathSegment().startsWith(LIVE)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.LIVE);
         }
         TokopediaUrl.Companion.deleteInstance();
@@ -185,6 +184,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
+
+        tvFakeResponse = findViewById(R.id.tv_fake_response);
 
     }
 
@@ -264,11 +265,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        reviewNotifBtn.setOnClickListener(v ->{
+        reviewNotifBtn.setOnClickListener(v -> {
             Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777,notifReview);
-                });
+            notificationManagerCompat.notify(777, notifReview);
+        });
 
         toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
 
@@ -324,6 +325,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
             }
+        });
+
+        tvFakeResponse.setOnClickListener(v -> {
+            new FakeResponseActivityProvider().startActivity(this);
         });
     }
 

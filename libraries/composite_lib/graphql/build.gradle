@@ -6,6 +6,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+        maven { url 'https://dl.bintray.com/iamdangerous/FakeResponse/' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -52,6 +53,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+//    debugImplementation project(rootProject.ext.libraries.fakeresponse)
+    debugImplementation project(path: ':fakeresponse')
 }
 
 apply from: '../publish_local.gradle'
