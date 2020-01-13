@@ -13,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.contract.ValidateMerchantPinContract;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
@@ -117,7 +119,7 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
 
     @Override
     protected void initInjector() {
-        getComponent(TokoPointComponent.class).inject(this);
+        DaggerTokoPointComponent.builder().baseAppComponent(((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent()).build().inject(this);
     }
 
     @Override
@@ -164,7 +166,7 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
         return getActivity();
     }
 
-    interface ValidatePinCallBack {
+    public interface ValidatePinCallBack {
         void onSuccess(CouponSwipeUpdate couponSwipeUpdate);
     }
 }
