@@ -88,7 +88,7 @@ class ShopProductViewHolder(
                         "",
                         "",
                         shopProductViewModel.name!!,
-                        shopProductViewModel.discountPercentage!!,
+                        "${shopProductViewModel.discountPercentage!!}%",
                         shopProductViewModel.originalPrice!!,
                         shopProductViewModel.displayedPrice!!,
                         ArrayList(),
