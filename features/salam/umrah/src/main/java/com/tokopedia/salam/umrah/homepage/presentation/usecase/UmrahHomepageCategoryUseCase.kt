@@ -1,13 +1,10 @@
 package com.tokopedia.salam.umrah.homepage.presentation.usecase
 
 import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageCategoryEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageCategoryParam
 import com.tokopedia.usecase.coroutines.Fail
