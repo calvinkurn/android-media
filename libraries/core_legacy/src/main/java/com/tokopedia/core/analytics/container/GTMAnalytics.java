@@ -828,9 +828,18 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = new Bundle();
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
-        bundle.putString("userId", sessionHandler.getLoginID());
+        if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
+            bundle.putString("userId", sessionHandler.getLoginID());
+        }else{
+            bundle.putString("userId", "");
+        }
         bundle.putString("clientId", getClientIDString());
         bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
+        if(!TextUtils.isEmpty(sessionHandler.getShopId())) {
+            bundle.putString("shopId", sessionHandler.getShopId());
+        }else{
+            bundle.putString("shopId", "");
+        }
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {

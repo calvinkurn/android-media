@@ -3,5 +3,6 @@
     <color name="umrah_solid_ticker">#fffbcd</color>
     <color name="umrah_border_ticker">#ecdb77</color>
     <color name="umrah_snow">#f9f9f9</color>
+    <color name="umrah_green_permission">#03ac0e</color>
 
 </resources>
