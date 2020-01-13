@@ -57,7 +57,7 @@ class ARHomeViewModelTest {
         coEvery { userSessionInterface.isLoggedIn } returns false
         viewModel.doOnCreate()
 
-        assertEquals(viewModel.getAskUserLogin().value,1)
+        assertEquals(viewModel.getAskUserLogin().value, 1)
     }
 
     /****************************************** fetchUserDOB() ****************************************/

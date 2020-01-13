@@ -1,21 +1,18 @@
 package com.tokopedia.age_restriction.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
-import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
 import com.tokopedia.age_restriction.repository.ARRepository
-import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
-import com.tokopedia.common.network.data.model.RequestType
 import io.mockk.*
-import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 
 class UpdateUserDobUseCaseTest {

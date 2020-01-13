@@ -35,6 +35,22 @@ class FetchUserDobUseCaseTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
+    @Test(expected = IllegalStateException::class)
+    fun `getRestData throws exception`() {
+        runBlockingTest {
+            coEvery {
+                (repository.getRestData("",
+                        object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
+                        any())
+                        as DataResponse<UserDOBResponse>).data
+            } returns  null
+
+            fetchUserDobUseCase.getData("")
+
+        }
+    }
+
+
     @Test
     fun `check function invokation of getRestData`() {
         runBlockingTest {
@@ -46,9 +62,11 @@ class FetchUserDobUseCaseTest {
             } returns mockk()
 
             fetchUserDobUseCase.getData("")
-            coVerify(exactly = 1) { (repository.getRestData("",
-                    object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
-                    any()) as DataResponse<UserDOBResponse>).data }
+            coVerify(exactly = 1) {
+                (repository.getRestData("",
+                        object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
+                        any()) as DataResponse<UserDOBResponse>).data
+            }
         }
     }
 
