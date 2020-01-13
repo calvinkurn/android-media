@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -21,10 +23,9 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
-import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
-import com.tokopedia.hotel.homepage.presentation.adapter.HotelPromoAdapter
+import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
@@ -35,7 +36,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
@@ -55,9 +55,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
-
-    private lateinit var promoAdapter: HotelPromoAdapter
-    private var promoDataList: List<HotelPromoEntity> = listOf()
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -124,6 +121,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 }
             }
         })
+
+        renderHotelLastSearch()
     }
 
     override fun onErrorRetryClicked() {
@@ -361,6 +360,25 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.bannerIndicator.hide()
     }
 
+    private fun renderHotelLastSearch() {
+        showHotelLastSearchContainer()
+
+        val dataList = mutableListOf<String>()
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+        dataList.add("")
+
+        rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(dataList)
+    }
+
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
         var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
         if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
@@ -393,6 +411,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
         trackingHotelUtil.hotelClickBanner(promo, position)
+    }
+
+    private fun showHotelLastSearchContainer() {
+        hotel_container_last_search.visibility = View.VISIBLE
+    }
+
+    private fun hideHotelLastSearchContainer() {
+        hotel_container_last_search.visibility = View.GONE
     }
 
     companion object {
