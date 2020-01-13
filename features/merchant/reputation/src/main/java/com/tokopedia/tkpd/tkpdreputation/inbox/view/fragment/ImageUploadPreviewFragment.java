@@ -297,7 +297,7 @@ public class ImageUploadPreviewFragment extends BaseDaggerFragment
 
     private Drawable getDeleteMenu() {
         TextDrawable drawable = new TextDrawable(getActivity());
-        drawable.setText(getResources().getString(R.string.action_delete));
+        drawable.setText(getResources().getString(R.string.menu_delete));
         drawable.setTextColor(R.color.black_70b);
         return drawable;
     }
@@ -344,7 +344,7 @@ public class ImageUploadPreviewFragment extends BaseDaggerFragment
         public Object instantiateItem(ViewGroup container, int position) {
             LayoutInflater inflater = (LayoutInflater) getActivity()
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.image_slider, container, false);
+            View view = inflater.inflate(R.layout.reputation_image_slider, container, false);
 
             ImageView image = (ImageView) view
                     .findViewById(R.id.image);

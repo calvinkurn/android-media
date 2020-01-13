@@ -54,7 +54,7 @@ public class ShareReviewDialog {
         this.context = context;
         this.dialog = new BottomSheetDialog(context);
         this.fragment = fragment;
-        this.dialog.setContentView(R.layout.share_review_dialog);
+        this.dialog.setContentView(R.layout.reputation_share_review_dialog);
         appGrid = (GridView) this.dialog.findViewById(R.id.grid);
         cancelButton = this.dialog.findViewById(R.id.cancel_but);
         initAdapter();
@@ -63,7 +63,7 @@ public class ShareReviewDialog {
     }
 
     public void initAdapter() {
-        adapterRead = ArrayAdapter.createFromResource(context, R.array.talk_read, R.layout.dialog_item);
+        adapterRead = ArrayAdapter.createFromResource(context, R.array.talk_read, R.layout.reputation_dialog_item);
         adapterRead.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 

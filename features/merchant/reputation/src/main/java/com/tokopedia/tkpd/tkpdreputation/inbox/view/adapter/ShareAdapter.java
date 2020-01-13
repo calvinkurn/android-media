@@ -50,7 +50,7 @@ public class ShareAdapter extends BaseAdapter {
         final ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.sheet_grid_item, parent, false);
+            convertView = inflater.inflate(R.layout.reputation_sheet_grid_item, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {

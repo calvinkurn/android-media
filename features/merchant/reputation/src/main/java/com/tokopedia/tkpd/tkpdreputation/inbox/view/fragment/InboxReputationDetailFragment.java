@@ -498,7 +498,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (!TextUtils.isEmpty(score)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(getReputationSmileyMessage(name));
-            builder.setPositiveButton(getString(R.string.send),
+            builder.setPositiveButton(getString(R.string.submit_review),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

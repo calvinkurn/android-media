@@ -215,7 +215,7 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (!element.getReputationDataViewModel().isShowRevieweeScore()
                 && element.getReputationDataViewModel().
                 getRevieweeScore() != NO_REPUTATION) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_done_24dp);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.reputation_ic_done_24dp);
         } else {
             switch (element.getReputationDataViewModel().getRevieweeScore()) {
                 case NO_REPUTATION:

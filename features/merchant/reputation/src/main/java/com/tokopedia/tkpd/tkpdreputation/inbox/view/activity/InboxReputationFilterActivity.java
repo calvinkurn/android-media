@@ -65,7 +65,7 @@ public class InboxReputationFilterActivity extends BaseSimpleActivity {
 
     private Drawable getResetMenu() {
         TextDrawable drawable = new TextDrawable(this);
-        drawable.setText(getResources().getString(R.string.action_reset));
+        drawable.setText(getResources().getString(R.string.reset_title));
         drawable.setTextColor(R.color.black_70b);
         return drawable;
     }

@@ -75,7 +75,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/invoice"
-                app:srcCompat="@drawable/red_circle" />
+                app:srcCompat="@drawable/reputation_red_circle" />
 
             <TextView
                 android:id="@+id/label_deadline"
