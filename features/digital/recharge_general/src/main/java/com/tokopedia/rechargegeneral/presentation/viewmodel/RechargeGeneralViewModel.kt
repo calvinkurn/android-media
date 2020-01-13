@@ -1,5 +1,6 @@
 package com.tokopedia.rechargegeneral.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -26,8 +27,13 @@ class RechargeGeneralViewModel  @Inject constructor(
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val operatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
-    val productList = MutableLiveData<Result<RechargeGeneralProductData>>()
+    private val _operatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
+    val operatorCluster : LiveData<Result<RechargeGeneralOperatorCluster>>
+        get() = _operatorCluster
+
+    private val _productList = MutableLiveData<Result<RechargeGeneralProductData>>()
+    val productList : LiveData<Result<RechargeGeneralProductData>>
+        get() = _productList
 
     lateinit var operatorClusterQuery: String
     lateinit var productListQuery: String
@@ -41,9 +47,9 @@ class RechargeGeneralViewModel  @Inject constructor(
                     graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
-                operatorCluster.value = Success(data.response)
+                _operatorCluster.value = Success(data.response)
             }) {
-                operatorCluster.value = Fail(it)
+                _operatorCluster.value = Fail(it)
             }
         }
     }
@@ -57,9 +63,9 @@ class RechargeGeneralViewModel  @Inject constructor(
                     graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<RechargeGeneralProductData.Response>()
 
-                productList.value = Success(data.response)
+                _productList.value = Success(data.response)
             }) {
-                productList.value = Fail(it)
+                _productList.value = Fail(it)
             }
         }
     }

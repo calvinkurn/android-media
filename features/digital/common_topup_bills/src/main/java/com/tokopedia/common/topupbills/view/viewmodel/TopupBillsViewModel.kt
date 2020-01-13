@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.*
@@ -23,9 +24,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                                               val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
-    val menuDetailData = MutableLiveData<Result<TopupBillsMenuDetail>>()
-    val favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
+    private val _enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
+    val enquiryData: LiveData<Result<TopupBillsEnquiryData>>
+        get() = _enquiryData
+
+    private val _menuDetailData = MutableLiveData<Result<TopupBillsMenuDetail>>()
+    val menuDetailData: LiveData<Result<TopupBillsMenuDetail>>
+        get() = _menuDetailData
+
+    private val _favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
+    val favNumberData : LiveData<Result<TopupBillsFavNumber>>
+        get() = _favNumberData
 
     fun getEnquiry(rawQuery: String, mapParam: List<TopupBillsEnquiryQuery>) {
         val params = mapOf(PARAM_FIELDS to mapParam)
@@ -40,9 +49,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 // If data is pending delay query call
                 if (data.enquiry.status == STATUS_PENDING) delay((data.enquiry.retryDuration?.toLong() ?: 1) * 1000)
             } while (data.enquiry.status != STATUS_DONE)
-            enquiryData.value = Success(data)
+            _enquiryData.value = Success(data)
         }) {
-            enquiryData.value = Fail(it)
+            _enquiryData.value = Fail(it)
         }
     }
 
@@ -53,9 +62,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
-            menuDetailData.value = Success(data.catalogMenuDetailData)
+            _menuDetailData.value = Success(data.catalogMenuDetailData)
         }) {
-            menuDetailData.value = Fail(it)
+            _menuDetailData.value = Fail(it)
         }
     }
 
@@ -66,9 +75,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsFavNumberData>()
 
-            favNumberData.value = Success(data.favNumber)
+            _favNumberData.value = Success(data.favNumber)
         }) {
-            favNumberData.value = Fail(it)
+            _favNumberData.value = Fail(it)
         }
     }
 
