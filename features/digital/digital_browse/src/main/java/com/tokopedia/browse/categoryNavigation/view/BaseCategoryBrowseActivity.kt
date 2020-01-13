@@ -150,7 +150,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
                 .commit()
     }
 
-    override fun onAttachFragment(fragment: Fragment?) {
+    override fun onAttachFragment(fragment: Fragment) {
         if (fragment is CategorylevelOneFragment) {
             fragment.activityStateListener = this
         } else if (fragment is CategoryLevelTwoFragment) {
