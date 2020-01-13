@@ -55,7 +55,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
             2 -> {
                 val f = ShopInfoFragment.createInstance()
                 shopPageActivity.getShopInfoData()?.run {
-                    f.shopInfo = this
+                    f.setShopInfo(this.mapToShopInfoData())
                 }
                 return f
             }
@@ -85,7 +85,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
             3 -> {
                 val f = ShopInfoFragment.createInstance()
                 shopPageActivity.getShopInfoData()?.run {
-                    f.shopInfo = this
+                    f.setShopInfo(this.mapToShopInfoData())
                 }
                 return f
             }
@@ -108,7 +108,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
             ShopPageActivity.TAB_POSITION_INFO -> {
                 val f = ShopInfoFragment.createInstance()
                 shopPageActivity.getShopInfoData()?.run {
-                    f.shopInfo = this
+                    f.setShopInfo(this.mapToShopInfoData())
                 }
                 return f
             }
@@ -128,7 +128,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
             1 -> {
                 val f = ShopInfoFragment.createInstance()
                 shopPageActivity.getShopInfoData()?.run {
-                    f.shopInfo = this
+                    f.setShopInfo(this.mapToShopInfoData())
                 }
                 return f
             }

@@ -12,6 +12,12 @@ buildscript {
     }
 }
 
+android {
+    androidExtensions {
+        experimental = true
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)

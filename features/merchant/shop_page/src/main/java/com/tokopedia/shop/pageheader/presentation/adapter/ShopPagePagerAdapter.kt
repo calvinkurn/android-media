@@ -42,7 +42,7 @@ internal class ShopPagePagerAdapter(
     override fun getItem(position: Int): Fragment {
         val fragment = ShopInfoFragment.createInstance()
         (shopData.value as? Success)?.also { result ->
-            fragment.shopInfo = result.data
+            fragment.setShopInfo(result.data.mapToShopInfoData())
         }
 
         return fragment
