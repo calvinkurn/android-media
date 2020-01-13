@@ -15,7 +15,7 @@ class GradientBackgroundView(container: ViewGroup) : UIView(container) {
 
     private val view: View =
             LayoutInflater.from(container.context).inflate(R.layout.view_gradient_background, container, true)
-                    .findViewById(R.id.v_gradient_background)
+                    .findViewById(R.id.cl_play_gradient)
 
     override val containerId: Int = view.id
 

@@ -320,6 +320,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
+        gradientBackgroundComponent = initGradientBackgroundComponent(container)
         sendChatComponent = initSendChatComponent(container)
         likeComponent = initLikeComponent(container)
         statsComponent = initStatsComponent(container)
@@ -327,7 +328,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         chatListComponent = initChatListComponent(container)
         immersiveBoxComponent = initImmersiveBoxComponent(container)
         videoControlComponent = initVideoControlComponent(container)
-        gradientBackgroundComponent = initGradientBackgroundComponent(container)
         toolbarComponent = initToolbarComponent(container)
         quickReplyComponent = initQuickReplyComponent(container)
         //play button should be on top of other component so it can be clicked
@@ -596,7 +596,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
                 connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-                connect(id, ConstraintSet.BOTTOM, R.id.gl_one_third, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
             }
 
             constraintSet.applyTo(container)

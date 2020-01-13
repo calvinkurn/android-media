@@ -6,9 +6,12 @@
     <color name="play_pinned_action_background">#00B736</color>
     <color name="play_loading_overlay_background">#B331353B</color>
 
-    <!--Toolbar Background-->
-    <color name="play_toolbar_gradient_darker">#80000000</color>
-    <color name="play_toolbar_gradient_lighter">#00FFFFFF</color>
+    <!--Background-->
+    <color name="play_top_gradient_darker">#30000000</color>
+    <color name="play_top_gradient_lighter">#00FFFFFF</color>
+
+    <color name="play_bottom_gradient_lighter">#00000000</color>
+    <color name="play_bottom_gradient_darker">#B331353B</color>
 
     <color name="play_video_background">#26292E</color>
 </resources>
