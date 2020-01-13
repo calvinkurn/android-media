@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.cancellation.data.cache.FlightCancellationReasonDataCacheSource;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
@@ -14,6 +13,7 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.HashMap;
 import java.util.List;
