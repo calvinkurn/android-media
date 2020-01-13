@@ -72,6 +72,7 @@ class NotificationUpdatePresenter @Inject constructor(
 
     override fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit) {
         markAllReadNotificationUpdateUseCase.execute(
+                MarkAllReadNotificationUpdateUseCase.params(variables),
                 NotificationUpdateActionSubscriber(onSuccessMarkAllReadNotificationUpdate))
     }
 
