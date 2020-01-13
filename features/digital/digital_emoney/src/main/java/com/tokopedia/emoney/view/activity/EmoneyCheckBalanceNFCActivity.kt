@@ -41,6 +41,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
@@ -346,7 +347,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     private fun isDigitalSmartcardEnabled(): Boolean {
-        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
     }
 
     private fun directToNFCSettingsPage() {
@@ -465,8 +466,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     companion object {
-        private const val DIGITAL_SMARTCARD = "mainapp_digital_smartcard"
-
         const val REQUEST_CODE_LOGIN = 1980
 
         const val ISSUER_ID_EMONEY = 1
