@@ -62,7 +62,7 @@
                 app:layout_constraintTop_toTopOf="@id/tv_traveller_info_title"
                 app:typographyType="body_2" />
 
-            <com.tokopedia.common.travel.widget.TravellerInfoWidget
+            <com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
                 android:id="@+id/widget_traveller_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
