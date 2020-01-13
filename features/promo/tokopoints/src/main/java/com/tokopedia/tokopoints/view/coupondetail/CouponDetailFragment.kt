@@ -645,7 +645,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     }
 
                 })
-        mBottomSheetFragment?.showNow(activity?.supportFragmentManager, "")
+        activity?.supportFragmentManager?.let {
+            mBottomSheetFragment?.showNow(it, "")
+        }
     }
 
 
