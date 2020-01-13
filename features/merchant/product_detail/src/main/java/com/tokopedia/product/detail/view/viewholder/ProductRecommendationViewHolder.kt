@@ -50,6 +50,7 @@ class ProductRecommendationViewHolder(private val view: View,
 
     private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?) {
         view.rvProductRecom.bindCarouselProductCardView(
+                viewHolderPosition = adapterPosition,
                 parentView = view,
                 isScrollable = true,
                 carouselModelId = carouselModelId,
@@ -93,7 +94,7 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     override fun onViewRecycled() {
-        view.rvProductRecom.onViewRecycled()
+        view.rvProductRecom.onViewRecycled(adapterPosition)
         super.onViewRecycled()
     }
 }

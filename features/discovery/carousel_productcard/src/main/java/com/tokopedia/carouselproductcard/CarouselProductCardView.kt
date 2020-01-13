@@ -71,7 +71,7 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
             carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
-            viewHolderPosition: Int) {
+            viewHolderPosition: Int = 0) {
 
         if (productCardModelList.isEmpty()) return
 
@@ -150,7 +150,7 @@ class CarouselProductCardView: BaseCustomView {
     /**
      * Use this function onViewRecycled to retains scroll position
      */
-    fun onViewRecycled(viewHolderPosition: Int) {
+    fun onViewRecycled(viewHolderPosition: Int = 0) {
         carouselLayoutManager?.let {
             if (it is LinearLayoutManager) {
                 val positionState = it.findFirstCompletelyVisibleItemPosition()
