@@ -14,11 +14,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
+import com.tokopedia.attachvoucher.data.Voucher
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactoryImpl
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
+import kotlinx.android.synthetic.main.fragment_attachvoucher_attach_voucher.*
 import javax.inject.Inject
 
 class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFactory>() {
@@ -71,6 +73,24 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         viewModel.vouchers.observe(viewLifecycleOwner, Observer { vouchers ->
             renderList(vouchers)
         })
+        adapter.selectedInvoice.observe(viewLifecycleOwner, Observer { voucher ->
+            if (voucher != null) {
+                enableAttachButton(voucher)
+            } else {
+                disableAttachButton()
+            }
+        })
+    }
+
+    private fun enableAttachButton(invoice: Voucher) {
+        btnAttach?.isEnabled = true
+        btnAttach.setOnClickListener {
+            // TODO: impl click
+        }
+    }
+
+    private fun disableAttachButton() {
+        btnAttach?.isEnabled = false
     }
 
     private fun setupFilter() {
