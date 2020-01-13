@@ -135,6 +135,7 @@ class CarouselProductCardView: BaseCustomView {
             if (it.productName.isNotEmpty()) blankSpaceConfig.productName = true
             if (it.labelPromo.title.isNotEmpty()) blankSpaceConfig.labelPromo = true
             if (it.slashedPrice.isNotEmpty()) blankSpaceConfig.slashedPrice = true
+            if (it.discountPercentage.isNotEmpty()) blankSpaceConfig.discountPercentage = true
             if (it.formattedPrice.isNotEmpty()) blankSpaceConfig.price = true
             if (it.shopBadgeList.isNotEmpty()) blankSpaceConfig.shopBadge = true
             if (it.shopLocation.isNotEmpty()) blankSpaceConfig.shopLocation = true
