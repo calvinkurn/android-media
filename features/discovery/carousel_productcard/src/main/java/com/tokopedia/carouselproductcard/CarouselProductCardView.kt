@@ -21,7 +21,6 @@ class CarouselProductCardView: BaseCustomView {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
-    private val positionList = SparseIntArray()
 
     constructor(context: Context): super(context) {
         init()
@@ -71,7 +70,8 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
             carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
-            viewHolderPosition: Int = 0) {
+            viewHolderPosition: Int = 0,
+            carouselCardSavedStatePosition: SparseIntArray? = null) {
 
         if (productCardModelList.isEmpty()) return
 
@@ -93,13 +93,15 @@ class CarouselProductCardView: BaseCustomView {
 
         submitProductCardCarouselData(carouselAdapter, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
 
-        carouselLayoutManager.run {
-            if (this is LinearLayoutManager) {
-                val position = positionList.get(viewHolderPosition, 0)
-                scrollToPositionWithOffset(position,
-                        context.applicationContext.resources.getDimensionPixelOffset(
-                                R.dimen.dp_16
-                        ))
+        carouselCardSavedStatePosition?.let { sparseIntArray ->
+            carouselLayoutManager.run {
+                if (this is LinearLayoutManager) {
+                    val position = sparseIntArray.get(viewHolderPosition, 0)
+                    scrollToPositionWithOffset(position,
+                            context.applicationContext.resources.getDimensionPixelOffset(
+                                    R.dimen.dp_16
+                            ))
+                }
             }
         }
     }
@@ -148,16 +150,13 @@ class CarouselProductCardView: BaseCustomView {
         return blankSpaceConfig
     }
 
-    /**
-     * Use this function onViewRecycled to retains scroll position
-     */
-    fun onViewRecycled(viewHolderPosition: Int = 0) {
+    fun getCurrentPosition(): Int {
         carouselLayoutManager?.let {
             if (it is LinearLayoutManager) {
-                val positionState = it.findFirstCompletelyVisibleItemPosition()
-                positionList.put(viewHolderPosition, positionState)
+                return it.findFirstCompletelyVisibleItemPosition()
             }
         }
+        return 0
     }
 
     /**

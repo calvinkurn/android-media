@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.app.Application
+import android.util.SparseIntArray
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -69,6 +70,7 @@ interface DynamicProductDetailListener {
     fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String)
     fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
+    fun getRecommendationCarouselSavedState(): SparseIntArray
 
     /**
      * ProductGeneralInfoViewHolder
