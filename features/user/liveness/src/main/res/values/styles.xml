@@ -13,7 +13,7 @@
         <item name="android:background">@drawable/liveness_shape_gradient_green</item>
         <item name="android:layout_height">@dimen/liveness_36</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/liveness_color_light</item>
+        <item name="android:textColor">@color/liveness_accent_reverse</item>
         <item name="android:textSize">@dimen/liveness_text_28</item>
     </style>
 

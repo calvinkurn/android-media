@@ -55,9 +55,18 @@ public class BackgroundOverlay extends View {
 
         mPath.reset();
 
+        int width = getWidth();
+        int height = getHeight();
+
+        int radius;
+        if(width < height)
+            radius = width/3;
+        else
+            radius = height/3;
+
         mPath.addCircle(getRight() / 2,
                 getBottom() / 3,
-                272,
+                radius,
                 Path.Direction.CW);  //invisible circle
         mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
 
@@ -67,7 +76,7 @@ public class BackgroundOverlay extends View {
 
         canvas.drawCircle(getRight() / 2,
                 getBottom() / 3,
-                275,
+                radius,
                 mWhitePaint);
     }
 }

@@ -11,12 +11,15 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import ai.advance.common.entity.BaseResultEntity;
 import ai.advance.liveness.R;
@@ -53,12 +56,12 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      * bottom anim tip imageView
      * 底部提示动画控件
      */
-//    private ImageView mTipImageView;
+    private LottieAnimationView mTipLottieAnimationView;
     /**
      * bottom tip textView
      * 底部提示文本控件
      */
-//    private TextView mTipTextView;
+    private TextView mTipTextView;
     /**
      * the countdown timer view
      * 倒计时控件
@@ -73,7 +76,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      * the loading dialog after all action success
      * 全部动作成功后的加载框
      */
-//    private View mProgressLayout;
+    private View mProgressLayout;
     /**
      * auth loading dialog
      * 授权过程的加载框
@@ -105,6 +108,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
         mDrawableCache = new SparseArray<>();
         // start liveness detection check 启动活体检测
         mLivenessView.startDetection(this);
+        setLottieFile("https://ecs7.tokopedia.net/lottie/scanning_the_face.json");
     }
 
     /**
@@ -116,18 +120,13 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
         if (activity != null) {
 //            mMaskImageView = activity.findViewById(R.id.mask_view);
             mLivenessView = activity.findViewById(R.id.liveness_view);
-//            mTipImageView = activity.findViewById(R.id.tip_image_view);
-//            mTipTextView = activity.findViewById(R.id.tip_text_view);
+            mTipLottieAnimationView = activity.findViewById(R.id.tip_lottie_animation_view);
+            mTipTextView = activity.findViewById(R.id.tip_text_view);
 //            mTimerView = activity.findViewById(R.id.timer_text_view_camera_activity);
-//            mProgressLayout = activity.findViewById(R.id.progress_layout);
+            mProgressLayout = activity.findViewById(R.id.progress_layout);
 //            mVoiceCheckBox = activity.findViewById(R.id.voice_check_box);
             View mBackView = activity.findViewById(R.id.back_view_camera_activity);
-            mBackView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    activity.onBackPressed();
-                }
-            });
+            mBackView.setOnClickListener(v -> activity.onBackPressed());
 //            mVoiceCheckBox.setChecked(IMediaPlayer.isPlayEnable());
 //            mVoiceCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //                @Override
@@ -173,9 +172,9 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      *
      * @param strResId resId 资源id
      */
-//    private void changeTipTextView(int strResId) {
-//        mTipTextView.setText(strResId);
-//    }
+    private void changeTipTextView(int strResId) {
+        mTipTextView.setText(strResId);
+    }
 
     /**
      * update tip textView text
@@ -183,38 +182,38 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      *
      * @param warnCode the status of current frame 当前的状态
      */
-//    private void updateTipUIView(Detector.WarnCode warnCode) {
-//        if (mLivenessView.isVertical()) {//phone not vertical
-//            if (warnCode != null) {
-//                switch (warnCode) {
-//                    case FACEMISSING:
-//                        changeTipTextView(R.string.liveness_no_people_face);
-//                        break;
-//                    case FACESMALL:
-//                        changeTipTextView(R.string.liveness_tip_move_closer);
-//                        break;
-//                    case FACELARGE:
-//                        changeTipTextView(R.string.liveness_tip_move_furthre);
-//                        break;
-//                    case FACENOTCENTER:
-//                        changeTipTextView(R.string.liveness_move_face_center);
-//                        break;
-//                    case FACENOTFRONTAL:
-//                        changeTipTextView(R.string.liveness_frontal);
-//                        break;
-//                    case FACENOTSTILL:
-//                    case FACECAPTURE:
-//                        changeTipTextView(R.string.liveness_still);
-//                        break;
-//                    case FACEINACTION:
-//                        showActionTipUIView();
-//                        break;
-//                }
-//            }
-//        } else {
-//            changeTipTextView(R.string.liveness_hold_phone_vertical);
-//        }
-//    }
+    private void updateTipUIView(Detector.WarnCode warnCode) {
+        if (mLivenessView.isVertical()) {//phone not vertical
+            if (warnCode != null) {
+                switch (warnCode) {
+                    case FACEMISSING:
+                        changeTipTextView(R.string.liveness_no_people_face);
+                        break;
+                    case FACESMALL:
+                        changeTipTextView(R.string.liveness_tip_move_closer);
+                        break;
+                    case FACELARGE:
+                        changeTipTextView(R.string.liveness_tip_move_furthre);
+                        break;
+                    case FACENOTCENTER:
+                        changeTipTextView(R.string.liveness_move_face_center);
+                        break;
+                    case FACENOTFRONTAL:
+                        changeTipTextView(R.string.liveness_frontal);
+                        break;
+                    case FACENOTSTILL:
+                    case FACECAPTURE:
+                        changeTipTextView(R.string.liveness_still);
+                        break;
+                    case FACEINACTION:
+                        showActionTipUIView();
+                        break;
+                }
+            }
+        } else {
+            changeTipTextView(R.string.liveness_hold_phone_vertical);
+        }
+    }
 
     /**
      * show current action tips
@@ -235,10 +234,8 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
                     detectionNameId = R.string.liveness_blink;
                     break;
             }
-//            changeTipTextView(detectionNameId);
-//            AnimationDrawable anim = getDrawRes(currentDetectionType);
-//            mTipImageView.setImageDrawable(anim);
-//            anim.start();
+            changeTipTextView(detectionNameId);
+            setLottieFile(getLottieFile(currentDetectionType));
         }
     }
 
@@ -289,7 +286,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
             mInitProgressDialog.dismiss();
         }
         if (isValid) {
-//            updateTipUIView(null);
+            updateTipUIView(null);
         } else {
             final String errorMessage;
             if (LivenessView.NO_RESPONSE.equals(errorCode)) {
@@ -322,29 +319,39 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      * @param detectionType Action type 动作类型
      * @return Prompt picture/animation
      */
-    public AnimationDrawable getDrawRes(Detector.DetectionType detectionType) {
-        int resID = -1;
+    public String getLottieFile(Detector.DetectionType detectionType) {
+        String lottieFile = "";
         if (detectionType != null) {
             switch (detectionType) {
                 case POS_YAW:
-                    resID = R.drawable.anim_frame_turn_head;
+                    lottieFile = "https://ecs7.tokopedia.net/lottie/turning_the_head_to_right_and_left.json";
                     break;
                 case MOUTH:
-                    resID = R.drawable.anim_frame_open_mouse;
+                    lottieFile = "https://ecs7.tokopedia.net/lottie/mouth_open_and_close.json";
                     break;
                 case BLINK:
-                    resID = R.drawable.anim_frame_blink;
+                    lottieFile = "https://ecs7.tokopedia.net/lottie/blink_interaction.json";
                     break;
             }
         }
-        AnimationDrawable cachedDrawAble = mDrawableCache.get(resID);
-        if (cachedDrawAble == null) {
-            AnimationDrawable drawable = (AnimationDrawable) getResources().getDrawable(resID);
-            mDrawableCache.put(resID, (drawable));
-            return drawable;
-        } else {
-            return cachedDrawAble;
-        }
+        return lottieFile;
+//        AnimationDrawable cachedDrawAble = mDrawableCache.get(resID);
+//        if (cachedDrawAble == null) {
+//            AnimationDrawable drawable = (AnimationDrawable) getResources().getDrawable(resID);
+//            mDrawableCache.put(resID, (drawable));
+//            return drawable;
+//        } else {
+//            return cachedDrawAble;
+//        }
+    }
+
+    private void setLottieFile(String url){
+        mTipLottieAnimationView.cancelAnimation();
+        mTipLottieAnimationView.clearAnimation();
+        mTipLottieAnimationView.invalidate();
+
+        mTipLottieAnimationView.setAnimationFromUrl(url);
+        mTipLottieAnimationView.playAnimation();
     }
 
     /**
@@ -368,12 +375,12 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
 
             @Override
             public void onGetFaceDataStart() {
-//                mProgressLayout.setVisibility(View.VISIBLE);
+                mProgressLayout.setVisibility(View.VISIBLE);
 //                mTimerView.setVisibility(View.GONE);
                 mLivenessView.setVisibility(View.GONE);
 //                mVoiceCheckBox.setVisibility(View.GONE);
-//                mTipImageView.setVisibility(View.GONE);
-//                mTipTextView.setVisibility(View.GONE);
+                mTipLottieAnimationView.setVisibility(View.GONE);
+                mTipTextView.setVisibility(View.GONE);
 //                mMaskImageView.setVisibility(View.GONE);
             }
 
@@ -412,7 +419,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
     @Override
     public void onDetectionFrameStateChanged(Detector.WarnCode warnCode) {
         if (isAdded()) {
-//            updateTipUIView(warnCode);
+            updateTipUIView(warnCode);
         }
     }
 
