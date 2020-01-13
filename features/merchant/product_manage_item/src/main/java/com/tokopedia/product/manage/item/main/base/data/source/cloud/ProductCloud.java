@@ -1,8 +1,6 @@
 package com.tokopedia.product.manage.item.main.base.data.source.cloud;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ProductSubmitResp;
+import com.tokopedia.network.mapper.DataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
@@ -14,7 +12,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
