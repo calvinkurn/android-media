@@ -32,6 +32,8 @@ class Voucher(
         restrictedForLiquidProduct
 ), Visitable<AttachVoucherTypeFactory> {
 
+    val availableAmount: String get() = merchantVoucherAmount?.amount?.toInt()?.toString() ?: ""
+
     override fun type(typeFactory: AttachVoucherTypeFactory): Int {
         return typeFactory.type(this)
     }
