@@ -5,4 +5,6 @@
     <color name="play_pinned_chat_background">#B331353B</color>
     <color name="play_pinned_action_background">#00B736</color>
     <color name="play_loading_overlay_background">#B331353B</color>
+    <color name="play_error_background">#26292e</color>
+    <color name="play_error_text_color">#aeffffff</color>
 </resources>
