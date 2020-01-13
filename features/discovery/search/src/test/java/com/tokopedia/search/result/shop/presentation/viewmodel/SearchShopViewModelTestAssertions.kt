@@ -120,7 +120,18 @@ internal fun State<List<Visitable<*>>>?.shouldOnlyHaveEmptySearchModel() {
     this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendation() {
+internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationAndLoadMore() {
+    val lastIndex = this?.data?.lastIndex ?: 0
+
+    this.shouldNotBeNull()
+
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this.shouldHaveRecommendationTitle()
+    this.shouldHaveShopItemViewModel(2, lastIndex - 1)
+    this.shouldHaveLoadingMoreViewModel(lastIndex)
+}
+
+internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationWithoutLoadMore() {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()

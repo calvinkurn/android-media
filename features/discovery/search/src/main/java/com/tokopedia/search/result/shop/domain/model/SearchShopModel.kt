@@ -13,6 +13,10 @@ internal data class SearchShopModel(
         @Expose
         val cpmModel: CpmModel = CpmModel()
 ) {
+    fun hasShopList() = aceSearchShop.shopList.isNotEmpty()
+
+    fun hasRecommendationShopList() = aceSearchShop.topShopList.isNotEmpty()
+
     data class AceSearchShop(
             @SerializedName("source")
             @Expose
