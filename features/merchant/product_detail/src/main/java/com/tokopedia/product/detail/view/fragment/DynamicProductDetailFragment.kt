@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
+import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -61,6 +62,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -895,6 +897,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
                 }
                 is Fail -> {
+                    logException(it.throwable)
                     renderPageError(it.throwable)
                 }
             }
@@ -1076,6 +1079,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil.snapShotMap.shouldShowCod =
                 shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_COD)
+    }
+
+    private fun logException(t: Throwable) {
+        try {
+            if (!BuildConfig.DEBUG) {
+                val errorMessage = String.format(
+                        getString(R.string.on_error_p1_string_builder),
+                        viewModel.userSessionInterface.userId,
+                        viewModel.userSessionInterface.email,
+                        t.message
+                )
+                Crashlytics.logException(Exception(errorMessage))
+            }
+        } catch (ex: IllegalStateException) {
+            ex.printStackTrace()
+        }
     }
 
     private fun renderPageError(t: Throwable) {
