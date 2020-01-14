@@ -80,12 +80,12 @@ class FindPageAnalytics {
             val map = HashMap<String, Any>()
             map[KEY_NAME] = item.name
             map[KEY_ID] = item.id.toString()
-            map[KEY_PRICE] = item.price
+            map[KEY_PRICE] = getItemPriceInNumber(item.price)
             map[KEY_BRAND] = ""
             map[KEY_CATEGORY] = item.categoryBreadcrumb + " / " + item.category
             map[KEY_LIST] = productListName
             map[KEY_VARIANT] = ""
-            map[KEY_POSITION] = item.adapter_position
+            map[KEY_POSITION] = item.adapter_position + 1
             list.add(map)
         }
         val map = DataLayer.mapOf(
@@ -97,6 +97,13 @@ class FindPageAnalytics {
                 KEY_CURRENCY_CODE, CURRENCY_VALUE,
                 KEY_IMPRESSIONS, DataLayer.listOf(list)))
         getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getItemPriceInNumber(price: String): String {
+        var result: String = price.replace("Rp", "", true)
+        result = result.replace(".", "")
+        result.trim()
+        return result
     }
 
     private fun getProductListName(item: ProductsItem, findNavScreenName: String): String {
@@ -121,12 +128,12 @@ class FindPageAnalytics {
                 KEY_PRODUCTS, DataLayer.mapOf(
                 KEY_NAME, product.name,
                 KEY_ID, product.id?.toString() ?: "",
-                KEY_PRICE, product.price,
+                KEY_PRICE, getItemPriceInNumber(product.price),
                 KEY_BRAND, "",
                 KEY_CATEGORY, product.categoryBreadcrumb + " / " + product.category,
                 KEY_VARIANT, "",
                 KEY_LIST, productListName,
-                KEY_POSITION, product.adapter_position
+                KEY_POSITION, product.adapter_position + 1
         )))))
         getTracker().sendEnhanceEcommerceEvent(map)
     }

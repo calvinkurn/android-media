@@ -87,7 +87,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     private var quickFilterList = ArrayList<Filter>()
     private lateinit var findNavViewModel: FindNavViewModel
     private var pageCount = 0
-    private var rows = 10
+    private var rows = 60
+    private var productCount = 0
     private var isPagingAllowed: Boolean = true
 
     private lateinit var findSearchParam: String
@@ -114,8 +115,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun addFragmentView() {
-        view?.findViewById<View>(R.id.swipeRefreshLayout)?.show()
-        view?.findViewById<View>(R.id.layoutBannedScreen)?.hide()
+        view?.findViewById<View>(R.id.swipe_refresh_layout)?.show()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.hide()
     }
 
     override fun initFragmentView() {
@@ -135,7 +136,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun hideFragmentView() {
-        view?.findViewById<View>(R.id.swipeRefreshLayout)?.hide()
+        view?.findViewById<View>(R.id.swipe_refresh_layout)?.hide()
     }
 
     override fun onPause() {
@@ -200,8 +201,14 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
         findNavViewModel.getProductCountLiveData().observe(viewLifecycleOwner, Observer {
             it?.let {
-                setTotalSearchResultCount(it)
-                setQuickFilterAdapter(it)
+                it[0].let { countText ->
+                    setTotalSearchResultCount(countText)
+                    setQuickFilterAdapter(countText)
+                }
+                it[1].let { count ->
+                    productCount = count.toInt()
+                    setPagingAllowed()
+                }
             }
         })
 
@@ -235,6 +242,14 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         })
     }
 
+    private fun hideBtnLoadMoreIfRequired() {
+        if (isPagingAllowed) {
+            btnLoadMore.show()
+        } else {
+            btnLoadMore.hide()
+        }
+    }
+
     private fun removeLoadingFromAdapter() {
         productNavListAdapter?.removeLoading()
     }
@@ -245,10 +260,15 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             productList.addAll(list as ArrayList<Visitable<ProductTypeFactory>>)
             removeLoadingFromAdapter()
             productRecyclerView.adapter?.notifyDataSetChanged()
-            isPagingAllowed = true
+            setPagingAllowed()
         } else {
             showNoDataScreen(true)
         }
+    }
+
+    private fun setPagingAllowed() {
+        isPagingAllowed = !productList.isNullOrEmpty() && productList.size < productCount
+        hideBtnLoadMoreIfRequired()
     }
 
     private fun removeShimmerIfRunning() {
@@ -283,7 +303,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         dataUpdatedHeader.show()
         val calendar = Calendar.getInstance()
         val currentMonthYear = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale("in", "ID")) + " ${calendar?.get(Calendar.YEAR)}"
-        val dateUpdatedText = getString(R.string.find_data_updated_text, calendar.time.toFormattedString("DD/MM/YYYY"))
+        val dateUpdatedText = getString(R.string.find_data_updated_text, calendar.time.toFormattedString("dd/MM/yyyy"))
         val priceHeaderText = getString(R.string.find_price_header_text, findNavScreenName, currentMonthYear)
         priceListHeader.text = priceHeaderText
         dataUpdatedHeader.text = dateUpdatedText
@@ -312,8 +332,13 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     private fun init() {
         setUpBreadCrumb()
         fetchProducts(0)
+        fetchRelatedLink()
         attachLoadMoreButton()
         setQuickFilterAdapter("")
+    }
+
+    private fun fetchRelatedLink() {
+        findNavViewModel.fetchRelatedLinkList(findSearchParam)
     }
 
     private fun setUpBreadCrumb() {
@@ -339,8 +364,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     private fun attachLoadMoreButton() {
         btnLoadMore.setOnClickListener {
-            findPageAnalytics.eventClickViewAll(findNavScreenName)
             if (isPagingAllowed) {
+                findPageAnalytics.eventClickViewAll(findNavScreenName)
                 incrementPage()
                 fetchProducts(getPage())
                 productNavListAdapter?.addLoading()
@@ -351,7 +376,6 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     private fun fetchProducts(start: Int) {
         findNavViewModel.fetchProductList(start, getDepartMentId(), rows, getUniqueId(), getSelectedSort(), getSelectedFilter())
-        findNavViewModel.fetchRelatedLinkList(findSearchParam)
     }
 
     private fun getPage(): Int {
@@ -387,7 +411,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onSwipeToRefresh() {
-        fetchProducts(0)
+        reloadData()
     }
 
     override fun getScreenName(): String {
@@ -412,6 +436,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         productNavListAdapter?.addShimmer()
         resetPage()
         fetchProducts(getPage())
+        fetchRelatedLink()
         findNavViewModel.fetchQuickFilterList(findSearchParam)
     }
 

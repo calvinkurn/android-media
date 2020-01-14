@@ -44,7 +44,7 @@ class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var
         return if (productList.size <= 0) {
             SHIMMER_LAYOUT_COUNT
         } else {
-            PRICE_COUNT
+            minOf(PRICE_COUNT, productList.size)
         }
     }
 

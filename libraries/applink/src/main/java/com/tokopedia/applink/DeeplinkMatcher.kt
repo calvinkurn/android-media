@@ -58,7 +58,7 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
             add(Pattern(GT, 1, mapOf(0 to "hot")) to HOT)
             add(Pattern(GT, 0, mapOf(0 to "find")) to FIND)
-            add(Pattern(GT, 1, mapOf(1 to "find")) to FIND)
+            add(Pattern(GT, 1, mapOf(0 to "amp", 1 to "find")) to FIND)
             add(Pattern(GT, 0, mapOf(0 to "catalog")) to CATALOG)
             add(Pattern(EQ, 2, mapOf(0 to "b")) to DISCOVERY_PAGE)
             add(Pattern(EQ, 2, mapOf(0 to "discovery")) to DISCOVERY_PAGE)

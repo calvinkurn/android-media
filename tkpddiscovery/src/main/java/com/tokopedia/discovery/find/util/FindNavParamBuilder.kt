@@ -24,18 +24,18 @@ class FindNavParamBuilder {
 
 
     private fun prepareProductListParams(productKey: String, start: Int, rows: Int, uniqueId: String, sortParam: HashMap<String, String>, filterParam: HashMap<String, String>): Map<String, Any> {
-        val queryMap= HashMap<String, Any>()
+        val queryMap = HashMap<String, Any>()
         queryMap[KEY_SAFE_SEARCH] = "false"
         queryMap[KEY_SOURCE] = KEY_SOURCE_VALUE
         if (filterParam.isNotEmpty()) {
-            queryMap.plus(filterParam)
+            queryMap.putAll(filterParam)
         }
         if (sortParam.isNotEmpty()) {
-            queryMap.plus(sortParam)
+            queryMap.putAll(sortParam)
         }
         queryMap[KEY_QUERY] = productKey
         queryMap[KEY_DEVICE] = KEY_DEVICE_VALUE
-        queryMap[KEY_START] = start
+        queryMap[KEY_START] = start * rows
         queryMap[KEY_ROWS] = rows
         queryMap[KEY_UNIQUE_ID] = uniqueId
         return queryMap

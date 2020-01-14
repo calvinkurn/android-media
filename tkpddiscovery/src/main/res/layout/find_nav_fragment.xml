@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipeRefreshLayout"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -123,7 +123,7 @@
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <include
-        android:id="@+id/layoutBannedScreen"
+        android:id="@+id/layout_banned_screen"
         layout="@layout/fragment_banned_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

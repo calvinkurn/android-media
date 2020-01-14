@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     private val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
-    private val mProductCount = MutableLiveData<String>()
+    private val mProductCount = MutableLiveData<List<String>>()
     private var mBannedData = MutableLiveData<Result<ArrayList<String>>>()
     private var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
     private var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
@@ -68,8 +68,19 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
             searchProduct.products.let { productList ->
                 mProductList.value = Success((productList) as List<ProductsItem>)
             }
-            mProductCount.value = searchProduct.countText
+            setProductCountValue(searchProduct)
         }
+    }
+
+    private fun setProductCountValue(searchProduct: SearchProduct) {
+        val list = ArrayList<String>()
+        searchProduct.countText.let {
+            list.add(it.toString())
+        }
+        searchProduct.totalData.let {
+            list.add(it.toString())
+        }
+        mProductCount.value = list
     }
 
     private fun checkForBannedData(searchProduct: SearchProduct): Boolean {
@@ -124,7 +135,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return mProductList
     }
 
-    fun getProductCountLiveData(): LiveData<String> {
+    fun getProductCountLiveData(): MutableLiveData<List<String>> {
         return mProductCount
     }
 
