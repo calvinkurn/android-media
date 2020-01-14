@@ -97,6 +97,9 @@ public class SearchProductModel {
         @SerializedName("response_code")
         @Expose
         private String responseCode;
+        @SerializedName("keyword_process")
+        @Expose
+        private String keywordProcess;
         @SerializedName("count_text")
         @Expose
         private String countText;
@@ -159,6 +162,10 @@ public class SearchProductModel {
 
         public String getResponseCode() {
             return responseCode;
+        }
+
+        public String getKeywordProcess() {
+            return keywordProcess;
         }
 
         public String getCountText() {

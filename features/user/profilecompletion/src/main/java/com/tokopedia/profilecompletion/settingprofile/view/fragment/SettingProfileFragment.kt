@@ -560,7 +560,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     override fun onDestroy() {
         super.onDestroy()
         profileInfoViewModel.userProfileInfo.removeObservers(this)
-        profileInfoViewModel.clear()
+        profileInfoViewModel.flush()
     }
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {

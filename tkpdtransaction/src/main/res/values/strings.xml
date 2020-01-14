@@ -390,6 +390,7 @@ Anda di sini.</string>
     <string name="tkpdtransaction_filter_custom_date">"Pilih Tanggal Sendiri"</string>
     <string name="tkpdtransaction_filter_90_days">90 Hari Terakhir</string>
     <string name="tkpdtransaction_90_days_found_nothing">Tidak ada transaksi dalam 90 hari terakhir</string>
+    <string name="tkpdtransaction_web_title">Info Pembeli</string>
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
     <string name="month_3">Mar</string>

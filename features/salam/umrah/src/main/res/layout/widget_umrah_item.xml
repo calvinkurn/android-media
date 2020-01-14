@@ -37,15 +37,27 @@
             android:maxHeight="@dimen/dp_32"
             android:maxWidth="@dimen/dp_32" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:visibility="gone"
+            android:id="@+id/iv_umrah_verified_blue"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_pdp_item_desc"
+            app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_pdp_item"
+            app:srcCompat="@drawable/ic_umrah_verified_blue"
+            android:layout_marginLeft="@dimen/dp_8"
+            />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_widget_umrah_pdp_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginBottom="1dp"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_pdp_item_desc"
-            app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_pdp_item"
+            app:layout_constraintLeft_toRightOf="@+id/iv_umrah_verified_blue"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_3"
@@ -58,8 +70,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N700_44"
+            android:layout_marginLeft="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@+id/tg_widget_umrah_pdp_item_title"
+            app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_pdp_item"
             app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_pdp_item_title"
             app:typographyType="small"
             app:typographyWeight="reguler"
