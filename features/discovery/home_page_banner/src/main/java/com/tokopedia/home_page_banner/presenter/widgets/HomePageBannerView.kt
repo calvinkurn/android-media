@@ -67,7 +67,9 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
     }
 
     fun buildView(imagesUrl: List<String>){
-        adapter = HomePageBannerAdapter()
+        adapter = HomePageBannerAdapter{
+            listener?.onPromoClick(it)
+        }
         viewPager?.offscreenPageLimit = 5
         buildIndicator(imagesUrl.size)
         adapter?.setItem(imagesUrl)
@@ -136,7 +138,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
                     selectedPosition = 0 // reset to first image
                 }
                 launch(Dispatchers.Main){
-                    viewPager?.setCurrentItem(selectedPosition + 1, selectedPosition != 0)
+                    viewPager?.setCurrentItem(selectedPosition + 1, true)
                 }
             }
         }
@@ -167,9 +169,8 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
             } else if(state == ViewPager2.SCROLL_STATE_IDLE){
                 val count = adapter?.itemCount ?: 0
                 val position: Int
-                if(count < 2) return
-                val index = viewPager?.currentItem ?: 0
-                when (index) {
+                if(count < 1) return
+                when (val index = viewPager?.currentItem ?: 0) {
                     0 -> {
                         position = count - 2
                         viewPager?.setCurrentItem(position, false)
@@ -179,8 +180,8 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
                         viewPager?.setCurrentItem(position, false)
                     }
                     else -> position = index
-
                 }
+                setImpression(position - 1)
                 setCurrentIndicator(position - 1)
                 runSlider()
             }

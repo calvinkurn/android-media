@@ -265,7 +265,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
-        startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 4;
+        startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
     }
 
     @Override
@@ -441,23 +441,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
 
         stickyLoginView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> updateStickyState());
-        stickyLoginView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
-                onGoToLogin();
-            }
+        stickyLoginView.setOnClickListener(v -> {
+            stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
+            onGoToLogin();
         });
-        stickyLoginView.setOnDismissListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
-                stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
+        stickyLoginView.setOnDismissListener(v -> {
+            stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
+            stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
 
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    updateEggBottomMargin(floatingEggButtonFragment);
-                }
+            FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+            if (floatingEggButtonFragment != null) {
+                updateEggBottomMargin(floatingEggButtonFragment);
             }
         });
     }

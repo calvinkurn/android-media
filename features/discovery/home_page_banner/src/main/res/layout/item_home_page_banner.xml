@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:adjustViewBounds="true"
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground"
     android:focusable="true"
     android:maxHeight="200dp"
     app:srcCompat="@drawable/banner_image_placeholder"
