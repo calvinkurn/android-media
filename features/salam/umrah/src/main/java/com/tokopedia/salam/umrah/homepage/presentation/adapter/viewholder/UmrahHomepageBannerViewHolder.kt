@@ -19,7 +19,7 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
         AbstractViewHolder<UmrahHomepageBannerEntity>(view) {
     override fun bind(element: UmrahHomepageBannerEntity) {
         with(itemView) {
-            if (element.isLoaded && element.data.isNotEmpty()) {
+            if (element.isLoaded && element.umrahBanners.isNotEmpty()) {
 
                 umrah_banner_shimmering.hide()
                 banner_umrah_home_page.apply {
@@ -28,16 +28,16 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                     customHeight = getHeightPx()
 
                     setBannerIndicator(GREEN_INDICATOR)
-                    val listImageUrl = UmrahHomepageBannerMapper.bannerMappertoString(element.data)
+                    val listImageUrl = UmrahHomepageBannerMapper.bannerMappertoString(element.umrahBanners)
                     setPromoList(listImageUrl)
                     setOnPromoClickListener {
-                        onBindListener.onClickBanner(element.data[it], it)
-                        RouteManager.route(context, element.data[it].applinkUrl)
+                        onBindListener.onClickBanner(element.umrahBanners[it], it)
+                        RouteManager.route(context, element.umrahBanners[it].applinkUrl)
                     }
                     setOnPromoScrolledListener {
-                        if (!element.data[it].isViewed) {
-                            onBindListener.onImpressionBanner(element.data[it], it)
-                            element.data[it].isViewed = true
+                        if (!element.umrahBanners[it].isViewed) {
+                            onBindListener.onImpressionBanner(element.umrahBanners[it], it)
+                            element.umrahBanners[it].isViewed = true
                         }
                     }
                     buildView()

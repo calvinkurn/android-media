@@ -148,9 +148,9 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
     }
 
 
-    fun getBannerData(rawQuery: String, isLoadFromCloud: Boolean, response: String) {
+    fun getBannerData(rawQuery: String, isLoadFromCloud: Boolean) {
         launch {
-            val result = umrahHomepageBannerUseCase.executeBanner(rawQuery, isLoadFromCloud, response)
+            val result = umrahHomepageBannerUseCase.executeBanner(rawQuery, isLoadFromCloud)
             when (result) {
                 is Success -> {
                     homePageModel.value?.let {

@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHomepageFactory
 
 data class UmrahHomepageBannerEntity(
-        @SerializedName("data")
+        @SerializedName("umrahBanners")
         @Expose
-        val data: List<UmrahBanner> = emptyList()
+        val umrahBanners: List<UmrahBanner> = emptyList()
 ):UmrahHomepageModel(){
 
         override fun type(typeFactory: UmrahHomepageFactory): Int {

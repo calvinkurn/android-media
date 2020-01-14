@@ -230,9 +230,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onBindBannerVH(isLoadedFromCloud: Boolean) {
         umrahHomepageViewModel.getBannerData(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_umrah_home_page_search_parameter), isLoadedFromCloud,
-                GraphqlHelper.loadRawString(resources, R.raw.dummy_response_banner)
-                )
+                R.raw.gql_query_umrah_home_page_banner), isLoadedFromCloud)
     }
 
     override fun onClickBanner(banner: UmrahBanner, position: Int) {
