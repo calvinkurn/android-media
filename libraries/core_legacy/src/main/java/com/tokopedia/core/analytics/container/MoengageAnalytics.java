@@ -20,7 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import static com.moe.pushlibrary.utils.MoEHelperConstants.*;
@@ -128,8 +127,9 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     @SuppressWarnings("RestrictedApi")
     public void setMoengageUserProfile(String... customerWrapper) {
-        checkArrayElementsNotNull(customerWrapper, "please pass 3 value, customerId, fullName, emailAddress");
-
+        if (customerWrapper.length != 3) {
+            return;
+        }
         final String customerId = customerWrapper[0];
         final String fullName = customerWrapper[1];
         final String emailAddress = customerWrapper[2];
@@ -306,33 +306,5 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     public void logoutEvent() {
         MoEHelper.getInstance(context).logoutUser();
-    }
-
-    /**
-     * Copied this file from androidx.core.util.Preconditions in androidx core version 1.0.0
-     * because this function no longer existed in version 1.1.0
-     *
-     * Ensures that the array is not {@code null}, and none of its elements are {@code null}.
-     *
-     * @param value an array of boxed objects
-     * @param valueName the name of the argument to use if the check fails
-     *
-     * @return the validated array
-     *
-     * @throws NullPointerException if the {@code value} or any of its elements were {@code null}
-     */
-    public static <T> T[] checkArrayElementsNotNull(final T[] value, final String valueName) {
-        if (value == null) {
-            throw new NullPointerException(valueName + " must not be null");
-        }
-
-        for (int i = 0; i < value.length; ++i) {
-            if (value[i] == null) {
-                throw new NullPointerException(
-                        String.format(Locale.US, "%s[%d] must not be null", valueName, i));
-            }
-        }
-
-        return value;
     }
 }

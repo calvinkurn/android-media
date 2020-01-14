@@ -39,10 +39,6 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
                     .umrahComponent(UmrahComponentInstance.getUmrahComponent(application))
                     .build()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     companion object{
         const val EXTRA_PRICE = "EXTRA_PRICE"
         const val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"
@@ -71,10 +67,6 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
     }
 
     override fun onBackPressed() {
-        if (fragment is OnBackListener) {
-            (fragment as OnBackListener).onBackPress()
-        }
-
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.umrah_checkout_dialog_title))
         dialog.setDescription(getString(R.string.umrah_checkout_dialog_desc))
@@ -86,7 +78,10 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
         }
 
         dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
+            if (fragment is OnBackListener) {
+                (fragment as OnBackListener).onBackPress()
+            }
+            dialog.dismiss()
             super.onBackPressed()
 
         }

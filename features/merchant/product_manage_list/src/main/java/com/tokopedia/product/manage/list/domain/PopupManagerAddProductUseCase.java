@@ -37,7 +37,7 @@ public class PopupManagerAddProductUseCase extends UseCase<Boolean> {
     }
 
     @Override public Observable<Boolean> createObservable(RequestParams requestParams) {
-        GraphqlRequest graphqlRequest = new GraphqlRequest(popUpQuery, PopUpManagerViewModel.class, requestParams.getParameters());
+        GraphqlRequest graphqlRequest = new GraphqlRequest(popUpQuery, PopUpManagerViewModel.class, requestParams.getParameters(), true);
         useCase.clearRequest();
         useCase.addRequest(graphqlRequest);
         return useCase.createObservable(requestParams).map(it -> {
