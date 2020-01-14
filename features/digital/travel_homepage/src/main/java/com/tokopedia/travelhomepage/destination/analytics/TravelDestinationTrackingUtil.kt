@@ -244,7 +244,7 @@ class TravelDestinationTrackingUtil {
 
     private fun getPriceValueFromString(string: String): Int {
         return try {
-            string.replace("Rp", "").replace(".", "").toInt()
+            string.replace("Rp", "").replace(".", "").replace(" ", "").toInt()
         } catch (e: Exception) {
             0
         }
