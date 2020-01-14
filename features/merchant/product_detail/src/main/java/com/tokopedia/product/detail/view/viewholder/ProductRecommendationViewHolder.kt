@@ -50,9 +50,12 @@ class ProductRecommendationViewHolder(private val view: View,
 
     private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?) {
         view.rvProductRecom.bindCarouselProductCardView(
+                carouselCardSavedStatePosition = listener.getRecommendationCarouselSavedState(),
+                viewHolderPosition = adapterPosition,
                 parentView = view,
                 isScrollable = true,
                 carouselModelId = carouselModelId,
+                recyclerViewPool = listener.getParentRecyclerViewPool(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = product.recommendationItemList[adapterPosition]
@@ -92,7 +95,7 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     override fun onViewRecycled() {
-        view.rvProductRecom.onViewRecycled()
+        listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
         super.onViewRecycled()
     }
 }
