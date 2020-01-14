@@ -536,12 +536,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
 
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
+
+            REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
         }
     }
 
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
         presenter.initInvoicePreview(data.extras)
+        presenter.initAttachmentPreview()
+    }
+
+    private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != RESULT_OK) return
+        presenter.initVoucherPreview(data.extras)
         presenter.initAttachmentPreview()
     }
 
@@ -877,7 +885,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun pickVoucherToUpload() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER).apply {
-            putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId)
+            putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId.toString())
         }
         startActivityForResult(intent, REQUEST_ATTACH_VOUCHER)
     }

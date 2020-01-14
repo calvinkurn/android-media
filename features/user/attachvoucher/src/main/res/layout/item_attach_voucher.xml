@@ -52,7 +52,6 @@
         android:padding="@dimen/spacing_lvl3"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/validStatus"
-        app:vchElevation="@dimen/spacing_lvl3"
-        tools:text="Berlaku hingga: 20 Nov 2019  |  Tersisa: 8" />
+        app:vchElevation="@dimen/spacing_lvl3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
