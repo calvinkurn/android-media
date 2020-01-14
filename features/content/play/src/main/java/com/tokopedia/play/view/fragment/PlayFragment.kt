@@ -208,7 +208,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            if (it.isFreeze) Toaster.snackBar.dismiss()
+            if (it.isFreeze)
+                try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         })
     }
 

@@ -24,7 +24,8 @@ import kotlinx.coroutines.CoroutineScope
  * Created by jegul on 14/01/20
  */
 class EndLiveInfoView(
-        container: ViewGroup
+        container: ViewGroup,
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View =
@@ -62,7 +63,9 @@ class EndLiveInfoView(
         txtLiveEndedTitle.text = title
         txtLiveEndedBody.text = message
         btnLiveEndedAction.text = btnTitle
-        btnLiveEndedAction.setOnClickListener { RouteManager.route(view.context, btnUrl) }
+        btnLiveEndedAction.setOnClickListener {
+            listener.onButtonActionClicked(this, btnUrl)
+        }
     }
 
     private fun layoutStats(@IdRes statsComponentId: Int) {
@@ -78,5 +81,9 @@ class EndLiveInfoView(
             connect(txtLiveEndedBody.id, ConstraintSet.BOTTOM, statsComponentId, ConstraintSet.BOTTOM)
         }
         constraintSet.applyTo(clPlayLiveEnded)
+    }
+
+    interface Listener {
+        fun onButtonActionClicked(view: EndLiveInfoView, btnUrl: String)
     }
 }

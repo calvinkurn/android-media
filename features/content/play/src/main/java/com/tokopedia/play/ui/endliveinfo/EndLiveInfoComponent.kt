@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.endliveinfo
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import kotlinx.coroutines.CoroutineScope
@@ -16,9 +17,9 @@ import kotlinx.coroutines.launch
  */
 class EndLiveInfoComponent(
         container: ViewGroup,
-        bus: EventBusFactory,
+        private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
-) : UIComponent<Unit>, CoroutineScope by coroutineScope {
+) : UIComponent<EndLiveInfoInteractionEvent>, CoroutineScope by coroutineScope, EndLiveInfoView.Listener {
 
     private val uiView = initView(container)
 
@@ -51,10 +52,16 @@ class EndLiveInfoComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): Flow<Unit> {
-        return emptyFlow()
+    override fun getUserInteractionEvents(): Flow<EndLiveInfoInteractionEvent> {
+        return bus.getSafeManagedFlow(EndLiveInfoInteractionEvent::class.java)
+    }
+
+    override fun onButtonActionClicked(view: EndLiveInfoView, btnUrl: String) {
+        launch {
+            bus.emit(EndLiveInfoInteractionEvent::class.java, EndLiveInfoInteractionEvent.ButtonActionClicked(btnUrl))
+        }
     }
 
     private fun initView(container: ViewGroup) =
-            EndLiveInfoView(container)
+            EndLiveInfoView(container, this)
 }

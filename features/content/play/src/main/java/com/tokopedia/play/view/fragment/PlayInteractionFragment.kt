@@ -26,6 +26,7 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
+import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
 import com.tokopedia.play.ui.gradientbg.GradientBackgroundComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
@@ -523,8 +524,24 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return quickReplyComponent
     }
 
-    private fun initEndLiveInfoComponent(container: ViewGroup): UIComponent<Unit> {
-        return EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    private fun initEndLiveInfoComponent(container: ViewGroup): UIComponent<EndLiveInfoInteractionEvent> {
+        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+
+        launch {
+            endLiveInfoComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is EndLiveInfoInteractionEvent.ButtonActionClicked -> {
+                                openPageByApplink(
+                                        applink = it.buttonUrl,
+                                        shouldFinish = true
+                                )
+                            }
+                        }
+                    }
+        }
+
+        return endLiveInfoComponent
     }
     //endregion
 
@@ -920,9 +937,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         openPageByApplink(ApplinkConst.LOGIN)
     }
 
-    private fun openPageByApplink(applink: String, vararg params: String) {
+    private fun openPageByApplink(applink: String, vararg params: String, shouldFinish: Boolean = false) {
         RouteManager.route(context, applink, *params)
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
+
+        if (shouldFinish) activity?.finish()
     }
 
     private fun calculateInteractionHeightOnKeyboardShown(estimatedKeyboardHeight: Int) {
