@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
@@ -69,6 +70,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var viewModel: RechargeGeneralViewModel
     @Inject
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
+    private var saveInstanceManager: SaveInstanceCacheManager? = null
 
     lateinit var adapter: RechargeGeneralAdapter
 
@@ -83,6 +85,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
 
     private var enquiryLabel = ""
+    private lateinit var enquiryData: TopupBillsEnquiry
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
@@ -101,6 +104,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             // Setup viewmodel queries
             viewModel.operatorClusterQuery = GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group)
             viewModel.productListQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input)
+
+            saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
+            val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
+            if (savedEnquiryData != null) enquiryData = savedEnquiryData
 
             adapter = RechargeGeneralAdapter(it, RechargeGeneralAdapterFactory(this), this)
         }
@@ -184,6 +191,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
 
         loadData()
+
+        // Render enquiry data
+        if (::enquiryData.isInitialized) renderCheckoutView(enquiryData)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -195,6 +205,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryId, operatorId)
                     renderClientNumber(favNumber.clientNumber)
                 }
+            } else if (requestCode == REQUEST_CODE_LOGIN) {
+                enquire()
             }
         }
     }
@@ -206,6 +218,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
         outState.putString(EXTRA_PARAM_PRODUCT_ID, productId)
         outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
+        if (::enquiryData.isInitialized) {
+            saveInstanceManager?.apply {
+                onSave(outState)
+                put(EXTRA_PARAM_ENQUIRY_DATA, enquiryData)
+            }
+        }
     }
 
     private fun renderInitialData(cluster: RechargeGeneralOperatorCluster) {
@@ -608,7 +626,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
-        renderCheckoutView(data)
+        enquiryData = data.enquiry
+        renderCheckoutView(enquiryData)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
@@ -636,7 +655,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 //        showGetListError(t)
     }
 
-    private fun renderCheckoutView(data: TopupBillsEnquiryData) {
+    private fun renderCheckoutView(data: TopupBillsEnquiry) {
         context?.let { context ->
             checkoutBottomSheet = BottomSheetUnify()
             checkoutBottomSheet.setTitle(getString(R.string.checkout_view_title))
@@ -649,7 +668,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
             val checkoutView = RechargeGeneralCheckoutBottomSheet(context)
             checkoutView.listener = this
-            checkoutView.setPayload(data.enquiry)
+            checkoutView.setPayload(data)
             checkoutBottomSheet.setChild(checkoutView)
 
             fragmentManager?.let { fm ->
@@ -667,9 +686,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun processCheckout() {
         // Setup checkout pass data
-        if (categoryId > 0
-                && operatorId > 0
-                && productId.isNotEmpty()) {
+        if (validateEnquiry()) {
             var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
                     .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                     .categoryId(categoryId.toString())
@@ -732,6 +749,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_PRODUCT_ID = "EXTRA_PARAM_PRODUCT_ID"
         const val EXTRA_PARAM_CLIENT_NUMBER = "EXTRA_PARAM_CLIENT_NUMBER"
         const val EXTRA_PARAM_INPUT_DATA = "EXTRA_PARAM_INPUT_DATA"
+        const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
 
         const val INPUT_TYPE_NUMERIC = "input_numeric"
         const val INPUT_TYPE_ALPHANUMERIC = "input_alphanumeric"
