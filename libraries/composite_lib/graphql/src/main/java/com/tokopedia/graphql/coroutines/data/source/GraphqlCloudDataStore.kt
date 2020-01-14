@@ -7,14 +7,13 @@ import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-class GraphqlCloudDataStore(private val api: GraphqlApi,
+class GraphqlCloudDataStore(private val api: GraphqlApiSuspend,
                             private val cacheManager: GraphqlCacheManager,
                             private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
 
@@ -23,13 +22,15 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
         return withContext(Dispatchers.Default) {
             val result: JsonArray
             try {
-                result = api.getResponseDeferred(requests).await()
+                result = api.getResponseSuspend(requests.toMutableList())
             } catch (e: Throwable) {
-                if (e !is UnknownHostException && e!is SocketTimeoutException) {
+                if (e !is UnknownHostException && e!is SocketTimeoutException && e !is CancellationException) {
                     Timber.e(e, "P1#REQUEST_ERROR_GQL#$requests")
                 }
                 throw e
             }
+
+            yield()
 
             val graphqlResponseInternal = GraphqlResponseInternal(result, false)
 
