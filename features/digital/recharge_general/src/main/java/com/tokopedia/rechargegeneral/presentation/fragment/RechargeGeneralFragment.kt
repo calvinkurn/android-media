@@ -86,7 +86,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var isApplinkData = false
 
     private var enquiryLabel = ""
-    private lateinit var enquiryData: TopupBillsEnquiry
+    private var enquiryData: TopupBillsEnquiry? = null
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
@@ -197,9 +197,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
 
         loadData()
-
-        // Render enquiry data
-        if (::enquiryData.isInitialized) renderCheckoutView(enquiryData)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -214,6 +211,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 enquire()
             }
+        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_CART_DIGITAL) {
+            // Render enquiry data
+            enquiryData?.let{ renderCheckoutView(it) }
         }
     }
 
@@ -227,10 +227,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (::inputDataKeys.isInitialized) {
             outState.putStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS, ArrayList(inputDataKeys))
         }
-        if (::enquiryData.isInitialized) {
+        enquiryData?.let { data ->
             saveInstanceManager?.apply {
                 onSave(outState)
-                put(EXTRA_PARAM_ENQUIRY_DATA, enquiryData)
+                put(EXTRA_PARAM_ENQUIRY_DATA, data)
             }
         }
     }
@@ -639,7 +639,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
         enquiryData = data.enquiry
-        renderCheckoutView(enquiryData)
+        renderCheckoutView(data.enquiry)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
