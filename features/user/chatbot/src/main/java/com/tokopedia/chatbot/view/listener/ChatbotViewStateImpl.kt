@@ -124,7 +124,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
-        if (adapter.data[0] is AttachInvoiceSelectionViewModel)
+        if (adapter.dataSize > 0 && adapter.data[0] is AttachInvoiceSelectionViewModel)
             getAdapter().removeElement(adapter.data[0])
         super.onReceiveMessageEvent(generatedInvoice)
     }

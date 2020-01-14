@@ -11,6 +11,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by Hendri on 27/03/18.
@@ -48,15 +51,15 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
         productStatus.text = element.status
         productInvoiceDate.text = element.createTime
         if (!TextUtils.isEmpty(element.imageUrl)) {
-            productImage?.visibility = View.VISIBLE
+            productImage?.show()
             ImageHandler.LoadImage(productImage, element.imageUrl)
         } else {
-            productImage?.visibility = View.INVISIBLE
+            productImage?.invisible()
         }
     }
 
     private fun prerequisiteUISetup(element: AttachInvoiceSentViewModel) {
-        action.visibility = View.GONE
+        action.hide()
 
         val resource = if (element.isDummy)
             com.tokopedia.chat_common.R.drawable.ic_chat_pending;
