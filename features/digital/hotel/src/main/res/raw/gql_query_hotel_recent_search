@@ -1,5 +1,5 @@
 query{
-  TravelCollectiveRecentSearches(product:HOTEL){
+  TravelCollectiveRecentSearches(product:HOTEL, platform: HOTELPAGE){
     items {
       product
       title
@@ -15,7 +15,6 @@ query{
       title
       webURL
       appURL
-      type
     }
   }
 }
