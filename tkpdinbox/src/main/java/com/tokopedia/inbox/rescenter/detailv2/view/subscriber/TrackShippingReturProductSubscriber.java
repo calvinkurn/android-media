@@ -1,8 +1,5 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
-import android.util.Log;
-
-import com.tkpd.library.utils.Logger;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProductHistory;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.TrackShippingFragmentListener;
@@ -12,6 +9,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingHistoryDial
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Created by milhamj on 24/11/17.
@@ -34,7 +33,7 @@ public class TrackShippingReturProductSubscriber extends rx.Subscriber<TrackingA
     public void onError(Throwable e) {
         for (int i = 0; i < e.getStackTrace().length; i++) {
             StackTraceElement element = e.getStackTrace()[i];
-            Logger.dump(this.getClass().getSimpleName(), element.toString());
+            Timber.d(element.toString());
         }
         if (e instanceof IOException) {
             view.onTrackingTimeOut();

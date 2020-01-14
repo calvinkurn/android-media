@@ -56,6 +56,7 @@ object HomeQuery{
               name
               layout
               type
+              showPromoBadge
               header {
                 id
                 name

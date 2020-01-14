@@ -6,6 +6,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.wandroid.traceroute.TraceRoute;
 import com.wandroid.traceroute.TraceRouteCallback;
 import com.wandroid.traceroute.TraceRouteResult;
@@ -20,8 +24,14 @@ public class GlideErrorLogHelper {
 
     public static void logError(Context context, GlideException e, String url) {
 
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        long traceRouteMinVersion = remoteConfig.getLong(RemoteConfigKey.ENABLE_TRACEROUTE_MIN_VERSION, 999999999);
+        if (GlobalConfig.VERSION_CODE < traceRouteMinVersion) {
+            return;
+        }
+
         if (!isNetworkAvailable(context)) {
-            Timber.w("P2#Load image error network not available");
+            Timber.w("P2#IMAGE_TRACEROUTE#network not available");
             return;
         }
 
@@ -30,7 +40,7 @@ public class GlideErrorLogHelper {
 
             @Override
             public void onSuccess(@NotNull TraceRouteResult traceRouteResult) {
-                Timber.w("P2#Load image error traceroute success: url= %s message= %s traceroute= %s",
+                Timber.w("P2#IMAGE_TRACEROUTE#success: url= %s message= %s traceroute= %s",
                         url,
                         e != null ? e.getMessage() : "",
                         traceResult);
@@ -44,7 +54,7 @@ public class GlideErrorLogHelper {
             @Override
             public void onFailed(int code, @NotNull String reason) {
                 traceResult += String.format("code: %d reason: %s", code, reason);
-                Timber.w("P2#Load image error traceroute failed: url= %s message= %s traceroute= %s",
+                Timber.w("P2#IMAGE_TRACEROUTE#failed: url= %s message= %s traceroute= %s",
                         url,
                         e != null ? e.getMessage() : "",
                         traceResult);

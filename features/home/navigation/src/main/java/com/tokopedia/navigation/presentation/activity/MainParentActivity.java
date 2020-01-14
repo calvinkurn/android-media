@@ -93,6 +93,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -184,10 +185,11 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE})
+    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE, ApplinkConst.OFFICIAL_STORE_CATEGORY})
     public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -229,6 +231,12 @@ public class MainParentActivity extends BaseActivity implements
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
 
         initCategoryConfig();
+
+        if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
+            new DFInstaller().installOnBackground(this.getApplication(), list, null, null);
+        }
     }
 
     private void initCategoryConfig() {

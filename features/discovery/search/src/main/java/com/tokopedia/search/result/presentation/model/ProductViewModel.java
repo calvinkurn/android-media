@@ -20,6 +20,7 @@ public class ProductViewModel implements Parcelable {
     private String additionalParams;
     private String autocompleteApplink;
     private String responseCode;
+    private String keywordProcess;
     private String errorMessage;
     private TickerViewModel tickerModel;
     private SuggestionViewModel suggestionModel;
@@ -150,6 +151,14 @@ public class ProductViewModel implements Parcelable {
         this.responseCode = responseCode;
     }
 
+    public String getKeywordProcess() {
+        return keywordProcess;
+    }
+
+    public void setKeywordProcess(String keywordProcess) {
+        this.keywordProcess = keywordProcess;
+    }
+
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -216,6 +225,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeString(this.additionalParams);
         dest.writeString(this.autocompleteApplink);
         dest.writeString(this.responseCode);
+        dest.writeString(this.keywordProcess);
         dest.writeParcelable(this.tickerModel, flags);
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
@@ -238,6 +248,7 @@ public class ProductViewModel implements Parcelable {
         this.additionalParams = in.readString();
         this.autocompleteApplink = in.readString();
         this.responseCode = in.readString();
+        this.keywordProcess = in.readString();
         this.tickerModel = in.readParcelable(TickerViewModel.class.getClassLoader());
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();

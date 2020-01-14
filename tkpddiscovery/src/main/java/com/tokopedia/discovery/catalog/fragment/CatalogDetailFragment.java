@@ -1,16 +1,16 @@
 package com.tokopedia.discovery.catalog.fragment;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.viewpager.widget.ViewPager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.ExpandableTextView;
@@ -191,11 +191,6 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     }
 
     @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-        this.startActivityForResult(intent, requestCode);
-    }
-
-    @Override
     public void navigateToActivity(Intent intent) {
         this.startActivity(intent);
     }
@@ -213,21 +208,6 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     @Override
     public void showToastMessage(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
-    }
-
-    @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void closeView() {
-
     }
 
     @Override

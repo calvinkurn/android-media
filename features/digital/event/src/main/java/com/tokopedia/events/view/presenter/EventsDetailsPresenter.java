@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
@@ -59,6 +60,7 @@ public class EventsDetailsPresenter
     private PostNsqTravelDataUseCase postNsqTravelDataUseCase;
     private UserSession userSession;
     public static String EXTRA_EVENT_VIEWMODEL = "extraeventviewmodel";
+    public static String EVENT_BOOK_TICKET_ID = "eventbookticketactivity";
     String url = "";
     public static String EXTRA_SEATING_PARAMETER = "hasSeatLayout";
     private EventsDetailsContract.EventDetailsView mView;
@@ -168,9 +170,11 @@ public class EventsDetailsPresenter
     public void bookBtnClick() {
         mView.showProgressBar();
         Intent bookTicketIntent = new Intent(mView.getActivity(), EventBookTicketActivity.class);
-        bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         if (eventsDetailsViewModel != null) {
-            bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
+            SaveInstanceCacheManager saveInstanceCacheManager = new SaveInstanceCacheManager(mView.getActivity(),true);
+            saveInstanceCacheManager.put(EXTRA_EVENT_VIEWMODEL,eventsDetailsViewModel,7);
+            saveInstanceCacheManager.put(EXTRA_SEATING_PARAMETER,hasSeatLayout);
+            bookTicketIntent.putExtra(EVENT_BOOK_TICKET_ID, saveInstanceCacheManager.getId());
             eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle().toLowerCase() + "-" + getSCREEN_NAME());
         }
         mView.navigateToActivityRequest(bookTicketIntent, Utils.Constants.SELECT_TICKET_REQUEST);

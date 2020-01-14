@@ -11,29 +11,27 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_0"
-    app:layout_constraintTop_toTopOf="parent"
     android:scrollbars="none"
-    app:layout_constraintBottom_toTopOf="@+id/emptyCardContentView">
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent">
     
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="@dimen/dp_0"
       android:orientation="vertical"
-      android:padding="@dimen/dp_16"
       android:paddingBottom="@dimen/dp_16">
   
       <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/otp_onboarding_image_animation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_height="@dimen/dp_288"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
+        app:lottie_rawRes="@raw/otp_miscall_animation"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/otp_miscall_animation" />
+        app:layout_constraintTop_toTopOf="parent"/>
   
       <TextView
         android:id="@+id/otp_onboarding_text_title"
@@ -41,116 +39,46 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textColor="@color/grey_796"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_18"
         android:textStyle="bold"
-        android:text="@string/cotp_miscall_onboarding_title" />
+        android:lineHeight="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:text="@string/cotp_miscall_onboarding_title"
+        app:layout_constraintTop_toBottomOf="@id/otp_onboarding_image_animation"/>
+  
+      <TextView
+        android:id="@+id/otp_onboarding_text_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:textAlignment="center"
+        android:textSize="@dimen/sp_14"
+        android:lineHeight="@dimen/dp_20"
+        android:text="@string/cotp_miscall_onboarding_desc"
+        app:layout_constraintTop_toBottomOf="@id/otp_onboarding_text_title"/>
       
-      <LinearLayout
-        android:id="@+id/otp_onboarding_layout_desc_1"
+      <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/call_me"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:orientation="horizontal">
-        
-        <FrameLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-  
-          <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_circle_text_background"
-            tools:ignore="MissingConstraints"/>
-  
-          <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:layout_gravity="center"
-            android:text="@string/cotp_miscall_onboarding_point_1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"/>
-        </FrameLayout>
-        
-        
-        <TextView
-          android:id="@+id/otp_onboarding_desc_1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="@dimen/dp_8"
-          android:layout_marginLeft="@dimen/dp_8"
-          android:textColor="@color/grey_550"
-          android:textSize="@dimen/sp_14" />
-        
-      </LinearLayout>
-  
-      <LinearLayout
-        android:id="@+id/otp_onboarding_layout_desc_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:orientation="horizontal">
-        
-        <FrameLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-    
-          <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_circle_text_background"
-            tools:ignore="MissingConstraints"/>
-    
-          <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:layout_gravity="center"
-            android:text="@string/cotp_miscall_onboarding_point_2"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"/>
-        </FrameLayout>
-        
-        <TextView
-          android:id="@+id/otp_onboarding_desc_2"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="@dimen/dp_8"
-          android:layout_marginLeft="@dimen/dp_8"
-          android:textColor="@color/grey_550"
-          android:textSize="@dimen/sp_14" />
-  
-      </LinearLayout>
-
-    </LinearLayout>
+        android:layout_height="@dimen/dp_48"
+        android:textColor="@color/grey_500"
+        android:fontFamily="sans-serif"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/cotp_miscall_onboarding_send_call"
+        app:layout_constraintTop_toBottomOf="@id/otp_onboarding_text_desc"/>
+      
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
   </ScrollView>
-  
-  <FrameLayout
-    android:id="@+id/emptyCardContentView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintBottom_toBottomOf="parent">
-  
-    <com.tokopedia.unifycomponents.UnifyButton
-      android:id="@+id/call_me"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textColor="@color/grey_500"
-      android:fontFamily="sans-serif"
-      android:textSize="@dimen/sp_14"
-      android:textStyle="bold"
-      android:text="@string/cotp_miscall_onboarding_send_call"
-      android:padding="@dimen/dp_10"
-      android:layout_marginStart="@dimen/dp_16"
-      android:layout_marginLeft="@dimen/dp_16"
-      android:layout_marginTop="@dimen/dp_16"
-      android:layout_marginEnd="@dimen/dp_16"
-      android:layout_marginRight="@dimen/dp_16"
-      android:layout_marginBottom="@dimen/dp_16" />
-
-  </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,9 +8,11 @@
     <com.tokopedia.design.component.Tabs
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
         app:tabType="secondary"
-        app:tabTextAppearance="@style/Tabs.Secondary"/>
+        app:tabTextAppearance="@style/Tabs.Secondary"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:tabPaddingBottom="@dimen/dp_12"/>
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/viewPager"

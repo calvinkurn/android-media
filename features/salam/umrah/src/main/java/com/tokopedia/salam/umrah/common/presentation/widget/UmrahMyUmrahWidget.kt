@@ -3,9 +3,10 @@ package com.tokopedia.salam.umrah.common.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
 class UmrahMyUmrahWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    lateinit var umrahMyUmrahModel: UmrahMyUmrahWidgetModel
+    lateinit var myUmrahModel: UmrahMyUmrahWidgetModel
 
     init {
         View.inflate(context, R.layout.widget_umrah_my_umrah, this)
@@ -32,21 +33,26 @@ class UmrahMyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    fun buildView(trackingUmrahUtil: TrackingUmrahUtil) {
-        if (::umrahMyUmrahModel.isInitialized) {
+    fun buildView(trackingUmrahUtil: UmrahTrackingAnalytics) {
+        if (::myUmrahModel.isInitialized) {
             hideLoadingState()
 
-            tg_umrah_package.text = umrahMyUmrahModel.subHeader
-            tg_umrah_departure.text = umrahMyUmrahModel.header
-            tg_umrah_next.text = umrahMyUmrahModel.nextActionText
-            btn_my_umrah_detail.text = umrahMyUmrahModel.mainButtonText
+            tg_umrah_package.text = myUmrahModel.subHeader
+            tg_umrah_departure.text = myUmrahModel.header
+            tg_umrah_next.text = myUmrahModel.nextActionText
+            btn_my_umrah_detail.text = myUmrahModel.mainButtonText
             btn_my_umrah_detail.setOnClickListener {
-                trackingUmrahUtil.umrahOrderDetailUmrahSaya(umrahMyUmrahModel.nextActionText)
-                RouteManager.route(context, umrahMyUmrahModel.mainButtonLink)
+                trackingUmrahUtil.umrahOrderDetailUmrahSaya(myUmrahModel.nextActionText)
+                RouteManager.route(context, myUmrahModel.mainButtonLink)
             }
         } else {
             showLoadingState()
         }
+    }
+
+    fun setWidthMatchParent(){
+        container_umrah_widget_my_umrah.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        container_inner_umrah_widget_my_umrah.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
     fun showLoadingState() {

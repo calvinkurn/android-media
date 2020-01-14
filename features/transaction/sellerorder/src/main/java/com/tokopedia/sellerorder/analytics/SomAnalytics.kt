@@ -51,8 +51,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, orderLabel)
     }
 
-    fun eventClickOrder() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ORDER_LIST)
+    fun eventClickOrder(orderLabel: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ORDER_LIST, orderLabel)
     }
 
     fun eventSubmitSearch(keyword: String) {
