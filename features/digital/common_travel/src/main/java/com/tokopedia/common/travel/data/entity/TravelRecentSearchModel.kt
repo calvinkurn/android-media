@@ -1,19 +1,17 @@
-package com.tokopedia.travel.homepage.data
+package com.tokopedia.common.travel.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageRecentSearchModel(@SerializedName("items")
+class TravelRecentSearchModel(@SerializedName("items")
                                       @Expose
                                       val items: List<Item> = listOf(),
-                                      @SerializedName("meta")
+                              @SerializedName("meta")
                                       @Expose
-                                      val meta: MetaModel = MetaModel()) {
+                                      val travelMeta: TravelMetaModel = TravelMetaModel()) {
 
     data class Item(@SerializedName("product")
                     @Expose
@@ -45,6 +43,6 @@ class TravelHomepageRecentSearchModel(@SerializedName("items")
 
     data class Response(@SerializedName("TravelCollectiveRecentSearches")
                         @Expose
-                        val response: TravelHomepageRecentSearchModel = TravelHomepageRecentSearchModel())
+                        val response: TravelRecentSearchModel = TravelRecentSearchModel())
 
 }
