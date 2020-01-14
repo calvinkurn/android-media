@@ -44,10 +44,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult;
@@ -68,6 +66,8 @@ import com.tokopedia.gamification.di.GamificationComponentInstance;
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView;
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist;
 import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
+import com.tokopedia.promogamification.common.GamificationRouter;
+import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.unifyprinciples.Typography;
@@ -179,19 +179,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 } else if (crackResult.isCrackButtonRedirect(crackResult.getCtaButton())) {
                     trackingButtonClick(crackResult.getBenefitType(), titleBtn);
 
-                    String applink = crackResult.getCtaButton().getApplink();
-                    if (!TextUtils.isEmpty(applink)) {
-                        boolean isSupported = RouteManager.route(getActivity(), applink);
-                        if (!isSupported) {
-                            ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
-                                    crackResult.getCtaButton().getUrl(),
-                                    CrackTokenActivity.class);
-                        }
-                    } else {
-                        ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
-                                crackResult.getCtaButton().getUrl(),
-                                CrackTokenActivity.class);
-                    }
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
+                            crackResult.getCtaButton().getUrl(),
+                            CrackTokenActivity.class);
+
                 }
             }
 
@@ -212,22 +203,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 } else if (crackResult.isCrackButtonRedirect(crackResult.getReturnButton())) {
                     trackingButtonClick(crackResult.getBenefitType(), titleBtn);
 
-                    String applink = crackResult.getReturnButton().getApplink();
-                    if (!TextUtils.isEmpty(applink)) {
-                        boolean isSupported = RouteManager.route(getActivity(), applink);
-                        if (!isSupported) {
-                            ApplinkUtil.navigateToAssociatedPage(getActivity(),
-                                    crackResult.getReturnButton().getApplink(),
-                                    crackResult.getReturnButton().getUrl(),
-                                    CrackTokenActivity.class);
-                        }
-                    } else {
-                        ApplinkUtil.navigateToAssociatedPage(getActivity(),
-                                crackResult.getReturnButton().getApplink(),
-                                crackResult.getReturnButton().getUrl(),
-                                CrackTokenActivity.class);
-                    }
-
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(),
+                            crackResult.getReturnButton().getApplink(),
+                            crackResult.getReturnButton().getUrl(),
+                            CrackTokenActivity.class);
                 }
             }
 
@@ -416,16 +395,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             ImageHandler.loadImageAndCache(ivPrize, homeSmallButton.getImageURL());
             ivPrize.setOnClickListener(v -> {
                 crackLayoutTooltip.setVisibility(View.GONE);
-                String applink = homeSmallButton.getAppLink();
-                if (!TextUtils.isEmpty(applink)) {
-                    boolean isSupported = RouteManager.route(getActivity(), applink);
-                    if (!isSupported) {
-                        ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
-                    }
-                } else {
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
-                }
-
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
                 trackingDailyPrizeBtnClick();
             });
         }
@@ -458,18 +428,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             HomeActionButton actionButton = homeActionButtons.get(0);
             widgetEggSource.showEggSource(actionButton.getText());
             widgetEggSource.setOnClickListener(v -> {
-                if (!TextUtils.isEmpty(actionButton.getAppLink()) || !TextUtils.isEmpty(actionButton.getUrl())) {
-                    String applink = actionButton.getAppLink();
-                    if (!TextUtils.isEmpty(applink)) {
-                        boolean isSupported = RouteManager.route(getActivity(), applink);
-                        if (!isSupported) {
-                            ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
-                        }
-                    } else {
-                        ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
-                    }
-                    trackingMainGameLainnyaClick(actionButton.getText());
-                }
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
+                trackingMainGameLainnyaClick(actionButton.getText());
             });
         } else {
             widgetEggSource.hide();

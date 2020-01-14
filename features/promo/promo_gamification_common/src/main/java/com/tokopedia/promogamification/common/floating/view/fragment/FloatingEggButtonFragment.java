@@ -45,7 +45,7 @@ import com.tokopedia.promogamification.common.CoreGamificationEventTracking;
 import com.tokopedia.promogamification.common.R;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.promogamification.common.di.CommonGamificationComponent;
-import com.tokopedia.promogamification.common.di.*;
+import com.tokopedia.promogamification.common.di.CommonGamificationComponentInstance;
 import com.tokopedia.promogamification.common.floating.data.entity.FloatingCtaEntity;
 import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingButtonEntity;
 import com.tokopedia.promogamification.common.floating.listener.OnDragTouchListener;
@@ -409,14 +409,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onClick(View v) {
 
-                if (!TextUtils.isEmpty(appLink)) {
-                    boolean isSupported = RouteManager.route(getActivity(), appLink, null);
-                    if (!isSupported) {
-                        ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
-                    }
-                } else {
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
-                }
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, null);
                 trackingEggClick(tokenData.getId(), tokenData.getName());
             }
         });

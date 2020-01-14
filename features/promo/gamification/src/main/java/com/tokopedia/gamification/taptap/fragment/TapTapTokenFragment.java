@@ -39,8 +39,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.promogamification.common.GamificationRouter;
-import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
@@ -62,6 +60,8 @@ import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
+import com.tokopedia.promogamification.common.GamificationRouter;
+import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -351,16 +351,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
             crackTokenPresenter.playWithPoints(true);
         } else {
-            String applink = actionButton.getApplink();
-            if (!TextUtils.isEmpty(applink)) {
-                boolean isSupported = RouteManager.route(getActivity(), applink);
-                if (!isSupported) {
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(), actionButton.getUrl(), TapTapTokenActivity.class);
-                }
-            } else {
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(), actionButton.getUrl(), TapTapTokenActivity.class);
-            }
-
+            ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(), actionButton.getUrl(), TapTapTokenActivity.class);
         }
         if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
             sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK, actionButton.getText());
