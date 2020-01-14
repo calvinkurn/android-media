@@ -433,7 +433,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         viewModel.etalaseResponse.removeObservers(this)
         viewModel.productHighlightResp.removeObservers(this)
         viewModel.productResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
         merchantVoucherListPresenter.detachView()
     }
@@ -625,7 +625,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                     data.membershipClaimBenefitResponse.subTitle,
                     data.membershipClaimBenefitResponse.resultStatus.code, lastQuestId)
             bottomSheetMembership.setListener(this)
-            bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+            fragmentManager?.run {
+                bottomSheetMembership.show(this, "membership_shop_page")
+            }
         }
     }
 

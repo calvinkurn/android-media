@@ -332,7 +332,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onDestroy() {
-        enquiryViewModel.clear()
+        enquiryViewModel.flush()
         super.onDestroy()
     }
 
