@@ -875,8 +875,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())) {
-                            tickerAnnouncementHolderData.setId(String.valueOf(responseGetPromoStack.getData().getTickerInfoUiModel().getStatusCode()));
-                            tickerAnnouncementHolderData.setMessage(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage());
+                            if (tickerAnnouncementHolderData == null) {
+                                setTickerAnnouncementHolderData(
+                                        new TickerAnnouncementHolderData(
+                                                String.valueOf(responseGetPromoStack.getData().getTickerInfoUiModel().getStatusCode()),
+                                                responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())
+                                );
+                            }
                             getView().updateTickerAnnouncementMessage();
                             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
                         }
