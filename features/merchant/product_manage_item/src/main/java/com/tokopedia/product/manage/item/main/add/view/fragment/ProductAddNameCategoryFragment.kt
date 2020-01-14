@@ -75,8 +75,10 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         categoryCatalogSection?.visibility = if (productName.name.isNotEmpty()) View.VISIBLE else View.GONE
         if(!flagReset){
             this.productName = productName
-            presenter.onProductNameChange(productName.name)
             name = productName.name
+            if(name.isNotEmpty()) {
+                presenter.onProductNameChange(name)
+            }
             validateData()
             resetCategoryCatalog()
         }

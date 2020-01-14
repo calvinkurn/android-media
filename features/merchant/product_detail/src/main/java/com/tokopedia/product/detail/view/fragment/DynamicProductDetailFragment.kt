@@ -287,7 +287,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         productDetailTracking.sendAllQueue()
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         // handling menu toolbar / cart counter / settings / etc
 
@@ -296,7 +296,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
                 activity?.onBackPressed(); true
@@ -352,7 +352,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         loadProductData()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.menu_product_detail_dark, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
@@ -468,7 +468,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 goToAtcExpress()
                             }
                         }
-                        errorBottomsheets.show(fragmentManager, "")
+                        fragmentManager?.let{
+                            errorBottomsheets.show(it, "")
+                        }
                     }
                 } else if (resultCode == Constant.RESULT_CODE_NAVIGATE_TO_OCS) {
                     goToNormalCheckout()
@@ -524,7 +526,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.loadTopAdsProduct.removeObservers(this)
         viewModel.moveToWarehouseResult.removeObservers(this)
         viewModel.moveToEtalaseResult.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
@@ -897,7 +899,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
-        bottomSheet.show(fragmentManager, "pdp_bs")
+        fragmentManager?.let{
+            bottomSheet.show(it, "pdp_bs")
+        }
     }
 
     private fun observeData() {
@@ -1173,9 +1177,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 shouldShowCartAnimation = true
                 updateCartNotification()
             }
-            addToCartDoneBottomSheet.show(
-                    fragmentManager, "TAG"
-            )
+            fragmentManager?.let {
+                addToCartDoneBottomSheet.show(
+                        it, "TAG"
+                )
+            }
         }
     }
 

@@ -131,8 +131,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val deviceId: String
         get() = userSessionInterface.deviceId
 
-    override fun clear() {
-        super.clear()
+    override fun flush() {
+        super.flush()
         stickyLoginUseCase.cancelJobs()
         getPdpLayoutUseCase.cancelJobs()
         getProductInfoP2ShopUseCase.cancelJobs()
