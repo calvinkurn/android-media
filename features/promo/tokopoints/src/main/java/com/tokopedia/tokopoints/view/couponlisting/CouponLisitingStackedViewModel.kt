@@ -42,9 +42,9 @@ class CouponLisitingStackedViewModel @Inject constructor(private val respositor:
                 if (catalogListingOuter != null) {
                     if (catalogListingOuter.coupon.coupons != null) {
                         startAdapter.value = Success(catalogListingOuter)
-                    } else NullPointerException()
-                } else NullPointerException()
-            }
+                    } else throw NullPointerException()
+                } else throw NullPointerException()
+            } ?: throw NullPointerException("category no available")
         }) {
             if (pageNumber == 1) {
                 startAdapter.value = ErrorMessage(it.toString())
