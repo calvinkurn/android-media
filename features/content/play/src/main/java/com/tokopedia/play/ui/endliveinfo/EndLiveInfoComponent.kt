@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.onetap
+package com.tokopedia.play.ui.endliveinfo
 
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 20/12/19
+ * Created by jegul on 14/01/20
  */
-class OneTapComponent(
+class EndLiveInfoComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         coroutineScope: CoroutineScope
@@ -22,12 +22,15 @@ class OneTapComponent(
     private val uiView = initView(container)
 
     init {
+        uiView.hide()
+
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.ShowOneTapOnboarding -> uiView.showAnimated()
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.SetTotalViews -> uiView.statsView.setTotalViews(it.totalView)
+                            is ScreenStateEvent.SetTotalLikes -> uiView.statsView.setTotalLikes(it.totalLikes)
                         }
                     }
         }
@@ -42,5 +45,5 @@ class OneTapComponent(
     }
 
     private fun initView(container: ViewGroup) =
-            OneTapView(container)
+            EndLiveInfoView(container)
 }

@@ -18,7 +18,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -26,6 +25,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
+import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.gradientbg.GradientBackgroundComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
@@ -52,6 +52,7 @@ import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.KeyboardState
+import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -117,6 +118,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var toolbarComponent: UIComponent<*>
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
+    private lateinit var endLiveInfoComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
 
@@ -154,25 +156,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVideo(it)
-                        )
-            }
-        })
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.VideoPropertyChanged(it)
-                        )
-            }
-        })
-        observerTitleChannel()
+
+        observeVOD()
+        observeVideoProperty()
+        observeTitleChannel()
         observeQuickReply()
         observeVideoStream()
         observeToolbarInfo()
@@ -183,6 +170,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeFollowShop()
         observeLikeContent()
         observeKeyboardState()
+        observeEventUserInfo()
 
         observeLoggedInInteractionEvent()
     }
@@ -211,7 +199,31 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region observe
-    private fun observerTitleChannel() {
+    private fun observeVOD() {
+        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetVideo(it)
+                        )
+            }
+        })
+    }
+
+    private fun observeVideoProperty() {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.VideoPropertyChanged(it)
+                        )
+            }
+        })
+    }
+
+    private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
@@ -291,6 +303,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
     }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            launch {
+                if (it.isBanned) sendEventBanned()
+                else if(it.isFreeze) sendEventFreeze()
+            }
+        })
+    }
     //endregion
 
     private fun setupView(view: View) {
@@ -331,6 +352,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         chatListComponent = initChatListComponent(container)
         immersiveBoxComponent = initImmersiveBoxComponent(container)
         videoControlComponent = initVideoControlComponent(container)
+        endLiveInfoComponent = initEndLiveInfoComponent(container)
         toolbarComponent = initToolbarComponent(container)
         quickReplyComponent = initQuickReplyComponent(container)
         //play button should be on top of other component so it can be clicked
@@ -349,7 +371,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 toolbarComponentId = toolbarComponent.getContainerId(),
                 playButtonComponentId = playButtonComponent.getContainerId(),
                 immersiveBoxComponentId = immersiveBoxComponent.getContainerId(),
-                quickReplyComponentId = quickReplyComponent.getContainerId()
+                quickReplyComponentId = quickReplyComponent.getContainerId(),
+                endLiveInfoComponentId = endLiveInfoComponent.getContainerId()
         )
     }
 
@@ -495,6 +518,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         return quickReplyComponent
     }
+
+    private fun initEndLiveInfoComponent(container: ViewGroup): UIComponent<Unit> {
+        return EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    }
     //endregion
 
     //region layouting
@@ -511,7 +538,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             @IdRes toolbarComponentId: Int,
             @IdRes playButtonComponentId: Int,
             @IdRes immersiveBoxComponentId: Int,
-            @IdRes quickReplyComponentId: Int
+            @IdRes quickReplyComponentId: Int,
+            @IdRes endLiveInfoComponentId: Int
     ) {
 
         fun layoutSizeContainer(container: ViewGroup, @IdRes id: Int) {
@@ -684,6 +712,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
+        fun layoutEndLiveComponent(container: ViewGroup, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START)
+                connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         layoutSizeContainer(container, sizeContainerComponentId)
         layoutToolbar(container, toolbarComponentId, sizeContainerComponentId)
         layoutVideoControl(container, videoControlComponentId, toolbarComponentId, sizeContainerComponentId)
@@ -696,6 +739,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutImmersiveBox(container, immersiveBoxComponentId, toolbarComponentId, statsComponentId)
         layoutQuickReply(container, quickReplyComponentId, sendChatComponentId, toolbarComponentId)
         layoutGradientBackground(container, gradientBackgroundComponentId)
+        layoutEndLiveComponent(container, endLiveInfoComponentId, sizeContainerComponentId)
     }
     //endregion
 
@@ -913,5 +957,25 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun showSystemUI() {
         PlayFullScreenHelper.showSystemUi(requireActivity())
+    }
+
+    private fun sendEventBanned() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(PlayRoomEvent.Banned)
+                    )
+        }
+    }
+
+    private fun sendEventFreeze() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(PlayRoomEvent.Freeze)
+                    )
+        }
     }
 }

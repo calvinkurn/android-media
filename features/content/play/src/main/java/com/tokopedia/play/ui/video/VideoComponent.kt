@@ -35,6 +35,10 @@ open class VideoComponent(
                         when (it) {
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
                             is ScreenStateEvent.KeyboardStateChanged -> uiView.setCornerRadius(if (it.isShown) cornerRadius else 0f)
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
+                                uiView.hide()
+                                uiView.setPlayer(null)
+                            }
                         }
                     }
         }

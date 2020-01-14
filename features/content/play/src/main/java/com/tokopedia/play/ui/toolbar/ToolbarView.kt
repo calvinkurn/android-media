@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.Group
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -48,6 +45,9 @@ class ToolbarView(
     }
 
     override val containerId: Int = view.id
+
+    override val isVisible: Boolean
+        get() = view.isVisible
 
     override fun show() {
         view.show()

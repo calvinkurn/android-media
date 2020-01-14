@@ -67,6 +67,9 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
 
     override val containerId: Int = view.id
 
+    override val isVisible: Boolean
+        get() = view.isVisible
+
     override fun show() {
         view.show()
     }

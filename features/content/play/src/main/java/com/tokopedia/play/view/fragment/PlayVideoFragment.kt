@@ -23,6 +23,7 @@ import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -96,6 +97,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVideoProperty()
         observeOneTapOnboarding()
         observeKeyboardState()
+        observeEventUserInfo()
     }
 
     override fun onDestroyView() {
@@ -144,6 +146,15 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+            }
+        })
+    }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            launch {
+                if (it.isBanned) sendEventBanned()
+                else if(it.isFreeze) sendEventFreeze()
             }
         })
     }
@@ -250,6 +261,26 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                     .emit(
                             ScreenStateEvent::class.java,
                             ScreenStateEvent.ShowOneTapOnboarding
+                    )
+        }
+    }
+
+    private fun sendEventBanned() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(PlayRoomEvent.Banned)
+                    )
+        }
+    }
+
+    private fun sendEventFreeze() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(PlayRoomEvent.Freeze)
                     )
         }
     }

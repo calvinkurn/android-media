@@ -2,6 +2,7 @@ package com.tokopedia.play.view.event
 
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.ComponentEvent
+import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.*
 
 /**
@@ -23,6 +24,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class IsLikedContent(val isLiked: Boolean) : ScreenStateEvent()
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
+    data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
 
     data class KeyboardStateChanged(val isShown: Boolean) : ScreenStateEvent()
 }

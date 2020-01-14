@@ -47,6 +47,7 @@ class PinnedComponent(
                                 if (!it.isShown && shouldShow) uiView.show() else uiView.hide()
                                 isKeyboardShown = it.isShown
                             }
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

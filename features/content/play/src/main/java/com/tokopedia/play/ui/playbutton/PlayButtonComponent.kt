@@ -30,6 +30,7 @@ class PlayButtonComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.type.isVod, it.videoProp.state)
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

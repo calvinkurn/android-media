@@ -27,6 +27,7 @@ class ImmersiveBoxComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

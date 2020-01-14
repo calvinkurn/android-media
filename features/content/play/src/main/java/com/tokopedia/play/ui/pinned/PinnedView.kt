@@ -8,10 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
@@ -32,6 +29,9 @@ class PinnedView(
     private val tvPinnedAction: TextView = view.findViewById(R.id.tv_pinned_action)
 
     override val containerId: Int = view.id
+
+    override val isVisible: Boolean
+        get() = view.isVisible
 
     override fun show() {
         view.show()

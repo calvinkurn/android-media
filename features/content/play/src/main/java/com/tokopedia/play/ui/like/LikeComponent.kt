@@ -30,6 +30,7 @@ class LikeComponent(
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.LikeContent -> uiView.playLikeAnimation(it.shouldLike)
                             is ScreenStateEvent.IsLikedContent -> uiView.setIsLiked(it.isLiked)
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }
