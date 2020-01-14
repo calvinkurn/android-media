@@ -130,7 +130,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CODE_LOGIN -> context?.let{startChatUmroh(it)}
+                REQUEST_CODE_LOGIN_FAB -> context?.let{startChatUmroh(it)}
             }
         }
     }
