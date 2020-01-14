@@ -108,13 +108,17 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
     private fun setupFAB(){
         fab_umrah_pdp_detail_message.bringToFront()
         fab_umrah_pdp_detail_message.setOnClickListener {
-            if (userSessionInterface.isLoggedIn) {
-                context?.let {
-                    startChatUmroh(it)
-                }
-            } else {
-                goToLoginPage(REQUEST_CODE_LOGIN_FAB)
+            checkChatSession()
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn) {
+            context?.let {
+                startChatUmroh(it)
             }
+        } else {
+            goToLoginPage(REQUEST_CODE_LOGIN_FAB)
         }
     }
 
@@ -130,7 +134,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CODE_LOGIN_FAB -> context?.let{startChatUmroh(it)}
+                REQUEST_CODE_LOGIN_FAB -> context?.let{checkChatSession()}
             }
         }
     }
