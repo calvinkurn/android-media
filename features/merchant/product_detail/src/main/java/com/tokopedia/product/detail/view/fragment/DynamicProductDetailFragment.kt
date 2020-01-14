@@ -11,6 +11,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.SparseIntArray
 import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -26,6 +27,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
@@ -207,6 +209,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
+    private val recommendationCarouselPositionSavedState = SparseIntArray()
+
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -241,6 +245,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         isTopdasLoaded = false
         actionButtonView.visibility = false
         adapter.clearAllElements()
+        recommendationCarouselPositionSavedState.clear()
         showLoading()
         updateStickyContent()
         loadProductData(true)
@@ -620,6 +625,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String) {
         productDetailTracking.eventRecommendationImpression(
                 position, recomItem, viewModel.isUserSessionActive, pageName, title)
+    }
+
+    override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
+        return getRecyclerView(view).recycledViewPool
+    }
+
+    override fun getRecommendationCarouselSavedState(): SparseIntArray {
+        return recommendationCarouselPositionSavedState
     }
 
     override fun loadTopads() {

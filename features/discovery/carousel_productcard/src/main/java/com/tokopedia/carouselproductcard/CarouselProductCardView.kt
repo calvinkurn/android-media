@@ -3,6 +3,7 @@ package com.tokopedia.carouselproductcard
 import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
+import android.util.SparseIntArray
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,11 +19,8 @@ import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 
 class CarouselProductCardView: BaseCustomView {
 
-    private var carouselAdapter: CarouselProductCardAdapter? = null
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
-
-    var position: Int = 0
 
     constructor(context: Context): super(context) {
         init()
@@ -70,7 +68,10 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemLongClickListener: CarouselProductCardListener.OnItemLongClickListener? = null,
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
-            carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null) {
+            carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null,
+            recyclerViewPool: RecyclerView.RecycledViewPool? = null,
+            viewHolderPosition: Int = 0,
+            carouselCardSavedStatePosition: SparseIntArray? = null) {
 
         if (productCardModelList.isEmpty()) return
 
@@ -84,25 +85,24 @@ class CarouselProductCardView: BaseCustomView {
 
 
         carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-
-        if (carouselAdapter == null) {
-            carouselAdapter = CarouselProductCardAdapter()
-            setupCarouselProductCardRecyclerView(carouselAdapter!!)
-        }
-
-        carouselAdapter?.let {
-            submitProductCardCarouselData(it, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
-        }
-
-
-        carouselLayoutManager?.run {
-            if (this is LinearLayoutManager) {
-                scrollToPositionWithOffset(position?:0,
-                        context.applicationContext.resources.getDimensionPixelOffset(
-                                R.dimen.dp_16
-                        ))
+        carouselCardSavedStatePosition?.let { sparseIntArray ->
+            carouselLayoutManager.run {
+                if (this is LinearLayoutManager) {
+                    val position = sparseIntArray.get(viewHolderPosition, 0)
+                    scrollToPositionWithOffset(position,
+                            context.applicationContext.resources.getDimensionPixelOffset(
+                                    R.dimen.dp_16
+                            ))
+                }
             }
         }
+
+        val carouselAdapter = CarouselProductCardAdapter()
+        setupCarouselProductCardRecyclerView(carouselAdapter)
+
+        recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
+
+        submitProductCardCarouselData(carouselAdapter, productCardModelList, carouselProductCardListenerInfo, computeBlankSpaceConfig(productCardModelList))
     }
 
     private fun submitProductCardCarouselData(newCarouselAdapter: CarouselProductCardAdapter,
@@ -136,6 +136,7 @@ class CarouselProductCardView: BaseCustomView {
             if (it.productName.isNotEmpty()) blankSpaceConfig.productName = true
             if (it.labelPromo.title.isNotEmpty()) blankSpaceConfig.labelPromo = true
             if (it.slashedPrice.isNotEmpty()) blankSpaceConfig.slashedPrice = true
+            if (it.discountPercentage.isNotEmpty()) blankSpaceConfig.discountPercentage = true
             if (it.formattedPrice.isNotEmpty()) blankSpaceConfig.price = true
             if (it.shopBadgeList.isNotEmpty()) blankSpaceConfig.shopBadge = true
             if (it.shopLocation.isNotEmpty()) blankSpaceConfig.shopLocation = true
@@ -148,16 +149,13 @@ class CarouselProductCardView: BaseCustomView {
         return blankSpaceConfig
     }
 
-    /**
-     * Use this function onViewRecycled to retains scroll position
-     */
-    fun onViewRecycled() {
+    fun getCurrentPosition(): Int {
         carouselLayoutManager?.let {
             if (it is LinearLayoutManager) {
-                val positionState = it.findFirstCompletelyVisibleItemPosition()
-                position = positionState
+                return it.findFirstCompletelyVisibleItemPosition()
             }
         }
+        return 0
     }
 
     /**
