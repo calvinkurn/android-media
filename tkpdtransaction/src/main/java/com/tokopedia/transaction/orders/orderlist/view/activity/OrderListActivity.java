@@ -163,11 +163,14 @@ public class OrderListActivity extends BaseSimpleActivity
         initVar();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            orderCategory = bundle.getString(ORDER_CATEGORY);
             String url = bundle.getString("url");
             if (url != null && (Uri.parse(url).getQueryParameter("tab") != null))
                 orderCategory = Uri.parse(url).getQueryParameter("tab");
-            else
+            else if (bundle.getString(ORDER_CATEGORY) != null)
                 orderCategory = bundle.getString(ORDER_CATEGORY);
+            else
+                orderCategory = OrderCategory.MARKETPLACE;
         }
         orderListAnalytics = new OrderListAnalytics();
         UserSession userSession = new UserSession(this);
