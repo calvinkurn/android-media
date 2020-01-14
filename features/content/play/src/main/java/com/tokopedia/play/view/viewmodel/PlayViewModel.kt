@@ -84,23 +84,28 @@ class PlayViewModel @Inject constructor(
     private val _observableKeyboardState = MutableLiveData<KeyboardState>()
     val observableKeyboardState: LiveData<KeyboardState> = _observableKeyboardState
 
-    private val _observablePinnedMessage = MediatorLiveData<PinnedMessageUiModel>().apply {
-        addSource(observablePartnerInfo) {
-            val currentValue = value
-            if (currentValue != null) value = currentValue.copy(
-                    partnerName = it.name
-            )
-        }
-    }
+    private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     val observablePinnedMessage: LiveData<PinnedMessageUiModel> = _observablePinnedMessage
 
-    val observableVideoProperty: LiveData<VideoPropertyUiModel> = MediatorLiveData<VideoPropertyUiModel>().apply {
+    private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    val observableVideoProperty: LiveData<VideoPropertyUiModel> = _observableVideoProperty
+
+    val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
-            value = VideoPropertyUiModel(it.videoType, value?.state
+            _observableVideoProperty.value = VideoPropertyUiModel(it.videoType, _observableVideoProperty.value?.state
                     ?: TokopediaPlayVideoState.NotConfigured)
         }
         addSource(playManager.getObservablePlayVideoState()) {
-            value = VideoPropertyUiModel(value?.type ?: PlayVideoType.Unknown, it)
+            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayVideoType.Unknown, it)
+        }
+        addSource(observablePartnerInfo) {
+            val currentValue = _observablePinnedMessage.value
+            if (currentValue != null) _observablePinnedMessage.value = currentValue.copy(
+                    partnerName = it.name
+            )
+        }
+        addSource(observableEvent) {
+            if (it.isFreeze) doOnChannelFreeze()
         }
     }
 
@@ -372,6 +377,11 @@ class PlayViewModel @Inject constructor(
     )
 
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
+
+    private fun doOnChannelFreeze() {
+        destroy()
+        hideKeyboard()
+    }
 
     private fun initMockChat() {
         launch(dispatchers.io) {

@@ -100,8 +100,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
     
-    private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_16) }
-    private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_8) }
+    private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
+    private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
+    private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl3) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -193,6 +194,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
             sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
             sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
+
+            val endLiveInfoView = view.findViewById<View>(endLiveInfoComponent.getContainerId())
+            endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
 
             insets
         }
@@ -712,16 +716,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutEndLiveComponent(container: ViewGroup, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
+        fun layoutEndLiveComponent(container: ViewGroup, @IdRes id: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START)
-                connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
-                connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END)
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
             }
 
             constraintSet.applyTo(container)
@@ -739,7 +743,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutImmersiveBox(container, immersiveBoxComponentId, toolbarComponentId, statsComponentId)
         layoutQuickReply(container, quickReplyComponentId, sendChatComponentId, toolbarComponentId)
         layoutGradientBackground(container, gradientBackgroundComponentId)
-        layoutEndLiveComponent(container, endLiveInfoComponentId, sizeContainerComponentId)
+        layoutEndLiveComponent(container, endLiveInfoComponentId)
     }
     //endregion
 

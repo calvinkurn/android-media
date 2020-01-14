@@ -17,8 +17,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
@@ -143,7 +141,10 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
+
         observeSocketInfo()
+        observeEventUserInfo()
+        observeState()
     }
 
     private fun initView(view: View) {
@@ -203,6 +204,16 @@ class PlayFragment : BaseDaggerFragment() {
                     )
                 }
             }
+        })
+    }
+
+    private fun observeState() {
+        playViewModel.stateHandler.observe(viewLifecycleOwner, Observer {  })
+    }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            if (it.isFreeze) Toaster.snackBar.dismiss()
         })
     }
 
