@@ -31,7 +31,6 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
     public static final String PARAM_ANONYMOUS = "anonymous";
     public static final int DEFAULT_IS_ANONYMOUS = 1;
     public static final String PARAM_UTM_SOURCE = "utm_source";
-    public static final String DEFAULT_UTM_SOURCE = "android";
 
     private static final String PARAM_HAS_PRODUCT_REVIEW_PHOTO = "has_product_review_photo";
     private static final String PARAM_REVIEW_PHOTO_ALL = "product_review_photo_all";
@@ -63,7 +62,8 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
                                          String shopId,
                                          String rating,
                                          String reviewMessage,
-                                         boolean isAnonymous) {
+                                         boolean isAnonymous,
+                                         String utmSource) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_REVIEW_ID, reviewId);
         params.putString(PARAM_PRODUCT_ID, productId);
@@ -74,7 +74,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putInt(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_NO_IMAGE);
         if(isAnonymous)
             params.putInt(PARAM_ANONYMOUS, DEFAULT_IS_ANONYMOUS);
-        params.putString(PARAM_UTM_SOURCE, DEFAULT_UTM_SOURCE);
+        params.putString(PARAM_UTM_SOURCE, utmSource);
         return params;
     }
 
@@ -86,7 +86,8 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
                                                   String reviewMessage,
                                                   ArrayList<ImageUpload> list,
                                                   List<ImageUpload> deletedList,
-                                                  boolean isAnonymous) {
+                                                  boolean isAnonymous,
+                                                  String utmSource) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_REVIEW_ID, reviewId);
         params.putString(PARAM_PRODUCT_ID, productId);
@@ -99,7 +100,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_REVIEW_PHOTO_OBJ, getReviewPhotosObj(list, deletedList));
         if(isAnonymous)
             params.putInt(PARAM_ANONYMOUS, DEFAULT_IS_ANONYMOUS);
-        params.putString(PARAM_UTM_SOURCE, DEFAULT_UTM_SOURCE);
+        params.putString(PARAM_UTM_SOURCE, utmSource);
         return params;
     }
 

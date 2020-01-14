@@ -338,7 +338,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             } catch (NumberFormatException e) {
                 ratingNumber = 5;
             }
-
             String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating);
             Intent intent = RouteManager.getIntent(
                     context,

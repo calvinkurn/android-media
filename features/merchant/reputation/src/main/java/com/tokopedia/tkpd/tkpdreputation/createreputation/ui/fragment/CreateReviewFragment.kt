@@ -70,6 +70,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
         const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
         const val REVIEW_ORDER_ID = "REVIEW_ORDER_ID"
+        const val UTM_SOURCE = "UTM_SOURCE"
 
         private const val IMAGE_REVIEW_GREY_BG = "https://ecs7.tokopedia.net/android/others/1_2reviewbg.png"
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
@@ -88,11 +89,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
         private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REVIEW_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
+                putString(UTM_SOURCE, utmSource)
             }
         }
     }
@@ -120,6 +122,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
     private var shopId: String = ""
     private var orderId: String = ""
+    private var utmSource: String = ""
 
     private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
@@ -152,6 +155,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             orderId = it.getString(REVIEW_ORDER_ID) ?: ""
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
+            utmSource = it.getString(UTM_SOURCE, "")
         }
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
@@ -303,7 +307,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         )
 
         createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
-                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
+                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked, utmSource)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {

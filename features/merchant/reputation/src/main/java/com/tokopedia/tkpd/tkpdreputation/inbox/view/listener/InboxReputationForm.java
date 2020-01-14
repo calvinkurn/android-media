@@ -48,7 +48,7 @@ public interface InboxReputationForm {
         void sendReview(String reviewId, String reputationId, String productId, String shopId,
                         String review, float rating, ArrayList<ImageUpload> list,
                         List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
-                        String productName, String productAvatar, String productUrl);
+                        String productName, String productAvatar, String productUrl, String utmSource);
 
         void setFormToCache(int position, SendReviewPass sendReviewPass);
 
@@ -61,6 +61,6 @@ public interface InboxReputationForm {
         void editReview(String reviewId, String reputationId, String productId, String shopId,
                         String review, float rating, ArrayList<ImageUpload> list,
                         List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
-                        String productName, String productAvatar, String productUrl);
+                        String productName, String productAvatar, String productUrl, String utmSource);
     }
 }
