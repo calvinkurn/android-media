@@ -11,9 +11,6 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
-import ai.advance.liveness.lib.impl.LivenessCallback;
-import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +22,8 @@ import ai.advance.common.entity.BaseResultEntity;
 import ai.advance.common.utils.JsonUtils;
 import ai.advance.common.utils.LogUtil;
 import ai.advance.common.utils.SensorUtil;
+import ai.advance.liveness.lib.impl.LivenessCallback;
+import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback;
 
 /**
  * camera logic view
@@ -158,7 +157,9 @@ public class LivenessView extends GuardianCameraView implements GuardianCameraVi
 
     @Override
     protected void transformTexture() {
-        if (GuardianLivenessDetectionSDK.isEmulator) {
+//        if (GuardianLivenessDetectionSDK.isEmulator) {
+        boolean temp = true;
+        if(temp == true) {
             if (this.mPreviewSize != null) {
                 float viewWidth = (float) this.getViewWidth();
                 float viewHeight = (float) this.getViewHeight();
@@ -198,7 +199,8 @@ public class LivenessView extends GuardianCameraView implements GuardianCameraVi
     @Override
     protected synchronized void open(int cameraId) {
         try {
-            if (GuardianLivenessDetectionSDK.isEmulator) {
+//            if (GuardianLivenessDetectionSDK.isEmulator) {
+            if(true) {
                 if (!this.mOnCameraOpening) {
                     try {
                         this.mOnCameraOpening = true;

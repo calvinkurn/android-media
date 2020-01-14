@@ -58,11 +58,11 @@ public class BackgroundOverlay extends View {
         int width = getWidth();
         int height = getHeight();
 
-        int radius;
+        float radius;
         if(width < height)
-            radius = width/3;
+            radius = width/2.7F;
         else
-            radius = height/3;
+            radius = height/2.7F;
 
         mPath.addCircle(getRight() / 2,
                 getBottom() / 3,
@@ -78,5 +78,6 @@ public class BackgroundOverlay extends View {
                 getBottom() / 3,
                 radius,
                 mWhitePaint);
+
     }
 }

@@ -26,6 +26,7 @@ public class FocusedCameraKTPView extends View {
 
     private Paint mTransparentPaint;
     private Paint mSemiBlackPaint;
+    private Paint mWhitePaint;
     private Path mPath = new Path();
 
     public FocusedCameraKTPView(Context context) {
@@ -52,6 +53,11 @@ public class FocusedCameraKTPView extends View {
         mSemiBlackPaint = new Paint();
         mSemiBlackPaint.setColor(Color.TRANSPARENT);
         mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);
+
+        mWhitePaint = new Paint();
+        mWhitePaint.setStyle(Paint.Style.STROKE);
+        mWhitePaint.setColor(Color.WHITE);
+        mWhitePaint.setStrokeWidth(CONST_STROKE_WIDTH);
     }
 
     @Override
@@ -79,12 +85,16 @@ public class FocusedCameraKTPView extends View {
         }
         mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
 
+        canvas.drawPath(mPath, mSemiBlackPaint);
+        canvas.clipPath(mPath);
+        canvas.drawColor(Color.parseColor("#ae000000"));
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
                     (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
                     getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
                     (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
-                    mTransparentPaint);
+                    mWhitePaint);
         } else {
             canvas.drawRoundRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
                     (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
@@ -92,12 +102,7 @@ public class FocusedCameraKTPView extends View {
                     (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
                     CONST_RADIUS,
                     CONST_RADIUS,
-                    mTransparentPaint);
+                    mWhitePaint);
         }
-
-
-        canvas.drawPath(mPath, mSemiBlackPaint);
-        canvas.clipPath(mPath);
-        canvas.drawColor(Color.parseColor("#a642b549"));
     }
 }

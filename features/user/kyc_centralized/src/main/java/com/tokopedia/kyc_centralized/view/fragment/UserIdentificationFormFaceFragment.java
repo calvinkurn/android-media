@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc_centralized.R;
@@ -58,7 +57,10 @@ public class UserIdentificationFormFaceFragment extends
             Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.LIVENESS_DETECTION);
             startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
         });
-        ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_FACE);
+//        ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_FACE);
+        onboardingImage.setAnimationFromUrl(KycUrl.SCAN_FACE);
+        onboardingImage.playAnimation();
+
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())
                     .updateToolbarTitle(getString(R.string.title_kyc_form_face));

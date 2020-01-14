@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
@@ -35,7 +35,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
 
     public final static String EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model";
 
-    protected ImageView onboardingImage;
+    protected LottieAnimationView onboardingImage;
     protected TextView title;
     protected TextView subtitle;
     protected TextView button;

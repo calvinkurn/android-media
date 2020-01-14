@@ -27,16 +27,19 @@ public class LivenessActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        super.onCreate(savedInstanceState);
+
         GuardianLivenessDetectionSDK.initOffLine(getApplication());
         GuardianLivenessDetectionSDK.letSDKHandleCameraPermission();
         GuardianLivenessDetectionSDK.setDeviceType(Build.CPU_ABI.equals("x86") ? GuardianLivenessDetectionSDK.DeviceType.Emulator : GuardianLivenessDetectionSDK.DeviceType.RealPhone);
 
         setContentView(R.layout.activity_liveness);
         ScreenUtil.init(this);
+
         changeAppBrightness(255);
         if (GuardianLivenessDetectionSDK.isSDKHandleCameraPermission() && !allPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, getRequiredPermissions(), PERMISSIONS_REQUEST_CODE);

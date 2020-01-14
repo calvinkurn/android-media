@@ -108,7 +108,6 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
         mDrawableCache = new SparseArray<>();
         // start liveness detection check 启动活体检测
         mLivenessView.startDetection(this);
-        setLottieFile("https://ecs7.tokopedia.net/lottie/scanning_the_face.json");
     }
 
     /**

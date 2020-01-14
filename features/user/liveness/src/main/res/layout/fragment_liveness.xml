@@ -14,77 +14,78 @@
  limitations under the License.
 -->
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ae000000"
+    android:background="#aeffffff"
     android:orientation="vertical"
     tools:ignore="MissingConstraints,ResourceName">
     <!--titleBar-->
 
-
     <ai.advance.liveness.lib.LivenessView
         android:id="@+id/liveness_view"
-        style="@style/liveness_preview"
-        app:layout_constraintTop_toTopOf="parent" />
+        style="@style/liveness_preview" />
 
     <ai.advance.liveness.BackgroundOverlay
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="73dp" />
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:id="@+id/back_view_camera_activity"
-        android:padding="@dimen/spacing_lvl4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_lvl4"
         android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:srcCompat="@drawable/liveness_ic_icon_md_arrow_back" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        app:typographyType="heading_4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="3sp"
+        android:text="Verifikasi Wajah"
         android:textColor="@color/Neutral_N0"
         android:textSize="17sp"
-        app:layout_constraintTop_toTopOf="@id/back_view_camera_activity"
         app:layout_constraintBottom_toBottomOf="@id/back_view_camera_activity"
         app:layout_constraintLeft_toRightOf="@id/back_view_camera_activity"
-        android:text="Verifikasi Wajah" />
+        app:layout_constraintTop_toTopOf="@id/back_view_camera_activity"
+        app:typographyType="heading_4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tip_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:gravity="center"
         android:lineSpacingExtra="4sp"
+        android:textColor="@color/Neutral_N0"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/tip_lottie_animation_view"
-        android:textColor="@color/Neutral_N0"
-        tools:text="Silakan berkedip"/>
+        tools:text="Silakan berkedip" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/tip_lottie_animation_view"
         android:layout_width="104dp"
         android:layout_height="104dp"
         android:layout_marginBottom="@dimen/spacing_lvl5"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tip_text_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:lottie_loop="true"
-        app:lottie_autoPlay="true"/>
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_layout"
         style="@style/liveness_horizontal_center"
         android:layout_width="0dp"

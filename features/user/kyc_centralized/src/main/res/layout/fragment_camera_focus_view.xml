@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
-    android:background="@color/Neutral_N700">
+    android:background="@color/Neutral_N700"
+    android:orientation="vertical">
 
     <com.tokopedia.cameraview.CameraView
         android:id="@+id/full_camera_view"
-        android:keepScreenOn="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cameraPlaySounds="true"/>
+        android:keepScreenOn="true"
+        app:cameraPlaySounds="true" />
 
     <ImageView
         android:id="@+id/full_image_preview"
@@ -24,7 +24,7 @@
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <com.tokopedia.kyc_centralized.view.FocusedCameraKTPView
+    <com.tokopedia.kyc_centralized.view.customview.FocusedCameraKTPView
         android:id="@+id/focused_view_ktp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,27 +40,26 @@
         android:id="@+id/close_button"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
+        android:background="@color/kyc_centralized_00ffffff"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/kyc_centralized_00ffffff"
-        app:srcCompat="@drawable/ic_kyc_arrow_back"/>
+        app:srcCompat="@drawable/ic_kyc_arrow_back" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        app:typographyType="heading_4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/kyc_centralized_3sp"
         android:textColor="@color/Neutral_N0"
         android:textSize="@dimen/kyc_centralized_17sp"
-        app:layout_constraintTop_toTopOf="@id/close_button"
         app:layout_constraintBottom_toBottomOf="@id/close_button"
         app:layout_constraintLeft_toRightOf="@id/close_button"
+        app:layout_constraintTop_toTopOf="@id/close_button"
+        app:typographyType="heading_4"
         tools:text="Ambil Foto KTP" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtitle"
-        app:typographyType="body_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/kyc_centralized_98dp"
@@ -73,6 +72,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="@string/camera_ktp_subtitle" />
 
 
@@ -90,7 +91,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_shutter_background"/>
+            android:src="@drawable/ic_shutter_background" />
 
         <ImageView
             android:layout_width="46dp"
@@ -104,15 +105,14 @@
         android:id="@+id/image_button_flip"
         android:layout_width="@dimen/dp_25"
         android:layout_height="@dimen/dp_25"
-        android:layout_marginLeft="@dimen/dp_50"
         android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginLeft="@dimen/dp_50"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/image_button_shutter"
         app:layout_constraintLeft_toRightOf="@+id/image_button_shutter"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/image_button_shutter"
-        app:srcCompat="@drawable/ic_flip_camera_icon"
-        android:visibility="gone"/>
-
+        app:srcCompat="@drawable/ic_flip_camera" />
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -122,52 +122,54 @@
         android:orientation="horizontal"
         android:visibility="gone"
         android:weightSum="2"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/recapture_button"
-            app:typographyType="heading_4"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl3"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            android:background="@drawable/white_button_ghost"
             android:gravity="center"
             android:text="@string/camera_recapture_text"
-            android:background="@drawable/white_button_ghost"
             android:textColor="@color/white"
             android:textSize="@dimen/fontSize_lvl3"
+            app:typographyType="heading_4"
             tools:text="Foto Ulang" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/next_button"
-            app:typographyType="heading_4"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="1"
             android:background="@drawable/white_button_filled"
             android:gravity="center"
             android:text="@string/camera_next_button"
             android:textColor="@color/medium_green"
-            android:textSize="@dimen/fontSize_lvl3" />
+            android:textSize="@dimen/fontSize_lvl3"
+            app:typographyType="heading_4" />
     </LinearLayout>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         android:layout_centerInParent="true"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

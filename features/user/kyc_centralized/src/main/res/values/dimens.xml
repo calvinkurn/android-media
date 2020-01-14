@@ -9,9 +9,9 @@
     <dimen name="kyc_centralized_110dp">110dp</dimen>
     <dimen name="kyc_centralized_132dp">132dp</dimen>
     <dimen name="kyc_centralized_144dp">144dp</dimen>
-    <dimen name="kyc_centralized_216_5dp">216.5dp</dimen>
+    <dimen name="kyc_centralized_154dp">154dp</dimen>
+    <dimen name="kyc_centralized_218dp">218dp</dimen>
     <dimen name="kyc_centralized_272dp">272dp</dimen>
-    <dimen name="kyc_centralized_288dp">288dp</dimen>
 
     <dimen name="kyc_centralized_3sp">3sp</dimen>
     <dimen name="kyc_centralized_5sp">5sp</dimen>
