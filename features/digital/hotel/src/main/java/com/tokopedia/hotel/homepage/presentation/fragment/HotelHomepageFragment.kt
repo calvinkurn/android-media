@@ -17,7 +17,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
-import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -28,6 +27,7 @@ import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
@@ -383,19 +383,20 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.bannerIndicator.hide()
     }
 
-    private fun renderHotelLastSearch(data: List<TravelRecentSearchModel.Item>) {
-        if (data.isEmpty()) {
+    private fun renderHotelLastSearch(data: HotelRecentSearchModel) {
+        if (data.items.isEmpty()) {
             hideHotelLastSearchContainer()
             return
         }
 
         showHotelLastSearchContainer()
 
-        rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data)
+        tv_hotel_last_search_title.text = data.title
         tv_hotel_homepage_delete_last_search.setOnClickListener {
             homepageViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_hotel_delete_recent_search))
         }
+        rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data.items)
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {

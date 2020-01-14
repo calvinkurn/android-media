@@ -217,6 +217,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:id="@+id/tv_hotel_last_search_title"
                     android:text="@string/hotel_homepage_last_search_title"
                     app:fontSize="title"
                     app:textViewTheme="lightPrimary"

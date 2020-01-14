@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
-import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -13,6 +12,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
+import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -34,8 +34,8 @@ class HotelHomepageViewModel @Inject constructor(
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
-    private val _recentSearch = MutableLiveData<Result<List<TravelRecentSearchModel.Item>>>()
-    val recentSearch: MutableLiveData<Result<List<TravelRecentSearchModel.Item>>>
+    private val _recentSearch = MutableLiveData<Result<HotelRecentSearchModel>>()
+    val recentSearch: MutableLiveData<Result<HotelRecentSearchModel>>
         get() = _recentSearch
 
     private val _deleteRecentSearch = MutableLiveData<Result<Boolean>>()
@@ -51,7 +51,7 @@ class HotelHomepageViewModel @Inject constructor(
     fun getRecentSearch(rawQuery: String) {
         launchCatchError(block = {
             val data = travelRecentSearchUseCase.execute(rawQuery, true)
-            _recentSearch.value = Success(data.items)
+            _recentSearch.value = Success(HotelRecentSearchModel(title = data.travelMeta.title, items = data.items))
         }) {
             _recentSearch.value = Fail(it)
         }
