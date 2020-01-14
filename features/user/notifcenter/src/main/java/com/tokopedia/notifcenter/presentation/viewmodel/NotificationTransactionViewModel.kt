@@ -15,6 +15,7 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
 import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -27,6 +28,7 @@ interface NotificationTransactionContract {
     fun markReadNotification(notificationId: String)
     fun markAllReadNotification()
     fun onErrorMessage(throwable: Throwable)
+    fun getTotalUnreadNotification()
     fun getInfoStatusNotification()
     fun resetNotificationFilter()
     fun getNotificationFilter()
@@ -37,6 +39,7 @@ typealias FilterWrapper = NotificationFilterSectionViewBean
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
         private var markAllReadNotificationUseCase: MarkAllReadNotificationUpdateUseCase,
+        private var getNotificationTotalUnreadUseCase: GetNotificationTotalUnreadUseCase,
         private var notificationTransactionUseCase: NotificationTransactionUseCase,
         private var markNotificationUseCase: MarkReadNotificationUpdateItemUseCase,
         private var notificationFilterMapper: GetNotificationUpdateFilterMapper,
@@ -56,6 +59,9 @@ class NotificationTransactionViewModel @Inject constructor(
 
     private val _markAllNotification = MutableLiveData<Boolean>()
     val markAllNotification: LiveData<Boolean> get() = _markAllNotification
+
+    private val _totalUnreadNotification = MutableLiveData<Long>()
+    val totalUnreadNotification: LiveData<Long> get() = _totalUnreadNotification
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -77,6 +83,7 @@ class NotificationTransactionViewModel @Inject constructor(
         }
 
         _notification.addSource(_filterNotification) {
+            getTotalUnreadNotification()
             getNotification(_lastNotificationId.value?: "")
         }
     }
@@ -108,6 +115,15 @@ class NotificationTransactionViewModel @Inject constructor(
         })
     }
 
+    override fun getTotalUnreadNotification() {
+        getNotificationTotalUnreadUseCase.execute(
+                GetNotificationTotalUnreadUseCase.getRequestParams(TYPE_OF_NOTIF_TRANSACTION),
+                GetNotificationTotalUnreadSubscriber({
+                    _totalUnreadNotification.value = it.pojo.notifUnreadInt
+                })
+        )
+    }
+
     override fun markReadNotification(notificationId: String) {
         markNotificationUseCase.execute(
                 MarkReadNotificationUpdateItemUseCase.getRequestParams(
@@ -118,7 +134,7 @@ class NotificationTransactionViewModel @Inject constructor(
 
     override fun markAllReadNotification() {
         markAllReadNotificationUseCase.execute(
-                MarkAllReadNotificationUpdateUseCase.params(variables, TYPE_OF_NOTIF_TRANSACTION),
+                MarkAllReadNotificationUpdateUseCase.params(TYPE_OF_NOTIF_TRANSACTION),
                 NotificationUpdateActionSubscriber({
                     _markAllNotification.postValue(true)
                 })
