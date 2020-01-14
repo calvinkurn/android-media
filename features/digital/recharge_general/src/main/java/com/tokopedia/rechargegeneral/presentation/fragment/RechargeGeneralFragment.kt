@@ -211,9 +211,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderInitialData(cluster: RechargeGeneralOperatorCluster) {
         if (operatorId == 0) operatorId = getFirstOperatorId(cluster)
         if (operatorId > 0) {
-            operatorCluster = getClusterNameOfOperatorId(cluster, operatorId)
             renderOperatorCluster(cluster)
 
+            operatorCluster = getClusterOfOperatorId(cluster, operatorId)?.name ?: ""
             val operatorGroup = cluster.operatorGroups.first { it.name == operatorCluster }
             renderOperatorList(operatorGroup, cluster.text)
             if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
@@ -443,6 +443,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         fragmentManager?.run { moreInfoBottomSheet.show(this,"E-gold more info bottom sheet") }
     }
 
+    private fun setupAutoFillData(data: TopupBillsRecommendation) {
+        if (viewModel.operatorCluster.value is Success
+                && (viewModel.operatorCluster.value as Success).data.operatorGroups.isNotEmpty()) {
+            operatorId = data.operatorId
+            productId = data.productId.toString()
+
+            renderInitialData((viewModel.operatorCluster.value as Success).data)
+        }
+    }
+
     private fun renderFooter(data: TopupBillsMenuDetail) {
         val promos = data.promos
         val recommendations = data.recommendations
@@ -603,6 +613,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+        setupAutoFillData(data.recommendations[0])
         renderFooter(data)
     }
 
@@ -693,13 +704,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         return cluster.operatorGroups.getOrNull(0)?.operators?.getOrNull(0)?.id ?: 0
     }
 
-    private fun getClusterNameOfOperatorId(cluster: RechargeGeneralOperatorCluster, operatorId: Int): String {
+    private fun getClusterOfOperatorId(cluster: RechargeGeneralOperatorCluster, operatorId: Int): RechargeGeneralOperatorCluster.CatalogOperatorGroup? {
         cluster.operatorGroups.forEach { group ->
             group.operators.forEach { operator ->
-                if (operator.id == operatorId) return group.name
+                if (operator.id == operatorId) return group
             }
         }
-        return ""
+        return null
     }
 
     fun onBackPressed() {
