@@ -37,6 +37,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
 
