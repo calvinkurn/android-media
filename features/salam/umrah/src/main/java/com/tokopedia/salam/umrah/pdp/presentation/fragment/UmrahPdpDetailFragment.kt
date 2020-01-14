@@ -113,7 +113,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
                     startChatUmroh(it)
                 }
             } else {
-                goToLoginPage()
+                goToLoginPage(REQUEST_CODE_LOGIN_FAB)
             }
         }
     }
@@ -165,7 +165,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
                         ))
             }
         } else {
-            goToLoginPage()
+            goToLoginPage(REQUEST_CODE_LOGIN)
         }
     }
     private fun getParamPurchase() {
@@ -268,7 +268,8 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         private var instance: UmrahPdpDetailFragment = UmrahPdpDetailFragment()
         var paramPurchase = ParamPurchase()
         private var maxPassenger = 0
-        const val REQUEST_CODE_LOGIN = 400
+        const val REQUEST_CODE_LOGIN_FAB = 400
+        const val REQUEST_CODE_LOGIN = 401
     }
 
     fun getInstance(slugName: String, totalAvailability: Int): UmrahPdpDetailFragment {
@@ -281,11 +282,11 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         return instance
     }
 
-    private fun goToLoginPage() {
+    private fun goToLoginPage(requestCode: Int) {
         if (activity != null) {
             progressDialog.dismiss()
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN)
+                    requestCode)
         }
     }
 }
