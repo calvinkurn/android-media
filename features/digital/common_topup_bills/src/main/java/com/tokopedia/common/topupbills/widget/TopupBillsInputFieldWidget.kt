@@ -8,6 +8,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.TouchDelegate
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -69,18 +70,24 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 actionListener?.onFinishInput(getInputText())
-                clearFocus()
+                ac_input.clearFocus()
             }
             false
         }
         ac_input.setKeyImeChangeListener { _, event ->
             if (event.keyCode == KeyEvent.KEYCODE_BACK) {
                 actionListener?.onFinishInput(getInputText())
-                clearFocus()
+                ac_input.clearFocus()
             }
         }
-        ac_input.setOnFocusChangeListener { _, b ->
-            onFocusChangeDropdown(b)
+        ac_input.setOnTouchListener { view, motionEvent ->
+            if(motionEvent.action == MotionEvent.ACTION_UP) {
+                if (isCustomInput) {
+                    actionListener?.onCustomInputClick()
+                    return@setOnTouchListener true
+                }
+            }
+            false
         }
 
         input_info.setOnClickListener {
@@ -196,13 +203,6 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         isCustomInput = false
         ac_input.setText("")
         hideErrorMessage()
-    }
-
-    private fun onFocusChangeDropdown(hasFocus: Boolean) {
-        if (hasFocus && isCustomInput) {
-            ac_input.clearFocus()
-            actionListener?.onCustomInputClick()
-        }
     }
 
     interface ActionListener {
