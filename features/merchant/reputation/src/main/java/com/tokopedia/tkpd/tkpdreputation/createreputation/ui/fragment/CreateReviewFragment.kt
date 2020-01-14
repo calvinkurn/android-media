@@ -158,7 +158,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
         }
 
-        if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 1) {
+        if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
             reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING
         }
 
