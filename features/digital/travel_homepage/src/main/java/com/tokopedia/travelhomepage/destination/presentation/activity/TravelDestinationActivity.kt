@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travelhomepage.destination.TravelDestinationComponentInstance
+import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingConstant
 import com.tokopedia.travelhomepage.destination.di.TravelDestinationComponent
 import com.tokopedia.travelhomepage.destination.presentation.fragment.TravelDestinationFragment
 
@@ -39,6 +40,8 @@ class TravelDestinationActivity : BaseSimpleActivity(), HasComponent<TravelDesti
         initInjector()
         GraphqlClient.init(this)
     }
+
+    override fun getScreenName(): String = TravelDestinationTrackingConstant.TRAVEL_HOMEPAGE_DESTINATION_SCREEN_NAME
 
     private fun initInjector() {
         component.inject(this)

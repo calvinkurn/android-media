@@ -210,6 +210,7 @@ OnViewHolderBindListener{
                 } else if (!isShowMoveUpLayout) {
                     arrow_up?.show()
                     tv_move_up?.show()
+                    isShowMoveUpLayout = true
                 }
 
                 (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)

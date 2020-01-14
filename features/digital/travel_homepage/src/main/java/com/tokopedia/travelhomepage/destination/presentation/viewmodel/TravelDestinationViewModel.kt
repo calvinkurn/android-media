@@ -113,33 +113,6 @@ class TravelDestinationViewModel  @Inject constructor(
 
     }
 
-    fun getCityDeals(query: String, cityId: String) {
-        launchCatchError(block ={
-            val data = withContext(Dispatchers.Default) {
-                val param = mapOf(PARAM_PRODUCT to "DEALS", PARAM_CITY_ID to cityId.toInt())
-                val graphqlRequest = GraphqlRequest(query, TravelHomepageRecommendationModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<TravelHomepageRecommendationModel.Response>()
-
-            travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[CITY_DEALS_ORDER] = mapper.mapToSectionViewModel(data.response, CITY_DEALS_ORDER)
-                updatedList[CITY_DEALS_ORDER].isLoaded = true
-                updatedList[CITY_DEALS_ORDER].isSuccess = true
-                _travelDestinationItemList.postValue(updatedList)
-            }
-
-        }) {
-            travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[CITY_DEALS_ORDER].isLoaded = true
-                updatedList[CITY_DEALS_ORDER].isSuccess = false
-                _travelDestinationItemList.postValue(updatedList)
-                checkIfAllError()
-            }
-        }
-    }
-
     fun getOrderList(query: String, cityId: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
