@@ -1,20 +1,23 @@
 package com.tokopedia.attachvoucher.view.viewmodel
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
 import com.tokopedia.attachvoucher.data.Voucher
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
+import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
 
 class AttachVoucherViewModel @Inject constructor(
         private val getVouchersUseCase: GetVoucherUseCase
 ) : ViewModel() {
-
     var shopId: String = ""
 
     var filter: MutableLiveData<Int> = MutableLiveData()
@@ -55,6 +58,28 @@ class AttachVoucherViewModel @Inject constructor(
 
     private fun onErrorGetVouchers(throwable: Throwable) {
 
+    }
+
+    fun getVoucherPreviewIntent(voucher: Voucher): Intent {
+        val voucherPreview = VoucherPreview(
+                "inbox",
+                voucher.voucherId,
+                voucher.tnc ?: "",
+                voucher.voucherCode ?: "",
+                voucher.voucherName ?: "",
+                voucher.minimumSpend,
+                voucher.validThru.toLong(),
+                voucher.merchantVoucherBanner?.desktopUrl ?: "",
+                voucher.merchantVoucherBanner?.mobileUrl ?: "",
+                voucher.availableAmount.toIntOrZero(),
+                voucher.amountType ?: -1,
+                voucher.identifier,
+                voucher.type ?: -1
+        )
+        val stringVoucherPreview = CommonUtil.toJson(voucherPreview)
+        return Intent().apply {
+            putExtra(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, stringVoucherPreview)
+        }
     }
 
     companion object {

@@ -13,8 +13,8 @@ class AttachVoucherAdapter(private val baseListAdapterTypeFactory: AttachVoucher
     : BaseListAdapter<Visitable<*>, AttachVoucherTypeFactory>(baseListAdapterTypeFactory),
         AttachVoucherViewHolder.Listener {
 
-    val selectedInvoice: MutableLiveData<Voucher?> = MutableLiveData()
-    private var selectedInvoicePosition: Int = RecyclerView.NO_POSITION
+    val selectedVoucher: MutableLiveData<Voucher?> = MutableLiveData()
+    private var selectedVoucherPosition: Int = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val view = onCreateViewItem(parent, viewType)
@@ -22,23 +22,23 @@ class AttachVoucherAdapter(private val baseListAdapterTypeFactory: AttachVoucher
     }
 
     override fun checkCurrentItem(element: Voucher, position: Int) {
-        selectedInvoice.postValue(element)
-        selectedInvoicePosition = position
+        selectedVoucher.postValue(element)
+        selectedVoucherPosition = position
     }
 
     override fun uncheckPreviousItem() {
-        if (selectedInvoice.value == null || selectedInvoicePosition == RecyclerView.NO_POSITION) return
-        notifyItemChanged(selectedInvoicePosition, AttachVoucherViewHolder.PAYLOAD_UNCHECK)
-        selectedInvoice.postValue(null)
-        selectedInvoicePosition = RecyclerView.NO_POSITION
+        if (selectedVoucher.value == null || selectedVoucherPosition == RecyclerView.NO_POSITION) return
+        notifyItemChanged(selectedVoucherPosition, AttachVoucherViewHolder.PAYLOAD_UNCHECK)
+        selectedVoucher.postValue(null)
+        selectedVoucherPosition = RecyclerView.NO_POSITION
     }
 
     override fun isChecked(element: Voucher): Boolean {
-        return selectedInvoice.value == element
+        return selectedVoucher.value == element
     }
 
     fun clearSelected() {
-        selectedInvoice.value = null
-        selectedInvoicePosition = RecyclerView.NO_POSITION
+        selectedVoucher.value = null
+        selectedVoucherPosition = RecyclerView.NO_POSITION
     }
 }

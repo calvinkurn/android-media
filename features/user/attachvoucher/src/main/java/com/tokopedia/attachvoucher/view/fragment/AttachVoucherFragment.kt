@@ -1,5 +1,6 @@
 package com.tokopedia.attachvoucher.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -93,7 +94,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun observeVoucherState() {
-        adapter.selectedInvoice.observe(viewLifecycleOwner, Observer { voucher ->
+        adapter.selectedVoucher.observe(viewLifecycleOwner, Observer { voucher ->
             if (voucher != null) {
                 enableAttachButton(voucher)
             } else {
@@ -102,10 +103,11 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         })
     }
 
-    private fun enableAttachButton(invoice: Voucher) {
+    private fun enableAttachButton(voucher: Voucher) {
         btnAttach?.isEnabled = true
         btnAttach.setOnClickListener {
-            // TODO: impl click
+            activity?.setResult(Activity.RESULT_OK, viewModel.getVoucherPreviewIntent(voucher))
+            activity?.finish()
         }
     }
 

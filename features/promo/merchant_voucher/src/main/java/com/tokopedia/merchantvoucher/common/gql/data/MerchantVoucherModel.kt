@@ -75,6 +75,9 @@ data class MerchantVoucherOwner(
 )
 
 data class MerchantVoucherBanner(
+        @SerializedName("desktop_url")
+        @Expose
+        var desktopUrl: String = "",
         @SerializedName("mobile_url")
         @Expose
         var mobileUrl: String = ""

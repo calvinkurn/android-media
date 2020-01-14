@@ -388,6 +388,7 @@ public interface ApplinkConst {
 
     interface AttachVoucher {
         String PARAM_SHOP_ID = "shop_id";
+        String PARAM_VOUCHER_PREVIEW = "voucher_preview";
     }
 
     interface Play {

@@ -32,7 +32,9 @@ class Voucher(
         restrictedForLiquidProduct
 ), Visitable<AttachVoucherTypeFactory> {
 
+    val identifier: String get() = merchantVoucherType?.identifier ?: ""
     val availableAmount: String get() = merchantVoucherAmount?.amount?.toInt()?.toString() ?: ""
+    val amountType: Int? get() = merchantVoucherAmount?.type
     val type: Int? get() = merchantVoucherType?.type
 
     override fun type(typeFactory: AttachVoucherTypeFactory): Int {
