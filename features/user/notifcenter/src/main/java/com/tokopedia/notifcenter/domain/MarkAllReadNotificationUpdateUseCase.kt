@@ -39,12 +39,10 @@ class MarkAllReadNotificationUpdateUseCase @Inject constructor(
         private const val PARAM_NOTIF_TYPE  = "typeOfNotif"
         private const val TYPE_NOTIF_UPDATE = 1 //update
 
-        fun params(
-                variables: HashMap<String, Any>,
-                typeOfNotif: Int = TYPE_NOTIF_UPDATE
-        ): HashMap<String, Any> {
-            variables[PARAM_NOTIF_TYPE] = typeOfNotif
-            return variables
+        fun params(typeOfNotif: Int = TYPE_NOTIF_UPDATE): HashMap<String, Any> {
+            val params = hashMapOf<String, Any>()
+            params[PARAM_NOTIF_TYPE] = typeOfNotif
+            return params
         }
     }
 
