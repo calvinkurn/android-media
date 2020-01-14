@@ -93,6 +93,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
         btnFilter?.setButton1OnClickListener {
             viewModel.markAllReadNotification()
+            analytics.trackMarkAllAsRead(markAllReadCounter.toString())
         }
 
         swipeRefresh?.setOnRefreshListener {
