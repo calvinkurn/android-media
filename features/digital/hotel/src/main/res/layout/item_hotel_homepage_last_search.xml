@@ -20,16 +20,14 @@
             android:scaleType="fitXY"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_hotel"
             tools:src="@drawable/ic_hotel" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_hotel_homepage_name_last_search"
+            android:id="@+id/tg_hotel_homepage_title_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:ellipsize="end"
-            android:text="Jakarta"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/iv_hotel_homepage_last_search"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,12 +36,11 @@
             tools:text="Jakarta" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_hotel_homepage_date_last_search"
+            android:id="@+id/tg_hotel_homepage_subtitle_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="2"
-            android:text="22 Feb 2018 - 24 Feb 2019"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_hotel_homepage_last_search"
@@ -51,10 +48,9 @@
             tools:text="22 Feb 2018 - 24 Feb 2019" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_hotel_homepage_desc_last_search"
+            android:id="@+id/tg_hotel_homepage_prefix_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1 Kamar, 2 Tamu"
             android:textColor="@color/Neutral_N700_44"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

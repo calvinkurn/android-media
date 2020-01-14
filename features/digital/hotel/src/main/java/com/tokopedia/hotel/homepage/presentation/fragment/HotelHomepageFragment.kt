@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -104,7 +105,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         initView()
         hidePromoContainer()
+        hideHotelLastSearchContainer()
         loadPromoData()
+        loadRecentSearchData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,7 +125,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
             }
         })
 
-        renderHotelLastSearch()
+        homepageViewModel.recentSearch.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    renderHotelLastSearch(it.data)
+                }
+            }
+        })
     }
 
     override fun onErrorRetryClicked() {
@@ -328,6 +337,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner))
     }
 
+    private fun loadRecentSearchData() {
+        homepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recent_search))
+    }
+
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
         showPromoContainer()
 
@@ -360,23 +373,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.bannerIndicator.hide()
     }
 
-    private fun renderHotelLastSearch() {
+    private fun renderHotelLastSearch(data: List<TravelRecentSearchModel.Item>) {
         showHotelLastSearchContainer()
 
-        val dataList = mutableListOf<String>()
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-        dataList.add("")
-
         rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(dataList)
+        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data)
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
