@@ -32,8 +32,10 @@ class TravelDestinationCityRecommendationViewHolder(itemView: View, private val 
                     destination_recommendation_title.text = element.title
                     if (!::recommendationAdapter.isInitialized) {
                         recommendationAdapter = TravelDestinationCityRecommendationAdapter(element.list, actionListener)
-                        rv_destination_recommendation.layoutManager = LinearLayoutManager(this.context, RecyclerView.VERTICAL, false)
+                        val layoutManager = LinearLayoutManager(this.context, RecyclerView.VERTICAL, false)
+                        rv_destination_recommendation.layoutManager = layoutManager
                         rv_destination_recommendation.adapter = recommendationAdapter
+                        actionListener.onTrackRecommendationsImpression(element.list, 0)
                     } else {
                         recommendationAdapter.updateList(element.list)
                     }

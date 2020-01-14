@@ -39,7 +39,10 @@ class TravelDestinationArticleAdapter(private var list: List<TravelArticleModel.
                 iv_article.loadImage(item.imageUrl)
                 tv_article_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, item.publishedDate))
                 tv_article_title.text = item.title
-                setOnClickListener { actionListener.clickAndRedirect(item.appUrl, item.webUrl) }
+                setOnClickListener {
+                    actionListener.onTrackArticleItemClick(item, position)
+                    actionListener.clickAndRedirect(item.appUrl, item.webUrl)
+                }
             }
         }
     }

@@ -112,8 +112,8 @@ class TravelDestinationTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_DESTINATION_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, EVENTS_WIDGET_IMPRESSION,
                         TrackAppUtils.EVENT_LABEL, VIEW_EVENTS_WIDGET,
-                        ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, IDR ,
-                        DataLayer.mapOf(IMPRESSIONS, products))
+                        ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, IDR,
+                        IMPRESSIONS, products)
                 ))
     }
 
@@ -143,7 +143,7 @@ class TravelDestinationTrackingUtil {
                         TrackAppUtils.EVENT_ACTION, DEALS_WIDGET_IMPRESSION,
                         TrackAppUtils.EVENT_LABEL, VIEW_DEALS_WIDGET,
                         ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, IDR ,
-                        DataLayer.mapOf(IMPRESSIONS, products))
+                       IMPRESSIONS, products)
                 ))
     }
 

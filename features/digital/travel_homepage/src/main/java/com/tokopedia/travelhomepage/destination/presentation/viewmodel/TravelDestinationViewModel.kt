@@ -7,10 +7,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationCityModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
+import com.tokopedia.travelhomepage.destination.model.*
 import com.tokopedia.travelhomepage.destination.model.mapper.TravelDestinationMapper
 import com.tokopedia.travelhomepage.destination.usecase.GetEmptyViewModelsUseCase
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel

@@ -37,6 +37,10 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
                     if (element.seeAllUrl.isNotBlank()) {
                         section_see_all.show()
                         section_see_all.setOnClickListener {
+                            when (element.type) {
+                                CITY_EVENT_ORDER -> actionListener.onTrackEventClickSeeAll()
+                                CITY_DEALS_ORDER -> actionListener.onTrackDealsClickSeeAll()
+                            }
                             actionListener.clickAndRedirect(element.seeAllUrl)
                         }
                     } else section_see_all.hide()
@@ -52,10 +56,14 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
                             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                                 super.onScrolled(recyclerView, dx, dy)
 
-                                val firstVisibleIndex = layoutManager.findFirstCompletelyVisibleItemPosition()
-                                val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
+                                val firstVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                                val lastVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
 
-                                actionListener.onTrackDestinationSection(firstVisibleIndex, lastVisibleIndex)
+                                when (element.type) {
+                                    CITY_EVENT_ORDER -> actionListener.onTrackEventsImpression(element.list.subList(firstVisibleIndex, lastVisibleIndex), firstVisibleIndex)
+                                    CITY_DEALS_ORDER -> actionListener.onTrackDealsImpression(element.list.subList(firstVisibleIndex, lastVisibleIndex), firstVisibleIndex)
+                                    ORDER_LIST_ORDER -> actionListener.onTrackOrderListImpression(element.list.subList(firstVisibleIndex, lastVisibleIndex), firstVisibleIndex)
+                                }
                             }
                         })
                     } else {

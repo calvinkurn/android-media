@@ -1,5 +1,8 @@
 package com.tokopedia.travelhomepage.destination.listener
 
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+
 /**
  * @author by jessica on 2020-01-03
  */
@@ -8,31 +11,29 @@ interface ActionListener {
 
     fun clickAndRedirect(appUrl: String, webUrl: String = "")
 
-    fun onTrackDestinationSection(firstVisiblePosition: Int, lastVisiblePosition: Int)
+    fun onTrackOrderListImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int)
 
-    fun onTrackOrderListImpression(firstVisiblePosition: Int, lastVisiblePosition: Int)
+    fun onTrackOrderClick(item: TravelDestinationSectionViewModel.Item, position: Int)
 
-    fun onTrackOrderClick(position: Int)
+    fun onTrackRecommendationsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int)
 
-    fun onTrackRecommendationsImpression()
+    fun onTrackRecommendationItemClick(item: TravelDestinationSectionViewModel.Item, position: Int)
 
-    fun onTrackRecommendationItemClick(position: Int)
+    fun onTrackEventsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int)
 
-    fun onTrackEventsImpression(firstVisiblePosition: Int, lastVisiblePosition: Int)
-
-    fun onTrackEventItemClick(position: Int)
+    fun onTrackEventItemClick(item: TravelDestinationSectionViewModel.Item, position: Int)
 
     fun onTrackEventClickSeeAll()
 
-    fun onTrackDealsImpression(firstVisiblePosition: Int, lastVisiblePosition: Int)
+    fun onTrackDealsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int)
 
-    fun onTrackDealsItemClick(position: Int)
+    fun onTrackDealsItemClick(item: TravelDestinationSectionViewModel.Item, position: Int)
 
-    fun onTrackDeaksClickSeeAll()
+    fun onTrackDealsClickSeeAll()
 
-    fun onTrackArticleImpression(firstVisiblePosition: Int, lastVisiblePosition: Int)
+    fun onTrackArticleImpression(list: List<TravelArticleModel.Item>, firstVisiblePosition: Int)
 
-    fun onTrackArticleItemClick(position: Int)
+    fun onTrackArticleItemClick(item: TravelArticleModel.Item, position: Int)
 
     fun onTrackArticleClickSeeAll()
 }

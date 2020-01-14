@@ -38,6 +38,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingUtil
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.PARAM_CITY_ID
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
@@ -237,10 +239,6 @@ OnViewHolderBindListener{
         RouteManager.route(context, appUrl)
     }
 
-    override fun onTrackDestinationSection(firstVisiblePosition: Int, lastVisiblePosition: Int) {
-
-    }
-
     override fun onCitySummaryVHBind() {
         destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), cityId)
     }
@@ -299,56 +297,56 @@ OnViewHolderBindListener{
                 cityId, "EVENTS", CITY_EVENT_ORDER)
     }
 
-    override fun onTrackOrderListImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackOrderListImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+        travelDestinationTrackingUtil.orderListImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackOrderClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackOrderClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+        travelDestinationTrackingUtil.orderListClicked(item, position)
     }
 
-    override fun onTrackRecommendationsImpression() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackRecommendationsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+        travelDestinationTrackingUtil.cityRecommendationImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackRecommendationItemClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackRecommendationItemClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+        travelDestinationTrackingUtil.cityRecommendationItemClicked(item, position)
     }
 
-    override fun onTrackEventsImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackEventsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+       travelDestinationTrackingUtil.cityEventsImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackEventItemClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackEventItemClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+        travelDestinationTrackingUtil.cityEventsClick(item, position)
     }
 
     override fun onTrackEventClickSeeAll() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        travelDestinationTrackingUtil.cityEventsSeeAllClicked()
     }
 
-    override fun onTrackDealsImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackDealsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+        travelDestinationTrackingUtil.cityDealsImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackDealsItemClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackDealsItemClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+        travelDestinationTrackingUtil.cityDealsClick(item, position)
     }
 
-    override fun onTrackDeaksClickSeeAll() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackDealsClickSeeAll() {
+        travelDestinationTrackingUtil.cityDealsSeeAllClicked()
     }
 
-    override fun onTrackArticleImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackArticleImpression(list: List<TravelArticleModel.Item>, firstVisiblePosition: Int) {
+        travelDestinationTrackingUtil.cityArticleImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackArticleItemClick(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTrackArticleItemClick(item: TravelArticleModel.Item, position: Int) {
+        travelDestinationTrackingUtil.cityArticleClicked(item, position)
     }
 
     override fun onTrackArticleClickSeeAll() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        travelDestinationTrackingUtil.cityArticleClickSeeAll()
     }
 
     companion object {

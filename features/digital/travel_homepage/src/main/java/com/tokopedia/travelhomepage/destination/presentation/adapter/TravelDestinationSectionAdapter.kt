@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.ORDER_LIST_ORDER
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
 
@@ -53,7 +54,14 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
                 image.loadImage(item.imageUrl)
                 title.text = item.title
                 if (item.subtitle.isNotBlank()) subtitle.text = item.subtitle
-                setOnClickListener { actionListener.clickAndRedirect(item.appUrl) }
+                setOnClickListener {
+                    when (type) {
+                        TravelDestinationViewModel.CITY_EVENT_ORDER -> actionListener.onTrackEventItemClick(item, position)
+                        TravelDestinationViewModel.CITY_DEALS_ORDER -> actionListener.onTrackDealsItemClick(item, position)
+                        ORDER_LIST_ORDER -> actionListener.onTrackOrderClick(item, position)
+                    }
+                    actionListener.clickAndRedirect(item.appUrl)
+                }
 
                 prefix.text = when (item.prefixStyling) {
                     TravelDestinationSectionViewModel.PREFIX_STYLE_STRIKETHROUGH -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_strikethrough, item.prefix, item.value))

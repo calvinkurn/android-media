@@ -47,7 +47,9 @@ class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDe
                 tv_travel_destination_recommendation_item_desc_subtitle.text = item.prefix
                 tv_travel_destination_recommendation_item_desc_title.text = item.value
 
-                setOnClickListener { actionListener.clickAndRedirect(item.appUrl) }
+                setOnClickListener {
+                    actionListener.onTrackRecommendationItemClick(item, position)
+                    actionListener.clickAndRedirect(item.appUrl) }
             }
         }
 
