@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import kotlinx.android.synthetic.main.item_travel_destination_article.view.*
 
@@ -16,10 +16,10 @@ import kotlinx.android.synthetic.main.item_travel_destination_article.view.*
  */
 
 class TravelDestinationArticleAdapter(private var list: List<TravelArticleModel.Item>,
-                                      private var onClickListener: OnClickListener)
+                                      private var actionListener: ActionListener)
     : RecyclerView.Adapter<TravelDestinationArticleAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_travel_destination_article, parent, false), onClickListener)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_travel_destination_article, parent, false), actionListener)
     }
 
     override fun getItemCount(): Int = list.size
@@ -33,13 +33,13 @@ class TravelDestinationArticleAdapter(private var list: List<TravelArticleModel.
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View, private val onClickListener: OnClickListener): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, private val actionListener: ActionListener): RecyclerView.ViewHolder(itemView) {
         fun bind(item: TravelArticleModel.Item, position: Int) {
             with(itemView) {
                 iv_article.loadImage(item.imageUrl)
                 tv_article_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, item.publishedDate))
                 tv_article_title.text = item.title
-                setOnClickListener { onClickListener.clickAndRedirect(item.appUrl, item.webUrl) }
+                setOnClickListener { actionListener.clickAndRedirect(item.appUrl, item.webUrl) }
             }
         }
     }

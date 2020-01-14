@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travelhomepage.destination.di.TravelDestinationComponent
 import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
-import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity
@@ -37,6 +37,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingUtil
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.PARAM_CITY_ID
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
@@ -49,18 +50,21 @@ import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
  * @author by jessica on 2019-12-20
  */
 
-class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, TravelDestinationTypeFactory>(), OnClickListener,
+class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, TravelDestinationTypeFactory>(), ActionListener,
 OnViewHolderBindListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: TravelDestinationViewModel
 
-    var cityId: String = ""
+    @Inject
+    lateinit var travelDestinationTrackingUtil: TravelDestinationTrackingUtil
+
+    private var cityId: String = ""
     var cityName: String = ""
     var webUrl: String = ""
 
-    var indicatorItems: ArrayList<ImageView> = arrayListOf()
+    private var indicatorItems: ArrayList<ImageView> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -232,6 +236,10 @@ OnViewHolderBindListener{
         RouteManager.route(context, appUrl)
     }
 
+    override fun onTrackDestinationSection(firstVisiblePosition: Int, lastVisiblePosition: Int) {
+
+    }
+
     override fun onCitySummaryVHBind() {
         destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), cityId)
     }
@@ -288,6 +296,58 @@ OnViewHolderBindListener{
     override fun onCityEventVHBind() {
         destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
                 cityId, "EVENTS", CITY_EVENT_ORDER)
+    }
+
+    override fun onTrackOrderListImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackOrderClick(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackRecommendationsImpression() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackRecommendationItemClick(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackEventsImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackEventItemClick(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackEventClickSeeAll() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackDealsImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackDealsItemClick(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackDeaksClickSeeAll() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackArticleImpression(firstVisiblePosition: Int, lastVisiblePosition: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackArticleItemClick(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTrackArticleClickSeeAll() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     companion object {

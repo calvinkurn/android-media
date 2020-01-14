@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.ORDER_LIST_ORDER
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
@@ -19,11 +19,11 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.v
 class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSectionViewModel.Item>,
                                       private var type: Int,
                                       private var categoryType: String,
-                                      private var onClickListener: OnClickListener) :
+                                      private var actionListener: ActionListener) :
         RecyclerView.Adapter<TravelDestinationSectionAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(itemViewType, parent, false), onClickListener)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(itemViewType, parent, false), actionListener)
     }
 
     override fun getItemCount(): Int = list.size
@@ -46,14 +46,14 @@ class TravelDestinationSectionAdapter(private var list: List<TravelDestinationSe
         }
     }
 
-    class ViewHolder(itemView: View, private val onClickListener: OnClickListener) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, private val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: TravelDestinationSectionViewModel.Item, position: Int, type: Int, categoryType: String) {
             with(itemView) {
                 image.loadImage(item.imageUrl)
                 title.text = item.title
                 if (item.subtitle.isNotBlank()) subtitle.text = item.subtitle
-                setOnClickListener { onClickListener.clickAndRedirect(item.appUrl) }
+                setOnClickListener { actionListener.clickAndRedirect(item.appUrl) }
 
                 prefix.text = when (item.prefixStyling) {
                     TravelDestinationSectionViewModel.PREFIX_STYLE_STRIKETHROUGH -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_strikethrough, item.prefix, item.value))

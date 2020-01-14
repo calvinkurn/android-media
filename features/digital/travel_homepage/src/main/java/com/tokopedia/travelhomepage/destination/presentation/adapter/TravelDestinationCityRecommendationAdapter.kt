@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.item_travel_destination_recommendation.view.*
 
 /**
@@ -16,12 +15,12 @@ import kotlinx.android.synthetic.main.item_travel_destination_recommendation.vie
  */
 
 class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDestinationSectionViewModel.Item>,
-                                                 private val onClickListener: OnClickListener) :
+                                                 private val actionListener: ActionListener) :
         RecyclerView.Adapter<TravelDestinationCityRecommendationAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_travel_destination_recommendation, parent, false),
-                onClickListener)
+                actionListener)
     }
 
     override fun getItemCount(): Int = list.size
@@ -35,7 +34,7 @@ class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDe
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View, private val onClickListener: OnClickListener) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, private val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: TravelDestinationSectionViewModel.Item, position: Int) {
             with(itemView) {
@@ -48,7 +47,7 @@ class TravelDestinationCityRecommendationAdapter(private var list: List<TravelDe
                 tv_travel_destination_recommendation_item_desc_subtitle.text = item.prefix
                 tv_travel_destination_recommendation_item_desc_title.text = item.value
 
-                setOnClickListener { onClickListener.clickAndRedirect(item.appUrl) }
+                setOnClickListener { actionListener.clickAndRedirect(item.appUrl) }
             }
         }
 

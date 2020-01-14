@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.presentation.adapter.TravelDestinationArticleAdapter
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.layout_travel_destination_article.view.*
  */
 
 class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolderBindListener: OnViewHolderBindListener,
-                                         private val onClickListener: OnClickListener)
+                                         private val actionListener: ActionListener)
     : AbstractViewHolder<TravelArticleModel>(itemView){
 
     lateinit var adapter: TravelDestinationArticleAdapter
@@ -33,17 +33,17 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
                     layout_content.show()
                     tv_travel_destination_article_title.text = element.meta.title
                     tv_travel_destination_article_see_all.text = "Lihat Semua"
-                    setOnClickListener { onClickListener.clickAndRedirect(element.meta.appUrl, element.meta.webUrl) }
+                    setOnClickListener { actionListener.clickAndRedirect(element.meta.appUrl, element.meta.webUrl) }
 
                     if (element.items.isNotEmpty()) {
                         iv_travel_destination_article_item.loadImage(element.items[0].imageUrl)
                         tv_travel_destination_article_item_title.text = element.items[0].title
                         tv_travel_destination_article_item_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, element.items[0].publishedDate))
-                        travel_destination_highlight_article.setOnClickListener { onClickListener.clickAndRedirect(element.items[0].appUrl,
+                        travel_destination_highlight_article.setOnClickListener { actionListener.clickAndRedirect(element.items[0].appUrl,
                                 element.items[0].webUrl) }
 
                         if (!::adapter.isInitialized) {
-                            adapter = TravelDestinationArticleAdapter(element.items.subList(1, element.items.size - 1), onClickListener)
+                            adapter = TravelDestinationArticleAdapter(element.items.subList(1, element.items.size - 1), actionListener)
                             rv_travel_destination_article_item.layoutManager = LinearLayoutManager(this.context, RecyclerView.HORIZONTAL, false)
                             rv_travel_destination_article_item.adapter = adapter
                         } else {

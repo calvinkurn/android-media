@@ -7,12 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.destination.listener.OnClickListener
+import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
 import com.tokopedia.travelhomepage.destination.presentation.adapter.TravelDestinationCityRecommendationAdapter
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.layout_travel_destination_recommendation.view.*
 
 /**
@@ -20,7 +18,7 @@ import kotlinx.android.synthetic.main.layout_travel_destination_recommendation.v
  */
 
 class TravelDestinationCityRecommendationViewHolder(itemView: View, private val onViewHolderBindListener: OnViewHolderBindListener,
-                                                    private val onClickListener: OnClickListener)
+                                                    private val actionListener: ActionListener)
     : AbstractViewHolder<TravelDestinationSectionViewModel>(itemView) {
 
     lateinit var recommendationAdapter: TravelDestinationCityRecommendationAdapter
@@ -33,7 +31,7 @@ class TravelDestinationCityRecommendationViewHolder(itemView: View, private val 
                     layout_shimmering.hide()
                     destination_recommendation_title.text = element.title
                     if (!::recommendationAdapter.isInitialized) {
-                        recommendationAdapter = TravelDestinationCityRecommendationAdapter(element.list, onClickListener)
+                        recommendationAdapter = TravelDestinationCityRecommendationAdapter(element.list, actionListener)
                         rv_destination_recommendation.layoutManager = LinearLayoutManager(this.context, RecyclerView.VERTICAL, false)
                         rv_destination_recommendation.adapter = recommendationAdapter
                     } else {
