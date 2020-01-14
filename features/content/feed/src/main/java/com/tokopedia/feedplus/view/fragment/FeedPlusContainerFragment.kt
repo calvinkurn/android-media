@@ -101,7 +101,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private lateinit var coachMarkItem:  CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         mainParentStatusBarListener = context as MainParentStatusBarListener
         requestStatusBarDark()
@@ -146,7 +146,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onDestroy() {
         viewModel.tabResp.removeObservers(this)
         viewModel.whitelistResp.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 

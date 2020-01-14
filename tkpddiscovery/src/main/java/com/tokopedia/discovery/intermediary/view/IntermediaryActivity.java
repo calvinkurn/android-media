@@ -29,6 +29,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
 
@@ -107,7 +108,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     }
 
     private void checkAndOpenCategoryPage(Uri uri) {
-        if (uri.getQuery() != null && !uri.getQuery().isEmpty() && !uri.toString().contains("categoryName")) {
+        if (uri.getQuery() != null && !uri.getQuery().isEmpty() && uri.toString().contains(CategoryNavActivity.EXTRA_CATEGORY_NAME)) {
             CategoryActivity.moveTo(this, uri.toString(), null);
             finish();
         }
