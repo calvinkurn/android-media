@@ -2,6 +2,6 @@
 <resources>
     <dimen name="dp_88">88dp</dimen>
 
-    <dimen name="hotel_last_search_width">170dp</dimen>
-    <dimen name="hotel_last_search_height">78dp</dimen>
+    <dimen name="hotel_last_search_width">200dp</dimen>
+    <dimen name="hotel_last_search_height">66dp</dimen>
 </resources>
