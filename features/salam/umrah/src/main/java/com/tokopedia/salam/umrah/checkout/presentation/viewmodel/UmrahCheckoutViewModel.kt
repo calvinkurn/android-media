@@ -8,11 +8,10 @@ import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultEntity
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultParams
 import com.tokopedia.salam.umrah.checkout.presentation.usecase.UmrahCheckoutGetDataUseCase
 import com.tokopedia.salam.umrah.checkout.presentation.usecase.UmrahCheckoutResultUseCase
-
-import kotlinx.coroutines.launch
 import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
-import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 /**

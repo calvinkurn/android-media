@@ -121,7 +121,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
             shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
-                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth() );
+                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth());
             if (isRight)
                 isMinimized = false;
             else
@@ -145,7 +145,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         rotateRight.setDuration(SHORT_ANIMATION_DURATION);
         rotateRight.playTogether(rotateMinimizeAnimator, translateEggXAnimator);
         rotateRight.start();
-        saveCoordPreference((int)newX, (int)vgFloatingEgg.getY());
+        saveCoordPreference((int) newX, (int) vgFloatingEgg.getY());
     }
 
     @Override
@@ -409,7 +409,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onClick(View v) {
 
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, null);
+                if (!TextUtils.isEmpty(appLink)) {
+                    boolean isSupported = RouteManager.route(getActivity(), appLink, null);
+                    if (!isSupported) {
+                        ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
+                    }
+                } else {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
+                }
                 trackingEggClick(tokenData.getId(), tokenData.getName());
             }
         });
@@ -648,7 +655,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX){
+    private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX) {
         AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
         final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, newAngle);
         final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, newX);
@@ -657,6 +664,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         rotateRightAnimatorSet.playTogether(animator, rotateMinimizeAnimator, translateEggXAnimator);
         rotateRightAnimatorSet.start();
     }
+
     @Override
     protected String getScreenName() {
         return null;

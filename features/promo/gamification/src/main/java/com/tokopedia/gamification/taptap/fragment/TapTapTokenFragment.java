@@ -351,9 +351,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
             crackTokenPresenter.playWithPoints(true);
         } else {
-            ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(),
-                    actionButton.getUrl(),
-                    TapTapTokenActivity.class);
+            String applink = actionButton.getApplink();
+            if (!TextUtils.isEmpty(applink)) {
+                boolean isSupported = RouteManager.route(getActivity(), applink);
+                if (!isSupported) {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(), actionButton.getUrl(), TapTapTokenActivity.class);
+                }
+            } else {
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(), actionButton.getUrl(), TapTapTokenActivity.class);
+            }
+
         }
         if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
             sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK, actionButton.getText());

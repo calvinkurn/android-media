@@ -129,6 +129,7 @@ public class WidgetCrackResult extends RelativeLayout {
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
         tvRewardsTip = view.findViewById(R.id.tvRewardsTip);
 
+        tvRewardsTip.setBackgroundResource(R.drawable.gamification_tooltip);
         animationList = new ArrayList<>();
     }
 
