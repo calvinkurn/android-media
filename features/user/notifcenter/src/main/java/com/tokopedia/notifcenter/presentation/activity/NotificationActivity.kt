@@ -249,7 +249,7 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_notification_activity, menu)
+        menuInflater.inflate(R.menu.menu_notifcenter_main, menu)
         return true
     }
 
