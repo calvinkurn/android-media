@@ -117,7 +117,6 @@ import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -206,7 +205,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         observingAcceptOrder()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.chat_menu, menu)
     }
 
@@ -692,7 +691,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setFullPage(false)
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let { bottomSheetUnify.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         bottomSheetUnify.setTitle(TITLE_UBAH_RESI)
 
         viewBottomSheet?.btn_cancel_order_canceled?.setOnClickListener { bottomSheetUnify.dismiss() }
@@ -883,10 +884,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.setFullPage(true)
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
             bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
         }
-
         somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
         somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
     }
@@ -928,7 +930,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.setFullPage(true)
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
             bottomSheetUnify.setTitle(TITLE_ATUR_TOKO_TUTUP)
         }
 
@@ -995,7 +999,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.setFullPage(true)
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
             bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
         }
         somBottomSheetCourierProblemsAdapter.listChildCourierProblems = listChild.toMutableList()

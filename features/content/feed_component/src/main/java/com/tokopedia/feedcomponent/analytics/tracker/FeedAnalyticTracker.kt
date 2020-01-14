@@ -63,6 +63,7 @@ class FeedAnalyticTracker
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
 
         const val CONTENT_DETAIL = "$USER_PROFILE_SOCIALCOMMERCE - content detail"
+        const val MY_CONTENT_DETAIL = "$MY_PROFILE_SOCIALCOMMERCE - content detail"
 
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
@@ -90,6 +91,8 @@ class FeedAnalyticTracker
         const val CLICK_UNFOLLOW = "click unfollow"
         const val CLICK_FOLLOW_ALL = "click follow semua"
         const val CLICK_FEED_PRODUCT_DETAIL = "click - shop"
+        const val CLICK_CONTENT_DETAIL_SHOP = "click - shop"
+        const val CLICK_CONTENT_DETAIL_AFFILIATE = "click - user"
 
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
@@ -165,6 +168,28 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_USER_RECOM = "/feed follow recom - user recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM = "/feed follow recom - {usertype} recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
+    //    screenshot 47
+    fun eventContentDetailClickShopNameAvatar(activityId: String, shopId: String) {
+        trackGeneralEvent(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (shopId.equals(userSessionInterface.shopId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+                Action.CLICK_CONTENT_DETAIL_SHOP,
+                String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
+    //    screenshot 47
+    fun eventContentDetailClickAffiliateNameAvatar(activityId: String, userId: String) {
+        trackGeneralEvent(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (userId.equals(userSessionInterface.userId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+                Action.CLICK_CONTENT_DETAIL_AFFILIATE,
+                String.format(Action.FORMAT_TWO_PARAM, userId, activityId)
+        )
     }
 
 

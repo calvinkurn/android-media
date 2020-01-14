@@ -157,7 +157,7 @@ class OtpModeListFragment : BaseDaggerFragment(), OtpModeListAdapter.ClickListen
 
     override fun onDestroy() {
         super.onDestroy()
-        otpModeListViewModel.clear()
+        otpModeListViewModel.flush()
     }
 
     private fun showLoading() {

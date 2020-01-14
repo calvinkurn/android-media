@@ -7,7 +7,7 @@
               android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/activity_talk_product_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:theme="?toolbarTheme"
@@ -18,7 +18,7 @@
         app:titleTextAppearance="?titleTextAppearance" />
 
     <FrameLayout
-        android:id="@+id/parent_view"
+        android:id="@+id/talk_parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

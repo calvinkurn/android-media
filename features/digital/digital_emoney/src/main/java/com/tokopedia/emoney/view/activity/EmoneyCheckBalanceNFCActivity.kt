@@ -144,10 +144,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         return true
     }
 
-    override fun getScreenName(): String? {
-        return EmoneyCheckBalanceNFCActivity::class.simpleName
-    }
-
     private fun initInjector() {
         val emoneyComponent = DaggerDigitalEmoneyComponent.builder()
                 .baseAppComponent((this.application as BaseMainApplication).baseAppComponent)
