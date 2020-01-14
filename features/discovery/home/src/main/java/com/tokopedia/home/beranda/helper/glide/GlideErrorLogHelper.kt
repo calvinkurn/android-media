@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Toast
 import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.config.GlobalConfig
@@ -41,8 +42,9 @@ private suspend fun logErrorSync(context: Context, e: GlideException?, url: Stri
                 url,
                 e?.message ?: "",
                 traceResult?.message ?: "")
-        
-        Toast.makeText(context, traceResult?.message ?: "", Toast.LENGTH_SHORT).show()
+
+        Log.v("P2#IMAGE_TRACEROUTE#:",
+                traceResult?.message ?: "")
     }
 }
 
