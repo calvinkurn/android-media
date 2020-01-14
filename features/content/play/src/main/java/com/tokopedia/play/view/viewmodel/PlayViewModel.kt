@@ -124,7 +124,9 @@ class PlayViewModel @Inject constructor(
     }
 
     fun showKeyboard(estimatedKeyboardHeight: Int) {
-        _observableKeyboardState.value = KeyboardState.Shown(estimatedKeyboardHeight)
+        _observableKeyboardState.value =
+                if (_observableVideoStream.value?.videoType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight)
+                else KeyboardState.Hidden
     }
 
     fun hideKeyboard() {

@@ -75,7 +75,7 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
         view.hide()
     }
 
-    fun focusChatForm(shouldFocus: Boolean) {
+    fun focusChatForm(shouldFocus: Boolean, forceChangeKeyboardState: Boolean = false) {
         if (shouldFocus && !etChat.isFocusable) {
             etChat.apply {
                 isFocusable = true
@@ -92,7 +92,7 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
 
         if (!etChat.hasFocus() && shouldFocus) {
             etChat.requestFocus()
-            showKeyboard(true)
+            if (forceChangeKeyboardState) showKeyboard(true)
         }
         else if (etChat.hasFocus() && !shouldFocus) {
             etChat.clearFocus()
@@ -100,7 +100,7 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
         }
     }
 
-    private fun showKeyboard(shouldShow: Boolean) {
+    fun showKeyboard(shouldShow: Boolean) {
         val imm = etChat.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (shouldShow) imm.showSoftInput(etChat, InputMethodManager.SHOW_FORCED)
         else imm.hideSoftInputFromWindow(etChat.windowToken, 0)
