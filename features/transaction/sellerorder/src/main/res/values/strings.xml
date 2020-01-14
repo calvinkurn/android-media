@@ -61,6 +61,7 @@
     <string name="kode_booking">Kode Booking</string>
     <string name="kurir_pengiriman">Kurir Pengiriman</string>
     <string name="alamat_pengiriman">Alamat Pengiriman</string>
+    <string name="alamat_pengiriman_tersalin">Alamat Pengiriman sudah tersalin</string>
     <string name="salin_alamat">Salin Alamat</string>
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>

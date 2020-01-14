@@ -838,7 +838,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     override fun onCopiedAddress(address: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.primaryClip = ClipData.newPlainText(address, str)
-        showCommonToaster(getString(R.string.invoice_tersalin))
+        showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
     private fun setProductEmpty(rCode: String) {
