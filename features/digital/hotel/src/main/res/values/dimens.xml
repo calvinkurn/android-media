@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dp_88">88dp</dimen>
+
+    <dimen name="hotel_last_search_width">178dp</dimen>
+    <dimen name="hotel_last_search_height">178dp</dimen>
 </resources>
