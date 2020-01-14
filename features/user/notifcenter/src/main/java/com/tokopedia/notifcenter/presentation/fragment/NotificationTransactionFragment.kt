@@ -136,6 +136,10 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         viewModel.markAllNotification.observe(this, Observer {
             onSuccessMarkAllRead()
         })
+        viewModel.totalUnreadNotification.observe(this, Observer {
+            markAllReadCounter = it
+            notifyStateFilterActionView()
+        })
     }
 
     override fun onPause() {
@@ -151,6 +155,10 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     private fun onSuccessMarkAllRead() {
         _adapter.markAllAsRead()
         markAllReadCounter = 0L
+        notifyStateFilterActionView()
+    }
+
+    private fun notifyStateFilterActionView() {
         btnFilter?.showWithCondition(markAllReadCounter != 0L)
     }
 
@@ -212,10 +220,21 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
         val payloadBackground = BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
         adapter.notifyItemChanged(adapterPosition, payloadBackground)
-        viewModel.markReadNotification(notification.notificationId)
 
         //tracking
         analytics.trackNotificationClick(notification)
+
+        //reader
+        viewModel.markReadNotification(notification.notificationId)
+        val needToResetCounter = !notification.isRead
+        if (needToResetCounter) {
+            updateMarkAllReadCounter()
+            notifyStateFilterActionView()
+        }
+    }
+
+    private fun updateMarkAllReadCounter() {
+        markAllReadCounter -= 1
     }
 
     private fun fetchUpdateFilter(filter: HashMap<String, Int>) {
