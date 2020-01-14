@@ -75,7 +75,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var adapter: RechargeGeneralAdapter
 
     private var inputData: HashMap<String, String> = hashMapOf()
-    private var inputDataSize: Int = 0
+    private lateinit var inputDataKeys: List<String>
 
     private var menuId: Int = 0
     private var categoryId: Int = 0
@@ -83,6 +83,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var productId: String = ""
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
+    private var isApplinkData = false
 
     private var enquiryLabel = ""
     private lateinit var enquiryData: TopupBillsEnquiry
@@ -117,6 +118,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             menuId = it.getInt(EXTRA_PARAM_MENU_ID, 0)
             operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
             productId = it.getString(EXTRA_PARAM_PRODUCT_ID, "")
+            isApplinkData = operatorId > 0
         }
     }
 
@@ -152,12 +154,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         })
 
         sharedViewModel.recommendationItem.observe(this, Observer {
-            if (viewModel.operatorCluster.value is Success) {
+            val operatorClusters = viewModel.operatorCluster.value
+            if (operatorClusters is Success) {
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, it.position)
                 operatorId = it.operatorId
                 productId = it.productId.toString()
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
-                renderInitialData((viewModel.operatorCluster.value as Success).data)
+                renderInitialData(operatorClusters.data)
             }
         })
     }
@@ -170,7 +173,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             menuId = savedInstanceState.getInt(EXTRA_PARAM_MENU_ID, menuId)
             operatorId = savedInstanceState.getInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             productId = savedInstanceState.getString(EXTRA_PARAM_PRODUCT_ID, productId)
-            inputData = savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as HashMap<String, String>
+            inputData = (savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as? HashMap<String, String>) ?: hashMapOf()
+            if (savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS) != null) {
+                inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)!!.toList()
+            }
         }
 
         rv_digital_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -218,6 +224,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
         outState.putString(EXTRA_PARAM_PRODUCT_ID, productId)
         outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
+        if (::inputDataKeys.isInitialized) {
+            outState.putStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS, ArrayList(inputDataKeys))
+        }
         if (::enquiryData.isInitialized) {
             saveInstanceManager?.apply {
                 onSave(outState)
@@ -343,7 +352,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
                 dataList.addAll(enquiryFields)
 
-                inputDataSize = enquiryFields.size
+                inputDataKeys = enquiryFields.map { it.name }
             }
         }
 
@@ -462,12 +471,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
-        if (viewModel.operatorCluster.value is Success
-                && (viewModel.operatorCluster.value as Success).data.operatorGroups.isNotEmpty()) {
+        val operatorClusters = viewModel.operatorCluster.value
+        if (operatorClusters is Success
+                && operatorClusters.data.operatorGroups.isNotEmpty()) {
             operatorId = data.operatorId
             productId = data.productId.toString()
+            if (data.clientNumber.isNotEmpty()) {
+                inputData[PARAM_CLIENT_NUMBER] = data.clientNumber
+            }
 
-            renderInitialData((viewModel.operatorCluster.value as Success).data)
+            renderInitialData(operatorClusters.data)
         }
     }
 
@@ -527,13 +540,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderClientNumber(number: String) {
         inputData[PARAM_CLIENT_NUMBER] = number
         if (adapter.data.isNotEmpty()) {
-            adapter.data.forEachIndexed { index, productInput ->
-                if (productInput is RechargeGeneralProductInput && productInput.name == PARAM_CLIENT_NUMBER) {
-                    productInput.value = number
-                    productInput.style = INPUT_TYPE_FAVORITE_NUMBER
-                    adapter.notifyItemChanged(index)
-                    return@forEachIndexed
-                }
+            val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
+            clientNumberInput?.apply {
+                value = number
+                style = INPUT_TYPE_FAVORITE_NUMBER
+                adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
             }
         }
     }
@@ -612,7 +623,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun validateEnquiry(): Boolean {
-        return operatorId > 0 && productId.isNotEmpty() && inputData.size == inputDataSize
+        return operatorId > 0 && productId.isNotEmpty()
+                && ::inputDataKeys.isInitialized && inputData.keys.toList() == inputDataKeys
     }
 
     private fun enquire() {
@@ -631,14 +643,18 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
-        setupAutoFillData(data.recommendations[0])
+        (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
+        // Set recommendation data if there is
+        if (data.recommendations.isNotEmpty() && !isApplinkData) {
+            setupAutoFillData(data.recommendations[0])
+        }
         renderFooter(data)
     }
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
-        if (favoriteNumbers.isNotEmpty()) {
+        // Set favorite number if it belongs to the current selected operator
+        if (favoriteNumbers.isNotEmpty() && favoriteNumbers[0].operatorId == operatorId.toString()) {
             renderClientNumber(favoriteNumbers[0].clientNumber)
         }
     }
@@ -749,6 +765,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_PRODUCT_ID = "EXTRA_PARAM_PRODUCT_ID"
         const val EXTRA_PARAM_CLIENT_NUMBER = "EXTRA_PARAM_CLIENT_NUMBER"
         const val EXTRA_PARAM_INPUT_DATA = "EXTRA_PARAM_INPUT_DATA"
+        const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
 
         const val INPUT_TYPE_NUMERIC = "input_numeric"
