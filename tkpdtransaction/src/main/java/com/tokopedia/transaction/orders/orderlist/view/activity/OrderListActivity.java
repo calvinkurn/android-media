@@ -163,7 +163,6 @@ public class OrderListActivity extends BaseSimpleActivity
         initVar();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            orderCategory = bundle.getString(ORDER_CATEGORY);
             String url = bundle.getString("url");
             if (url != null && (Uri.parse(url).getQueryParameter("tab") != null))
                 orderCategory = Uri.parse(url).getQueryParameter("tab");
