@@ -24,6 +24,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -153,8 +154,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             launch {
-                if (it.isBanned) sendEventBanned()
-                else if(it.isFreeze) sendEventFreeze()
+                if (it.isBanned) sendEventBanned(it)
+                else if(it.isFreeze) sendEventFreeze(it)
             }
         })
     }
@@ -265,22 +266,35 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         }
     }
 
-    private fun sendEventBanned() {
+    private fun sendEventBanned(eventUiModel: EventUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(PlayRoomEvent.Banned)
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Banned(
+                                            title = eventUiModel.bannedTitle,
+                                            message = eventUiModel.bannedMessage,
+                                            btnTitle = eventUiModel.bannedButtonTitle
+                                    )
+                            )
                     )
         }
     }
 
-    private fun sendEventFreeze() {
+    private fun sendEventFreeze(eventUiModel: EventUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(PlayRoomEvent.Freeze)
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Freeze(
+                                            title = eventUiModel.freezeTitle,
+                                            message = eventUiModel.freezeMessage,
+                                            btnTitle = eventUiModel.freezeButtonTitle,
+                                            btnUrl = eventUiModel.freezeButtonUrl
+                                    )
+                            )
                     )
         }
     }

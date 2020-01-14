@@ -144,7 +144,6 @@ class PlayFragment : BaseDaggerFragment() {
 
         observeSocketInfo()
         observeEventUserInfo()
-        observeState()
     }
 
     private fun initView(view: View) {
@@ -205,10 +204,6 @@ class PlayFragment : BaseDaggerFragment() {
                 }
             }
         })
-    }
-
-    private fun observeState() {
-        playViewModel.stateHandler.observe(viewLifecycleOwner, Observer {  })
     }
 
     private fun observeEventUserInfo() {

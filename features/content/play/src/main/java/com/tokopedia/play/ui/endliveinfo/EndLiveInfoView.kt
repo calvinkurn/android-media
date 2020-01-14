@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -55,6 +56,13 @@ class EndLiveInfoView(
 
     override fun hide() {
         view.hide()
+    }
+
+    internal fun setInfo(title: String, message: String, btnTitle: String, btnUrl: String) {
+        txtLiveEndedTitle.text = title
+        txtLiveEndedBody.text = message
+        btnLiveEndedAction.text = btnTitle
+        btnLiveEndedAction.setOnClickListener { RouteManager.route(view.context, btnUrl) }
     }
 
     private fun layoutStats(@IdRes statsComponentId: Int) {

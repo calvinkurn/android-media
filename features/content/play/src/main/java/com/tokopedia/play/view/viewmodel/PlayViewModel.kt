@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -90,7 +91,7 @@ class PlayViewModel @Inject constructor(
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     val observableVideoProperty: LiveData<VideoPropertyUiModel> = _observableVideoProperty
 
-    val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
+    private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.videoType, _observableVideoProperty.value?.state
                     ?: TokopediaPlayVideoState.NotConfigured)
@@ -109,19 +110,29 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    /**
+     * DO NOT CHANGE THIS TO LAMBDA
+     */
+    private val stateHandlerObserver = object : Observer<Unit> {
+        override fun onChanged(t: Unit?) {}
+    }
+
     var isLive: Boolean = false
     var contentId: Int = 0
     var contentType: Int = 0
 
     init {
         //TODO(Remove, ONLY FOR TESTING)
-        initMockChat()
+//        initMockChat()
+//        initMockFreeze()
 
-        launch(dispatchers.main) {
-            delay(10000)
-            _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true)
-        }
         _observableVOD.value = playManager.videoPlayer
+        stateHandler.observeForever(stateHandlerObserver)
+    }
+
+    override fun onCleared() {
+        stateHandler.removeObserver(stateHandlerObserver)
+        super.onCleared()
     }
 
     fun startCurrentVideo() {
@@ -151,11 +162,11 @@ class PlayViewModel @Inject constructor(
              */
             getPartnerInfo(channel)
             // TODO("remove, for testing")
-            channel.videoStream = VideoStream(
-                    "vertical",
-                    "live",
-                    true,
-                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+//            channel.videoStream = VideoStream(
+//                    "vertical",
+//                    "live",
+//                    true,
+//                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             setStateLiveOrVod(channel)
             setContentIdAndType(channel)
@@ -383,6 +394,7 @@ class PlayViewModel @Inject constructor(
         hideKeyboard()
     }
 
+    //region mock
     private fun initMockChat() {
         launch(dispatchers.io) {
 
@@ -400,4 +412,13 @@ class PlayViewModel @Inject constructor(
             }
         }
     }
+
+    private fun initMockFreeze() {
+        launch(dispatchers.main) {
+            delay(10000)
+            _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true, freezeTitle = "Freeze title", freezeMessage = "freeze message", freezeButtonTitle = "Freeze Button", freezeButtonUrl = "tokopedia://play/2")
+        }
+    }
+
+    //endregion
 }

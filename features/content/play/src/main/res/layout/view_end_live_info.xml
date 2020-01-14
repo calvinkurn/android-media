@@ -27,7 +27,6 @@
             app:layout_constraintBottom_toTopOf="@id/txt_live_ended_body"
             app:typographyType="heading_3"
             app:typographyWeight="bold"
-            android:text="Live streaming telah berakhir"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -45,7 +44,6 @@
             app:layout_constraintTop_toBottomOf="@id/txt_live_ended_title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_2"
-            android:text="Tokopedia Play punya banyak video menarik lainnya yang bisa ditonton untuk menemani waktu senggangmu"
             />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -55,7 +53,6 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl5"
-            android:text="Lihat Video Lainnya"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
