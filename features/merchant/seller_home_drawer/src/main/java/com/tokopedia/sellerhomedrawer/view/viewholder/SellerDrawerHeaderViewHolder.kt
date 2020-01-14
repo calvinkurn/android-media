@@ -1,18 +1,39 @@
 package com.tokopedia.sellerhomedrawer.view.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
-import com.tokopedia.sellerhomedrawer.view.listener.SellerDrawerItemListener
-import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerHeader
+import com.tokopedia.sellerhomedrawer.view.listener.RetryTokoCashListener
+import com.tokopedia.sellerhomedrawer.view.listener.SellerDrawerHeaderListener
+import com.tokopedia.sellerhomedrawer.view.viewmodel.header.SellerDrawerHeader
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.seller_drawer_header.view.*
+import kotlinx.android.synthetic.main.drawer_header.view.*
+import kotlinx.android.synthetic.main.drawer_header.view.complete_profile
+import kotlinx.android.synthetic.main.seller_drawer_header.view.ProgressBar
+import kotlinx.android.synthetic.main.seller_drawer_header.view.cover_img
+import kotlinx.android.synthetic.main.seller_drawer_header.view.drawer_header
+import kotlinx.android.synthetic.main.seller_drawer_header.view.drawer_points_layout
+import kotlinx.android.synthetic.main.seller_drawer_header.view.layout_progress
+import kotlinx.android.synthetic.main.seller_drawer_header.view.name_text
+import kotlinx.android.synthetic.main.seller_drawer_header.view.percent_text
+import kotlinx.android.synthetic.main.seller_drawer_header.view.user_avatar
+import kotlinx.android.synthetic.main.seller_drawer_header.view.verified
+import kotlinx.android.synthetic.main.seller_drawer_header.view.verified_icon
+import kotlinx.android.synthetic.main.seller_drawer_saldo.view.*
 
 class SellerDrawerHeaderViewHolder(itemView: View,
-                                   val listener: SellerDrawerItemListener,
+                                   private val sellerDrawerHeaderListener: SellerDrawerHeaderListener,
+                                   private val retryTokoCashListener: RetryTokoCashListener,
                                    val context: Context)
     : AbstractViewHolder<SellerDrawerHeader>(itemView){
 
@@ -59,7 +80,7 @@ class SellerDrawerHeaderViewHolder(itemView: View,
                     oldUserAvatar != sellerUserAvatar
 
             if (isAvatarExistAndNotOld) {
-                loadAvatarImage(this, sellerUserAvatar)
+                loadAvatarImage(sellerUserAvatar)
             }
 
             name_text.text = sellerDrawerHeader.drawerProfile.userName
@@ -74,10 +95,20 @@ class SellerDrawerHeaderViewHolder(itemView: View,
                 verified_icon.visibility = View.GONE
                 verified.visibility = View.GONE
             }
+            setupViewHolder(sellerDrawerHeader)
         }
     }
 
-    private fun loadAvatarImage(itemView: View, userAvatar: String) {
+    private fun setupViewHolder(sellerDrawerHeader: SellerDrawerHeader) {
+        setDeposit(sellerDrawerHeader)
+        setTopPoints(sellerDrawerHeader)
+        setTopCash(sellerDrawerHeader)
+        setTokoPoint(sellerDrawerHeader)
+        setTokoCard()
+        setListener(sellerDrawerHeader)
+    }
+
+    private fun loadAvatarImage(userAvatar: String) {
         ImageHandler.loadImage(context,
                 itemView.user_avatar,
                 userAvatar,
@@ -85,149 +116,164 @@ class SellerDrawerHeaderViewHolder(itemView: View,
                 R.drawable.ic_image_avatar_boy)
         oldUserAvatar = userAvatar
     }
-//
-//    private fun setTokoCard(itemView: View) {
-//        val remoteConfig = FirebaseRemoteConfigImpl(context)
-//        val showTokoCard = remoteConfig.getBoolean(RemoteConfigKey.SHOW_TOKOCARD, true)
-//
-//        if (!showTokoCard) {
-//            holder.tokocardLayout.setVisibility(View.GONE)
-//        }
-//    }
-//
-//    @SuppressLint("SetTextI18n")
-//    private fun setTokoPoint(holder: ViewHolder) {
-//        val TITLE_HEADER_WEBSITE = "TokoPoints"
-//        if (data.getTokoPointDrawerData() != null && data.getTokoPointDrawerData().getOffFlag() == 0) {
-//            holder.tokoPointContainer.setVisibility(View.VISIBLE)
-//            val title = data.getTokoPointDrawerData().getMainPageTitle()
-//            holder.tvTokoPointAction.setText(if (TextUtils.isEmpty(title)) TITLE_HEADER_WEBSITE else "TokoPoints")
-//            com.tkpd.library.utils.ImageHandler.loadImageThumbs(context,
-//                    holder.ivTokoPointBadge,
-//                    data.getTokoPointDrawerData().getUserTier().getTierImageUrl())
-//            holder.tvTokoPointCount.setText(data.getTokoPointDrawerData().getUserTier().getRewardPointsStr())
-//            holder.tvTokoPointAction.setOnClickListener(View.OnClickListener {
-//                eventUserClickedPoints()
-//                listener.onTokoPointActionClicked(
-//                        data.getTokoPointDrawerData().getMainPageUrl(),
-//                        if (TextUtils.isEmpty(title)) TITLE_HEADER_WEBSITE else title
-//                )
-//            })
-//        } else {
-//            holder.tokoPointContainer.setVisibility(View.GONE)
-//        }
-//    }
-//
-//    private fun eventUserClickedPoints() {
-//        TrackApp.getInstance().getGTM().sendGeneralEvent(
-//                "clickHomePage",
-//                "homepage-tokopoints",
-//                "click point & tier status",
-//                "tokopoints")
-//    }
-//
-//
-//    private fun setListener(holder: ViewHolder) {
-//        holder.saldoLayout.setOnClickListener(View.OnClickListener { listener.onGoToDeposit() })
-//        holder.topPointsLayout.setOnClickListener(View.OnClickListener {
-//            if (data.getDrawerTopPoints() != null && data.getDrawerTopPoints().getTopPointsUrl() != null)
-//                listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl())
-//        })
-//        holder.tokoCashLayout.setOnClickListener(View.OnClickListener { v ->
-//            if (data.getDrawerTokoCash() != null && data.getDrawerTokoCash().getDrawerWalletAction() != null) {
-//                if (isRegistered(data.getDrawerTokoCash())) {
-//                    listener.onWalletBalanceClicked(
-//                            data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
-//                            data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
-//                    )
-//                    AnalyticsEventTrackingHelper.homepageTokocashClick(v.context, data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance())
-//
-//                } else {
-//                    listener.onWalletActionButtonClicked(
-//                            data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
-//                            data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
-//                    )
-//                    AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick(v.context)
-//
-//                }
-//            } else {
-//                tokoCashListener.onRetryTokoCash()
-//            }
-//        })
-//        holder.name.setOnClickListener(View.OnClickListener { listener.onGoToProfile() })
-//        holder.avatar.setOnClickListener(View.OnClickListener { listener.onGoToProfile() })
-//
-//        holder.completeProfile.setOnClickListener(View.OnClickListener { listener.onGoToProfileCompletion() })
-//        holder.tokocardLayout.setOnClickListener(View.OnClickListener { listener.onGotoTokoCard() })
-//
-//
-//    }
-//
-//    private fun setTopCash(holder: ViewHolder) {
-//        holder.loadingTokoCash.setVisibility(View.VISIBLE)
-//        if (isTokoCashDisabled(data.getDrawerTokoCash())) {
-//            holder.loadingTokoCash.setVisibility(View.GONE)
-//            holder.retryTopCash.setVisibility(View.VISIBLE)
-//        } else {
-//            if (data.getDrawerTokoCash().getDrawerWalletAction().getTypeAction() == DrawerWalletAction.TYPE_ACTION_BALANCE) {
-//                showTokoCashBalanceView(holder)
-//                holder.tokoCash.setText(data.getDrawerTokoCash().getDrawerWalletAction().getBalance())
-//                holder.tokoCashLabel.setText(data.getDrawerTokoCash().getDrawerWalletAction().getLabelTitle())
-//            } else {
-//                showTokoCashActivateView(holder)
-//                holder.tokoCashActivationButton.setText(data.getDrawerTokoCash()
-//                        .getDrawerWalletAction().getLabelActionButton())
-//            }
-//            holder.loadingTokoCash.setVisibility(View.GONE)
-//            holder.retryTopCash.setVisibility(View.GONE)
-//        }
-//    }
-//
-//    private fun showTokoCashBalanceView(holder: ViewHolder) {
-//        holder.tokoCashLayout.setVisibility(View.VISIBLE)
-//        holder.tokoCashActivationButton.setVisibility(View.GONE)
-//        holder.tokoCash.setVisibility(View.VISIBLE)
-//    }
-//
-//    private fun showTokoCashActivateView(holder: ViewHolder) {
-//        holder.tokoCashLayout.setVisibility(View.VISIBLE)
-//        holder.tokoCashActivationButton.setVisibility(View.VISIBLE)
-//        holder.tokoCash.setVisibility(View.GONE)
-//    }
-//
-//    private fun isRegistered(drawerTokoCash: DrawerTokoCash): Boolean {
-//        return drawerTokoCash.drawerWalletAction.typeAction == DrawerWalletAction.TYPE_ACTION_BALANCE
-//    }
-//
-//    private fun isTokoCashDisabled(drawerTokoCash: DrawerTokoCash?): Boolean {
-//        return (drawerTokoCash == null || drawerTokoCash.drawerWalletAction == null
-//                || drawerTokoCash.drawerWalletAction.labelTitle == null
-//                || drawerTokoCash.drawerWalletAction.labelTitle == "")
-//    }
-//
-//    private fun setTopPoints(holder: ViewHolder) {
-//        if (!data.getDrawerTopPoints().isActive()) {
-//            holder.topPointsLayout.setVisibility(View.GONE)
-//        } else if (data.getDrawerTopPoints().getTopPoints() == "") {
-//            holder.topPointsLayout.setVisibility(View.VISIBLE)
-//            holder.loadingLoyalty.setVisibility(View.VISIBLE)
-//            holder.topPoint.setVisibility(View.GONE)
-//        } else {
-//            holder.topPointsLayout.setVisibility(View.VISIBLE)
-//            holder.loadingLoyalty.setVisibility(View.GONE)
-//            holder.topPoint.setVisibility(View.VISIBLE)
-//            holder.topPoint.setText(data.getDrawerTopPoints().getTopPoints())
-//        }
-//    }
-//
-//    private fun setDeposit(holder: ViewHolder) {
-//        if (data.getDrawerDeposit().getDeposit() == "") {
-//            holder.loadingSaldo.setVisibility(View.VISIBLE)
-//            holder.deposit.setVisibility(View.GONE)
-//        } else {
-//            holder.loadingSaldo.setVisibility(View.GONE)
-//            holder.deposit.setText(data.getDrawerDeposit().getDeposit())
-//            holder.deposit.setVisibility(View.VISIBLE)
-//        }
-//    }
+
+    private fun loadTokoPointImage(imageUrl: String?) {
+        ImageHandler.loadImageThumbs(context,
+                itemView.iv_tokopoint_badge,
+                imageUrl)
+    }
+
+    private fun setTokoCard() {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val showTokoCard = remoteConfig.getBoolean(RemoteConfigKey.SHOW_TOKOCARD, true)
+
+        if (!showTokoCard) {
+            itemView.drawer_tokocard.visibility = View.GONE
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setTokoPoint(sellerDrawerHeader: SellerDrawerHeader) {
+        val titleHeaderWebsite = "TokoPoints"
+        with(itemView) {
+            if (sellerDrawerHeader.tokoPointDrawerData != null && sellerDrawerHeader.tokoPointDrawerData?.offFlag == 0) {
+                tokopoint_container.visibility = View.VISIBLE
+                val title = sellerDrawerHeader.tokoPointDrawerData?.mainPageTitle
+                tv_tokopoint_action.text = titleHeaderWebsite
+                loadTokoPointImage(sellerDrawerHeader.tokoPointDrawerData?.userTier?.tierImageUrl)
+                tv_tokopoint_count.text = sellerDrawerHeader.tokoPointDrawerData?.userTier?.rewardPointsStr
+                tv_tokopoint_action.setOnClickListener {
+                    eventUserClickedPoints()
+                    sellerDrawerHeaderListener.onTokoPointActionClicked(
+                            sellerDrawerHeader.tokoPointDrawerData?.mainPageUrl,
+                            title ?: titleHeaderWebsite
+                    )
+                }
+
+            } else tokopoint_container.visibility = View.GONE
+        }
+    }
+
+    private fun eventUserClickedPoints() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickHomePage",
+                "homepage-tokopoints",
+                "click point & tier status",
+                "tokopoints")
+    }
+
+    private fun setListener(sellerDrawerHeader: SellerDrawerHeader) {
+        with(itemView) {
+            drawer_saldo.setOnClickListener { sellerDrawerHeaderListener.onGoToDeposit() }
+            drawer_top_points.setOnClickListener {
+                if (sellerDrawerHeader.drawerTopPoints?.topPointsUrl != null)
+                    sellerDrawerHeaderListener.onGoToTopPoints(sellerDrawerHeader.drawerTopPoints?.topPointsUrl)
+            }
+            drawer_top_cash.setOnClickListener {
+                if (sellerDrawerHeader.drawerTokoCash?.drawerWalletAction != null) {
+                    if (isRegistered(sellerDrawerHeader.drawerTokoCash!!)) {
+                        sellerDrawerHeaderListener.onWalletBalanceClicked(
+                                sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.redirectUrlBalance,
+                                sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.appLinkBalance
+                        )
+                        AnalyticsEventTrackingHelper.homepageTokocashClick(it.context, sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.redirectUrlBalance)
+                    } else {
+                        sellerDrawerHeaderListener.onWalletActionButtonClicked(
+                                sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.redirectUrlActionButton,
+                                sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.appLinkActionButton
+                        )
+                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick(it.context)
+                    }
+                }
+                else retryTokoCashListener.onRetryTokoCash()
+            }
+            name_text.setOnClickListener { sellerDrawerHeaderListener.onGoToProfile() }
+            user_avatar.setOnClickListener { sellerDrawerHeaderListener.onGoToProfile() }
+            complete_profile.setOnClickListener { sellerDrawerHeaderListener.onGoToProfileCompletion() }
+            drawer_tokocard.setOnClickListener { sellerDrawerHeaderListener.onGotoTokoCard() }
+        }
+    }
+
+    private fun setTopCash(sellerDrawerHeader: SellerDrawerHeader) {
+        val isTokoCashDisabled: (DrawerTokoCash?) -> Boolean = { drawerTokoCash ->
+            drawerTokoCash == null || drawerTokoCash.drawerWalletAction == null
+                    || drawerTokoCash.drawerWalletAction.labelTitle == null
+                    || drawerTokoCash.drawerWalletAction.labelTitle.isEmpty()
+        }
+        val isActionTypeBalance by lazy {
+            sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.typeAction == DrawerWalletAction.TYPE_ACTION_BALANCE
+        }
+        with(itemView) {
+            loading_top_cash.visibility = View.VISIBLE
+            if (isTokoCashDisabled(sellerDrawerHeader.drawerTokoCash)) {
+                loading_top_cash.visibility = View.GONE
+                retry_top_cash.visibility = View.VISIBLE
+            } else {
+                if (isActionTypeBalance) {
+                    showTokoCashBalanceView()
+                    top_cash_value.text = sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.balance
+                    toko_cash_label.text = sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.labelTitle
+                } else {
+                    showTokoCashActivateView()
+                    toko_cash_activation_button.text = sellerDrawerHeader.drawerTokoCash?.drawerWalletAction?.labelActionButton
+                }
+                loading_top_cash.visibility = View.GONE
+                retry_top_cash.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun showTokoCashBalanceView() {
+        with(itemView) {
+            drawer_top_cash.visibility = View.VISIBLE
+            toko_cash_activation_button.visibility = View.GONE
+            top_cash_value.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showTokoCashActivateView() {
+        with(itemView) {
+            drawer_top_cash.visibility = View.VISIBLE
+            toko_cash_activation_button.visibility = View.VISIBLE
+            top_cash_value.visibility = View.GONE
+        }
+    }
+
+    private fun isRegistered(drawerTokoCash: DrawerTokoCash): Boolean {
+        return drawerTokoCash.drawerWalletAction.typeAction == DrawerWalletAction.TYPE_ACTION_BALANCE
+    }
+
+    private fun setTopPoints(sellerDrawerHeader: SellerDrawerHeader) {
+        with(itemView) {
+            when {
+                !sellerDrawerHeader.drawerTopPoints?.isActive!! ->
+                    drawer_top_points.visibility = View.GONE
+                sellerDrawerHeader.drawerTopPoints?.topPoints!!.isEmpty() -> {
+                    drawer_top_points.visibility = View.VISIBLE
+                    loading_loyalty.visibility = View.VISIBLE
+                    toppoints_text.visibility = View.GONE }
+                else ->  {
+                    drawer_top_points.visibility = View.VISIBLE
+                    loading_loyalty.visibility = View.GONE
+                    toppoints_text.visibility = View.VISIBLE
+                    toppoints_text.text = sellerDrawerHeader.drawerTopPoints?.topPoints
+                }
+            }
+        }
+    }
+
+    private fun setDeposit(sellerDrawerHeader: SellerDrawerHeader) {
+        with(itemView) {
+            if (sellerDrawerHeader.drawerDeposit?.deposit?.isEmpty()!!) {
+                loading_saldo.visibility = View.VISIBLE
+                deposit_text.visibility = View.GONE
+            } else {
+                loading_saldo.visibility = View.GONE
+                deposit_text.apply {
+                    text = sellerDrawerHeader.drawerDeposit?.deposit
+                    visibility = View.VISIBLE
+                }
+            }
+        }
+    }
 }

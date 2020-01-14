@@ -1,7 +1,8 @@
-package com.tokopedia.sellerhomedrawer.view.viewmodel
+package com.tokopedia.sellerhomedrawer.view.viewmodel.header
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.core.drawer2.data.viewmodel.*
+import com.tokopedia.loyalty.common.TokoPointDrawerData
 import com.tokopedia.sellerhomedrawer.view.adapter.SellerDrawerAdapterTypeFactory
 
 class SellerDrawerHeader : Visitable<SellerDrawerAdapterTypeFactory>{
@@ -24,7 +25,7 @@ class SellerDrawerHeader : Visitable<SellerDrawerAdapterTypeFactory>{
     var drawerTokoCash: DrawerTokoCash? = null
     var drawerTopPoints: DrawerTopPoints? = null
     var drawerDeposit: DrawerDeposit? = null
-//    private var tokoPointDrawerData: TokoPointDrawerData? = null
+    var tokoPointDrawerData: TokoPointDrawerData? = null
     var profileCompletion: Int = 0
 
     override fun type(typeFactory: SellerDrawerAdapterTypeFactory): Int {
