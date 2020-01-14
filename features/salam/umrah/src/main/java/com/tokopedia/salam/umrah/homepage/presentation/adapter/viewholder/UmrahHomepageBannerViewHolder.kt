@@ -13,8 +13,10 @@ import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBannerMapper
 import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import kotlinx.android.synthetic.main.partial_umrah_home_page_banner.view.*
+import kotlinx.android.synthetic.main.partial_umrah_home_page_banner_shimmering.view.*
 
-class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onItemBindListener) : AbstractViewHolder<UmrahHomepageBannerEntity>(view){
+class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onItemBindListener) :
+        AbstractViewHolder<UmrahHomepageBannerEntity>(view) {
     override fun bind(element: UmrahHomepageBannerEntity) {
         with(itemView) {
             if (element.isLoaded && element.data.isNotEmpty()) {
@@ -22,9 +24,8 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                 umrah_banner_shimmering.hide()
                 banner_umrah_home_page.apply {
                     show()
-                    val width = Resources.getSystem().displayMetrics.widthPixels-120
-                    customWidth = width
-                    customHeight = width/3
+                    customWidth = getWidthPx()
+                    customHeight = getHeightPx()
 
                     setBannerIndicator(GREEN_INDICATOR)
                     val listImageUrl = UmrahHomepageBannerMapper.bannerMappertoString(element.data)
@@ -34,28 +35,42 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                         RouteManager.route(context, element.data[it].applinkUrl)
                     }
                     setOnPromoScrolledListener {
-                        onBindListener.onImpressionBanner(element.data[it],it)
+                        if (!element.data[it].isViewed) {
+                            onBindListener.onImpressionBanner(element.data[it], it)
+                            element.data[it].isViewed = true
+                        }
                     }
                     buildView()
 
                 }
 
-
             } else {
                 umrah_banner_shimmering.show()
+                iv_umrah_banner_salam.apply {
+                    requestLayout()
+                    layoutParams.height = getHeightPx()
+                }
                 banner_umrah_home_page.hide()
                 if (!UmrahHomepageFragment.isRequestedBanner) {
                     onBindListener.onBindBannerVH(element.isLoadFromCloud)
                     UmrahHomepageFragment.isRequestedBanner = true
-                }  else{
+                } else {
 
                 }
             }
         }
     }
 
-    companion object{
+    private fun getWidthPx():Int{
+        return Resources.getSystem().displayMetrics.widthPixels - MARGIN_RIGHT_PX
+    }
+
+    private fun getHeightPx():Int{
+        return getWidthPx()/3
+    }
+    companion object {
         val LAYOUT = R.layout.partial_umrah_home_page_banner
-        val GREEN_INDICATOR = 1
+        const val MARGIN_RIGHT_PX = 120
+        const val GREEN_INDICATOR = 1
     }
 }

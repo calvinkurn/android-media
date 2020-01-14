@@ -36,5 +36,8 @@ data class UmrahBanner(
         val applinkUrl: String = "",
         @SerializedName("weight")
         @Expose
-        val weight: Int = 0
+        val weight: Int = 0,
+        @SerializedName("isViewed")
+        @Expose
+        var isViewed : Boolean = false
         )

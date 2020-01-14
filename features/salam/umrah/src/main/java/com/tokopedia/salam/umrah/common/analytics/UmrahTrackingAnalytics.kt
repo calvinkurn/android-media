@@ -159,7 +159,7 @@ class UmrahTrackingAnalytics {
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_BANNER
         map[TrackAppUtils.EVENT_LABEL] = ""
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                UMRAH_EVENT_PROMO_VIEW, DataLayer.mapOf(
+                UMRAH_EVENT_PROMO_CLICK, DataLayer.mapOf(
                 PROMOTIONS_LABEL, getBannerData(banner, position)
         )
         )
