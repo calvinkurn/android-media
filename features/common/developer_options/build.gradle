@@ -45,6 +45,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
 
 
+    implementation rootProject.ext.firebase.messaging
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation project(rootProject.ext.libraries.translator)

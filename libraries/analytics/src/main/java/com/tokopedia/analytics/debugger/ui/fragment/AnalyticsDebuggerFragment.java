@@ -93,7 +93,7 @@ public class AnalyticsDebuggerFragment
     @Nullable
     @Override
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return view.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
+        return view.findViewById(com.tokopedia.baselist.R.id.swipe_refresh_layout);
     }
 
     @Override

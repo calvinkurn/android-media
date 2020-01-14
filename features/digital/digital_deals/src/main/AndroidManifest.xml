@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.digital_deals">
+    package="com.tokopedia.digital_deals"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/title_digital_deals"
-        android:supportsRtl="true">
+    <application>
         <activity
             android:name=".view.activity.DealsHomeActivity"
             android:label="@string/title_activity_deals"
