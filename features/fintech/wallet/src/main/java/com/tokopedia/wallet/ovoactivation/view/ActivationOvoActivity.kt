@@ -10,9 +10,9 @@ import androidx.fragment.app.Fragment
 class ActivationOvoActivity : BaseOvoActivationActivity() {
 
     override fun getNewFragment(): Fragment? {
-        val registeredApplink = intent.data?.getQueryParameter(REGISTERED_APPLINK)?: ""
-        val phoneNumber = intent.data?.getQueryParameter(PHONE_NUMBER)?: ""
-        val changeMsisdnApplink = intent.data?.getQueryParameter(CHANGE_MSISDN_APPLINK)?:""
+        val registeredApplink = intent.getStringExtra(REGISTERED_APPLINK)?: ""
+        val phoneNumber = intent.getStringExtra(PHONE_NUMBER)?: ""
+        val changeMsisdnApplink = intent.getStringExtra(CHANGE_MSISDN_APPLINK)?:""
         return ActivationOvoFragment.newInstance(registeredApplink, phoneNumber, changeMsisdnApplink)
     }
 
