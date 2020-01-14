@@ -132,6 +132,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 }
             }
         })
+
+        homepageViewModel.deleteRecentSearch.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data) {
+                        loadRecentSearchData()
+                    }
+                }
+            }
+        })
     }
 
     override fun onErrorRetryClicked() {
@@ -374,10 +384,18 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun renderHotelLastSearch(data: List<TravelRecentSearchModel.Item>) {
+        if (data.isEmpty()) {
+            hideHotelLastSearchContainer()
+            return
+        }
+
         showHotelLastSearchContainer()
 
         rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data)
+        tv_hotel_homepage_delete_last_search.setOnClickListener {
+            homepageViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_hotel_delete_recent_search))
+        }
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {

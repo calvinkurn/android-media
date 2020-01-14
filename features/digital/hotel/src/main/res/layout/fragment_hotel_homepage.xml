@@ -223,11 +223,11 @@
                     app:weight="medium" />
 
                 <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/tv_hotel_homepage_all_last_search"
+                    android:id="@+id/tv_hotel_homepage_delete_last_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/hotel_show_all_text"
+                    android:text="@string/hotel_delete_all_last_search"
                     android:textColor="@color/green_500"
                     app:fontSize="micro" />
 
