@@ -28,7 +28,7 @@ class PartialAttributeInfoView private constructor(private val view: View) {
         with(view) {
             txt_seen.text = countView.thousandFormatted()
             txt_tx_success.text = context.getString(R.string.template_success_rate,
-                    txStats?.txSuccess?.toIntOrNull()?.numberFormatted(), txStats?.countSold?.toIntOrNull()?.thousandFormatted())
+                    txStats?.getSuccessRateRound?.numberFormatted(), txStats?.countSold?.toIntOrNull()?.thousandFormatted())
             visible()
         }
     }

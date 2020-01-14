@@ -128,7 +128,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
                 lastSeen = if (isLongFormat) {
                     val date = Date(it.data.price.lastUpdateUnix.toLong() * 1000)
-                    val dateString = date.toFormattedString("dd-mm-yyyy , hh:mm")
+                    val dateString = date.toFormattedString("dd-MM-yyyy , HH:mm")
                     "$dateString WIB"
                 } else {
                     it.data.price.lastUpdateUnix
