@@ -40,7 +40,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/img"
+            app:layout_constraintLeft_toRightOf="@+id/img"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
             app:corners="8"/>
@@ -50,7 +50,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/img"
+            app:layout_constraintLeft_toRightOf="@+id/img"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
             app:corners="8"/>
@@ -68,7 +68,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/img_2"
+            app:layout_constraintRight_toLeftOf="@+id/img_2"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             app:corners="8"/>
@@ -78,7 +78,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/img_2"
+            app:layout_constraintRight_toLeftOf="@+id/img_2"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             app:corners="8"/>
@@ -102,7 +102,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/img_3"
+            app:layout_constraintLeft_toRightOf="@+id/img_3"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
             app:corners="8"/>
@@ -112,7 +112,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/img_3"
+            app:layout_constraintLeft_toRightOf="@+id/img_3"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
             app:corners="8"/>
@@ -130,7 +130,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/img_4"
+            app:layout_constraintRight_toLeftOf="@+id/img_4"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             app:corners="8"/>
@@ -140,7 +140,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/img_4"
+            app:layout_constraintRight_toLeftOf="@+id/img_4"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             app:corners="8"/>
@@ -162,8 +162,8 @@
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl1"
-            app:layout_constraintLeft_toRightOf="@id/img_5"
-            app:layout_constraintRight_toLeftOf="@id/img_6"
+            app:layout_constraintLeft_toRightOf="@+id/img_5"
+            app:layout_constraintRight_toLeftOf="@+id/img_6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginLeft="@dimen/dp_12"

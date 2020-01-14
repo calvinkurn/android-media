@@ -76,7 +76,8 @@ OnViewHolderBindListener{
             destinationViewModel = viewModelProvider.get(TravelDestinationViewModel::class.java)
         }
 
-        arguments?.let {
+        val args: Bundle? = savedInstanceState ?: arguments
+        args?.let {
             webUrl = it.getString(EXTRA_DESTINATION_WEB_URL, "")
             cityId = it.getString(PARAM_CITY_ID, "")
         }
@@ -85,6 +86,7 @@ OnViewHolderBindListener{
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_DESTINATION_WEB_URL, webUrl)
+        outState.putString(SAVED_CITY_ID, cityId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

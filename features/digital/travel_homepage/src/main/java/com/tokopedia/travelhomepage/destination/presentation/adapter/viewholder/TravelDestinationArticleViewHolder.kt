@@ -32,7 +32,7 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
                     layout_shimmering.hide()
                     layout_content.show()
                     tv_travel_destination_article_title.text = element.meta.title
-                    tv_travel_destination_article_see_all.text = "Lihat Semua"
+                    tv_travel_destination_article_see_all.text = getString(R.string.travel_homepage_section_see_all)
                     setOnClickListener {
                         actionListener.onTrackArticleClickSeeAll()
                         actionListener.clickAndRedirect(element.meta.appUrl, element.meta.webUrl)
