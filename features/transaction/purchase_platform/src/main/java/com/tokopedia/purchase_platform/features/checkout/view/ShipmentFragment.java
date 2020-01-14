@@ -3004,8 +3004,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void updateTickerAnnouncementMessage() {
         int index = shipmentAdapter.getTickerAnnouncementHolderDataIndex();
         if (index != RecyclerView.NO_POSITION) {
+            // If ticker exist, update the view
             onNeedUpdateViewItem(index);
         } else {
+            // If ticker not exist, add ticker to list, then update the list
             TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
             shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
             shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
