@@ -138,7 +138,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 invoiceSentPojo.invoiceLink.attributes.statusId,
                 invoiceSentPojo.invoiceLink.attributes.status,
                 invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceSentPojo.invoiceLink.attributes.hrefUrl
+                invoiceSentPojo.invoiceLink.attributes.hrefUrl,
+                invoiceSentPojo.invoiceLink.attributes.createTime
         )
 
     }
