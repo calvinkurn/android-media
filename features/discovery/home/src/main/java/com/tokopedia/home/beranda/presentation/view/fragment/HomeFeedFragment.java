@@ -159,7 +159,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
 
     @Override
     public void showGetListError(Throwable throwable) {
-        Toaster.INSTANCE.make(getView().getRootView(), ErrorHandler.getErrorMessage(throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", (v)->{});
+        Toaster.INSTANCE.make(getView(), ErrorHandler.getErrorMessage(throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", (v)->{});
     }
 
     @NonNull
