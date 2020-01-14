@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
@@ -66,9 +69,6 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
     }
 
     override val containerId: Int = view.id
-
-    override val isVisible: Boolean
-        get() = view.isVisible
 
     override fun show() {
         view.show()

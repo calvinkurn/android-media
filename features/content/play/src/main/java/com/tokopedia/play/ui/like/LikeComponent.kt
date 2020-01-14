@@ -3,7 +3,6 @@ package com.tokopedia.play.ui.like
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope

@@ -8,17 +8,12 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.ui.stats.StatsView
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.coroutines.CoroutineScope
 
 /**
  * Created by jegul on 14/01/20
@@ -47,9 +42,6 @@ class EndLiveInfoView(
     }
 
     override val containerId: Int = view.id
-
-    override val isVisible: Boolean
-        get() = view.isVisible
 
     override fun show() {
         view.show()

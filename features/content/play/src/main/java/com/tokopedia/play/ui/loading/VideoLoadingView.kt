@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
@@ -23,9 +22,6 @@ class VideoLoadingView(
                     .findViewById(R.id.fl_loading)
 
     override val containerId: Int = view.id
-
-    override val isVisible: Boolean
-        get() = view.isVisible
 
     private val ivLoading = view.findViewById<ImageView>(R.id.iv_loading)
 

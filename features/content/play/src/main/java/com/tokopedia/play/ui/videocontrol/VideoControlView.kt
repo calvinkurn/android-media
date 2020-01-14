@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.PlayerControlView
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
@@ -23,9 +22,6 @@ class VideoControlView(
     private val pcvVideo = view as PlayerControlView
 
     override val containerId: Int = view.id
-
-    override val isVisible: Boolean
-        get() = view.isVisible
 
     override fun show() {
         pcvVideo.show()

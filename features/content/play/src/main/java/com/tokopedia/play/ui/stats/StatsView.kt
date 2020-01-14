@@ -4,9 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
@@ -23,9 +21,6 @@ class StatsView(container: ViewGroup) : UIView(container) {
                     .findViewById(R.id.ll_stats)
 
     override val containerId: Int = view.id
-
-    override val isVisible: Boolean
-        get() = view.isVisible
 
     private val tvTotalLikes = view.findViewById<Typography>(R.id.tv_total_likes)
     private val tvTotalView = view.findViewById<Typography>(R.id.tv_total_views)

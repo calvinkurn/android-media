@@ -6,11 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.data.QuickReply
 import com.tokopedia.play.ui.quickreply.adapter.QuickReplyAdapter
 import com.tokopedia.play.ui.quickreply.itemdecoration.QuickReplyItemDecoration
 import com.tokopedia.play.view.uimodel.QuickReplyUiModel
@@ -40,9 +38,6 @@ class QuickReplyView(
     }
 
     override val containerId: Int = view.id
-
-    override val isVisible: Boolean
-        get() = view.isVisible
 
     override fun show() {
         view.show()

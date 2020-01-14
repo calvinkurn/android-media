@@ -14,11 +14,6 @@ abstract class UIView(val container: ViewGroup) {
     abstract val containerId: Int
 
     /**
-     * UIView Visibility State
-     */
-    abstract val isVisible: Boolean
-
-    /**
      * Show the UIView
      */
     abstract fun show()
