@@ -9,7 +9,6 @@ dependencies {
         }
     }
     implementation rootProject.ext.networkDependencies.glide
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 

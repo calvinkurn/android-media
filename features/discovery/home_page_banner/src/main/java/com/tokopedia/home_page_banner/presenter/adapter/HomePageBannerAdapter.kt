@@ -7,6 +7,9 @@ import com.tokopedia.home_page_banner.presenter.adapter.viewHolder.HomePageBanne
 class HomePageBannerAdapter(
         private val clickCallback: (Int) -> Unit
 ) : RecyclerView.Adapter<HomePageBannerViewHolder>(){
+    companion object{
+        private const val OFFSET_LEFT_N_RIGHT = 2
+    }
     private val imagesUrl = mutableListOf<String>()
     private var firstInitial = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomePageBannerViewHolder {
@@ -14,10 +17,10 @@ class HomePageBannerAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (imagesUrl.size == 0) 0 else imagesUrl.size + 2
+        return if (imagesUrl.size == 0) 0 else imagesUrl.size + OFFSET_LEFT_N_RIGHT
     }
 
-    fun getRealCount() = itemCount - 2
+    fun getRealCount() = itemCount - OFFSET_LEFT_N_RIGHT
 
     override fun onBindViewHolder(holder: HomePageBannerViewHolder, position: Int) {
         val imagePosition = getImagesUrl(position)

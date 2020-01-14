@@ -12,6 +12,7 @@ ext {
     workManagerVersion = "1.0.1"
 
     supportLibraryVersion = '1.0.0'
+    coreVersion = '1.1.0'
     playServiceVersion = '11.0.4'
     coroutineVersion = '1.3.3'
     retrofitVersion = '2.6.0'

@@ -105,9 +105,20 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
     }
 
     private fun setImpression(currentPosition: Int){
-        if (!impressionStatusList[currentPosition]) {
-            impressionStatusList[currentPosition] = true
-            listener?.onPromoScrolled(currentPosition)
+        val realPosition = getRealPosition(currentPosition) - 1
+        val realCount = adapter?.getRealCount() ?: 0
+        if (realPosition < realCount && !impressionStatusList[realPosition]) {
+            impressionStatusList[realPosition] = true
+            listener?.onPromoScrolled(realPosition)
+        }
+    }
+
+    private fun getRealPosition(positionWithOffset: Int): Int{
+        val count = adapter?.itemCount ?: 0
+        return when (positionWithOffset) {
+            0 -> count - 2
+            count - 1 -> 1
+            else -> positionWithOffset
         }
     }
 
@@ -116,7 +127,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         indicatorView?.removeAllViews()
         for (i in 0 until size){
             val imageView = ImageView(context)
-            imageView.setPadding(5, 0, 5, 0)
+            imageView.setPadding(resources.getDimension(R.dimen.dp_5).toInt(), 0, resources.getDimension(R.dimen.dp_5).toInt(), 0)
             if (i == 0) {
                 imageView.setImageResource(getIndicatorFocus())
             } else {
@@ -161,6 +172,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         override fun onPageSelected(position: Int) {
             lastItem = currentItem
             currentItem = position
+            setImpression(position)
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -181,7 +193,6 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
                     }
                     else -> position = index
                 }
-                setImpression(position - 1)
                 setCurrentIndicator(position - 1)
                 runSlider()
             }
