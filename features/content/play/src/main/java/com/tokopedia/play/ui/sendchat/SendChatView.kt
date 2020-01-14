@@ -92,7 +92,7 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
 
         if (!etChat.hasFocus() && shouldFocus) {
             etChat.requestFocus()
-            showKeyboard(true)
+//            showKeyboard(true)
         }
         else if (etChat.hasFocus() && !shouldFocus) {
             etChat.clearFocus()
