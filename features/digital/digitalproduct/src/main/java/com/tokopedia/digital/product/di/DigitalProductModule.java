@@ -14,24 +14,15 @@ import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.data.source.CategoryListDataSource;
-import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.interactor.DigitalGetHelpUrlUseCase;
 import com.tokopedia.digital.product.domain.interactor.GetOperatorsByCategoryIdUseCase;
 import com.tokopedia.digital.product.domain.interactor.GetProductsByOperatorIdUseCase;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase;
-import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
-import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
-import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -192,55 +183,7 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    DigitalGetHelpUrlUseCase provideDigitalGetHelpUrlUseCase(IDigitalCategoryRepository digitalCategoryRepository) {
-        return new DigitalGetHelpUrlUseCase(digitalCategoryRepository);
-    }
-
-    @Provides
-    @DigitalProductScope
     com.tokopedia.digital.common.data.apiservice.DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
         return retrofit.create(com.tokopedia.digital.common.data.apiservice.DigitalRestApi.class);
-    }
-
-    @Provides
-    @DigitalProductScope
-    StatusMapper provideStatusMapper() {
-        return new StatusMapper();
-    }
-
-    @Provides
-    @DigitalProductScope
-    CategoryMapper provideCategoryMapper() {
-        return new CategoryMapper();
-    }
-
-    @Provides
-    @DigitalProductScope
-    StatusDataSource provideStatusDataSource(com.tokopedia.digital.common.data.apiservice.DigitalRestApi digitalRestApi, StatusMapper statusMapper) {
-        return new StatusDataSource(digitalRestApi, statusMapper);
-    }
-
-    @Provides
-    @DigitalProductScope
-    CategoryListDataSource provideCategoryListDataSource(com.tokopedia.digital.common.data.apiservice.DigitalRestApi digitalRestApi, CategoryMapper categoryMapper) {
-        return new CategoryListDataSource(digitalRestApi, categoryMapper);
-    }
-
-    @Provides
-    @DigitalProductScope
-    DigitalWidgetRepository provideDigitalWidgetRepository(StatusDataSource statusDataSource, CategoryListDataSource categoryListDataSource) {
-        return new DigitalWidgetRepository(statusDataSource, categoryListDataSource);
-    }
-
-    @Provides
-    @DigitalProductScope
-    DigitalWidgetUseCase provideDigitalWidgetUseCase(@ApplicationContext Context context, DigitalWidgetRepository digitalWidgetRepository) {
-        return new DigitalWidgetUseCase(context, digitalWidgetRepository);
-    }
-
-    @Provides
-    @DigitalProductScope
-    DigitalRecommendationUseCase provideDigitalRecommendationUseCase(@ApplicationContext Context context){
-        return new DigitalRecommendationUseCase(new GraphqlUseCase(), context);
     }
 }

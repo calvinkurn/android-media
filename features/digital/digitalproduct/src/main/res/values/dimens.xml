@@ -2,21 +2,14 @@
 <resources>
 
     <dimen name="digital_padding_28">28dp</dimen>
-    <dimen name="digital_padding_30">30dp</dimen>
-    <dimen name="digital_padding_20">20dp</dimen>
     <dimen name="digital_padding_16">16dp</dimen>
-    <dimen name="digital_padding_14">14dp</dimen>
     <dimen name="digital_padding_12">12dp</dimen>
-    <dimen name="digital_padding_10">10dp</dimen>
     <dimen name="digital_padding_8">8dp</dimen>
     <dimen name="digital_padding_6">6dp</dimen>
     <dimen name="digital_padding_5">5dp</dimen>
     <dimen name="digital_padding_4">4dp</dimen>
     <dimen name="digital_padding_2">2dp</dimen>
 
-    <dimen name="digital_height_width_5">5dp</dimen>
-    <dimen name="digital_height_width_10">10dp</dimen>
-    <dimen name="digital_height_width_15">15dp</dimen>
     <dimen name="digital_height_width_20">20dp</dimen>
     <dimen name="digital_height_width_25">25dp</dimen>
 
@@ -24,10 +17,9 @@
     <dimen name="digital_margin_min_5">-5dp</dimen>
     <dimen name="digital_margin_min_7">-7dp</dimen>
 
-    <dimen name="digital_youtube_thumbnail_width">250dp</dimen>
     <dimen name="digital_youtube_thumbnail_height">180dp</dimen>
 
-    <dimen name="spacing_show_case">12dp</dimen>
-    <dimen name="arrow_width_show_case">16dp</dimen>
+    <dimen name="digital_spacing_show_case">12dp</dimen>
+    <dimen name="digital_arrow_width_show_case">16dp</dimen>
 
 </resources>

@@ -5,7 +5,6 @@
     <color name="digital_separator">#1f000000</color>
     <color name="digital_cancel">#1f000000</color>
     <color name="digital_item_title">#b3000000</color>
-    <color name="digital_item_sub_title">#8a000000</color>
     <color name="digital_grey">#888888</color>
     <color name="price_new_promo">#ff5722</color>
     <color name="digital_voucher_copied_color">#42b549</color>
@@ -13,9 +12,6 @@
     <color name="digital_dark_selectable_recycler">#CCCCCC</color>
     <color name="digital_drop_shadow_light">#e7e7e7</color>
     <color name="digital_ussd_light_yellow">#fff5dd</color>
-    <color name="digital_body_text_5_inverse">#848484</color>
     <color name="digital_green_btn">#239229</color>
-    <color name="digital_grey_bg_header">#f3f4f5</color>
-    <color name="digital_title_header_non_active">#7031353b</color>
     <color name="tkpd_dark_gray">#999999</color>
 </resources>

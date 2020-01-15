@@ -22,8 +22,6 @@ interface HomeTypeFactory {
 
     fun type(searchPlaceholderViewModel: SearchPlaceholderViewModel): Int
 
-    fun type(digitalViewModel: DigitalsViewModel): Int
-
     fun type(businessUnitViewModel: BusinessUnitViewModel): Int
 
     fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int

@@ -30,8 +30,6 @@ interface HomeCategoryListener {
 
     fun onSectionItemClicked(actionLink: String)
 
-    fun onDigitalMoreClicked(pos: Int)
-
     fun onCloseTicker(pos: Int)
 
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
