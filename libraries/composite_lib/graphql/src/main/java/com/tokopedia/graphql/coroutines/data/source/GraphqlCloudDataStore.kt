@@ -17,17 +17,18 @@ class GraphqlCloudDataStore(private val api: GraphqlApiSuspend,
                             private val cacheManager: GraphqlCacheManager,
                             private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
 
-
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         return withContext(Dispatchers.Default) {
-            val result: JsonArray
+            var result = JsonArray()
             try {
                 result = api.getResponseSuspend(requests.toMutableList())
             } catch (e: Throwable) {
                 if (e !is UnknownHostException && e!is SocketTimeoutException && e !is CancellationException) {
                     Timber.e(e, "P1#REQUEST_ERROR_GQL#$requests")
                 }
-                throw e
+                if (e !is CancellationException) {
+                    throw e
+                }
             }
 
             yield()
