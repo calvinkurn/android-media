@@ -33,9 +33,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.promogamification.common.applink.ApplinkConstant;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
@@ -424,7 +424,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                         "");
             } else {
                 if (getActivity() != null) {
-                    RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                    RouteManager.route(getActivity(), ApplinkConst.Gamification.CRACK);
                 }
 
                 AnalyticsTrackerUtil.sendEvent(source.getContext(),

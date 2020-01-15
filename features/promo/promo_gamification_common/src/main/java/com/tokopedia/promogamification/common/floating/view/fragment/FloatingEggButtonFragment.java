@@ -73,7 +73,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private View vgRoot;
     private View vgFloatingEgg;
-    private View eggCounterTimer;
     private ImageView ivFloatingEgg;
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
@@ -108,7 +107,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         View view = inflater.inflate(R.layout.fragment_floating_egg, container, false);
         vgRoot = view.findViewById(R.id.vg_root);
         vgFloatingEgg = view.findViewById(R.id.vg_floating_egg);
-        eggCounterTimer = view.findViewById(R.id.egg_counter_timer);
         ivFloatingEgg = view.findViewById(R.id.iv_floating_egg);
         tvFloatingCounter = view.findViewById(R.id.tv_floating_counter);
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
