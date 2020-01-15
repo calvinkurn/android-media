@@ -188,6 +188,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         bottomSheet.dismiss()
     }
 
+    override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.NoActionMore)
+        }
+    }
+
     private fun setInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
 
@@ -312,8 +319,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             launch {
+                getBottomSheetInstance().setState(it.isFreeze)
+
                 if (it.isBanned) sendEventBanned(it)
-                else if(it.isFreeze) sendEventFreeze(it)
+                else if(it.isFreeze) {
+                    sendEventFreeze(it)
+                    hideBottomSheet()
+                }
             }
         })
     }
@@ -855,10 +867,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun showMoreActionBottomSheet() {
-        if (!::bottomSheet.isInitialized) {
-            bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
-        }
-        bottomSheet.show(childFragmentManager)
+        getBottomSheetInstance().show(childFragmentManager)
     }
 
     private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
@@ -914,6 +923,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun doLikeUnlike(shouldLike: Boolean) {
         viewModel.doLikeUnlike(playViewModel.contentId,
                 playViewModel.contentType,
+                playViewModel.likeType,
                 shouldLike,
                 playViewModel.isLive)
 
@@ -1013,5 +1023,17 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             )
                     )
         }
+    }
+
+    private fun getBottomSheetInstance() : PlayMoreActionBottomSheet {
+        if (!::bottomSheet.isInitialized) {
+            bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
+        }
+        return bottomSheet
+    }
+
+    private fun hideBottomSheet() {
+        val bottomSheet = getBottomSheetInstance()
+        if (bottomSheet.isVisible) bottomSheet.dismiss()
     }
 }

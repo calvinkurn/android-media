@@ -25,6 +25,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
     data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
+    object NoActionMore : ScreenStateEvent()
 
     data class KeyboardStateChanged(val isShown: Boolean) : ScreenStateEvent()
 }

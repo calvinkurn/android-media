@@ -43,7 +43,7 @@
             android:layout_marginLeft="@dimen/spacing_lvl2"
             android:textColor="@color/Neutral_N0"
             app:typographyType="body_3"
-            tools:text="@string/play_mock_like"
+            android:text="@string/play_mock_like"
             />
 
     </LinearLayout>

@@ -120,6 +120,7 @@ class PlayViewModel @Inject constructor(
     var isLive: Boolean = false
     var contentId: Int = 0
     var contentType: Int = 0
+    var likeType: Int = 0
 
     init {
         //TODO(Remove, ONLY FOR TESTING)
@@ -175,7 +176,7 @@ class PlayViewModel @Inject constructor(
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
-            playVideoStream(applicationContext, channel)
+            playVideoStream(channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
@@ -302,13 +303,13 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun startVideoWithUrlString(context: Context, urlString: String, isLive: Boolean) {
-        playManager.safePlayVideoWithUriString(context, urlString, isLive)
+    private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {
+        playManager.safePlayVideoWithUriString(urlString, isLive)
     }
 
-    private fun playVideoStream(context: Context, channel: Channel) {
+    private fun playVideoStream(channel: Channel) {
         if (channel.isActive) {
-            startVideoWithUrlString(context, channel.videoStream.config.streamUrl, channel.videoStream.isLive)
+            startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
         }
     }
 
@@ -319,6 +320,7 @@ class PlayViewModel @Inject constructor(
     private fun setContentIdAndType(channel: Channel) {
         contentId = channel.contentId
         contentType = channel.contentType
+        likeType = channel.likeType
     }
 
     private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(
@@ -393,7 +395,12 @@ class PlayViewModel @Inject constructor(
 
     private fun doOnChannelFreeze() {
         destroy()
+        pausePlayer()
         hideKeyboard()
+    }
+
+    private fun pausePlayer() {
+        playManager.pauseCurrentVideo()
     }
 
     //region mock
@@ -421,6 +428,5 @@ class PlayViewModel @Inject constructor(
             _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true, freezeTitle = "Freeze title", freezeMessage = "freeze message", freezeButtonTitle = "Freeze Button", freezeButtonUrl = "tokopedia://play/2")
         }
     }
-
     //endregion
 }

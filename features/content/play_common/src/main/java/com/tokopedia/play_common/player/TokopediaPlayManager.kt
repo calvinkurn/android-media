@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
+import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -24,7 +25,7 @@ import com.tokopedia.play_common.type.PlayVideoProtocol
 /**
  * Created by jegul on 03/12/19
  */
-class TokopediaPlayManager private constructor(applicationContext: Context) {
+class TokopediaPlayManager private constructor(private val applicationContext: Context) {
 
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
@@ -33,9 +34,9 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         private var INSTANCE: TokopediaPlayManager? = null
 
         @JvmStatic
-        fun getInstance(applicationContext: Context): TokopediaPlayManager {
+        fun getInstance(context: Context): TokopediaPlayManager {
             return INSTANCE ?: synchronized(this) {
-                TokopediaPlayManager(applicationContext).also {
+                TokopediaPlayManager(context.applicationContext).also {
                     INSTANCE = it
                 }
             }
@@ -66,7 +67,10 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
 
         override fun onPlayerError(error: ExoPlaybackException?) {
             //TODO("Maybe return error based on corresponding cause?")
-            _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
+            if (error != null && isBehindLiveWindow(error)) {
+                val uri = currentVideoUri
+                if (uri != null) playVideoWithUri(uri, videoPlayer.playWhenReady)
+            } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
     }
 
@@ -75,18 +79,18 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     }
 
     //region public method
-    fun safePlayVideoWithUri(context: Context, uri: Uri, autoPlay: Boolean = true) {
+    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
         if (uri != currentVideoUri) {
             currentVideoUri = uri
-            playVideoWithUri(context, uri, autoPlay)
+            playVideoWithUri(uri, autoPlay)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(context: Context, uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(context, Uri.parse(uriString), autoPlay)
+    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay)
 
-    private fun playVideoWithUri(context: Context, uri: Uri, autoPlay: Boolean = true) {
-        val mediaSource = getMediaSourceBySource(context, uri)
+    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
+        val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
         videoPlayer.prepare(mediaSource)
     }
@@ -133,6 +137,17 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         }
     }
     //endregion
+
+    private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean {
+        if (e.type != ExoPlaybackException.TYPE_SOURCE) return false
+
+        var cause: Throwable? = e.sourceException
+        while (cause != null) {
+            if (cause is BehindLiveWindowException) return true
+            cause = cause.cause
+        }
+        return false
+    }
 
     fun releasePlayer() {
         videoPlayer.release()

@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.globalerror.GlobalError
@@ -131,7 +132,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                     globalError.setType(GlobalError.PAGE_NOT_FOUND)
                     globalError.setActionClickListener {
                         activity?.let { activity ->
-                            RouteManager.route(activity, ApplinkConsInternalHome.INTERNAL_HOME)
+                            RouteManager.route(activity, ApplinkConst.HOME)
                         }
                     }
                 }
