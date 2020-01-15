@@ -201,6 +201,7 @@
         <View
             android:id="@+id/emptyView"
             android:layout_width="match_parent"
+            tools:layout_height= "300dp"
             android:layout_height="@dimen/gamification_pdp_peek_height_xml" />
     </LinearLayout>
 
@@ -213,6 +214,7 @@
         <com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
             android:id="@+id/pdpGamificationView"
             android:layout_width="match_parent"
+            tools:layout_height= "300dp"
             android:layout_height="wrap_content" />
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
