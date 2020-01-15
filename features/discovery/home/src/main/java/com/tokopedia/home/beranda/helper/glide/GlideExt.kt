@@ -25,7 +25,7 @@ fun ImageView.loadImage(url: String){
             .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    logError(context, e, url)
+                    GlideErrorLogHelper().logError(context, e, url)
                     return false
                 }
 
@@ -46,7 +46,7 @@ fun ImageView.loadImageFitCenter(url: String){
             .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    logError(context, e, url)
+                    GlideErrorLogHelper().logError(context, e, url)
                     return false
                 }
 
