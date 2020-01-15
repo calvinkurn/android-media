@@ -3,21 +3,12 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.dash.DashMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultAllocator
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
@@ -40,27 +31,17 @@ class TokopediaPlayerHelper(
         CoroutineScope {
 
     private var mPlayer: SimpleExoPlayer? = null
-    private var mDataSourceFactory: DataSource.Factory? = null
-    private var mLoadControl: DefaultLoadControl? = null
-    private var mMediaSource: MediaSource? = null
-
-    private var mProgressBar: ProgressBar? = null
 
     private var mExoPlayerListener: ExoPlayerListener? = null
-    private var mExoThumbListener: ExoThumbListener? = null
 
     private var mVideosUris: Array<Uri>? = null
     private var mResumePosition = C.TIME_UNSET
     private var mResumeWindow = C.INDEX_UNSET
-    private var mTempCurrentVolume = 0f
     private var isVideoMuted = false
     private var isRepeatModeOn = false
-    private var isAutoPlayOn = false
     private var isResumePlayWhenReady = false
     private var isPlayerPrepared = false
     private var isToPrepareOnResume = true
-    private var isThumbImageViewEnabled = false
-    private var mThumbImage: ImageView? = null
 
     /* Master job */
     private val masterJob = Job()
@@ -70,28 +51,9 @@ class TokopediaPlayerHelper(
     }
 
     override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.IO
+        get() = masterJob + Dispatchers.Main
 
     private fun init(){
-        // Measures bandwidth during playback. Can be null if not required.
-        val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
-
-        // Produces DataSource instances through which media data is loaded.
-        mDataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(context, "home"), bandwidthMeter)
-
-
-        // LoadControl that controls when the MediaSource buffers more media, and how much media is buffered.
-        // LoadControl is injected when the player is created.
-        // removed deprecated DefaultLoadControl creation method
-        // LoadControl that controls when the MediaSource buffers more media, and how much media is buffered.
-        // LoadControl is injected when the player is created.
-        //removed deprecated DefaultLoadControl creation method
-        val builder = DefaultLoadControl.Builder()
-        builder.setAllocator(DefaultAllocator(true, 2 * 1024 * 1024))
-        builder.setBufferDurationsMs(5000, 5000, 5000, 5000)
-        builder.setPrioritizeTimeOverSizeThresholds(true)
-        mLoadControl = builder.createDefaultLoadControl()
     }
 
     // Player creation and release
@@ -106,32 +68,11 @@ class TokopediaPlayerHelper(
         // A MediaSource is injected via ExoPlayer.prepare at the start of playback.
         mVideosUris?.let {
             TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(it.first(),false)
-//            val mediaSources: MutableList<MediaSource> = mutableListOf()
-//            it.forEach {uri ->
-//                mediaSources.add(buildMediaSource(uri))
-//            }
-//            mMediaSource = if(mediaSources.size == 1)  mediaSources[0] else ConcatenatingMediaSource(*mediaSources.toTypedArray())
         }
     }
 
     fun isPlayerNull(): Boolean {
         return mPlayer == null
-    }
-
-    private fun buildMediaSource(uri: Uri?): MediaSource {
-        return when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
-            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
-            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
-            else -> throw IllegalStateException("Unsupported type: $type")
-        }
-    }
-
-    private fun setProgressVisible(visible: Boolean) {
-        if (mProgressBar != null) {
-            mProgressBar?.visibility = if (visible) View.VISIBLE else View.GONE
-        }
     }
 
     private fun updateResumePosition() {
@@ -155,16 +96,6 @@ class TokopediaPlayerHelper(
 
         fun setRepeatModeOn(isOn: Boolean): Builder {
             mExoPlayerHelper.isRepeatModeOn = isOn
-            return this
-        }
-
-        fun setMutedVolume(): Builder{
-            mExoPlayerHelper.setPlayerMuted()
-            return this
-        }
-
-        fun setAutoPlayOn(isAutoPlayOn: Boolean): Builder {
-            mExoPlayerHelper.isAutoPlayOn = isAutoPlayOn
             return this
         }
 
@@ -206,7 +137,6 @@ class TokopediaPlayerHelper(
         exoPlayerView.setPlayer(mPlayer)
         isVideoMuted = true
         mPlayer?.volume = 0f
-        mTempCurrentVolume = mPlayer?.volume ?: 0f
 
         mPlayer?.repeatMode = if(isRepeatModeOn) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
         mPlayer?.playWhenReady = false
@@ -331,7 +261,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun playerPlay() {
-        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()){
+        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && mPlayer?.isPlaying == false){
             masterJob.cancelChildren()
             launch(coroutineContext){
                 delay(3000)
@@ -349,7 +279,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun setExoPlayerEventsListener(pExoPlayerListenerListener: ExoPlayerListener?) {
-        mExoPlayerListener = pExoPlayerListenerListener;
+        mExoPlayerListener = pExoPlayerListenerListener
     }
 
     override fun onActivityStart() {
@@ -373,20 +303,6 @@ class TokopediaPlayerHelper(
 
     override fun onActivityStop() {
         releasePlayer()
-    }
-
-    override fun updateVideoMuted() {
-        isVideoMuted = !isVideoMuted
-        if (isVideoMuted) {
-            mPlayer?.volume = 0f
-        } else {
-            mPlayer?.volume = 100f
-        }
-    }
-
-    override fun setPlayerMuted() {
-        isVideoMuted = true
-        mPlayer?.volume = 0f
     }
 
     override fun isPlayerVideoMuted(): Boolean {

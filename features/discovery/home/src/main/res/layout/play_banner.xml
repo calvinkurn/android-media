@@ -45,28 +45,6 @@
         android:scaleType="centerCrop"
         tools:visibility="visible"
         app:layout_constraintTop_toBottomOf="@+id/description"/>
-    <TextView
-        android:id="@+id/error_message"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:text="Error Massage"
-        android:gravity="center"
-        android:background="#fff"
-        android:textSize="16sp"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:textSize="16sp"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <View android:background="@drawable/home_gradient_action_play"
         android:layout_width="match_parent"
@@ -156,38 +134,4 @@
         android:src="@drawable/home_play_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <FrameLayout
-        android:id="@+id/volume"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="6dp"
-        android:background="@drawable/home_background_rounded"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description">
-        <ImageView
-            android:id="@+id/volume_asset"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="bottom"
-            android:animateLayoutChanges="true"
-            app:srcCompat="@drawable/ic_volume_mute_white_24dp"/>
-    </FrameLayout>
-
-<!--    <ProgressBar-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/progressBar"-->
-<!--        style="?android:attr/progressBarStyle"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/video_player"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/video_player"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

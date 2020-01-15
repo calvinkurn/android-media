@@ -1,9 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -27,10 +25,7 @@ class PlayCardViewHolder(
 ): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener {
 
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
-    private val volumeContainer = view.findViewById<FrameLayout>(R.id.volume)
     private val play = view.findViewById<ImageView>(R.id.play)
-    private val volumeAsset = view.findViewById<ImageView>(R.id.volume_asset)
-    private val errorMessage = view.findViewById<TextView>(R.id.error_message)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<TextView>(R.id.live)
@@ -38,7 +33,6 @@ class PlayCardViewHolder(
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
     private val description = view.findViewById<TextView>(R.id.description)
-    private val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
 
     private var helper: TokopediaPlayerHelper? = null
 
@@ -70,16 +64,11 @@ class PlayCardViewHolder(
             else live.hide()
 
             itemView.setOnClickListener {
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, "2") }
-            }
-
-            volumeContainer.setOnClickListener {
-                helper?.updateVideoMuted()
-                volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.channelId) }
             }
 
             play.setOnClickListener { _ ->
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, "2") }
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.channelId) }
             }
         }
 
@@ -93,11 +82,9 @@ class PlayCardViewHolder(
 
         if(helper == null) {
             helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
-                    .setAutoPlayOn(true)
                     .setVideoUrls(mVideoUrl)
                     .setExoPlayerEventsListener(this)
                     .setRepeatModeOn(true)
-                    .setMutedVolume()
                     .setToPrepareOnResume(true)
                     .create()
             helper?.playerPlay()
@@ -110,46 +97,40 @@ class PlayCardViewHolder(
     fun resume(){
         helper?.onActivityResume()
         thumbnailView.hide()
-        errorMessage.hide()
     }
 
     fun pause(){
         helper?.onActivityPause()
         thumbnailView.show()
-        volumeContainer?.hide()
     }
 
     fun getHelper() = helper
 
     override fun onPlayerPlaying(currentWindowIndex: Int) {
-        progressBar.hide()
         thumbnailView.hide()
-        volumeContainer.show()
     }
 
     override fun onPlayerPaused(currentWindowIndex: Int) {
-        errorMessage.hide()
-        thumbnailView.show()
-        volumeContainer?.hide()
+        helper?.seekToDefaultPosition()
     }
 
     override fun onPlayerBuffering(currentWindowIndex: Int) {
-        progressBar.hide()
-        errorMessage.hide()
     }
 
     override fun onPlayerError(errorString: String?) {
-        progressBar.hide()
-        errorMessage.text = errorString
-        thumbnailView.show()
-        volumeContainer?.hide()
-        errorMessage.show()
+        if(mThumbUrl.isEmpty()){
+            helper?.seekToDefaultPosition()
+        } else {
+            thumbnailView.show()
+        }
     }
 
     override fun releaseExoPlayerCalled() {
-        thumbnailView.show()
-        progressBar.hide()
-        volumeContainer?.hide()
+        if(mThumbUrl.isEmpty()){
+            helper?.seekToDefaultPosition()
+        } else {
+            thumbnailView.show()
+        }
     }
 
     companion object {
