@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -48,6 +49,9 @@ class GlideErrorLogHelper(): CoroutineScope {
                     traceResult?.code?.toString() ?: "",
                     url,
                     e?.message ?: "",
+                    traceResult?.message ?: "")
+
+            Log.v("P2#IMAGE_TRACEROUTE#:",
                     traceResult?.message ?: "")
         }
     }
