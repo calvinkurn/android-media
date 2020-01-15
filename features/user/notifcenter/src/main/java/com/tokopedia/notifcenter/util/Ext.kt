@@ -23,6 +23,7 @@ fun RecyclerView.endLess(
 ) {
     this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
             onScrolled(dy)
         }
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

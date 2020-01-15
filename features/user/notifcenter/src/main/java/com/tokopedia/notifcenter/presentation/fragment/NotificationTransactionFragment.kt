@@ -7,11 +7,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,7 +19,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTransactionAnalytics
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
@@ -85,8 +81,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onListLastScroll(view)
         initObservable()
+        onListLastScroll(view)
 
         //enable transition of filter type on kitkat above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -162,7 +158,13 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     private fun notifyStateFilterActionView() {
-        btnFilter?.showWithCondition(markAllReadCounter != 0L)
+        btnFilter?.let {
+            if (markAllReadCounter != 0L) {
+                it.show()
+            } else {
+                it.hide()
+            }
+        }
     }
 
     private fun onListLastScroll(view: View) {
