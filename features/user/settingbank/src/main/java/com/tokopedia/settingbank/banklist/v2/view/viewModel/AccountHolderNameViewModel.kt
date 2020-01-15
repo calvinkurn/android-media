@@ -1,7 +1,10 @@
 package com.tokopedia.settingbank.banklist.v2.view.viewModel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.view.viewState.AccountNameTextWatcherState
 import com.tokopedia.settingbank.banklist.v2.view.viewState.OnAccountNameError
 import com.tokopedia.settingbank.banklist.v2.view.viewState.OnAccountNameValidated
@@ -12,7 +15,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AccountHolderNameViewModel @Inject constructor(dispatcher: CoroutineDispatcher)
+class AccountHolderNameViewModel @Inject constructor(@ApplicationContext private val context: Context,
+                                                     dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val textWatcherState = MutableLiveData<AccountNameTextWatcherState>()
@@ -34,7 +38,7 @@ class AccountHolderNameViewModel @Inject constructor(dispatcher: CoroutineDispat
     private suspend fun validateAccountName(name: String, job: Job): AccountNameTextWatcherState =
             withContext(Dispatchers.IO + job) {
                 if (!isLengthCorrect(name)) {
-                    return@withContext OnAccountNameError("Length must in min 3 and max 128")
+                    return@withContext OnAccountNameError(context.resources.getString(R.string.sbank_name_char_limit_error))
                 }
                 return@withContext OnAccountNameValidated(name)
             }

@@ -52,6 +52,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    implementation project(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

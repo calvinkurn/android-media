@@ -45,7 +45,7 @@ mempermudah proses penarikan dana</string>
     <string name="you_will_change_account_into">Anda akan mengubah rekening menjadi rekening</string>
     <string name="sbank_no_saved_account">Belum ada rekening tersimpan</string>
     <string name="sbank_comeon_add_bank_Account">Yuk, tambah rekening bank kamu biar lebih mudah saat tarik Saldo Tokopedia!</string>
-    <string name="terms_and_condition">Syarat dan Ketentuan</string>
+    <string name="sbank_terms_and_condition">Syarat dan Ketentuan</string>
     <string name="sbank_bank_search_hint">Cari nama bank</string>
     <string name="sbank_choose_a_bank">Pilih nama bank</string>
     <string name="sbank_nama_bank">Nama Bank</string>
@@ -87,5 +87,6 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_no_bank_add_bank_account">Tambah Rekening</string>
     <string name="sbank_no_bank_account">Tidak ada Bank yang ditemukan</string>
     <string name="sbank_please_select_photo">Silakan pilih foto dokumen</string>
+    <string name="sbank_name_char_limit_error">Panjang harus dalam min 3 dan maks 128</string>
 
 </resources>

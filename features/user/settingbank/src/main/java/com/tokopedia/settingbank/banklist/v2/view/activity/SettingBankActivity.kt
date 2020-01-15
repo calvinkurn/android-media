@@ -11,18 +11,27 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.banklist.v2.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
+import com.tokopedia.settingbank.banklist.v2.util.SettingBankRemoteConfig
 import com.tokopedia.settingbank.banklist.v2.view.fragment.OnBankSelectedListener
 import com.tokopedia.settingbank.banklist.v2.view.fragment.SettingBankFragment
 
 
-
 class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>, OnBankSelectedListener {
 
-    val ADD_ACCOUNT_REQUEST_CODE =101
+    val ADD_ACCOUNT_REQUEST_CODE = 101
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
                     .baseAppComponent).build()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (SettingBankRemoteConfig.instance(this).isOldFlowEnabled()) {
+            this.startActivity(com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity.createIntent(this))
+            finish()
+            return
+        }
+    }
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -34,7 +43,7 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
 
     companion object {
         const val REQUEST_ON_DOC_UPLOAD = 102
-        const val UPALOAD_DOCUMENT_MESSAGE =  "UPALOAD_DOCUMENT_MESSAGE"
+        const val UPALOAD_DOCUMENT_MESSAGE = "UPALOAD_DOCUMENT_MESSAGE"
         fun createIntent(context: Context): Intent {
             return Intent(context, SettingBankActivity::class.java)
         }
@@ -47,19 +56,19 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == ADD_ACCOUNT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == ADD_ACCOUNT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
             fragment?.let {
-                if(fragment is SettingBankFragment){
+                if (fragment is SettingBankFragment) {
                     fragment.loadUserBankAccountList()
                 }
             }
-        }else if(requestCode == REQUEST_ON_DOC_UPLOAD && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == REQUEST_ON_DOC_UPLOAD && resultCode == Activity.RESULT_OK) {
             data?.let {
-                val message : String? = data.getStringExtra(UPALOAD_DOCUMENT_MESSAGE)
+                val message: String? = data.getStringExtra(UPALOAD_DOCUMENT_MESSAGE)
                 val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
                 fragment?.let {
-                    if(fragment is SettingBankFragment){
+                    if (fragment is SettingBankFragment) {
                         fragment.loadUserBankAccountList()
                         fragment.showToasterOnUI(message)
                     }
@@ -72,7 +81,7 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
     override fun onBankSelected(bank: Bank) {
         val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
         fragment?.let {
-            if(fragment is SettingBankFragment){
+            if (fragment is SettingBankFragment) {
                 fragment.closeBottomSheet()
             }
         }

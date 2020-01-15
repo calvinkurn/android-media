@@ -10,9 +10,6 @@ import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
 
 class BankTNCBottomSheet(val context: Context) : CloseableBottomSheetDialog.CloseClickedListener {
 
-    override fun onCloseDialog() {
-    }
-
     lateinit var templateData: TemplateData
     lateinit var tncDialog: CloseableBottomSheetDialog
 
@@ -21,7 +18,7 @@ class BankTNCBottomSheet(val context: Context) : CloseableBottomSheetDialog.Clos
         val view = createBottomSheetView()
         if (!::tncDialog.isInitialized)
             tncDialog = CloseableBottomSheetDialog.createInstanceCloseableRounded(context, this)
-        tncDialog.setCustomContentView(view,context.resources.getString(R.string.terms_and_condition) , true)
+        tncDialog.setCustomContentView(view,context.resources.getString(R.string.sbank_terms_and_condition) , true)
         tncDialog.show()
     }
 
@@ -32,6 +29,9 @@ class BankTNCBottomSheet(val context: Context) : CloseableBottomSheetDialog.Clos
                     "text/html", "utf-8")
         }
         return view
+    }
+
+    override fun onCloseDialog() {
     }
 
 }
