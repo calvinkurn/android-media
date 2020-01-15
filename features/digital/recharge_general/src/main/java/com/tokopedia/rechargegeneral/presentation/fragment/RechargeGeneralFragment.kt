@@ -252,9 +252,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             operator_cluster_select.hide()
         } else if (cluster.operatorGroups.size > 1) {
             operator_cluster_select.show()
-            // TODO: Get operator cluster label from backend
-            operator_cluster_select.setLabel("Pilih Operator Cluster")
-//            operator_cluster_select.setLabel(cluster.text)
+            operator_cluster_select.setLabel(getString(R.string.operator_cluster_select_label))
             operator_cluster_select.setHint("")
             operator_cluster_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
