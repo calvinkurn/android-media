@@ -29,7 +29,7 @@ class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
 
     override fun bindView(fragment: Fragment, viewModel: DiscoveryBaseViewModel) {
         multiBannerViewModel = viewModel as MultiBannerViewModel
-        multiBannerViewModel.getComponentData().observe(fragment, Observer { item ->
+        multiBannerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
 
             if (item.data != null && item.data.isNotEmpty()) {
                 constraintLayout.removeAllViews()
@@ -74,7 +74,7 @@ class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
             bannersItemList.add(bannerView)
 
             checkSubscriptionStatus(index)
-            setClicksOnBanners(index)
+            setClickOnBanners(index)
         }
     }
 
@@ -82,7 +82,7 @@ class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
         multiBannerViewModel.campaignSubscribedStatus(position)
     }
 
-    private fun setClicksOnBanners(index: Int) {
+    private fun setClickOnBanners(index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
             multiBannerViewModel.onBannerClicked(index)
 

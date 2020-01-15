@@ -9,14 +9,10 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class DiscoveryRecycleAdapter(val fragment: Fragment)
+class DiscoveryRecycleAdapter(private val fragment: Fragment)
     : RecyclerView.Adapter<AbstractViewHolder>() {
 
-    var viewModel: DiscoveryListViewModel
-
-    init {
-        viewModel = ViewModelProviders.of(fragment).get(DiscoveryListViewModel::class.java)
-    }
+    var viewHolderListModel = ViewModelProviders.of(fragment).get(DiscoveryListViewModel::class.java)
 
     private val componentList: ArrayList<ComponentsItem> = ArrayList()
 
@@ -25,12 +21,16 @@ class DiscoveryRecycleAdapter(val fragment: Fragment)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-        holder.bindView(fragment, viewModel.getViewModelList
-        (DiscoveryHomeFactory.createViewModel(getItemViewType(position))!!, componentList[position], position))
+        holder.bindView(fragment, viewHolderListModel.getViewHolderModel(
+                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position))
     }
 
     override fun getItemCount(): Int {
-        return componentList.size
+        return if (componentList.size > 0) {
+            componentList.size
+        } else {
+            0
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

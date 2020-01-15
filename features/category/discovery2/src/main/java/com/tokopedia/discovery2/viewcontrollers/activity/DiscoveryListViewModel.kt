@@ -5,14 +5,14 @@ import androidx.lifecycle.AndroidViewModel
 import com.tokopedia.discovery2.data.ComponentsItem
 import kotlin.reflect.KFunction
 
-class DiscoveryListViewModel(val applicationContext: Application) : AndroidViewModel(applicationContext) {
-    val viewHolderViewModelList = ArrayList<DiscoveryBaseViewModel>()
+class DiscoveryListViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
+    private val viewHolderViewModelList = ArrayList<DiscoveryBaseViewModel>()
 
-    fun getViewModelList(viewModel: KFunction<DiscoveryBaseViewModel>, componentItem: ComponentsItem, position : Int): DiscoveryBaseViewModel {
+    fun getViewHolderModel(viewModel: KFunction<DiscoveryBaseViewModel>, componentItem: ComponentsItem, position: Int): DiscoveryBaseViewModel {
         if (viewHolderViewModelList.size - 1 >= position) {
             return viewHolderViewModelList.get(position)
         }
-        val viewModelObject = viewModel.call(componentItem, applicationContext);
+        val viewModelObject = viewModel.call(applicationContext, componentItem);
         viewHolderViewModelList.add(viewModelObject)
         return viewModelObject
 

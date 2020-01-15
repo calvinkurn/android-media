@@ -7,10 +7,12 @@ import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
-class DiscoveryDataUseCase {
+class DiscoveryDataUseCase @Inject constructor(var repository: BaseRepository) {
 
-    suspend fun getDiscoveryData(repository: BaseRepository, pageIdentifier: String): DiscoveryResponse {
+
+    suspend fun getDiscoveryData(pageIdentifier: String): DiscoveryResponse {
         val response = repository.getRestData(GenerateUrl.getUrl(pageIdentifier),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,

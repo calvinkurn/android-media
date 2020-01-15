@@ -2,14 +2,18 @@ package com.tokopedia.tradein_common.viewcontrollers;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
+
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,13 +51,14 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     abstract protected boolean doNeedReattach();
 
-    abstract protected ViewModelProvider.AndroidViewModelFactory getVMFactory();
+    abstract protected ViewModelProvider.Factory getVMFactory();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NetworkClient.init(this);
         GraphqlClient.init(this);
+        initDaggerInject();
         setViewModel();
         initView();
         if (getSupportActionBar() != null)
@@ -91,6 +96,10 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
                 }
             }
         });
+    }
+
+    protected void initDaggerInject() {
+
     }
 
     @Override

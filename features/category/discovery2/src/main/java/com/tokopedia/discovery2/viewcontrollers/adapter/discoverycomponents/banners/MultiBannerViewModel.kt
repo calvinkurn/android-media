@@ -6,8 +6,10 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -16,16 +18,18 @@ import com.tokopedia.discovery2.utils.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class MultiBannerViewModel(components: ComponentsItem, val application: Application) : DiscoveryBaseViewModel(), CoroutineScope {
+class MultiBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
+
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -63,22 +67,27 @@ class MultiBannerViewModel(components: ComponentsItem, val application: Applicat
     }
 
     private fun subscribeUserPush(position: Int) {
-        val userSession = UserSession(application)
-        if (userSession.isLoggedIn) {
+       // userSession = getUserSessions()
+        if (isUserLoggedIn()) {
             launchCatchError(block = {
                 val campaignMap = HashMap<String, Int>()
                 campaignMap["campaignID"] = getCampaignId(position)
                 val pushSubscriptionResponse = MultiBannerDataUseCase()
                         .subscribeToPush(GraphqlHelper.loadRawString(application.resources, R.raw.set_push_reminder_gql), campaignMap)
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
-                    pushBannerStatus.value = position
-                }
+                pushBannerStatus.value = position
+            }
             }, onError = {
                 it.printStackTrace()
             })
         } else {
             showLogin.value = true
         }
+    }
+
+     fun isUserLoggedIn():Boolean{
+        return UserSession(application).isLoggedIn
+
     }
 
     fun campaignSubscribedStatus(position: Int) {

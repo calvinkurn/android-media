@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.fragment_discovery.view.*
 class DiscoveryFragment : Fragment() {
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
-   // var bannerLister : BannerListener = this
 
     companion object {
         fun getInstance(endPoint: String?): Fragment {

@@ -13,17 +13,16 @@ class DiscoveryHomeFactory {
 
     companion object {
         private val componentIdMap = mutableMapOf<String, Int>()
-        private val componentMapper = mutableMapOf<Int, ComponentHelpersHolder<*, *>>()
+        private val componentMapper = mutableMapOf<Int, ComponentHelpersHolder<out AbstractViewHolder, out DiscoveryBaseViewModel>>()
 
         init {
-            intializeComponent(ComponentsList.SingleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
-            intializeComponent(ComponentsList.DoubleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
-            intializeComponent(ComponentsList.TripleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
-            intializeComponent(ComponentsList.QuadrupleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
+            initializeComponent(ComponentsList.SingleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
+            initializeComponent(ComponentsList.DoubleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
+            initializeComponent(ComponentsList.TripleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
+            initializeComponent(ComponentsList.QuadrupleBanner, ::MultiBannerViewHolder, ::MultiBannerViewModel)
         }
 
-        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> intializeComponent(component: ComponentsList, viewModel: KFunction<E>,
-                                                                                                            componentViewModel: KFunction<T>) {
+        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>,componentViewModel: KFunction<T>) {
             componentIdMap[component.componentName] = component.ordinal
             componentMapper[component.ordinal] = ComponentHelpersHolder(viewModel, componentViewModel);
         }
@@ -39,8 +38,11 @@ class DiscoveryHomeFactory {
             return componentMapper[viewType]?.getViewHolder(itemView)
         }
 
-        fun createViewModel(viewType: Int): KFunction<DiscoveryBaseViewModel>? {
-            return componentMapper.get(viewType)?.getComponentModels()
+        fun createViewModel(viewType: Int): KFunction<DiscoveryBaseViewModel> {
+            if(componentMapper[viewType] != null){
+                return componentMapper[viewType]!!.getComponentModels()
+            }
+            return ::MultiBannerViewModel
         }
     }
 }

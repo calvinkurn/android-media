@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,9 +14,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DiscoveryViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
+class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase) : BaseViewModel(), CoroutineScope {
 
     private val discoveryResponse = MutableLiveData<Result<DiscoveryResponse>>()
     var pageIdentifier: String = ""
@@ -29,7 +31,7 @@ class DiscoveryViewModel(application: Application) : BaseViewModel(application),
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
-                        val data = DiscoveryDataUseCase().getDiscoveryData(repository, pageIdentifier)
+                        val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
                         data.let {
                             discoveryResponse.postValue(Success(it))
                         }
