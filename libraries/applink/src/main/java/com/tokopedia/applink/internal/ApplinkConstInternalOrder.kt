@@ -39,4 +39,8 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val HISTORY_ORDER = "$INTERNAL_ORDER/history"
+
+    @JvmField
+    val FINISHED = "$INTERNAL_ORDER/finished"
+
 }

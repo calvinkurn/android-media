@@ -45,6 +45,11 @@
                     android:host="@string/host_seller"
                     android:path="@string/path_history"/>
 
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_finished"/>
+
             </intent-filter>
         </activity>
 
