@@ -183,9 +183,11 @@ OnViewHolderBindListener{
             val window = it.window
             window.getDecorView().getWindowVisibleDisplayFrame(rectgle)
             val statusBarHeight = rectgle.top
+            val contentViewTop = window.findViewById<View>(Window.ID_ANDROID_CONTENT).getTop()
+            val titleBarHeight = contentViewTop - statusBarHeight
 
             val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    height - peekSize - indicator_banner_container.height - statusBarHeight -
+                    height - peekSize - indicator_banner_container.height - Math.abs(titleBarHeight) -
                             resources.getDimensionPixelSize(R.dimen.destination_padding_info))
             lp.collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
             lp.parallaxMultiplier = 0.6f
