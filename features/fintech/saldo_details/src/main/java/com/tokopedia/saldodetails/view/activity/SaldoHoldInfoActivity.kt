@@ -1,39 +1,70 @@
 package com.tokopedia.saldodetails.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
+import android.view.LayoutInflater
+import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.component.Tabs
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoInfoVIewPagerAdapter
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.contract.SaldoHoldInfoContract
+import com.tokopedia.saldodetails.di.SaldoDetailsComponent
+import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
+import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
+import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.BuyerDataItem
+import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
+import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SellerDataItem
 import com.tokopedia.saldodetails.view.fragment.SaldoHoldInfoFragment
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
+import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
+import kotlinx.android.synthetic.main.saldo_info_help_bottomsheet.view.*
 import kotlinx.android.synthetic.main.saldo_info_toolbar.*
+import javax.inject.Inject
 
-class SaldoHoldInfoActivity : BaseActivity() {
+class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent>, SaldoHoldInfoContract.View {
 
-    lateinit var item: ArrayList<SaldoHistoryTabItem>
+    var isTickerShow: Boolean? = false
+    var tickerMessage: String? = null
+    var sellerListSize = 0
+    var buyerListSize = 0
+    var viewPager: ViewPager? = null
+    var resultList: ArrayList<Any>? = null
+    var sellerAmount: Double? = 0.0
+    var buyerAmount: Double? = 0.0
+    lateinit var allTransactionList: ArrayList<Any>
+    var item: ArrayList<SaldoHistoryTabItem>? = null
+    lateinit var tabLayout: Tabs
+    lateinit var helpdialog: CloseableBottomSheetDialog
+    val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
+    val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
+    val RESULT_LIST = "RESULT_LIST"
 
-    val saldoHoldInfoViewpagerAdapter: SaldoInfoVIewPagerAdapter by lazy { SaldoInfoVIewPagerAdapter(supportFragmentManager, ArrayList()) }
+    @Inject
+    lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
 
-    fun newInstance(context: Context): Intent {
-        return Intent(context, SaldoHoldInfoFragment::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.saldo_hold_info_tabview)
-        getFragments()
-        saldoHoldInfoViewpagerAdapter.arrayList = item
-
-        val tabLayout = findViewById<TabLayout>(R.id.tabs_saldo_info_type)
-        val viewPager = findViewById<ViewPager>(R.id.view_pager_saldo_info_type)
-        viewPager.adapter = saldoHoldInfoViewpagerAdapter
-        tabLayout.setupWithViewPager(viewPager)
-        top_bar_close_button.setOnClickListener{
+        SaldoDetailsComponentInstance.getComponent(application).inject(this)
+        tabLayout = findViewById(R.id.tabs_saldo_info_type)
+        viewPager = findViewById<ViewPager>(R.id.view_pager_saldo_info_type)
+        saldoInfoPresenter.attachView(this)
+        saldoInfoPresenter.getSaldoHoldInfo()
+        top_bar_close_button.setOnClickListener {
             onBackPressed()
+        }
+
+        btn_bantuan.setOnClickListener {
+            initBottomSheet()
         }
     }
 
@@ -84,14 +115,64 @@ class SaldoHoldInfoActivity : BaseActivity() {
 
     private fun setUpViewPager(sellerListSize: Int, buyerListSize: Int) {
         item = ArrayList()
+        val bundle = Bundle()
+        bundle.putParcelableArrayList(RESULT_LIST, resultList as ArrayList<out Parcelable>)
+        buyerAmount?.let { bundle.putDouble(SALDO_BUYER_AMOUNT, buyerAmount!!) }
+        sellerAmount?.let { bundle.putDouble(SALDO_SELLER_AMOUNT, sellerAmount!!) }
 
-        val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
-        saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance()
-        item.add(saldoHistoryTabItemSeller)
 
-        val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
-        saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance()
-        item.add(saldoHistoryTabItemBuyer)
+        if (sellerListSize == 0 && buyerListSize != 0) {
+            val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
+            saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemBuyer.title = resources.getString(R.string.saldo_total_balance_buyer) + "(" + buyerListSize + ")"
+            item?.add(saldoHistoryTabItemBuyer)
+
+        } else if (buyerListSize == 0 && sellerListSize != 0) {
+            val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
+            saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemSeller.title = resources.getString(R.string.saldo_total_balance_seller) + "(" + sellerListSize + ")"
+            item?.add(saldoHistoryTabItemSeller)
+
+        } else if (buyerListSize != 0 && sellerListSize != 0) {
+            val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
+            saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemBuyer.title = resources.getString(R.string.saldo_total_balance_buyer) + "(" + buyerListSize + ")"
+
+            val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
+            saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemSeller.title = resources.getString(R.string.saldo_total_balance_seller) + "(" + sellerListSize + ")"
+
+            item?.add(0, saldoHistoryTabItemBuyer)
+            item?.add(1, saldoHistoryTabItemSeller)
+        }
+
+        if (buyerListSize == 0 || sellerListSize == 0) {
+            tabLayout.visibility = View.GONE
+        }
+    }
+
+    private fun initViewPagerAdapter() {
+        val adapter = item?.let { SaldoInfoVIewPagerAdapter(supportFragmentManager, it) }
+        viewPager?.adapter = adapter
+        tabLayout.setupWithViewPager(viewPager)
+    }
+
+    private fun initBottomSheet() {
+        helpdialog = CloseableBottomSheetDialog.createInstanceRounded(this)
+        val view = LayoutInflater.from(this).inflate(R.layout.saldo_info_help_bottomsheet, null)
+        helpdialog.setContentView(view)
+        view.btn1.setOnClickListener {
+            RouteManager.route(this, String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL))
+            helpdialog.cancel()
+        }
+        view.btn2.setOnClickListener {
+            RouteManager.route(this, String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL_TWO))
+            helpdialog.cancel()
+        }
+
+        helpdialog.show()
 
     }
 
@@ -109,5 +190,9 @@ class SaldoHoldInfoActivity : BaseActivity() {
         viewflipper_container.displayedChild = 0
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        saldoInfoPresenter.detachView()
+    }
 
 }

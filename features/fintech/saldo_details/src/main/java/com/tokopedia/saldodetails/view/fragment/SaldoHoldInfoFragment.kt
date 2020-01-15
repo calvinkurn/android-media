@@ -11,28 +11,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHoldInfoAdapter
-import com.tokopedia.saldodetails.contract.SaldoHoldInfoContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
-import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.BuyerDataItem
-import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
-import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SellerDataItem
 import kotlinx.android.synthetic.main.fragment_container_saldo_info.*
-import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
 import java.util.*
-import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class SaldoHoldInfoFragment : BaseDaggerFragment(), SaldoHoldInfoContract.View {
+class SaldoHoldInfoFragment : BaseDaggerFragment() {
 
-    var isTickerShow: Boolean? = false
-    var tickerMessage: String? = null
+    val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
+    val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
+    val RESULT_LIST = "RESULT_LIST"
 
-    @Inject
-    lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
     val saldoHoldInfoAdapter: SaldoHoldInfoAdapter by lazy { SaldoHoldInfoAdapter(ArrayList()) }
-    lateinit var allTransactionList: ArrayList<Any>
-    lateinit var fakelist: ArrayList<Any>
 
     override fun getScreenName() = "SaldoHoldInfoFragment"
 
@@ -42,8 +32,10 @@ class SaldoHoldInfoFragment : BaseDaggerFragment(), SaldoHoldInfoContract.View {
     }
 
     companion object {
-        fun createInstance(): Fragment {
-            return SaldoHoldInfoFragment()
+        fun createInstance(bundle: Bundle): Fragment {
+            val saldoHoldInfoFragment = SaldoHoldInfoFragment()
+            saldoHoldInfoFragment.arguments = bundle
+            return saldoHoldInfoFragment
         }
     }
 
@@ -55,53 +47,16 @@ class SaldoHoldInfoFragment : BaseDaggerFragment(), SaldoHoldInfoContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        saldoInfoPresenter.attachView(this)
-        saldoInfoPresenter.getSaldoHoldInfo()
     }
 
     fun initView() {
         rv_container.layoutManager = LinearLayoutManager(context)
         rv_container.adapter = saldoHoldInfoAdapter
-    }
 
-    override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
-        var resultList = ArrayList<Any>()
-        saldoHoldDepositHistory?.let {
-            resultList = combinedTransactionList(it.sellerData as ArrayList<SellerDataItem>, it.buyerData as ArrayList<BuyerDataItem>)
-            isTickerShow = it.tickerMessageIsshow
-            tickerMessage = it.tickerMessageId
-        }
-
-        if (resultList.size == 1) {
-            activity?.ll_container?.visibility = View.GONE
-        }
-        if (isTickerShow as Boolean) {
-            activity?.saldo_hold_info_ticker.let {
-                it?.setTextDescription(tickerMessage.toString())
-            }
-        } else
-            activity?.saldo_hold_info_ticker?.visibility = View.GONE
-
-        activity?.btn_bantuan?.setOnClickListener {
-            //TODO btn click
-        }
         saldoHoldInfoAdapter.list.clear()
-        saldoHoldInfoAdapter.list.addAll(resultList)
+        saldoHoldInfoAdapter.list.addAll(arguments?.getParcelableArrayList(RESULT_LIST)!!)
         saldoHoldInfoAdapter.notifyDataSetChanged()
-    }
 
-    fun combinedTransactionList(arrayList: ArrayList<SellerDataItem>, arrayList1: ArrayList<BuyerDataItem>): ArrayList<Any> {
-        allTransactionList = ArrayList()
-        allTransactionList.clear()
-        allTransactionList.addAll(arrayList)
-        allTransactionList.addAll(arrayList1)
-
-        return allTransactionList
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        saldoInfoPresenter.detachView()
     }
 
 }
