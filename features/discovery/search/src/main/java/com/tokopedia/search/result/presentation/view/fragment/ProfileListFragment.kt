@@ -63,17 +63,17 @@ class ProfileListFragment :
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    lateinit var searchNavigationListener: SearchNavigationListener
+    private lateinit var searchNavigationListener: SearchNavigationListener
 
-    lateinit var redirectionListener: RedirectionListener
+    private lateinit var redirectionListener: RedirectionListener
 
-    lateinit var trackingQueue: TrackingQueue
+    private lateinit var trackingQueue: TrackingQueue
 
-    var query : String = ""
+    private var query : String = ""
 
-    var searchParameter: SearchParameter? = null
+    private var searchParameter: SearchParameter? = null
 
-    var hasLoadData = false
+    private var hasLoadData = false
 
     override fun getRecyclerViewResourceId(): Int {
         return R.id.profile_list_recycler_view
@@ -86,10 +86,8 @@ class ProfileListFragment :
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        context?.let {
-            attachNavigationListener(it)
-            attachRedirectionListener(it)
-        }
+        attachNavigationListener(context)
+        attachRedirectionListener(context)
     }
 
     private fun attachNavigationListener(context: Context) {
