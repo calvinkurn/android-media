@@ -663,6 +663,7 @@ class TopChatRoomPresenter @Inject constructor(
 
         val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
         val sendableVoucher = SendableVoucherPreview(voucherPreview)
+        if (attachmentsPreview.isNotEmpty()) attachmentsPreview.clear()
         attachmentsPreview.add(sendableVoucher)
     }
 

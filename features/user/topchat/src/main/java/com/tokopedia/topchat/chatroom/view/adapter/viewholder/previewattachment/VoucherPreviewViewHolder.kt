@@ -11,7 +11,7 @@ class VoucherPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     : AttachmentPreviewViewHolder<SendableVoucherPreview>(itemView, attachmentItemPreviewListener) {
 
     override fun getButtonView(itemView: View): ImageView? {
-        return null
+        return itemView.iv_close
     }
 
     override fun bind(model: SendableVoucherPreview) {
