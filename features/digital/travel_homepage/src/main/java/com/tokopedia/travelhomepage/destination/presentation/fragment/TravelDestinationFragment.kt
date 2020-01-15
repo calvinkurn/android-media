@@ -1,5 +1,6 @@
 package com.tokopedia.travelhomepage.destination.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -49,7 +50,9 @@ import kotlinx.android.synthetic.main.layout_travel_destination_shimmering.*
 import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
 import android.view.Window.ID_ANDROID_CONTENT
 import android.graphics.Rect
+import android.util.DisplayMetrics
 import android.view.Window
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.travel_homepage_order_section_list_without_subtitle_item.*
 
 
@@ -58,7 +61,7 @@ import kotlinx.android.synthetic.main.travel_homepage_order_section_list_without
  */
 
 class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, TravelDestinationTypeFactory>(), ActionListener,
-OnViewHolderBindListener{
+        OnViewHolderBindListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -132,7 +135,7 @@ OnViewHolderBindListener{
         indicator_banner_container.removeAllViews()
         for (count in 0 until imageCount) {
             val pointView = ImageView(context)
-            pointView.setPadding(5,60,5,60)
+            pointView.setPadding(5, 60, 5, 60)
             if (count == 0) pointView.setImageResource(getIndicatorFocus())
             else pointView.setImageResource(getIndicator())
 
@@ -142,7 +145,7 @@ OnViewHolderBindListener{
     }
 
     private fun showNetworkErrorLayout() {
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) { destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl ) }
+        NetworkErrorHelper.showEmptyState(context, view?.rootView) { destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -161,10 +164,6 @@ OnViewHolderBindListener{
         }
     }
 
-    override fun onUpdatePeekSize(height: Int) {
-        setUpContentPeekSize(height)
-    }
-
     private fun setUpContentPeekSize(peekSize: Int) {
         activity?.let {
             val display = it.windowManager.defaultDisplay
@@ -172,28 +171,58 @@ OnViewHolderBindListener{
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     display.getRealSize(size)
-                } else display.getSize(size)
+                } else{
+                    display.getSize(size)
+                }
             } catch (err: NoSuchMethodError) {
                 display.getSize(size)
             }
             val height = size.y
+            val titleBarHeight = getStatusBarHeight(it)
 
-            //get height of status bar
-            val rectgle = Rect()
-            val window = it.window
-            window.getDecorView().getWindowVisibleDisplayFrame(rectgle)
-            val statusBarHeight = rectgle.top
-            val contentViewTop = window.findViewById<View>(Window.ID_ANDROID_CONTENT).getTop()
-            val titleBarHeight = contentViewTop - statusBarHeight
+            val heightTitle = peekSize + resources.getDimensionPixelSize(R.dimen.destination_padding_info)
+            val heightIndicator = indicator_banner_container.height + resources.getDimensionPixelSize(R.dimen.destination_margin_top_indicator)
+            val diffHeight = heightIndicator + heightTitle - Math.abs(resources.getDimensionPixelSize(R.dimen.destination_margin_top_info))
+
+            val tmpHeight = height - diffHeight - Math.abs(titleBarHeight) - getSoftButtonsBarHeight()
 
             val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    height - peekSize - indicator_banner_container.height - Math.abs(titleBarHeight) -
-                            resources.getDimensionPixelSize(R.dimen.destination_padding_info))
+                    tmpHeight)
             lp.collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
             lp.parallaxMultiplier = 0.6f
             toolbar_container.layoutParams = lp
             toolbar_container.requestLayout()
         }
+    }
+
+    private fun getStatusBarHeight(it: FragmentActivity): Int {
+        //get height of status bar
+        val rectgle = Rect()
+        val window = it.window
+        window.getDecorView().getWindowVisibleDisplayFrame(rectgle)
+        val statusBarHeight = rectgle.top
+        val contentViewTop = window.findViewById<View>(ID_ANDROID_CONTENT).getTop()
+        val titleBarHeight = contentViewTop - statusBarHeight
+        return titleBarHeight
+    }
+
+    @SuppressLint("NewApi")
+    private fun getSoftButtonsBarHeight() : Int {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            val metrics = DisplayMetrics();
+            activity?.let {
+                it.windowManager.defaultDisplay.getMetrics(metrics);
+                val usableHeight = metrics.heightPixels;
+                it.windowManager.defaultDisplay.getRealMetrics(metrics);
+                val realHeight = metrics.heightPixels;
+                if (realHeight > usableHeight)
+                    return realHeight - usableHeight;
+                else
+                    return 0;
+            }
+        }
+        return 0;
     }
 
     private fun renderLayout() {
@@ -244,7 +273,8 @@ OnViewHolderBindListener{
     override fun getAdapterTypeFactory(): TravelDestinationTypeFactory = TravelDestinationAdapterTypeFactory(this, this)
 
 
-    override fun onItemClicked(t: TravelDestinationItemModel?) { /* do nothing */ }
+    override fun onItemClicked(t: TravelDestinationItemModel?) { /* do nothing */
+    }
 
     override fun getScreenName(): String = ""
 
@@ -254,7 +284,8 @@ OnViewHolderBindListener{
         getComponent(TravelDestinationComponent::class.java).inject(this)
     }
 
-    override fun loadData(page: Int) { /* do nothing */ }
+    override fun loadData(page: Int) { /* do nothing */
+    }
 
     override fun clickAndRedirect(appUrl: String, webUrl: String) {
         RouteManager.route(context, appUrl)
@@ -267,6 +298,7 @@ OnViewHolderBindListener{
     override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int, cityName: String) {
         if (this.cityName.isEmpty()) this.cityName = cityName
         renderLayout()
+        setUpContentPeekSize(peekSize)
         if (imgUrls.isNotEmpty()) {
             travel_homepage_destination_view_pager.setImages(imgUrls)
         }
@@ -334,7 +366,7 @@ OnViewHolderBindListener{
     }
 
     override fun onTrackEventsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
-       travelDestinationTrackingUtil.cityEventsImpression(list, firstVisiblePosition)
+        travelDestinationTrackingUtil.cityEventsImpression(list, firstVisiblePosition)
     }
 
     override fun onTrackEventItemClick(item: TravelDestinationSectionViewModel.Item, position: Int) {

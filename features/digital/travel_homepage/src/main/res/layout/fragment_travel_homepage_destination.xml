@@ -68,7 +68,7 @@
             android:id="@+id/container_city_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="-72dp"
+            android:layout_marginTop="@dimen/destination_margin_top_info"
             android:background="@color/transparent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -110,6 +110,7 @@
             android:id="@+id/layout_travel_destination_shimmering"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             layout="@layout/layout_travel_destination_shimmering"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -44,7 +44,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
                 pT = getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
+            val pB = resources.getDimensionPixelSize(R.dimen.destination_toolbar_padding)
             this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
             this.setPadding(pL, pT, pR, pB)
         }
@@ -59,7 +59,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
                 pT = getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
+            val pB = resources.getDimensionPixelSize(R.dimen.destination_toolbar_padding)
 
             this.background = ContextCompat.getDrawable(context, R.drawable.travel_homepage_toolbar_bg_shadow_bottom)
             this.setPadding(pL, pT, pR, pB)

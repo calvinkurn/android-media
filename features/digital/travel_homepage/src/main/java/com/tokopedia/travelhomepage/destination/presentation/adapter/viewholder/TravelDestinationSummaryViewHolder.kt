@@ -42,19 +42,6 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
                 arrow_up.animation = anim1
 
                 onViewHolderBindListener.onCitySummaryLoaded(list, peek_layout.height, element.title)
-
-                val observer = peek_layout.viewTreeObserver;
-
-                observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
-                    override fun onGlobalLayout() {
-                        peek_layout.measure(
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                        onViewHolderBindListener.onUpdatePeekSize(peek_layout.measuredHeight)
-                        peek_layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-
-                })
             }
         } else {
             onViewHolderBindListener.onCitySummaryVHBind()

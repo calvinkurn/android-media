@@ -55,7 +55,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
             travelHomepageViewModel = viewModelProvider.get(TravelHomepageViewModel::class.java)
         }
 
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.toolbar_transition_range)
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.destination_toolbar_transition_range)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
