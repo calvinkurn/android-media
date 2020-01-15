@@ -54,12 +54,12 @@ class NotificationActivity : BaseTabActivity(),
     private var updateCounter = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationTransactionFragment()))
+        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
+
         super.onCreate(savedInstanceState)
         initInjector()
         initView()
-
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationTransactionFragment()))
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
 
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
