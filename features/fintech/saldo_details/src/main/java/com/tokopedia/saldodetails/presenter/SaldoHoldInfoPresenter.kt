@@ -7,7 +7,7 @@ import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHol
 import com.tokopedia.saldodetails.usecase.GetHoldInfoUsecase
 import rx.Subscriber
 
-class SaldoHoldInfoPresenter (val getHoldInfoUsecase: GetHoldInfoUsecase) : BaseDaggerPresenter<SaldoHoldInfoContract.View>(), SaldoHoldInfoContract.Presenter {
+class SaldoHoldInfoPresenter(val getHoldInfoUsecase: GetHoldInfoUsecase) : BaseDaggerPresenter<SaldoHoldInfoContract.View>(), SaldoHoldInfoContract.Presenter {
 
     override fun detachView() {
         getHoldInfoUsecase.unsubscribe()
@@ -20,6 +20,7 @@ class SaldoHoldInfoPresenter (val getHoldInfoUsecase: GetHoldInfoUsecase) : Base
             }
 
             override fun onError(e: Throwable?) {
+                view.showErrorView()
             }
 
             override fun onNext(t: GraphqlResponse?) {

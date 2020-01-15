@@ -1,5 +1,6 @@
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/viewflipper_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,7 +34,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_20"
-            android:text="Total Saldo Tertahan"
+            android:text="@string/saldo_info_total_tertahan"
             android:typeface="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_hold_info_ticker"
@@ -48,18 +49,18 @@
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:text="Rp4.000.000"
             android:textColor="#03ac0e"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_hold_info_ticker"
-            app:typographyType="heading_4" />
+            app:typographyType="heading_4"
+            tools:text="Rp4.000.000" />
 
         <View
             android:id="@+id/bottom_sep1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_20"
-            android:background="#f3f4f5"
+            android:background="@color/saldo_info_bottom_separator_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_totalSaldoHold" />
 
@@ -88,8 +89,7 @@
                     app:tabIndicatorColor="@color/tkpd_main_green"
                     app:tabPaddingBottom="@dimen/dp_12"
                     app:tabSelectedTextColor="@color/tkpd_main_green"
-                    app:tabTextColor="@color/black_38">
-                </com.tokopedia.design.component.Tabs>
+                    app:tabTextColor="@color/black_38"></com.tokopedia.design.component.Tabs>
 
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -117,7 +117,7 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/bg_round_corner_solid_green"
             android:gravity="center"
-            android:text="Bantuan"
+            android:text="@string/saldo_info_btn_text"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"

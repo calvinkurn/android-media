@@ -16,9 +16,6 @@ class SaldoInfoVIewPagerAdapter(fm: FragmentManager, var arrayList: ArrayList<Sa
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        if (position == 0) {
-            return "Saldo Penghasilan (2)"
-        } else
-            return "Saldo Refund (1)"
+        return arrayList[position].title
     }
 }

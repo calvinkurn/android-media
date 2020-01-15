@@ -1,5 +1,7 @@
 package com.tokopedia.saldodetails.response.model.saldoholdinfo.response
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class SaldoHoldDepositHistory(
@@ -33,4 +35,44 @@ data class SaldoHoldDepositHistory(
 
 	@SerializedName("buyer_data")
 	val buyerData: List<BuyerDataItem?>? = null
-)
+):Parcelable {
+	constructor(parcel: Parcel) : this(
+			parcel.readArrayList(SellerDataItem::class.java.classLoader) as ArrayList<SellerDataItem>,
+			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+			parcel.readString(),
+			parcel.readString(),
+			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+			parcel.readString(),
+			parcel.readString(),
+			parcel.readArrayList(BuyerDataItem::class.java.classLoader) as ArrayList<BuyerDataItem>
+	)
+
+	override fun writeToParcel(parcel: Parcel, flags: Int) {
+		parcel.writeList(sellerData)
+		parcel.writeValue(total)
+		parcel.writeValue(code)
+		parcel.writeValue(tickerMessageIsshow)
+		parcel.writeString(tickerMessageId)
+		parcel.writeString(tickerMessageEn)
+		parcel.writeValue(error)
+		parcel.writeString(message)
+		parcel.writeString(totalFmt)
+		parcel.writeList(buyerData)
+	}
+
+	override fun describeContents(): Int {
+		return 0
+	}
+
+	companion object CREATOR : Parcelable.Creator<SaldoHoldDepositHistory> {
+		override fun createFromParcel(parcel: Parcel): SaldoHoldDepositHistory {
+			return SaldoHoldDepositHistory(parcel)
+		}
+
+		override fun newArray(size: Int): Array<SaldoHoldDepositHistory?> {
+			return arrayOfNulls(size)
+		}
+	}
+}

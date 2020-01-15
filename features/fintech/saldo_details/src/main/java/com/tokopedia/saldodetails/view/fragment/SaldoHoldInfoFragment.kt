@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHoldInfoAdapter
 import com.tokopedia.saldodetails.contract.SaldoHoldInfoContract

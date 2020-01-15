@@ -8,20 +8,23 @@
     android:orientation="horizontal"
     android:padding="16dp">
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/top_bar_close_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:srcCompat="@drawable/ic_icon_back_black" />
+        android:tint="@color/black"
+        app:srcCompat="@drawable/ic_action_back" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/top_bar_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_weight="1"
-        android:text="Informasi Saldo Tertahan"
+        android:text="@string/saldo_info_toolbar_title"
+        android:textColor="@color/black"
         app:typographyType="heading_4" />
 
 </LinearLayout>

@@ -23,15 +23,7 @@ class SaldoHoldInfoAdapter(val list: ArrayList<Any>) : RecyclerView.Adapter<Recy
         return list.size
     }
 
-    //TODO set adapter
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-        /*     if (list[position] is ArrayList<SellerDataItem>) {
-
-                 //call bind
-             } else if (list[position] is ArrayList<BuyerDataItem>) {
-                 //call bind
-             }*/
 
         if (holder is SaldoInfoItemViewHolder)
             if (list[position] is SellerDataItem) {

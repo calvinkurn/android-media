@@ -37,8 +37,52 @@ class SaldoHoldInfoActivity : BaseActivity() {
         }
     }
 
-    fun getFragments() {
+    override fun getComponent(): SaldoDetailsComponent {
+        return SaldoDetailsComponentInstance.getComponent(application)
+    }
 
+    override fun getNewFragment(): Fragment? = null
+
+    override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
+        resultList = ArrayList()
+
+        saldoHoldDepositHistory?.let {
+
+            tv_valueTotalSaldoHold.text = it.totalFmt
+            sellerListSize = it.sellerData?.size!!
+            buyerListSize = it.buyerData?.size!!
+            val arrayListSeller = it.sellerData as ArrayList<SellerDataItem>
+            val arrayListBuyer = it.buyerData as ArrayList<BuyerDataItem>
+
+            for (i in 0 until arrayListSeller.size) {
+                sellerAmount = arrayListSeller[i].amountFmt?.removeRP()?.let { it1 -> sellerAmount?.plus(it1) }
+            }
+
+            for (i in 0 until arrayListBuyer.size) {
+                buyerAmount = arrayListBuyer[i].amountFmt?.removeRP()?.let { it1 -> buyerAmount?.plus(it1) }
+            }
+
+            resultList = combinedTransactionList(it.sellerData, it.buyerData)
+            isTickerShow = it.tickerMessageIsshow
+            tickerMessage = it.tickerMessageId
+        }
+
+        setUpViewPager(sellerListSize, buyerListSize)
+        initViewPagerAdapter()
+        showLayout()
+
+    }
+
+    fun combinedTransactionList(arrayList: ArrayList<SellerDataItem>, arrayList1: ArrayList<BuyerDataItem>): ArrayList<Any> {
+        allTransactionList = ArrayList()
+        allTransactionList.clear()
+        allTransactionList.addAll(arrayList)
+        allTransactionList.addAll(arrayList1)
+
+        return allTransactionList
+    }
+
+    private fun setUpViewPager(sellerListSize: Int, buyerListSize: Int) {
         item = ArrayList()
 
         val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
@@ -49,6 +93,20 @@ class SaldoHoldInfoActivity : BaseActivity() {
         saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance()
         item.add(saldoHistoryTabItemBuyer)
 
+    }
+
+    override fun showErrorView() {
+        container_cl.visibility = View.GONE
+        viewflipper_container.displayedChild = 1
+        globalerror.setType(5)
+        globalerror.setActionClickListener {
+            saldoInfoPresenter.getSaldoHoldInfo()
+        }
+    }
+
+    private fun showLayout() {
+        container_cl.visibility = View.VISIBLE
+        viewflipper_container.displayedChild = 0
     }
 
 

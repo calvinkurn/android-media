@@ -8,6 +8,7 @@ interface SaldoHoldInfoContract {
 
     interface View : CustomerView {
         fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?)
+        fun showErrorView()
     }
 
     interface Presenter : CustomerPresenter<SaldoHoldInfoContract.View> {
