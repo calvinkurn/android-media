@@ -199,15 +199,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        data?.extras?.run {
-            val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
-            if (otpCode.isNotBlank()) {
-                val phone = etPhone.text.toString()
-                viewModel.mutateAddPhone(context!!, phone.trim(), otpCode)
-            } else {
-                onErrorAddPhone(Throwable())
-            }
-        }
+        val phone = etPhone.text.toString()
+        viewModel.mutateAddPhone(context!!, phone.trim(), "")
     }
 
 
