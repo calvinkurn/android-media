@@ -62,7 +62,9 @@ class CouponLisitingStackedViewModel @Inject constructor(private val respositor:
 
                 }
             }
-        }) {}
+        }) {
+
+        }
 
     }
 

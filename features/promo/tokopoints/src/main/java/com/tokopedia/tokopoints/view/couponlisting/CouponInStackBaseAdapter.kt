@@ -23,6 +23,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.tokopoints.R
@@ -32,6 +34,8 @@ import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
+import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
 
 import java.util.Arrays
 import java.util.HashMap
@@ -165,31 +169,31 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
         }
 
         if (item.usage != null) {
-            holder.label.visibility = View.VISIBLE
-            holder.value.visibility = View.VISIBLE
-            holder.imgLabel.visibility = View.VISIBLE
+            holder.label.show()
+            holder.value.show()
+            holder.imgLabel.show()
             holder.value.text = item.usage.usageStr.trim { it <= ' ' }
             holder.label.text = item.usage.text
         } else {
-            holder.label.visibility = View.GONE
-            holder.value.visibility = View.GONE
-            holder.imgLabel.visibility = View.GONE
+            holder.label.hide()
+            holder.value.hide()
+            holder.imgLabel.hide()
         }
 
         if (TextUtils.isEmpty(item.minimumUsageLabel)) {
-            holder.tvMinTxnLabel.visibility = View.GONE
-            holder.ivMinTxn.visibility = View.GONE
+            holder.tvMinTxnLabel.hide()
+            holder.ivMinTxn.hide()
         } else {
-            holder.ivMinTxn.visibility = View.VISIBLE
-            holder.tvMinTxnLabel.visibility = View.VISIBLE
+            holder.ivMinTxn.show()
+            holder.tvMinTxnLabel.show()
             holder.tvMinTxnLabel.text = item.minimumUsageLabel
 
         }
 
         if (TextUtils.isEmpty(item.minimumUsage)) {
-            holder.tvMinTxnValue.visibility = View.GONE
+            holder.tvMinTxnValue.hide()
         } else {
-            holder.tvMinTxnValue.visibility = View.VISIBLE
+            holder.tvMinTxnValue.show()
             holder.tvMinTxnValue.text = item.minimumUsage
         }
 
@@ -202,13 +206,13 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
                     holder.cvShadow1.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_5))
             layoutParamsCvData.setMargins(0, 0, 0,
                     holder.cvShadow1.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10))
-            holder.cvShadow1.visibility = View.VISIBLE
-            holder.cvShadow2.visibility = View.VISIBLE
+            holder.cvShadow1.show()
+            holder.cvShadow2.show()
             holder.cvShadow1.layoutParams = layoutParamsCv1
             holder.cvData.layoutParams = layoutParamsCvData
         } else {
-            holder.cvShadow1.visibility = View.GONE
-            holder.cvShadow2.visibility = View.GONE
+            holder.cvShadow1.hide()
+            holder.cvShadow2.hide()
             layoutParamsCv1.setMargins(0, 0, 0, 0)
             layoutParamsCvData.setMargins(0, 0, 0, 0)
             holder.cvShadow1.layoutParams = layoutParamsCv1
@@ -223,14 +227,11 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
         if (item.usage.activeCountDown < 1) {
             if (item.usage.expiredCountDown > 0 && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                 holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
-                holder.progressTimer.visibility = View.VISIBLE
+                holder.progressTimer.show()
                 holder.timer = object : CountDownTimer(item.usage.expiredCountDown * 1000, 1000) {
                     override fun onTick(l: Long) {
                         item.usage.expiredCountDown = l / 1000
-                        val seconds = (l / 1000).toInt() % 60
-                        val minutes = (l / (1000 * 60) % 60).toInt()
-                        val hours = (l / (1000 * 60 * 60) % 24).toInt()
-                        holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
+                        holder.value.text = convertLongToHourMinuteSec(l)
                         holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.medium_green))
                         holder.progressTimer.progress = l.toInt() / 1000
                         holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
@@ -240,16 +241,16 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
                     }
 
                     override fun onFinish() {
-                        holder.value.text = "00 : 00 : 00"
+                        holder.value.text = DEFAULT_TIME_STRING
                     }
                 }.start()
             } else {
-                holder.progressTimer.visibility = View.GONE
+                holder.progressTimer.hide()
                 holder.value.setPadding(0, 0, 0, 0)
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
             }
         } else {
-            holder.progressTimer.visibility = View.GONE
+            holder.progressTimer.hide()
             holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
         }
 
