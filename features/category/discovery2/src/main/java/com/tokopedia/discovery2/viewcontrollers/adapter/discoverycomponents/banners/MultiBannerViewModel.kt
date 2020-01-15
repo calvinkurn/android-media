@@ -6,10 +6,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -18,7 +16,6 @@ import com.tokopedia.discovery2.utils.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -51,7 +48,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         when (bannerData.value?.data?.get(position)?.action) {
             BannerAction.APPLINK.name -> navigation(position)
             BannerAction.CODE.name -> copyCodeToClipboard(position)
-            BannerAction.PUSH_NOTIFIER.name -> subscribeUserPush(position)
+            BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
         }
     }
 
@@ -66,14 +63,13 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         RouteManager.route(application, bannerData.value?.data?.get(position)?.applinks)
     }
 
-    private fun subscribeUserPush(position: Int) {
-       // userSession = getUserSessions()
+    private fun subscribeUserForPushNotification(position: Int) {
         if (isUserLoggedIn()) {
             launchCatchError(block = {
                 val campaignMap = HashMap<String, Int>()
                 campaignMap["campaignID"] = getCampaignId(position)
-                val pushSubscriptionResponse = MultiBannerDataUseCase()
-                        .subscribeToPush(GraphqlHelper.loadRawString(application.resources, R.raw.set_push_reminder_gql), campaignMap)
+                val pushSubscriptionResponse = MultiBannerDataUseCase(application.resources)
+                        .subscribeToPush(campaignMap)
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value = position
             }
@@ -102,7 +98,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         launchCatchError(block = {
             val campaignMap = HashMap<String, Int>()
             campaignMap["campaignID"] = getCampaignId(position)
-            val pushSubscriptionResponse = MultiBannerDataUseCase()
+            val pushSubscriptionResponse = MultiBannerDataUseCase(application.resources)
                     .checkPushStatus(GraphqlHelper.loadRawString(application.resources, R.raw.check_push_reminder_gql), campaignMap)
 
             if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
@@ -125,7 +121,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         launchCatchError(block = {
             val campaignMap = HashMap<String, Int>()
             campaignMap["campaignID"] = getCampaignId(position)
-            val pushSubscriptionResponse = MultiBannerDataUseCase()
+            val pushSubscriptionResponse = MultiBannerDataUseCase(application.resources)
                     .checkPushStatus(GraphqlHelper.loadRawString(application.resources, R.raw.check_push_reminder_gql), campaignMap)
             if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
                 pushBannerSubscription.value = position
