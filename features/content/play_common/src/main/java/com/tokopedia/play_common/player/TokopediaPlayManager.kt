@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
+import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -66,7 +67,10 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
         override fun onPlayerError(error: ExoPlaybackException?) {
             //TODO("Maybe return error based on corresponding cause?")
-            _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
+            if (error != null && isBehindLiveWindow(error)) {
+                val uri = currentVideoUri
+                if (uri != null) playVideoWithUri(uri, videoPlayer.playWhenReady)
+            } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
     }
 
@@ -133,6 +137,17 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
     }
     //endregion
+
+    private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean {
+        if (e.type != ExoPlaybackException.TYPE_SOURCE) return false
+
+        var cause: Throwable? = e.sourceException
+        while (cause != null) {
+            if (cause is BehindLiveWindowException) return true
+            cause = cause.cause
+        }
+        return false
+    }
 
     fun releasePlayer() {
         videoPlayer.release()
