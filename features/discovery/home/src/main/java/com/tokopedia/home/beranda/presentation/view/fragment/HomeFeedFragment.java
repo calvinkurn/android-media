@@ -159,7 +159,16 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
 
     @Override
     public void showGetListError(Throwable throwable) {
-        Toaster.INSTANCE.make(getView(), ErrorHandler.getErrorMessage(throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", (v)->{});
+        hideLoading();
+
+        updateStateScrollListener();
+
+        // Note: add element should be the last in line.
+        if (getAdapter().getItemCount() > 0) {
+            Toaster.INSTANCE.make(getView(), getString(R.string.home_error_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", (v)->{});
+        } else {
+            onGetListErrorWithEmptyData(throwable);
+        }
     }
 
     @NonNull
