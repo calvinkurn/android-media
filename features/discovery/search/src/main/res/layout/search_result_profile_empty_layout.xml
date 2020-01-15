@@ -37,24 +37,18 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewSearchProfileEmptyContent"
         android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/empty_search_profile_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageSearchProfileEmpty"
         app:layout_constraintTop_toBottomOf="@id/textViewSearchProfileEmptyTitle"
-        app:typographyType="body_3"
-        tools:text="@string/empty_search_profile_content" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrierForEmptySearchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imageSearchProfileEmpty,textViewSearchProfileEmptyContent" />
+        app:layout_constraintBottom_toBottomOf="@id/imageSearchProfileEmpty"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonSearchProfileEmptySearchAgain"
@@ -68,7 +62,7 @@
         android:text="@string/empty_search_profile_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrierForEmptySearchButton"
+        app:layout_constraintTop_toBottomOf="@id/imageSearchProfileEmpty"
         app:unifyButtonSize="small" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
