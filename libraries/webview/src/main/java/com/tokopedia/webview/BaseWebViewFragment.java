@@ -333,7 +333,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                             && isKolUrl(decodedUrl)) {
                         actionBar.setTitle(title);
                     } else {
-                        actionBar.setTitle(getString(R.string.tokopedia));
+                        String activityExtraTitle = getActivity().getIntent().getStringExtra(ConstantKt.KEY_TITLE);
+                        if (TextUtils.isEmpty(activityExtraTitle)) {
+                            actionBar.setTitle(getString(R.string.tokopedia));
+                        } else {
+                            actionBar.setTitle(activityExtraTitle);
+                        }
                     }
                 }
             }
@@ -412,9 +417,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
                 && getActivity()!= null) {
             if (getActivity().isTaskRoot()) {
-                getActivity().finish();
-            } else {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
+            } else {
+                getActivity().finish();
             }
             return true;
         } else if (url.contains(PLAY_GOOGLE_URL)) {

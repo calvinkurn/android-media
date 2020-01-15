@@ -22,6 +22,7 @@ ext {
             analytics               : ":libraries:analytics",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
+            baseList                : ":libraries:base_list",
             baseListSeller          : ":libraries:base_list_seller",
             bannerDynamic           : ":libraries:banner_dynamic",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",

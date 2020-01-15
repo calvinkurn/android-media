@@ -92,12 +92,6 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeDataMapper(@ApplicationContext context: Context, homeVisitableFactory: HomeVisitableFactory): HomeDataMapper{
-        return HomeDataMapper(context, homeVisitableFactory)
-    }
-
-    @HomeScope
-    @Provides
     fun homeRepository(homeDataSource: HomeDataSource, homeDao: HomeDao, homeRemoteDataSource: HomeRemoteDataSource, playRemoteDataSource: PlayRemoteDataSource): HomeRepository {
         return HomeRepositoryImpl(homeDataSource, homeDao, homeRemoteDataSource, playRemoteDataSource)
     }
@@ -214,9 +208,8 @@ class HomeModule {
     fun homePresenter(userSession: UserSessionInterface,
                       getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                       @Named("Main") coroutineDispatcher: CoroutineDispatcher,
-                      homeUseCase: HomeUseCase,
-                      homeDataMapper: HomeDataMapper): HomePresenter {
-        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher, homeUseCase, homeDataMapper)
+                      homeUseCase: HomeUseCase): HomePresenter {
+        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher, homeUseCase)
     }
 
     @Provides

@@ -172,13 +172,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         getComponent(WishlistComponent::class.java).inject(this)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.wishlist_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         showOnBoarding()
     }
