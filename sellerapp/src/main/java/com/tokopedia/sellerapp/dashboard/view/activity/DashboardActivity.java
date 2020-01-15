@@ -26,6 +26,7 @@ import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdated
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
+import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment;
 
 import javax.inject.Inject;
 
@@ -60,7 +61,7 @@ public class DashboardActivity extends DrawerPresenterActivity implements
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, DashboardFragment.newInstance(), TAG)
+                    .replace(R.id.container, SellerHomeFragment.newInstance(), TAG)
                     .commit();
         }
         checkAppUpdate();
