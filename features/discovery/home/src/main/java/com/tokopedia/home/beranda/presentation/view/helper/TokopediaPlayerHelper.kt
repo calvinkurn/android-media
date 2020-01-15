@@ -100,7 +100,7 @@ class TokopediaPlayerHelper(
         // A MediaSource defines the media to be played, loads the media, and from which the loaded media can be read.
         // A MediaSource is injected via ExoPlayer.prepare at the start of playback.
         mVideosUris?.let {
-            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(context, it.first(),false)
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(it.first(),false)
 //            val mediaSources: MutableList<MediaSource> = mutableListOf()
 //            it.forEach {uri ->
 //                mediaSources.add(buildMediaSource(uri))

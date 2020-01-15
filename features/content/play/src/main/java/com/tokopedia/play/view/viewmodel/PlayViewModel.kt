@@ -175,7 +175,7 @@ class PlayViewModel @Inject constructor(
             if (channel.videoStream.isLive
                     && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
-            playVideoStream(applicationContext, channel)
+            playVideoStream(channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
@@ -302,13 +302,13 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun startVideoWithUrlString(context: Context, urlString: String, isLive: Boolean) {
-        playManager.safePlayVideoWithUriString(context, urlString, isLive)
+    private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {
+        playManager.safePlayVideoWithUriString(urlString, isLive)
     }
 
-    private fun playVideoStream(context: Context, channel: Channel) {
+    private fun playVideoStream(channel: Channel) {
         if (channel.isActive) {
-            startVideoWithUrlString(context, channel.videoStream.config.streamUrl, channel.videoStream.isLive)
+            startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
         }
     }
 
