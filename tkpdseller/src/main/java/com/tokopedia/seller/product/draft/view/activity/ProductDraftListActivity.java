@@ -13,6 +13,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -121,6 +122,11 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
                         });
             }
         }
+    }
+
+    @Override
+    protected void startDrawerGetNotificationServiceOnResume() {
+        DrawerGetNotificationService.startService(this,true,true);
     }
 
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {

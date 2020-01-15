@@ -26,10 +26,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
-import com.tokopedia.common.travel.presentation.model.TravelContactData
-import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
@@ -63,6 +59,10 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataActivity
+import com.tokopedia.travel.passenger.presentation.fragment.TravelContactDataFragment
+import com.tokopedia.travel.passenger.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -589,7 +589,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderUiFromBundle(args: Bundle) {
-        val flightBookingParam = args.getParcelable(EXTRA_FLIGHT_BOOKING_PARAM) ?: FlightBookingModel()
+        val flightBookingParam = args.getParcelable(EXTRA_FLIGHT_BOOKING_PARAM)
+                ?: FlightBookingModel()
         bookingViewModel.setFlightBookingParam(flightBookingParam)
 
         val cartId = args.getString(EXTRA_CART_ID, "")
@@ -601,14 +602,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
         renderProfileData(profileData)
 
-        val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS) ?: listOf<FlightBookingPassengerViewModel>()
+        val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS)
+                ?: listOf<FlightBookingPassengerViewModel>()
         bookingViewModel.setPassengerModels(passengerModels)
 
-        val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA)
+                ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setPriceData(priceData)
-        val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA)
+                ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setOtherPriceData(otherPriceData)
-        val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA)
+                ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setAmenityPriceData(amenityPriceData)
 
         refreshCart()
