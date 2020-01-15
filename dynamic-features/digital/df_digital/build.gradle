@@ -54,5 +54,6 @@ dependencies {
     implementation project(rootProject.ext.features.digitalHomepage)
     implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.rechargeOcr)
+    implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.rechargeGeneral)
 }
