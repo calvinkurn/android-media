@@ -69,11 +69,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     // Will be deleted once old shop page removed
     private var shouldInitView = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_info, container, false)
     }
@@ -85,6 +80,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
+
+        val newShopPageEnabled = shopPageConfig.isNewShopPageEnabled()
+        setHasOptionsMenu(newShopPageEnabled)
 
         initViewModel()
         initObservers()
@@ -105,9 +103,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        val shareMenu = menu?.findItem(R.id.action_share)
-        if (shareMenu != null) return
-
         inflater?.inflate(R.menu.menu_shop_info, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
