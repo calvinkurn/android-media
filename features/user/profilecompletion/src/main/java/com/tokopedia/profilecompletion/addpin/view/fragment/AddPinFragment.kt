@@ -297,7 +297,7 @@ class AddPinFragment: BaseDaggerFragment(){
         addChangePinViewModel.addPinResponse.removeObservers(this)
         addChangePinViewModel.checkPinResponse.removeObservers(this)
         addChangePinViewModel.validatePinResponse.removeObservers(this)
-        addChangePinViewModel.clear()
+        addChangePinViewModel.flush()
     }
 
     companion object {

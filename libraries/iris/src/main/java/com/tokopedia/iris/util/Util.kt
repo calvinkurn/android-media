@@ -19,6 +19,6 @@ fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext
 
 fun logIris(cache: Cache, message: String) {
     if (cache.isEnableLogEntries()) {
-        Timber.w("$TAG $message")
+
     }
 }

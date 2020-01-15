@@ -193,11 +193,6 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
-import com.tokopedia.talk.common.TalkRouter;
-import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
-import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
-import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
-import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -293,7 +288,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
-        TalkRouter,
         TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
         UnifiedOrderListRouter,
@@ -1304,11 +1298,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context context) {
-        return InboxTalkActivity.Companion.createIntent(context);
-    }
-
-    @Override
     public Intent getManageAdressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);
     }
@@ -1423,11 +1412,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getProductTalk(Context context, String productId) {
-        return TalkProductActivity.Companion.createIntent(context, productId);
-    }
-
-    @Override
     public void eventClickFilterReview(Context context,
                                        String filterName,
                                        String productId) {
@@ -1462,17 +1446,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         );
         mapEvent.put(KEY_PRODUCT_ID, productId);
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
-    }
-
-    @Override
-    public Intent getShopTalkIntent(Context context, String shopId) {
-        return ShopTalkActivity.Companion.createIntent(context, shopId);
-    }
-
-    @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
-                                      String source) {
-        return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override
