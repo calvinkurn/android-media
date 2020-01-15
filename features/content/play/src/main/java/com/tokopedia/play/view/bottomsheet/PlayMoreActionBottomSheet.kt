@@ -31,18 +31,14 @@ class PlayMoreActionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private val moreActionAdapter = PlayMoreActionAdapter().apply {
-        setItems(
-                listOf(
-                    PlayMoreActionUiModel(
-                            type = PlayMoreActionType.WatchMode,
-                            iconRes = R.drawable.ic_play_watch_mode,
-                            subtitleRes = R.string.play_watch_mode,
-                            onClick = { listener?.onWatchModeClicked(this@PlayMoreActionBottomSheet) }
-                    )
-                )
-        )
-    }
+    private val moreActionAdapter = PlayMoreActionAdapter()
+
+    private val watchModeAction = PlayMoreActionUiModel(
+            type = PlayMoreActionType.WatchMode,
+            iconRes = R.drawable.ic_play_watch_mode,
+            subtitleRes = R.string.play_watch_mode,
+            onClick = { listener?.onWatchModeClicked(this@PlayMoreActionBottomSheet) }
+    )
 
     private var listener: Listener? = null
 
@@ -58,6 +54,10 @@ class PlayMoreActionBottomSheet : BottomSheetUnify() {
         show(fragmentManager, TAG)
     }
 
+    fun setState(isFreeze: Boolean) {
+        setActionList(isFreeze)
+    }
+
     private fun initView(view: View) {
         with(view) {
             rvActionList = findViewById(R.id.rv_action_list)
@@ -71,8 +71,20 @@ class PlayMoreActionBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun setActionList(isFreeze: Boolean) {
+        val actionList = mutableListOf<PlayMoreActionUiModel>().apply {
+            if (!isFreeze) add(watchModeAction)
+        }
+        if (actionList.isNotEmpty()) {
+            moreActionAdapter.setItems(actionList)
+            moreActionAdapter.notifyDataSetChanged()
+        }
+        else listener?.onNoAction(this)
+    }
+
     interface Listener {
 
         fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
+        fun onNoAction(bottomSheet: PlayMoreActionBottomSheet)
     }
 }

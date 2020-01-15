@@ -34,6 +34,7 @@ class ToolbarView(
     private val tvPartnerName = view.findViewById<Typography>(R.id.tv_partner_name)
     private val tvFollow = view.findViewById<Typography>(R.id.tv_follow)
     private val groupPartner = view.findViewById<Group>(R.id.group_partner)
+    private val ivMore = view.findViewById<ImageView>(R.id.iv_more)
 
     init {
         view.findViewById<ImageView>(R.id.iv_back)
@@ -41,14 +42,12 @@ class ToolbarView(
                     listener.onBackButtonClicked(this)
                 }
 
-        view.findViewById<ImageView>(R.id.iv_more)
-                .setOnClickListener {
-                    listener.onMoreButtonClicked(this)
-                }
+        ivMore.setOnClickListener {
+            listener.onMoreButtonClicked(this)
+        }
     }
 
     override val containerId: Int = view.id
-
 
 
     override fun show() {
@@ -59,15 +58,19 @@ class ToolbarView(
         view.hide()
     }
 
-    fun setLiveBadgeVisibility(isLive: Boolean) {
+    internal fun setLiveBadgeVisibility(isLive: Boolean) {
         if (isLive) flLiveBadge.visible() else flLiveBadge.gone()
     }
 
-    fun setTitle(title: String) {
+    internal fun setTitle(title: String) {
         tvChannelName.text = title
     }
 
-    fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
+    internal fun hideActionMore() {
+        ivMore.hide()
+    }
+
+    internal fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
         tvPartnerName.text = partnerInfo.name
         tvFollow.text = if (partnerInfo.isFollowed)
             view.context.getString(R.string.play_following) else
