@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
+import com.tokopedia.play_common.state.TokopediaPlayPrepareState
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -50,7 +51,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
     }
 
-    private var currentVideoUri: Uri? = null
+    private var currentPrepareState: TokopediaPlayPrepareState = TokopediaPlayPrepareState.Unprepared(null)
     private val _observablePlayVideoState = MutableLiveData<TokopediaPlayVideoState>()
 
     private val playerEventListener = object : Player.EventListener {
@@ -67,8 +68,8 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         override fun onPlayerError(error: ExoPlaybackException?) {
             //TODO("Maybe return error based on corresponding cause?")
             if (error != null && isBehindLiveWindow(error)) {
-                val uri = currentVideoUri
-                if (uri != null) playVideoWithUri(uri, videoPlayer.playWhenReady)
+                val prepareState = currentPrepareState
+                if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
             } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
     }
@@ -78,20 +79,21 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     }
 
     //region public method
-    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
-        if (uri != currentVideoUri) {
-            currentVideoUri = uri
-            playVideoWithUri(uri, autoPlay)
+    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, forceReset: Boolean = false) {
+        val prepareState = currentPrepareState
+        if (prepareState is TokopediaPlayPrepareState.Unprepared) {
+            playVideoWithUri(uri, autoPlay, prepareState.previousUri != uri || forceReset)
+            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay)
+    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean = true, forceReset: Boolean = false) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay, forceReset)
 
-    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
+    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, shouldReset: Boolean) {
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
-        videoPlayer.prepare(mediaSource)
+        videoPlayer.prepare(mediaSource, shouldReset, shouldReset)
     }
 
     //endregion
@@ -158,5 +160,13 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     fun releasePlayer() {
         videoPlayer.release()
+    }
+
+    fun stopPlayer() {
+        val prepareState = currentPrepareState
+        if (prepareState is TokopediaPlayPrepareState.Prepared)
+            currentPrepareState = TokopediaPlayPrepareState.Unprepared(prepareState.uri)
+
+        videoPlayer.stop(false)
     }
 }
