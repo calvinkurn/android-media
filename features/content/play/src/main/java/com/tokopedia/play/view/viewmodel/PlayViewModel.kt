@@ -120,6 +120,7 @@ class PlayViewModel @Inject constructor(
     var isLive: Boolean = false
     var contentId: Int = 0
     var contentType: Int = 0
+    var likeType: Int = 0
 
     init {
         //TODO(Remove, ONLY FOR TESTING)
@@ -319,6 +320,7 @@ class PlayViewModel @Inject constructor(
     private fun setContentIdAndType(channel: Channel) {
         contentId = channel.contentId
         contentType = channel.contentType
+        likeType = channel.likeType
     }
 
     private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(

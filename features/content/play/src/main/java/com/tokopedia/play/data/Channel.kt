@@ -61,6 +61,9 @@ data class Channel(
         @SerializedName("content_type")
         val contentType: Int = 1,
 
+        @SerializedName("like_type")
+        val likeType: Int = 1,
+
         @SerializedName("video_stream")
         var videoStream: VideoStream = VideoStream(), // TODO("testing purposes")
 
