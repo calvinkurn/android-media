@@ -43,6 +43,7 @@ class VideoControlComponent(
                                 if (it.videoStream.videoType.isLive) uiView.hide()
                                 else if (it.videoStream.videoType.isVod) uiView.show()
                             }
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

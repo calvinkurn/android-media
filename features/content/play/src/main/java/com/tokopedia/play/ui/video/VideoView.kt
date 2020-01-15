@@ -34,10 +34,10 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
     fun onDestroy() {
         pvVideo.release()
-        pvVideo.setPlayer(null)
+        setPlayer(null)
     }
 
-    fun setPlayer(exoPlayer: ExoPlayer) {
+    fun setPlayer(exoPlayer: ExoPlayer?) {
         pvVideo.setPlayer(exoPlayer)
     }
 

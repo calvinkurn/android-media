@@ -14,12 +14,12 @@ abstract class UIView(val container: ViewGroup) {
     abstract val containerId: Int
 
     /**
-     * Show the IUIView
+     * Show the UIView
      */
     abstract fun show()
 
     /**
-     * Hide the IUIView
+     * Hide the UIView
      */
     abstract fun hide()
 }

@@ -8,7 +8,6 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -47,6 +46,7 @@ class PinnedComponent(
                                 if (!it.isShown && shouldShow) uiView.show() else uiView.hide()
                                 isKeyboardShown = it.isShown
                             }
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

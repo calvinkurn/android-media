@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -84,24 +85,36 @@ class PlayViewModel @Inject constructor(
     private val _observableKeyboardState = MutableLiveData<KeyboardState>()
     val observableKeyboardState: LiveData<KeyboardState> = _observableKeyboardState
 
-    private val _observablePinnedMessage = MediatorLiveData<PinnedMessageUiModel>().apply {
-        addSource(observablePartnerInfo) {
-            val currentValue = value
-            if (currentValue != null) value = currentValue.copy(
-                    partnerName = it.name
-            )
-        }
-    }
+    private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     val observablePinnedMessage: LiveData<PinnedMessageUiModel> = _observablePinnedMessage
 
-    val observableVideoProperty: LiveData<VideoPropertyUiModel> = MediatorLiveData<VideoPropertyUiModel>().apply {
+    private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    val observableVideoProperty: LiveData<VideoPropertyUiModel> = _observableVideoProperty
+
+    private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
-            value = VideoPropertyUiModel(it.videoType, value?.state
+            _observableVideoProperty.value = VideoPropertyUiModel(it.videoType, _observableVideoProperty.value?.state
                     ?: TokopediaPlayVideoState.NotConfigured)
         }
         addSource(playManager.getObservablePlayVideoState()) {
-            value = VideoPropertyUiModel(value?.type ?: PlayVideoType.Unknown, it)
+            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayVideoType.Unknown, it)
         }
+        addSource(observablePartnerInfo) {
+            val currentValue = _observablePinnedMessage.value
+            if (currentValue != null) _observablePinnedMessage.value = currentValue.copy(
+                    partnerName = it.name
+            )
+        }
+        addSource(observableEvent) {
+            if (it.isFreeze) doOnChannelFreeze()
+        }
+    }
+
+    /**
+     * DO NOT CHANGE THIS TO LAMBDA
+     */
+    private val stateHandlerObserver = object : Observer<Unit> {
+        override fun onChanged(t: Unit?) {}
     }
 
     var isLive: Boolean = false
@@ -111,8 +124,15 @@ class PlayViewModel @Inject constructor(
     init {
         //TODO(Remove, ONLY FOR TESTING)
 //        initMockChat()
+//        initMockFreeze()
 
         _observableVOD.value = playManager.videoPlayer
+        stateHandler.observeForever(stateHandlerObserver)
+    }
+
+    override fun onCleared() {
+        stateHandler.removeObserver(stateHandlerObserver)
+        super.onCleared()
     }
 
     fun startCurrentVideo() {
@@ -371,6 +391,12 @@ class PlayViewModel @Inject constructor(
 
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
 
+    private fun doOnChannelFreeze() {
+        destroy()
+        hideKeyboard()
+    }
+
+    //region mock
     private fun initMockChat() {
         launch(dispatchers.io) {
 
@@ -388,4 +414,13 @@ class PlayViewModel @Inject constructor(
             }
         }
     }
+
+    private fun initMockFreeze() {
+        launch(dispatchers.main) {
+            delay(10000)
+            _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true, freezeTitle = "Freeze title", freezeMessage = "freeze message", freezeButtonTitle = "Freeze Button", freezeButtonUrl = "tokopedia://play/2")
+        }
+    }
+
+    //endregion
 }

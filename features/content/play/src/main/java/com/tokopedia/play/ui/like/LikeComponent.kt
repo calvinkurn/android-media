@@ -3,7 +3,6 @@ package com.tokopedia.play.ui.like
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +29,7 @@ class LikeComponent(
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.LikeContent -> uiView.playLikeAnimation(it.shouldLike)
                             is ScreenStateEvent.IsLikedContent -> uiView.setIsLiked(it.isLiked)
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

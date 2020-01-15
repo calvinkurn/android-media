@@ -18,7 +18,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -26,6 +25,8 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
+import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
+import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
 import com.tokopedia.play.ui.gradientbg.GradientBackgroundComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
@@ -52,6 +53,7 @@ import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.KeyboardState
+import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -99,8 +101,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
     
-    private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_16) }
-    private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_8) }
+    private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
+    private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
+    private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl3) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -117,6 +120,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var toolbarComponent: UIComponent<*>
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
+    private lateinit var endLiveInfoComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
 
@@ -154,25 +158,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVideo(it)
-                        )
-            }
-        })
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.VideoPropertyChanged(it)
-                        )
-            }
-        })
-        observerTitleChannel()
+
+        observeVOD()
+        observeVideoProperty()
+        observeTitleChannel()
         observeQuickReply()
         observeVideoStream()
         observeToolbarInfo()
@@ -183,6 +172,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeFollowShop()
         observeLikeContent()
         observeKeyboardState()
+        observeEventUserInfo()
 
         observeLoggedInInteractionEvent()
     }
@@ -206,12 +196,39 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
             sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
 
+            val endLiveInfoView = view.findViewById<View>(endLiveInfoComponent.getContainerId())
+            endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
+
             insets
         }
     }
 
     //region observe
-    private fun observerTitleChannel() {
+    private fun observeVOD() {
+        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetVideo(it)
+                        )
+            }
+        })
+    }
+
+    private fun observeVideoProperty() {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.VideoPropertyChanged(it)
+                        )
+            }
+        })
+    }
+
+    private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
@@ -291,6 +308,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
     }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            launch {
+                if (it.isBanned) sendEventBanned(it)
+                else if(it.isFreeze) sendEventFreeze(it)
+            }
+        })
+    }
     //endregion
 
     private fun setupView(view: View) {
@@ -331,6 +357,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         chatListComponent = initChatListComponent(container)
         immersiveBoxComponent = initImmersiveBoxComponent(container)
         videoControlComponent = initVideoControlComponent(container)
+        endLiveInfoComponent = initEndLiveInfoComponent(container)
         toolbarComponent = initToolbarComponent(container)
         quickReplyComponent = initQuickReplyComponent(container)
         //play button should be on top of other component so it can be clicked
@@ -349,7 +376,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 toolbarComponentId = toolbarComponent.getContainerId(),
                 playButtonComponentId = playButtonComponent.getContainerId(),
                 immersiveBoxComponentId = immersiveBoxComponent.getContainerId(),
-                quickReplyComponentId = quickReplyComponent.getContainerId()
+                quickReplyComponentId = quickReplyComponent.getContainerId(),
+                endLiveInfoComponentId = endLiveInfoComponent.getContainerId()
         )
     }
 
@@ -495,6 +523,26 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         return quickReplyComponent
     }
+
+    private fun initEndLiveInfoComponent(container: ViewGroup): UIComponent<EndLiveInfoInteractionEvent> {
+        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+
+        launch {
+            endLiveInfoComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is EndLiveInfoInteractionEvent.ButtonActionClicked -> {
+                                openPageByApplink(
+                                        applink = it.buttonUrl,
+                                        shouldFinish = true
+                                )
+                            }
+                        }
+                    }
+        }
+
+        return endLiveInfoComponent
+    }
     //endregion
 
     //region layouting
@@ -511,7 +559,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             @IdRes toolbarComponentId: Int,
             @IdRes playButtonComponentId: Int,
             @IdRes immersiveBoxComponentId: Int,
-            @IdRes quickReplyComponentId: Int
+            @IdRes quickReplyComponentId: Int,
+            @IdRes endLiveInfoComponentId: Int
     ) {
 
         fun layoutSizeContainer(container: ViewGroup, @IdRes id: Int) {
@@ -684,6 +733,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
+        fun layoutEndLiveComponent(container: ViewGroup, @IdRes id: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         layoutSizeContainer(container, sizeContainerComponentId)
         layoutToolbar(container, toolbarComponentId, sizeContainerComponentId)
         layoutVideoControl(container, videoControlComponentId, toolbarComponentId, sizeContainerComponentId)
@@ -696,6 +760,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutImmersiveBox(container, immersiveBoxComponentId, toolbarComponentId, statsComponentId)
         layoutQuickReply(container, quickReplyComponentId, sendChatComponentId, toolbarComponentId)
         layoutGradientBackground(container, gradientBackgroundComponentId)
+        layoutEndLiveComponent(container, endLiveInfoComponentId)
     }
     //endregion
 
@@ -872,9 +937,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         openPageByApplink(ApplinkConst.LOGIN)
     }
 
-    private fun openPageByApplink(applink: String, vararg params: String) {
+    private fun openPageByApplink(applink: String, vararg params: String, shouldFinish: Boolean = false) {
         RouteManager.route(context, applink, *params)
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
+
+        if (shouldFinish) activity?.finish()
     }
 
     private fun calculateInteractionHeightOnKeyboardShown(estimatedKeyboardHeight: Int) {
@@ -913,5 +980,38 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun showSystemUI() {
         PlayFullScreenHelper.showSystemUi(requireActivity())
+    }
+
+    private fun sendEventBanned(eventUiModel: EventUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Banned(
+                                            title = eventUiModel.bannedTitle,
+                                            message = eventUiModel.bannedMessage,
+                                            btnTitle = eventUiModel.bannedButtonTitle
+                                    )
+                            )
+                    )
+        }
+    }
+
+    private fun sendEventFreeze(eventUiModel: EventUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Freeze(
+                                            title = eventUiModel.freezeTitle,
+                                            message = eventUiModel.freezeMessage,
+                                            btnTitle = eventUiModel.freezeButtonTitle,
+                                            btnUrl = eventUiModel.freezeButtonUrl
+                                    )
+                            )
+                    )
+        }
     }
 }

@@ -27,6 +27,7 @@ class OneTapComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.ShowOneTapOnboarding -> uiView.showAnimated()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

@@ -14,6 +14,8 @@
     <color name="play_bottom_gradient_darker">#B331353B</color>
 
     <color name="play_video_background">#26292E</color>
-    <color name="play_error_background">#26292e</color>
-    <color name="play_error_text_color">#aeffffff</color>
+    <color name="play_error_background">#26292E</color>
+    <color name="play_error_text_color">#AEffffff</color>
+
+    <color name="play_live_ended_title">#F5FFFFFF</color>
 </resources>

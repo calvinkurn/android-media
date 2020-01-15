@@ -29,6 +29,7 @@ class StatsComponent(
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
                             is ScreenStateEvent.SetTotalLikes -> uiView.setTotalLikes(it.totalLikes)
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }

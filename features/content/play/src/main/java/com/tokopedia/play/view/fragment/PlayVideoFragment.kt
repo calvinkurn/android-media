@@ -23,6 +23,8 @@ import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -96,6 +98,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVideoProperty()
         observeOneTapOnboarding()
         observeKeyboardState()
+        observeEventUserInfo()
     }
 
     override fun onDestroyView() {
@@ -144,6 +147,15 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+            }
+        })
+    }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            launch {
+                if (it.isBanned) sendEventBanned(it)
+                else if(it.isFreeze) sendEventFreeze(it)
             }
         })
     }
@@ -250,6 +262,39 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                     .emit(
                             ScreenStateEvent::class.java,
                             ScreenStateEvent.ShowOneTapOnboarding
+                    )
+        }
+    }
+
+    private fun sendEventBanned(eventUiModel: EventUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Banned(
+                                            title = eventUiModel.bannedTitle,
+                                            message = eventUiModel.bannedMessage,
+                                            btnTitle = eventUiModel.bannedButtonTitle
+                                    )
+                            )
+                    )
+        }
+    }
+
+    private fun sendEventFreeze(eventUiModel: EventUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Freeze(
+                                            title = eventUiModel.freezeTitle,
+                                            message = eventUiModel.freezeMessage,
+                                            btnTitle = eventUiModel.freezeButtonTitle,
+                                            btnUrl = eventUiModel.freezeButtonUrl
+                                    )
+                            )
                     )
         }
     }

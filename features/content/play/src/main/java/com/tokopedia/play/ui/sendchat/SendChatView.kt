@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
@@ -94,7 +97,7 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
             etChat.requestFocus()
             if (forceChangeKeyboardState) showKeyboard(true)
         }
-        else if (etChat.hasFocus() && !shouldFocus) {
+        else if (!shouldFocus) {
             etChat.clearFocus()
             showKeyboard(false)
         }
