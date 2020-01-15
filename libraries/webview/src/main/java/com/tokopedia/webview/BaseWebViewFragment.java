@@ -333,7 +333,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                             && isKolUrl(decodedUrl)) {
                         actionBar.setTitle(title);
                     } else {
-                        actionBar.setTitle(getString(R.string.tokopedia));
+                        String activityExtraTitle = getActivity().getIntent().getStringExtra(ConstantKt.KEY_TITLE);
+                        if (TextUtils.isEmpty(activityExtraTitle)) {
+                            actionBar.setTitle(getString(R.string.tokopedia));
+                        } else {
+                            actionBar.setTitle(activityExtraTitle);
+                        }
                     }
                 }
             }
