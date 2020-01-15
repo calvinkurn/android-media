@@ -60,7 +60,7 @@ class PlayModule {
     fun provideRetrofit(@ApplicationContext context: Context, userSession: UserSession, networkRouter: NetworkRouter): Retrofit {
          return CommonNetwork.createRetrofit(
              context,
-             TokopediaUrl.getInstance().GROUPCHAT, // TODO("change url to TokopediaUrl.getInstance().CHAT for prod")
+             TokopediaUrl.getInstance().PLAY,
              networkRouter,
              userSession)
     }
