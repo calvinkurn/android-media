@@ -19,6 +19,7 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, LikeContent.Response::class.java, params)
+        gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
