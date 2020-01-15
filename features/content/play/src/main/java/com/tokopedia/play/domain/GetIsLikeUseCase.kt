@@ -61,7 +61,7 @@ class GetIsLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestG
 
         fun createParam(contentId: Int, contentType: Int): HashMap<String, Any> {
             return hashMapOf(
-                    CONTENT_ID to contentId.toString(),
+                    CONTENT_ID to contentId,
                     CONTENT_TYPE to contentType
             )
         }

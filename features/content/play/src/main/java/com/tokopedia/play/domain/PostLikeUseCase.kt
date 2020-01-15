@@ -19,6 +19,7 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, LikeContent.Response::class.java, params)
+        gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
@@ -66,13 +67,13 @@ class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGr
             """.trimIndent()
         }
 
-        fun createParam(contentId: Int, contentType: Int, action: Boolean, isLive: Boolean): HashMap<String, Any> {
+        fun createParam(contentId: Int, contentType: Int, likeType: Int, action: Boolean, isLive: Boolean): HashMap<String, Any> {
             return hashMapOf(
                     POST_ID to 0,
                     ACTION to if(action) 1 else 0,
                     CONTENT_ID to contentId,
                     CONTENT_TYPE to contentType,
-                    LIKE_TYPE to if(isLive) 1 else 2
+                    LIKE_TYPE to likeType
             )
         }
     }

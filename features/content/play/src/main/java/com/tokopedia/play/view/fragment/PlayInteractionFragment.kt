@@ -923,6 +923,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun doLikeUnlike(shouldLike: Boolean) {
         viewModel.doLikeUnlike(playViewModel.contentId,
                 playViewModel.contentType,
+                playViewModel.likeType,
                 shouldLike,
                 playViewModel.isLive)
 
