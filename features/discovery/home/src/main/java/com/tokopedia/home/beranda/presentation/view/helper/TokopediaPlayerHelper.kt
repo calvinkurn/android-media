@@ -24,10 +24,10 @@ import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.util.ConnectionUtils
 import com.tokopedia.home.util.DimensionUtils
 import com.tokopedia.play_common.player.TokopediaPlayManager
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.IOException
+import kotlin.coroutines.CoroutineContext
 
 @SuppressWarnings("WeakerAccess")
 class TokopediaPlayerHelper(
@@ -36,7 +36,8 @@ class TokopediaPlayerHelper(
 ) :
         ExoPlayerControl,
         ExoPlayerStatus,
-        Player.EventListener {
+        Player.EventListener,
+        CoroutineScope {
 
     private var mPlayer: SimpleExoPlayer? = null
     private var mDataSourceFactory: DataSource.Factory? = null
@@ -61,16 +62,20 @@ class TokopediaPlayerHelper(
     private var isThumbImageViewEnabled = false
     private var mThumbImage: ImageView? = null
 
+    /* Master job */
+    private val masterJob = Job()
+
     init {
         init()
     }
 
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.IO
+
     private fun init(){
-        // Measures bandwidth during playback. Can be null if not required.
         // Measures bandwidth during playback. Can be null if not required.
         val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
 
-        // Produces DataSource instances through which media data is loaded.
         // Produces DataSource instances through which media data is loaded.
         mDataSourceFactory = DefaultDataSourceFactory(context,
                 Util.getUserAgent(context, "home"), bandwidthMeter)
@@ -307,6 +312,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun releasePlayer() {
+        masterJob.cancelChildren()
         isPlayerPrepared = false
         mExoPlayerListener?.releaseExoPlayerCalled()
         if (mPlayer != null) {
@@ -319,17 +325,17 @@ class TokopediaPlayerHelper(
     }
 
     override fun playerPause() {
+        masterJob.cancelChildren()
         updateResumePosition()
         mPlayer?.playWhenReady = false
     }
 
     override fun playerPlay() {
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()){
-            runBlocking {
-                launch {
-                    Thread.sleep(3000)
-                    mPlayer?.playWhenReady = true
-                }
+            masterJob.cancelChildren()
+            launch(coroutineContext){
+                delay(3000)
+                mPlayer?.playWhenReady = true
             }
         }
     }
