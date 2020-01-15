@@ -24,7 +24,6 @@ public interface TkpdCoreRouter {
     String FRAGMENT_TYPE = "FRAGMENT_TYPE";
     int INVALID_FRAGMENT = 0;
     int WISHLIST_FRAGMENT = 1;
-    int PRODUCT_HISTORY_FRAGMENT = 2;
 
     String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     int RESO_ALL = 2;

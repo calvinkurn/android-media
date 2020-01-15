@@ -12,13 +12,14 @@ import android.nfc.tech.NfcA;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -44,15 +45,15 @@ import com.tokopedia.digital.product.view.listener.IETollView;
 import com.tokopedia.digital.utils.NFCUtils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-
-import java.io.IOException;
-
-import javax.inject.Inject;
-
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+
+import javax.inject.Inject;
 
 /**
  * Created by Rizky on 15/05/18.
@@ -71,8 +72,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private static final String COMMAND_SUCCESSFULLY_EXECUTED = "9000";
 
     private static final int TRANSCEIVE_TIMEOUT_IN_SEC = 5000;
-
-    private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -441,7 +440,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     }
 
     private boolean isDigitalSmartcardEnabled() {
-        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false);
     }
 
     @Override

@@ -5,12 +5,12 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.salam.umrah.checkout.data.ContactUser
 import com.tokopedia.salam.umrah.checkout.di.DaggerUmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutContactDataFragment
 import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
+
 /**
  * @author by firman on 27/11/2019
  */

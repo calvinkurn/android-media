@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
-import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
@@ -96,7 +95,9 @@ public class HomePageTracking {
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK = "product recommendation click";
-    public static final String EVENT_LEGO_BANNER_IMPRESSION = "lego banner gif impression";
+    public static final String EVENT_LEGO_BANNER_IMPRESSION = "home banner impression";
+    public static final String EVENT_LEGO_BANNER = "lego banner gif impression";
+
     public static final String EVENT_LEGO_BANNER_CLICK = "lego banner gif click";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK_NON_LOGIN = "product recommendation click - non login";
     public static final String CLICK = "click";
@@ -164,10 +165,6 @@ public class HomePageTracking {
     public static final String VALUE_NAME_DYNAMIC_ICON = "/ - dynamic icon";
     public static final String EVENT_ACTION_IMPRESSION_ON_DYNAMIC_ICON = "impression on dynamic icon";
     public static final String SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus";
-
-    private static final String HOMEPAGE_INTERACTION = "userInteractionHomePage";
-    private static final String DIGITAL_HOMEPAGE = "homepage digital";
-    private static final String CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk";
 
     public static ContextAnalytics getTracker() {
         return TrackApp.getInstance().getGTM();
@@ -583,8 +580,7 @@ public class HomePageTracking {
                                         legoAndCuratedList.toArray(new Object[legoAndCuratedList.size()])
                                 )
                         )
-                ),
-                "attribution", "2 - homeBanner"
+                )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
@@ -1029,15 +1025,6 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventEnhanceImpressionBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceImpressionBannerChannelMix()
-                    );
-        }
-    }
-
     public static void eventEnhanceImpressionPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
@@ -1056,33 +1043,27 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhanceImpressionBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    DataLayer.mapOf(
-                            EVENT, PROMO_VIEW,
-                            EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                            EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
-                            EVENT_LABEL, "",
-                            CHANNEL_ID, bannerChannel.getId(),
-                            ECOMMERCE, DataLayer.mapOf(
-                                    PROMO_VIEW, DataLayer.mapOf(
-                                            PROMOTIONS, DataLayer.listOf(
-                                                    DataLayer.mapOf(
-                                                            FIELD_ID, bannerChannel.getBanner().getId(),
-                                                            FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
-                                                            FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
-                                                            FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
-                                                            FIELD_POSITION, String.valueOf(1)
-                                                    )
-                                            )
-                                    )
+    public static HashMap<String, Object> getEventEnhanceImpressionBannerGif(DynamicHomeChannel.Channels bannerChannel) {
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, bannerChannel.getBanner().getId()+"_"+bannerChannel.getId(),
+                                                FIELD_NAME, bannerChannel.getPromoName(),
+                                                FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
+                                                FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(1)
+                                        )
+                                )
+                        )
 
-                            )
-                    )
-            );
-        }
+                )
+        );
     }
 
     public static void eventEnhanceClickBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
@@ -1268,7 +1249,7 @@ public class HomePageTracking {
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW_IRIS,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                EVENT_ACTION, EVENT_LEGO_BANNER,
                 EVENT_LABEL, "",
                 CHANNEL_ID, channel.getId(),
                 ECOMMERCE, DataLayer.mapOf(
@@ -1477,8 +1458,7 @@ public class HomePageTracking {
         return list;
     }
 
-    public static HashMap<String,Object> getBannerImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
-        List<Map<String, Object>> listBanner = convertSliderBannerImpressionDataLayer(bannerOverlaySlides);
+    public static HashMap<String,Object> getBannerImpressionDataLayer(BannerSlidesModel bannerOverlaySlide) {
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
@@ -1487,7 +1467,7 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
-                                        listBanner
+                                        convertSliderBannerImpressionDataLayer(bannerOverlaySlide)
                                 )
                         )
                 )
@@ -1516,8 +1496,7 @@ public class HomePageTracking {
         );
     }
 
-    public static HashMap<String, Object> getBannerOverlayPersoImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
-        List<Object> listBanner = convertOverlaySliderBannerImpressionDataLayer(bannerOverlaySlides);
+    public static HashMap<String, Object> getBannerOverlayPersoImpressionDataLayer(BannerSlidesModel bannerOverlaySlide) {
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
@@ -1525,50 +1504,30 @@ public class HomePageTracking {
                 EVENT_LABEL, LABEL_EMPTY,
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
-                                PROMOTIONS, DataLayer.listOf(
-                                        listBanner
-                                )
+                                PROMOTIONS, convertOverlaySliderBannerImpressionDataLayer(bannerOverlaySlide)
                         )
                 )
         );
     }
 
-    private static List<Object> convertOverlaySliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
-        List<Object> list = new ArrayList<>();
-        if (bannerSlidesModels != null) {
-            for (int i = 0; i < bannerSlidesModels.size(); i++) {
-                BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
-                list.add(
-                        DataLayer.mapOf(
-                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
-                                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
-                                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
-                                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
-                        )
-                );
-            }
-        }
-        return list;
+    private static Map<String, Object> convertOverlaySliderBannerImpressionDataLayer(BannerSlidesModel bannerSlidesModel) {
+        return DataLayer.mapOf(
+                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
+                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
+                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
+                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
+                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
+        );
     }
 
-    private static List<Map<String, Object>> convertSliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        if (bannerSlidesModels != null) {
-            for (int i = 0; i < bannerSlidesModels.size(); i++) {
-                BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
-                list.add(
-                        DataLayer.mapOf(
-                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
-                                FIELD_NAME, VALUE_NAME_PROMO,
-                                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
-                                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
-                        )
-                );
-            }
-        }
-        return list;
+    private static Map<String, Object> convertSliderBannerImpressionDataLayer(BannerSlidesModel bannerSlidesModel) {
+        return DataLayer.mapOf(
+                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
+                FIELD_NAME, VALUE_NAME_PROMO,
+                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
+                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
+                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
+        );
     }
 
     public static Map<String, Object> getEnhanceImpressionDynamicIconHomePage(List<HomeIconItem> homeIconItem) {
@@ -1606,17 +1565,6 @@ public class HomePageTracking {
             }
         }
         return list;
-    }
-
-    public static void onClickDigitalSeeMore() {
-        if (getTracker() != null) {
-            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                    HOMEPAGE_INTERACTION,
-                    DIGITAL_HOMEPAGE,
-                    CLICK_SEE_ALL_PRODUCTS,
-                    ""
-            ));
-        }
     }
 
     public static void sendTokopointTrackerClick() {

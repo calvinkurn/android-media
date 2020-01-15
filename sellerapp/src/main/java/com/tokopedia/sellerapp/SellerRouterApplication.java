@@ -46,7 +46,6 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.CoreNetworkRouter;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.SellerRouter;
@@ -59,7 +58,6 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -69,7 +67,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -95,6 +92,9 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -110,6 +110,7 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -175,7 +176,7 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
-        ApplinkRouter, ImageUploaderRouter,
+        ApplinkRouter,
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, WithdrawRouter,
         TalkRouter, PhoneVerificationRouter,
@@ -187,7 +188,6 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        CharacterPerMinuteInterface,
         ResolutionRouter,
         MLPRouter {
 
@@ -604,6 +604,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return LoginActivity.DeepLinkIntents.getAutoLoginWebview(context, name, url);
     }
+
+    public Intent getKolFollowingPageIntent(Context context, int userId) {
+        return null;
+    }
+
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
@@ -751,11 +756,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
-    @Override
-    public Interceptor getAuthInterceptor() {
-        return new TkpdAuthInterceptor();
-    }
-
 
     @Override
     public FingerprintModel getFingerprintModel() {
@@ -812,6 +812,16 @@ public abstract class SellerRouterApplication extends MainApplication
         }
     }
 
+    public Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
+                                             ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
+                                             int productStock, boolean officialStore, String productSku,
+                                             boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
+                                             boolean hasOriginalVariantLevel2, boolean hasWholesale, boolean isAddStatus) {
+        return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
+                productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
+                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale,isAddStatus);
+    }
+
     @Override
     public Intent getProductTalk(Context context, String productId) {
         return TalkProductActivity.Companion.createIntent(context, productId);
@@ -861,7 +871,13 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-
+        if (activity != null) {
+            DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+            Intent intent = activity.getIntent();
+            intent.setData(Uri.parse(applink));
+            intent.putExtras(bundle);
+            deepLinkDelegate.dispatchFrom(activity, intent);
+        }
     }
 
     @Override
@@ -978,6 +994,9 @@ public abstract class SellerRouterApplication extends MainApplication
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
+    public void onLoginSuccess() {
+    }
+
     public String getDeviceId(Context context) {
         return "";
     }
@@ -1009,20 +1028,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void saveCPM(@NonNull String cpm) {
-    }
-
-    @Override
-    public String getCPM() {
-        return "";
-    }
-
-    @Override
-    public boolean isEnable() {
-        return false;
-    }
-
-    @Override
     public boolean isToggleBuyAgainOn() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, false);
     }
@@ -1038,8 +1043,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context,
-                                            BottomSheets.BottomSheetDismissListener listener) {
-        //no op
+    public void onActivityDestroyed(String screenName, Activity baseActivity) {
+
+    }
+
+    @Override
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
+
     }
 }
