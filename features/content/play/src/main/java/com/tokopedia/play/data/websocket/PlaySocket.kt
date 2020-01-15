@@ -31,7 +31,7 @@ class PlaySocket @Inject constructor(
     fun connect(onMessageReceived: (WebSocketResponse)-> Unit, onReconnect: () -> Unit, onError: (error: Throwable) -> Unit) {
         val wsBaseUrl: String = localCacheHandler.
                 getString(KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
-                        TokopediaUrl.getInstance().WS_GROUPCHAT)
+                        TokopediaUrl.getInstance().WS_PLAY)
         var wsConnectUrl = "$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId"
         if (gcToken.isNotEmpty())
             wsConnectUrl += "&token=$gcToken"
