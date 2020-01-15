@@ -19,7 +19,7 @@ import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.tradein_common.Constants
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,7 +30,7 @@ import tradein_common.TradeInUtils
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseViewModel(application),
+class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseTradeInViewModel(application),
         CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
@@ -88,7 +88,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             variables["params"] = deviceDiagInput
             val gqlDeviceDiagInput = GraphqlUseCase()
             gqlDeviceDiagInput.clearRequest()
-            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(applicationInstance.resources,
+            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(getResource(),
                     R.raw.gql_insert_device_diag), DeviceDiagInputResponse::class.java, variables, false))
             gqlDeviceDiagInput.execute(object : Subscriber<GraphqlResponse>() {
                 override fun onCompleted() {
@@ -138,7 +138,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         val variables = HashMap<String, Any>()
         variables["params"] = tradeInParams
         launchCatchError(block = {
-            val query = GraphqlHelper.loadRawString(applicationInstance.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
+            val query = GraphqlHelper.loadRawString(getResource(), com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
             val response = repository?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
             checkIfElligible(response, jsonObject)
         }, onError = {
