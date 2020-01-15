@@ -61,6 +61,8 @@ object WebViewHelper {
         Log.d("WebviewHelper before URL" , url)
         var returnURl = "";
 
+        if (url?.contains("ta.tokopedia.com") == true)
+            return url
 
         if (url != null && isPassingGAClientIdEnable(context)) {
             try {
