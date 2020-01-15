@@ -24,7 +24,7 @@ import com.tokopedia.play_common.type.PlayVideoProtocol
 /**
  * Created by jegul on 03/12/19
  */
-class TokopediaPlayManager private constructor(applicationContext: Context) {
+class TokopediaPlayManager private constructor(private val applicationContext: Context) {
 
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
@@ -33,9 +33,9 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         private var INSTANCE: TokopediaPlayManager? = null
 
         @JvmStatic
-        fun getInstance(applicationContext: Context): TokopediaPlayManager {
+        fun getInstance(context: Context): TokopediaPlayManager {
             return INSTANCE ?: synchronized(this) {
-                TokopediaPlayManager(applicationContext).also {
+                TokopediaPlayManager(context.applicationContext).also {
                     INSTANCE = it
                 }
             }
@@ -75,18 +75,18 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     }
 
     //region public method
-    fun safePlayVideoWithUri(context: Context, uri: Uri, autoPlay: Boolean = true) {
+    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
         if (uri != currentVideoUri) {
             currentVideoUri = uri
-            playVideoWithUri(context, uri, autoPlay)
+            playVideoWithUri(uri, autoPlay)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(context: Context, uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(context, Uri.parse(uriString), autoPlay)
+    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay)
 
-    private fun playVideoWithUri(context: Context, uri: Uri, autoPlay: Boolean = true) {
-        val mediaSource = getMediaSourceBySource(context, uri)
+    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
+        val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
         videoPlayer.prepare(mediaSource)
     }
