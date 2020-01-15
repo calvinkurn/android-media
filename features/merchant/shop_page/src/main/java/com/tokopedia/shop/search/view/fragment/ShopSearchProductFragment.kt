@@ -50,6 +50,7 @@ import com.tokopedia.shop.search.di.module.ShopSearchProductModule
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_KEYWORD
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_ATTRIBUTION
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_INFO_CACHE_MANAGER_ID
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SORT_ID
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDataModel
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResultDataModel
@@ -91,6 +92,22 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 arguments = bundleData
             }
         }
+
+        fun createInstance(
+                keyword: String,
+                shopInfoCacheManagerId: String,
+                shopAttribution: String,
+                sortId: String
+        ): Fragment {
+            return ShopSearchProductFragment().apply {
+                val bundleData = Bundle()
+                bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
+                bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
+                bundleData.putString(KEY_KEYWORD, keyword)
+                bundleData.putString(KEY_SORT_ID, sortId)
+                arguments = bundleData
+            }
+        }
     }
 
     @Inject
@@ -118,7 +135,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     private var shopInfo: ShopInfo? = null
 
     private var searchQuery = ""
-    private var sortValue: String? = "0"
+    private var sortValue: String? = ""
 
     private var viewFragment: View? = null
 
@@ -275,8 +292,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 goToCart()
             }
             REQUEST_CODE_SORT -> {
-                sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_NAME)
-                onSearchSubmitted(editTextSearchProduct.text.toString())
+                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                sortName?.let {
+                    sortValue = sortName
+                    onSearchSubmitted(editTextSearchProduct.text.toString())
+                }
             }
         }
     }
@@ -505,6 +525,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             } ?: getString(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
             searchQuery = getString(KEY_KEYWORD).orEmpty()
+            sortValue = getString(KEY_SORT_ID).orEmpty()
         }
     }
 
