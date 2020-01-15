@@ -709,12 +709,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().startActivity(intent);
     }
 
-
-    @Override
-    public void onDigitalMoreClicked(int pos) {
-        HomePageTracking.onClickDigitalSeeMore();
-    }
-
     @Override
     public void openShop() {
         onGoToSell();
