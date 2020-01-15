@@ -393,7 +393,12 @@ class PlayViewModel @Inject constructor(
 
     private fun doOnChannelFreeze() {
         destroy()
+        pausePlayer()
         hideKeyboard()
+    }
+
+    private fun pausePlayer() {
+        playManager.pauseCurrentVideo()
     }
 
     //region mock
@@ -421,6 +426,5 @@ class PlayViewModel @Inject constructor(
             _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true, freezeTitle = "Freeze title", freezeMessage = "freeze message", freezeButtonTitle = "Freeze Button", freezeButtonUrl = "tokopedia://play/2")
         }
     }
-
     //endregion
 }
