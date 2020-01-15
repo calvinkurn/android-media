@@ -83,7 +83,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var productId: String = ""
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
-    private var isApplinkData = false
+    private var hasInputData = false
 
     private var enquiryLabel = ""
     private var enquiryData: TopupBillsEnquiry? = null
@@ -118,7 +118,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             menuId = it.getInt(EXTRA_PARAM_MENU_ID, 0)
             operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
             productId = it.getString(EXTRA_PARAM_PRODUCT_ID, "")
-            isApplinkData = operatorId > 0
+            hasInputData = operatorId > 0
         }
     }
 
@@ -205,6 +205,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                 val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
                 favNumber?.let {
+                    hasInputData = true
                     rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryId, operatorId)
                     renderClientNumber(favNumber.clientNumber)
                 }
@@ -643,7 +644,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         // Set recommendation data if there is
-        if (data.recommendations.isNotEmpty() && !isApplinkData) {
+        if (data.recommendations.isNotEmpty() && !hasInputData) {
             setupAutoFillData(data.recommendations[0])
         }
         renderFooter(data)
