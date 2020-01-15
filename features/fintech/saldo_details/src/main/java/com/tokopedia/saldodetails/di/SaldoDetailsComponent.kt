@@ -13,7 +13,10 @@ import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment
 import dagger.Component
 
 @SaldoDetailsScope
-@Component(modules = [SaldoDetailsModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [SaldoDetailsModule::class,
+    GqlQueryModule::class,
+    DispatcherModule::class,
+    ViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface SaldoDetailsComponent {
 
     @ApplicationContext

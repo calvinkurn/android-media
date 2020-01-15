@@ -10,7 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -19,19 +23,33 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
-import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.presenter.MerchantSaldoPriorityPresenter
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse
 import com.tokopedia.saldodetails.response.model.GqlSpAnchorListResponse
+import com.tokopedia.saldodetails.response.model.LiveDataResult
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_SELLER_DETAILS_ID
+import com.tokopedia.saldodetails.viewmodels.MerchantSaldoPriorityViewModel
 import javax.inject.Inject
 
-class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorityContract.View {
+class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
+
+    companion object {
+
+        private val NONE = "none"
+        private val DEFAULT = "default"
+        private val WARNING = "warning"
+        private val DANGER = "danger"
+
+        fun newInstance(bundle: Bundle): Fragment {
+            val merchantSaldoPriorityFragment = MerchantSaldoPriorityFragment()
+            merchantSaldoPriorityFragment.arguments = bundle
+            return merchantSaldoPriorityFragment
+        }
+    }
 
     private var spTitle: TextView? = null
     private var spNewTitle: TextView? = null
@@ -51,8 +69,12 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
     @Inject
     lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
+//    @Inject
+//    lateinit var saldoDetailsPresenter: MerchantSaldoPriorityPresenter
+
     @Inject
-    lateinit var saldoDetailsPresenter: MerchantSaldoPriorityPresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var merchantSaldoPriorityViewModel: MerchantSaldoPriorityViewModel
 
     private var originalSwitchState: Boolean = false
 
@@ -65,7 +87,33 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
         val saveInstanceCacheManager = SaveInstanceCacheManager(context!!, saveInstanceCacheManagerId)
         sellerDetails = saveInstanceCacheManager.get(BUNDLE_PARAM_SELLER_DETAILS, GqlDetailsResponse::class.java)
         initViews(view)
+        setViewModelObservers()
         return view
+    }
+
+    private fun setViewModelObservers() {
+        merchantSaldoPriorityViewModel.gqlUpdateSaldoStatusLiveData.observe(context as AppCompatActivity,
+                Observer {
+                    when (it.status) {
+                        LiveDataResult.STATUS.SUCCESS -> {
+                            if (it.data != null) {
+
+                                if (it.data.merchantSaldoStatus?.isSuccess!!) {
+                                    onSaldoStatusUpdateSuccess(it.data.merchantSaldoStatus?.value ?: false)
+                                } else {
+                                    onSaldoStatusUpdateError("")
+                                }
+
+                            } else {
+                                onSaldoStatusUpdateError("")
+                            }
+                            hideProgressLoading()
+                        }
+                        else -> {
+                            onSaldoStatusUpdateError("")
+                        }
+                    }
+                })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,7 +129,6 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
         } catch (e: Exception) {
 
         }
-
     }
 
     private fun initViews(view: View) {
@@ -124,13 +171,14 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
                 dialog.setBtnOk(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_ok_disable))
             }
 
-            dialog.setOnOkClickListener { v ->
+            dialog.setOnOkClickListener {
                 dialog.dismiss()
-                saldoDetailsPresenter.updateSellerSaldoStatus(isChecked)
+                showProgressLoading()
+                merchantSaldoPriorityViewModel.updateSellerSaldoStatus(isChecked)
             }
 
             dialog.setBtnCancel(resources.getString(com.tokopedia.saldodetails.R.string.sp_btn_cancel))
-            dialog.setOnCancelClickListener { v ->
+            dialog.setOnCancelClickListener {
                 dialog.dismiss()
                 spEnableSwitchCompat!!.isChecked = !isChecked
             }
@@ -141,7 +189,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
         }
 
         if (sellerDetails!!.isBoxShowPopup) {
-            spKYCStatusLayout!!.setOnClickListener { v ->
+            spKYCStatusLayout!!.setOnClickListener {
                 val userStatusInfoBottomSheet = UserStatusInfoBottomSheet(context!!)
                 userStatusInfoBottomSheet.setBody(sellerDetails!!.popupDesc!!)
                 userStatusInfoBottomSheet.setTitle(sellerDetails!!.popupTitle!!)
@@ -179,29 +227,29 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
             spDescription!!.text = Html.fromHtml(sellerDetails!!.description)
             spDescription!!.show()
         } else {
-            spDescription!!.gone() //visibility = View.GONE
+            spDescription!!.gone()
         }
 
         if (!TextUtils.isEmpty(sellerDetails!!.boxTitle)) {
-            spKYCStatusLayout!!.show() //visibility = View.VISIBLE
-            spKYCShortDesc!!.show() //visibility = View.VISIBLE
+            spKYCStatusLayout!!.show()
+            spKYCShortDesc!!.show()
             spKYCShortDesc!!.text = Html.fromHtml(sellerDetails!!.boxTitle)
 
             if (!TextUtils.isEmpty(sellerDetails!!.boxDesc)) {
-                spKYCLongDesc!!.show() //visibility = View.VISIBLE
+                spKYCLongDesc!!.show()
                 spKYCLongDesc!!.text = Html.fromHtml(sellerDetails!!.boxDesc)
             } else {
-                spKYCLongDesc!!.gone() //visibility = View.GONE
+                spKYCLongDesc!!.gone()
             }
 
             if (sellerDetails!!.isShowRightArrow) {
-                spRightArrow!!.show() //visibility = View.VISIBLE
+                spRightArrow!!.show()
             } else {
-                spRightArrow!!.gone() //visibility = View.GONE
+                spRightArrow!!.gone()
             }
             setBoxBackground()
         } else {
-            spKYCStatusLayout!!.gone() //visibility = View.GONE
+            spKYCStatusLayout!!.gone()
         }
 
 
@@ -218,7 +266,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
     private fun setBoxBackground() {
         val boxType = sellerDetails!!.boxType
         if (boxType!!.equals(NONE, ignoreCase = true)) {
-            spStatusInfoIcon!!.gone() //visibility = View.GONE
+            spStatusInfoIcon!!.gone()
         } else if (boxType.equals(DEFAULT, ignoreCase = true)) {
 
             spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_green))
@@ -290,7 +338,11 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
     override fun initInjector() {
         val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(activity!!.application)
         saldoDetailsComponent!!.inject(this)
-        saldoDetailsPresenter.attachView(this)
+
+        if (context is AppCompatActivity) {
+            val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
+            merchantSaldoPriorityViewModel = viewModelProvider[MerchantSaldoPriorityViewModel::class.java]
+        }
     }
 
 
@@ -298,57 +350,33 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment(), MerchantSaldoPriorit
         return null
     }
 
-    override fun getContext(): Context? {
-        return super.getContext()
-    }
-
-    override fun showProgressLoading() {
+    private fun showProgressLoading() {
         if (interactionListener != null) {
             interactionListener!!.showLoading()
         }
     }
 
-    override fun hideProgressLoading() {
+    private fun hideProgressLoading() {
         if (interactionListener != null) {
             interactionListener!!.dismissLoading()
         }
     }
 
-    override fun onSaldoStatusUpdateError(errorMessage: String) {
+    private fun onSaldoStatusUpdateError(errorMessage: String) {
         val check = spEnableSwitchCompat!!.isChecked
         spEnableSwitchCompat!!.isChecked = !check
         NetworkErrorHelper.showRedSnackbar(activity, errorMessage)
     }
 
-    override fun onSaldoStatusUpdateSuccess(newState: Boolean) {
+    private fun onSaldoStatusUpdateSuccess(newState: Boolean) {
         originalSwitchState = newState
         NetworkErrorHelper.showGreenSnackbarShort(activity,
                 resources.getString(com.tokopedia.saldodetails.R.string.saldo_status_updated_success))
     }
 
-    override fun onDestroy() {
-        saldoDetailsPresenter.onDestroyView()
-        super.onDestroy()
-    }
-
-
     interface InteractionListener {
         fun showLoading()
-
         fun dismissLoading()
     }
 
-    companion object {
-
-        private val NONE = "none"
-        private val DEFAULT = "default"
-        private val WARNING = "warning"
-        private val DANGER = "danger"
-
-        fun newInstance(bundle: Bundle): Fragment {
-            val merchantSaldoPriorityFragment = MerchantSaldoPriorityFragment()
-            merchantSaldoPriorityFragment.arguments = bundle
-            return merchantSaldoPriorityFragment
-        }
-    }
 }

@@ -1,12 +1,9 @@
 package com.tokopedia.saldodetails.presenter
 
-import android.content.Context
 import android.util.Log
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -31,6 +28,7 @@ import javax.inject.Inject
 import rx.Subscriber
 
 import android.content.ContentValues.TAG
+import com.tokopedia.network.utils.ErrorHandler
 
 class SaldoHistoryPresenter @Inject constructor() :
         BaseDaggerPresenter<SaldoHistoryContract.View>(), SaldoHistoryContract.Presenter {

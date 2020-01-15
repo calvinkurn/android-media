@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -22,7 +23,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -30,33 +34,63 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
-import com.tokopedia.saldodetails.contract.SaldoDetailContract
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
+import com.tokopedia.saldodetails.response.model.LiveDataResult
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
+import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
-import java.util.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
-class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
+class SaldoDepositFragment : BaseDaggerFragment()/*, SaldoDetailContract.View*/ {
 
-    private val animation_duration: Long = 300
+    companion object {
+        val REQUEST_WITHDRAW_CODE = 1
 
+        val IS_SELLER_ENABLED = "is_user_enabled"
+        val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
+        val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details"
 
+        val BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int"
+        val BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int"
+        private val MCL_STATUS_ZERO = 0
+        private val MCL_STATUS_BLOCK1 = 700
+        private val MCL_STATUS_BLOCK2 = 701
+        private val MCL_STATUS_BLOCK3 = 999
+        private val IS_SELLER = "is_seller"
+        val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id"
+        val BUNDLE_PARAM_SELLER_DETAILS_ID = "bundle_param_seller_details_id"
+
+        private val IS_WITHDRAW_LOCK = "is_lock"
+        private val MCL_LATE_COUNT = "late_count"
+        private val FIREBASE_FLAG_STATUS = "is_on"
+
+        fun createInstance(isSellerEnabled: Boolean): SaldoDepositFragment {
+            val saldoDepositFragment = SaldoDepositFragment()
+            val bundle = Bundle()
+            bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled)
+            saldoDepositFragment.arguments = bundle
+            return saldoDepositFragment
+        }
+    }
+
+    private val animationDuration: Long = 300
     private val SHOW_CASE_DELAY: Long = 400
-    @Inject
-    lateinit var saldoDetailsPresenter: SaldoDetailsPresenter
 
     @Inject
     lateinit var userSession: UserSession
@@ -110,6 +144,10 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var saveInstanceCacheManager: SaveInstanceCacheManager? = null
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var saldoDetailViewModel: SaldoDetailViewModel
+
     private val isSaldoNativeEnabled: Boolean
         get() = remoteConfig!!.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
                 true)
@@ -134,7 +172,7 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
     }
 
     private fun initRemoteConfig() {
-        remoteConfig = FirebaseRemoteConfigImpl(getContext())
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     private fun startShowCase() {
@@ -170,7 +208,7 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
     private fun buildShowCase(): ArrayList<ShowCaseObject>? {
 
         val list = ArrayList<ShowCaseObject>()
-        if (isSellerEnabled && getActivity() is SaldoDepositActivity) {
+        if (isSellerEnabled && activity is SaldoDepositActivity) {
             list.add(ShowCaseObject(
                     buyerSaldoBalanceRL,
                     getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
@@ -198,6 +236,7 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         if (arguments != null) {
             isSellerEnabled = arguments!!.getBoolean(IS_SELLER_ENABLED)
         }
+        setViewModelObservers()
 
         expandLayout = isSellerEnabled
 
@@ -227,56 +266,151 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         saldoTypeLL = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_type_ll)
         merchantDetailLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_details_ll)
         merchantStatusLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_status_ll)
-        saldoDepositExpandIV!!.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.design.R.drawable.ic_arrow_up_grey))
+        saldoDepositExpandIV!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_up_grey))
         layoutTicker = view.findViewById(com.tokopedia.saldodetails.R.id.layout_holdwithdrawl_dialog)
         tvTickerMessage = view.findViewById(com.tokopedia.design.R.id.tv_desc_info)
         ivDismissTicker = view.findViewById(com.tokopedia.design.R.id.iv_dismiss_ticker)
 
         if (expandLayout) {
-            saldoTypeLL!!.visibility = View.VISIBLE
+            saldoTypeLL!!.show()
         } else {
-            saldoDepositExpandIV!!.animate().rotation(180f).duration = animation_duration
-            saldoTypeLL!!.visibility = View.GONE
+            saldoDepositExpandIV!!.animate().rotation(180f).duration = animationDuration
+            saldoTypeLL!!.gone()
         }
 
         if (expandMerchantDetailLayout) {
-            merchantDetailLL!!.visibility = View.VISIBLE
+            merchantDetailLL!!.show()
         } else {
-            merchantDetailsExpandIV!!.animate().rotation(180f).duration = animation_duration
-            merchantDetailLL!!.visibility = View.GONE
+            merchantDetailsExpandIV!!.animate().rotation(180f).duration = animationDuration
+            merchantDetailLL!!.gone()
         }
 
-        saldoHistoryFragment = childFragmentManager.findFragmentById(com.tokopedia.saldodetails.R.id.saldo_history_layout) as SaldoTransactionHistoryFragment?
+        saldoHistoryFragment = childFragmentManager.findFragmentById(
+                com.tokopedia.saldodetails.R.id.saldo_history_layout) as SaldoTransactionHistoryFragment?
+
+
+    }
+
+    private fun setViewModelObservers() {
+
+        saldoDetailViewModel.gqlUserSaldoBalanceLiveData.observe(context as AppCompatActivity,
+                androidx.lifecycle.Observer {
+
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    setSellerSaldoBalance(it.data?.saldo!!.sellerUsable, it.data.saldo!!.sellerUsableFmt!!)
+                    showSellerSaldoRL()
+
+                    setBuyerSaldoBalance(it.data.saldo!!.buyerUsable, it.data.saldo!!.buyerUsableFmt!!)
+                    showBuyerSaldoRL()
+
+                    val totalBalance = it.data.saldo!!.buyerUsable + it.data.saldo!!.sellerUsable
+                    setBalance(totalBalance, CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance, false))
+                    setWithdrawButtonState(totalBalance != 0L)
+
+                    val holdBalance = (it.data.saldo!!.buyerHold + it.data.saldo!!.sellerHold).toFloat()
+                    if (holdBalance > 0) {
+                        showHoldWarning(CurrencyFormatUtil.convertPriceValueToIdrFormat(holdBalance.toDouble(), false))
+                    } else {
+                        hideWarning()
+                    }
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    if (it.error is UnknownHostException ||
+                            it.error is SocketTimeoutException) {
+                        setRetry()
+                    } else {
+                        setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
+                    }
+                }
+                else -> {
+                    setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
+                }
+            }
+        })
+
+        saldoDetailViewModel.gqlMerchantSaldoDetailLiveData.observe(context as AppCompatActivity,
+                androidx.lifecycle.Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    showSaldoPrioritasFragment(it.data?.data)
+                }
+                else -> {
+                    hideSaldoPrioritasFragment()
+                }
+
+            }
+        })
+
+        saldoDetailViewModel.gqlMerchantCreditDetailLiveData.observe(context as AppCompatActivity,
+                androidx.lifecycle.Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    showMerchantCreditLineFragment(it.data?.data)
+                }
+                else -> {
+                    hideMerchantCreditLineFragment()
+                }
+            }
+        })
+
+        saldoDetailViewModel.gqlLateCountResponseLiveData.observe(context as AppCompatActivity,
+                androidx.lifecycle.Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    setLateCount(it.data?.mclGetLatedetails!!.lateCount)
+                }
+                else -> {
+                    hideWithdrawTicker()
+                }
+            }
+        })
+
+        saldoDetailViewModel.gqlTickerWithdrawalLiveData.observe(context as AppCompatActivity,
+                androidx.lifecycle.Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data != null && !TextUtils.isEmpty(it.data.withdrawalTicker!!.tickerMessage)) {
+                        showTickerMessage(it.data.withdrawalTicker!!.tickerMessage!!)
+                    } else {
+                        hideTickerMessage()
+                    }
+                }
+                else -> {
+                    hideTickerMessage()
+                }
+            }
+        })
     }
 
     private fun initListeners() {
 
-        saldoDepositExpandIV!!.setOnClickListener { v ->
+        saldoDepositExpandIV!!.setOnClickListener {
             if (expandLayout) {
-                saldoDepositExpandIV!!.animate().rotation(180f).duration = animation_duration
+                saldoDepositExpandIV!!.animate().rotation(180f).duration = animationDuration
                 expandLayout = false
                 collapse(saldoTypeLL!!)
             } else {
-                saldoDepositExpandIV!!.animate().rotation(0f).duration = animation_duration
+                saldoDepositExpandIV!!.animate().rotation(0f).duration = animationDuration
                 expandLayout = true
                 expand(saldoTypeLL!!)
             }
 
         }
 
-        merchantDetailsExpandIV!!.setOnClickListener { v ->
+        merchantDetailsExpandIV!!.setOnClickListener {
             if (expandMerchantDetailLayout) {
-                merchantDetailsExpandIV!!.animate().rotation(180f).duration = animation_duration
+                merchantDetailsExpandIV!!.animate().rotation(180f).duration = animationDuration
                 expandMerchantDetailLayout = false
                 collapse(merchantDetailLL!!)
             } else {
-                merchantDetailsExpandIV!!.animate().rotation(0f).duration = animation_duration
+                merchantDetailsExpandIV!!.animate().rotation(0f).duration = animationDuration
                 expandMerchantDetailLayout = true
                 expand(merchantDetailLL!!)
             }
         }
 
-        drawButton!!.setOnClickListener { v ->
+        drawButton!!.setOnClickListener {
             try {
                 if (!userSession.isMsisdnVerified) {
                     showMustVerify()
@@ -302,14 +436,14 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
             }
         }
 
-        tickerMessageCloseButton!!.setOnClickListener { v -> tickerMessageRL!!.visibility = View.GONE }
+        tickerMessageCloseButton!!.setOnClickListener { v -> tickerMessageRL!!.gone() }
     }
 
     private fun expand(v: View) {
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         val targetHeight = v.measuredHeight    // Older versions of android (pre API 21) cancel animations for views with a height of 0.
         v.layoutParams.height = 1
-        v.visibility = View.VISIBLE
+        v.show()
         val a = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
                 v.layoutParams.height = if (interpolatedTime == 1f)
@@ -332,7 +466,7 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         val a = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
                 if (interpolatedTime == 1f) {
-                    v.visibility = View.GONE
+                    v.gone()
                 } else {
                     v.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
                     v.requestLayout()
@@ -349,100 +483,124 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
 
 
     private fun showMustVerify() {
-        androidx.appcompat.app.AlertDialog.Builder(Objects.requireNonNull<FragmentActivity>(getActivity()))
-                .setTitle(getActivity()!!.getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_title))
-                .setMessage(getActivity()!!.getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_body))
-                .setPositiveButton(getActivity()!!.getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_positive)) { dialog, which ->
-                    val intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
-                    startActivity(intent)
-                    dialog.dismiss()
-                }
-                .setNegativeButton(getActivity()!!.getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_negative)) { dialog, which -> dialog.dismiss() }
-                .setCancelable(false)
-                .show()
+        activity?.let {
+            androidx.appcompat.app.AlertDialog.Builder(it)
+                    .setTitle(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_title))
+                    .setMessage(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_body))
+                    .setPositiveButton(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_positive)) { dialog, which ->
+                        val intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+                        startActivity(intent)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_negative)) { dialog, which -> dialog.dismiss() }
+                    .setCancelable(false)
+                    .show()
+        }
     }
 
     private fun goToWithdrawActivity() {
-        if (getActivity() != null) {
-            val intent = RouteManager.getIntent(getActivity(),
+        if (activity != null) {
+            val intent = RouteManager.getIntent(activity,
                     ApplinkConstInternalGlobal.WITHDRAW)
             val bundle = Bundle()
             bundle.putBoolean(IS_SELLER, isSellerEnabled)
             intent.putExtras(bundle)
-            saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock, mclLateCount, showMclBlockTickerFirebaseFlag)
+            onDrawClicked(intent)
+        }
+    }
+
+    private fun onDrawClicked(intent: Intent) {
+        val userSession = UserSession(context)
+        if (userSession.hasPassword()) {
+
+            val sellerBalance = getSellerSaldoBalance()
+            val buyerBalance = getBuyerSaldoBalance()
+
+            val minSaldoLimit: Long = 10000
+            if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
+                showErrorMessage(getString(com.tokopedia.saldodetails.R.string.saldo_min_withdrawal_error))
+            } else {
+                val withdrawActivityBundle = Bundle()
+                withdrawActivityBundle.putBoolean(FIREBASE_FLAG_STATUS, showMclBlockTickerFirebaseFlag)
+                withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock)
+                withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount)
+                withdrawActivityBundle.putBoolean(IS_SELLER, isSellerEnabled)
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getBuyerSaldoBalance())
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getSellerSaldoBalance())
+                intent.putExtras(withdrawActivityBundle)
+                startActivityForResult(intent, REQUEST_WITHDRAW_CODE)
+            }
+        } else {
+            showWithdrawalNoPassword()
         }
     }
 
     private fun showSaldoWarningDialog() {
-        androidx.appcompat.app.AlertDialog.Builder(Objects.requireNonNull<FragmentActivity>(getActivity()))
-                .setTitle(getActivity()!!.getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_title))
-                .setMessage(getActivity()!!.getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_desc))
-                .setPositiveButton(
-                        getActivity()!!.getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button)
-                ) { dialog, which -> goToWithdrawActivity() }
-                .setCancelable(true)
-                .show()
+        activity?.let {
+            androidx.appcompat.app.AlertDialog.Builder(it)
+                    .setTitle(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_title))
+                    .setMessage(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_desc))
+                    .setPositiveButton(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button)
+                    ) { dialog, which -> goToWithdrawActivity() }
+                    .setCancelable(true)
+                    .show()
+        }
     }
 
-    override fun getSellerSaldoBalance(): Long {
+    private fun getSellerSaldoBalance(): Long {
         return saldoBalanceSeller
     }
 
-    override fun getBuyerSaldoBalance(): Long {
+    private fun getBuyerSaldoBalance(): Long {
         return saldoBalanceBuyer
     }
 
-    override fun isUserSeller(): Boolean {
+    fun isUserSeller(): Boolean {
         return isSellerEnabled
     }
 
     protected fun initialVar() {
-        saldoDetailsPresenter.isSeller = isSellerEnabled
+        saldoDetailViewModel.isSeller = isSellerEnabled
         totalBalanceTitle!!.text = resources.getString(com.tokopedia.saldodetails.R.string.total_saldo_text)
-        totalBalanceInfo!!.visibility = View.GONE
-        buyerSaldoBalanceRL!!.visibility = View.VISIBLE
-        sellerSaldoBalanceRL!!.visibility = View.VISIBLE
+        totalBalanceInfo!!.gone()
+        buyerSaldoBalanceRL!!.show()
+        sellerSaldoBalanceRL!!.show()
 
-        totalBalanceInfo!!.setOnClickListener { v -> showBottomSheetInfoDialog(false) }
+        totalBalanceInfo!!.setOnClickListener { showBottomSheetInfoDialog(false) }
 
-        buyerBalanceInfoIcon!!.setOnClickListener { v -> showBottomSheetInfoDialog(false) }
+        buyerBalanceInfoIcon!!.setOnClickListener { showBottomSheetInfoDialog(false) }
 
-        sellerBalanceInfoIcon!!.setOnClickListener { v -> showBottomSheetInfoDialog(true) }
+        sellerBalanceInfoIcon!!.setOnClickListener { showBottomSheetInfoDialog(true) }
 
 
-        if (getActivity() != null) {
-            if (isSaldoNativeEnabled && isMerchantCreditLineEnabled) {
-                saldoDetailsPresenter.getUserFinancialStatus()
+        if (activity != null) {
+            if (isSaldoNativeEnabled) {
+                saldoDetailViewModel.getMerchantSaldoDetails()
             } else {
+                hideSaldoPrioritasFragment()
+            }
 
-                if (isSaldoNativeEnabled) {
-                    saldoDetailsPresenter.getMerchantSaldoDetails()
-                } else {
-                    hideSaldoPrioritasFragment()
-                }
-
-                if (isMerchantCreditLineEnabled) {
-                    saldoDetailsPresenter.getMerchantCreditLineDetails()
-                } else {
-                    hideMerchantCreditLineFragment()
-                }
+            if (isMerchantCreditLineEnabled) {
+                saldoDetailViewModel.getMerchantCreditLineDetails()
+            } else {
+                hideMerchantCreditLineFragment()
             }
         }
     }
 
-    override fun hideUserFinancialStatusLayout() {
-        merchantStatusLL!!.visibility = View.GONE
+    private fun hideUserFinancialStatusLayout() {
+        merchantStatusLL!!.gone()
     }
 
     private fun showBottomSheetInfoDialog(isSellerClicked: Boolean) {
         val userStatusInfoBottomSheet = UserStatusInfoBottomSheet(context!!)
 
         if (isSellerClicked) {
-            userStatusInfoBottomSheet.setBody(resources.getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc))
-            userStatusInfoBottomSheet.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller))
+            userStatusInfoBottomSheet.setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc))
+            userStatusInfoBottomSheet.setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller))
         } else {
-            userStatusInfoBottomSheet.setBody(resources.getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc))
-            userStatusInfoBottomSheet.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer))
+            userStatusInfoBottomSheet.setBody(getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc))
+            userStatusInfoBottomSheet.setTitle(getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer))
         }
 
         userStatusInfoBottomSheet.setButtonText(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button))
@@ -451,9 +609,16 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
 
     override fun initInjector() {
 
-        val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(Objects.requireNonNull<FragmentActivity>(getActivity()).getApplication())
-        saldoDetailsComponent!!.inject(this)
-        saldoDetailsPresenter.attachView(this)
+        activity?.let {
+            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it.application)
+            saldoDetailsComponent!!.inject(this)
+
+
+            if (context is AppCompatActivity) {
+                val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
+                saldoDetailViewModel = viewModelProvider[SaldoDetailViewModel::class.java]
+            }
+        }
     }
 
     override fun getScreenName(): String? {
@@ -468,12 +633,12 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
     private fun onFirstTimeLaunched() {
         val remoteConfig = FirebaseRemoteConfigImpl(getContext())
         showMclBlockTickerFirebaseFlag = remoteConfig.getBoolean(APP_ENABLE_SALDO_LOCK, false)
-        saldoDetailsPresenter.getSaldoBalance()
-        saldoDetailsPresenter.getTickerWithdrawalMessage()
-        saldoDetailsPresenter.getMCLLateCount()
+        saldoDetailViewModel.getUserSaldoBalance()
+        saldoDetailViewModel.getTickerWithdrawalMessage()
+        saldoDetailViewModel.getMerchantCreditLateCountValue()
     }
 
-    override fun showWithdrawalNoPassword() {
+    private fun showWithdrawalNoPassword() {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_title))
         builder.setMessage(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_content))
@@ -494,17 +659,17 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD))
     }
 
-    override fun setBalance(totalBalance: Long, summaryUsebleDepositIdr: String) {
+    private fun setBalance(totalBalance: Long, summaryUsebleDepositIdr: String) {
         if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
             totalBalanceTV!!.text = summaryUsebleDepositIdr
-            totalBalanceTV!!.visibility = View.VISIBLE
+            totalBalanceTV!!.show()
         } else {
-            totalBalanceTV!!.visibility = View.GONE
+            totalBalanceTV!!.gone()
         }
 
     }
 
-    override fun setWithdrawButtonState(state: Boolean) {
+    private fun setWithdrawButtonState(state: Boolean) {
         if (state) {
             drawButton!!.setTextColor(Color.WHITE)
         } else {
@@ -515,18 +680,18 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
     }
 
     @SuppressLint("Range")
-    override fun showErrorMessage(error: String) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error)
+    fun showErrorMessage(error: String) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, error)
     }
 
-    override fun showHoldWarning(text: String) {
-        holdBalanceLayout!!.visibility = View.VISIBLE
-        amountBeingReviewed!!.text = String.format(resources.getString(com.tokopedia.saldodetails.R.string.saldo_hold_balance_text), text)
+    private fun showHoldWarning(warningText: String) {
+        holdBalanceLayout!!.show()
+        amountBeingReviewed!!.text = String.format(resources.getString(com.tokopedia.saldodetails.R.string.saldo_hold_balance_text), warningText)
         amountBeingReviewed!!.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    override fun hideSaldoPrioritasFragment() {
-        saldoFrameLayout!!.visibility = View.GONE
+    private fun hideSaldoPrioritasFragment() {
+        saldoFrameLayout!!.show()
         Handler().postDelayed({
             if (merchantCreditFrameLayout!!.visibility != View.VISIBLE) {
                 hideUserFinancialStatusLayout()
@@ -534,8 +699,8 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         }, CHECK_VISIBILITY_DELAY)
     }
 
-    override fun hideMerchantCreditLineFragment() {
-        merchantCreditFrameLayout!!.visibility = View.GONE
+    private fun hideMerchantCreditLineFragment() {
+        merchantCreditFrameLayout!!.gone()
         Handler().postDelayed({
             if (saldoFrameLayout!!.visibility != View.VISIBLE) {
                 hideUserFinancialStatusLayout()
@@ -543,12 +708,12 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         }, CHECK_VISIBILITY_DELAY)
     }
 
-    override fun showTickerMessage(withdrawalTicker: String) {
-        tickerMessageRL!!.visibility = View.VISIBLE
+    private fun showTickerMessage(withdrawalTicker: String) {
+        tickerMessageRL!!.show()
         tickeRMessageTV!!.text = withdrawalTicker
     }
 
-    fun showTicker() {
+    private fun showTicker() {
 
         if (showMclBlockTickerFirebaseFlag) {
             var tickerMsg = getString(com.tokopedia.design.R.string.saldolock_tickerDescription)
@@ -576,43 +741,43 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
 
 
             tvTickerMessage!!.text = ss
-            ivDismissTicker!!.setOnClickListener { v -> layoutTicker!!.visibility = View.GONE }
-            layoutTicker!!.visibility = View.VISIBLE
+            ivDismissTicker!!.setOnClickListener { v -> layoutTicker!!.gone() }
+            layoutTicker!!.show()
         }
 
     }
 
-    override fun hideTickerMessage() {
-        tickerMessageRL!!.visibility = View.GONE
+    private fun hideTickerMessage() {
+        tickerMessageRL!!.gone()
     }
 
-    override fun setLateCount(count: Int) {
+    private fun setLateCount(count: Int) {
         mclLateCount = count
     }
 
-    override fun hideWithdrawTicker() {
-        layoutTicker!!.visibility = View.GONE
+    private fun hideWithdrawTicker() {
+        layoutTicker!!.gone()
     }
 
-    override fun showSellerSaldoRL() {
-        sellerSaldoBalanceRL!!.visibility = View.VISIBLE
+    private fun showSellerSaldoRL() {
+        sellerSaldoBalanceRL!!.show()
     }
 
-    override fun setBuyerSaldoBalance(balance: Long, text: String) {
+    private fun setBuyerSaldoBalance(balance: Long, text: String) {
         saldoBalanceBuyer = balance
         buyerBalanceTV!!.text = text
     }
 
-    override fun setSellerSaldoBalance(amount: Long, formattedAmount: String) {
+    private fun setSellerSaldoBalance(amount: Long, formattedAmount: String) {
         saldoBalanceSeller = amount
         sellerBalanceTV!!.text = formattedAmount
     }
 
-    override fun showBuyerSaldoRL() {
-        buyerSaldoBalanceRL!!.visibility = View.VISIBLE
+    private fun showBuyerSaldoRL() {
+        buyerSaldoBalanceRL!!.show()
     }
 
-    override fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
+    private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
         if (response != null && response.isEligible) {
             statusWithDrawLock = response.status
             when (statusWithDrawLock) {
@@ -637,7 +802,7 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
 
     }
 
-    fun showMerchantCreditLineWidget(response: GqlMerchantCreditResponse) {
+    private fun showMerchantCreditLineWidget(response: GqlMerchantCreditResponse?) {
         merchantStatusLL!!.show()
         val bundle = Bundle()
         saveInstanceCacheManager = SaveInstanceCacheManager(context!!, true)
@@ -651,7 +816,7 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
                 .commit()
     }
 
-    override fun showSaldoPrioritasFragment(gqlDetailsResponse: GqlDetailsResponse?) {
+    private fun showSaldoPrioritasFragment(gqlDetailsResponse: GqlDetailsResponse?) {
         if (gqlDetailsResponse != null && gqlDetailsResponse.isEligible) {
             merchantStatusLL!!.show()
             val bundle = Bundle()
@@ -670,62 +835,21 @@ class SaldoDepositFragment : BaseDaggerFragment(), SaldoDetailContract.View {
         }
     }
 
-    override fun hideWarning() {
+    private fun hideWarning() {
         holdBalanceLayout!!.hide()
     }
 
-    override fun refresh() {
+    fun refresh() {
         saldoHistoryFragment!!.onRefresh()
     }
 
-    override fun showEmptyState() {
-        NetworkErrorHelper.showEmptyState(getActivity(), view) { saldoDetailsPresenter.getSaldoBalance() }
-        try {
-            val retryLoad = view!!.findViewById<View>(com.tokopedia.abstraction.R.id.main_retry)
-            retryLoad.translationY = (topSlideOffBar!!.height / 2).toFloat()
-        } catch (e: NullPointerException) {
-            e.printStackTrace()
-        }
-
+    private fun setRetry() {
+        NetworkErrorHelper.createSnackbarWithAction(activity) { saldoDetailViewModel.getUserSaldoBalance() }.showRetrySnackbar()
     }
 
-    override fun setRetry() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity()) { saldoDetailsPresenter.getSaldoBalance() }.showRetrySnackbar()
+    private fun setRetry(error: String) {
+        NetworkErrorHelper.createSnackbarWithAction(activity, error
+        ) { saldoDetailViewModel.getUserSaldoBalance() }.showRetrySnackbar()
     }
 
-    override fun setRetry(error: String) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), error
-        ) { saldoDetailsPresenter.getSaldoBalance() }.showRetrySnackbar()
-    }
-
-    override fun onDestroy() {
-        saldoDetailsPresenter.detachView()
-        super.onDestroy()
-    }
-
-    companion object {
-
-        val IS_SELLER_ENABLED = "is_user_enabled"
-        val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
-        val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details"
-
-        val BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int"
-        val BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int"
-        private val MCL_STATUS_ZERO = 0
-        private val MCL_STATUS_BLOCK1 = 700
-        private val MCL_STATUS_BLOCK2 = 701
-        private val MCL_STATUS_BLOCK3 = 999
-        private val IS_SELLER = "is_seller"
-        val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id"
-        val BUNDLE_PARAM_SELLER_DETAILS_ID = "bundle_param_seller_details_id"
-
-        fun createInstance(isSellerEnabled: Boolean): SaldoDepositFragment {
-            val saldoDepositFragment = SaldoDepositFragment()
-            val bundle = Bundle()
-            bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled)
-            saldoDepositFragment.arguments = bundle
-            return saldoDepositFragment
-        }
-    }
 }
-

@@ -1,36 +1,23 @@
 package com.tokopedia.saldodetails.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.saldodetails.data.GqlUseCaseWrapper
+import com.tokopedia.saldodetails.di.GqlQueryModule
 import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse
-import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 
-class GetMCLLateCountUseCase @Inject
-constructor(@ApplicationContext val context: Context) {
-
-    private val graphqlUseCase = GraphqlUseCase()
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
-
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        graphqlUseCase.clearRequest()
+class GetMCLLateCountUseCase @Inject constructor(
+        @Named(GqlQueryModule.MERCHANT_CREDIT_LATE_COUNT_QUERY)
+        val queryString: String,
+        val gqlusecasewrapper: GqlUseCaseWrapper
+) {
+    suspend fun getResponse(): GqlMclLateCountResponse {
         val variables = HashMap<String, Any>()
-
-        val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_get_merchant_latecount),
-                GqlMclLateCountResponse::class.java,
-                variables, false)
-
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+        return gqlusecasewrapper.getResponse(GqlMclLateCountResponse::class.java,
+                queryString, variables, GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
+
 }
 

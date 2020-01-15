@@ -12,5 +12,6 @@ data class GqlSetMerchantSaldoStatus(
 data class MerchantSaldoStatus(
         @SerializedName("success")
         @Expose
-        var isSuccess: Boolean = false
+        var isSuccess: Boolean = false,
+        var value: Boolean = false
 )

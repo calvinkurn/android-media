@@ -1,42 +1,26 @@
 package com.tokopedia.saldodetails.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.cacheDuration
+import com.tokopedia.saldodetails.data.GqlUseCaseWrapper
+import com.tokopedia.saldodetails.di.GqlQueryModule.Companion.SALDO_WITHDRAWAL_TICKER_QUERY
 import com.tokopedia.saldodetails.response.model.GqlWithdrawalTickerResponse
-import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 
-class GetTickerWithdrawalMessageUseCase @Inject
-constructor(@ApplicationContext val context: Context) {
+class GetTickerWithdrawalMessageUseCase @Inject constructor(
+        @Named(SALDO_WITHDRAWAL_TICKER_QUERY)
+        val queryString: String,
+        val graphqlWrapper: GqlUseCaseWrapper
+) {
 
-    private val graphqlUseCase = GraphqlUseCase()
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
-
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        graphqlUseCase.clearRequest()
-
+    suspend fun getResponse(): GqlWithdrawalTickerResponse {
         val usableRequestMap = HashMap<String, Any>()
-        val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_withdrawal_ticker),
-                GqlWithdrawalTickerResponse::class.java,
-                usableRequestMap, false)
-
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                 .setExpiryTime(cacheDuration).setSessionIncluded(true).build()
 
-        graphqlUseCase.setCacheStrategy(cacheStrategy)
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+        return graphqlWrapper.getResponse(GqlWithdrawalTickerResponse::class.java, queryString, usableRequestMap, cacheStrategy)
     }
+
 }

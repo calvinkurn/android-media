@@ -1,36 +1,22 @@
 package com.tokopedia.saldodetails.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.saldodetails.data.GqlUseCaseWrapper
+import com.tokopedia.saldodetails.di.GqlQueryModule
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse
-import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 
-class GetMerchantSaldoDetails @Inject
-constructor(@ApplicationContext val context: Context) {
+class GetMerchantSaldoDetails @Inject constructor(
+        @Named(GqlQueryModule.MERCHANT_SALDO_DETAIL_QUERY)
+        val queryString: String,
+        val gqlUseCaseWrapper: GqlUseCaseWrapper
+) {
 
-    private val graphqlUseCase = GraphqlUseCase()
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
-
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        graphqlUseCase.clearRequest()
+    suspend fun getResponse(): GqlMerchantSaldoDetailsResponse {
         val variables = HashMap<String, Any>()
-
-        val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources,
-                        com.tokopedia.saldodetails.R.raw.query_get_merchant_saldo_details),
-                GqlMerchantSaldoDetailsResponse::class.java,
-                variables, false)
-
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+        return gqlUseCaseWrapper.getResponse(GqlMerchantSaldoDetailsResponse::class.java, queryString,
+                variables, GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
     }
 }

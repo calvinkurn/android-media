@@ -1,46 +1,33 @@
 package com.tokopedia.saldodetails.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.saldodetails.di.GqlQueryModule
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse
-import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 
-class GetMerchantFinancialStatus @Inject
-constructor(@ApplicationContext val context: Context) {
+class GetMerchantFinancialStatus @Inject constructor(
+        @Named(GqlQueryModule.MERCHANT_CREDIT_DETAIL_QUERY)
+        val creditDetailQueryString: String,
+        @Named(GqlQueryModule.MERCHANT_SALDO_DETAIL_QUERY)
+        val saldoDetailQueryString: String,
+        val graphqlUseCase: MultiRequestGraphqlUseCase
+) {
 
-    private val graphqlUseCase = GraphqlUseCase()
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
-
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        graphqlUseCase.clearRequest()
-        val variables = HashMap<String, Any>()
-
-        val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources,
-                        com.tokopedia.saldodetails.R.raw.query_get_merchant_saldo_details),
-                GqlMerchantSaldoDetailsResponse::class.java,
-                variables, false)
-
+    suspend fun getResponse(): GraphqlResponse{
+        val map = HashMap<String, Any>()
+        val graphqlRequest = GraphqlRequest(saldoDetailQueryString,
+                GqlMerchantSaldoDetailsResponse::class.java, map, false)
         graphqlUseCase.addRequest(graphqlRequest)
 
-        val graphqlMCLRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources,
-                        com.tokopedia.saldodetails.R.raw.query_get_merchant_credit_details),
-                GqlMerchantCreditDetailsResponse::class.java,
-                variables, false)
-
+        val graphqlMCLRequest = GraphqlRequest(creditDetailQueryString,
+                GqlMerchantCreditDetailsResponse::class.java, map, false)
         graphqlUseCase.addRequest(graphqlMCLRequest)
 
-        graphqlUseCase.execute(subscriber)
+        return graphqlUseCase.executeOnBackground()
     }
+
 }

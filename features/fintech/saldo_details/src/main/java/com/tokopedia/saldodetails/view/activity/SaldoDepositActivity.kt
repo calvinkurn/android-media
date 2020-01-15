@@ -19,8 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
+import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -38,7 +38,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SaldoDetailsPresenter.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
             if (supportFragmentManager.findFragmentByTag(TAG) == null) {
                 finish()
             } else {
