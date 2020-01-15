@@ -5,22 +5,16 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
-import com.tokopedia.play_common.type.Http
-import com.tokopedia.play_common.type.Rtmp
-import com.tokopedia.play_common.type.PlayVideoProtocol
 
 /**
  * Created by jegul on 03/12/19
@@ -127,13 +121,6 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
             C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
             else -> throw IllegalStateException("Unsupported type: $type")
-        }
-    }
-
-    private fun getExoDataSourceFactoryByProtocol(protocol: PlayVideoProtocol): DataSource.Factory {
-        return when (protocol) {
-            is Http -> DefaultHttpDataSourceFactory(EXOPLAYER_AGENT)
-            is Rtmp -> RtmpDataSourceFactory()
         }
     }
     //endregion

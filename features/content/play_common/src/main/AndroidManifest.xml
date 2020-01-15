@@ -1,7 +1,2 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.play_common">
-
-    <application>
-        <service android:name=".service.TokopediaPlayService"/>
-    </application>
-</manifest>
+    package="com.tokopedia.play_common"/>
