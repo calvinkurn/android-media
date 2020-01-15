@@ -70,7 +70,7 @@ class TokopediaPlayerHelper(
     }
 
     override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.IO
+        get() = masterJob + Dispatchers.Main
 
     private fun init(){
         // Measures bandwidth during playback. Can be null if not required.
