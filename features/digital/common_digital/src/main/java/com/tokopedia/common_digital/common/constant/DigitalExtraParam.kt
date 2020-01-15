@@ -25,4 +25,7 @@ object DigitalExtraParam {
 
     @JvmField
     val EXTRA_NFC = "calling_from_nfc"
+
+    @JvmField
+    val EXTRA_NUMBER_FROM_CAMERA_OCR = "EXTRA_NUMBER_FROM_CAMERA_OCR"
 }

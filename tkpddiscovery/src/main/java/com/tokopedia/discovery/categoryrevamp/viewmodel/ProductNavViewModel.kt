@@ -21,8 +21,7 @@ import javax.inject.Inject
 class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCategoryV3UseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
-                                              var getProductListUseCase: GetProductListUseCase,
-                                              var seamlessLoginUsecase: SeamlessLoginUsecase?) : ViewModel() {
+                                              var getProductListUseCase: GetProductListUseCase) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -30,7 +29,6 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
     val mSubCategoryList = MutableLiveData<Result<List<SubCategoryItem>>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
-    val mSeamlessLogin: MutableLiveData<Result<String>> by lazy { MutableLiveData<Result<String>>() }
 
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
@@ -120,27 +118,11 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
         return mDynamicFilterModel
     }
 
-    fun openBrowserSeamlessly(url: String) {
-        seamlessLoginUsecase?.generateSeamlessUrl(url, seamlessLoginSubscriber)
-    }
-
-    val seamlessLoginSubscriber: SeamlessLoginSubscriber? = object : SeamlessLoginSubscriber {
-        override fun onUrlGenerated(url: String) {
-            mSeamlessLogin.value = Success(url)
-        }
-
-        override fun onError(msg: String) {
-            mSeamlessLogin.value = Fail(Throwable(msg))
-        }
-
-    }
-
     override fun onCleared() {
         super.onCleared()
         subCategoryUseCaseV3.unsubscribe()
         dynamicFilterUseCase.unsubscribe()
         quickFilterUseCase.unsubscribe()
         getProductListUseCase.unsubscribe()
-        seamlessLoginUsecase = null
     }
 }

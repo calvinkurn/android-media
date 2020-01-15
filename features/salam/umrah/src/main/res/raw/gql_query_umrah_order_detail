@@ -5,10 +5,11 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
           invoiceUrl
       }
       conditionalInfo {
-             text
-             url
-             title
-           }
+                   text
+                   url
+                   title
+      }
+      helpLink
       beforeOrderId
       title {
           imageUrl
@@ -17,7 +18,6 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
           backgroundColor
           textColor
       }
-      helpLink
       actionButtons {
           control
           body {

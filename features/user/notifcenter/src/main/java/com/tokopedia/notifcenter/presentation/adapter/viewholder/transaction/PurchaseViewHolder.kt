@@ -55,6 +55,7 @@ class PurchaseViewHolder(
 
         btnLoadMore.setOnClickListener {
             RouteManager.route(context, ApplinkConst.PURCHASE_ORDER)
+            listener.sendTrackingData(element.title, btnLoadMore.text.toString())
         }
     }
 
