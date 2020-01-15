@@ -22,19 +22,20 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
-                                            private val checkMsisdnGraphQlUseCase: GraphqlUseCase<CheckPhonePojo>,
-                                            private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
-                                            val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class AddPhoneViewModel @Inject constructor(
+        private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
+        private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
+        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val mutateAddPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
-    val mutateCheckPhoneResponse = MutableLiveData<Result<CheckPhonePojo>>()
-    private val mutableUserValidateResponse = MutableLiveData<Result<UserValidatePojo>>()
+    private val _addPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
+    val addPhoneResponse: LiveData<Result<AddPhoneResult>>
+        get() = _addPhoneResponse
+
+    private val _userValidateResponse = MutableLiveData<Result<UserValidatePojo>>()
     val userValidateResponse: LiveData<Result<UserValidatePojo>>
-        get() = mutableUserValidateResponse
+        get() = _userValidateResponse
 
-
-    fun mutateAddPhone(context: Context, msisdn: String, otp : String) {
+    fun mutateAddPhone(context: Context, msisdn: String, otp: String) {
         GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_phone)?.let { query ->
 
             val params = mapOf(
@@ -55,64 +56,27 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
     private fun onErrorMutateAddPhone(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
-            mutateAddPhoneResponse.value = Fail(it)
+            _addPhoneResponse.value = Fail(it)
         }
     }
 
     private fun onSuccessMutateAddPhone(msisdn: String): (AddPhonePojo) -> Unit {
-       return {
-           val errorMessage = it.data.errorMessage
-           val isSuccess = it.data.isSuccess
-
-           if (errorMessage.isBlank() && isSuccess) {
-               mutateAddPhoneResponse.value = Success(AddPhoneResult(it, msisdn))
-           } else if (!errorMessage.isBlank()) {
-               mutateAddPhoneResponse.value = Fail(MessageErrorException(errorMessage,
-                       ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
-           } else {
-               mutateAddPhoneResponse.value = Fail(RuntimeException())
-           }
-       }
-    }
-
-    fun mutateCheckPhone(context: Context, msisdn: String) {
-
-        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_phone)?.let { query ->
-
-            val params = mapOf(PARAM_PHONE to msisdn)
-
-            checkMsisdnGraphQlUseCase.setTypeClass(CheckPhonePojo::class.java)
-            checkMsisdnGraphQlUseCase.setRequestParams(params)
-            checkMsisdnGraphQlUseCase.setGraphqlQuery(query)
-
-            checkMsisdnGraphQlUseCase.execute(
-                    onSuccessCheckPhonePojo(),
-                    onErrorCheckPhonePojo()
-            )
-        }
-    }
-
-    private fun onErrorCheckPhonePojo(): (Throwable) -> Unit {
         return {
-            it.printStackTrace()
-            mutateCheckPhoneResponse.value = Fail(it)
-        }
-    }
+            val errorMessage = it.data.errorMessage
+            val isSuccess = it.data.isSuccess
 
-    private fun onSuccessCheckPhonePojo(): (CheckPhonePojo) -> Unit {
-        return {
-            val errorMessage = it.checkMsisdn.errorMessage
-
-            when {
-                errorMessage.isEmpty() -> mutateCheckPhoneResponse.value = Success(it)
-                errorMessage.isNotEmpty() -> mutateCheckPhoneResponse.value = Fail(MessageErrorException(errorMessage[0],
+            if (errorMessage.isBlank() && isSuccess) {
+                _addPhoneResponse.value = Success(AddPhoneResult(it, msisdn))
+            } else if (!errorMessage.isBlank()) {
+                _addPhoneResponse.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
-                else -> mutateCheckPhoneResponse.value = Fail(RuntimeException())
+            } else {
+                _addPhoneResponse.value = Fail(RuntimeException())
             }
         }
     }
 
-    fun userProfileCompletionValidate(context: Context, msisdn: String){
+    fun userProfileCompletionValidate(context: Context, msisdn: String) {
         GraphqlHelper.loadRawString(context.resources, R.raw.mutation_user_profile_completion_validate)?.let { query ->
 
             val params = mapOf(PARAM_PHONE to msisdn)
@@ -131,7 +95,7 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
     private fun onErrorUserValidatePojo(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
-            mutableUserValidateResponse.postValue(Fail(it))
+            _userValidateResponse.postValue(Fail(it))
         }
     }
 
@@ -141,12 +105,11 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
             val isValid = it.userProfileCompletionValidate.isValid
 
             if (errorMessage.isBlank() && isValid) {
-                mutableUserValidateResponse.postValue(Success(it))
+                _userValidateResponse.postValue(Success(it))
             } else if (!errorMessage.isBlank()) {
-                mutableUserValidateResponse.postValue(Fail(MessageErrorException(errorMessage,
-                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString())))
+                _userValidateResponse.postValue(Fail(Throwable(errorMessage)))
             } else {
-                mutableUserValidateResponse.postValue(Fail(RuntimeException()))
+                _userValidateResponse.postValue(Fail(RuntimeException()))
             }
         }
     }

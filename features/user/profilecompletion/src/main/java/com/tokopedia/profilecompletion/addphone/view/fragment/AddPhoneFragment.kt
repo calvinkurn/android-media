@@ -1,9 +1,6 @@
 package com.tokopedia.profilecompletion.addphone.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -12,18 +9,20 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
-import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -130,18 +129,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun setObserver() {
-
-        viewModel.mutateCheckPhoneResponse.observe(
-                this,
-                Observer {
-                    when (it) {
-                        is Success -> onSuccessCheckPhone(it.data)
-                        is Fail -> onErrorCheckPhone(it.throwable)
-                    }
-                }
-        )
-
-        viewModel.mutateAddPhoneResponse.observe(
+        viewModel.addPhoneResponse.observe(
                 this,
                 Observer {
                     when (it) {
@@ -165,7 +153,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onErrorUserValidate(throwable: Throwable) {
         dismissLoading()
-        setErrorText(ErrorHandlerSession.getErrorMessage(throwable, context, false))
+        setErrorText(ErrorHandler.getErrorMessage(context, throwable))
     }
 
     private fun onSuccessUserValidate(pojo: UserValidatePojo) {
@@ -174,25 +162,11 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onErrorCheckPhone(throwable: Throwable) {
-        dismissLoading()
-        setErrorText(ErrorHandlerSession.getErrorMessage(throwable, context, false))
-    }
-
-    private fun onSuccessCheckPhone(pojo: CheckPhonePojo) {
-        val isExist = pojo.checkMsisdn.isExist
-
-        if (isExist) {
-            onErrorAddPhone(MessageErrorException(getString(R.string.phone_number_already_exist),
-                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
-        } else {
-            goToVerificationActivity()
-        }
-    }
-
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
-        setErrorText(ErrorHandlerSession.getErrorMessage(throwable, context, false))
+        view?.let {
+            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     private fun onSuccessAddPhone(result: AddPhoneResult) {
@@ -209,7 +183,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun storeLocalSession(phone: String){
+    private fun storeLocalSession(phone: String) {
         userSession.setIsMSISDNVerified(true)
         userSession.phoneNumber = phone
     }
@@ -231,8 +205,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
                 val phone = etPhone.text.toString()
                 viewModel.mutateAddPhone(context!!, phone.trim(), otpCode)
             } else {
-                onErrorAddPhone(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
-                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
+                onErrorAddPhone(Throwable())
             }
         }
     }
@@ -243,7 +216,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_COTP_PHONE_VERIFICATION
                 && resultCode == Activity.RESULT_OK) {
             onSuccessVerifyPhone(data)
-        }else{
+        } else {
             dismissLoading()
         }
     }
@@ -264,8 +237,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.mutateCheckPhoneResponse.removeObservers(this)
-        viewModel.mutateAddPhoneResponse.removeObservers(this)
+        viewModel.addPhoneResponse.removeObservers(this)
+        viewModel.userValidateResponse.removeObservers(this)
         viewModel.flush()
     }
 
