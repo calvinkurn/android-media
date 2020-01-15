@@ -6,7 +6,27 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction
 
-class SellerDrawerTokoCash : Parcelable {
+class SellerDrawerTokoCash() : Parcelable {
+
+    constructor(parcel: Parcel) : this(){
+        this.sellerDrawerTokoCashAction = parcel.readParcelable(DrawerTokoCashAction::class.java.classLoader)
+        this.sellerHomeHeaderWalletAction = parcel.readParcelable(HomeHeaderWalletAction::class.java.classLoader)
+        this.sellerDrawerWalletAction = parcel.readParcelable(DrawerWalletAction::class.java.classLoader)
+    }
+
+    companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<SellerDrawerTokoCash> = object : Parcelable.Creator<SellerDrawerTokoCash> {
+            override fun createFromParcel(source: Parcel): SellerDrawerTokoCash {
+                return SellerDrawerTokoCash(source)
+            }
+
+            override fun newArray(size: Int): Array<SellerDrawerTokoCash?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 
     @Deprecated("")
     @get:Deprecated("")
@@ -26,23 +46,4 @@ class SellerDrawerTokoCash : Parcelable {
         dest.writeParcelable(this.sellerDrawerWalletAction, flags)
     }
 
-    protected constructor(parcel: Parcel) {
-        this.sellerDrawerTokoCashAction = parcel.readParcelable(DrawerTokoCashAction::class.java.classLoader)
-        this.sellerHomeHeaderWalletAction = parcel.readParcelable(HomeHeaderWalletAction::class.java.classLoader)
-        this.sellerDrawerWalletAction = parcel.readParcelable(DrawerWalletAction::class.java.classLoader)
-    }
-
-    companion object {
-
-        @JvmField
-        val CREATOR: Parcelable.Creator<SellerDrawerTokoCash> = object : Parcelable.Creator<SellerDrawerTokoCash> {
-            override fun createFromParcel(source: Parcel): SellerDrawerTokoCash {
-                return SellerDrawerTokoCash(source)
-            }
-
-            override fun newArray(size: Int): Array<SellerDrawerTokoCash?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
 }

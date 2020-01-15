@@ -3,7 +3,35 @@ package com.tokopedia.sellerhomedrawer.view.viewmodel.header
 import android.os.Parcel
 import android.os.Parcelable
 
-class SellerDrawerWalletAction : Parcelable {
+class SellerDrawerWalletAction() : Parcelable {
+
+    constructor(parcel: Parcel): this() {
+        this.labelTitle = parcel.readString()
+        this.balance = parcel.readString()
+        this.redirectUrlBalance = parcel.readString()
+        this.appLinkBalance = parcel.readString()
+        this.typeAction = parcel.readInt()
+        this.isVisibleActionButton = parcel.readByte().toInt() != 0
+        this.labelActionButton = parcel.readString()
+        this.appLinkActionButton = parcel.readString()
+        this.redirectUrlActionButton = parcel.readString()
+    }
+
+    companion object {
+        val TYPE_ACTION_ACTIVATION = 1
+        val TYPE_ACTION_BALANCE = 2
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<SellerDrawerWalletAction> = object : Parcelable.Creator<SellerDrawerWalletAction> {
+            override fun createFromParcel(source: Parcel): SellerDrawerWalletAction {
+                return SellerDrawerWalletAction(source)
+            }
+
+            override fun newArray(size: Int): Array<SellerDrawerWalletAction?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 
     var labelTitle: String? = null
     var balance: String? = null
@@ -31,31 +59,4 @@ class SellerDrawerWalletAction : Parcelable {
         dest.writeString(this.redirectUrlActionButton)
     }
 
-    protected constructor(parcel: Parcel) {
-        this.labelTitle = parcel.readString()
-        this.balance = parcel.readString()
-        this.redirectUrlBalance = parcel.readString()
-        this.appLinkBalance = parcel.readString()
-        this.typeAction = parcel.readInt()
-        this.isVisibleActionButton = parcel.readByte().toInt() != 0
-        this.labelActionButton = parcel.readString()
-        this.appLinkActionButton = parcel.readString()
-        this.redirectUrlActionButton = parcel.readString()
-    }
-
-    companion object {
-        val TYPE_ACTION_ACTIVATION = 1
-        val TYPE_ACTION_BALANCE = 2
-
-        @JvmField
-        val CREATOR: Parcelable.Creator<SellerDrawerWalletAction> = object : Parcelable.Creator<SellerDrawerWalletAction> {
-            override fun createFromParcel(source: Parcel): SellerDrawerWalletAction {
-                return SellerDrawerWalletAction(source)
-            }
-
-            override fun newArray(size: Int): Array<SellerDrawerWalletAction?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
 }

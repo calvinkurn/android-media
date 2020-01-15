@@ -4,27 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.*
 
-class SellerHomeHeaderWalletAction : Parcelable {
+class SellerHomeHeaderWalletAction() : Parcelable {
 
-    var labelTitle: String? = null
-    var balance: String? = null
-    var redirectUrlBalance: String? = null
-    var appLinkBalance: String? = null
-    var typeAction: Int = 0
-    var isVisibleActionButton: Boolean = false
-    var labelActionButton: String? = null
-    var appLinkActionButton: String? = null
-    var redirectUrlActionButton: String? = null
-    var isLinked: Boolean = false
-    var abTags: List<String>? = ArrayList()
-    var pointBalance: String? = null
-    var rawPointBalance: Int = 0
-    var cashBalance: String? = null
-    var rawCashBalance: Int = 0
-    var walletType: String? = null
-
-
-    protected constructor(parcel: Parcel) {
+    constructor(parcel: Parcel): this() {
         labelTitle = parcel.readString()
         balance = parcel.readString()
         redirectUrlBalance = parcel.readString()
@@ -42,6 +24,36 @@ class SellerHomeHeaderWalletAction : Parcelable {
         rawCashBalance = parcel.readInt()
         walletType = parcel.readString()
     }
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<SellerHomeHeaderWalletAction> = object : Parcelable.Creator<SellerHomeHeaderWalletAction> {
+            override fun createFromParcel(parcel: Parcel): SellerHomeHeaderWalletAction {
+                return SellerHomeHeaderWalletAction(parcel)
+            }
+
+            override fun newArray(size: Int): Array<SellerHomeHeaderWalletAction?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+
+    var labelTitle: String? = null
+    var balance: String? = null
+    var redirectUrlBalance: String? = null
+    var appLinkBalance: String? = null
+    var typeAction: Int = 0
+    var isVisibleActionButton: Boolean = false
+    var labelActionButton: String? = null
+    var appLinkActionButton: String? = null
+    var redirectUrlActionButton: String? = null
+    var isLinked: Boolean = false
+    var abTags: List<String>? = ArrayList()
+    var pointBalance: String? = null
+    var rawPointBalance: Int = 0
+    var cashBalance: String? = null
+    var rawCashBalance: Int = 0
+    var walletType: String? = null
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(labelTitle)
@@ -64,19 +76,5 @@ class SellerHomeHeaderWalletAction : Parcelable {
 
     override fun describeContents(): Int {
         return 0
-    }
-
-    companion object {
-
-        @JvmField
-        val CREATOR: Parcelable.Creator<SellerHomeHeaderWalletAction> = object : Parcelable.Creator<SellerHomeHeaderWalletAction> {
-            override fun createFromParcel(parcel: Parcel): SellerHomeHeaderWalletAction {
-                return SellerHomeHeaderWalletAction(parcel)
-            }
-
-            override fun newArray(size: Int): Array<SellerHomeHeaderWalletAction?> {
-                return arrayOfNulls(size)
-            }
-        }
     }
 }
