@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -164,11 +166,17 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     private fun onListLastScroll(view: View) {
-        super.getRecyclerView(view).endLess {
+        super.getRecyclerView(view).endLess({
+            if (it < 0) { // going up
+                notifyStateFilterActionView()
+            } else if (it > 0) { // going down
+                btnFilter?.hide()
+            }
+        }, {
             if (it > lastListItem) {
                 lastListItem = it
             }
-        }
+        })
     }
 
     private fun getNotification(position: String) {
@@ -206,7 +214,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         hideLoading()
 
         val pagination = notification.paging.hasNext
-        if (pagination && !notification.list.isEmpty()) {
+        if (pagination && notification.list.isNotEmpty()) {
             cursor = (notification.list.last().notificationId)
         }
         _adapter.addElement(notification.list)
