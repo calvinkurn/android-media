@@ -37,7 +37,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewSearchShopEmptyContent"
         android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_4"
@@ -46,15 +46,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageSearchShopEmpty"
         app:layout_constraintTop_toBottomOf="@id/textViewSearchShopEmptyTitle"
+        app:layout_constraintBottom_toBottomOf="@id/imageSearchShopEmpty"
         app:typographyType="body_3"
         tools:text="@string/msg_empty_search_shop_content" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrierForEmptySearchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imageSearchShopEmpty,textViewSearchShopEmptyContent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSearchShopEmptySelectedFilter"
@@ -67,7 +61,7 @@
         android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrierForEmptySearchButton"
+        app:layout_constraintTop_toBottomOf="@id/imageSearchShopEmpty"
         tools:itemCount="5"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -82,7 +76,7 @@
         android:text="@string/msg_empty_search_shop_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrierForEmptySearchButton"
+        app:layout_constraintTop_toBottomOf="@id/imageSearchShopEmpty"
         app:unifyButtonSize="small" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -83,7 +83,7 @@ class ProfileListFragment :
         return R.id.profile_list_swipe_refresh_layout
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
         context?.let {
