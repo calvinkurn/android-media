@@ -12,7 +12,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        multiDexEnabled true
     }
 
     sourceSets {
@@ -36,18 +35,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
     testOptions {
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
-        }
-
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
         }
     }
 
@@ -55,7 +46,6 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
         exclude 'META-INF/LICENSE.md'
-        exclude 'META-INF/**'
     }
 }
 
