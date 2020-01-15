@@ -21,7 +21,7 @@ class VoucherPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
 
     private fun bindVoucherView(model: SendableVoucherPreview) {
         val voucherModel = MerchantVoucherViewModel(model.voucherViewModel)
-        itemView.voucher?.setData(voucherModel)
+        itemView.voucher?.setData(voucherModel, false)
     }
 
     companion object {
