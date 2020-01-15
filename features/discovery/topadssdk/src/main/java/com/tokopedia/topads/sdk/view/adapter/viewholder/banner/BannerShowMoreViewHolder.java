@@ -38,7 +38,7 @@ public class BannerShowMoreViewHolder extends AbstractViewHolder<BannerShopViewM
 
     @Override
     public void bind(final BannerShopViewModel element) {
-        txtMore.setOnClickListener(new View.OnClickListener() {
+        itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(topAdsBannerClickListener!=null) {
