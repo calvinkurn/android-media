@@ -74,10 +74,8 @@ class TokopediaPlayerHelper(
 
     private fun init(){
         // Measures bandwidth during playback. Can be null if not required.
-        // Measures bandwidth during playback. Can be null if not required.
         val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
 
-        // Produces DataSource instances through which media data is loaded.
         // Produces DataSource instances through which media data is loaded.
         mDataSourceFactory = DefaultDataSourceFactory(context,
                 Util.getUserAgent(context, "home"), bandwidthMeter)
