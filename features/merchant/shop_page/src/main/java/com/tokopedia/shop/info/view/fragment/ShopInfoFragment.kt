@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_NEW_SHOP_PAGE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -42,6 +41,7 @@ import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -59,6 +59,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var remoteConfig: RemoteConfig
+    private lateinit var shopPageConfig: ShopPageConfig
     private lateinit var shopViewModel: ShopInfoViewModel
     private lateinit var shopPageTracking: ShopPageTrackingBuyer
     private lateinit var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>
@@ -83,6 +84,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
         shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
+        shopPageConfig = ShopPageConfig(context)
 
         initViewModel()
         initObservers()
@@ -178,7 +180,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun observeShopStats() {
-        if(!isNewShopPageEnabled()) {
+        if(!shopPageConfig.isNewShopPageEnabled()) {
             observe(shopViewModel.shopStatisticsResp) {
                 displayShopStatistics(it)
             }
@@ -230,13 +232,13 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun getShopStats(shopId: String) {
-        if(!isNewShopPageEnabled()) {
+        if(!shopPageConfig.isNewShopPageEnabled()) {
             shopViewModel.getShopStats(shopId)
         }
     }
 
     private fun setStatisticsVisibility() {
-        if(isNewShopPageEnabled()) {
+        if(shopPageConfig.isNewShopPageEnabled()) {
             shopInfoStatistics.visibility = View.GONE
         } else {
             shopInfoStatistics.visibility = View.VISIBLE
@@ -289,7 +291,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun displayImageBackground(shopInfo: ShopInfoData) {
-        if (shopInfo.isOfficial == 1 || shopInfo.isGold == 1 && !isNewShopPageEnabled()) {
+        if (shopInfo.isOfficial == 1 || shopInfo.isGold == 1 && !shopPageConfig.isNewShopPageEnabled()) {
             shopBackgroundImageView.visibility = View.VISIBLE
             ImageHandler.LoadImage(shopBackgroundImageView, shopInfo.imageCover)
         } else {
@@ -455,10 +457,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private fun setToolbarTitle(title: String) {
         val toolbar = (activity as? AppCompatActivity)?.supportActionBar
         toolbar?.title = title
-    }
-
-    private fun isNewShopPageEnabled(): Boolean {
-        return remoteConfig.getBoolean(ENABLE_NEW_SHOP_PAGE, true)
     }
 
     private fun getShopId(): String? {
