@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,9 +23,7 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     private ActionListener actionListener;
 
     private TextView tvInfo;
-    private LinearLayout containerAdditional;
-
-    private Context context;
+    private RelativeLayout containerAdditional;
 
     public ProductAdditionalInfoView(Context context) {
         super(context);
@@ -54,8 +51,6 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     }
 
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this.context = context;
-
         LayoutInflater.from(context).inflate(
                 R.layout.view_holder_digital_product_additional_info, this, true
         );
