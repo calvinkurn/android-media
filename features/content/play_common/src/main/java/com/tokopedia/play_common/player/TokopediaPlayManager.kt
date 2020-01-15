@@ -14,9 +14,11 @@ import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import java.io.FileNotFoundException
 import java.io.IOException
 
 /**
@@ -144,7 +146,8 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
         return object : DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
-                return 5000
+                return if (exception is ParserException || exception is FileNotFoundException || exception is UnexpectedLoaderException) C.TIME_UNSET
+                else 5000
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
