@@ -42,9 +42,6 @@ private suspend fun logErrorSync(context: Context, e: GlideException?, url: Stri
                 url,
                 e?.message ?: "",
                 traceResult?.message ?: "")
-
-        Log.v("P2#IMAGE_TRACEROUTE#:",
-                traceResult?.message ?: "")
     }
 }
 
