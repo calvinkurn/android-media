@@ -578,6 +578,10 @@ class TopChatRoomPresenter @Inject constructor(
                 totalPriceAmount
         )
 
+        if (attachmentsPreview.hasInvoicePreview()) {
+            attachmentsPreview.clear()
+        }
+
         attachmentsPreview.add(invoiceViewModel)
 
         if (invoiceViewModel.notEnoughRequiredData()) {
@@ -684,4 +688,12 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+}
+
+private fun java.util.ArrayList<SendablePreview>.hasInvoicePreview(): Boolean {
+    if (isEmpty()) return false
+    for (item in this) {
+        if (item is InvoicePreviewViewModel) return true
+    }
+    return false
 }

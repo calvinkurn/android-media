@@ -58,4 +58,5 @@ dependencies {
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.kyccentralized)
+    implementation project(rootProject.ext.features.talk)
 }

@@ -1,12 +1,10 @@
 package com.tokopedia.digital.product.additionalfeature.etoll.view.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
@@ -14,30 +12,26 @@ import android.nfc.tech.NfcA;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.core.app.TaskStackBuilder;
-import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.di.DigitalComponentInstance;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
 import com.tokopedia.digital.product.additionalfeature.etoll.di.DaggerDigitalETollComponent;
 import com.tokopedia.digital.product.additionalfeature.etoll.di.DigitalETollComponent;
@@ -51,17 +45,15 @@ import com.tokopedia.digital.product.view.listener.IETollView;
 import com.tokopedia.digital.utils.NFCUtils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
-
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Rizky on 15/05/18.
@@ -80,8 +72,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private static final String COMMAND_SUCCESSFULLY_EXECUTED = "9000";
 
     private static final int TRANSCEIVE_TIMEOUT_IN_SEC = 5000;
-
-    private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -450,7 +440,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     }
 
     private boolean isDigitalSmartcardEnabled() {
-        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false);
     }
 
     @Override

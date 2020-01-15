@@ -2,7 +2,7 @@
     <string name="app_name">topads_sdk</string>
     <string name="error_response_message">Invalid error please try again</string>
     <string name="title_promote">Promoted</string>
-    <string name="title_promote_by">Promoted by</string>
+    <string name="title_promote_by">Dipromosikan</string>
     <string name="favoritkan">Favoritkan</string>
     <string name="favorite">Favorit</string>
     <string name="favorit">Favorit</string>
@@ -29,4 +29,5 @@
     <string name="msg_success_add_wishlist">Sukses menambah wishlist</string>
     <string name="msg_error_add_wishlist">Error menambah wishlist</string>
     <string name="msg_error_remove_wishlist">Error menghapus wishlist</string>
+    <string name="cek_sekarang">Cek Sekarang</string>
 </resources>
