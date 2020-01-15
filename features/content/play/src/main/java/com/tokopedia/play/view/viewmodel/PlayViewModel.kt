@@ -126,6 +126,7 @@ class PlayViewModel @Inject constructor(
         //TODO(Remove, ONLY FOR TESTING)
 //        initMockChat()
 //        initMockFreeze()
+//        initMockBanned()
 
         _observableVOD.value = playManager.videoPlayer
         stateHandler.observeForever(stateHandlerObserver)
@@ -395,12 +396,12 @@ class PlayViewModel @Inject constructor(
 
     private fun doOnChannelFreeze() {
         destroy()
-        pausePlayer()
+        releasePlayer()
         hideKeyboard()
     }
 
-    private fun pausePlayer() {
-        playManager.pauseCurrentVideo()
+    private fun releasePlayer() {
+        playManager.releasePlayer()
     }
 
     //region mock
@@ -426,6 +427,13 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.main) {
             delay(10000)
             _observableEvent.value = EventUiModel(isBanned = false, isFreeze = true, freezeTitle = "Freeze title", freezeMessage = "freeze message", freezeButtonTitle = "Freeze Button", freezeButtonUrl = "tokopedia://play/2")
+        }
+    }
+
+    private fun initMockBanned() {
+        launch(dispatchers.main) {
+            delay(10000)
+            _observableEvent.value = EventUiModel(isBanned = true, isFreeze = false, bannedTitle = "You are banned", bannedMessage = "You are banned for spamming", bannedButtonTitle = "Back to Home")
         }
     }
     //endregion
