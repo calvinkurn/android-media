@@ -89,7 +89,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 if (resultCode == Activity.RESULT_OK) {
                     val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
                             ?: TravelCountryPhoneCode()
-                    contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
+                    contactData.phoneCode = countryPhoneCode.countryPhoneCode
 
                     spinnerData.clear()
                     spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
@@ -272,7 +272,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         fun getInstance(contactData: ContactUser): UmrahCheckoutContactDataFragment =
                 UmrahCheckoutContactDataFragment().also {
                     it.arguments = Bundle().apply {
-                        putParcelable(UmrahCheckoutContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
+                        putParcelable(EXTRA_INITIAL_CONTACT_DATA, contactData)
                     }
                 }
     }
