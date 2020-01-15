@@ -82,6 +82,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     companion object {
+        private const val ETALASE_TO_SHOW = 5
         private const val REQUEST_CODE_USER_LOGIN = 100
         private const val REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101
         private const val REQUEST_CODE_ETALASE = 205
@@ -516,7 +517,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             isLoadingNewProductData = true
             shopProductAdapter.clearAllElements()
             showLoading()
-            viewModel.getEtalaseData(it, selectedEtalaseId)
+            viewModel.getEtalaseData(it)
         }
     }
 
@@ -881,16 +882,51 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun onSuccessGetEtalaseListData(data: ShopProductEtalaseListViewModel) {
+    private fun onSuccessGetEtalaseListData(data: List<ShopProductEtalaseChipItemViewModel>) {
+        val shopProductEtalaseListViewModel = createShopProductEtalaseListViewModel(data)
+        shopProductAdapter.setEtalaseDataModel(shopProductEtalaseListViewModel)
+        selectedEtalaseId = shopProductEtalaseListViewModel.selectedEtalaseId
         shopId?.let { shopId ->
             if (viewModel.isMyShop(shopId)) {
-                viewModel.getSellerShopPageProductTabData(shopId, data)
+                viewModel.getSellerShopPageProductTabData(shopId, shopProductEtalaseListViewModel)
             } else {
-                viewModel.getBuyerShopPageProductTabData(shopId, data)
+                viewModel.getBuyerShopPageProductTabData(shopId, shopProductEtalaseListViewModel)
             }
         }
-        shopProductAdapter.setEtalaseDataModel(data)
-        selectedEtalaseId = data.selectedEtalaseId
+
+    }
+
+    private fun createShopProductEtalaseListViewModel(
+            data: List<ShopProductEtalaseChipItemViewModel>
+    ): ShopProductEtalaseListViewModel {
+        val currentEtalaseId: String
+        val currentEtalaseName: String
+        val currentEtalaseBadge: String
+        val selectedEtalaseChip = data.firstOrNull { it.etalaseId == selectedEtalaseId }
+        if (selectedEtalaseChip != null) {
+            currentEtalaseId = selectedEtalaseChip.etalaseId
+            currentEtalaseName = selectedEtalaseChip.etalaseName
+            currentEtalaseBadge = selectedEtalaseChip.etalaseBadge
+        } else {
+            currentEtalaseId = data[0].etalaseId
+            currentEtalaseName = data[0].etalaseName
+            currentEtalaseBadge = data[0].etalaseBadge
+        }
+        val listShopEtalaseDataModel = mutableListOf<BaseShopProductEtalaseViewModel>()
+        if (data.size > ETALASE_TO_SHOW) {
+            listShopEtalaseDataModel.addAll(data.subList(0, ETALASE_TO_SHOW))
+        } else {
+            listShopEtalaseDataModel.addAll(data)
+        }
+        if (isOwner) {
+            listShopEtalaseDataModel.add(0, ShopProductAddEtalaseChipViewModel())
+        }
+        return ShopProductEtalaseListViewModel(
+                data,
+                currentEtalaseId,
+                currentEtalaseName,
+                currentEtalaseBadge
+        )
     }
 
     private fun onSuccessClaimBenefit(data: MembershipClaimBenefitResponse) {

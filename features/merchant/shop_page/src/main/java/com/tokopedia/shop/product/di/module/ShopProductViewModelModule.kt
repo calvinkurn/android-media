@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.product.di.scope.ShopProductScope
 import com.tokopedia.shop.product.view.viewmodel.ShopProductLimitedViewModel
@@ -34,4 +35,9 @@ abstract class ShopProductViewModelModule {
     @IntoMap
     @ViewModelKey(ShopProductListViewModel::class)
     internal abstract fun shopProductViewModel(viewModel: ShopProductListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopPageProductListResultViewModel::class)
+    internal abstract fun shopPageProductListResultViewModel(viewModel: ShopPageProductListResultViewModel): ViewModel
 }

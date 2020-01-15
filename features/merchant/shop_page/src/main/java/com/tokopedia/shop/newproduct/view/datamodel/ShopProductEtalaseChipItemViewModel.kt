@@ -1,5 +1,7 @@
 package com.tokopedia.shop.newproduct.view.datamodel
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
 import com.tokopedia.shop.newproduct.view.adapter.ShopProductEtalaseAdapterTypeFactory
@@ -11,12 +13,43 @@ import com.tokopedia.shop.newproduct.view.adapter.ShopProductEtalaseAdapterTypeF
 data class ShopProductEtalaseChipItemViewModel(
         val etalaseId: String = "",
         val etalaseName: String = "",
-        @ShopEtalaseTypeDef private var type: Int = ETALASE_DEFAULT,
+        @ShopEtalaseTypeDef val type: Int = ETALASE_DEFAULT,
         val etalaseBadge: String = "",
         val etalaseCount: Long = 0,
         val highlighted: Boolean = false
-) : BaseShopProductEtalaseViewModel {
+) : BaseShopProductEtalaseViewModel, Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readInt(),
+            parcel.readString() ?: "",
+            parcel.readLong(),
+            parcel.readByte() != 0.toByte())
+
     override fun type(typeFactory: ShopProductEtalaseAdapterTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(etalaseId)
+        parcel.writeString(etalaseName)
+        parcel.writeInt(type)
+        parcel.writeString(etalaseBadge)
+        parcel.writeLong(etalaseCount)
+        parcel.writeByte(if (highlighted) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ShopProductEtalaseChipItemViewModel> {
+        override fun createFromParcel(parcel: Parcel): ShopProductEtalaseChipItemViewModel {
+            return ShopProductEtalaseChipItemViewModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ShopProductEtalaseChipItemViewModel?> {
+            return arrayOfNulls(size)
+        }
     }
 }
