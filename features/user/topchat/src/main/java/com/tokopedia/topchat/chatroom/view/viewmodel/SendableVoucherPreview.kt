@@ -88,8 +88,8 @@ class SendableVoucherPreview(
             val desktop_url: String,
             val mobile_url: String,
             val amount: Int,
-            val amountType: Int,
+            val amount_type: Int,
             val identifier: String,
-            val voucherType: Int
+            val voucher_type: Int
     )
 }
