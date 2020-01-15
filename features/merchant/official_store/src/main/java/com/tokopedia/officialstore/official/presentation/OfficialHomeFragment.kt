@@ -356,7 +356,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.officialStoreProductRecommendationResult.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 

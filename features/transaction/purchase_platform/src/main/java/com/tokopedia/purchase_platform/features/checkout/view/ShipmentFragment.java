@@ -35,7 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
@@ -3004,7 +3004,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void updateTickerAnnouncementMessage() {
         int index = shipmentAdapter.getTickerAnnouncementHolderDataIndex();
         if (index != RecyclerView.NO_POSITION) {
+            // If ticker exist, update the view
             onNeedUpdateViewItem(index);
+        } else {
+            // If ticker not exist, add ticker to list, then update the list
+            TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
+            shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
+            shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
         }
     }
 

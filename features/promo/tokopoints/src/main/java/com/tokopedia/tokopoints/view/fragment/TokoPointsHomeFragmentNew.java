@@ -56,7 +56,7 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
-import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
@@ -126,7 +126,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private ServerErrorView serverErrorView;
 
     private Boolean userLoggedInStatus;
-    private AppCompatImageView ivLeaderBoard;
     private AppCompatImageView ivUserCoupon;
     private TextView userCouponCount;
     private CardView rewardsPointLayout;
@@ -482,7 +481,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         statusBarBgView = view.findViewById(R.id.status_bar_bg);
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint);
         serverErrorView = view.findViewById(R.id.server_error_view);
-        ivLeaderBoard = view.findViewById(R.id.iv_tpToolbar_leaderboard);
         ivUserCoupon = view.findViewById(R.id.iv_tpToolbar_coupon);
         userCouponCount = view.findViewById(R.id.tv_tpToolbar_couponCount);
         rewardsPointLayout = view.findViewById(R.id.card_point);
@@ -875,7 +873,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 emptyTitle.setText(data.getStatus().getEmptyMessage().getTitle());
                 emptySubtitle.setText(data.getStatus().getEmptyMessage().getSubTitle());
 
-                ivLeaderBoard.setVisibility(View.GONE);
                 ivUserCoupon.setVisibility(View.GONE);
                 userCouponCount.setVisibility(View.GONE);
                 ivLoyaltyStack.setVisibility(View.GONE);
@@ -1050,16 +1047,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             alertDialog.dismiss();
         });
         alertDialog.show();
-    }
-
-    @Override
-    public void onToolbarLeaderboardClick() {
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.LEADERBOARD, getString(R.string.tp_leader));
-        AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_LEADERBOARD,
-                "");
     }
 
     @Override

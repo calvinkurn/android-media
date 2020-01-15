@@ -5,9 +5,9 @@ import android.content.Context;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
+import com.tokopedia.sellerapp.dashboard.model.ShopInfoDashboardModel;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
 /**
@@ -16,7 +16,7 @@ import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubs
 
 public interface SellerDashboardView extends CustomerView {
 
-    void onSuccessGetShopInfoAndScore(ShopModel shopModel,
+    void onSuccessGetShopInfoAndScore(ShopInfoDashboardModel shopInfoDashboardModel,
                                       GoldGetPmOsStatus goldGetPmOsStatus,
                                       ShopScoreResult shopScoreResult);
 

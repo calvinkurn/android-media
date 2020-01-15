@@ -22,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -63,7 +64,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.maps
-    
+
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -82,6 +83,8 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModelKtx

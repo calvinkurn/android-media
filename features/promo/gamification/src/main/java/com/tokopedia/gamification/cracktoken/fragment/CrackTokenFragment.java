@@ -44,6 +44,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.GamificationRouter;
@@ -57,7 +58,6 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
-import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.HomeActionButton;
@@ -180,9 +180,19 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 } else if (crackResult.isCrackButtonRedirect(crackResult.getCtaButton())) {
                     trackingButtonClick(crackResult.getBenefitType(), titleBtn);
 
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
-                            crackResult.getCtaButton().getUrl(),
-                            CrackTokenActivity.class);
+                    String applink = crackResult.getCtaButton().getApplink();
+                    if (!TextUtils.isEmpty(applink)) {
+                        boolean isSupported = RouteManager.route(getActivity(), applink);
+                        if (!isSupported) {
+                            ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
+                                    crackResult.getCtaButton().getUrl(),
+                                    CrackTokenActivity.class);
+                        }
+                    } else {
+                        ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
+                                crackResult.getCtaButton().getUrl(),
+                                CrackTokenActivity.class);
+                    }
                 }
             }
 
@@ -203,10 +213,22 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 } else if (crackResult.isCrackButtonRedirect(crackResult.getReturnButton())) {
                     trackingButtonClick(crackResult.getBenefitType(), titleBtn);
 
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(),
-                            crackResult.getReturnButton().getApplink(),
-                            crackResult.getReturnButton().getUrl(),
-                            CrackTokenActivity.class);
+                    String applink = crackResult.getReturnButton().getApplink();
+                    if (!TextUtils.isEmpty(applink)) {
+                        boolean isSupported = RouteManager.route(getActivity(), applink);
+                        if (!isSupported) {
+                            ApplinkUtil.navigateToAssociatedPage(getActivity(),
+                                    crackResult.getReturnButton().getApplink(),
+                                    crackResult.getReturnButton().getUrl(),
+                                    CrackTokenActivity.class);
+                        }
+                    } else {
+                        ApplinkUtil.navigateToAssociatedPage(getActivity(),
+                                crackResult.getReturnButton().getApplink(),
+                                crackResult.getReturnButton().getUrl(),
+                                CrackTokenActivity.class);
+                    }
+
                 }
             }
 
@@ -249,7 +271,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         return result;
     }
 
-    private int getScreenHeightWithoutStatusBar(){
+    private int getScreenHeightWithoutStatusBar() {
         int statusBarHeight = getStatusBarHeight();
         return getActivity().getResources().getDisplayMetrics().heightPixels - statusBarHeight;
     }
@@ -395,7 +417,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             ImageHandler.loadImageAndCache(ivPrize, homeSmallButton.getImageURL());
             ivPrize.setOnClickListener(v -> {
                 crackLayoutTooltip.setVisibility(View.GONE);
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                String applink = homeSmallButton.getAppLink();
+                if (!TextUtils.isEmpty(applink)) {
+                    boolean isSupported = RouteManager.route(getActivity(), applink);
+                    if (!isSupported) {
+                        ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                    }
+                } else {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                }
+
                 trackingDailyPrizeBtnClick();
             });
         }
@@ -429,7 +460,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             widgetEggSource.showEggSource(actionButton.getText());
             widgetEggSource.setOnClickListener(v -> {
                 if (!TextUtils.isEmpty(actionButton.getAppLink()) || !TextUtils.isEmpty(actionButton.getUrl())) {
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
+                    String applink = actionButton.getAppLink();
+                    if (!TextUtils.isEmpty(applink)) {
+                        boolean isSupported = RouteManager.route(getActivity(), applink);
+                        if (!isSupported) {
+                            ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
+                        }
+                    } else {
+                        ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
+                    }
                     trackingMainGameLainnyaClick(actionButton.getText());
                 }
             });
@@ -474,7 +513,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void initTimerBound() {
-        int marginTop = (int)(getScreenHeightWithoutStatusBar() - (getScreenHeightWithoutStatusBar() *0.47));
+        int marginTop = (int) (getScreenHeightWithoutStatusBar() - (getScreenHeightWithoutStatusBar() * 0.47));
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
         ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
         ivFullLp.topMargin = marginTop;

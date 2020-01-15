@@ -400,7 +400,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(deviceLocation.getLatitude()));
         localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
         localCacheHandler.applyEditor();
-        allBrandsFragment.setCurrentCoordinates();
+        if (allBrandsFragment != null)
+            allBrandsFragment.setCurrentCoordinates();
     }
 
     private void checkForCurrentLocation() {
