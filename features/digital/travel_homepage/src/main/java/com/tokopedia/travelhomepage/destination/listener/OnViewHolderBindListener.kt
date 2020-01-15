@@ -12,4 +12,5 @@ interface OnViewHolderBindListener {
     fun onCityEventVHBind()
     fun onCityDealsVHBind()
     fun onCityArticleVHBind()
+    fun onUpdatePeekSize(height: Int)
 }

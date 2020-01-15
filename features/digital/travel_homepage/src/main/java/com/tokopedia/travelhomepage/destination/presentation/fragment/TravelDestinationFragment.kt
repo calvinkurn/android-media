@@ -47,6 +47,11 @@ import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDes
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.android.synthetic.main.layout_travel_destination_shimmering.*
 import kotlinx.android.synthetic.main.layout_travel_destination_summary.*
+import android.view.Window.ID_ANDROID_CONTENT
+import android.graphics.Rect
+import android.view.Window
+import kotlinx.android.synthetic.main.travel_homepage_order_section_list_without_subtitle_item.*
+
 
 /**
  * @author by jessica on 2019-12-20
@@ -156,6 +161,10 @@ OnViewHolderBindListener{
         }
     }
 
+    override fun onUpdatePeekSize(height: Int) {
+        setUpContentPeekSize(height)
+    }
+
     private fun setUpContentPeekSize(peekSize: Int) {
         activity?.let {
             val display = it.windowManager.defaultDisplay
@@ -169,7 +178,15 @@ OnViewHolderBindListener{
             }
             val height = size.y
 
-            val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height - peekSize - resources.getDimensionPixelSize(R.dimen.destination_content_peek_size))
+            //get height of status bar
+            val rectgle = Rect()
+            val window = it.window
+            window.getDecorView().getWindowVisibleDisplayFrame(rectgle)
+            val statusBarHeight = rectgle.top
+
+            val lp = CollapsingToolbarLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    height - peekSize - indicator_banner_container.height - statusBarHeight -
+                            resources.getDimensionPixelSize(R.dimen.destination_padding_info))
             lp.collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
             lp.parallaxMultiplier = 0.6f
             toolbar_container.layoutParams = lp
@@ -248,7 +265,6 @@ OnViewHolderBindListener{
     override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int, cityName: String) {
         if (this.cityName.isEmpty()) this.cityName = cityName
         renderLayout()
-        setUpContentPeekSize(peekSize)
         if (imgUrls.isNotEmpty()) {
             travel_homepage_destination_view_pager.setImages(imgUrls)
         }
