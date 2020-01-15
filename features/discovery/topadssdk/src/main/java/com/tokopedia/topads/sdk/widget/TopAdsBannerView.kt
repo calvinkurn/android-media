@@ -43,8 +43,10 @@ import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMore
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
@@ -92,14 +94,16 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             return
         if (template == NO_TEMPLATE) {
             var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
-            if(variant.equals(VARIANT_B)) {
+            if (variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b
-            } else{
+                BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_more
+            } else {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
+                BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
             }
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
@@ -156,8 +160,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val items = ArrayList<Item<*>>()
             items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
             for (i in 0 until cpmData.cpm.cpmShop.products.size) {
-                items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
-                        appLink, adsClickUrl))
+                if (i < 3) {
+                    items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
+                            appLink, adsClickUrl))
+                }
+            }
+            if (items.size == 2) {
+                items.add(BannerShopViewMore(appLink))
             }
             bannerAdsAdapter!!.setList(items)
         }
