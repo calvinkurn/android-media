@@ -88,6 +88,7 @@ public class ActivitySellingTransaction extends TkpdActivity
     public static final String EXTRA_KEY_IN_SHIPPING = "in_shipping";
     public static final String EXTRA_KEY_DONE = "done";
     public static final String EXTRA_KEY_ALL_ORDER = "all_order";
+    public static final String EXTRA_KEY_FINISHED = "finisehd";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
@@ -123,7 +124,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-            if (enable) {
+            if (true) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_NEW_ORDER);
             } else {
@@ -145,7 +146,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
+            if (true) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
             } else {
@@ -167,7 +168,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
+            if (true) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
             } else {
@@ -189,9 +190,30 @@ public class ActivitySellingTransaction extends TkpdActivity
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
+            if (true) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.HISTORY)
                         .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_ALL_ORDER);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+            }
+        }
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_FINISHED)
+    public static Intent getCallingIntentSellerFinished(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
+                    .putExtras(extras);
+        } else {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (true) {
+                return RouteManager.getIntent(context, ApplinkConstInternalOrder.FINISHED)
+                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_FINISHED);
             } else {
                 return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
             }
