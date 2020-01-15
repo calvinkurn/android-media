@@ -156,7 +156,7 @@ public class DigitalChooserOperatorFragment extends BaseDaggerFragment implement
     }
 
     private void initView(View view) {
-        rvOperatorList = view.findViewById(R.id.rv_list_chooser);
+        rvOperatorList = view.findViewById(R.id.rv_list_chooser_operator);
         fieldSearch = view.findViewById(R.id.field_search);
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
 

@@ -121,7 +121,7 @@ public class DigitalChooserProductFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
-        rvProductList = view.findViewById(R.id.rv_list_chooser);
+        rvProductList = view.findViewById(R.id.rv_list_chooser_product);
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
 
         rvProductList.setLayoutManager(new LinearLayoutManager(getActivity()));

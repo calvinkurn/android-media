@@ -32,7 +32,7 @@
             android:paddingStart="@dimen/dp_20"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_list_chooser"
+            android:id="@+id/rv_list_chooser_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"/>

@@ -6,14 +6,11 @@ import android.os.Bundle;
 import android.os.Parcel;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment;
 
@@ -100,21 +97,23 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     public void onOperatorItemSelected(Operator operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
         finish();
-        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
+        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay,
+                com.tokopedia.digital.R.anim.digital_slide_out_up);
     }
 
     @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
-        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
+        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay,
+                com.tokopedia.digital.R.anim.digital_slide_out_up);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
-        invalidateHomeUpToolbarIndicator();
+//        invalidateHomeUpToolbarIndicator();
     }
 
     @Override
@@ -128,7 +127,7 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         this.titleToolbar = savedInstanceState.getString(EXTRA_STATE_TITLE_TOOLBAR);
         invalidateTitleToolBar();
-        invalidateHomeUpToolbarIndicator();
+//        invalidateHomeUpToolbarIndicator();
     }
 
     private void invalidateTitleToolBar() {
@@ -138,15 +137,21 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
+        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay,
+                com.tokopedia.digital.R.anim.digital_slide_out_up);
     }
 
-    private void invalidateHomeUpToolbarIndicator() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.design.R.drawable.ic_close_default));
-        }
-    }
+//    private void invalidateHomeUpToolbarIndicator() {
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this,
+//                    com.tokopedia.design.R.drawable.ic_close_default));
+//        }
+//    }
 
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
 
     @Override
     protected Fragment getNewFragment() {
