@@ -22,6 +22,23 @@ import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.
 
 
 class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>() {
+
+    companion object {
+
+        private val SELLER_SALDO = 1
+        private val BUYER_SALDO = 0
+        private val ALL_SALDO = 2
+
+        fun createInstance(type: String, saldoHistoryPresenter: SaldoHistoryPresenter): SaldoHistoryListFragment {
+            val saldoHistoryListFragment = SaldoHistoryListFragment()
+            val bundle = Bundle()
+            bundle.putString(TRANSACTION_TYPE, type)
+            saldoHistoryListFragment.arguments = bundle
+            saldoHistoryListFragment.setPresenter(saldoHistoryPresenter)
+            return saldoHistoryListFragment
+        }
+    }
+
     private var recyclerView: RecyclerView? = null
     private var adapter: SaldoDepositAdapter? = null
     private var presenter: SaldoHistoryPresenter? = null
@@ -40,10 +57,6 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     private fun initViews(view: View) {
         recyclerView = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_history_recycler_view)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -106,21 +119,4 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
     override fun getScreenName(): String? {
         return null
     }
-
-    companion object {
-
-        private val SELLER_SALDO = 1
-        private val BUYER_SALDO = 0
-        private val ALL_SALDO = 2
-
-        fun createInstance(type: String, saldoHistoryPresenter: SaldoHistoryPresenter): SaldoHistoryListFragment {
-            val saldoHistoryListFragment = SaldoHistoryListFragment()
-            val bundle = Bundle()
-            bundle.putString(TRANSACTION_TYPE, type)
-            saldoHistoryListFragment.arguments = bundle
-            saldoHistoryListFragment.setPresenter(saldoHistoryPresenter)
-            return saldoHistoryListFragment
-        }
-    }
-
 }

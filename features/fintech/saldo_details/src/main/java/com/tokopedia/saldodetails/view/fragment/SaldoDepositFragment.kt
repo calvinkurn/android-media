@@ -57,7 +57,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class SaldoDepositFragment : BaseDaggerFragment()/*, SaldoDetailContract.View*/ {
+class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
         val REQUEST_WITHDRAW_CODE = 1
@@ -338,7 +338,6 @@ class SaldoDepositFragment : BaseDaggerFragment()/*, SaldoDetailContract.View*/ 
                 else -> {
                     hideSaldoPrioritasFragment()
                 }
-
             }
         })
 
@@ -423,11 +422,9 @@ class SaldoDepositFragment : BaseDaggerFragment()/*, SaldoDetailContract.View*/ 
             } catch (e: Exception) {
 
             }
-
-
         }
 
-        checkBalanceStatus!!.setOnClickListener { v ->
+        checkBalanceStatus!!.setOnClickListener {
             try {
                 val intent = RouteManager.getIntent(context, ApplinkConst.INBOX_TICKET)
                 startActivity(intent)
@@ -436,7 +433,7 @@ class SaldoDepositFragment : BaseDaggerFragment()/*, SaldoDetailContract.View*/ 
             }
         }
 
-        tickerMessageCloseButton!!.setOnClickListener { v -> tickerMessageRL!!.gone() }
+        tickerMessageCloseButton!!.setOnClickListener { tickerMessageRL!!.gone() }
     }
 
     private fun expand(v: View) {
@@ -812,7 +809,8 @@ class SaldoDepositFragment : BaseDaggerFragment()/*, SaldoDetailContract.View*/ 
         }
         childFragmentManager
                 .beginTransaction()
-                .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
+                .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget,
+                        MerchantCreditDetailFragment.newInstance(bundle))
                 .commit()
     }
 
