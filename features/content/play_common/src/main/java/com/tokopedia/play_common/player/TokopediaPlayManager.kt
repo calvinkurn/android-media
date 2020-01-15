@@ -12,9 +12,12 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import java.io.IOException
 
 /**
  * Created by jegul on 03/12/19
@@ -52,9 +55,9 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             if (!playWhenReady) _observablePlayVideoState.value = TokopediaPlayVideoState.Pause
             else when (playbackState) {
+                Player.STATE_IDLE -> _observablePlayVideoState.value = TokopediaPlayVideoState.NoMedia
                 Player.STATE_BUFFERING -> _observablePlayVideoState.value = TokopediaPlayVideoState.Buffering
                 Player.STATE_READY -> _observablePlayVideoState.value = TokopediaPlayVideoState.Playing
-                Player.STATE_IDLE -> _observablePlayVideoState.value = TokopediaPlayVideoState.NoMedia
                 Player.STATE_ENDED -> _observablePlayVideoState.value = TokopediaPlayVideoState.Ended
             }
         }
@@ -115,13 +118,15 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     //region private method
     private fun getMediaSourceBySource(context: Context, uri: Uri?): MediaSource {
         val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "home"))
-        return when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
-            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
-            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory).createMediaSource(uri)
+        val errorHandlingPolicy = getErrorHandlingPolicy()
+        val mediaSource = when (val type = Util.inferContentType(uri)) {
+            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
+        return mediaSource.createMediaSource(uri)
     }
     //endregion
 
@@ -134,6 +139,18 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             cause = cause.cause
         }
         return false
+    }
+
+    private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
+        return object : DefaultLoadErrorHandlingPolicy() {
+            override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
+                return 5000
+            }
+
+            override fun getMinimumLoadableRetryCount(dataType: Int): Int {
+                return Integer.MAX_VALUE
+            }
+        }
     }
 
     fun releasePlayer() {
