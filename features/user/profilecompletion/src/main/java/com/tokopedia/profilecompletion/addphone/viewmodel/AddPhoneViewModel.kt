@@ -1,21 +1,19 @@
 package com.tokopedia.profilecompletion.addphone.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
-import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_MSISDN
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_PHONE
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -68,8 +66,7 @@ class AddPhoneViewModel @Inject constructor(
             if (errorMessage.isBlank() && isSuccess) {
                 _addPhoneResponse.value = Success(AddPhoneResult(it, msisdn))
             } else if (!errorMessage.isBlank()) {
-                _addPhoneResponse.value = Fail(MessageErrorException(errorMessage,
-                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+                _addPhoneResponse.value = Fail(MessageErrorException(errorMessage))
             } else {
                 _addPhoneResponse.value = Fail(RuntimeException())
             }
@@ -104,10 +101,10 @@ class AddPhoneViewModel @Inject constructor(
             val errorMessage = it.userProfileCompletionValidate.msisdnMessage
             val isValid = it.userProfileCompletionValidate.isValid
 
-            if (errorMessage.isBlank() && isValid) {
+            if (isValid) {
                 _userValidateResponse.postValue(Success(it))
             } else if (!errorMessage.isBlank()) {
-                _userValidateResponse.postValue(Fail(Throwable(errorMessage)))
+                _userValidateResponse.postValue(Fail(MessageErrorException(errorMessage)))
             } else {
                 _userValidateResponse.postValue(Fail(RuntimeException()))
             }
