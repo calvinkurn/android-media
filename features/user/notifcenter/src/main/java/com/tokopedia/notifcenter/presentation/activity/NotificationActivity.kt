@@ -49,18 +49,17 @@ class NotificationActivity : BaseTabActivity(),
     @Inject lateinit var notifPreference: NotifPreference
     @Inject lateinit var cacheManager: CacheManager
 
-    private val handler = Handler()
-
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
     private var updateCounter = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationTransactionFragment()))
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
         super.onCreate(savedInstanceState)
         initInjector()
         initView()
+
+        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationTransactionFragment()))
+        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
 
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
@@ -204,8 +203,8 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     private fun createCustomView(title: String): View? {
-        var customView = LayoutInflater.from(this).inflate(R.layout.item_notification_tab_title, null);
-        var titleView = customView.findViewById<TextView>(R.id.title)
+        val customView = LayoutInflater.from(this).inflate(R.layout.item_notification_tab_title, null)
+        val titleView = customView.findViewById<TextView>(R.id.title)
         titleView.text = title
         return customView
     }
@@ -266,19 +265,19 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     companion object {
+        const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
         private const val KEY_TAB_POSITION = "tab_position"
 
-        var INDEX_NOTIFICATION_ACTIVITY = 0
-        var INDEX_NOTIFICATION_UPDATE = 1
-        const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
+        const val INDEX_NOTIFICATION_ACTIVITY = 0
+        const val INDEX_NOTIFICATION_UPDATE = 1
 
         fun start(context: Context): Intent {
             return Intent(context, NotificationActivity::class.java)
         }
 
         fun createIntentUpdate(context: Context): Intent {
-            var intent = Intent(context, NotificationActivity::class.java)
-            var bundle = Bundle()
+            val intent = Intent(context, NotificationActivity::class.java)
+            val bundle = Bundle()
             bundle.putInt(Intent.EXTRA_TITLE, INDEX_NOTIFICATION_UPDATE)
             intent.putExtras(bundle)
             return intent
