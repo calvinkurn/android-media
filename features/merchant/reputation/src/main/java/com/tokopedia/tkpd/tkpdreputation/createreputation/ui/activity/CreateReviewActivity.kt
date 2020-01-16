@@ -21,13 +21,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     private var productId: String = ""
     lateinit var createReviewFragment: CreateReviewFragment
-    private var utmSource: String = ""
 
     companion object {
         const val PARAM_RATING = "rating"
         const val DEFAULT_PRODUCT_RATING = 5
         const val PARAM_UTM_SOURCE = "utm_source"
-        const val PARAM_QUERY = "QUERY_PARAM"
+        const val DEFAULT_UTM_SOURCE = ""
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
@@ -36,7 +35,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         val bundle = intent.extras
         val uri = intent.data
         val rating = uri?.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
-        utmSource = bundle?.getBundle(PARAM_QUERY)?.getString(PARAM_UTM_SOURCE) ?: ""
+        val utmSource = uri?.getQueryParameter(PARAM_UTM_SOURCE)?.toString() ?: DEFAULT_UTM_SOURCE
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
@@ -50,7 +49,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                 productId,
                 reputationId,
                 bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: rating,
-                utmSource
+                bundle?.getString(CreateReviewFragment.UTM_SOURCE, utmSource) ?: utmSource
         )
         return createReviewFragment
 

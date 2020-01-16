@@ -98,6 +98,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_TITLEBAR = "titlebar";
     private static final String PARAM_NEED_LOGIN = "need_login";
     private static final String PARAM_EXTRA_REVIEW = "REVIEW_CLICK_AT";
+    private static final String PARAM_EXTRA_UTM_SOURCE = "UTM_SOURCE";
 
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
@@ -338,12 +339,21 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             } catch (NumberFormatException e) {
                 ratingNumber = 5;
             }
+
+            String utmSource;
+            if (!TextUtils.isEmpty(uri.getQueryParameter("utm_source"))) {
+                utmSource = uri.getQueryParameter("utm_source");
+            } else {
+                utmSource = "";
+            }
+
             String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating);
             Intent intent = RouteManager.getIntent(
                     context,
                     uriReview);
             intent.putExtras(defaultBundle);
             intent.putExtra(PARAM_EXTRA_REVIEW, ratingNumber);
+            intent.putExtra(PARAM_EXTRA_UTM_SOURCE, utmSource);
             viewListener.goToPage(intent);
         }
     }
