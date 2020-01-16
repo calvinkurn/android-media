@@ -123,7 +123,6 @@ object DeviceConnectionInfo {
                 for (addr in addrs) {
                     if (!addr.isLoopbackAddress) {
                         val sAddr = addr.hostAddress
-                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
                         val isIPv4 = sAddr.indexOf(':') < 0
 
                         if (useIPv4) {
