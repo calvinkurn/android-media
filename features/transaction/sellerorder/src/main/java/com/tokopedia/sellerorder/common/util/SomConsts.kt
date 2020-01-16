@@ -126,17 +126,18 @@ object SomConsts {
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
-    const val STATUS_ORDER_CANCELED = 0
-    const val STATUS_ORDER_WAITING_PICK_UP = 450
-    const val STATUS_ORDER_SHIPPING_WAITING = 501
-    const val STATUS_ORDER_SHIPPING_REFERENCE_NUMBER_INVALID = 520
-    const val STATUS_ORDER_SHIPPING_REFERENCE_NUMBER_EDITED = 530
-    const val STATUS_ORDER_RETURN_TO_SELLER = 550
     const val STATUS_ORDER_DELIVERED = 600
-    const val STATUS_ORDER_CONFLICTED = 601
     const val STATUS_ORDER_DELIVERED_DUE_LIMIT = 699
-    const val STATUS_ORDER_FINISHED = 700
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"
+
+    const val EXTRA_KEY_CANCELLED = "order_canceled"
+    const val EXTRA_KEY_WAITING_PICKUP = "waiting_pickup"
+    const val EXTRA_KEY_WAITING_AWB = "waiting_awb"
+    const val EXTRA_KEY_AWB_INVALID = "awb_invalid"
+    const val EXTRA_KEY_AWB_CHANGE = "awb_change"
+    const val EXTRA_KEY_RETUR = "retur"
+    const val EXTRA_KEY_COMPLAINT = "complaint"
+    const val EXTRA_KEY_FINISHED = "done"
 }

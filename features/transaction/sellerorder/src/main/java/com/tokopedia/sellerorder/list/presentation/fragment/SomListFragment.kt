@@ -30,6 +30,14 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangI
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_AWB_CHANGE
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_AWB_INVALID
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_CANCELLED
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_COMPLAINT
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_FINISHED
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_RETUR
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_WAITING_AWB
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_WAITING_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
@@ -90,6 +98,17 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var defaultEndDate = ""
     private var nextOrderId = 0
     private var onLoadMore = false
+
+    private val STATUS_ORDER_MAP = mapOf(
+            EXTRA_KEY_CANCELLED to listOf(0, 2, 4, 10, 11),
+            EXTRA_KEY_WAITING_PICKUP to listOf(450),
+            EXTRA_KEY_WAITING_AWB to listOf(501),
+            EXTRA_KEY_AWB_INVALID to listOf(520),
+            EXTRA_KEY_AWB_CHANGE to listOf(530),
+            EXTRA_KEY_RETUR to listOf(550),
+            EXTRA_KEY_COMPLAINT to listOf(601),
+            EXTRA_KEY_FINISHED to listOf(700)
+    )
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -180,6 +199,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         defaultEndDate = Date().toFormattedString("dd/MM/yyyy")
         paramOrder.startDate = defaultStartDate
         paramOrder.endDate = defaultEndDate
+        paramOrder.statusList = STATUS_ORDER_MAP[tabStatus] ?: listOf()
     }
 
     private fun loadInitial() {
