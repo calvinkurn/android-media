@@ -514,7 +514,7 @@ public class SearchTracking {
         return isTopAds ? SearchEventTracking.Label.TOPADS : SearchEventTracking.Label.GENERAL;
     }
 
-    public void eventActionClickCartButton(String keyword) {
+    public static void eventActionClickCartButton(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
@@ -523,7 +523,7 @@ public class SearchTracking {
         );
     }
 
-    public void eventActionClickHomeButton(String keyword) {
+    public static void eventActionClickHomeButton(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
