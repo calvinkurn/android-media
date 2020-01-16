@@ -139,6 +139,7 @@ fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemory: Boolea
             .load(url)
             .override(width, height)
             .skipMemoryCache(skipMemory)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .format(DecodeFormat.PREFER_ARGB_8888)
             .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .placeholder(R.drawable.loading_page)

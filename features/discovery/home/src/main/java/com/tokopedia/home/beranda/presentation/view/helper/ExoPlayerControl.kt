@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 
 
 interface ExoPlayerControl {
-    fun createPlayer(isToPrepare: Boolean)
+    fun createPlayer()
     fun preparePlayer()
     fun releasePlayer()
     fun playerPause()
