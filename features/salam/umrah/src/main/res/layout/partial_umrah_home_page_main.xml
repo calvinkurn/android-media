@@ -8,13 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/section_layout"
-        android:visibility="invisible"
+        android:visibility="visible"
         >
         <ImageView
+            android:adjustViewBounds="true"
+            android:id="@+id/iv_umrah_bg_kabbah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/umrah_bg_homepage_search" />
+            android:src="@drawable/umrah_bg_kabbah" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_160"
+                android:layout_marginTop="@dimen/dp_100"
                 app:cardElevation="@dimen/dp_2"
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="@dimen/dp_8"
@@ -72,6 +73,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/partial_umrah_home_page_main_shimmering"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 </FrameLayout>
