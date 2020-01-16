@@ -56,7 +56,7 @@ object DeeplinkMapperDigital {
     fun getDigitalTemplateNavigation(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        var newDeeplink = uri.getQueryParameter(TEMPLATE_PARAM)?.let {
+        return uri.getQueryParameter(TEMPLATE_PARAM)?.let {
             when (it) {
                 TEMPLATE_ID_VOUCHER -> {
                     if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP))
@@ -68,15 +68,12 @@ object DeeplinkMapperDigital {
                 else -> deeplink
             }
         } ?: deeplink
-        // Append query to new deeplink
-        if (newDeeplink != deeplink) newDeeplink = "$newDeeplink?${uri.query}"
-        return newDeeplink
     }
 
     fun getDigitalMenuNavigation(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        var newDeeplink = uri.getQueryParameter(MENU_ID_PARAM)?.toIntOrNull()?.let {
+        return uri.getQueryParameter(MENU_ID_PARAM)?.toIntOrNull()?.let {
             when (it) {
                 in MENU_ID_TELCO -> {
                     if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP))
@@ -85,9 +82,6 @@ object DeeplinkMapperDigital {
                 else -> deeplink
             }
         } ?: deeplink
-        // Append query to new deeplink
-        if (newDeeplink != deeplink) newDeeplink = "$newDeeplink?${uri.query}"
-        return newDeeplink
     }
 
     fun getDigitalSmartcardNavigation(context: Context, deeplink: String): String {
