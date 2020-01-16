@@ -9,11 +9,13 @@ import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSea
 /**
  * @author by furqan on 10/04/19
  */
-class HotelLastSearchAdapter(private var viewModels: List<TravelRecentSearchModel.Item>) : RecyclerView.Adapter<HotelLastSearchViewHolder>() {
+class HotelLastSearchAdapter(private val viewModels: List<TravelRecentSearchModel.Item>,
+                             private val listener: HotelLastSearchViewHolder.LastSearchListener)
+    : RecyclerView.Adapter<HotelLastSearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelLastSearchViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(HotelLastSearchViewHolder.LAYOUT, parent, false)
-        return HotelLastSearchViewHolder(view)
+        return HotelLastSearchViewHolder(view, listener)
     }
 
     override fun getItemCount(): Int = viewModels.size

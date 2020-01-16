@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -26,6 +27,7 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
+import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
@@ -46,7 +48,8 @@ import javax.inject.Inject
  * @author by furqan on 28/03/19
  */
 class HotelHomepageFragment : HotelBaseFragment(),
-        HotelRoomAndGuestBottomSheets.HotelGuestListener {
+        HotelRoomAndGuestBottomSheets.HotelGuestListener,
+        HotelLastSearchViewHolder.LastSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -182,6 +185,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 }
             }
         }
+    }
+
+    override fun onItemBind(item: TravelRecentSearchModel.Item, position: Int) {
+        trackingHotelUtil.hotelLastSearchImpression(item, position)
+    }
+
+    override fun onItemClick(item: TravelRecentSearchModel.Item, position: Int) {
+        trackingHotelUtil.hotelLastSearchClick(item, position)
     }
 
     private fun initView() {
@@ -396,7 +407,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             homepageViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_hotel_delete_recent_search))
         }
         rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data.items)
+        rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data.items, this)
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
@@ -429,7 +440,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
+    private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
         trackingHotelUtil.hotelClickBanner(promo, position)
     }
 
