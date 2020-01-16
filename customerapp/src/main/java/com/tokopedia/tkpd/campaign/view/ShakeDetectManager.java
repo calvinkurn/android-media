@@ -21,7 +21,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
-import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
 import static android.content.Context.SENSOR_SERVICE;
@@ -149,17 +148,10 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void startShake(boolean isLongShake) {
-           Intent intent = null;
-        if (!isAudioShakeEnable()) {
-            intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext,isLongShake);
-        } else if(false) { // feature under development
-            intent = ShakeShakeAudioCampaignActivity.getCapturedAudioCampaignActivity(mContext);
-        }
-        if(intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-            mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
-        }
+        Intent intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext,isLongShake);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
+        mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
     }
 
     Handler mShakeEnabler = new Handler() {

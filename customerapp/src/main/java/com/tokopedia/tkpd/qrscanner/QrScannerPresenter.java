@@ -23,7 +23,6 @@ import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
-import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
 import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
 import com.tokopedia.usecase.RequestParams;
@@ -43,7 +42,6 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_BRANCHIO;
-import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
 
 
 /**

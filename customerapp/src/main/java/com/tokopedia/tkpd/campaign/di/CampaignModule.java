@@ -14,8 +14,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
-import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
-import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.network.CampaignAuthInterceptor;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
@@ -43,16 +41,6 @@ public class CampaignModule {
     @Provides
     Resources provideResources(@ApplicationContext Context context) {
         return context.getResources();
-    }
-
-    @Provides
-    PostBarCodeDataUseCase providePostBarCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
-        return new PostBarCodeDataUseCase(bookingRideRepository);
-    }
-
-    @Provides
-    PostAudioDataUseCase providePostAudioCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
-        return new PostAudioDataUseCase(bookingRideRepository);
     }
 
     @Provides

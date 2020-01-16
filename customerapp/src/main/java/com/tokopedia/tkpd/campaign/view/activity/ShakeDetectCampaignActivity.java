@@ -33,8 +33,6 @@ import javax.inject.Inject;
 
 public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements ShakeDetectContract.View, HasComponent<CampaignComponent> {
 
-
-
     public static String SCREEN_NAME = "ShakeDetectCampaignActivity";
     private View shakeShakeMessageButton;
     private View parent;

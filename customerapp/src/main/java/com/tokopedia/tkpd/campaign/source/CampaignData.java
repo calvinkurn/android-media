@@ -27,17 +27,7 @@ public class CampaignData implements CampaignDataRepository {
     }
 
     @Override
-    public Observable<CampaignResponseEntity> getCompaignData(HashMap<String, Object> params) {
-        return campaignDataFactory.createCloudCampaignDataStore().getCampaign(params);
-    }
-
-    @Override
     public Observable<CampaignResponseEntity> getCampaignFromShake(HashMap<String, Object> params) {
         return campaignDataFactory.createCloudCampaignDataStore().getCampaignForShake(params);
-    }
-
-    @Override
-    public Observable<CampaignResponseEntity> getCampaignFromShakeAudio(HashMap<String, RequestBody> params, MultipartBody.Part audioFile) {
-        return campaignDataFactory.createCloudCampaignDataStore().getCampaignFromAudio(params,audioFile);
     }
 }

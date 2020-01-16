@@ -3,13 +3,11 @@ package com.tokopedia.tkpd.deeplink.di.module;
 
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
-import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
 import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
 import com.tokopedia.tkpd.deeplink.source.BranchIOData;
 import com.tokopedia.tkpd.deeplink.source.BranchIODataFactory;
 import com.tokopedia.tkpd.deeplink.source.BranchIODataRepository;
 import com.tokopedia.tkpd.deeplink.source.api.BranchIOAPI;
-import com.tokopedia.tkpd.deeplink.source.api.BranchIOURL;
 
 import dagger.Module;
 import dagger.Provides;
