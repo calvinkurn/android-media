@@ -121,8 +121,6 @@ public class ProductListFragment
     private PerformanceMonitoring performanceMonitoring;
 
     private Config topAdsConfig;
-
-    private boolean tickerHasDismissed = false;
     private FilterController quickFilterController = new FilterController();
 
     public static ProductListFragment newInstance(SearchParameter searchParameter) {
@@ -638,12 +636,14 @@ public class ProductListFragment
 
     @Override
     public void onTickerDismissed() {
-        tickerHasDismissed = true;
+        if (presenter != null) {
+            presenter.setIsTickerHasDismissed(true);
+        }
     }
 
     @Override
     public boolean isTickerHasDismissed() {
-        return tickerHasDismissed;
+        return presenter != null && presenter.getIsTickerHasDismissed();
     }
 
     @Override

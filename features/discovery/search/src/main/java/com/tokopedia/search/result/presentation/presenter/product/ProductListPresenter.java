@@ -102,6 +102,7 @@ final class ProductListPresenter
     private boolean isUsingBottomSheetFilter;
     private String additionalParams;
     private boolean isFirstTimeLoad;
+    private boolean isTickerHasDismissed;
 
     @Override
     public void initInjector(ProductListSectionContract.View view) {
@@ -138,6 +139,16 @@ final class ProductListPresenter
     @Override
     public void setIsFirstTimeLoad(boolean isFirstTimeLoad) {
         this.isFirstTimeLoad = isFirstTimeLoad;
+    }
+
+    @Override
+    public void setIsTickerHasDismissed(boolean isTickerHasDismissed) {
+        this.isTickerHasDismissed = isTickerHasDismissed;
+    }
+
+    @Override
+    public boolean getIsTickerHasDismissed() {
+        return isTickerHasDismissed;
     }
 
     @Override
@@ -858,7 +869,7 @@ final class ProductListPresenter
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
 
-        if (!getView().isTickerHasDismissed()
+        if (isTickerHasDismissed
                 && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
             getView().trackEventImpressionSortPriceMinTicker();

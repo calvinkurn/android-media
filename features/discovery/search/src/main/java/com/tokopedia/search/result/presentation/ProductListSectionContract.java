@@ -133,5 +133,9 @@ public interface ProductListSectionContract {
         boolean isUserLoggedIn();
 
         void setIsFirstTimeLoad(boolean isFirstTimeLoad);
+
+        void setIsTickerHasDismissed(boolean isTickerHasDismissed);
+
+        boolean getIsTickerHasDismissed();
     }
 }
