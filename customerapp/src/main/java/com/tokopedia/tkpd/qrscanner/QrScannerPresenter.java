@@ -173,17 +173,17 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                    CampaignTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
+                    QRTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
                 } else {
                     getView().showErrorNetwork(e);
-                    CampaignTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
+                    QRTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
                 }
             }
 
             @Override
             public void onNext(BranchIOAndroidDeepLink branchIOAndroidDeepLink) {
                 openActivity(Constants.Schemes.APPLINKS + "://" + branchIOAndroidDeepLink.getAndroidDeeplinkPath());
-                CampaignTracking.eventScanQRCode("success", "", branchIOAndroidDeepLink.getAndroidDeeplinkPath());
+                QRTracking.eventScanQRCode("success", "", branchIOAndroidDeepLink.getAndroidDeeplinkPath());
             }
         });
     }
@@ -197,18 +197,18 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                 if (!verificationResponse.getData().getUrl().isEmpty()) {
                     openActivity(verificationResponse.getData().getUrl());
-                    CampaignTracking.eventScanQRCode("success", idCampaign, verificationResponse.getData().getUrl());
+                    QRTracking.eventScanQRCode("success", idCampaign, verificationResponse.getData().getUrl());
                     getView().finish();
                     return Unit.INSTANCE;
                 } else {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                    CampaignTracking.eventScanQRCode("fail", idCampaign, "");
+                    QRTracking.eventScanQRCode("fail", idCampaign, "");
                     return Unit.INSTANCE;
                 }
             },
             throwable -> {
                 getView().showErrorNetwork(throwable);
-                CampaignTracking.eventScanQRCode("fail", idCampaign, "");
+                QRTracking.eventScanQRCode("fail", idCampaign, "");
                 getView().hideProgressDialog();
                 return Unit.INSTANCE;
             }
