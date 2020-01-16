@@ -118,6 +118,18 @@ public class SearchTracking {
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent("af_search", listViewEvent);
     }
 
+    public static void trackEventClickQuickFilter(String filterName, String filterValue, boolean isSelected, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                        EVENT_CATEGORY, SearchEventTracking.Category.FILTER_PRODUCT,
+                        EVENT_ACTION, SearchEventTracking.Action.QUICK_FILTER,
+                        EVENT_LABEL, filterName + " - " + filterValue + " - " + isSelected,
+                        USER_ID, userId
+                )
+        );
+    }
+
     public static void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoView",

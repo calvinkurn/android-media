@@ -37,12 +37,9 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.RecommendationTracking;
-import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
@@ -51,6 +48,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
+import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
@@ -60,15 +58,10 @@ import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListe
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -86,7 +79,6 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -141,7 +133,6 @@ public class ProductListFragment
 
     private PerformanceMonitoring performanceMonitoring;
     private TrackingQueue trackingQueue;
-    private ShowCaseDialog showCaseDialog;
 
     private FilterController quickFilterController = new FilterController();
 
@@ -707,7 +698,7 @@ public class ProductListFragment
         clearDataFilterSort();
         reloadData();
 
-        eventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelectedReversed);
+        trackEventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelectedReversed);
     }
 
     private void setFilterToQuickFilterController(Option option, boolean isQuickFilterSelected) {
@@ -720,13 +711,10 @@ public class ProductListFragment
         }
     }
 
-    public void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
-        searchTracking.sendGeneralEventWithUserId(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.QUICK_FILTER,
-                filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
-        );
+    private void trackEventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
+
+        SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, userId);
     }
 
     @Override
