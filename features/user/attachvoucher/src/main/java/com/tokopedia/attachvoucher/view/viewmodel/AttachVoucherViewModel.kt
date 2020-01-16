@@ -18,12 +18,12 @@ import javax.inject.Inject
 class AttachVoucherViewModel @Inject constructor(
         private val getVouchersUseCase: GetVoucherUseCase
 ) : ViewModel() {
-    var shopId: String = ""
 
     private var _filter: MutableLiveData<Int> = MutableLiveData()
     private var _vouchers: MutableLiveData<List<Voucher>> = MutableLiveData()
     private var _error: MutableLiveData<Throwable> = MutableLiveData()
 
+    var shopId: String = ""
     val filter: LiveData<Int> get() = _filter
     val error: LiveData<Throwable> get() = _error
     var filteredVouchers: LiveData<List<Voucher>> = Transformations.map(_filter) {
