@@ -564,10 +564,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
-            NetworkErrorHelper.showSnackbar(getActivity(),
-                    getString(R.string.review_for) + " " + data.getExtras().getString
-                            (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
-                            + " " + getString(R.string.is_send));
         } else if (requestCode == REQUEST_GIVE_REVIEW && resultCode ==
                 InboxReputationFormFragment.RESULT_CODE_SKIP) {
             refreshPage();
