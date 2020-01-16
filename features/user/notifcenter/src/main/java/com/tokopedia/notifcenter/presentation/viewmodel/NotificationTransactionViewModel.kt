@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.notifcenter.data.entity.NotificationEntity
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateFilter
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.notifcenter.domain.MarkReadNotificationUpdateItemUseCase
@@ -69,6 +70,9 @@ class NotificationTransactionViewModel @Inject constructor(
     private val _hasNotification = MutableLiveData<Boolean>()
     val hasNotification: LiveData<Boolean> get() = _hasNotification
 
+    //filter notification param
+    var filterNotificationParams = NotificationFilterUseCase.params()
+
     init {
         _filterNotification.addSource(_infoNotification) {
             getNotificationFilter()
@@ -114,11 +118,14 @@ class NotificationTransactionViewModel @Inject constructor(
                 NotificationUpdateActionSubscriber())
     }
 
+    private fun filterMapToDataView(it: NotificationUpdateFilter): NotificationFilterSectionViewBean {
+        return FilterWrapper(notificationFilterMapper.mapToFilter(it))
+    }
+
     override fun getNotificationFilter() {
-        val params = NotificationFilterUseCase.params()
-        notificationFilterUseCase.get(params, {
-            val notificationFilter = FilterWrapper(notificationFilterMapper.mapToFilter(it))
-            _filterNotification.value = notificationFilter
+        if (filterNotificationParams.isEmpty()) return
+        notificationFilterUseCase.get(filterNotificationParams, {
+            _filterNotification.value = filterMapToDataView(it)
         }, {
             onErrorMessage(it)
         })
