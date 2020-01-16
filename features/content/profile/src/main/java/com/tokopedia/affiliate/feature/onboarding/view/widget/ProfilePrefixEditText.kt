@@ -12,9 +12,9 @@ import com.tokopedia.profile.R
  * Created by Hendry on 3/9/2017.
  */
 
-class PrefixEditText @JvmOverloads constructor(context: Context,
-                                               attrs: AttributeSet? = null,
-                                               defStyle: Int = 0)
+class ProfilePrefixEditText @JvmOverloads constructor(context: Context,
+                                                      attrs: AttributeSet? = null,
+                                                      defStyle: Int = 0)
     : AppCompatEditText(context, attrs, defStyle), TextWatcher {
     private var mPrefix: String? = null
     private var mColor: Int = 0
@@ -47,10 +47,10 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         var a = context.obtainStyledAttributes(
-                attrs, R.styleable.PrefixEditText, defStyle, 0)
+                attrs, R.styleable.ProfilePrefixEditText, defStyle, 0)
 
-        mPrefix = a.getString(R.styleable.PrefixEditText_prefix)
-        mColor = a.getColor(R.styleable.PrefixEditText_prefixTextColor, 0)
+        mPrefix = a.getString(R.styleable.ProfilePrefixEditText_prefix)
+        mColor = a.getColor(R.styleable.ProfilePrefixEditText_prefixTextColor, 0)
         a.recycle()
 
         val set = intArrayOf(android.R.attr.text        // idx 0
@@ -114,9 +114,9 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
         val prefix = mPrefix
         if (prefix != null && !s.toString().startsWith(prefix)) {
             removeTextChangedListener(this)
-            super@PrefixEditText.setText(prefix)
-            super@PrefixEditText.getText()?.length?.let {
-                Selection.setSelection(super@PrefixEditText.getText(),
+            super@ProfilePrefixEditText.setText(prefix)
+            super@ProfilePrefixEditText.getText()?.length?.let {
+                Selection.setSelection(super@ProfilePrefixEditText.getText(),
                         it)
             }
             addTextChangedListener(this)
@@ -133,8 +133,8 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
         // if select on the prefix text, move selection to the end
         val prefixLength = mPrefix?.length ?: 0
         if (selStart < prefixLength && selEnd == selStart) {
-            super@PrefixEditText.getText()?.length?.let {
-                Selection.setSelection(super@PrefixEditText.getText(),
+            super@ProfilePrefixEditText.getText()?.length?.let {
+                Selection.setSelection(super@ProfilePrefixEditText.getText(),
                         it)
             }
         }
