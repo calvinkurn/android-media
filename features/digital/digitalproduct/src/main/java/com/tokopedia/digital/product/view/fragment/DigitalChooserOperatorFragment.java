@@ -202,7 +202,7 @@ public class DigitalChooserOperatorFragment extends BaseDaggerFragment implement
         pbMainLoading.setVisibility(View.GONE);
     }
 
-    private void fiterData(String query) {
+    private void filterData(String query) {
         List<Operator> searchOperatorList = new ArrayList<>();
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).getName().toLowerCase()
@@ -244,7 +244,7 @@ public class DigitalChooserOperatorFragment extends BaseDaggerFragment implement
 
             @Override
             public void afterTextChanged(Editable s) {
-                fiterData(s.toString());
+                filterData(s.toString());
                 checkEmptyQuery(s.toString());
             }
         };
