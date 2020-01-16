@@ -101,7 +101,17 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
             adapter.clearSelected()
             clearAllData()
             renderList(vouchers)
+            if (vouchers.isEmpty()) {
+                changeActionState(View.GONE)
+            } else {
+                changeActionState(View.VISIBLE)
+            }
         })
+    }
+
+    private fun changeActionState(visibility: Int) {
+        flAttach?.visibility = visibility
+        filterContainer?.visibility = visibility
     }
 
     private fun observeVoucherState() {
