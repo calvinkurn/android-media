@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
@@ -82,6 +83,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         super.onViewCreated(view, savedInstanceState)
         initView()
         setViewListener()
+        editTextSearchNumber.requestFocus()
+        KeyboardHandler.showSoftKeyboard(activity)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

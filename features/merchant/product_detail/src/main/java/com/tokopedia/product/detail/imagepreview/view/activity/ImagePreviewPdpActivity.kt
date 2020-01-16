@@ -132,9 +132,11 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_LOGIN -> {
-                addWishlist()
-                startActivity(RouteManager.getIntent(applicationContext, ApplinkConst.WISHLIST))
-                finish()
+                if (userSession.isLoggedIn) {
+                    addWishlist()
+                    startActivity(RouteManager.getIntent(applicationContext, ApplinkConst.WISHLIST))
+                    finish()
+                }
             }
         }
     }

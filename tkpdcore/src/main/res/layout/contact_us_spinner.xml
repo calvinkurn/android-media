@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Spinner xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/category"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/spinner_bg"
-    android:entries="@array/transaction_filter_type"
-    android:layout_marginTop="1dp"
-    android:spinnerMode="dropdown"/>

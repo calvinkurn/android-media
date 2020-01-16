@@ -48,10 +48,6 @@
         <item name="android:background">@drawable/bg_border_bottom</item>
     </style>
 
-    <style name="LabelLayout.BorderTop">
-        <item name="android:background">@drawable/bg_border_top</item>
-    </style>
-
     <style name="BaseCardViewLayoutMatchParent">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

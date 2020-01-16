@@ -26,7 +26,6 @@ import javax.inject.Inject
 class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.View, DeleteCreditCardDialogPayment.DeleteCreditCardDialogListener {
 
     var settingListPaymentModel: SettingListPaymentModel? = null
-    var paymentSettingRouter: PaymentSettingRouter? = null
     @Inject
     lateinit var detailCreditCardPresenter: DetailCreditCardPresenter
     val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
@@ -35,7 +34,6 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
         super.onCreate(savedInstanceState)
         activity?.run { GraphqlClient.init(this) }
         settingListPaymentModel = arguments?.getParcelable(EXTRA_PAYMENT_MODEL)
-        paymentSettingRouter = activity?.application as PaymentSettingRouter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,7 +44,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         settingListPaymentModel?.run {
             ImageHandler.LoadImage(view.imageCCBackground, this.backgroundImage)
             creditCardNumber.setText(this.maskedNumber?.getSpacedTextPayment())

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -25,7 +26,7 @@ import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.model.DeviceAttr;
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
-import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel;
 import com.tokopedia.tradein_common.Constants;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
@@ -33,13 +34,13 @@ import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import tradein_common.router.TradeInRouter;
-
 public class FinalPriceActivity extends BaseTradeInActivity implements Observer<DeviceDataResponse> {
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
     private final static int PINPOINT_ACTIVITY_REQUEST_CODE = 1302;
+    public static final String PARAM_PROJECTID_TRADEIN = "TRADEIN_PROJECT";
     private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
+    private static final int PROJECT_ID = 4;
     private FinalPriceViewModel viewModel;
     private String orderValue = "";
     private String deviceId = "";
@@ -254,8 +255,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     }
 
     private void goToKycActivity() {
-        TradeInRouter router = (TradeInRouter) getApplication();
-        Intent intent = router.getKYCIntent(this, 4);
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.KYC_FORM, String.valueOf(PROJECT_ID));
         startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
     }
 
@@ -307,7 +307,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
             }
         };
-        int greenColor = getResources().getColor(R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         spannableString.setSpan(clickableSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(foregroundColorSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -335,7 +335,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
             }
         };
-        int greenColor = getResources().getColor(R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

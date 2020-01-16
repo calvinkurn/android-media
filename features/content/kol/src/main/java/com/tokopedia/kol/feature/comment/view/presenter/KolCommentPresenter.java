@@ -56,17 +56,17 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void getCommentFirstTime(int id) {
+    public void getCommentFirstTime(int postId) {
         getView().showLoading();
         getKolCommentsUseCase.execute(
-                GetKolCommentsUseCase.getFirstTimeParam(id),
+                GetKolCommentsUseCase.getFirstTimeParam(postId),
                 new GetKolCommentFirstTimeSubscriber(getView()));
     }
 
     @Override
-    public void loadMoreComments(int id) {
+    public void loadMoreComments(int postId) {
         getKolCommentsUseCase.execute(
-                GetKolCommentsUseCase.getParam(id, cursor),
+                GetKolCommentsUseCase.getParam(postId, cursor),
                 new GetKolCommentSubscriber(getView()));
     }
 

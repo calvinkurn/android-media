@@ -11,7 +11,7 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -39,7 +39,8 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 GetDynamicFeedUseCase.createRequestParams(
                         userId = getUserId(),
                         cursor = cursor,
-                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending
+                ),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -67,7 +68,7 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 GetDynamicFeedUseCase.createRequestParams(
                         userId = getUserId(),
                         cursor = cursor,
-                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -92,7 +93,7 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
 
     override fun likeKol(id: Int, rowNumber: Int, columnNumber: Int) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         t?.let {
@@ -111,7 +112,7 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
     }
 
     override fun unlikeKol(id: Int, rowNumber: Int, columnNumber: Int) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         t?.let {

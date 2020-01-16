@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
@@ -109,7 +111,11 @@ class FeedAnalyticTracker
         const val USER_PROFILE_PAGE = "/user profile page"
         const val USER_PROFILE_PAGE_DETAIL = "$USER_PROFILE_PAGE detail"
         const val INTEREST_PICK_DETAIL = "/feed/interest-pick"
+        const val HOME_FEED_SCREEN = "/feed"
         const val ONBOARDING_PROFILE_RECOM = "/feed/profile-recom"
+
+        const val SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+        const val SCREEN_DIMENSION_IS_FEED_EMPTY = "isFeedEmpty"
     }
 
     private object Promotion {
@@ -211,6 +217,17 @@ class FeedAnalyticTracker
      */
     fun eventOpenInterestPickDetail() {
         trackOpenScreenEvent(Screen.INTEREST_PICK_DETAIL)
+    }
+
+    /**
+     *
+     *  * docs: https://docs.google.com/spreadsheets/d/1IRr-k5qfzFUz43mbkZDRtjKPAbXVrWDlHus5gCIqzFg/edit#gid=1450459047
+     *
+     */
+    fun eventOpenFeedPlusFragment(isLoggedInStatus: Boolean, isFeedEmpty: Boolean) {
+        trackOpenScreenEventC2s(Screen.HOME_FEED_SCREEN,
+                isLoggedInStatus = isLoggedInStatus.toString(),
+                isFeedEmpty = isFeedEmpty.toString())
     }
 
     /**
@@ -862,6 +879,18 @@ class FeedAnalyticTracker
                 screenName,
                 mapOf(
                         EVENT.capitalize() to Event.OPEN_SCREEN
+                )
+        )
+    }
+
+    private fun trackOpenScreenEventC2s(screenName: String,
+                                        isLoggedInStatus: String,
+                                        isFeedEmpty: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+                screenName,
+                mapOf(
+                        SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus,
+                        SCREEN_DIMENSION_IS_FEED_EMPTY to isFeedEmpty
                 )
         )
     }

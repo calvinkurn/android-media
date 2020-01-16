@@ -15,6 +15,7 @@ query SearchProduct(
         isQuerySafe
         autocomplete_applink
         errorMessage
+        lite_url
         default_view
         redirection {
             redirect_applink

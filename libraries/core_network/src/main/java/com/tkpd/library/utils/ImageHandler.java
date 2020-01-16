@@ -434,19 +434,6 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     }
 
-    public static void LoadImageWGender(ImageView imageview, String url, Context context, String
-            gender) {
-        if (!url.equals("null")) {
-            loadImageCircle2(imageview.getContext(), imageview, url);
-        } else {
-            if (gender.equals("1")) {
-                imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_boy), 100));
-            } else {
-                imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_girl), 100));
-            }
-        }
-    }
-
     private static boolean isContextValid(Context context) {
         Context tempContext = context;
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {

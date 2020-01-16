@@ -48,7 +48,6 @@ buildscript {
 }
 
 apply from: 'buildproj.gradle'
-
 apply plugin: 'com.uber.okbuck'
 
 okbuck {

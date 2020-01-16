@@ -4,8 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.SendNotification
-import com.tokopedia.navigation.presentation.di.notification.NotificationQueriesConstant
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.navigation.data.consts.NotificationQueriesConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

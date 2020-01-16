@@ -253,7 +253,6 @@ class TopChatRoomPresenter @Inject constructor(
                                 }
                             }
                         }
-                        templateList.add(TemplateChatModel(false) as Visitable<Any>)
                         view.onSuccessGetTemplate(templateList)
                     }
 
@@ -496,8 +495,6 @@ class TopChatRoomPresenter @Inject constructor(
         if (isValidReply(sendMessage)) {
             sendAttachments(messageId, opponentId)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
-        } else {
-            showErrorSnackbar(R.string.error_empty_product)
         }
     }
 

@@ -8,8 +8,9 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
-import com.tokopedia.transaction.orders.orderlist.data.Order;
-
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.CustomDate;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDate;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -70,6 +71,7 @@ public class OrderListContract {
 
         void showSuccessMessageWithAction(String message);
 
+        void setFilterRange(DefaultDate defaultDate, CustomDate customDate);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

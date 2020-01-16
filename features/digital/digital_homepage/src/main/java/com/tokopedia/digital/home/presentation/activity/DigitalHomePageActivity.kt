@@ -30,9 +30,14 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     override fun getComponent(): DigitalHomePageComponent {
         if (!::travelHomepageComponent.isInitialized) {
-            travelHomepageComponent = DigitalHomePageComponentInstance.getTravelHomepageComponent(application)
+            travelHomepageComponent = DigitalHomePageComponentInstance.getDigitalHomepageComponent(application)
         }
         return travelHomepageComponent
+    }
+
+    override fun onBackPressed() {
+        (fragment as DigitalHomePageFragment).onBackPressed()
+        super.onBackPressed()
     }
 
     companion object {

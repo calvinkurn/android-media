@@ -78,7 +78,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     }
 
     override fun type(dynamicIconSectionViewModel: DynamicIconSectionViewModel): Int {
-        return if(!dynamicIconSectionViewModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
+        return if(dynamicIconSectionViewModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
     }
 
     override fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int {

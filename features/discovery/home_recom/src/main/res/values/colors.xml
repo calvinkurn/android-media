@@ -8,4 +8,6 @@
     <color name="background_gradient_product_info">#ffeaef</color>
     <color name="text_location">#ae31353b</color>
     <color name="shadow_6">#60727272</color>
+    <color name="title_error_product_info">#f531353b</color>
+    <color name="message_error_product_info">#ae31353b</color>
 </resources>

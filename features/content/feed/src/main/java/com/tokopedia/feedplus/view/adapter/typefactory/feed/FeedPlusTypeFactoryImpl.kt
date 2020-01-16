@@ -27,8 +27,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
@@ -36,20 +34,9 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.listener.FeedPlus
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel
+import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -57,11 +44,12 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 
 class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
-                              private val userSession: UserSessionInterface) :
-        BaseAdapterTypeFactory(), FeedPlusTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
+                              private val userSession: UserSessionInterface,
+                              private val interestPickItemListener: OnboardingAdapter.InterestPickItemListener) :
+        BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
     private val viewListener: FeedPlus.View
-    private val kolPostListener: KolPostListener.View.ViewHolder
+    private val kolPostListener: KolPostViewHolderListener
     private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener
     private val bannerListener: BannerAdapter.BannerItemListener
     private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener
@@ -74,7 +62,6 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
     private val videoViewListener: VideoViewHolder.VideoViewListener
     private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener
     private val highlightListener: HighlightAdapter.HighlightListener
-    private val interestPickItemListener: OnboardingAdapter.InterestPickItemListener
 
     init {
         this.viewListener = context
@@ -91,36 +78,10 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         this.videoViewListener = context
         this.feedMultipleImageViewListener = context
         this.highlightListener = context
-        this.interestPickItemListener = context
     }
 
     override fun type(emptyModel: EmptyModel): Int {
         return EmptyFeedViewHolder.LAYOUT
-    }
-
-    override fun type(kolPostViewModel: KolPostViewModel): Int {
-        return KolPostViewHolder.LAYOUT
-    }
-
-    override fun type(kolPostYoutubeViewModel: KolPostYoutubeViewModel): Int {
-        return KolPostYoutubeViewHolder.LAYOUT
-    }
-
-    override fun type(emptyKolPostViewModel: EmptyKolPostViewModel): Int {
-        return EmptyKolPostViewHolder.LAYOUT
-    }
-
-    override fun type(exploreViewModel: ExploreViewModel): Int {
-        return ExploreViewHolder.LAYOUT
-    }
-
-    override fun type(entryPointViewModel: EntryPointViewModel): Int {
-        throw IllegalStateException(this.javaClass.simpleName + " doesn't support "
-                + EntryPointViewModel::class.java.simpleName)
-    }
-
-    override fun type(whitelistViewModel: WhitelistViewModel): Int {
-        return WhitelistViewHolder.LAYOUT
     }
 
     override fun type(emptyFeedBeforeLoginModel: EmptyFeedBeforeLoginModel): Int {
@@ -165,16 +126,6 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
             viewHolder = RetryViewHolder(view, viewListener)
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = EmptyFeedBeforeLoginViewHolder(view, viewListener)
-        else if (type == KolPostViewHolder.LAYOUT)
-            viewHolder = KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.FEED)
-        else if (type == KolPostYoutubeViewHolder.LAYOUT)
-            viewHolder = KolPostYoutubeViewHolder(view, kolPostListener, KolPostYoutubeViewHolder.Type.FEED)
-        else if (type == EmptyKolPostViewHolder.LAYOUT)
-            viewHolder = EmptyKolPostViewHolder(view)
-        else if (type == ExploreViewHolder.LAYOUT)
-            viewHolder = ExploreViewHolder(view, kolPostListener)
-        else if (type == WhitelistViewHolder.LAYOUT)
-            viewHolder = WhitelistViewHolder(view, viewListener)
         else if (type == DynamicPostViewHolder.LAYOUT) {
             viewHolder = DynamicPostViewHolder(
                     view,
@@ -199,9 +150,5 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder
-    }
-
-    override fun setType(type: KolPostViewHolder.Type) {
-
     }
 }

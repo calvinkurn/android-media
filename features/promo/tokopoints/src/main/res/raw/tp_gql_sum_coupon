@@ -1,6 +1,6 @@
 {
-  tokopointsSumCoupon {
-    sumCoupon
-    sumCouponStr
-  }
+  tokopointsSumNewCoupon {
+          sumNewCoupon
+          sumNewCouponStr
+      }
 }

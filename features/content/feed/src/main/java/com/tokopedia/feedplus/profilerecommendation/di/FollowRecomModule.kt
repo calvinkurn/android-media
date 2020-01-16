@@ -35,8 +35,8 @@ class FollowRecomModule {
 
     @FollowRecomScope
     @Provides
-    fun provideFollowKolPostUseCase(@ApplicationContext context: Context): FollowKolPostGqlUseCase {
-        return FollowKolPostGqlUseCase(context, GraphqlUseCase())
+    fun provideFollowKolPostUseCase(): FollowKolPostGqlUseCase {
+        return FollowKolPostGqlUseCase()
     }
 
     @FollowRecomScope

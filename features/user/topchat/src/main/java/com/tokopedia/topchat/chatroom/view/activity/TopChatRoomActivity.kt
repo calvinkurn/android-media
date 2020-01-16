@@ -107,13 +107,6 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
 
     }
 
-    override fun onBackPressed() {
-        supportFragmentManager.findFragmentByTag(tagFragment).let {
-            if (it is TopChatRoomFragment) it.onBackPressedEvent()
-            else super.onBackPressed()
-        }
-    }
-
     object DeepLinkIntents {
         @JvmStatic
         @DeepLink(ApplinkConst.TOPCHAT)

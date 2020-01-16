@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
@@ -53,12 +52,12 @@ class NotificationUpdatePresenter @Inject constructor(
     override fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationUpdateViewModel) -> Unit, onErrorInitiateData: (Throwable) -> Unit) {
         getNotificationUpdateUseCase.execute(
                 GetNotificationUpdateUseCase.getRequestParams(1, variables, lastNotifId),
-                GetNotificationUpdateSubscriber(view, getNotificationUpdateMapper, onSuccessInitiateData, onErrorInitiateData)
+                GetNotificationUpdateSubscriber(getNotificationUpdateMapper, onSuccessInitiateData, onErrorInitiateData)
         )
     }
 
     override fun getFilter(onSuccessGetFilter: (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit) {
-        getNotificationUpdateFilterUseCase.execute(GetNotificationUpdateFilterSubscriber(view, getNotificationUpdateFilterMapper, onSuccessGetFilter))
+        getNotificationUpdateFilterUseCase.execute(GetNotificationUpdateFilterSubscriber(getNotificationUpdateFilterMapper, onSuccessGetFilter))
     }
 
     override fun clearNotifCounter() {
@@ -67,7 +66,9 @@ class NotificationUpdatePresenter @Inject constructor(
 
     override fun markReadNotif(notifId: String) {
         markReadNotificationUpdateItemUseCase.execute(
-                MarkReadNotificationUpdateItemUseCase.getRequestParams(notifId),
+                MarkReadNotificationUpdateItemUseCase.getRequestParams(
+                        notifId,
+                        TYPE_OF_NOTIF_UPDATE),
                 NotificationUpdateActionSubscriber())
     }
 
@@ -125,5 +126,9 @@ class NotificationUpdatePresenter @Inject constructor(
        return RequestParams.create().apply {
            putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
        }
+    }
+
+    companion object {
+        private const val TYPE_OF_NOTIF_UPDATE = 1
     }
 }

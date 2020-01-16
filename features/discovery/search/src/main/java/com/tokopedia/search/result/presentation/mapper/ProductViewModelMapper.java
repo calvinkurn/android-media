@@ -2,6 +2,9 @@ package com.tokopedia.search.result.presentation.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
@@ -10,6 +13,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
+import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
@@ -45,13 +49,40 @@ public class ProductViewModelMapper {
             productViewModel.setDynamicFilterModel(searchProductModel.getDynamicFilterModel());
         }
         if (searchProductModel.getQuickFilterModel() != null) {
-            productViewModel.setQuickFilterModel(searchProductModel.getQuickFilterModel());
+            productViewModel.setQuickFilterModel(
+                    convertToQuickFilterViewModel(
+                            searchProductModel.getQuickFilterModel(),
+                            searchProduct.getCountText()
+                    )
+            );
         }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
         productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
         productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
+    }
+
+    private QuickFilterViewModel convertToQuickFilterViewModel(DataValue dynamicFilterModel, String formattedResultCount) {
+        QuickFilterViewModel quickFilterViewModel = new QuickFilterViewModel();
+        quickFilterViewModel.setFormattedResultCount(formattedResultCount);
+        quickFilterViewModel.setQuickFilterList(dynamicFilterModel.getFilter());
+        quickFilterViewModel.setQuickFilterOptions(getQuickFilterOptions(dynamicFilterModel));
+        return quickFilterViewModel;
+    }
+
+    private List<Option> getQuickFilterOptions(DataValue dynamicFilterModel) {
+        ArrayList<Option> optionList = new ArrayList<>();
+
+        if (dynamicFilterModel.getFilter() == null) {
+            return optionList;
+        }
+
+        for (Filter filter : dynamicFilterModel.getFilter()) {
+            optionList.addAll(filter.getOptions());
+        }
+
+        return optionList;
     }
 
     private boolean isListContainItems(List list) {

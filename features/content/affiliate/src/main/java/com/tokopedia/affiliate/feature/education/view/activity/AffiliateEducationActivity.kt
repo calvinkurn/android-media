@@ -18,7 +18,6 @@ class AffiliateEducationActivity : BaseSimpleActivity() {
     }
 
     object DeeplinkIntent {
-        @DeepLink(ApplinkConst.AFFILIATE_EDUCATION)
         @JvmStatic
         fun createIntent(context: Context, extras: Bundle) = createIntent(context)
     }

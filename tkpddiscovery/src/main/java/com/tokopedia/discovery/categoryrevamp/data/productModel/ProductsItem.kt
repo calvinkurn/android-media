@@ -106,7 +106,11 @@ data class ProductsItem(
         var productClickTrackingUrl: String = "",
 
         @field:SerializedName("productWishlistTrackingUrl")
-        var productWishlistTrackingUrl: String = ""
+        var productWishlistTrackingUrl: String = "",
+
+        @field:SerializedName("adapterPosition")
+        var adapter_position: Int = 0
+
 
 ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
@@ -148,7 +152,8 @@ data class ProductsItem(
             parcel.readValue(Boolean::class.java.classLoader) as Boolean,
             parcel.readString(),
             parcel.readString(),
-            parcel.readString())
+            parcel.readString(),
+            parcel.readInt())
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(this.imageURL500)
@@ -185,6 +190,7 @@ data class ProductsItem(
         dest?.writeValue(this.productImpTrackingUrl)
         dest?.writeValue(this.productClickTrackingUrl)
         dest?.writeValue(this.productWishlistTrackingUrl)
+        dest?.writeInt(this.adapter_position)
     }
 
     override fun describeContents(): Int {

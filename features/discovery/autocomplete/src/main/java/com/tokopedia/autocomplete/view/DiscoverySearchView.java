@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.autocomplete.R;
@@ -348,11 +349,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void startShowCase() {
-
-        if (isAllowImageSearch() &&
-                !isShowShowCase()) {
-
-
+        if (shouldShowImageSearchShowCase()) {
             final String showCaseTag = "Image Search ShowCase";
             if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
                 return;
@@ -386,6 +383,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
 
         }
+    }
+
+    private boolean shouldShowImageSearchShowCase() {
+        return isAllowImageSearch()
+                && !isShowShowCase()
+                && mImageSearchButton != null
+                && mImageSearchButton.getVisibility() == View.VISIBLE;
     }
 
     private ShowCaseDialog createShowCase() {

@@ -52,7 +52,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_34"
-        android:background="@drawable/bg_btn_green"
+        android:background="@drawable/bg_af_btn_green"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
