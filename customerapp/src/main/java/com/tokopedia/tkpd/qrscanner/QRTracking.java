@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.qrscanner;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.tkpd.campaign.analytics.CampaignAppEventTracking;
 
 public class QRTracking extends UnifyTracking {
 

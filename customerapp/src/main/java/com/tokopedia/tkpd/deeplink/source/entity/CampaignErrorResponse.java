@@ -1,10 +1,8 @@
-package com.tokopedia.tkpd.campaign.data.model;
+package com.tokopedia.tkpd.deeplink.source.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 
 import java.io.IOException;
 
@@ -15,6 +13,14 @@ import java.io.IOException;
 public class CampaignErrorResponse extends BaseResponseError {
     private static final String ERROR_KEY = "message_error";
     private static final String DATA_KEY = "data";
+
+    public CampaignResponseEntity getErrorCode() {
+        return data;
+    }
+
+    public void setErrorCode(CampaignResponseEntity data) {
+        this.data = data;
+    }
 
     @SerializedName(DATA_KEY)
     @Expose

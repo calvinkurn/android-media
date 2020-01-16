@@ -29,7 +29,6 @@ import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.entity.ValidCampaignPojo;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
-import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
@@ -67,8 +66,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     private PermissionCheckerHelper permissionCheckerHelper;
 
     @Inject
-    public ShakeDetectPresenter(ShakeUseCase shakeUseCase,
-                                GetCampaignUseCase getCampaignUseCase,
+    public ShakeDetectPresenter(GetCampaignUseCase getCampaignUseCase,
                                 @ApplicationContext Context context) {
         this.getCampaignUseCase = getCampaignUseCase;
         this.context = context;

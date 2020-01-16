@@ -13,12 +13,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
-import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
-import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.network.CampaignAuthInterceptor;
-import com.tokopedia.tkpd.campaign.source.CampaignData;
-import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
-import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
 import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -44,11 +39,6 @@ public class CampaignModule {
     }
 
     @Provides
-    ShakeUseCase provideShakeUseCase(CampaignDataRepository bookingRideRepository) {
-        return new ShakeUseCase(bookingRideRepository);
-    }
-
-    @Provides
     GraphqlRepository provideRepository() {
         return Interactor.getInstance().getGraphqlRepository();
     }
@@ -56,21 +46,6 @@ public class CampaignModule {
     @Provides
     ScannerUseCase provideScannerUseCase(@ApplicationContext Context context, GraphqlRepository repository) {
         return new ScannerUseCase(context.getResources(), repository);
-    }
-
-    @Provides
-    CampaignDataRepository provideCampaignRideRepository(CampaignDataFactory campaignDataFactory) {
-        return new CampaignData(campaignDataFactory);
-    }
-
-    @Provides
-    CampaignDataFactory provideCampaignDataFactory(CampaignAPI campaignAPI) {
-        return new CampaignDataFactory(campaignAPI);
-    }
-
-    @Provides
-    CampaignAPI provideCampaignApi(Retrofit retrofit) {
-        return retrofit.create(CampaignAPI.class);
     }
 
     @Provides
