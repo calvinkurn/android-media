@@ -135,5 +135,7 @@ public interface ProductListSectionContract {
         void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
 
         void onBannedProductsGoToBrowserClick(String url);
+
+        boolean isUsingBottomSheetFilter();
     }
 }

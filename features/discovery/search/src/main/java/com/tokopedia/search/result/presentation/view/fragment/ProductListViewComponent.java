@@ -13,8 +13,7 @@ import dagger.Component;
 @Component(modules = {
         ProductListPresenterModule.class,
         UserSessionModule.class,
-        SearchTrackingModule.class,
-        RemoteConfigModule.class
+        SearchTrackingModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListViewComponent {
 

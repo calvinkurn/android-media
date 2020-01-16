@@ -90,7 +90,6 @@ public abstract class SearchSectionFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
     private boolean hasLoadData;
     private FilterTrackingData filterTrackingData;
@@ -432,11 +431,15 @@ public abstract class SearchSectionFragment
             return;
         }
 
-        if (bottomSheetListener != null && isUsingBottomSheetFilter) {
+        if (bottomSheetListener != null && isUsingBottomSheetFilter()) {
             openBottomSheetFilter();
         } else {
             FilterSortManager.openFilterPage(getFilterTrackingData(), this, getScreenName(), searchParameter.getSearchParameterHashMap());
         }
+    }
+
+    protected boolean isUsingBottomSheetFilter() {
+        return false;
     }
 
     protected void openBottomSheetFilter() {

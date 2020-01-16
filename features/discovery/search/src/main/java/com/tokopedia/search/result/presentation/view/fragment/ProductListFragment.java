@@ -113,11 +113,9 @@ public class ProductListFragment
         BannedProductsRedirectToBrowserListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
-    private static final String SHOP = "shop";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
-    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
 
@@ -131,8 +129,6 @@ public class ProductListFragment
     SearchTracking searchTracking;
     @Inject
     UserSessionInterface userSession;
-    @Inject
-    RemoteConfig remoteConfig;
 
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
     private SearchPerformanceMonitoringListener searchPerformanceMonitoringListener;
@@ -168,7 +164,6 @@ public class ProductListFragment
         if(getContext() == null) return;
 
         trackingQueue = new TrackingQueue(getContext());
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
     }
 
     private void loadDataFromArguments() {
@@ -1248,5 +1243,10 @@ public class ProductListFragment
         else {
             SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
         }
+    }
+
+    @Override
+    protected boolean isUsingBottomSheetFilter() {
+        return presenter != null && presenter.isUsingBottomSheetFilter();
     }
 }

@@ -97,6 +97,7 @@ final class ProductListPresenter
 
     private boolean enableGlobalNavWidget;
     private boolean changeParamRow;
+    private boolean isUsingBottomSheetFilter;
 
     @Override
     public void initInjector(ProductListSectionContract.View view) {
@@ -108,6 +109,11 @@ final class ProductListPresenter
 
         enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,true);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
+        isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+    }
+
+    public boolean isUsingBottomSheetFilter() {
+        return this.isUsingBottomSheetFilter;
     }
 
     @Override
