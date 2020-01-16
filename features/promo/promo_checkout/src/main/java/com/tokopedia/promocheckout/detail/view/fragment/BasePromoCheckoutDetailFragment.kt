@@ -14,6 +14,9 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
@@ -239,6 +242,32 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         }
         NetworkErrorHelper.showRedCloseSnackbar(activity, message)
         setDisabledButtonUse()
+
+        var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, "")
+
+        //todo
+        //todo check for phone verifiaction error
+        //todo enable gunakan button . hide error . open bottomsheet for phone verification . redirect applink
+
+        openPhoneVerificationBottomSheet()
+
+    }
+
+    private fun openPhoneVerificationBottomSheet() {
+        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
+        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
+        closeableBottomSheetDialog.setContentView(view)
+        btn_verifikasi.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+            startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
+            promoCheckoutAnalytics.clickVerifikasai()
+        }
+
+        cancel_verifikasi.setOnClickListener{
+            closeableBottomSheetDialog.hide()
+        }
+
+        closeableBottomSheetDialog.show()
     }
 
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
