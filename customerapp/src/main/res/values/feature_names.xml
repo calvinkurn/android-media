@@ -206,4 +206,9 @@
     <!-- Dynamic feature for user identification commmon-->
     <string name="title_upload_user_identification_common">Upload Foto</string>
 
+    <!-- Dynamic feature for user talk-->
+    <string name="write_new_talk">Tulis Diskusi Baru</string>
+    <string name="title_product_discussion">Diskusi Produk</string>
+    <string name="title_report_talk">Laporkan</string>
+
 </resources>

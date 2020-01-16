@@ -125,6 +125,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_DONE = "selesai";
     private static final String  MULAI_DARI= "Mulai Dari";
     private static final String  SAMPAI= "Sampai";
+    private static final int DEFAULT_FILTER_YEAR = 2017;
+    private static final int DEFAULT_FILTER_MONTH = 0;
+    private static final int DEFAULT_FILTER_DATE = 1;
 
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
@@ -152,6 +155,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private String defEndDate = "";
     private String customStartDate = "";
     private String customEndDate = "";
+    private String datePickerStartDate = "";
+    private String datePickerEndDate = "";
     private boolean customFilter = false;
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -387,7 +392,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     protected void setViewListener() {
-        refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        refreshHandler = new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), this);
         refreshHandler.setPullEnabled(true);
         layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setSpanSizeLookup(onSpanSizeLookup());
@@ -484,10 +489,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 addRecyclerListener();
             }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-                if (elapsedDays == _days90) {
-                    orderListAdapter.setEmptyMarketplaceFilter();
-                } else
-                    orderListAdapter.setEmptyMarketplace();
+                orderListAdapter.setEmptyMarketplaceFilter();
                 presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
                 orderListAdapter.setEmptyOrderList();
@@ -634,7 +636,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         defEndDate = Utils.setFormat(format, format1, defaultDate.getEndRangeDate());
         customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
         customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
-
     }
 
     @Override
@@ -738,6 +739,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerlayout.setVisibility(View.GONE);
             sampaiButton.setText(Utils.setFormat(format2, format, customEndDate));
             mulaiButton.setText(Utils.setFormat(format2, format, customStartDate));
+            datePickerStartDate = "";
+            datePickerEndDate = "";
         });
         if (customFilter) {
             radio2.setChecked(true);
@@ -795,19 +798,35 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
 
     private void showDatePicker(String title) {
-        String[] result = split(customStartDate);
         Calendar minDate = Calendar.getInstance();
-        minDate.add(Calendar.YEAR, -3);
         Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.YEAR, 100);
         Calendar defaultDate = Calendar.getInstance();
-        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
-            @Override
-            public void onDateChanged(long l) {
-                //
+
+        if (!TextUtils.isEmpty(datePickerStartDate) && !TextUtils.isEmpty(datePickerEndDate)) {
+            String[] resultStartDate = split(datePickerStartDate);
+            String[] resultEndDate = split(datePickerEndDate);
+
+            if (title.equalsIgnoreCase(MULAI_DARI)) {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+
+                defaultDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
+                maxDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
+
+            } else {
+                minDate.set(Integer.parseInt(resultStartDate[2]), Integer.parseInt(resultStartDate[1]), Integer.parseInt(resultStartDate[0]));
+                defaultDate.set(Integer.parseInt(resultEndDate[2]), Integer.parseInt(resultEndDate[1]), Integer.parseInt(resultEndDate[0]));
             }
-        });
-        datePickerUnify.show(getFragmentManager(), "");
+        } else {
+            if (title.equalsIgnoreCase(MULAI_DARI)) {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+                defaultDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+            } else {
+                minDate.set(DEFAULT_FILTER_YEAR, DEFAULT_FILTER_MONTH, DEFAULT_FILTER_DATE);
+            }
+        }
+
+        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, null);
+
         if (title.equalsIgnoreCase(MULAI_DARI)) {
             datePickerUnify.setTitle(MULAI_DARI);
 
@@ -815,12 +834,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerUnify.setTitle(SAMPAI);
         }
 
+        datePickerUnify.show(getFragmentManager(), "");
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
                 sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
+
             } else {
                 mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
             }
             datePickerUnify.dismiss();
         });
