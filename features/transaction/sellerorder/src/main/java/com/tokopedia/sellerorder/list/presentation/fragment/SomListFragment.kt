@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -154,7 +154,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
-                    println("++ onLoadMore - nextOrderId = $nextOrderId")
                     if (nextOrderId != 0) {
                         loadOrderList(nextOrderId)
                     }
@@ -304,7 +303,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (keySelected.equals(key, true)) {
                     tabActive = keySelected
                     SomAnalytics.eventClickQuickFilter(tabActive)
-                    println("++ selected tabActive = $tabActive")
                     if (listOrderStatusId.isNotEmpty()) {
                         this.paramOrder.statusList = listOrderStatusId
                         refreshHandler?.startRefresh()
@@ -321,7 +319,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
-                    println("++ nextOrderId = $nextOrderId")
                     if (orderList.orders.isNotEmpty()) renderOrderList()
                     else {
                         if (isFilterApplied) {

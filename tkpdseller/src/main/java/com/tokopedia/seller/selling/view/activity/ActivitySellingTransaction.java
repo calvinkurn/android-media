@@ -88,6 +88,14 @@ public class ActivitySellingTransaction extends TkpdActivity
     public static final String EXTRA_KEY_IN_SHIPPING = "in_shipping";
     public static final String EXTRA_KEY_DONE = "done";
     public static final String EXTRA_KEY_ALL_ORDER = "all_order";
+
+    public static final String EXTRA_KEY_CANCELLED = "finisehd";
+    public static final String EXTRA_KEY_WAITING_PICKUP = "finisehd";
+    public static final String EXTRA_KEY_WAITING_AWB = "finisehd";
+    public static final String EXTRA_KEY_AWB_INVALID = "finisehd";
+    public static final String EXTRA_KEY_AWB_CHANGE = "finisehd";
+    public static final String EXTRA_KEY_RETUR = "finisehd";
+    public static final String EXTRA_KEY_COMPLAINT = "finisehd";
     public static final String EXTRA_KEY_FINISHED = "finisehd";
 
     ViewPager mViewPager;
@@ -107,7 +115,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_OPPORTUNITY)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY);
         }
     }
 
@@ -180,44 +188,47 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @DeepLink(ApplinkConst.SELLER_HISTORY)
     public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
-        if (GlobalConfig.isSellerApp()) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            return new Intent(context, ActivitySellingTransaction.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
-                    .putExtras(extras);
-        } else {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-            boolean enable = remoteConfig.getBoolean(
-                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (true) {
-                return RouteManager.getIntent(context, ApplinkConstInternalOrder.HISTORY)
-                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_ALL_ORDER);
-            } else {
-                return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
-            }
-        }
+        return handleApplink(context, extras, ApplinkConstInternalOrder.HISTORY, EXTRA_KEY_ALL_ORDER);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_CANCELED)
+    public static Intent getCallingIntentSellerCanceled(Context context, Bundle extras) {
+        return handleApplink(context, extras, ApplinkConstInternalOrder.CANCELLED, EXTRA_KEY_CANCELLED);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP)
+    public static Intent getCallingIntentSellerWaitingPickup(Context context, Bundle extras) {
+        return handleApplink(context, extras, ApplinkConstInternalOrder.WAITING_PICKUP, EXTRA_KEY_WAITING_PICKUP);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_AWB)
+    public static Intent getCallingIntentSellerWaitingAwb(Context context, Bundle extras) {
+        return handleApplink(context, extras, ApplinkConstInternalOrder.WAITING_AWB, EXTRA_KEY_WAITING_AWB);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_INVALID)
+    public static Intent getCallingIntentSellerAwbInvalid(Context context, Bundle extras) {
+        return handleApplink(context, extras, ApplinkConstInternalOrder.AWB_INVALID, EXTRA_KEY_AWB_INVALID);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE)
+    public static Intent getCallingIntentSellerAwbChange(Context context, Bundle extras) {
+        return handleApplink(context, extras, ApplinkConstInternalOrder.AWB_CHANGE, EXTRA_KEY_AWB_CHANGE);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_RETUR)
+    public static Intent getCallingIntentSellerRetur(Context context, Bundle extras) {
+        return handleApplink(context, extras, ApplinkConstInternalOrder.RETUR, EXTRA_KEY_RETUR);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_COMPLAINT)
+    public static Intent getCallingIntentSellerComplaint(Context context, Bundle extras) {
+        return handleApplink(context, extras, ApplinkConstInternalOrder.COMPLAINT, EXTRA_KEY_COMPLAINT);
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_FINISHED)
     public static Intent getCallingIntentSellerFinished(Context context, Bundle extras) {
-        if (GlobalConfig.isSellerApp()) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            return new Intent(context, ActivitySellingTransaction.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
-                    .putExtras(extras);
-        } else {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-            boolean enable = remoteConfig.getBoolean(
-                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (true) {
-                return RouteManager.getIntent(context, ApplinkConstInternalOrder.FINISHED)
-                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_FINISHED);
-            } else {
-                return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
-            }
-        }
+        return handleApplink(context, extras, ApplinkConstInternalOrder.FINISHED, EXTRA_KEY_FINISHED);
     }
 
     @DeepLink(ApplinkConst.SellerApp.SALES)
@@ -230,6 +241,26 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtras(extras);
         } else {
             return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+        }
+    }
+
+    private static Intent handleApplink(Context context, Bundle extras, String internalApplink, String filter) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
+                    .putExtras(extras);
+        } else {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (true) {
+                return RouteManager.getIntent(context, internalApplink)
+                        .putExtra(EXTRA_TAB_ACTIVE, filter);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+            }
         }
     }
 
