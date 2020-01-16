@@ -8,9 +8,10 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -33,7 +34,7 @@ import javax.inject.Inject
 class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresenter.View {
 
     @Inject
-    lateinit var  updateShopShedulePresenter: UpdateShopShedulePresenter
+    lateinit var updateShopShedulePresenter: UpdateShopShedulePresenter
 
     private var progressDialog: ProgressDialog? = null
 
@@ -47,9 +48,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         GraphqlClient.init(this)
 
         shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
-        val title = intent.getStringExtra(EXTRA_TITLE)
         isClosedNow = intent.getBooleanExtra(EXTRA_IS_CLOSED_NOW, false)
-        setTitle(title)
 
         if (savedInstanceState != null) {
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
@@ -87,6 +86,11 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
                 .build()
                 .inject(this)
         updateShopShedulePresenter.attachView(this)
+
+        val mToolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(mToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.title = getString(R.string.set_shop_status)
 
         etShopCloseNote.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {

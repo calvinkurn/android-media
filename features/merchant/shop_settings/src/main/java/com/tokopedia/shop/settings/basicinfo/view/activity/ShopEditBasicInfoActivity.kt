@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -63,6 +64,12 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
                 .build()
                 .inject(this)
         updateShopSettingsInfoPresenter.attachView(this)
+
+        toolbar
+        val mToolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(mToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setTitle(R.string.information_edit)
 
         parentTvBrowseFile.setBackground(MethodChecker
                 .getDrawable(parentTvBrowseFile.getContext(), com.tokopedia.design.R.drawable.ic_balloon_gray))
