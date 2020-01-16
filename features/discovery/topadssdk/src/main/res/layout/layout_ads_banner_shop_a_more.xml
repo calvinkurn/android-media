@@ -26,7 +26,7 @@
             android:textColor="@color/tkpd_main_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
-            app:typographyType="heading_6" />
+            app:typographyType="heading_5" />
 
         <ImageView
             android:id="@+id/imageView2"
