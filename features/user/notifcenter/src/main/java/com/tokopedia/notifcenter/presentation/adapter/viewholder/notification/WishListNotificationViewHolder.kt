@@ -39,7 +39,7 @@ class WishListNotificationViewHolder(
             btnCart.setImageDrawable(atcDrawable)
             productCampaign.setupCampaign(campaign)
             productVariant.setupVariant(variant)
-            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
+            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_notifcenter_loading_toped)
         }
 
         assignClickListenerAtc(element)

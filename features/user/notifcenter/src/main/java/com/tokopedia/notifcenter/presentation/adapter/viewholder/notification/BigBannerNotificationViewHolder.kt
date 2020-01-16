@@ -20,7 +20,7 @@ class BigBannerNotificationViewHolder(
         val imageUrl = element.contentUrl
 
         contentImageBanner.shouldShowWithAction(imageUrl.isNotEmpty()) {
-            ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_loading_toped_new)
+            ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_notifcenter_loading_toped)
         }
     }
 
