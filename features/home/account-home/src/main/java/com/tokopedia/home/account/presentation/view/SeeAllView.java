@@ -15,6 +15,8 @@ import com.tokopedia.home.account.presentation.adapter.MenuGridAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.MenuGridSpacingDecoration;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,11 @@ public class SeeAllView extends BottomSheets {
     }
 
     private List<MenuGridItemViewModel> createItems() {
+        RemoteConfig remoteConfig = null;
+        if (getActivity() != null) {
+            remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        }
+
         List<MenuGridItemViewModel> list = new ArrayList<>();
 
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
@@ -157,7 +164,7 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
-        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_GIFTCARD_ENABLE, false)) {
+        if (remoteConfig != null && remoteConfig.getBoolean(RC_GIFTCARD_ENABLE, false)) {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_giftcard,
                     getContext().getString(R.string.title_menu_gift_card),
@@ -199,7 +206,7 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
-        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_LOCALSERVICE_ENABLE, false)) {
+        if (remoteConfig != null && remoteConfig.getBoolean(RC_LOCALSERVICE_ENABLE, false)) {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_local_service_order,
                     getContext().getString(R.string.title_menu_localservice),
