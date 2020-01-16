@@ -120,7 +120,6 @@ public class ProductListFragment
 
     private Config topAdsConfig;
     private ProductListAdapter adapter;
-    private ProductListTypeFactory productListTypeFactory;
     private String additionalParams = "";
     private boolean isFirstTimeLoad;
     private boolean tickerHasDismissed = false;
@@ -238,7 +237,7 @@ public class ProductListFragment
     }
 
     private void setupAdapter() {
-        productListTypeFactory = new ProductListTypeFactoryImpl(
+        ProductListTypeFactory productListTypeFactory = new ProductListTypeFactoryImpl(
                 this,
                 this,
                 this, this,
@@ -324,12 +323,6 @@ public class ProductListFragment
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
-
-        // This method is commented, due to "Bebas Ongkir" promo show case shown as pop up dialog.
-        // This start show case will be uncommented again
-        // after "Bebas Ongkir" promo show case is not pop up dialog anymore.
-
-        // startShowCase();
     }
 
     public void addRecommendationList(List<Visitable> list){

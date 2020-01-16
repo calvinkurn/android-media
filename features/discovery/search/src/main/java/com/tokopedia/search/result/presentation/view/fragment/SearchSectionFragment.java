@@ -72,10 +72,7 @@ public abstract class SearchSectionFragment
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
     public static final int REQUEST_CODE_LOGIN = 561;
 
-    protected static final int START_ROW_FIRST_TIME_LOAD = 0;
-
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
-    private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
 
     private SearchNavigationListener searchNavigationListener;
@@ -85,7 +82,6 @@ public abstract class SearchSectionFragment
     private LinearLayoutManager linearLayoutManager;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout refreshLayout;
-    private boolean showBottomBar;
     public int spanCount;
 
     private ArrayList<Sort> sort;
@@ -524,7 +520,6 @@ public abstract class SearchSectionFragment
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
     }
 
     public abstract void reloadData();
@@ -552,7 +547,6 @@ public abstract class SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
-        showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
     }
 
     @Override
