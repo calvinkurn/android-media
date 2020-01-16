@@ -82,10 +82,8 @@ class ToolbarView(
             tvFollow.setOnClickListener {
                 if (partnerInfo.isFollowed) {
                     listener.onFollowButtonClicked(this, partnerInfo.id, PartnerFollowAction.UnFollow)
-                    tvFollow.text = view.context.getString(R.string.play_follow)
                 } else {
                     listener.onFollowButtonClicked(this, partnerInfo.id, PartnerFollowAction.Follow)
-                    tvFollow.text = view.context.getString(R.string.play_following)
                 }
                 partnerInfo.isFollowed = !partnerInfo.isFollowed
             }
@@ -99,6 +97,13 @@ class ToolbarView(
                 listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)
             }
         }
+    }
+
+    fun setFollowStatus(shouldFollow: Boolean) {
+        tvFollow.text = view.context.getString(
+                if (shouldFollow) R.string.play_following
+                else R.string.play_follow
+        )
     }
 
     interface Listener {

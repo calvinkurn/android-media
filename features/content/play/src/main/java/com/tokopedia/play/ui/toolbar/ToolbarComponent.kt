@@ -38,6 +38,7 @@ class ToolbarComponent(
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show()
                             is ScreenStateEvent.NoActionMore -> uiView.hideActionMore()
+                            is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
                         }
                     }
         }

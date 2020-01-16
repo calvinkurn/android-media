@@ -41,6 +41,8 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val MOCK_CHANNEL_ID = "1953"
+
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
         private const val VIDEO_FRAGMENT_TAG = "FRAGMENT_VIDEO"
@@ -92,7 +94,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "2" // TODO remove default value, handle channel_id=1865, 80 staging live not found
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: MOCK_CHANNEL_ID
         PlayAnalytics.sendScreen(channelId)
     }
 
