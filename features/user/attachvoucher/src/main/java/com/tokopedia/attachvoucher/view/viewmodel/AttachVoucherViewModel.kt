@@ -20,12 +20,15 @@ class AttachVoucherViewModel @Inject constructor(
 ) : ViewModel() {
     var shopId: String = ""
 
-    var filter: MutableLiveData<Int> = MutableLiveData()
-    var vouchers: MutableLiveData<List<Voucher>> = MutableLiveData()
-    var error: MutableLiveData<Throwable> = MutableLiveData()
-    var filteredVouchers: LiveData<List<Voucher>> = Transformations.map(filter) {
-        vouchers.value?.filter { voucher ->
-            (filter.value == NO_FILTER || filter.value == voucher.type)
+    private var _filter: MutableLiveData<Int> = MutableLiveData()
+    private var _vouchers: MutableLiveData<List<Voucher>> = MutableLiveData()
+    private var _error: MutableLiveData<Throwable> = MutableLiveData()
+
+    val filter: LiveData<Int> get() = _filter
+    val error: LiveData<Throwable> get() = _error
+    var filteredVouchers: LiveData<List<Voucher>> = Transformations.map(_filter) {
+        _vouchers.value?.filter { voucher ->
+            (_filter.value == NO_FILTER || _filter.value == voucher.type)
         } ?: emptyList()
     }
 
@@ -35,11 +38,11 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun toggleFilter(filterType: Int) {
-        val currentFilter = filter.value
+        val currentFilter = _filter.value
         if (currentFilter == filterType) {
-            filter.value = NO_FILTER
+            _filter.value = NO_FILTER
         } else {
-            filter.value = filterType
+            _filter.value = filterType
         }
     }
 
@@ -53,12 +56,12 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     private fun onSuccessGetVouchers(getVoucherResponse: GetVoucherResponse) {
-        vouchers.value = getVoucherResponse.vouchers
-        filter.value = NO_FILTER
+        _vouchers.value = getVoucherResponse.vouchers
+        _filter.value = NO_FILTER
     }
 
     private fun onErrorGetVouchers(throwable: Throwable) {
-        error.value = throwable
+        _error.value = throwable
     }
 
     fun getVoucherPreviewIntent(voucher: Voucher): Intent {
