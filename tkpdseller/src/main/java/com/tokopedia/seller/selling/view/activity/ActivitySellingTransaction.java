@@ -240,11 +240,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
-    public static Intent createIntent(Context context, int tab) {
-        return new Intent(context, ActivitySellingTransaction.class)
-                .putExtra(EXTRA_STATE_TAB_POSITION, tab);
-    }
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
