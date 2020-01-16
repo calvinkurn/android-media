@@ -12,9 +12,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
-import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
-import com.tokopedia.tkpd.campaign.network.CampaignAuthInterceptor;
-import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -48,32 +45,10 @@ public class CampaignModule {
         return new ScannerUseCase(context.getResources(), repository);
     }
 
-    @Provides
-    Retrofit provideRetrofit(OkHttpClient okHttpClient,
-                             Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(CampaignURL.BASE_URL).client(okHttpClient).build();
-    }
-
-    @Provides
-    OkHttpClient provideOkHttpClient(CampaignAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(new ErrorResponseInterceptor(CampaignErrorResponse.class))
-                .build();
-    }
-
     @IdentifierWalletQualifier
     @Provides
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, IDENTIFIER);
-    }
-
-    @Provides
-    CampaignAuthInterceptor provideContactUsAuthInterceptor(@ApplicationContext Context context,
-                                                            AbstractionRouter abstractionRouter) {
-        return new CampaignAuthInterceptor(context, abstractionRouter);
-
     }
 
     @Provides
