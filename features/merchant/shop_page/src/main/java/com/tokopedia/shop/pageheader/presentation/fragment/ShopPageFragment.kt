@@ -1,4 +1,4 @@
-package com.tokopedia.shop.pageheader.presentation
+package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -83,21 +82,7 @@ class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<OldShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener {
-    override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {
-        if (!isOfficial && !isPowerMerchant) {
-            view?.run {
-                Toaster.make(
-                        this,
-                        context.getString(R.string.text_regular_merchant_change_cover_message),
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        context.getString(R.string.oke)
-                )
-            }
-        } else {
-            redirectToSettingProfileShop()
-        }
-    }
+    override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {}
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -132,7 +117,7 @@ class ShopPageFragment :
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
 
         @JvmStatic
-        fun initInstance() = ShopPageFragment()
+        fun createInstance() = ShopPageFragment()
     }
 
     @Inject
@@ -211,15 +196,15 @@ class ShopPageFragment :
         tabLayout.setupWithViewPager(viewPager)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab,true)
+                viewPagerAdapter.handleSelectedTab(tab, true)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab,false)
+                viewPagerAdapter.handleSelectedTab(tab, false)
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab,true)
+                viewPagerAdapter.handleSelectedTab(tab, true)
                 (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                     shopPageTracking.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
                             titles[tab.position],
@@ -572,11 +557,12 @@ class ShopPageFragment :
                         getString(R.string.shop_info_title_tab_info))
             }
         }
+        val selectedPosition = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         viewPagerAdapter.setTabData(generateTabData())
         viewPagerAdapter.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
-                getTabAt(i)?.customView = viewPagerAdapter.getTabView(i)
+                getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
             }
         }
         if (isOfficialStore && tabPosition == 0) {
@@ -585,7 +571,7 @@ class ShopPageFragment :
             tabPosition = 0
         }
         setViewState(VIEW_CONTENT)
-        viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
+        viewPager.currentItem = selectedPosition
     }
 
     private fun generateTabData(): Pair<List<Int>, List<Fragment>> {
@@ -593,43 +579,25 @@ class ShopPageFragment :
     }
 
     private fun getListFragment(): List<Fragment> {
+        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
+        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+        val homeFragment = HomeProductFragment.createInstance()
+        val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
+        getShopInfoData()?.let {
+            homeFragment.setShopInfo(it)
+            shopPageProductFragment.setShopInfo(it)
+        }
         return when {
             isShowFeed and isOfficialStore -> {
-                val homeFragment = HomeProductFragment.createInstance()
-                val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
-                getShopInfoData()?.run {
-                    homeFragment.setShopInfo(this)
-                    shopPageProductFragment.setShopInfo(this)
-                }
                 listOf(homeFragment, shopPageProductFragment, feedFragment, shopReviewFragment)
             }
             isShowFeed -> {
-                val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
-                getShopInfoData()?.run {
-                    shopPageProductFragment.setShopInfo(this)
-                }
                 listOf(shopPageProductFragment, feedFragment, shopReviewFragment)
             }
             isOfficialStore -> {
-                val homeFragment = HomeProductFragment.createInstance()
-                val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
-                getShopInfoData()?.run {
-                    homeFragment.setShopInfo(this)
-                    shopPageProductFragment.setShopInfo(this)
-                }
                 listOf(homeFragment, shopPageProductFragment, shopReviewFragment)
             }
             else -> {
-                val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
-                getShopInfoData()?.run {
-                    shopPageProductFragment.setShopInfo(this)
-                }
                 listOf(shopPageProductFragment, shopReviewFragment)
             }
         }

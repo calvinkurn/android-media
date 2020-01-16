@@ -12,12 +12,9 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.lifecycle.LiveData
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.usecase.coroutines.Result
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
@@ -41,10 +38,9 @@ internal class ShopPageFragmentPagerAdapter(
         return listFragment[position]
     }
 
-    @SuppressLint("InflateParams")
-    fun getTabView(position: Int): View? = LayoutInflater.from(ctxRef.get())
+    fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
-                shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position))
+                shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
             }
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
