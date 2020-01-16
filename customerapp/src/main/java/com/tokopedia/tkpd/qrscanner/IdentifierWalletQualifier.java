@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.campaign.di;
+package com.tokopedia.tkpd.qrscanner;
 
 import javax.inject.Qualifier;
 

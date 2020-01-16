@@ -19,7 +19,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
 import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
 import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
 import com.tokopedia.usecase.RequestParams;

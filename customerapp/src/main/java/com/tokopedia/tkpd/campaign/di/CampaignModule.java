@@ -28,36 +28,8 @@ import retrofit2.Retrofit;
 @Module
 public class CampaignModule {
 
-    public static final String IDENTIFIER = "identifier";
-
     @Provides
     Resources provideResources(@ApplicationContext Context context) {
         return context.getResources();
-    }
-
-    @Provides
-    GraphqlRepository provideRepository() {
-        return Interactor.getInstance().getGraphqlRepository();
-    }
-
-    @Provides
-    ScannerUseCase provideScannerUseCase(@ApplicationContext Context context, GraphqlRepository repository) {
-        return new ScannerUseCase(context.getResources(), repository);
-    }
-
-    @IdentifierWalletQualifier
-    @Provides
-    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, IDENTIFIER);
-    }
-
-    @Provides
-    UserSessionInterface providesUserSession(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @Provides
-    RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
-        return new FirebaseRemoteConfigImpl(context);
     }
 }
