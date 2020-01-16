@@ -3,17 +3,28 @@ package com.tokopedia.sellerhomedrawer.view.helper
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.core.app.TaskStackBuilder
 import androidx.core.view.GravityCompat
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.core.drawer2.view.DrawerAdapter
 import com.tokopedia.sellerhomedrawer.R
+import com.tokopedia.sellerhomedrawer.analytics.*
+import com.tokopedia.sellerhomedrawer.constant.SellerBaseUrl
 import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.view.adapter.SellerDrawerAdapter
 import com.tokopedia.sellerhomedrawer.view.adapter.SellerDrawerAdapterTypeFactory
+import com.tokopedia.sellerhomedrawer.view.dashboard.SellerDashboardActivity
 import com.tokopedia.sellerhomedrawer.view.listener.*
 import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.view.viewmodel.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.view.webview.SellerHomeWebViewActivity
+import com.tokopedia.sellerhomedrawer.view.webview.SellerSimpleWebViewActivity
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_drawer_activity.*
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
@@ -24,6 +35,13 @@ class SellerDrawerHelper(val context: Activity,
                          val drawerCache: LocalCacheHandler) :
         SellerDrawerItemListener, SellerDrawerHeaderListener, SellerDrawerGroupListener ,
         DrawerHeaderListener, RetryTokoCashListener {
+
+    companion object {
+        @JvmStatic
+        val DIGITAL_WEBSITE_DOMAIN = TokopediaUrl.getInstance().PULSA
+        @JvmStatic
+        val DIGITAL_PATH_MITRA = "mitra"
+    }
 
     var sellerDrawerAdapter: SellerDrawerAdapter? = null
     var powerMerchantInstance: SellerDrawerItem? = null
@@ -36,19 +54,112 @@ class SellerDrawerHelper(val context: Activity,
             var intent: Intent? = null
             var isNeedToCloseActivity = true
             when(drawerItem.id) {
-//                SellerHomeState.DrawerPosition.INDEX_HOME ->
-
+                SellerHomeState.DrawerPosition.INDEX_HOME -> {
+                    eventDrawerClick(EventLabel.SELLER_HOME)
+                    //TODO: implement full SellerDashboardActivity feature
+                    context.startActivity(SellerDashboardActivity.createInstance(context))
+                }
+                SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND -> {
+                    if (context.application is AbstractionRouter)
+                        sendClickHamburgerMenuEvent(drawerItem.label)
+                    eventClickGoldMerchantViaDrawer()
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                }
+                SellerHomeState.DrawerPosition.SHOP_NEW_ORDER -> {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
+                    eventDrawerClick(EventLabel.NEW_ORDER)
+                }
+                SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING -> {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
+                    eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
+                }
+                SellerHomeState.DrawerPosition.SHOP_SHIPPING_STATUS -> {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
+                    eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
+                }
+                SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST -> {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
+                    eventDrawerClick(EventLabel.SALES_LIST)
+                }
+                SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST -> {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
+                }
+                SellerHomeState.DrawerPosition.ADD_PRODUCT -> {
+                    //TODO : context is TkpdCoreRouter ?
+                    val manageProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+                    val addProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
+                    TaskStackBuilder.create(context)
+                            .addNextIntent(manageProductIntent)
+                            .addNextIntent(addProductIntent)
+                            .startActivities()
+                }
+                SellerHomeState.DrawerPosition.MANAGE_PRODUCT -> {
+                    //TODO : is this applink correct ?
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+                }
+                SellerHomeState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP -> {
+                    //TODO : Check if you can use intent to move between activities in library (not features)
+                    eventClickPaymentAndTopupOnDrawer()
+                    context.startActivity(SellerSimpleWebViewActivity.createIntent(context, DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA))
+                }
+                SellerHomeState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL -> {
+                    eventClickDigitalTransactionListOnDrawer()
+                    context.startActivity(SellerSimpleWebViewActivity.createIntent(context, DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA))
+                }
+                SellerHomeState.DrawerPosition.DRAFT_PRODUCT -> {
+                    //TODO : Check the applink
+                    eventDrawerClick(EventLabel.DRAFT_PRODUCT)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DRAFT_LIST)
+                }
+                SellerHomeState.DrawerPosition.MANAGE_ETALASE -> {
+                    eventDrawerClick(EventLabel.PRODUCT_DISPLAY)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
+                }
+                SellerHomeState.DrawerPosition.SELLER_GM_STAT -> {
+                    eventClickGMStat(Category.HAMBURGER,
+                            EventLabel.STATISTIC)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+                }
+                SellerHomeState.DrawerPosition.SELLER_MITRA_TOPPERS -> {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.MITRA_TOPPERS_DASHBOARD)
+                }
+                SellerHomeState.DrawerPosition.SELLER_TOP_ADS -> {
+                    eventDrawerClick(EventLabel.TOPADS)
+                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+                }
+                SellerHomeState.DrawerPosition.SELLER_FLASH_SALE -> {
+                    RouteManager.route(context, ApplinkConst.SellerApp.FLASHSALE_MANAGEMENT)
+                }
+                SellerHomeState.DrawerPosition.FEATURED_PRODUCT -> {
+                    eventFeaturedProduct(EventLabel.FEATURED_PRODUCT)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
+                }
+                SellerHomeState.DrawerPosition.SELLER_INFO -> {
+                    eventSellerInfo(
+                            Action.CLICK_HAMBURGER_ICON,
+                            EventLabel.SELLER_INFO
+                    )
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLER_INFO)
+                }
+                SellerHomeState.DrawerPosition.RESOLUTION_CENTER -> {
+                    eventDrawerClick(EventLabel.RESOLUTION_CENTER)
+                    context.startActivity(SellerHomeWebViewActivity.createIntent(context, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER))
+                }
+                else -> {
+                    //TODO: Extends from DrawerHelper ?
+                }
             }
+
+            if (selectedPosition != SellerHomeState.DrawerPosition.INDEX_HOME && drawerItem.id != SellerHomeState.DrawerPosition.LOGOUT && isNeedToCloseActivity)
+                context.finish()
+
+            closeDrawer()
         }
     }
 
     fun closeDrawer() { context.drawer_layout_nav.closeDrawer(GravityCompat.START) }
 
     fun openDrawer() { context.drawer_layout_nav.openDrawer(GravityCompat.START) }
-
-    private fun sendGeneralEventGTM() {
-
-    }
 
     override fun notifyDataSetChanged() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -302,4 +413,5 @@ class SellerDrawerHelper(val context: Activity,
                     id = SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                     isExpanded = true)
     }
+
 }

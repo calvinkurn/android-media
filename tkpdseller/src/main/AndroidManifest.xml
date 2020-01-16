@@ -13,7 +13,18 @@
             android:name=".seller.info.view.activity.SellerInfoActivity"
             android:exported="true"
             android:label="@string/title_seller_info"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_seller_info"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
@@ -119,7 +130,18 @@
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"
             android:label="@string/title_activity_draft_product"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_product_draft_list"/>
+            </intent-filter>
+        </activity>
 
         <!-- Opportunity -->
         <activity
