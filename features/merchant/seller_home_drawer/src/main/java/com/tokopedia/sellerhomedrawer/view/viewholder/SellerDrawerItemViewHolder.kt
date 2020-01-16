@@ -6,14 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.view.listener.SellerDrawerItemListener
 import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerItem
-import kotlinx.android.synthetic.main.seller_drawer_item.view.*
+import kotlinx.android.synthetic.main.sh_drawer_item.view.*
 
 class SellerDrawerItemViewHolder (itemView: View,
                                   val listener: SellerDrawerItemListener)
     : AbstractViewHolder<SellerDrawerItem>(itemView){
 
     companion object {
-        val LAYOUT_RES = R.layout.seller_drawer_item
+        val LAYOUT_RES = R.layout.sh_drawer_item
         const val MAX_PLACEHOLDER = "999+"
     }
 

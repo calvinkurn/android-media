@@ -6,7 +6,7 @@ import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.view.listener.SellerDrawerGroupListener
 import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerItem
-import kotlinx.android.synthetic.main.seller_drawer_group.view.*
+import kotlinx.android.synthetic.main.sh_drawer_group.view.*
 
 class SellerDrawerGroupViewHolder(itemView: View,
                                   val listener: SellerDrawerGroupListener)
@@ -15,7 +15,7 @@ class SellerDrawerGroupViewHolder(itemView: View,
     private var sellerDrawerItems: List<SellerDrawerItem>? = null
 
     companion object {
-        val LAYOUT_RES = R.layout.seller_drawer_group
+        val LAYOUT_RES = R.layout.sh_drawer_group
     }
 
     override fun bind(sellerDrawerGroup: SellerDrawerGroup?) {

@@ -17,19 +17,19 @@ import com.tokopedia.sellerhomedrawer.view.viewmodel.header.SellerDrawerWalletAc
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.drawer_header.view.*
-import kotlinx.android.synthetic.main.drawer_header.view.complete_profile
-import kotlinx.android.synthetic.main.seller_drawer_header.view.ProgressBar
-import kotlinx.android.synthetic.main.seller_drawer_header.view.cover_img
-import kotlinx.android.synthetic.main.seller_drawer_header.view.drawer_header
-import kotlinx.android.synthetic.main.seller_drawer_header.view.drawer_points_layout
-import kotlinx.android.synthetic.main.seller_drawer_header.view.layout_progress
-import kotlinx.android.synthetic.main.seller_drawer_header.view.name_text
-import kotlinx.android.synthetic.main.seller_drawer_header.view.percent_text
-import kotlinx.android.synthetic.main.seller_drawer_header.view.user_avatar
-import kotlinx.android.synthetic.main.seller_drawer_header.view.verified
-import kotlinx.android.synthetic.main.seller_drawer_header.view.verified_icon
-import kotlinx.android.synthetic.main.seller_drawer_saldo.view.*
+import kotlinx.android.synthetic.main.sh_drawer_header.view.*
+import kotlinx.android.synthetic.main.sh_drawer_header.view.complete_profile
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.ProgressBar
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.cover_img
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.drawer_header
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.drawer_points_layout
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.layout_progress
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.name_text
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.percent_text
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.user_avatar
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.verified
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.verified_icon
+import kotlinx.android.synthetic.main.sh_drawer_saldo.view.*
 
 class DrawerHeaderViewHolder(itemView: View,
                              private val drawerHeaderListener: DrawerHeaderListener,
@@ -38,7 +38,7 @@ class DrawerHeaderViewHolder(itemView: View,
     : AbstractViewHolder<DrawerHeader>(itemView){
 
     companion object {
-        val LAYOUT_RES = R.layout.drawer_header
+        val LAYOUT_RES = R.layout.sh_drawer_header
     }
 
     private lateinit var userSession: UserSessionInterface

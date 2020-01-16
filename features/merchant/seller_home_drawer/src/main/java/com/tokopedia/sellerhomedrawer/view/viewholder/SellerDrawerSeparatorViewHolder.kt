@@ -9,7 +9,7 @@ class SellerDrawerSeparatorViewHolder(itemView: View)
     : AbstractViewHolder<SellerDrawerSeparator>(itemView) {
 
     companion object {
-        val LAYOUT_RES = R.layout.seller_drawer_child_separator
+        val LAYOUT_RES = R.layout.sh_drawer_child_separator
 
     }
 

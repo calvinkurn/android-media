@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.view.listener.SellerDrawerHeaderListener
 import com.tokopedia.sellerhomedrawer.view.viewmodel.sellerheader.SellerDrawerHeader
-import kotlinx.android.synthetic.main.seller_drawer_header.view.*
-import kotlinx.android.synthetic.main.seller_drawer_saldo.view.*
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.*
+import kotlinx.android.synthetic.main.sh_drawer_saldo.view.*
 
 class SellerDrawerHeaderViewHolder(itemView: View,
                                    private val sellerDrawerHeaderListener: SellerDrawerHeaderListener,
@@ -16,7 +16,7 @@ class SellerDrawerHeaderViewHolder(itemView: View,
     : AbstractViewHolder<SellerDrawerHeader>(itemView){
 
     companion object {
-        val LAYOUT_RES = R.layout.seller_drawer_header
+        val LAYOUT_RES = R.layout.sh_seller_drawer_header
     }
 
     private var oldUserAvatar = ""

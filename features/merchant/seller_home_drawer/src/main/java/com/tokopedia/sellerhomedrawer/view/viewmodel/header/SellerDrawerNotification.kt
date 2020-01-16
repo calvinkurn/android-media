@@ -1,60 +1,8 @@
 package com.tokopedia.sellerhomedrawer.view.viewmodel.header
 
+
 import com.tokopedia.core.util.GlobalConfig
-
 class SellerDrawerNotification {
-
-    var inboxMessage: Int = 0
-    var inboxTalk: Int = 0
-    var inboxReview: Int = 0
-    var inboxTicket: Int = 0
-    var inboxResCenter: Int = 0
-
-    var purchaseOrderStatus: Int = 0
-    var purchasePaymentConfirm: Int = 0
-    var purchaseDeliveryConfirm: Int = 0
-    var purchaseReorder: Int = 0
-
-    var sellingNewOrder: Int = 0
-    var sellingShippingConfirmation: Int = 0
-    var sellingShippingStatus: Int = 0
-    var totalNotif: Int = 0
-        get() = if (GlobalConfig.isSellerApp())
-            field - totalPurchaseNotif
-        else
-            field
-    var incrNotif: Int = 0
-    var totalCart: Int = 0
-
-    val totalPurchaseNotif: Int
-        get() = purchasePaymentConfirm + purchaseDeliveryConfirm +
-                purchaseOrderStatus + purchaseReorder
-
-    val isUnread: Boolean
-        get() = incrNotif > 0
-
-    val totalInboxNotif: Int
-        get() = inboxMessage + inboxTalk + inboxReview + inboxResCenter + inboxTicket
-
-    val totalSellingNotif: Int
-        get() = sellingNewOrder + sellingShippingConfirmation + sellingShippingStatus
-
-    init {
-        this.inboxMessage = 0
-        this.inboxTalk = 0
-        this.inboxReview = 0
-        this.inboxTicket = 0
-        this.inboxResCenter = 0
-
-        this.purchaseOrderStatus = 0
-        this.purchasePaymentConfirm = 0
-        this.purchaseDeliveryConfirm = 0
-        this.purchaseReorder = 0
-
-        this.sellingNewOrder = 0
-        this.sellingShippingConfirmation = 0
-        this.sellingShippingStatus = 0
-    }
 
     companion object {
 
@@ -90,5 +38,57 @@ class SellerDrawerNotification {
         val CACHE_PURCHASE_PROCESSED = "CACHE_PURCHASE_PROCESSED"
         val CACHE_PURCHASE_SHIPPED = "CACHE_PURCHASE_SHIPPED"
         val CACHE_PURCHASE_DELIVERED = "CACHE_PURCHASE_DELIVERED"
+    }
+    var inboxMessage: Int = 0
+    var inboxTalk: Int = 0
+    var inboxReview: Int = 0
+    var inboxTicket: Int = 0
+
+    var inboxResCenter: Int = 0
+    var purchaseOrderStatus: Int = 0
+    var purchasePaymentConfirm: Int = 0
+    var purchaseDeliveryConfirm: Int = 0
+
+    var purchaseReorder: Int = 0
+    var sellingNewOrder: Int = 0
+    var sellingShippingConfirmation: Int = 0
+    var sellingShippingStatus: Int = 0
+    var totalNotif: Int = 0
+        get() = if (GlobalConfig.isSellerApp())
+            field - totalPurchaseNotif
+        else
+            field
+    var incrNotif: Int = 0
+
+    var totalCart: Int = 0
+
+    val totalPurchaseNotif: Int
+        get() = purchasePaymentConfirm + purchaseDeliveryConfirm +
+                purchaseOrderStatus + purchaseReorder
+
+    val isUnread: Boolean
+        get() = incrNotif > 0
+
+    val totalInboxNotif: Int
+        get() = inboxMessage + inboxTalk + inboxReview + inboxResCenter + inboxTicket
+
+    val totalSellingNotif: Int
+        get() = sellingNewOrder + sellingShippingConfirmation + sellingShippingStatus
+
+    init {
+        this.inboxMessage = 0
+        this.inboxTalk = 0
+        this.inboxReview = 0
+        this.inboxTicket = 0
+        this.inboxResCenter = 0
+
+        this.purchaseOrderStatus = 0
+        this.purchasePaymentConfirm = 0
+        this.purchaseDeliveryConfirm = 0
+        this.purchaseReorder = 0
+
+        this.sellingNewOrder = 0
+        this.sellingShippingConfirmation = 0
+        this.sellingShippingStatus = 0
     }
 }
