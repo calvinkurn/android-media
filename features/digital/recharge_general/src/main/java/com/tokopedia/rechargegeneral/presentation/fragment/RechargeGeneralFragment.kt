@@ -80,7 +80,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var menuId: Int = 0
     private var categoryId: Int = 0
     private var operatorId: Int = 0
-    private var productId: String = ""
+    private var selectedProduct: RechargeGeneralProductSelectData? = null
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
     private var hasInputData = false
@@ -117,7 +117,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             categoryId = it.getInt(EXTRA_PARAM_CATEGORY_ID, 0)
             menuId = it.getInt(EXTRA_PARAM_MENU_ID, 0)
             operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
-            productId = it.getString(EXTRA_PARAM_PRODUCT_ID, "")
+            selectedProduct = it.getParcelable(EXTRA_PARAM_PRODUCT)
             hasInputData = operatorId > 0
         }
     }
@@ -133,7 +133,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 //                    trackSearchResultCategories(it.data)
 
                     // For enquiry testing
-//                    sharedViewModel.recommendationItem.selectedId = TopupBillsRecommendation(operatorId = 18, productId = 291, clientNumber = "102111106111")
+//                    sharedViewModel.recommendationItem.selectedId = TopupBillsRecommendation(operatorId = 18, selectedProduct = 291, clientNumber = "102111106111")
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -158,7 +158,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (operatorClusters is Success) {
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, it.position)
                 operatorId = it.operatorId
-                productId = it.productId.toString()
+                selectedProduct = RechargeGeneralProductSelectData(it.productId.toString(), it.title, it.description)
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
                 renderInitialData(operatorClusters.data)
             }
@@ -172,7 +172,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             categoryId = savedInstanceState.getInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             menuId = savedInstanceState.getInt(EXTRA_PARAM_MENU_ID, menuId)
             operatorId = savedInstanceState.getInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
-            productId = savedInstanceState.getString(EXTRA_PARAM_PRODUCT_ID, productId)
+            selectedProduct = savedInstanceState.getParcelable(EXTRA_PARAM_PRODUCT)
             inputData = (savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as? HashMap<String, String>) ?: hashMapOf()
             if (savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS) != null) {
                 inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)!!.toList()
@@ -223,7 +223,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         outState.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
         outState.putInt(EXTRA_PARAM_MENU_ID, menuId)
         outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
-        outState.putString(EXTRA_PARAM_PRODUCT_ID, productId)
+        outState.putParcelable(EXTRA_PARAM_PRODUCT, selectedProduct)
         outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
         if (::inputDataKeys.isInitialized) {
             outState.putStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS, ArrayList(inputDataKeys))
@@ -358,10 +358,22 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         // Show product field if there is > 1 product
         if (productData.isShowingProduct) {
             val productSelectData = productData.product
-            if (productId.isNotEmpty()) productSelectData.selectedId = productId
+            selectedProduct?.run { productSelectData.selectedId = id }
             dataList.add(productSelectData)
         } else {
-            productId = productData.product.dataCollections.getOrNull(0)?.products?.getOrNull(0)?.id ?: ""
+            val product = productData.product.dataCollections.getOrNull(0)?.products?.getOrNull(0)
+            product?.let {
+                with (it.attributes) {
+                    val slashedPrice = if (promo != null) price else ""
+                    selectedProduct = RechargeGeneralProductSelectData(
+                            it.id,
+                            desc,
+                            detail,
+                            promo?.newPrice ?: price,
+                            slashedPrice,
+                            isPromo = promo != null)
+                }
+            }
         }
 
         if (dataList.isNotEmpty()) adapter.renderList(dataList)
@@ -426,8 +438,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
                     // Show label & store id for enquiry
                     field.setInputText(item.title, false)
-                    productId = item.id
-                    rechargeGeneralAnalytics.eventClickProductCard(categoryId, operatorId, productId)
+                    selectedProduct = item
+                    rechargeGeneralAnalytics.eventClickProductCard(categoryId, operatorId, item.id)
                     toggleEnquiryButton()
                 }
             })
@@ -473,10 +485,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         val operatorClusters = viewModel.operatorCluster.value
         if (operatorClusters is Success
                 && operatorClusters.data.operatorGroups.isNotEmpty()) {
-            operatorId = data.operatorId
-            productId = data.productId.toString()
-            if (data.clientNumber.isNotEmpty()) {
-                inputData[PARAM_CLIENT_NUMBER] = data.clientNumber
+            with (data) {
+                this@RechargeGeneralFragment.operatorId = operatorId
+                selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
+                if (clientNumber.isNotEmpty()) {
+                    inputData[PARAM_CLIENT_NUMBER] = clientNumber
+                }
             }
 
             renderInitialData(operatorClusters.data)
@@ -620,7 +634,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun validateEnquiry(): Boolean {
-        return operatorId > 0 && productId.isNotEmpty()
+        return operatorId > 0 && selectedProduct != null
                 && ::inputDataKeys.isInitialized && inputData.keys.toList() == inputDataKeys
     }
 
@@ -629,7 +643,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (!userSession.isLoggedIn) {
                 navigateToLoginPage()
             } else {
-                getEnquiry(operatorId.toString(), productId, inputData)
+                selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
             }
         }
     }
@@ -695,33 +709,34 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun processCheckout() {
         // Setup checkout pass data
         if (validateEnquiry()) {
-            var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
-                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                    .categoryId(categoryId.toString())
-                    .instantCheckout("0")
-                    // TODO: Check promo
-//                    .isPromo(if (selectedProduct.attributes.promo != null) "1" else "0")
-                    .isPromo("1")
-                    .operatorId(operatorId.toString())
-                    .productId(productId)
-                    .utmCampaign(categoryId.toString())
-                    .utmContent(GlobalConfig.VERSION_NAME)
-                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                    .voucherCodeCopied("")
-            if (inputData.containsKey(PARAM_CLIENT_NUMBER)) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(inputData[PARAM_CLIENT_NUMBER]!!)
-            }
-            if (inputData.containsKey(PARAM_ZONE_ID)) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(inputData[PARAM_ZONE_ID]!!)
-            }
-            val otherInputs = inputData.filter { it.key != PARAM_CLIENT_NUMBER && it.key != PARAM_ZONE_ID }
-            if (otherInputs.isNotEmpty()) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.fields(HashMap(otherInputs))
-            }
-            checkoutPassData = checkoutPassDataBuilder.build()
+            selectedProduct?.run {
+                var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
+                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                        .categoryId(categoryId.toString())
+                        .instantCheckout("0")
+                        .isPromo(if (isPromo) "1" else "0")
+                        .isPromo("1")
+                        .operatorId(operatorId.toString())
+                        .productId(id)
+                        .utmCampaign(categoryId.toString())
+                        .utmContent(GlobalConfig.VERSION_NAME)
+                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                        .voucherCodeCopied("")
+                if (inputData.containsKey(PARAM_CLIENT_NUMBER)) {
+                    checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(inputData[PARAM_CLIENT_NUMBER]!!)
+                }
+                if (inputData.containsKey(PARAM_ZONE_ID)) {
+                    checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(inputData[PARAM_ZONE_ID]!!)
+                }
+                val otherInputs = inputData.filter { it.key != PARAM_CLIENT_NUMBER && it.key != PARAM_ZONE_ID }
+                if (otherInputs.isNotEmpty()) {
+                    checkoutPassDataBuilder = checkoutPassDataBuilder.fields(HashMap(otherInputs))
+                }
+                checkoutPassData = checkoutPassDataBuilder.build()
 
-            processToCart()
+                processToCart()
+            }
         }
     }
 
@@ -754,14 +769,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
         const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
         const val EXTRA_PARAM_OPERATOR_ID = "EXTRA_PARAM_OPERATOR_ID"
-        const val EXTRA_PARAM_PRODUCT_ID = "EXTRA_PARAM_PRODUCT_ID"
-        const val EXTRA_PARAM_CLIENT_NUMBER = "EXTRA_PARAM_CLIENT_NUMBER"
+        const val EXTRA_PARAM_PRODUCT = "EXTRA_PARAM_PRODUCT_ID"
         const val EXTRA_PARAM_INPUT_DATA = "EXTRA_PARAM_INPUT_DATA"
         const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
 
-        const val INPUT_TYPE_NUMERIC = "input_numeric"
-        const val INPUT_TYPE_ALPHANUMERIC = "input_alphanumeric"
         const val INPUT_TYPE_FAVORITE_NUMBER = "input_favorite"
         const val INPUT_TYPE_ENQUIRY_INFO = "enquiry"
 
@@ -775,13 +787,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         fun newInstance(categoryId: Int,
                         menuId: Int,
                         operatorId: Int = 0,
-                        productId: String = ""): RechargeGeneralFragment {
+                        selectedProduct: String = ""): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
             bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
-            bundle.putString(EXTRA_PARAM_PRODUCT_ID, productId)
+            bundle.putString(EXTRA_PARAM_PRODUCT, selectedProduct)
             fragment.arguments = bundle
             return fragment
         }

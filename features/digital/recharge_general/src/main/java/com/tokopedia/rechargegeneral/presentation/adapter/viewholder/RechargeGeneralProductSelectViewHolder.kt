@@ -39,11 +39,16 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
             for (product in dataCollection.products) {
                 with (product.attributes) {
                     val label = productLabels.joinToString(",")
-                    val dropdownData = if (promo != null) {
-                        RechargeGeneralProductSelectData(product.id, desc, detailCompact, promo!!.newPrice, price, label)
-                    } else {
-                        RechargeGeneralProductSelectData(product.id, desc, detailCompact, price, label)
-                    }
+                    val slashedPrice = if (promo != null) price else ""
+
+                    val dropdownData = RechargeGeneralProductSelectData(
+                            product.id,
+                            desc,
+                            detailCompact,
+                            promo?.newPrice ?: price,
+                            slashedPrice,
+                            label,
+                            promo != null)
                     productList.add(dropdownData)
                 }
             }
