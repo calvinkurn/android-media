@@ -22,6 +22,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
+import com.tokopedia.notifcenter.data.consts.Resources.Green_G500
+import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
 import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
@@ -199,12 +201,12 @@ class NotificationActivity : BaseTabActivity(),
 
     private fun setTabSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Green_G500))
+        titleView?.setTextColor(MethodChecker.getColor(this, Green_G500))
     }
 
     private fun setTabUnSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Neutral_N200))
+        titleView?.setTextColor(MethodChecker.getColor(this, Neutral_N200))
     }
 
     private fun createCustomView(title: String): View? {
@@ -221,9 +223,11 @@ class NotificationActivity : BaseTabActivity(),
         return fragmentAdapter
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_notification_page
-    }
+    override fun getLayoutRes(): Int = R.layout.activity_notification_page
+
+    override fun getTabLayoutResourceId(): Int = R.id.indicator
+
+    override fun getViewPagerResourceId(): Int = R.id.pager
 
     override fun getPageLimit(): Int {
         return tabList.size + 1
