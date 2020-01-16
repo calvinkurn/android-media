@@ -66,17 +66,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
         return intent;
     }
 
-    public static int sizeAsParcel(@NonNull Bundle bundle) {
-        Parcel parcel = Parcel.obtain();
-        try {
-            parcel.writeBundle(bundle);
-            return parcel.dataSize();
-        } finally {
-            parcel.recycle();
-        }
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setupBundlePass(getIntent().getExtras());
@@ -111,7 +100,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
-//        invalidateHomeUpToolbarIndicator();
     }
 
     @Override
@@ -125,7 +113,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         this.titleToolbar = savedInstanceState.getString(EXTRA_STATE_TITLE_TOOLBAR);
         invalidateTitleToolBar();
-//        invalidateHomeUpToolbarIndicator();
     }
 
     private void invalidateTitleToolBar() {
@@ -137,13 +124,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
         super.onBackPressed();
 //        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay, com.tokopedia.digital.R.anim.digital_slide_out_up);
     }
-
-//    private void invalidateHomeUpToolbarIndicator() {
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this,
-//                    com.tokopedia.design.R.drawable.ic_close_default));
-//        }
-//    }
 
     @Override
     protected boolean isShowCloseButton() {
