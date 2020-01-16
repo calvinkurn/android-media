@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/ivEmpty"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_attachvoucher_216"
         android:layout_marginTop="@dimen/spacing_lvl4" />
