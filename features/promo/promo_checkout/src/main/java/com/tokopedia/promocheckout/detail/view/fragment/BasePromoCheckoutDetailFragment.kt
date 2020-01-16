@@ -265,6 +265,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
         cancel_verifikasi.setOnClickListener{
             closeableBottomSheetDialog.hide()
+            promoCheckoutAnalytics.clickCancelVerifikasi()
         }
 
         closeableBottomSheetDialog.show()
