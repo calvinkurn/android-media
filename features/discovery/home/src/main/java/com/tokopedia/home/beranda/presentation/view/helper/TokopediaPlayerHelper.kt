@@ -34,7 +34,7 @@ class TokopediaPlayerHelper(
 
     private var mExoPlayerListener: ExoPlayerListener? = null
 
-    private var mVideosUri: Uri? = null
+    private var videosUri: Uri? = null
     private var mResumePosition = C.TIME_UNSET
     private var mResumeWindow = C.INDEX_UNSET
     private var isVideoMuted = false
@@ -57,12 +57,12 @@ class TokopediaPlayerHelper(
     }
 
     // Player creation and release
-    private fun setVideoUrls(url: String) {
-        mVideosUri = Uri.parse(url)
+    private fun setVideoUrl(url: String) {
+        videosUri = Uri.parse(url)
     }
 
     private fun createMediaSource() {
-        mVideosUri?.let{
+        videosUri?.let{
             TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(it,false)
         }
     }
@@ -86,7 +86,7 @@ class TokopediaPlayerHelper(
         private val mExoPlayerHelper: TokopediaPlayerHelper = TokopediaPlayerHelper(context, tokopediaPlayView)
 
         fun setVideoUrls(url: String): Builder {
-            mExoPlayerHelper.setVideoUrls(url)
+            mExoPlayerHelper.setVideoUrl(url)
             return this
         }
 

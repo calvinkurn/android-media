@@ -65,11 +65,11 @@ class PlayCardViewHolder(
             else live.hide()
 
             itemView.setOnClickListener {
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId ?: "-1") }
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId) }
             }
 
             play.setOnClickListener { _ ->
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId ?: "-1") }
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId) }
             }
         }
 
