@@ -55,15 +55,6 @@ class AttachVoucherViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessGetVouchers(getVoucherResponse: GetVoucherResponse) {
-        _vouchers.value = getVoucherResponse.vouchers
-        _filter.value = NO_FILTER
-    }
-
-    private fun onErrorGetVouchers(throwable: Throwable) {
-        _error.value = throwable
-    }
-
     fun getVoucherPreviewIntent(voucher: Voucher): Intent {
         val voucherPreview = VoucherPreview(
                 "inbox",
@@ -84,6 +75,15 @@ class AttachVoucherViewModel @Inject constructor(
         return Intent().apply {
             putExtra(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, stringVoucherPreview)
         }
+    }
+
+    private fun onSuccessGetVouchers(getVoucherResponse: GetVoucherResponse) {
+        _vouchers.value = getVoucherResponse.vouchers
+        _filter.value = NO_FILTER
+    }
+
+    private fun onErrorGetVouchers(throwable: Throwable) {
+        _error.value = throwable
     }
 
     companion object {
