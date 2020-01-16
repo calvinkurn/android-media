@@ -122,7 +122,7 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         initListeners()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
             this.interactionListener = context as InteractionListener?

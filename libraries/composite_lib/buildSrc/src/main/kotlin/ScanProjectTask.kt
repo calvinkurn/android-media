@@ -11,7 +11,7 @@ import kotlin.collections.HashSet
 
 open class ScanProjectTask : DefaultTask() {
 
-    var latestReleaseDate: Date = Date()
+    var moduleLatestLogMap = hashMapOf<String, Date>()
     val candidateModuleListToUpdate = hashSetOf<String>()
     val dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
     val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
@@ -202,8 +202,13 @@ open class ScanProjectTask : DefaultTask() {
         if (isWrittenByAdmin) {
             return false
         }
+        val previousLatestLogDate = moduleLatestLogMap[module]
+        if (previousLatestLogDate == null) {
+            println("$module has no log. It is considered a new module.")
+            return true
+        }
         val moduleLatestChangeDate = dateFormatter.parse(moduleLatestChangeDateString)
-        if (moduleLatestChangeDate > latestReleaseDate) {
+        if (moduleLatestChangeDate > previousLatestLogDate) {
             println("$module latest date $moduleLatestChangeDateString")
             return true
         } else {

@@ -30,7 +30,7 @@ class SaldoHistoryPagerAdapter(fragmentManager: FragmentManager): FragmentPagerA
         return items.size
     }
 
-    override fun getItem(position: Int): Fragment? {
+    override fun getItem(position: Int): Fragment {
         return items[position].fragment
     }
 }

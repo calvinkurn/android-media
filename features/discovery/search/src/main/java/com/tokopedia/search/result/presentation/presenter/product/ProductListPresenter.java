@@ -14,6 +14,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
+import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -727,7 +728,7 @@ final class ProductListPresenter
             }
             int resultCode = Integer.parseInt(productViewModel.getResponseCode());
             if (searchNoResultCodeList.contains(resultCode)) {
-                getView().sendTrackingForNoResult(productViewModel.getResponseCode(), alternativeKeyword);
+                getView().sendTrackingForNoResult(productViewModel.getResponseCode(), alternativeKeyword, productViewModel.getKeywordProcess());
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -818,12 +819,6 @@ final class ProductListPresenter
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
 
-        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
-            CpmViewModel cpmViewModel = new CpmViewModel();
-            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
-            list.add(cpmViewModel);
-        }
-
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
@@ -846,6 +841,12 @@ final class ProductListPresenter
 
         if (productViewModel.getQuickFilterModel() != null) {
             list.add(productViewModel.getQuickFilterModel());
+        }
+
+        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
+            CpmViewModel cpmViewModel = new CpmViewModel();
+            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
+            list.add(cpmViewModel);
         }
 
         list.addAll(convertToListOfVisitable(productViewModel));
@@ -943,9 +944,20 @@ final class ProductListPresenter
             }
         }
 
+        getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, productViewModel.getQuery(), prodIdArray);
         getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
-        getView().sendTrackingGTMEventSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), gtmTrackingCategory);
+        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, gtmTrackingCategory));
         getView().setFirstTimeLoad(false);
+    }
+
+    private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Map<String, String> category) {
+        return new GeneralSearchTrackingModel(
+                productViewModel.getQuery(),
+                productViewModel.getKeywordProcess(),
+                productViewModel.getResponseCode(),
+                !productViewModel.getProductList().isEmpty(),
+                category
+        );
     }
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams) {

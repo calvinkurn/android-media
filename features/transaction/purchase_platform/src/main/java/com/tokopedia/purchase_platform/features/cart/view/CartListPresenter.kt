@@ -110,7 +110,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         getRecentViewUseCase?.unsubscribe()
         getWishlistUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
-        addToCartUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
         removeInsuranceProductUsecase?.unsubscribe()
         updateInsuranceProductDataUsecase?.unsubscribe()
@@ -933,11 +932,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
-        addToCartUseCase?.createObservable(requestParams)
+        compositeSubscription.add(addToCartUseCase?.createObservable(requestParams)
                 ?.subscribeOn(schedulers.io)
                 ?.unsubscribeOn(schedulers.io)
                 ?.observeOn(schedulers.main)
                 ?.subscribe(AddToCartSubscriber(view, this, productModel))
+        )
     }
 
     override fun generateAddToCartEnhanceEcommerceDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData,
