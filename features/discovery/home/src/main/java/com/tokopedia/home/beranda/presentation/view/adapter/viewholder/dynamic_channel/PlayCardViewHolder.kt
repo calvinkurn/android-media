@@ -43,38 +43,36 @@ class PlayCardViewHolder(
     private var playCardViewModel: PlayCardViewModel ?= null
 
     override fun bind(element: PlayCardViewModel) {
-        title.setValue(element.getChannel()?.header?.name ?: "Play Channel")
-        description.setValue("")
-
-        element.getPlayCardHome()?.let { model ->
-            mVideoUrl = model.videoStream.config.streamUrl
-            mThumbUrl = model.coverUrl
-
+        if (element.getPlayCardHome() == null) {
+            helper = null
+            listener.onGetPlayBanner(adapterPosition)
+        } else {
+            val model = element.getPlayCardHome()
+            title.setValue(element.getChannel()?.header?.name ?: "Play Channel")
+            description.setValue("")
+            mVideoUrl = if(model?.videoStream?.config?.streamUrl?.isEmpty() == true) "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" else model?.videoStream?.config?.streamUrl ?: ""
+            mThumbUrl = if(model?.coverUrl?.isEmpty() == true) "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQsXmNcM4cLjmjXv-_9QJe5McOfdu6652WGC4LBq8FpirMHT9xl" else model?.coverUrl ?: ""
             createHelper()
-
             playCardViewModel = element
 
             thumbnailView.loadImage(mThumbUrl, 350, 150, true)
 
-            broadcasterName.text = model.moderatorName
-            titlePlay.text = model.title
-            viewer.text = model.totalView
+            broadcasterName.text = model?.moderatorName ?: ""
+            titlePlay.text = model?.title ?: ""
+            viewer.text = model?.totalView ?: ""
 
-            if(model.videoStream.isLive) live.show()
+            if(model?.videoStream?.isLive == true) live.show()
             else live.hide()
 
             itemView.setOnClickListener {
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.channelId) }
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId ?: "-1") }
             }
 
             play.setOnClickListener { _ ->
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.channelId) }
+                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId ?: "-1") }
             }
         }
 
-        if(playCardViewModel == null) {
-            listener.onGetPlayBanner(adapterPosition)
-        }
     }
 
     private fun createHelper() {
@@ -87,16 +85,16 @@ class PlayCardViewHolder(
                     .setRepeatModeOn(true)
                     .setToPrepareOnResume(true)
                     .create()
-            helper?.playerPlay()
         }
+
         if(helper?.isPlayerNull() == true){
-            helper?.createPlayer(false)
+            helper?.createPlayer()
         }
     }
 
     fun resume(){
         helper?.onActivityResume()
-        thumbnailView.hide()
+        thumbnailView.show()
     }
 
     fun pause(){

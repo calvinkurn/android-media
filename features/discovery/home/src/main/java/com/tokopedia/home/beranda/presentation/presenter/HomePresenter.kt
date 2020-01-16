@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
+import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.helper.map
 import com.tokopedia.home.beranda.presentation.view.HomeContract
@@ -116,8 +117,9 @@ class HomePresenter(private val userSession: UserSessionInterface,
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
     private var fetchFirstData = true
-    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(3) // 3 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
+
+    private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     override val coroutineContext: CoroutineContext
         get() = coroutineDispatcher + masterJob
@@ -137,9 +139,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun onResume() {
-        val needRefresh = lastRequestTimeHomeData + REQUEST_DELAY_HOME_DATA < System.currentTimeMillis()
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
-        if (isViewAttached && !fetchFirstData && needRefresh) {
+        if (isViewAttached && !fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             updateHomeData()
         }
         if (needSendGeolocationRequest && view?.hasGeolocationPermission() == true) {
@@ -205,19 +206,18 @@ class HomePresenter(private val userSession: UserSessionInterface,
             isCache = false
             _updateNetworkLiveData.value = resource
         }){
-            Timber.tag(HomePresenter::class.java.name).e(it)
+            homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.value = Resource.error(Throwable(), null)
         }
     }
 
     override fun updateHomeData() {
-        lastRequestTimeHomeData = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
             isCache = false
             _updateNetworkLiveData.value = resource
         }){
-            Timber.tag(HomePresenter::class.java.name).e(it)
+            homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.value = Resource.error(Throwable(), null)
         }
     }
@@ -478,11 +478,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     @InternalCoroutinesApi
     override fun getPlayBanner(adapterPosition: Int){
+        masterJob.cancelChildren()
         launchCatchError(coroutineDispatcher, block = {
-//            Thread.sleep(200)
-//            view?.setPlayContentBanner(PlayChannel(
-//                    videoStream = VideoStream(config = Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
-//            ), adapterPosition)
             playCardHomeUseCase.execute().collect{
                 view?.setPlayContentBanner(it.first(), adapterPosition)
             }
@@ -495,6 +492,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         private var lastRequestTimeSendGeolocation: Long = 0
         const val FLAG_FROM_NETWORK = 99
         const val FLAG_FROM_CACHE = 98
+        private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
     }
 
     init {

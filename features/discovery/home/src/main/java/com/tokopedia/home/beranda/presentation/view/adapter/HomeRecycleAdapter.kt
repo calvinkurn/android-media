@@ -240,6 +240,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     fun setPlayData(playContentBanner: PlayChannel?, adapterPosition: Int) {
         if (visitables[adapterPosition] is PlayCardViewModel) {
             (visitables[adapterPosition] as PlayCardViewModel).setPlayCardHome(playContentBanner!!)
+            currentSelected = adapterPosition
         }
         notifyItemChanged(adapterPosition)
     }
@@ -319,6 +320,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     fun onPause() {
         if (currentSelected != -1 && (getViewHolder(currentSelected) is PlayCardViewHolder)) {
             (getViewHolder(currentSelected) as PlayCardViewHolder).pause()
+
         }
     }
 

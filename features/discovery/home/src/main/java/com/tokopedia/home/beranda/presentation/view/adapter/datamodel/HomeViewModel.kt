@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 
 data class HomeViewModel(
         val homeFlag: HomeFlag = HomeFlag(),
@@ -13,6 +14,10 @@ data class HomeViewModel(
 
     override fun type(typeFactory: HomeViewType): Int {
         return typeFactory.type(this)
+    }
+
+    fun isContainsHomePlay(): Boolean{
+        return list.filterIsInstance<PlayCardViewModel>().isNotEmpty()
     }
 }
 

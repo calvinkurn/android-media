@@ -34,7 +34,7 @@ class TokopediaPlayerHelper(
 
     private var mExoPlayerListener: ExoPlayerListener? = null
 
-    private var mVideosUris: Array<Uri>? = null
+    private var mVideosUri: Uri? = null
     private var mResumePosition = C.TIME_UNSET
     private var mResumeWindow = C.INDEX_UNSET
     private var isVideoMuted = false
@@ -57,17 +57,13 @@ class TokopediaPlayerHelper(
     }
 
     // Player creation and release
-    private fun setVideoUrls(vararg urls: String) {
-        mVideosUris = Array(urls.size){
-            Uri.parse(urls[it])
-        }
+    private fun setVideoUrls(url: String) {
+        mVideosUri = Uri.parse(url)
     }
 
     private fun createMediaSource() {
-        // A MediaSource defines the media to be played, loads the media, and from which the loaded media can be read.
-        // A MediaSource is injected via ExoPlayer.prepare at the start of playback.
-        mVideosUris?.let {
-            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(it.first(),false)
+        mVideosUri?.let{
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(it,false)
         }
     }
 
@@ -89,8 +85,8 @@ class TokopediaPlayerHelper(
     class Builder(context: Context, tokopediaPlayView: TokopediaPlayView) {
         private val mExoPlayerHelper: TokopediaPlayerHelper = TokopediaPlayerHelper(context, tokopediaPlayView)
 
-        fun setVideoUrls(vararg urls: String): Builder {
-            mExoPlayerHelper.setVideoUrls(*urls)
+        fun setVideoUrls(url: String): Builder {
+            mExoPlayerHelper.setVideoUrls(url)
             return this
         }
 
@@ -122,18 +118,16 @@ class TokopediaPlayerHelper(
          * @return ExoPlayerHelper instance
          */
         fun create(): TokopediaPlayerHelper {
-            mExoPlayerHelper.createPlayer(false)
+            mExoPlayerHelper.createPlayer()
             return mExoPlayerHelper
         }
     }
 
-    override fun createPlayer(isToPrepare: Boolean) {
+    override fun createPlayer() {
         if (mPlayer != null) {
             return
         }
-        TokopediaPlayManager.deleteInstance()
         mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-
         exoPlayerView.setPlayer(mPlayer)
         isVideoMuted = true
         mPlayer?.volume = 0f
@@ -157,6 +151,8 @@ class TokopediaPlayerHelper(
         if (mResumeWindow != C.INDEX_UNSET) {
             mPlayer?.playWhenReady = isResumePlayWhenReady
             mPlayer?.seekTo(mResumeWindow, mResumePosition + 100)
+        } else {
+            playerPlay()
         }
     }
 
@@ -211,20 +207,23 @@ class TokopediaPlayerHelper(
             }
         }
 
-
         if (error.type == ExoPlaybackException.TYPE_RENDERER) {
             val cause: Exception = error.rendererException
             if (cause is DecoderInitializationException) { // Special case for decoder initialization failures.
                 val decoderInitializationException = cause
                 errorString = if (decoderInitializationException.decoderName == null) {
-                    if (decoderInitializationException.cause is DecoderQueryException) {
-                        context.getString(R.string.error_querying_decoders)
-                    } else if (decoderInitializationException.secureDecoderRequired) {
-                        context.getString(R.string.error_no_secure_decoder,
-                                decoderInitializationException.mimeType)
-                    } else {
-                        context.getString(R.string.error_no_decoder,
-                                decoderInitializationException.mimeType)
+                    when {
+                        decoderInitializationException.cause is DecoderQueryException -> {
+                            context.getString(R.string.error_querying_decoders)
+                        }
+                        decoderInitializationException.secureDecoderRequired -> {
+                            context.getString(R.string.error_no_secure_decoder,
+                                    decoderInitializationException.mimeType)
+                        }
+                        else -> {
+                            context.getString(R.string.error_no_decoder,
+                                    decoderInitializationException.mimeType)
+                        }
                     }
                 } else {
                     context.getString(R.string.error_instantiating_decoder,
@@ -248,10 +247,9 @@ class TokopediaPlayerHelper(
         if (mPlayer != null) {
             updateResumePosition()
             mPlayer?.removeListener(this)
-            mPlayer?.release()
             mPlayer = null
         }
-        TokopediaPlayManager.deleteInstance()
+        TokopediaPlayManager.getInstance(context).releasePlayer()
     }
 
     override fun playerPause() {
@@ -284,18 +282,22 @@ class TokopediaPlayerHelper(
 
     override fun onActivityStart() {
         if (Util.SDK_INT > 23) {
-            createPlayer(isToPrepareOnResume)
+            createPlayer()
         }
     }
 
     override fun onActivityResume() {
+        TokopediaPlayManager.deleteInstance()
         mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
+        createMediaSource()
         mPlayer?.addListener(this)
+        mPlayer?.seekTo(mResumeWindow, mResumePosition + 100)
         exoPlayerView.setPlayer(mPlayer)
         playerPlay()
     }
 
     override fun onActivityPause() {
+        updateResumePosition()
         mPlayer?.removeListener(this)
         exoPlayerView.setPlayer(null)
         mPlayer = null
