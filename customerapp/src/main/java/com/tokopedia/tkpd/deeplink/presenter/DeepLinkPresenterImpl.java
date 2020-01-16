@@ -292,9 +292,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = "";
                     break;
                 case DeepLinkChecker.ORDER_LIST:
-                    Bundle bundle =  new Bundle();
-                    bundle.putString("url",uriData.toString());
-                    RouteManager.route(context,bundle,ApplinkConst.ORDER_LIST_WEBVIEW);
+                    openOrderList(uriData);
                     screenName = "";
                     break;
                 case DeepLinkChecker.DEALS:
@@ -308,6 +306,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
             sendCampaignGTM(activity, uriData.toString(), screenName);
         }
+    }
+
+    private void openOrderList(Uri uriData) {
+        Bundle bundle = new Bundle();
+        bundle.putString("url", uriData.toString());
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.ORDER_LIST_WEBVIEW);
+        intent.putExtras(bundle);
+        viewListener.goToPage(intent);
     }
 
     private void openReview(String uriData, Bundle defaultBundle) {
