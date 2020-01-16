@@ -245,25 +245,6 @@ public class ActivitySellingTransaction extends TkpdActivity
                 .putExtra(EXTRA_STATE_TAB_POSITION, tab);
     }
 
-    @Deprecated
-    public static Intent createIntentOpportunityPageWithQuery
-            (Context context, String query) {
-        if (GlobalConfig.isSellerApp()) {
-            Intent intent = createIntent(context, TAB_POSITION_SELLING_OPPORTUNITY);
-            intent.putExtra(EXTRA_QUERY, query);
-            return intent;
-        } else {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-            boolean enable = remoteConfig.getBoolean(
-                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
-                return RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY);
-            } else {
-                return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, new Bundle());
-            }
-        }
-    }
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;

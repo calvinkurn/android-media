@@ -3,6 +3,9 @@ package com.tokopedia.seller;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.shopsettings.FragmentSettingShop;
@@ -48,6 +51,6 @@ public class TkpdSeller {
     }
 
     public static Intent getActivitySellingTransactionOpportunity(Context context, String query) {
-        return ActivitySellingTransaction.createIntentOpportunityPageWithQuery(context,query);
+        return RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
     }
 }
