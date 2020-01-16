@@ -938,6 +938,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
+        //Used to show mock like when user click like
+        playViewModel.changeLikeCount(shouldLike)
+
         viewModel.doLikeUnlike(playViewModel.contentId,
                 playViewModel.contentType,
                 playViewModel.likeType,

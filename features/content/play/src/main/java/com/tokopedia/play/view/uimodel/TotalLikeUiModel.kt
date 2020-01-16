@@ -7,4 +7,9 @@ package com.tokopedia.play.view.uimodel
 data class TotalLikeUiModel(
         var totalLike: Int,
         val totalLikeFormatted: String
-)
+) {
+
+    companion object {
+        fun empty() = TotalLikeUiModel(0, "0")
+    }
+}
