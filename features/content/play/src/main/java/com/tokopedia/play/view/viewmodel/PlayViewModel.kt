@@ -134,6 +134,7 @@ class PlayViewModel @Inject constructor(
 
     override fun onCleared() {
         stateHandler.removeObserver(stateHandlerObserver)
+        stopPlayer()
         super.onCleared()
     }
 
@@ -396,12 +397,12 @@ class PlayViewModel @Inject constructor(
 
     private fun doOnChannelFreeze() {
         destroy()
-        releasePlayer()
+        stopPlayer()
         hideKeyboard()
     }
 
-    private fun releasePlayer() {
-        playManager.releasePlayer()
+    private fun stopPlayer() {
+        playManager.stopPlayer()
     }
 
     //region mock
