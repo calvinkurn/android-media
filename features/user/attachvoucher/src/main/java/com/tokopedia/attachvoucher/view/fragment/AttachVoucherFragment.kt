@@ -134,6 +134,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     private fun enableAttachButton(voucher: Voucher) {
         btnAttach?.isEnabled = true
         btnAttach.setOnClickListener {
+            analytic.trackOnAttachVoucher(voucher)
             activity?.setResult(Activity.RESULT_OK, viewModel.getVoucherPreviewIntent(voucher))
             activity?.finish()
         }
