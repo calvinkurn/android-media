@@ -263,12 +263,12 @@ public final class Detector {
                         }
                         break;
                         case ERROR_FACEMISSING:
-                            onDetectionFailed(DetectionFailedType.FACEMISSING);
-                            working = false;
+//                            onDetectionFailed(DetectionFailedType.FACEMISSING);
+//                            working = false;
                             break;
                         case ERROR_MULTIPLEFACES:
-                            onDetectionFailed(DetectionFailedType.MULTIPLEFACE);
-                            working = false;
+//                            onDetectionFailed(DetectionFailedType.MULTIPLEFACE);
+//                            working = false;
                             break;
                         case ERROR_MUCHMOTION:
                             onDetectionFailed(DetectionFailedType.MUCHMOTION);

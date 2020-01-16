@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_user_identification_form_container"
     android:orientation="vertical"
     android:padding="@dimen/spacing_lvl4"
     android:background="@color/Neutral_N0">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/ktp_onboarding_image"
+            android:id="@+id/form_onboarding_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -31,7 +32,7 @@
             app:layout_constraintBottom_toTopOf="@+id/subtitle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ktp_onboarding_image"
+            app:layout_constraintTop_toBottomOf="@+id/form_onboarding_image"
             tools:text="Foto bagian depan KTP"/>
 
         <com.tokopedia.unifyprinciples.Typography

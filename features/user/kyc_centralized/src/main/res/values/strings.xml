@@ -83,11 +83,20 @@
 
     <string name="camera_recapture_text">Foto Ulang</string>
     <string name="camera_next_button">Lanjut</string>
+
     <string name="kyc_centralized_retake_photo">Foto Ulang KTP</string>
+
     <string name="user_identification_final_ktp_not_valid">Foto KTP belum terlihat jelas.</string>
     <string name="user_identification_final_retake_ktp">Ambil ulang foto sekarang.</string>
+
     <string name="kyc_data_security">Kerahasiaan data kamu dijamin sistem Tokopedia</string>
+
     <string name="upload_loading_title">Tunggu sebentar, ya…</string>
     <string name="upload_loading_subtitle">Dokumenmu sedang di-upload</string>
+
+    <string name="kyc_face_failed_time_limit_title">Yaa, waktu habis</string>
+    <string name="kyc_face_failed_time_limit_subtitle">Kamu telah melebih batas waktu. Coba lagi dan ikuti instruksinya, ya.</string>
+    <string name="kyc_face_failed_time_limit_button">Coba Lagi</string>
+
 
 </resources>

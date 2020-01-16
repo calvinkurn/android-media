@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
@@ -114,26 +115,36 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     @Override
     protected void onBackEvent() {
         if(getListFragment().size()  == currentPosition) {
-            DialogUnify dialog = new DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-            dialog.setTitle("Keluar dari halaman ini?");
-            dialog.setDescription("Kalau keluar sekarang, dokumen yang\ningin kamu kirim tidak akan tersimpan.");
-            dialog.setPrimaryCTAText("Lanjut Kirim");
-            dialog.setSecondaryCTAText("Keluar");
-
-            dialog.setPrimaryCTAClickListener(() -> {
-                dialog.dismiss();
-                return Unit.INSTANCE;
-            });
-
-            dialog.setSecondaryCTAClickListener(() -> {
-                dialog.dismiss();
-                backToPreviousFragment();
-                return Unit.INSTANCE;
-            });
-            dialog.show();
+            showDocumentAlertDialog();
         }else{
-            backToPreviousFragment();
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment currentFragment = fm.findFragmentByTag("fragment_scan_face_failed");
+            if(currentFragment != null && currentFragment.isVisible()){
+                fm.popBackStack();
+            }else{
+                backToPreviousFragment();
+            }
         }
+    }
+
+    public void showDocumentAlertDialog(){
+        DialogUnify dialog = new DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
+        dialog.setTitle("Keluar dari halaman ini?");
+        dialog.setDescription("Kalau keluar sekarang, dokumen yang\ningin kamu kirim tidak akan tersimpan.");
+        dialog.setPrimaryCTAText("Lanjut Kirim");
+        dialog.setSecondaryCTAText("Keluar");
+
+        dialog.setPrimaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            backToPreviousFragment();
+            return Unit.INSTANCE;
+        });
+        dialog.show();
     }
 
     public void backToPreviousFragment(){

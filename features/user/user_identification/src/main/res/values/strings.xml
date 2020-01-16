@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="kyc_intro_title">Verifikasi Dokumen Data Diri</string>
-    <string name="kyc_intro_text">Demi keamanan akun Anda, lakukan verifikasi dokumen data diri dengan unggah foto KTP.</string>
-    <string name="kyc_intro_button">Lanjut</string>
+    <string name="kyc_intro_title">Mari verifikasi data dirimu</string>
+    <string name="kyc_intro_text">Kamu hanya perlu upload foto KTP dan verifikasi wajah.</string>
+    <string name="kyc_intro_button">Mulai</string>
     
     <string name="kyc_pending_title">Dokumen sedang\nkami proses</string>
     <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x24 jam ya.</string>

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
@@ -21,6 +22,8 @@ import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
+
+import java.util.Objects;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
@@ -80,7 +83,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     }
 
     protected void initView(View view) {
-        onboardingImage = view.findViewById(R.id.ktp_onboarding_image);
+        onboardingImage = view.findViewById(R.id.form_onboarding_image);
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         button = view.findViewById(R.id.button);
@@ -93,7 +96,6 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
                 String faceFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
                 stepperModel.setFaceFile(faceFile);
                 stepperListener.goToNextPage(stepperModel);
-
             } else if (requestCode == REQUEST_CODE_CAMERA_KTP) {
                 String ktpFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
                 stepperModel.setKtpFile(ktpFile);
@@ -105,7 +107,11 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_cant_be_accessed));
         } else if (resultCode == KYCConstant.IS_LIVENESS_DETECTION_FAIL) {
-            NetworkErrorHelper.showRedSnackbar(getActivity(), "Gagal melakukan verifikasi wajah.");
+//            NetworkErrorHelper.showRedSnackbar(getActivity(), "Gagal melakukan verifikasi wajah.");
+            FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+            fragmentManager.beginTransaction().add(R.id.fragment_user_identification_form_container, UserIdentificationFormFailedFragment.createInstance(), "fragment_scan_face_failed")
+                    .addToBackStack("fragment_scan_face_failed")
+                    .commit();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

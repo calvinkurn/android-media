@@ -16,8 +16,9 @@ public class BackgroundOverlay extends View {
 
     private Paint mTransparentPaint;
     private Paint mSemiBlackPaint;
-    private Paint mWhitePaint;
+    private Paint mStatusPaint;
     private Path mPath = new Path();
+    private Boolean statusColor = false;
 
     public BackgroundOverlay(Context context) {
         super(context);
@@ -43,10 +44,35 @@ public class BackgroundOverlay extends View {
         mSemiBlackPaint.setColor(Color.TRANSPARENT);
         mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);
 
-        mWhitePaint = new Paint();
-        mWhitePaint.setStyle(Paint.Style.STROKE);
-        mWhitePaint.setColor(Color.WHITE);
-        mWhitePaint.setStrokeWidth(CONST_STROKE_WIDTH);
+        mStatusPaint = new Paint();
+        mStatusPaint.setStyle(Paint.Style.STROKE);
+        mStatusPaint.setColor(Color.WHITE);
+        mStatusPaint.setStrokeWidth(CONST_STROKE_WIDTH);
+    }
+
+    public void changeColor(){
+        statusColor = true;
+        pickColor();
+
+        Thread successThread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                statusColor = false;
+                pickColor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        successThread.start();
+    }
+
+    private void pickColor() {
+        if(!statusColor){
+            mStatusPaint.setColor(Color.WHITE);
+        }else{
+            mStatusPaint.setColor(Color.GREEN);
+        }
+        postInvalidate();
     }
 
     @Override
@@ -77,7 +103,7 @@ public class BackgroundOverlay extends View {
         canvas.drawCircle(getRight() / 2,
                 getBottom() / 3,
                 radius,
-                mWhitePaint);
+                mStatusPaint);
 
     }
 }

@@ -157,9 +157,7 @@ public class LivenessView extends GuardianCameraView implements GuardianCameraVi
 
     @Override
     protected void transformTexture() {
-//        if (GuardianLivenessDetectionSDK.isEmulator) {
-        boolean temp = true;
-        if(temp == true) {
+        if (GuardianLivenessDetectionSDK.isEmulator) {
             if (this.mPreviewSize != null) {
                 float viewWidth = (float) this.getViewWidth();
                 float viewHeight = (float) this.getViewHeight();
@@ -199,8 +197,7 @@ public class LivenessView extends GuardianCameraView implements GuardianCameraVi
     @Override
     protected synchronized void open(int cameraId) {
         try {
-//            if (GuardianLivenessDetectionSDK.isEmulator) {
-            if(true) {
+            if (GuardianLivenessDetectionSDK.isEmulator) {
                 if (!this.mOnCameraOpening) {
                     try {
                         this.mOnCameraOpening = true;
@@ -470,13 +467,14 @@ public class LivenessView extends GuardianCameraView implements GuardianCameraVi
 
     @Override
     public void onDetectionFailed(Detector.DetectionFailedType failedType) {
-
-        if (callBackEnable()) {
-            mLivenessCallback.onDetectionFailed(failedType, mCurrentDetectionType);
-        }
-        mLivenessCallback = null;
-        if (mDetector != null) {
-            mDetector.setDetectionListener(null);
+        if(failedType != Detector.DetectionFailedType.MULTIPLEFACE){
+            if (callBackEnable()) {
+                mLivenessCallback.onDetectionFailed(failedType, mCurrentDetectionType);
+            }
+            mLivenessCallback = null;
+            if (mDetector != null) {
+                mDetector.setDetectionListener(null);
+            }
         }
     }
 

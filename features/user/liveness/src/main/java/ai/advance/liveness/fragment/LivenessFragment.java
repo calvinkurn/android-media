@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,15 +22,21 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
+
+import java.io.File;
 
 import ai.advance.common.entity.BaseResultEntity;
+import ai.advance.liveness.BackgroundOverlay;
 import ai.advance.liveness.R;
-import ai.advance.liveness.activity.ResultActivity;
 import ai.advance.liveness.lib.Detector;
 import ai.advance.liveness.lib.LivenessResult;
 import ai.advance.liveness.lib.LivenessView;
 import ai.advance.liveness.lib.impl.LivenessCallback;
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback;
+import timber.log.Timber;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * fragment of liveness detection
@@ -82,6 +90,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      * 授权过程的加载框
      */
     ProgressDialog mInitProgressDialog;
+    BackgroundOverlay bgOverlay;
 
     public static LivenessFragment newInstance() {
         return new LivenessFragment();
@@ -123,6 +132,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
             mTipTextView = activity.findViewById(R.id.tip_text_view);
 //            mTimerView = activity.findViewById(R.id.timer_text_view_camera_activity);
             mProgressLayout = activity.findViewById(R.id.progress_layout);
+            bgOverlay = activity.findViewById(R.id.background_overlay);
 //            mVoiceCheckBox = activity.findViewById(R.id.voice_check_box);
             View mBackView = activity.findViewById(R.id.back_view_camera_activity);
             mBackView.setOnClickListener(v -> activity.onBackPressed());
@@ -203,6 +213,9 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
                     case FACENOTSTILL:
                     case FACECAPTURE:
                         changeTipTextView(R.string.liveness_still);
+                        break;
+                    case WARN_MULTIPLEFACES:
+                        changeTipTextView(R.string.liveness_failed_reason_multipleface);
                         break;
                     case FACEINACTION:
                         showActionTipUIView();
@@ -302,7 +315,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
                         FragmentActivity activity = getActivity();
                         dialog.dismiss();
                         if (activity != null) {
-                            activity.setResult(Activity.RESULT_OK);
+                            activity.setResult(RESULT_OK);
                             activity.finish();
                         }
                     }
@@ -349,8 +362,12 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
         mTipLottieAnimationView.clearAnimation();
         mTipLottieAnimationView.invalidate();
 
-        mTipLottieAnimationView.setAnimationFromUrl(url);
-        mTipLottieAnimationView.playAnimation();
+        try{
+            mTipLottieAnimationView.setAnimationFromUrl(url);
+            mTipLottieAnimationView.playAnimation();
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     /**
@@ -359,6 +376,7 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
      */
     @Override
     public void onDetectionActionChanged() {
+        bgOverlay.changeColor();
         playSound();
         showActionTipUIView();
 //        mTimerView.setBackgroundResource(R.drawable.liveness_shape_right_timer);
@@ -386,27 +404,66 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
             @Override
             public void onGetFaceDataSuccess(BaseResultEntity entity) {
                 // liveness detection success
-                setResultData();
+                setSuccessResultData();
             }
 
             @Override
             public void onGetFaceDataFailed(BaseResultEntity entity) {
                 if (!entity.success && LivenessView.NO_RESPONSE.equals(entity.code)) {
-                    LivenessResult.setErrorMsg(getString(R.string.liveness_failed_reason_bad_network));
+                    setErrorResultData(getString(R.string.liveness_failed_reason_bad_network));
                 }
-                setResultData();
             }
         });
     }
 
-    private void setResultData() {
+    private void setSuccessResultData() {
         Activity activity = getActivity();
         if (activity != null) {
-            Intent intent = new Intent(getActivity(), ResultActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-            activity.startActivity(intent);
+            Bitmap mImageBitmap = LivenessResult.getLivenessBitmap();
+            String imagePath = saveToFile(mImageBitmap);
+            if(isFileExists(imagePath)){
+                Intent intent = new Intent();
+                intent.putExtra("image_result", imagePath);
+                activity.setResult(RESULT_OK, intent);
+            }else{
+                int FILE_NOT_EXIST = -7;
+                activity.setResult(FILE_NOT_EXIST);
+            }
             activity.finish();
         }
+    }
+
+    private void setErrorResultData(String errorReason){
+        if(getActivity() != null){
+            int IS_LIVENESS_DETECTION_FAIL = -9;
+            Intent intent = new Intent();
+            intent.putExtra("error_result", errorReason);
+            getActivity().setResult(IS_LIVENESS_DETECTION_FAIL);
+
+        }
+    }
+
+    public String saveToFile(Bitmap mImageBitmap) {
+        try {
+            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
+                    .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, mImageBitmap, false);
+            if (cameraResultFile.exists()) {
+                return cameraResultFile.getAbsolutePath();
+            } else {
+                Toast.makeText(getContext(), "Terjadi kesalahan, silahkan coba lagi", Toast
+                        .LENGTH_LONG).show();
+            }
+        } catch (Throwable error) {
+            Toast.makeText(getContext(), "Terjadi kesalahan, silahkan coba lagi", Toast
+                    .LENGTH_LONG).show();
+        }
+
+        return "";
+    }
+
+    private boolean isFileExists(String filePath) {
+        File file = new File(filePath);
+        return file.exists();
     }
 
     /**
@@ -447,41 +504,38 @@ public class LivenessFragment extends Fragment implements Detector.DetectorInitC
     @Override
     public void onDetectionFailed(Detector.DetectionFailedType failedType, Detector.DetectionType detectionType) {
         if (isAdded()) {
+            String errorMsg = "";
             switch (failedType) {
                 case WEAKLIGHT:
+                     errorMsg = getString(R.string.liveness_weak_light);
 //                    changeTipTextView(R.string.liveness_weak_light);
                     break;
                 case STRONGLIGHT:
+                      errorMsg = getString(R.string.liveness_too_light);
 //                    changeTipTextView(R.string.liveness_too_light);
                     break;
-                default:
-                    String errorMsg = null;
-                    switch (failedType) {
-                        case FACEMISSING:
-                            switch (detectionType) {
-                                case MOUTH:
-                                case BLINK:
-                                    errorMsg = getString(R.string.liveness_failed_reason_facemissing_blink_mouth);
-                                    break;
-                                case POS_YAW:
-                                    errorMsg = getString(R.string.liveness_failed_reason_facemissing_pos_yaw);
-                                    break;
-                            }
+                case FACEMISSING:
+                    switch (detectionType) {
+                        case MOUTH:
+                        case BLINK:
+                            errorMsg = getString(R.string.liveness_failed_reason_facemissing_blink_mouth);
                             break;
-                        case TIMEOUT:
-                            errorMsg = getString(R.string.liveness_failed_reason_timeout);
-                            break;
-                        case MULTIPLEFACE:
-                            errorMsg = getString(R.string.liveness_failed_reason_multipleface);
-                            break;
-                        case MUCHMOTION:
-                            errorMsg = getString(R.string.liveness_failed_reason_muchaction);
+                        case POS_YAW:
+                            errorMsg = getString(R.string.liveness_failed_reason_facemissing_pos_yaw);
                             break;
                     }
-                    LivenessResult.setErrorMsg(errorMsg);
-                    setResultData();
+                    break;
+                case TIMEOUT:
+                    errorMsg = getString(R.string.liveness_failed_reason_timeout);
+                    break;
+//                case MULTIPLEFACE:
+//                    errorMsg = getString(R.string.liveness_failed_reason_multipleface);
+//                    break;
+                case MUCHMOTION:
+                    errorMsg = getString(R.string.liveness_failed_reason_muchaction);
                     break;
             }
+            setErrorResultData(errorMsg);
         }
     }
 

@@ -29,6 +29,7 @@
         style="@style/liveness_preview" />
 
     <ai.advance.liveness.BackgroundOverlay
+        android:id="@+id/background_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
