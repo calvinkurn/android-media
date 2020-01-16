@@ -164,7 +164,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             appLink, adsClickUrl))
                 }
             }
-            if (items.size == 2) {
+            if (cpmData.cpm.cpmShop.products.size < 3) {
                 items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
             }
             bannerAdsAdapter!!.setList(items)
