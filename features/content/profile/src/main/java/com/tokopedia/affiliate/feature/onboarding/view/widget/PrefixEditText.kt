@@ -6,6 +6,7 @@ import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.widget.TextView
+import com.tokopedia.profile.R
 
 /**
  * Created by Hendry on 3/9/2017.
@@ -21,7 +22,7 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
     val textWithoutPrefix: String
         get() {
             val s = super.getText()
-            val prefix = mPrefix ?: ""
+            val prefix = mPrefix.orEmpty()
             return s.toString().replaceFirst(prefix.toRegex(), "").trim { it <= ' ' }
         }
 
@@ -46,13 +47,10 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         var a = context.obtainStyledAttributes(
-                attrs, com.tokopedia.design.R.styleable.PrefixEditText, defStyle, 0)
+                attrs, R.styleable.PrefixEditText, defStyle, 0)
 
-        mPrefix = a.getString(
-                com.tokopedia.design.R.styleable.PrefixEditText_prefix)
-        mColor = a.getColor(
-                com.tokopedia.design.R.styleable.PrefixEditText_prefixTextColor,
-                0)
+        mPrefix = a.getString(R.styleable.PrefixEditText_prefix)
+        mColor = a.getColor(R.styleable.PrefixEditText_prefixTextColor, 0)
         a.recycle()
 
         val set = intArrayOf(android.R.attr.text        // idx 0
@@ -68,14 +66,15 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
 
     override fun setText(text: CharSequence, type: TextView.BufferType) {
         removeTextChangedListener(this)
+        val prefix = mPrefix
         when {
-            TextUtils.isEmpty(mPrefix) -> super.setText(text, type)
-            TextUtils.isEmpty(text) -> {
-                val prefixLength = mPrefix!!.length
-                val spannable = SpannableString(mPrefix)
+            TextUtils.isEmpty(prefix) -> super.setText(text, type)
+            TextUtils.isEmpty(text) && prefix != null -> {
+                val prefixLength = prefix.length
+                val spannable = SpannableString(prefix)
                 if (mColor != 0) {
                     spannable.setSpan(ForegroundColorSpan(mColor),
-                            0, mPrefix!!.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            0, prefix.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 super.setText(spannable, type)
                 Selection.setSelection(spannable, prefixLength)
@@ -83,15 +82,15 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
             else -> {
                 val textString = text.toString()
                 val spannable: Spannable
-                spannable = if (textString.startsWith(mPrefix!!)) {
+                spannable = if (prefix != null && textString.startsWith(prefix)) {
                     SpannableString(textString)
                 } else {
-                    val combinedString = mPrefix!! + textString
+                    val combinedString = prefix.orEmpty() + textString
                     SpannableString(combinedString)
                 }
-                if (mColor != 0) {
+                if (prefix != null && mColor != 0) {
                     spannable.setSpan(ForegroundColorSpan(mColor),
-                            0, mPrefix!!.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            0, prefix.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 super.setText(spannable, type)
                 super.getText()?.length?.let {
@@ -112,9 +111,10 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
     }
 
     override fun afterTextChanged(s: Editable) {
-        if (!s.toString().startsWith(mPrefix!!)) {
+        val prefix = mPrefix
+        if (prefix != null && !s.toString().startsWith(prefix)) {
             removeTextChangedListener(this)
-            super@PrefixEditText.setText(mPrefix)
+            super@PrefixEditText.setText(prefix)
             super@PrefixEditText.getText()?.length?.let {
                 Selection.setSelection(super@PrefixEditText.getText(),
                         it)
@@ -131,7 +131,7 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
 
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         // if select on the prefix text, move selection to the end
-        val prefixLength = if (mPrefix == null) 0 else mPrefix!!.length
+        val prefixLength = mPrefix?.length ?: 0
         if (selStart < prefixLength && selEnd == selStart) {
             super@PrefixEditText.getText()?.length?.let {
                 Selection.setSelection(super@PrefixEditText.getText(),
