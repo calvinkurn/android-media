@@ -24,13 +24,15 @@ interface DynamicProductDetailListener {
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()
     fun txtTradeinClicked()
-    fun onSwipePicture(swipeDirection: String)
+    fun onSwipePicture(swipeDirection: String, position: Int)
 
     /**
      * ProductInfoViewHolder
      */
     fun gotoVideoPlayer(videos: List<Video>, index: Int)
     fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>)
+    fun onCategoryClicked(url: String)
+    fun onEtalaseClicked(url: String)
 
     /**
      * ProductDiscussionViewHolder

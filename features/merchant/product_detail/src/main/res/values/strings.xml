@@ -23,7 +23,7 @@
     <string name="template_weight">%1$s %2$s</string>
     <string name="template_campaign_off">%1$s%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
-    <string name="template_success_rate">%1$s%% (%2$s produk)</string>
+    <string name="template_success_rate">%1$s%% (%2$s)</string>
     <string name="template_talk">%1$d Diskusi</string>
     <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
@@ -36,7 +36,7 @@
     <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="action_preorder">PREORDER</string>
-    <string name="product_from">Produk</string>
+    <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
     <string name="from_power_badge_label">Power Merchant</string>
 
@@ -165,8 +165,6 @@
 
     <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
     <string name="pdp_category_applink">https://staging.tokopedia.com/p/</string>
-    <string name="staging_pdp_category_applink">https://staging.tokopedia.com/p/</string>
-    <string name="staging_pdp_etalase_applink_builder">https://staging.tokopedia.com/%s/etalase</string>
 
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>

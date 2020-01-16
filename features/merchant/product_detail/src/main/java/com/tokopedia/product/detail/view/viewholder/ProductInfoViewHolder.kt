@@ -32,7 +32,7 @@ class ProductInfoViewHolder(private val view: View,
             view.rv_info.apply {
                 val topData = data.find { it.row == "top" } ?: return@apply
 
-                adapter = ProductInfoAdapter(topData.listOfContent)
+                adapter = ProductInfoAdapter(listener, topData.listOfContent)
 
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }

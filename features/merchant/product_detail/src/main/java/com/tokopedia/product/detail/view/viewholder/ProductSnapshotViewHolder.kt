@@ -71,7 +71,10 @@ class ProductSnapshotViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
-            ProductDetailConstant.PAYLOAD_COD -> renderCod(element.shouldShowCod)
+            ProductDetailConstant.PAYLOAD_COD -> {
+                view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
+                renderCod(element.shouldShowCod)
+            }
             ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
         }
     }

@@ -184,7 +184,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var shouldShowCodP1 = false
-    private var shouldShowCodP2Shop = false
     private var shouldShowCodP3 = false
     private var isAffiliate = false
     private var affiliateString: String? = null
@@ -250,8 +249,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         isLoadingInitialData = true
         isTopdasLoaded = false
         actionButtonView.visibility = false
-//        adapter.clearAllElements()
-//        showLoading()
         updateStickyContent()
         loadProductData(true)
     }
@@ -358,7 +355,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.menu_product_detail_dark, menu)
+        inflater.inflate(R.menu.menu_product_detail_dark, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
         initToolBarMethod.invoke()
@@ -588,6 +585,36 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     /**
+     * ProductInfoViewHolder
+     */
+    override fun onCategoryClicked(url: String) {
+        if (GlobalConfig.isCustomerApp()) {
+            var categoryId = ""
+            var categoryName = ""
+            viewModel.getDynamicProductInfoP1?.basic?.category?.detail?.let {
+                categoryId = it.last().id
+                categoryName = it.last().name
+            }
+
+            dynamicProductDetailTracking.eventCategoryClicked(categoryId, categoryName)
+            RouteManager.route(context, url)
+        }
+    }
+
+    override fun onEtalaseClicked(url: String) {
+        val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: 0
+        val etalaseName = viewModel.getDynamicProductInfoP1?.basic?.menu?.name ?: ""
+        val shopId = viewModel.shopInfo?.shopCore?.shopID ?: ""
+
+        dynamicProductDetailTracking.eventEtalaseClicked(etalaseId.toString(), etalaseName)
+        if (etalaseId == 0) {
+            RouteManager.route(context, ApplinkConst.SHOP, shopId)
+        } else {
+            RouteManager.route(context, url)
+        }
+    }
+
+    /**
      * ProductGeneralInfoViewHolder Listener
      */
     override fun onInfoClicked(name: String) {
@@ -769,8 +796,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ProductSnapshotViewHolder
      */
 
-    override fun onSwipePicture(swipeDirection: String) {
-        productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection)
+    override fun onSwipePicture(swipeDirection: String, position: Int) {
+        productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection, position)
     }
 
     override fun onImageClicked(position: Int) {
@@ -1021,8 +1048,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
-        shouldShowCodP2Shop = it.shopCod
-
         viewModel.getDynamicProductInfoP1?.let { p1 ->
             actionButtonView.renderData(!p1.basic.isActive(),
                     (viewModel.isShopOwner(p1.basic.getShopId())
@@ -1098,7 +1123,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP3Resp(it: ProductInfoP3) {
         shouldShowCodP3 = it.userCod
         pdpHashMapUtil.productShipingInfoMap?.let { productShippingInfoMap ->
-            if (it.ratesModel?.services?.size == 0) {
+            if (it.ratesModel?.getServicesSize() == 0) {
                 dynamicAdapter.removeGeneralInfo(productShippingInfoMap)
             } else {
                 pdpHashMapUtil.updateDataP3(it)
@@ -1106,8 +1131,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.notifyShipingInfo(productShippingInfoMap)
         }
 
-        pdpHashMapUtil.snapShotMap.shouldShowCod =
-                shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
+        pdpHashMapUtil.snapShotMap.shouldShowCod = shouldShowCodP1 && shouldShowCodP3
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_COD)
     }
 

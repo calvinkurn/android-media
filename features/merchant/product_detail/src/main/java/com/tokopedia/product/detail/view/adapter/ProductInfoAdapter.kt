@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_informasi_product.view.*
 
-class ProductInfoAdapter(private val listOfData: List<Content>) : RecyclerView.Adapter<ProductInfoAdapter.ItemProductInfoViewHolder>() {
+class ProductInfoAdapter(private val listener: DynamicProductDetailListener,
+                         private val listOfData: List<Content>) : RecyclerView.Adapter<ProductInfoAdapter.ItemProductInfoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemProductInfoViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -27,7 +27,7 @@ class ProductInfoAdapter(private val listOfData: List<Content>) : RecyclerView.A
 
     inner class ItemProductInfoViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        private val categoryApplink: String = view.context.getString(R.string.staging_pdp_category_applink)
+        private val categoryApplink: String = view.context.getString(R.string.pdp_category_applink)
 
         fun bind(data: Content) {
             view.title_info.text = data.title
@@ -38,12 +38,10 @@ class ProductInfoAdapter(private val listOfData: List<Content>) : RecyclerView.A
                 view.desc_info.setOnClickListener {
                     when {
                         data.applink.startsWith(categoryApplink) -> {
-                            if (GlobalConfig.isCustomerApp()) {
-                                RouteManager.route(view.context, data.applink)
-                            }
+                            listener.onCategoryClicked(data.applink)
                         }
                         else -> {
-                            RouteManager.route(view.context, data.applink)
+                            listener.onEtalaseClicked(data.applink)
                         }
                     }
                 }

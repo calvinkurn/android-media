@@ -123,11 +123,9 @@ class PartialSnapshotView(private val view: View,
 
     fun renderTradein(showTradein: Boolean) {
         if (showTradein) {
-            view.tv_trade_in_promo.visible()
-            view.tv_available_at?.visible()
+            view.tradein_header_container.visible()
         } else {
-            view.tv_trade_in_promo.gone()
-            view.tv_available_at?.gone()
+            view.tradein_header_container.gone()
         }
     }
 
@@ -146,7 +144,7 @@ class PartialSnapshotView(private val view: View,
             colorIc = ContextCompat.getColor(context, R.color.green_power_badge)
             renderTxtIcon(labelIc, colorIc, imageIc)
         } else if (isOfficialStore) {
-            val drawableOs = MethodChecker.getDrawable(context, R.drawable.ic_badge_shop_official)
+            val drawableOs = MethodChecker.getDrawable(context, R.drawable.ic_pdp_new_official_store)
             drawableOs?.setBounds(0, 0, drawableSize, drawableSize)
             labelIc = context.getString(R.string.from_official_store_label)
             imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)

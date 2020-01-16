@@ -3,10 +3,7 @@ package com.tokopedia.product.detail.usecase
 import android.util.SparseArray
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
@@ -28,6 +25,7 @@ import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
+import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.usecase.RequestParams
@@ -142,7 +140,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests, getCacheStrategy(forceRefresh))
+            val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
             if (gqlResponse.getError(ProductDetailVariantResponse::class.java)?.isNotEmpty() != true) {
                 productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantResponse>(ProductDetailVariantResponse::class.java).data
@@ -223,13 +221,6 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         }
 
         return productInfoP2
-    }
-
-    private fun getCacheStrategy(forceRefresh: Boolean): GraphqlCacheStrategy {
-        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
-                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
-                .setSessionIncluded(true)
-                .build()
     }
 
     private fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {

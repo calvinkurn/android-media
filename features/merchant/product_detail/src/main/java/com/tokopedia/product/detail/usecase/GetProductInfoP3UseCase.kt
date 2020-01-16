@@ -1,15 +1,13 @@
 package com.tokopedia.product.detail.usecase
 
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.UserCodStatus
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
+import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
 import javax.inject.Inject
@@ -49,7 +47,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         }
 
         try {
-            val response = graphqlRepository.getReseponse(requests, getCacheStrategy())
+            val response = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
@@ -68,12 +66,5 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         }
 
         return productInfoP3
-    }
-
-    private fun getCacheStrategy(): GraphqlCacheStrategy {
-        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
-                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
-                .setSessionIncluded(true)
-                .build()
     }
 }

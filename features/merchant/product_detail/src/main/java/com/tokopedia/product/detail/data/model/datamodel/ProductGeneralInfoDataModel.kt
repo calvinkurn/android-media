@@ -7,7 +7,7 @@ data class ProductGeneralInfoDataModel(
         val name: String = "",
         val type: String = "",
         val applink: String = "",
-        val title: String = "",
+        var title: String = "",
         val isApplink: Boolean = false,
         val parentIcon: String = "",
         val data: List<Content> = listOf(Content())

@@ -15,15 +15,12 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.PRO
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.RECOMMENDATION_CLICK
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
@@ -80,12 +77,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventProductImageOnSwipe(productId: String?, swipeDirection: String) {
+    fun eventProductImageOnSwipe(productId: String?, swipeDirection: String, imagePosition: Int) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
-                "$swipeDirection - "+ProductTrackingConstant.Label.PDP
+                "$swipeDirection - "+ProductTrackingConstant.Label.PDP + " - $imagePosition"
         )
         mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)

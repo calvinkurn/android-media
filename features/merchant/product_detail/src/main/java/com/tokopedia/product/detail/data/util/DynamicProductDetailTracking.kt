@@ -57,6 +57,24 @@ class DynamicProductDetailTracking @Inject constructor() {
         }
     }
 
+    fun eventCategoryClicked(categoryId: String, categoryName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                "",
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_CATEGORY,
+                "$categoryId - $categoryName")
+    }
+
+
+    fun eventEtalaseClicked(etalaseId: String, etalaseName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                "",
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_ETALASE,
+                "$etalaseId - $etalaseName")
+    }
+
+
     fun eventDiscussionClickedIris(productInfo: DynamicProductInfoP1?, deeplinkUrl: String,
                                    shopName: String) {
 

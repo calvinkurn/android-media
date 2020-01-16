@@ -1936,8 +1936,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onSwipePicture(swipeDirection: String) {
-        productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection)
+    private fun onSwipePicture(swipeDirection: String, position: Int) {
+        productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection, position)
     }
 
     private fun getImageURIPaths(): ArrayList<String> {

@@ -1,10 +1,7 @@
 package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -13,6 +10,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT
+import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
@@ -39,9 +37,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
-        gqlUseCase.setCacheStrategy(getCacheStrategy())
+        gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
+        val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
+        val cacheStrategyString = if (forceRefresh) "P1#PDP_CACHE#CACHE_FALSE;$productId" else "P1#PDP_CACHE#CACHE_TRUE;$productId"
 
-        val cacheStrategyString = if (forceRefresh) "P1#PDP_CACHE#CACHE_FALSE" else "P1#PDP_CACHE#CACHE_TRUE"
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java)
@@ -66,10 +65,4 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData)
     }
 
-    private fun getCacheStrategy(): GraphqlCacheStrategy {
-        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
-                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
-                .setSessionIncluded(true)
-                .build()
-    }
 }

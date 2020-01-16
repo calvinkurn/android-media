@@ -203,7 +203,11 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             productProtectionMap?.run {
-                data.first().subtitle = it.productPurchaseProtectionInfo.ppItemDetailPage!!.subTitlePDP
+                if (it.productPurchaseProtectionInfo.ppItemDetailPage?.title?.isNotEmpty() == true) {
+                    title = it.productPurchaseProtectionInfo.ppItemDetailPage?.title
+                            ?: ""
+                }
+                data.first().subtitle = it.productPurchaseProtectionInfo.ppItemDetailPage?.subTitlePDP
                         ?: ""
             }
 

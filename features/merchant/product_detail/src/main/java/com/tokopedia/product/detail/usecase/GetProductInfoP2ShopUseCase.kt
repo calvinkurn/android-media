@@ -1,17 +1,14 @@
 package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
+import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -56,10 +53,6 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
                 MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
 
-        val shopCodParam = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString())
-        val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
-                ShopCodStatus.Response::class.java, shopCodParam)
-
         /*
          * Since GraphqlRepository doesn't support caching Pojo parameter,
          * it has to create map instead of passing object itself
@@ -85,20 +78,15 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
                 TradeinResponse::class.java, pdpTradeinParam)
 
-        val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest, pdpTradeinRequest)
+        val requests = mutableListOf(shopRequest, nearestWarehouseRequest, pdpTradeinRequest)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests, getCacheStrategy(forceRefresh))
+            val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
             if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
                 val result = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java)
                 if (result.result.data.isNotEmpty())
                     p2Shop.shopInfo = result.result.data.first()
-            }
-
-            if (gqlResponse.getError(ShopCodStatus.Response::class.java)?.isNotEmpty() != true) {
-                p2Shop.shopCod = gqlResponse.getData<ShopCodStatus.Response>(ShopCodStatus.Response::class.java)
-                        .result.shopCodStatus.isCod
             }
 
             if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true) {
@@ -116,12 +104,4 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         }
         return p2Shop
     }
-
-    private fun getCacheStrategy(forceRefresh: Boolean): GraphqlCacheStrategy {
-        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
-                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
-                .setSessionIncluded(true)
-                .build()
-    }
-
 }

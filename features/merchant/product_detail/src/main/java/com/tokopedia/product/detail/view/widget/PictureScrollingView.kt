@@ -39,7 +39,7 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String) -> Unit) ,fragmentManager: FragmentManager,
+    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int) -> Unit) ,fragmentManager: FragmentManager,
                    forceRefresh: Boolean = true) {
         val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
@@ -60,7 +60,7 @@ class PictureScrollingView @JvmOverloads constructor(
                 var lastPosition = 0
                 override fun onPageSelected(position: Int) {
                     val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
-                    onSwipePictureListener.invoke(swipeDirection)
+                    onSwipePictureListener.invoke(swipeDirection, position)
                     (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
                     (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
                     lastPosition = position

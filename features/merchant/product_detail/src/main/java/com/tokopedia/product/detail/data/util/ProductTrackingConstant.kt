@@ -78,6 +78,8 @@ object ProductTrackingConstant {
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
+        const val CLICK_CATEGORY = "click - category on informasi produk"
+        const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - lihat semua metode on simulasi cicilan widget"
