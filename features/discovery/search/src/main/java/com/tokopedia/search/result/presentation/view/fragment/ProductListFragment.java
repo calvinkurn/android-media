@@ -117,8 +117,6 @@ public class ProductListFragment
     @Inject
     ProductListSectionContract.Presenter presenter;
     @Inject
-    SearchTracking searchTracking;
-    @Inject
     UserSessionInterface userSession;
 
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
@@ -999,7 +997,7 @@ public class ProductListFragment
 
     @Override
     public void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray) {
-        searchTracking.eventAppsFlyerViewListingSearch(getActivity(), afProdIds, query, prodIdArray);
+        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
     }
 
     @Override

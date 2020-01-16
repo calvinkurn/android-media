@@ -103,7 +103,7 @@ public class SearchTracking {
         );
     }
 
-    public void eventAppsFlyerViewListingSearch(Context context, JSONArray productsId, String keyword, ArrayList<String> prodIds) {
+    public static void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
         Map<String, Object> listViewEvent = new HashMap<>();
         listViewEvent.put("af_content_id", prodIds);
         listViewEvent.put("af_currency", "IDR");

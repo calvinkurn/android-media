@@ -12,8 +12,7 @@ import dagger.Component;
 @SearchScope
 @Component(modules = {
         ProductListPresenterModule.class,
-        UserSessionModule.class,
-        SearchTrackingModule.class
+        UserSessionModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListViewComponent {
 
