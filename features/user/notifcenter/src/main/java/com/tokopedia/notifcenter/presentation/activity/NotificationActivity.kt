@@ -58,6 +58,7 @@ class NotificationActivity : BaseTabActivity(),
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
 
         super.onCreate(savedInstanceState)
+        setupLayout(savedInstanceState)
         initInjector()
         initView()
 
