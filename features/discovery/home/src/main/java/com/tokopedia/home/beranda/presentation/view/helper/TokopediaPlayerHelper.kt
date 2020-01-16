@@ -287,12 +287,17 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityResume() {
-        TokopediaPlayManager.getInstance(context).stopPlayer()
-        mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-        exoPlayerView.setPlayer(mPlayer)
-        mPlayer?.addListener(this)
-        createMediaSource()
-        playerPlay()
+        masterJob.cancelChildren()
+        launch(coroutineContext){
+            delay(1500)
+            TokopediaPlayManager.getInstance(context).stopPlayer()
+            mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
+            exoPlayerView.setPlayer(mPlayer)
+            mPlayer?.addListener(this@TokopediaPlayerHelper)
+            createMediaSource()
+            delay(1500)
+            TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
+        }
     }
 
     override fun onActivityPause() {
