@@ -32,7 +32,7 @@ class CheckMoneyInUseCase @Inject constructor(
     }
 
     private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_validate_tradein)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
     }
 
     suspend fun checkMoneyIn(modelId: Int, tradeInParams: TradeInParams, userId: String): ValidateTradePDP {

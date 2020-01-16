@@ -133,7 +133,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
         }
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+            getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
         }
         TradeVM.getProgressBarVisibility().observe(this, (visibility) -> {
             if (visibility != null) {
@@ -174,7 +174,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     }
 
     private String getButtonStringOnError() {
-        return getString(R.string.close);
+        return getString(com.tokopedia.design.R.string.close);
     }
 
     @Override
@@ -264,7 +264,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     public void onBackPressed() {
         if (isTncShowing) {
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+                getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
                 getSupportActionBar().setTitle(getTitle());
             }
             isTncShowing = false;
