@@ -20,15 +20,15 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
-import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
+import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -69,6 +69,7 @@ final class ProductListPresenter
     private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
+    private static final String DEFAULT_USER_ID = "0";
 
     @Inject
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
@@ -112,8 +113,19 @@ final class ProductListPresenter
         isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
     }
 
+    @Override
     public boolean isUsingBottomSheetFilter() {
         return this.isUsingBottomSheetFilter;
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.isLoggedIn() ? userSession.getUserId() : DEFAULT_USER_ID;
+    }
+
+    @Override
+    public boolean isUserLoggedIn() {
+        return userSession.isLoggedIn();
     }
 
     @Override
@@ -148,7 +160,7 @@ final class ProductListPresenter
 
     @Override
     public void handleWishlistButtonClicked(final ProductItemViewModel productItem) {
-        if (getView().isUserHasLogin()) {
+        if (isUserLoggedIn()) {
             WishListActionListener wishlistActionListener = createWishlistActionListener(productItem);
 
             getView().disableWishlistButton(productItem.getProductID());
@@ -201,12 +213,12 @@ final class ProductListPresenter
 
     private void removeWishlist(ProductItemViewModel productItemViewModel, WishListActionListener wishlistActionListener) {
         getView().logDebug(this.toString(), "Remove Wishlist " + productItemViewModel.getProductID());
-        removeWishlistActionUseCase.createObservable(productItemViewModel.getProductID(), getView().getUserId(), wishlistActionListener);
+        removeWishlistActionUseCase.createObservable(productItemViewModel.getProductID(), getUserId(), wishlistActionListener);
     }
 
     private void addWishlist(ProductItemViewModel productItemViewModel, WishListActionListener wishlistActionListener) {
         getView().logDebug(this.toString(), "Add Wishlist " + productItemViewModel.getProductID());
-        addWishlistActionUseCase.createObservable(productItemViewModel.getProductID(), getView().getUserId(), wishlistActionListener);
+        addWishlistActionUseCase.createObservable(productItemViewModel.getProductID(), getUserId(), wishlistActionListener);
     }
 
     private Subscriber<Boolean> getWishlistSubscriber(final ProductItemViewModel productItem) {
@@ -238,7 +250,7 @@ final class ProductListPresenter
 
     @Override
     public void handleWishlistButtonClicked(final RecommendationItem recommendationItem) {
-        if (getView().isUserHasLogin()) {
+        if (isUserLoggedIn()) {
             WishListActionListener recommendationItemWishlistActionListener = createRecommendationItemWishlistActionListener();
 
             getView().disableWishlistButton(String.valueOf(recommendationItem.getProductId()));
@@ -284,13 +296,13 @@ final class ProductListPresenter
     private void removeWishlistRecommendationItem(RecommendationItem recommendationItem, WishListActionListener recommendationItemWishlistActionListener) {
         getView().logDebug(this.toString(), "Remove Wishlist " + recommendationItem.getProductId());
         removeWishlistActionUseCase.createObservable(
-                String.valueOf(recommendationItem.getProductId()), getView().getUserId(), recommendationItemWishlistActionListener);
+                String.valueOf(recommendationItem.getProductId()), getUserId(), recommendationItemWishlistActionListener);
     }
 
     private void addWishlistRecommendationItem(RecommendationItem recommendationItem, WishListActionListener recommendationItemWishlistActionListener) {
         getView().logDebug(this.toString(), "Add Wishlist " + recommendationItem.getProductId());
         addWishlistActionUseCase.createObservable(
-                String.valueOf(recommendationItem.getProductId()), getView().getUserId(), recommendationItemWishlistActionListener);
+                String.valueOf(recommendationItem.getProductId()), getUserId(), recommendationItemWishlistActionListener);
     }
 
     private Subscriber<Boolean> getWishlistSubscriber(final RecommendationItem recommendationItem) {

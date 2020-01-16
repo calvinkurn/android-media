@@ -19,11 +19,7 @@ import java.util.Map;
 public interface ProductListSectionContract {
 
     interface View extends SearchSectionContract.View {
-        boolean isUserHasLogin();
-
         String getUserId();
-
-        void initTopAdsParams();
 
         void incrementStart();
 
@@ -137,5 +133,9 @@ public interface ProductListSectionContract {
         void onBannedProductsGoToBrowserClick(String url);
 
         boolean isUsingBottomSheetFilter();
+
+        String getUserId();
+
+        boolean isUserLoggedIn();
     }
 }

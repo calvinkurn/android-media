@@ -70,7 +70,6 @@ import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -229,11 +228,11 @@ public class ProductListFragment
     }
 
     private void initTopAdsConfig() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return;
+        if(getActivity() == null || getActivity().getApplicationContext() == null || presenter == null) return;
 
         topAdsConfig = new Config.Builder()
                 .setSessionId(getRegistrationId())
-                .setUserId(userSession.getUserId())
+                .setUserId(getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
     }
@@ -282,12 +281,11 @@ public class ProductListFragment
                 && adapter.hasNextPage();
     }
 
-    @Override
-    public void initTopAdsParams() {
+    private void initTopAdsParams() {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, getUserId());
 
         if(getSearchParameter() != null) {
             getSearchParameter().cleanUpNullValuesInMap();
@@ -355,7 +353,7 @@ public class ProductListFragment
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
+        String userId = getUserId();
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
         for (Visitable object : list) {
@@ -394,17 +392,13 @@ public class ProductListFragment
         if(getSearchParameter() == null) setSearchParameter(new SearchParameter());
 
         getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
-        getSearchParameter().set(SearchApiConst.USER_ID, generateUserId());
+        getSearchParameter().set(SearchApiConst.USER_ID, getUserId());
         getSearchParameter().set(SearchApiConst.START, String.valueOf(startRow));
     }
 
-    private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
-    }
-
     private String generateUniqueId() {
-        return userSession.isLoggedIn() ?
-                AuthHelper.getMD5Hash(userSession.getUserId()) :
+        return presenter.isUserLoggedIn() ?
+                AuthHelper.getMD5Hash(getUserId()) :
                 AuthHelper.getMD5Hash(getRegistrationId());
     }
 
@@ -529,7 +523,7 @@ public class ProductListFragment
 
         if(intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, item.getPosition());
-            if(userSession.isLoggedIn()){
+            if(presenter.isUserLoggedIn()){
                 RecommendationTracking.Companion.eventClickProductRecommendationLogin(item, String.valueOf(item.getPosition()));
             }else {
                 RecommendationTracking.Companion.eventClickProductRecommendationNonLogin(item, String.valueOf(item.getPosition()));
@@ -540,7 +534,7 @@ public class ProductListFragment
 
     @Override
     public void onProductImpression(@NotNull RecommendationItem item) {
-        if(userSession.isLoggedIn()){
+        if(presenter.isUserLoggedIn()){
             RecommendationTracking.Companion.eventImpressionProductRecommendationLogin(trackingQueue, item, String.valueOf(item.getPosition()));
         } else {
             RecommendationTracking.Companion.eventImpressionProductRecommendationNonLogin(trackingQueue, item, String.valueOf(item.getPosition()));
@@ -550,7 +544,7 @@ public class ProductListFragment
     @Override
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
         presenter.handleWishlistButtonClicked(item);
-        if(userSession.isLoggedIn()){
+        if(presenter.isUserLoggedIn()){
             RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(!isAddWishlist);
         } else {
             RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
@@ -584,7 +578,7 @@ public class ProductListFragment
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
-        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
+        String userId = getUserId();
         if (item.isTopAds()) {
             sendItemClickTrackingEventForTopAdsItem(item, pos);
         } else {
@@ -707,9 +701,7 @@ public class ProductListFragment
     }
 
     private void trackEventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
-        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
-
-        SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, userId);
+        SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, getUserId());
     }
 
     @Override
@@ -756,7 +748,7 @@ public class ProductListFragment
         wishlistTrackingModel.setProductId(productItemViewModel.getProductID());
         wishlistTrackingModel.setTopAds(productItemViewModel.isTopAds());
         wishlistTrackingModel.setKeyword(getQueryKey());
-        wishlistTrackingModel.setUserLoggedIn(userSession.isLoggedIn());
+        wishlistTrackingModel.setUserLoggedIn(presenter.isUserLoggedIn());
 
         return wishlistTrackingModel;
     }
@@ -816,13 +808,10 @@ public class ProductListFragment
     }
 
     @Override
-    public boolean isUserHasLogin() {
-        return userSession.isLoggedIn();
-    }
-
-    @Override
     public String getUserId() {
-        return userSession.getUserId();
+        if (presenter == null) return "0";
+
+        return presenter.getUserId();
     }
 
     @Override
