@@ -86,17 +86,16 @@ public class ActivitySellingTransaction extends TkpdActivity
     public static final String EXTRA_KEY_NEW_ORDER = "new_order";
     public static final String EXTRA_KEY_CONFIRM_SHIPPING = "confirm_shipping";
     public static final String EXTRA_KEY_IN_SHIPPING = "in_shipping";
-    public static final String EXTRA_KEY_DONE = "done";
     public static final String EXTRA_KEY_ALL_ORDER = "all_order";
 
-    public static final String EXTRA_KEY_CANCELLED = "finisehd";
-    public static final String EXTRA_KEY_WAITING_PICKUP = "finisehd";
-    public static final String EXTRA_KEY_WAITING_AWB = "finisehd";
-    public static final String EXTRA_KEY_AWB_INVALID = "finisehd";
-    public static final String EXTRA_KEY_AWB_CHANGE = "finisehd";
-    public static final String EXTRA_KEY_RETUR = "finisehd";
-    public static final String EXTRA_KEY_COMPLAINT = "finisehd";
-    public static final String EXTRA_KEY_FINISHED = "finisehd";
+    public static final String EXTRA_KEY_CANCELLED = "order_canceled";
+    public static final String EXTRA_KEY_WAITING_PICKUP = "waiting_pickup";
+    public static final String EXTRA_KEY_WAITING_AWB = "waiting_awb";
+    public static final String EXTRA_KEY_AWB_INVALID = "awb_invalid";
+    public static final String EXTRA_KEY_AWB_CHANGE = "awb_change";
+    public static final String EXTRA_KEY_RETUR = "retur";
+    public static final String EXTRA_KEY_COMPLAINT = "complaint";
+    public static final String EXTRA_KEY_FINISHED = "done";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
