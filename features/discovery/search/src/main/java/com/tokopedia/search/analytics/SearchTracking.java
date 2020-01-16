@@ -57,35 +57,6 @@ public class SearchTracking {
     public static final String EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT = "click widget - digital product";
     public static final String EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product";
 
-    private UserSessionInterface userSessionInterface;
-
-    @Inject
-    public SearchTracking(Context context, UserSessionInterface userSessionInterface) {
-        this.userSessionInterface = userSessionInterface;
-    }
-
-    private Map<String, Object> generateEventTrackingWithUserId(String event, String category, String action, String label) {
-        Map<String, Object> eventTracking = new HashMap<>();
-
-        eventTracking.put(EVENT, event);
-        eventTracking.put(EVENT_CATEGORY, category);
-        eventTracking.put(EVENT_ACTION, action);
-        eventTracking.put(EVENT_LABEL, label);
-        eventTracking.put(USER_ID, userSessionInterface.isLoggedIn() ? userSessionInterface.getUserId() : "0");
-
-        return eventTracking;
-    }
-
-    public void sendGeneralEventWithUserId(String event, String category, String action, String label) {
-        Map<String, Object> eventTrackingMap = generateEventTrackingWithUserId(event, category, action, label);
-
-        sendGeneralEvent(eventTrackingMap);
-    }
-
-    public void sendGeneralEvent(Map<String, Object> eventTrackingMap) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
-    }
-
     public static void screenTrackSearchSectionFragment(String screen) {
         if (TextUtils.isEmpty(screen)) {
             return;
@@ -94,12 +65,15 @@ public class SearchTracking {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
     }
 
-    public void eventSearchResultSort(String screenName, String sortByValue) {
-        sendGeneralEventWithUserId(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SORT_BY,
-                SearchEventTracking.Action.SORT_BY + " - " + screenName,
-                sortByValue
+    public static void eventSearchResultSort(String screenName, String sortByValue, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT,SearchEventTracking.Event.SEARCH_RESULT,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SORT_BY,
+                        EVENT_ACTION, SearchEventTracking.Action.SORT_BY + " - " + screenName,
+                        EVENT_LABEL, sortByValue,
+                        USER_ID, userId
+                )
         );
     }
 

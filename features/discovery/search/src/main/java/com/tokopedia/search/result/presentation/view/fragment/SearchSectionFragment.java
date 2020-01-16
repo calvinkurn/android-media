@@ -45,6 +45,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,7 +99,7 @@ public abstract class SearchSectionFragment
     protected FilterController filterController = new FilterController();
 
     @Inject
-    SearchTracking searchTracking;
+    UserSessionInterface userSession;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -342,7 +343,8 @@ public abstract class SearchSectionFragment
 
     private void handleSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
         setSelectedSort(new HashMap<>(selectedSort));
-        searchTracking.eventSearchResultSort(getScreenName(), selectedSortName);
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
+        SearchTracking.eventSearchResultSort(getScreenName(), selectedSortName, userId);
         if(searchParameter != null) {
             searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
                     SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE);
