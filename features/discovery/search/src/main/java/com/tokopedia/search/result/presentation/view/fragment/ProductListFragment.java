@@ -120,8 +120,7 @@ public class ProductListFragment
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
 
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
-    private static int PRODUCT_POSITION = 2;
-    protected RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Inject
     ProductListSectionContract.Presenter presenter;
@@ -1070,84 +1069,6 @@ public class ProductListFragment
     @Override
     public void updateScrollListener() {
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-    }
-
-    /**
-     * This method is left unused for now, due to "Bebas Ongkir" promo show case shown as pop up dialog.
-     * This start show case will be used again after "Bebas Ongkir" promo show case is not pop up dialog anymore.
-     */
-    public void startShowCase() {
-        final String showCaseTag = ProductListFragment.class.getName();
-        if (!isShowCaseAllowed(showCaseTag)) {
-            return;
-        }
-        if (showCaseDialog != null) {
-            return;
-        }
-
-        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-
-        if (recyclerView == null)
-            return;
-
-        recyclerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (getView() == null) {
-                    return;
-                }
-
-                View itemView = scrollToShowCaseItem();
-                if (itemView != null) {
-                    showCaseList.add(
-                            new ShowCaseObject(
-                                    itemView.findViewById(R.id.productCardView),
-                                    getString(R.string.view_similar_item),
-                                    getString(R.string.press_to_see_similar),
-                                    ShowCaseContentPosition.BOTTOM));
-                }
-
-                if (showCaseList.isEmpty())
-                    return;
-
-                showCaseDialog = createShowCaseDialog();
-                showCaseDialog.show(getActivity(), showCaseTag, showCaseList);
-            }
-        }, 300);
-    }
-
-    private boolean isShowCaseAllowed(String tag) {
-        if (getActivity() == null) {
-            return false;
-        }
-        return !ShowCasePreference.hasShown(getActivity(), tag);
-    }
-
-    private ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .textSizeRes(R.dimen.fontvs)
-                .finishStringRes(R.string.megerti)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .useSkipWord(false)
-                .build();
-    }
-
-
-    public View scrollToShowCaseItem() {
-        if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
-            recyclerView.stopScroll();
-            recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
-            return recyclerView.getLayoutManager().findViewByPosition(PRODUCT_POSITION);
-        }
-        return null;
     }
 
     @Override
