@@ -108,25 +108,22 @@ public class ProductListFragment
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
     private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
-
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
-    private RecyclerView recyclerView;
 
     @Inject
     ProductListSectionContract.Presenter presenter;
 
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
     private SearchPerformanceMonitoringListener searchPerformanceMonitoringListener;
+    private RecyclerView recyclerView;
+    private ProductListAdapter adapter;
+    private TrackingQueue trackingQueue;
+    private PerformanceMonitoring performanceMonitoring;
 
     private Config topAdsConfig;
-    private ProductListAdapter adapter;
-    private String additionalParams = "";
+
     private boolean isFirstTimeLoad;
     private boolean tickerHasDismissed = false;
-
-    private PerformanceMonitoring performanceMonitoring;
-    private TrackingQueue trackingQueue;
-
     private FilterController quickFilterController = new FilterController();
 
     public static ProductListFragment newInstance(SearchParameter searchParameter) {
@@ -366,7 +363,7 @@ public class ProductListFragment
     private void loadMoreProduct(final int startRow) {
         generateLoadMoreParameter(startRow);
 
-        presenter.loadMoreData(searchParameter.getSearchParameterMap(), getAdditionalParamsMap());
+        presenter.loadMoreData(searchParameter.getSearchParameterMap());
     }
 
     @Override
@@ -867,13 +864,8 @@ public class ProductListFragment
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(getSearchParameter().getSearchParameterMap(), getAdditionalParamsMap(), isFirstTimeLoad);
+        presenter.loadData(getSearchParameter().getSearchParameterMap(), isFirstTimeLoad);
         TopAdsGtmTracker.getInstance().clearDataLayerList();
-    }
-
-    @Override
-    public Map<String, String> getAdditionalParamsMap() {
-        return UrlParamUtils.getParamMap(additionalParams);
     }
 
     @Override
@@ -958,13 +950,6 @@ public class ProductListFragment
         if(quickFilterController == null) return;
 
         quickFilterController.initFilterController(getSearchParameter().getSearchParameterHashMap(), quickFilterList);
-    }
-
-    @Override
-    public void setAdditionalParams(String additionalParams) {
-        if (!TextUtils.isEmpty(additionalParams)) {
-            this.additionalParams = additionalParams;
-        }
     }
 
     @Override

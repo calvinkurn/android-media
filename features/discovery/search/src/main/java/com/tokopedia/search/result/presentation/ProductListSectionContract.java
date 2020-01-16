@@ -69,8 +69,6 @@ public interface ProductListSectionContract {
 
         void initQuickFilter(List<Filter> quickFilterList);
 
-        void setAdditionalParams(String additionalParams);
-
         void setAutocompleteApplink(String autocompleteApplink);
 
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
@@ -92,8 +90,6 @@ public interface ProductListSectionContract {
         void updateScrollListener();
 
         boolean isAnyFilterActive();
-
-        Map<String, String> getAdditionalParamsMap();
 
         void launchLoginActivity(String productId);
 
@@ -122,9 +118,9 @@ public interface ProductListSectionContract {
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
 
-        void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
+        void loadMoreData(Map<String, Object> searchParameter);
 
-        void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);
+        void loadData(Map<String, Object> searchParameter, boolean isFirstTimeLoad);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 

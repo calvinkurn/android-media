@@ -30,6 +30,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
@@ -99,6 +100,7 @@ final class ProductListPresenter
     private boolean enableGlobalNavWidget;
     private boolean changeParamRow;
     private boolean isUsingBottomSheetFilter;
+    private String additionalParams;
 
     @Override
     public void initInjector(ProductListSectionContract.View view) {
@@ -128,11 +130,15 @@ final class ProductListPresenter
         return userSession.isLoggedIn();
     }
 
+    private Map<String, String> getAdditionalParamsMap() {
+        return UrlParamUtils.getParamMap(additionalParams);
+    }
+
     @Override
     public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
         requestDynamicFilterCheckForNulls();
 
-        Map<String, String> additionalParamsMap = getView().getAdditionalParamsMap();
+        Map<String, String> additionalParamsMap = getAdditionalParamsMap();
 
         if(searchParameterMap == null) return;
 
@@ -333,8 +339,10 @@ final class ProductListPresenter
     }
 
     @Override
-    public void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams) {
+    public void loadMoreData(Map<String, Object> searchParameter) {
         checkViewAttached();
+
+        Map<String, String> additionalParams = getAdditionalParamsMap();
         if(searchParameter == null || additionalParams == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
@@ -625,8 +633,10 @@ final class ProductListPresenter
     }
 
     @Override
-    public void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad) {
+    public void loadData(Map<String, Object> searchParameter, boolean isFirstTimeLoad) {
         checkViewAttached();
+
+        Map<String, String> additionalParams = getAdditionalParamsMap();
         if(searchParameter == null || additionalParams == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
@@ -872,7 +882,10 @@ final class ProductListPresenter
             list.add(productViewModel.getRelatedSearchModel());
         }
 
-        getView().setAdditionalParams(productViewModel.getAdditionalParams());
+        if (!textIsEmpty(productViewModel.getAdditionalParams())) {
+            additionalParams = productViewModel.getAdditionalParams();
+        }
+
         getView().removeLoading();
         getView().setProductList(list);
         getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
