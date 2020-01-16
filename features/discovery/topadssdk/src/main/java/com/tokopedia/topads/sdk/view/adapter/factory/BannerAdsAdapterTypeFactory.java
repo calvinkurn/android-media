@@ -9,11 +9,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMore;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel;
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -41,7 +39,7 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
     }
 
     @Override
-    public int type(BannerShopViewMore viewModel) {
+    public int type(BannerShopViewMoreModel viewModel) {
         return BannerShowMoreViewHolder.LAYOUT;
     }
 
@@ -53,7 +51,7 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
         } else if (viewType == BannerShopProductViewHolder.LAYOUT) {
             holder = new BannerShopProductViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         } else if (viewType == BannerShowMoreViewHolder.LAYOUT) {
-            holder = new BannerShowMoreViewHolder(view);
+            holder = new BannerShowMoreViewHolder(view, topAdsBannerClickListener);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

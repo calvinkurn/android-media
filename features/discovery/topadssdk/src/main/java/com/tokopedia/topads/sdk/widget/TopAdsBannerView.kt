@@ -46,12 +46,11 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHol
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMore
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_product.view.*
 import org.apache.commons.text.StringEscapeUtils
 import java.util.*
 import javax.inject.Inject
@@ -166,7 +165,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
             if (items.size == 2) {
-                items.add(BannerShopViewMore(appLink))
+                items.add(BannerShopViewMoreModel(appLink))
             }
             bannerAdsAdapter!!.setList(items)
         }
