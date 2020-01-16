@@ -24,7 +24,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 4)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 5)
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
         NotificationStatusConverter.class,
@@ -101,13 +101,24 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    /**
+     * Below Migration added to Create BaseNotificationModel Table*
+     **/
+    private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("DELETE FROM `inapp_data`");
+            database.execSQL("DELETE FROM `BaseNotificationModel`");
+        }
+    };
+
     public static RoomDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomDB.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomDB.class, "inapp_database")
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                             .build();
                 }
             }
