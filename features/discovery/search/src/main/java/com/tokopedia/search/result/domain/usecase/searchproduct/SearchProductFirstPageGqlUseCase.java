@@ -72,6 +72,7 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
         headlineParams.put(TopAdsParams.KEY_EP, HEADLINE);
         headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, HEADLINE_TEMPLATE_VALUE);
         headlineParams.put(TopAdsParams.KEY_ITEM, HEADLINE_ITEM_VALUE);
+        headlineParams.put(TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT, 3);
 
         return UrlParamUtils.generateUrlParamString(headlineParams);
     }

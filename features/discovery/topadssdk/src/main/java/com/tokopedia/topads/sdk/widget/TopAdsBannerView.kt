@@ -165,7 +165,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
             if (items.size == 2) {
-                items.add(BannerShopViewMoreModel(appLink))
+                items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
             }
             bannerAdsAdapter!!.setList(items)
         }

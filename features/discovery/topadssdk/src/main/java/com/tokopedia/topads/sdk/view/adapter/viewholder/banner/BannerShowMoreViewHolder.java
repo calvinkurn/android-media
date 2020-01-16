@@ -8,8 +8,6 @@ import androidx.annotation.LayoutRes;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel;
 
 /**
