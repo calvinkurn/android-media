@@ -101,6 +101,7 @@ final class ProductListPresenter
     private boolean changeParamRow;
     private boolean isUsingBottomSheetFilter;
     private String additionalParams;
+    private boolean isFirstTimeLoad;
 
     @Override
     public void initInjector(ProductListSectionContract.View view) {
@@ -132,6 +133,11 @@ final class ProductListPresenter
 
     private Map<String, String> getAdditionalParamsMap() {
         return UrlParamUtils.getParamMap(additionalParams);
+    }
+
+    @Override
+    public void setIsFirstTimeLoad(boolean isFirstTimeLoad) {
+        this.isFirstTimeLoad = isFirstTimeLoad;
     }
 
     @Override
@@ -633,7 +639,7 @@ final class ProductListPresenter
     }
 
     @Override
-    public void loadData(Map<String, Object> searchParameter, boolean isFirstTimeLoad) {
+    public void loadData(Map<String, Object> searchParameter) {
         checkViewAttached();
 
         Map<String, String> additionalParams = getAdditionalParamsMap();
@@ -649,14 +655,14 @@ final class ProductListPresenter
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
 
-        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter, isFirstTimeLoad));
+        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter));
     }
 
     private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
         return getView().isAnyFilterActive() && additionalParams != null;
     }
 
-    private Subscriber<SearchProductModel> getLoadDataSubscriber(final Map<String, Object> searchParameter, final boolean isFirstTimeLoad) {
+    private Subscriber<SearchProductModel> getLoadDataSubscriber(final Map<String, Object> searchParameter) {
         return new Subscriber<SearchProductModel>() {
             @Override
             public void onStart() {
@@ -675,7 +681,7 @@ final class ProductListPresenter
 
             @Override
             public void onNext(SearchProductModel searchProductModel) {
-                loadDataSubscriberOnNextIfViewAttached(searchProductModel, isFirstTimeLoad);
+                loadDataSubscriberOnNextIfViewAttached(searchProductModel);
             }
         };
     }
@@ -702,13 +708,13 @@ final class ProductListPresenter
         }
     }
 
-    private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
+    private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel) {
         if (isViewAttached()) {
             if(isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
             }
             else {
-                getViewToProcessSearchResult(searchProductModel, isFirstTimeLoad);
+                getViewToProcessSearchResult(searchProductModel);
             }
         }
     }
@@ -727,7 +733,7 @@ final class ProductListPresenter
         getView().redirectSearchToAnotherPage(applink);
     }
 
-    private void getViewToProcessSearchResult(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
+    private void getViewToProcessSearchResult(SearchProductModel searchProductModel) {
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
@@ -978,7 +984,8 @@ final class ProductListPresenter
         getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, productViewModel.getQuery(), prodIdArray);
         getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
         getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, gtmTrackingCategory));
-        getView().setFirstTimeLoad(false);
+
+        isFirstTimeLoad = false;
     }
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Map<String, String> category) {

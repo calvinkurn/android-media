@@ -122,7 +122,6 @@ public class ProductListFragment
 
     private Config topAdsConfig;
 
-    private boolean isFirstTimeLoad;
     private boolean tickerHasDismissed = false;
     private FilterController quickFilterController = new FilterController();
 
@@ -421,7 +420,10 @@ public class ProductListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        isFirstTimeLoad = true;
+        if (presenter != null) {
+            presenter.setIsFirstTimeLoad(true);
+        }
+
         reloadData();
     }
 
@@ -864,7 +866,7 @@ public class ProductListFragment
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(getSearchParameter().getSearchParameterMap(), isFirstTimeLoad);
+        presenter.loadData(getSearchParameter().getSearchParameterMap());
         TopAdsGtmTracker.getInstance().clearDataLayerList();
     }
 
@@ -972,11 +974,6 @@ public class ProductListFragment
     @Override
     public void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel) {
         SearchTracking.trackGTMEventSearchAttempt(generalSearchTrackingModel);
-    }
-
-    @Override
-    public void setFirstTimeLoad(boolean isFirstTimeLoad) {
-        this.isFirstTimeLoad = isFirstTimeLoad;
     }
 
     @Override

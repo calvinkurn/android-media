@@ -77,8 +77,6 @@ public interface ProductListSectionContract {
 
         void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
 
-        void setFirstTimeLoad(boolean isFirstTimeLoad);
-
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
         void clearLastProductItemPositionFromCache();
@@ -120,7 +118,7 @@ public interface ProductListSectionContract {
 
         void loadMoreData(Map<String, Object> searchParameter);
 
-        void loadData(Map<String, Object> searchParameter, boolean isFirstTimeLoad);
+        void loadData(Map<String, Object> searchParameter);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 
@@ -133,5 +131,7 @@ public interface ProductListSectionContract {
         String getUserId();
 
         boolean isUserLoggedIn();
+
+        void setIsFirstTimeLoad(boolean isFirstTimeLoad);
     }
 }
