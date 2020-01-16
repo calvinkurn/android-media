@@ -14,9 +14,9 @@ class ChatListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) 
 
     private var itemList: MutableList<ChatListTab> = ArrayList()
 
-    override fun getItem(position: Int): Fragment? {
+    override fun getItem(position: Int): Fragment {
         if(position >= itemList.size) {
-            return null
+            return Fragment()
         }
         return itemList[position].fragment
     }

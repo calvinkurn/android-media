@@ -68,6 +68,10 @@ buildscript {
     }
 }
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     project.ext {
         defaultVersionCode = 221001101;
         defaultVersionName = "2.21";

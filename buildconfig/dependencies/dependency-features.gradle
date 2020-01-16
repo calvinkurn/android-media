@@ -44,6 +44,7 @@ ext {
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
             travelCountryCode               : ":features:digital:travel_country_code",
+            travelPassenger                 : ":features:digital:travel_passenger",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
@@ -152,6 +153,8 @@ ext {
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
             topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
+            topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
+            topAdsWidget                    : ":features:top_ads:top_ads_widget",
             topAdsManagement                : ":features:top_ads:top_ads_management",
 //            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
@@ -198,6 +201,7 @@ ext {
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
 
+            fcm_common                            : ":features:fcm_common",
 
             tkpdcore                        : ":tkpdcore",
             tkpddiscovery                   : ":tkpddiscovery",
