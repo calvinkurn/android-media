@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.GeolocationPermissions;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
@@ -35,6 +36,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
@@ -87,6 +89,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     boolean webViewHasContent = false;
 
     private UserSession userSession;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     /**
      * return the url to load in the webview
@@ -257,6 +260,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     class MyWebChromeClient extends WebChromeClient {
         @Override
+        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+            checkLocationPermission(callback, origin);
+        }
+
+        @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == MAX_PROGRESS) {
                 onLoadFinished();
@@ -336,6 +344,33 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         i.setType("*/*");
         startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
+
+    private void checkLocationPermission(GeolocationPermissions.Callback callback, String origin) {
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                callback.invoke(origin, false, false);
+            }
+
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+                callback.invoke(origin, false, false);
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                callback.invoke(origin, true, false);
+            }
+        }, getString(R.string.rationale_need_location));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    }
+
 
     class MyWebViewClient extends WebViewClient {
         @Override
