@@ -108,8 +108,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         initView()
         hidePromoContainer()
-        hideHotelLastSearchContainer()
         loadPromoData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // last search need to reload every time user back to homepage
+        hideHotelLastSearchContainer()
         loadRecentSearchData()
     }
 
