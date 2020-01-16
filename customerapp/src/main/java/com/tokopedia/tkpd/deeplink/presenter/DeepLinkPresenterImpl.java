@@ -313,8 +313,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         bundle.putString("url", uriData.toString());
         Intent intent = RouteManager.getIntent(context, ApplinkConst.ORDER_LIST_WEBVIEW);
         intent.putExtras(bundle);
-        context.startActivity(intent);
-        context.finish();
+        viewListener.goToPage(intent);
     }
 
     private void openReview(String uriData, Bundle defaultBundle) {
