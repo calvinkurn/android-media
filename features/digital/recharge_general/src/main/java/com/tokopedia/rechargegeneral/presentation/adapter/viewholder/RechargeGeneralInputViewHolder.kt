@@ -18,6 +18,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         inputView.setHint("")
         if (enquiryData.style == INPUT_TYPE_FAVORITE_NUMBER) {
             inputView.isCustomInput = true
+            inputView.setInputType(TopupBillsInputFieldWidget.INPUT_NUMERIC)
         } else {
             inputView.isCustomInput = false
             inputView.setInputType(enquiryData.style)

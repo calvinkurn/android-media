@@ -543,8 +543,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             clientNumberInput?.apply {
                 value = number
                 style = INPUT_TYPE_FAVORITE_NUMBER
-                adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
             }
+            adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
         }
     }
 
@@ -591,8 +591,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget, position: Int, data: List<RechargeGeneralProductSelectData>?) {
         // If there is data open product select bottom sheet, else open favorite number activity
         if (data != null) {
-            showProductSelectDropdown(field, data, "Pilih Produk")
-            // TODO: Change bottom sheet title to dynamic
+            showProductSelectDropdown(field, data, getString(R.string.product_select_label))
         } else {
             showFavoriteNumbersPage()
         }
@@ -610,7 +609,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun toggleEnquiryButton() {
         enquiry_button.isEnabled = validateEnquiry()
-        // TODO: Temporary fix - set enquiry label after setEnabled() on UnifyButton
         if (enquiryLabel.isNotEmpty()) enquiry_button.text = enquiryLabel
     }
 
@@ -652,10 +650,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
-        // Set favorite number if it belongs to the current selected operator
-        if (favoriteNumbers.isNotEmpty() && favoriteNumbers[0].operatorId == operatorId.toString()) {
-            renderClientNumber(favoriteNumbers[0].clientNumber)
-        }
     }
 
     override fun showEnquiryError(t: Throwable) {
@@ -667,7 +661,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun showFavoriteNumbersError(t: Throwable) {
-//        showGetListError(t)
+
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {
@@ -694,7 +688,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
         if (::checkoutBottomSheet.isInitialized) checkoutBottomSheet.dismiss()
-        // TODO: Change instant checkout constant when it is available
         rechargeGeneralAnalytics.eventClickBuy(categoryId, operatorId, false, data)
         processCheckout()
     }
