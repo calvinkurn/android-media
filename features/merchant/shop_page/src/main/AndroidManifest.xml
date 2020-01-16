@@ -23,6 +23,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".pageheader.presentation.activity.ShopPageActivity"
+            android:exported="true"
+            android:label="@string/shop_info_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan"/>
+
         <activity android:name=".oldpage.view.activity.ShopWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
