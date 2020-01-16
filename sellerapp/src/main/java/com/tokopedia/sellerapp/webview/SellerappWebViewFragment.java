@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.webview;
 
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 
@@ -15,6 +16,9 @@ public class SellerappWebViewFragment extends BaseWebViewFragment {
 
 
     private String url = "";
+    private boolean isTokopediaUrl;
+
+    private static final String TOKOPEDIA_STRING = "tokopedia";
 
     public static SellerappWebViewFragment newInstance(String url) {
         SellerappWebViewFragment sellerappWebViewFragment = new SellerappWebViewFragment();
@@ -30,17 +34,22 @@ public class SellerappWebViewFragment extends BaseWebViewFragment {
         if (getArguments() != null) {
             url = getArguments().getString(PARAM_BUNDLE_URL);
         }
-
+        String host = Uri.parse(url).getHost();
+        if (host != null && host.contains(TOKOPEDIA_STRING)) {
+            isTokopediaUrl = true;
+        }
     }
 
     @Override
     protected String getUrl() {
+        if (isTokopediaUrl) {
             UserSessionInterface usersession = new UserSession(getActivity());
             return URLGenerator.generateURLSessionLogin(url,
                     usersession.getDeviceId(),
                     usersession.getUserId());
-
-
+        } else {
+            return url;
+        }
     }
 
     @Nullable
