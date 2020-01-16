@@ -347,7 +347,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 utmSource = "";
             }
 
-            String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating);
+            String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating, utmSource);
             Intent intent = RouteManager.getIntent(
                     context,
                     uriReview);
