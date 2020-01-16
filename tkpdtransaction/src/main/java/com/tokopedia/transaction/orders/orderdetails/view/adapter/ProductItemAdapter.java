@@ -3,8 +3,6 @@ package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,10 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -33,6 +35,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
     public OrderListAnalytics orderListAnalytics;
+    private static final String BUY_AGAIN_ACTION_BUTTON_KEY = "buy_again";
 
     public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn, Status status) {
         this.context = context;
@@ -122,29 +125,29 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 totalPrice.setText(items.getTotalPrice());
             }
             if (items.getActionButtons().size() > 0) {
+                ActionButton actionButton = items.getActionButtons().get(0);
                 buyBtn.setVisibility(View.VISIBLE);
-                buyBtn.setText(items.getActionButtons().get(0).getLabel());
+                buyBtn.setText(actionButton.getLabel());
                 GradientDrawable shape = new GradientDrawable();
                 shape.setShape(GradientDrawable.RECTANGLE);
                 shape.setCornerRadius(context.getResources().getDimensionPixelSize(R.dimen.dp_4));
-                if (!items.getActionButtons().get(0).getActionColor().getBackground().equals("")) {
-                    shape.setColor((Color.parseColor(items.getActionButtons().get(0).getActionColor().getBackground())));
+                if (!actionButton.getActionColor().getBackground().equals("")) {
+                    shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
                 }
-                if (!items.getActionButtons().get(0).getActionColor().getBorder().equals("")) {
-                    shape.setStroke(context.getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(items.getActionButtons().get(0).getActionColor().getBorder()));
+                if (!actionButton.getActionColor().getBorder().equals("")) {
+                    shape.setStroke(context.getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
                 buyBtn.setBackground(shape);
-                if (!items.getActionButtons().get(0).getActionColor().getTextColor().equals("")) {
-                    buyBtn.setTextColor(Color.parseColor(items.getActionButtons().get(0).getActionColor().getTextColor()));
+                if (!actionButton.getActionColor().getTextColor().equals("")) {
+                    buyBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
                 }
-                buyBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                buyBtn.setOnClickListener(view -> {
+                    if (!TextUtils.isEmpty(actionButton.getUri())) {
+                        RouteManager.route(context, actionButton.getUri());
+                    } else if (actionButton.getKey().equalsIgnoreCase(BUY_AGAIN_ACTION_BUTTON_KEY)) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
-
                         presenter.onBuyAgainItems(itemsList, " - product");
-
                     }
                 });
             }
