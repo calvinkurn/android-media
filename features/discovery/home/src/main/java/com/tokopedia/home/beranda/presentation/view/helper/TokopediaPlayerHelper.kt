@@ -263,7 +263,7 @@ class TokopediaPlayerHelper(
             masterJob.cancelChildren()
             launch(coroutineContext){
                 delay(3000)
-                mPlayer?.playWhenReady = true
+                TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
             }
         }
     }
@@ -287,12 +287,11 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityResume() {
-        TokopediaPlayManager.deleteInstance()
+        TokopediaPlayManager.getInstance(context).stopPlayer()
         mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-        createMediaSource()
-        mPlayer?.addListener(this)
-        mPlayer?.seekTo(mResumeWindow, mResumePosition + 100)
         exoPlayerView.setPlayer(mPlayer)
+        mPlayer?.addListener(this)
+        createMediaSource()
         playerPlay()
     }
 

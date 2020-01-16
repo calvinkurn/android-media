@@ -312,7 +312,6 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     fun onResume() {
         if(currentSelected != -1 && (getViewHolder(currentSelected) is PlayCardViewHolder)){
             (getViewHolder(currentSelected) as PlayCardViewHolder).resume()
-            getExoPlayerByPosition(currentSelected)?.playerPlay()
         }
     }
 
@@ -320,7 +319,6 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     fun onPause() {
         if (currentSelected != -1 && (getViewHolder(currentSelected) is PlayCardViewHolder)) {
             (getViewHolder(currentSelected) as PlayCardViewHolder).pause()
-
         }
     }
 

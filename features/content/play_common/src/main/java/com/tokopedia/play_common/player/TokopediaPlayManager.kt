@@ -159,7 +159,6 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     }
 
     fun releasePlayer() {
-        currentVideoUri = null
         videoPlayer.release()
     }
 
