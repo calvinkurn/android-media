@@ -203,7 +203,7 @@ public class SeeAllView extends BottomSheets {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_local_service_order,
                     getContext().getString(R.string.title_menu_localservice),
-                    String.format("%s?url=%s",
+                    String.format("%s?allow_override=false&url=%s",
                             ApplinkConst.WEBVIEW,
                             AccountHomeUrl.LOCALSERVICE_TX_URL),
                     0,
