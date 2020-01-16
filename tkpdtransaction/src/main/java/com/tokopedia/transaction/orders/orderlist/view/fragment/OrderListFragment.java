@@ -33,7 +33,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.datepicker.DatePickerUnify;
-import com.tokopedia.datepicker.OnDateChangedListener;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -87,7 +86,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import javax.inject.Inject;
+
 import kotlin.Unit;
 
 
@@ -123,6 +124,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_TRACK_IT = "lacak";
     private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
+    private static final String ACTION_SIMILAR_PRODUCT = "rekomendasi";
+    private static final String CLICK_SIMILAR_PRODUCT = "click lihat produk serupa";
     private static final String  MULAI_DARI= "Mulai Dari";
     private static final String  SAMPAI= "Sampai";
     private static final int DEFAULT_FILTER_YEAR = 2017;
@@ -930,6 +933,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
                 break;
             default:
+                if (actionButton.uri().contains(ACTION_SIMILAR_PRODUCT)) {
+                    orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, order.id());
+                }
                 handleDefaultCase(actionButton);
                 break;
         }
