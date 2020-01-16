@@ -81,7 +81,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun getSelectedProduct(): MutableList<Int> {
         var list = mutableListOf<Int>()
         productListAdapter.getSelectedItems().forEach {
-            list.add(it.productId)
+            list.add(it.productID)
         }
         return list
     }
@@ -197,7 +197,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         })
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Data>) {
+    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         clearRefreshLoading()
         data.forEach { result -> productListAdapter.items.add(ProductItemViewModel(result)) }
         productListAdapter.notifyDataSetChanged()

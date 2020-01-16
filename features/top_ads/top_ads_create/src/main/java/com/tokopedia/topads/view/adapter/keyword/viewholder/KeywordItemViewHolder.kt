@@ -27,7 +27,9 @@ class KeywordItemViewHolder(val view: View, var actionSelected: (() -> Unit)?): 
 
     override fun bind(item: KeywordItemViewModel) {
         item.data?.let {
-            view.keyword_name.setText(it.keyword)
+            view.keyword_name.text = it.keyword
+            view.checkBox.setOnCheckedChangeListener(null)
+            view.checkBox.isChecked = item.isChecked
             view.keyword_count.setText(Utils.format(it.totalSearch.toLong()))
             view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked

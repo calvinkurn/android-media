@@ -10,11 +10,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.topads.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -41,6 +39,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: KeywordAdsViewModel
     private lateinit var keywordListAdapter: KeywordListAdapter
+    val keywordList = HashSet<String>()
 
     companion object {
         fun createInstance(): Fragment {
@@ -54,38 +53,23 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(KeywordAdsViewModel::class.java)
+
+        activity?.let {
+            viewModel = ViewModelProviders.of(it, viewModelFactory).get(KeywordAdsViewModel::class.java)
+        }
         keywordListAdapter = KeywordListAdapter(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
 
-        viewModel.selectedKeywordList.observe(this@KeywordAdsListFragment, Observer {
-            keywordListAdapter.addNewKeyword(it)
-        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getSugestionKeyword("293178758,293182872", 100, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
-
-        //Dummy data
-        keywordListAdapter.items = getDummyKeywordList()
-        keywordListAdapter.notifyDataSetChanged()
-//        onEmptySuggestion()
+        var list = stepperModel?.selectedProductIds!!
+        var _list = list.toString()
+        var product_id =_list.substring(1, _list.length- 1)
+        viewModel.getSugestionKeyword(product_id,0,  this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
     }
 
-    private fun getDummyKeywordList(): MutableList<KeywordViewModel> {
-        return mutableListOf(
-                KeywordGroupViewModel("Kata Kunci Pilihan"),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja Katun", 2399848)),
-                KeywordGroupViewModel("Rekomendasi"),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja Katun", 2399848)),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja K", 2399848)),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja Kerja", 2399848)),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja Katun", 2399848)),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja Kantor", 2399848)),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja Katun", 2399848)),
-                KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, "Kemeja Katun", 2399848))
-        )
-    }
+
 
     private fun onKeywordSelected() {
         var count = keywordListAdapter.getSelectedItems().size
@@ -98,10 +82,18 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             btn_next.isEnabled = true
             error_text.visibility = View.INVISIBLE
         }
+        keywordListAdapter.addNewKeywords(getSelectedData())
+
     }
 
-    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data>) {
+    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
+        keywordListAdapter.items.add (KeywordGroupViewModel("Rekomendasi"))
+        keywords.forEach {
+            index-> keywordListAdapter.items.add(KeywordItemViewModel(index))
+            keywordList.add(KeywordItemViewModel(index).data.keyword)
+        }
         tip_btn.visibility = View.VISIBLE
+        keywordListAdapter.notifyDataSetChanged()
     }
 
     private fun onErrorSuggestion(throwable: Throwable) {
@@ -133,6 +125,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return list
     }
 
+    private fun getSelectedData():List<KeywordViewModel>{
+        return keywordListAdapter.getSelectedItems()
+    }
+
     override fun populateView(stepperModel: CreateManualAdsStepperModel) {
     }
 
@@ -152,7 +148,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onViewCreated(view, savedInstanceState)
         add_btn.isEnabled = false
         add_btn.setOnClickListener {
-            viewModel.addNewKeyword(editText.text.toString())
+            keywordListAdapter.addNewKeyword( viewModel.addNewKeyword(editText.text.toString()))
         }
         btn_next.setOnClickListener { gotoNextPage() }
         tip_btn.setOnClickListener { TipSheetKeywordList.newInstance(view.context).show() }
@@ -200,4 +196,11 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             return null
         }
     }
+
+    override fun onDestroy() {
+   //     viewModel?.selectedKeywordList?.removeObservers(viewLifecycleOwner)
+        super.onDestroy()
+    }
+
+
 }

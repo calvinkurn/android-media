@@ -1,6 +1,8 @@
 package com.tokopedia.topads.view.model
 
 import android.content.Context
+import android.content.res.Resources
+import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -20,6 +22,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rx.plugins.RxJavaHooks.onError
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -31,9 +34,7 @@ class ProductAdsListViewModel @Inject constructor(
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
-        private val restRepository: RestRepository,
-        private val gqlRepository: GraphqlRepository,
-        private val urlMap: Map<String, String>): BaseViewModel(dispatcher) {
+        private val gqlRepository: GraphqlRepository): BaseViewModel(dispatcher) {
 
     fun etalaseList(onSuccess: ((List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>)->Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
@@ -55,32 +56,30 @@ class ProductAdsListViewModel @Inject constructor(
         )
     }
 
-    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Data>) -> Unit),
-                    onEmpty: (()->Unit), onError: ((Throwable) -> Unit)) {
+    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>) -> Unit),
+                    onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
+                    val queryMap = mutableMapOf<String, Any>(
+                            "keyword" to keyword,
+                            "etalase" to etalaseId,
+                            "sort_by" to sortBy,
+                            "rows" to rows,
+                            "start" to start,
+                            "shopID" to Integer.parseInt(userSession.shopId)
+                    )
                     val result = withContext(Dispatchers.IO) {
-                        val queryMap = mutableMapOf<String, Any>(
-                                "keyword" to keyword,
-                                "etalase" to etalaseId,
-                                "sort_by" to sortBy,
-                                "is_promoted" to isPromoted,
-                                "rows" to rows,
-                                "start" to start,
-                                "shop_id" to userSession.shopId
-                        )
-                        val restRequest = RestRequest.Builder(
-                                urlMap[UrlConstant.PATH_PRODUCT_LIST] ?: "",
-                                object : TypeToken<ResponseProductList>() {}.type)
-                                .setQueryParams(queryMap)
-                                .build()
-                        restRepository.getResponse(restRequest)
+                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_productlist), ResponseProductList.Result::class.java, queryMap)
+                        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
+                        gqlRepository.getReseponse(listOf(request), cacheStrategy)
+
                     }
-                    (result.getData() as ResponseProductList).data?.let{
-                        if(it.isEmpty()){
+
+                    result.getSuccessData<ResponseProductList.Result>()?.let {
+                        if (it.topadsGetListProduct.data.isEmpty()) {
                             onEmpty()
                         } else {
-                            onSuccess(it)
+                            onSuccess(it.topadsGetListProduct.data)
                         }
                     }
                 },

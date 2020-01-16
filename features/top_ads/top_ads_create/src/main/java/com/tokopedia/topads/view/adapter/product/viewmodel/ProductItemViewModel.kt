@@ -6,7 +6,7 @@ import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactory
 /**
  * Author errysuprayogi on 12,November,2019
  */
-class ProductItemViewModel(var data: ResponseProductList.Data) : ProductViewModel() {
+class ProductItemViewModel(var data: ResponseProductList.Result.TopadsGetListProduct.Data) : ProductViewModel() {
 
     var isChecked: Boolean = false
 

@@ -1,14 +1,15 @@
-query topAdsGetKeywordSuggestion($productIds:String!, $groupId:Int!){
-  topAdsGetKeywordSuggestion(product_ids:$productIds, group_id:$groupId){
-        data{
+query topAdsGetKeywordSuggestionV2($product_ids: String!, $group_id: Int, $shop_id: Int!) {
+  topAdsGetKeywordSuggestionV2(product_ids: $product_ids, group_id: $group_id, shop_id: $shop_id) {
+    data {
       keyword
       bid_suggest
       total_search
+      min_bid
     }
-    errors{
+    errors {
       code
       detail
-      object{
+      object {
         type
         text
       }

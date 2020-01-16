@@ -1,6 +1,7 @@
 package com.tokopedia.topads.view.activity
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
@@ -28,5 +29,18 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
     override fun getComponent(): CreateAdsComponent {
         return DaggerCreateAdsComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
+    }
+
+    override fun updateToolbarTitle(title: String?) {
+        super.updateToolbarTitle(title)
+       if( supportFragmentManager.backStackEntryCount>1){
+           var fragment =supportFragmentManager.findFragmentById(R.id.parent_view)
+           if(fragment is ProductAdsListFragment){
+               supportActionBar?.title = getString(R.string.abc_capital_on)
+           }
+           else
+               supportActionBar?.title = getString(R.string.abc_capital_off)
+       }
+
     }
 }

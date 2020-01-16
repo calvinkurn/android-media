@@ -14,6 +14,7 @@ import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,32 +28,38 @@ class KeywordAdsViewModel @Inject constructor(
         private val context: Context,
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
+        private val userSession: UserSessionInterface,
         private val repository: GraphqlRepository): BaseViewModel(dispatcher) {
 
     companion object {
-        val PRODUCT_IDS = "productIds"
-        val GROUP_ID = "groupId"
+        val PRODUCT_IDS = "product_ids"
+        val GROUP_ID = "group_id"
+        val SHOP_ID = "shop_id"
     }
 
     val selectedKeywordList = MutableLiveData<KeywordViewModel>()
+    val keywordList = HashSet<String>()
+    private val searchCount = HashMap<String, ArrayList<Int>>()
+    private val map = ArrayList<Int>()
 
 
-    fun getSugestionKeyword(productIds: String, groupId: Int, onSuccess: ((List<ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data>) -> Unit),
-                      onError: ((Throwable) -> Unit), onEmpty:(()->Unit)) {
+    fun getSugestionKeyword(productIds: String, groupId: Int, onSuccess: ((List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) -> Unit),
+                            onError: ((Throwable) -> Unit), onEmpty: (() -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_keyword_sugestion),
-                                ResponseKeywordSuggestion::class.java, mapOf(PRODUCT_IDS to productIds, GROUP_ID to groupId))
+                                ResponseKeywordSuggestion.Result::class.java, mapOf(PRODUCT_IDS to productIds, GROUP_ID to groupId, SHOP_ID to Integer.parseInt(userSession.shopId)))
                         val cacheStrategy = GraphqlCacheStrategy
                                 .Builder(CacheType.CLOUD_THEN_CACHE).build()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
-                    data.getSuccessData<ResponseKeywordSuggestion>().let {
-                        if(it.topAdsGetKeywordSuggestion.data.isEmpty()){
+                    data.getSuccessData<ResponseKeywordSuggestion.Result>().let {
+                        if (it.topAdsGetKeywordSuggestion.data.isEmpty()) {
                             onEmpty()
                         } else {
                             onSuccess(it.topAdsGetKeywordSuggestion.data)
+                            updateList(it.topAdsGetKeywordSuggestion.data)
                         }
                     }
                 },
@@ -62,9 +69,25 @@ class KeywordAdsViewModel @Inject constructor(
         )
     }
 
-    fun addNewKeyword(keyword: String) {
-        val item = KeywordItemViewModel(ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data(0, keyword, 2399848))
+    private fun updateList(data: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
+        keywordList.clear()
+        data.forEach { index ->
+            keywordList.add(KeywordItemViewModel(index).data.keyword)
+            map.add(KeywordItemViewModel(index).data.bidSuggest)
+            map.add(KeywordItemViewModel(index).data.totalSearch)
+            searchCount[KeywordItemViewModel(index).data.keyword] = map
+        }
+
+    }
+
+    fun addNewKeyword(keyword: String): KeywordItemViewModel {
+        var item :KeywordItemViewModel = if (keywordList.contains(keyword) && searchCount.containsKey(keyword)) {
+            KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(searchCount[keyword]?.get(0)!!, keyword, searchCount[keyword]?.get(1)!!))
+        }
+        else
+            KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(0, keyword, 0))
         selectedKeywordList.postValue(item)
+        return item
     }
 
 }

@@ -9,12 +9,14 @@ import com.tokopedia.abstraction.base.view.model.StepperModel
  */
 open class CreateManualAdsStepperModel() : StepperModel {
 
+    var toolbarTitle:String= ""
     var groupId: String = ""
     var groupName: String = ""
     var selectedProductIds = mutableListOf<Int>()
     var selectedKeywords = mutableListOf<String>()
 
     constructor(parcel: Parcel) : this() {
+        toolbarTitle = parcel.readString()
         groupId = parcel.readString()
         groupName = parcel.readString()
         selectedProductIds = arrayListOf<Int>().apply {
@@ -27,6 +29,7 @@ open class CreateManualAdsStepperModel() : StepperModel {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(groupId)
+        parcel.writeString(toolbarTitle)
         parcel.writeString(groupName)
         parcel.writeList(selectedProductIds)
         parcel.writeList(selectedKeywords)
