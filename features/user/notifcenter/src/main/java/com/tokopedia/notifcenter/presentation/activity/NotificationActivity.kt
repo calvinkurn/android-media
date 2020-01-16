@@ -58,7 +58,6 @@ class NotificationActivity : BaseTabActivity(),
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
 
         super.onCreate(savedInstanceState)
-        setupLayout(savedInstanceState)
         initInjector()
         initView()
 
@@ -71,6 +70,11 @@ class NotificationActivity : BaseTabActivity(),
                 presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
             }
         }
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        super.setupLayout(savedInstanceState)
+        tabLayout.setupWithViewPager(viewPager)
     }
 
     private fun onSuccessSendNotif(): (NotifCenterSendNotifData) -> Unit {
