@@ -107,7 +107,14 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_OPPORTUNITY)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (enable) {
+                return RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
+            }
         }
     }
 
