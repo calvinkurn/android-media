@@ -48,7 +48,6 @@ public class TkpdSeller {
     }
 
     public static Intent getActivitySellingTransactionOpportunity(Context context, String query) {
-        return ActivitySellingTransaction.createIntent(context,
-                ActivitySellingTransaction.TAB_POSITION_SELLING_OPPORTUNITY, query);
+        return ActivitySellingTransaction.createIntentOpportunityPageWithQuery(context,query);
     }
 }
