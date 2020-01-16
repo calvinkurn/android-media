@@ -362,7 +362,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             public void onPermissionGranted() {
                 callback.invoke(origin, true, false);
             }
-        }, getString(R.string.rationale_need_location));
+        }, getString(R.string.webview_rationale_need_location));
     }
 
     @Override
