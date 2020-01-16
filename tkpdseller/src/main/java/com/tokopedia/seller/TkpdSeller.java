@@ -46,8 +46,7 @@ public class TkpdSeller {
     }
 
     public static Intent getActivitySellingTransactionList(Context context) {
-        return ActivitySellingTransaction.createIntent(context,
-                ActivitySellingTransaction.TAB_POSITION_SELLING_TRANSACTION_LIST);
+        return RouteManager.getIntent(context, ApplinkConst.SELLER_HISTORY);
     }
 
     public static Intent getActivitySellingTransactionOpportunity(Context context, String query) {
