@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
     android:background="@drawable/digital_bg_chooser_operator_product_item">
 
     <TextView
@@ -14,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
         tools:text="Promo title" />
 
     <TextView
@@ -23,6 +22,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/digital_bg_out_of_stock"
         android:paddingStart="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_10"
