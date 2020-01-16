@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
@@ -210,7 +212,25 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             if (it.isFreeze)
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+            else if (it.isBanned)
+                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
         })
+    }
+
+    private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
+        activity?.let {
+            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(title)
+            dialog.setDescription(message)
+            dialog.setPrimaryCTAText(buttonTitle)
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                it.finish()
+                if (buttonUrl.isNotEmpty()) RouteManager.route(it, buttonUrl)
+            }
+            dialog.setOverlayClose(false)
+            dialog.show()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
