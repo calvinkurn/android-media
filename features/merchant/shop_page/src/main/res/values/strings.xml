@@ -25,7 +25,7 @@
     <string name="shop_page_header_shop_not_active_title_buyer">Toko dalam status Tidak Aktif.</string>
     <string name="shop_page_header_shop_not_active_description_buyer">Demi kenyamanan bertransaksi, kami menyarankan pembeli untuk memastikan terlebih dahulu bahwa toko yang dipilih berada dalam keadaan aktif.</string>
     <string name="shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari.</string>
-    <string name="new_shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari. %1$s</string>
+    <string name="new_shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari. <![CDATA[<a href="">%1$s</a>]]></string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
@@ -144,7 +144,7 @@
     <string name="shop_etalase">Etalase</string>
     <string name="max_rating_value">/ 5</string>
     <string name="shop_page_header_shop_in_moderation_desc">Toko ini menyalahi peraturan yang berlaku di Tokopedia.</string>
-    <string name="new_shop_page_header_shop_in_moderation_desc">Pastikan toko anda sudah mengikuti syarat &amp; ketentuan Tokopedia. %1$s.</string>
+    <string name="new_shop_page_header_shop_in_moderation_desc">Pastikan toko anda sudah mengikuti syarat &amp; ketentuan Tokopedia. <![CDATA[<a href="">%1$s</a>]]>.</string>
     <string name="shop_page_header_shop_in_permanent_moderation_buyer">Toko dimoderasi permanen.</string>
     <string name="new_shop_page_header_shop_in_permanent_moderation_buyer">Toko Sedang Diawasi Permanen</string>
     <string name="shop_page_header_shop_in_moderation_buyer">Toko sedang dimoderasi.</string>
@@ -184,8 +184,8 @@
     <string name="text_your_shop">Toko Kamu</string>
     <string name="text_regular_merchant_change_cover_message">Belum bisa ganti cover, upgrade tokomu ke power merchant</string>
     <string name="new_shop_page_header_shop_close_title_buyer">Toko Tutup</string>
-    <string name="new_shop_page_header_shop_close_description_buyer">Toko buka kembali pada %1$s. Chat penjual atau akses %2$s jika ada transaksi tertunda.</string>
-    <string name="new_shop_page_header_shop_close_description_seller">Toko akan dibuka otomatis pada %1$s. %2$s</string>
+    <string name="new_shop_page_header_shop_close_description_buyer">Toko buka kembali pada %1$s. Chat penjual atau akses <![CDATA[<a href="">%2$s</a>]]> jika ada transaksi tertunda.</string>
+    <string name="new_shop_page_header_shop_close_description_seller">Toko akan dibuka otomatis pada %1$s. <![CDATA[<a href="">%2$s</a>]]></string>
     <string name="new_shop_page_header_shop_close_title_seller">Toko Anda Sedang Tutup</string>
     <string name="new_shop_page_header_shop_close_description_buyer_clickable_text">Help Center</string>
     <string name="new_shop_page_header_shop_close_description_seller_clickable_text">Buka Toko</string>

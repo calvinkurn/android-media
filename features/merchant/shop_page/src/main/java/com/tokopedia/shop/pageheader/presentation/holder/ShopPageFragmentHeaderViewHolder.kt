@@ -2,12 +2,6 @@ package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.app.AlertDialog
 import android.content.Context
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import androidx.appcompat.view.ContextThemeWrapper
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -27,8 +21,8 @@ import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.shop_page_warning_ticker.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer,
@@ -118,38 +112,32 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun showShopNotActive(isMyShop: Boolean, shopInfo: ShopInfo) {
         val title: String
-        val descriptionSpannable: SpannableString
+        val description: String
+        val tickerCallback: TickerCallback?
         if (isMyShop) {
             title = view.context.getString(R.string.shop_page_header_shop_not_active_title)
-            val descriptionText = view.context.getString(R.string.new_shop_page_header_shop_not_active_description_seller)
             val clickableText = view.context.getString(R.string.shop_info_label_see_how_to_open)
-            val descriptionWithClickableText = String.format(
-                    descriptionText,
+            description = view.context.getString(
+                    R.string.new_shop_page_header_shop_not_active_description_seller,
                     clickableText
             )
-            val startIndex = descriptionWithClickableText.indexOf(clickableText)
-            val endIndex = startIndex + clickableText.length
-            descriptionSpannable = SpannableString(descriptionWithClickableText)
-            val clickableTextColor = MethodChecker.getColor(view.context, R.color.tkpd_main_green)
-            descriptionSpannable.setSpan(ForegroundColorSpan(clickableTextColor), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            descriptionSpannable.setSpan(object : ClickableSpan() {
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.isUnderlineText = false
-                }
-
-                override fun onClick(p0: View) {
+            tickerCallback = object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     shopPageTracking.clickHowToActivateShop(CustomDimensionShopPage
                             .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
                                     shopInfo.goldOS.isGold == 1))
                     listener.goToHowActivate()
                 }
 
-            }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                override fun onDismiss() {}
+
+            }
         } else {
             title = view.context.getString(R.string.shop_page_header_shop_not_active_title_buyer)
-            descriptionSpannable = SpannableString(view.context.getString(R.string.shop_page_header_shop_not_active_description_buyer))
+            description = view.context.getString(R.string.shop_page_header_shop_not_active_description_buyer)
+            tickerCallback = null
         }
-        showShopStatusTicker(title, descriptionSpannable, isMyShop)
+        showShopStatusTicker(title, description, tickerCallback, isMyShop)
         shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage
                 .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
                         shopInfo.goldOS.isGold == 1))
@@ -158,45 +146,39 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean, shopInfo: ShopInfo) {
         val shopId = shopInfo.shopCore.shopID.toInt()
         val title: Int
-        val descriptionSpannable: SpannableString
+        val description: String
+        val tickerCallback: TickerCallback?
         if (isMyShop) {
             title = if (isPermanent) {
                 R.string.new_shop_page_header_shop_in_permanent_moderation
             } else {
                 R.string.new_shop_page_header_shop_in_moderation
             }
-            val descriptionText = view.context.getString(R.string.new_shop_page_header_shop_in_moderation_desc)
-            val clickableText = view.context.getString(R.string.new_shop_info_label_open_request)
-            val descriptionWithClickableText = String.format(
-                    descriptionText,
-                    clickableText
+            description = view.context.getString(
+                    R.string.new_shop_page_header_shop_in_moderation_desc,
+                    view.context.getString(R.string.new_shop_info_label_open_request)
             )
-            val startIndex = descriptionWithClickableText.indexOf(clickableText)
-            val endIndex = startIndex + clickableText.length
-            descriptionSpannable = SpannableString(descriptionWithClickableText)
-            val clickableTextColor = MethodChecker.getColor(view.context, R.color.tkpd_main_green)
-            descriptionSpannable.setSpan(ForegroundColorSpan(clickableTextColor), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            descriptionSpannable.setSpan(object : ClickableSpan() {
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.isUnderlineText = false
-                }
-
-                override fun onClick(p0: View) {
+            tickerCallback = object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     initDialog(shopId)
                 }
 
-            }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                override fun onDismiss() {}
+
+            }
         } else {
             title = if (isPermanent) {
                 R.string.new_shop_page_header_shop_in_permanent_moderation_buyer
             } else {
                 R.string.new_shop_page_header_shop_in_moderation_buyer
             }
-            descriptionSpannable = SpannableString(view.context.getString(R.string.new_shop_page_header_shop_in_moderation_desc_buyer))
+            description = view.context.getString(R.string.new_shop_page_header_shop_in_moderation_desc_buyer)
+            tickerCallback = null
         }
         showShopStatusTicker(
                 view.context.getString(title),
-                descriptionSpannable,
+                description,
+                tickerCallback,
                 isMyShop
         )
     }
@@ -233,88 +215,71 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         val shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY, shopInfo.closedInfo.closeUntil)
         val title: String
-        val descriptionText: String
-        val clickableText: String
-        val descriptionWithDateAndClickableText: String
-        val descriptionSpannable: SpannableString
-        val startIndex: Int
-        val endIndex: Int
-        val clickableSpan: ClickableSpan
-        val clickableTextColor = MethodChecker.getColor(view.context, R.color.tkpd_main_green)
+        val description: String
+        val tickerCallback: TickerCallback?
         if (isMyShop) {
             title = view.context.getString(R.string.new_shop_page_header_shop_close_title_seller)
-            descriptionText = view.context.getString(R.string.new_shop_page_header_shop_close_description_seller)
-            clickableText = view.context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
-            descriptionWithDateAndClickableText = String.format(
-                    descriptionText,
+            description = view.context.getString(
+                    R.string.new_shop_page_header_shop_close_description_seller,
                     shopCloseUntilString,
-                    clickableText
+                    view.context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
             )
-            clickableSpan = object : ClickableSpan() {
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.isUnderlineText = false
-                }
-
-                override fun onClick(p0: View) {
+            tickerCallback = object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     listener.openShop()
                     shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage
                             .create(shopInfo.shopCore.shopID,
                                     shopInfo.goldOS.isOfficial == 1,
                                     shopInfo.goldOS.isGold == 1))
                 }
+
+                override fun onDismiss() {}
+
             }
         } else {
             title = view.context.getString(R.string.new_shop_page_header_shop_close_title_buyer)
-            descriptionText = view.context.getString(R.string.new_shop_page_header_shop_close_description_buyer)
-            clickableText = view.context.getString(R.string.new_shop_page_header_shop_close_description_buyer_clickable_text)
-            descriptionWithDateAndClickableText = String.format(
-                    descriptionText,
+            description = view.context.getString(
+                    R.string.new_shop_page_header_shop_close_description_buyer,
                     shopCloseUntilString,
-                    clickableText
+                    view.context.getString(R.string.new_shop_page_header_shop_close_description_buyer_clickable_text)
             )
-            clickableSpan = object : ClickableSpan() {
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.isUnderlineText = false
-                }
-
-                override fun onClick(p0: View) {
+            tickerCallback = object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     listener.goToHelpCenter(ShopUrl.SHOP_HELP_CENTER)
                 }
+
+                override fun onDismiss() {}
+
             }
         }
-        startIndex = descriptionWithDateAndClickableText.indexOf(clickableText)
-        endIndex = startIndex + clickableText.length
-        descriptionSpannable = SpannableString(descriptionWithDateAndClickableText)
-        descriptionSpannable.setSpan(ForegroundColorSpan(clickableTextColor), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        descriptionSpannable.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         shopPageTracking.impressionOpenOperationalShop(CustomDimensionShopPage
                 .create(shopInfo.shopCore.shopID,
                         shopInfo.goldOS.isOfficial == 1,
                         shopInfo.goldOS.isGold == 1))
         showShopStatusTicker(
                 title,
-                descriptionSpannable,
+                description,
+                tickerCallback,
                 isMyShop
         )
     }
 
     private fun showShopStatusTicker(
             title: String,
-            description: SpannableString,
+            description: String,
+            tickerCallback: TickerCallback?,
             isMyShop: Boolean = false
     ) {
         view.tickerShopStatus.show()
-        view.ticker_title.text = title
-        view.ticker_description.movementMethod = LinkMovementMethod.getInstance()
-        view.ticker_description.text = description
+        view.tickerShopStatus.tickerTitle = title
+        view.tickerShopStatus.setHtmlDescription(description)
+        tickerCallback?.let {
+            view.tickerShopStatus.setDescriptionClickEvent(it)
+        }
         if (isMyShop) {
-            view.ticker_close_icon.hide()
+            view.tickerShopStatus.closeButtonVisibility = View.GONE
         } else {
-            view.ticker_close_icon.apply {
-                setOnClickListener {
-                    view.tickerShopStatus.hide()
-                }
-            }.show()
+            view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
         }
     }
 
