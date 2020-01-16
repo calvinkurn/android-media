@@ -7,6 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
+import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
@@ -45,9 +47,14 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
                 TopAdsPdpAffiliateResponse::class.java, affilateParams)
 
+        val topAdsManageParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId, ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
+        val topAdsManageRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_TOP_ADS_MANAGE_PRODUCT],
+                TopAdsGetProductManageResponse::class.java, topAdsManageParams)
+
+
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
-        val requests = mutableListOf(isWishlistedRequest,getCheckoutTypeRequest, affiliateRequest)
+        val requests = mutableListOf(isWishlistedRequest, getCheckoutTypeRequest, affiliateRequest, topAdsManageRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
@@ -69,6 +76,12 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                         .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
                         .getCartType.data.cartType
             }
+
+            if (gqlResponse.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
+                p2Login.topAdsGetProductManage = gqlResponse.getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage
+                        ?: TopAdsGetProductManage()
+            }
+
         } catch (t: Throwable) {
             Timber.d(t)
         }

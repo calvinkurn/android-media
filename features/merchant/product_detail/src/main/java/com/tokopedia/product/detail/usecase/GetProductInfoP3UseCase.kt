@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -16,11 +17,11 @@ import javax.inject.Inject
 class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<String, String>,
                                                   private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP3>() {
 
-    var weight: Float = 0f
-    var shopDomain = ""
-    var needRequestCod = false
-    var origin: String? = null
-    var forceRefresh = false
+    private var weight: Float = 0f
+    private var shopDomain = ""
+    private var needRequestCod = false
+    private var origin: String? = null
+    private var forceRefresh = false
 
     fun createRequestParams(weight: Float, shopDomain: String, needRequestCod: Boolean, forceRefresh: Boolean, origin: String?) {
         this.weight = weight
@@ -39,7 +40,6 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
                 RatesEstimationModel.Response::class.java, estimationParams)
 
         val requests = mutableListOf(estimationRequest)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
 
         if (needRequestCod) {
             val userCodParams = mapOf(ProductDetailCommonConstant.PARAM_IS_PDP to true)
@@ -49,7 +49,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         }
 
         try {
-            val response = graphqlRepository.getReseponse(requests, cacheStrategy)
+            val response = graphqlRepository.getReseponse(requests, getCacheStrategy())
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
@@ -68,5 +68,12 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         }
 
         return productInfoP3
+    }
+
+    private fun getCacheStrategy(): GraphqlCacheStrategy {
+        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
+                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
+                .setSessionIncluded(true)
+                .build()
     }
 }

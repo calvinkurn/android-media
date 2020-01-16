@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -14,6 +15,7 @@ import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String, String>,
@@ -37,8 +39,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
+        gqlUseCase.setCacheStrategy(getCacheStrategy())
 
+        val cacheStrategyString = if (forceRefresh) "P1#PDP_CACHE#CACHE_FALSE" else "P1#PDP_CACHE#CACHE_TRUE"
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java)
@@ -53,6 +56,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
         }
 
+        Timber.d(cacheStrategyString)
         return mapIntoModel(data)
     }
 
@@ -60,5 +64,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.data.components)
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data.data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData)
+    }
+
+    private fun getCacheStrategy(): GraphqlCacheStrategy {
+        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
+                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
+                .setSessionIncluded(true)
+                .build()
     }
 }

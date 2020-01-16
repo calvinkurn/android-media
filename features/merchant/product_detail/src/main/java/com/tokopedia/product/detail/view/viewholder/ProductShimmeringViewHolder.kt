@@ -11,7 +11,7 @@ class ProductShimmeringViewHolder(val view: View) : AbstractViewHolder<LoadingMo
         val LAYOUT = R.layout.item_dynamic_shimmering
     }
 
-    override fun bind(element: LoadingModel?) {
+    override fun bind(element: LoadingModel) {
 
     }
 }

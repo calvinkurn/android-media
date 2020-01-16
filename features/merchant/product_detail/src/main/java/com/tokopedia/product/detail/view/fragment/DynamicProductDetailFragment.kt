@@ -47,6 +47,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -70,6 +71,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
@@ -120,6 +122,7 @@ import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.usecase.coroutines.Fail
@@ -175,6 +178,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     //Data
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
+    private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
     private lateinit var remoteConfig: RemoteConfig
     private var productId: String? = null
     private var productKey: String? = null
@@ -201,6 +205,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
     private lateinit var pdpHashMapUtil: DynamicProductDetailHashMap
+    private lateinit var topAdsDetailSheet: TopAdsDetailSheet
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this) }
@@ -241,12 +246,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
+        recommendationCarouselPositionSavedState.clear()
         isLoadingInitialData = true
         isTopdasLoaded = false
         actionButtonView.visibility = false
-        adapter.clearAllElements()
-        recommendationCarouselPositionSavedState.clear()
-        showLoading()
+//        adapter.clearAllElements()
+//        showLoading()
         updateStickyContent()
         loadProductData(true)
     }
@@ -468,7 +473,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 goToAtcExpress()
                             }
                         }
-                        fragmentManager?.let{
+                        fragmentManager?.let {
                             errorBottomsheets.show(it, "")
                         }
                     }
@@ -856,9 +861,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConst.PRODUCT_TALK, viewModel.getDynamicProductInfoP1?.basic?.productID
-                    ?: "")
-            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TALK_PRODUCT)
+                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
+            }
+            startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
         }
         viewModel.getDynamicProductInfoP1?.run {
             dynamicProductDetailTracking.eventDiscussionClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
@@ -899,7 +905,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
-        fragmentManager?.let{
+        fragmentManager?.let {
             bottomSheet.show(it, "pdp_bs")
         }
     }
@@ -931,6 +937,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         })
 
         viewModel.p2Login.observe(this, Observer {
+            topAdsGetProductManage = it.topAdsGetProductManage
+            actionButtonView.renderData(it.isExpressCheckoutType, hasTopAds())
+
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
 
@@ -1089,7 +1098,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP3Resp(it: ProductInfoP3) {
         shouldShowCodP3 = it.userCod
         pdpHashMapUtil.productShipingInfoMap?.let { productShippingInfoMap ->
-            pdpHashMapUtil.updateDataP3(it)
+            if (it.ratesModel?.services?.size == 0) {
+                dynamicAdapter.removeGeneralInfo(productShippingInfoMap)
+            } else {
+                pdpHashMapUtil.updateDataP3(it)
+            }
             dynamicAdapter.notifyShipingInfo(productShippingInfoMap)
         }
 
@@ -1681,6 +1694,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun initToolbar() {
+        if (GlobalConfig.isSellerApp()) {
+            val linearLayout = view?.findViewById<ViewGroup>(R.id.layout_search)
+            linearLayout?.hide()
+        }
+
         varToolbar = search_pdp_toolbar
         initToolBarMethod = ::initToolbarLight
         activity?.let {
@@ -1755,8 +1773,32 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun initBtnAction() {
+        context?.let {
+            topAdsDetailSheet = TopAdsDetailSheet.newInstance(it)
+        }
+
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
+        }
+
+        actionButtonView.rincianTopAdsClick = {
+            context?.let {
+                topAdsDetailSheet.show(topAdsGetProductManage.data.adId)
+            }
+        }
+
+        topAdsDetailSheet.detailTopAdsClick = {
+            viewModel.shopInfo?.let { shopInfo ->
+                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, applink), ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT)
+                }
+            }
         }
 
         actionButtonView.promoTopAdsClick = {
@@ -2034,5 +2076,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
     }
+
+    private fun hasTopAds() =
+            topAdsGetProductManage.data.adId.isNotEmpty() && !topAdsGetProductManage.data.adId.equals("0")
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -84,11 +85,10 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
                 TradeinResponse::class.java, pdpTradeinParam)
 
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest, pdpTradeinRequest)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+            val gqlResponse = graphqlRepository.getReseponse(requests, getCacheStrategy(forceRefresh))
 
             if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
                 val result = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java)
@@ -114,8 +114,14 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         } catch (t: Throwable) {
             Timber.d(t)
         }
-
         return p2Shop
+    }
+
+    private fun getCacheStrategy(forceRefresh: Boolean): GraphqlCacheStrategy {
+        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
+                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
+                .setSessionIncluded(true)
+                .build()
     }
 
 }

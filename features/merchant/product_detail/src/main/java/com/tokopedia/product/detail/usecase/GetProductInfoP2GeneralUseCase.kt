@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.usecase
 import android.util.SparseArray
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -139,10 +140,9 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
                 helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+            val gqlResponse = graphqlRepository.getReseponse(requests, getCacheStrategy(forceRefresh))
 
             if (gqlResponse.getError(ProductDetailVariantResponse::class.java)?.isNotEmpty() != true) {
                 productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantResponse>(ProductDetailVariantResponse::class.java).data
@@ -223,6 +223,13 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         }
 
         return productInfoP2
+    }
+
+    private fun getCacheStrategy(forceRefresh: Boolean): GraphqlCacheStrategy {
+        return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
+                .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
+                .setSessionIncluded(true)
+                .build()
     }
 
     private fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {

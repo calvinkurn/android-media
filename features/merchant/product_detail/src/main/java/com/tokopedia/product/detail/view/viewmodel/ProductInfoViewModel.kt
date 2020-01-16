@@ -531,6 +531,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
                             .getCartType.data.cartType
                 }
+
+                if (response.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
+                    p2Login.topAdsGetProductManage = response.getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage
+                            ?: TopAdsGetProductManage()
+                }
             } catch (t: Throwable) {
                 Timber.d(t)
             }

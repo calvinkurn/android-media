@@ -57,7 +57,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductSeparatorViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: LoadingModel?): Int {
+    override fun type(viewModel: LoadingModel): Int {
         return ProductShimmeringViewHolder.LAYOUT
     }
 

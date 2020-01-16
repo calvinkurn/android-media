@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.product
 
 import com.google.gson.annotations.SerializedName
+import java.text.DecimalFormat
 
 data class TxStatsDynamicPdp(
         @SerializedName("transactionSuccess")
@@ -21,7 +22,7 @@ data class TxStatsDynamicPdp(
         get() = if (getTxSuccessInt == 0 && getTxRejectInt == 0) 0f
         else 100f * getTxSuccessInt.toFloat() / (getTxSuccessInt + getTxRejectInt).toFloat()
 
-    val getSuccessRateRound: Float
-        get() = "%.${1}f".format(getSuccessRate).toFloat()
+    val getSuccessRateRound: String
+        get() = DecimalFormat("##.#").format(getSuccessRate)
 
 }

@@ -69,7 +69,6 @@
         app:layout_constraintBottom_toTopOf="@id/image_review_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_review_title"
-        app:typographyWeight="bold"
-        app:typographyType="body_2" />
+        app:typographyType="body_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
