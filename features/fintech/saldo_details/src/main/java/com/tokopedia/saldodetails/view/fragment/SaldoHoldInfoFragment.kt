@@ -50,6 +50,23 @@ class SaldoHoldInfoFragment : BaseDaggerFragment() {
     }
 
     fun initView() {
+        val sellerAmount = arguments?.getDouble(SALDO_SELLER_AMOUNT)
+        val buyerAmount = arguments?.getDouble(SALDO_BUYER_AMOUNT)
+        var resultAmount = 0.0
+        if (sellerAmount == 0.0) {
+            if (buyerAmount != null) {
+                resultAmount = buyerAmount
+                title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
+            }
+        } else if (buyerAmount == 0.0) {
+            if (sellerAmount != null) {
+                resultAmount = sellerAmount
+                title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
+            }
+        }
+
+
+        title_saldo_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(resultAmount, false)
         rv_container.layoutManager = LinearLayoutManager(context)
         rv_container.adapter = saldoHoldInfoAdapter
 

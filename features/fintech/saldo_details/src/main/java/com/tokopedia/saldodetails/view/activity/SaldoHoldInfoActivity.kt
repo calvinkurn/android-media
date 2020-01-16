@@ -196,3 +196,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     }
 
 }
+
+private fun String?.removeRP(): Double? {
+    return this?.substring(2)?.trim()?.toDouble()?.times(1000)
+}
+
