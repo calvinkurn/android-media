@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
@@ -30,9 +31,11 @@ import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailExc
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import com.tokopedia.promocheckout.widget.TimerPromoCheckout
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import kotlinx.android.synthetic.main.phoneverification_bottomsheet.*
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
@@ -140,14 +143,14 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
 
-    private fun showTimerView(){
+    private fun showTimerView() {
         view?.timerUsage?.visibility = View.VISIBLE
         view?.titlePeriod?.visibility = View.GONE
         view?.textPeriod?.visibility = View.GONE
 
     }
 
-    private fun hideTimerView(){
+    private fun hideTimerView() {
         view?.timerUsage?.visibility = View.GONE
         view?.titlePeriod?.visibility = View.VISIBLE
         view?.textPeriod?.visibility = View.VISIBLE
@@ -229,7 +232,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
         }
-
+        //todo check error type phone verification
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException || e is MessageErrorException) {
             message = e.message
@@ -337,7 +340,17 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         super.onDestroyView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_VERIFICATION_PHONE) {
+            onClickUse()
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     companion object {
+        val AB_TEST_PHONE_VERIFICATION_KEY="AB_TEST_PHONE_VERIFICATION_KEY"
+        val REQUEST_CODE_VERIFICATION_PHONE = 301
         val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
         val EXTRA_IS_USE = "EXTRA_IS_USE"
         val PAGE_TRACKING = "PAGE_TRACKING"

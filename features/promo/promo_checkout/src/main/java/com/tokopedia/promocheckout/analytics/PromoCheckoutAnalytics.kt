@@ -26,6 +26,9 @@ class PromoCheckoutAnalytics {
     val EVENT_ACTION_VALUE_TUKAR_POPUP_BUTTON = "click tukar button popup"
     val EVENT_ACTION_VALUE_CLICK_BATAL_POPUP = "click batal popup"
 
+    val KEY_EVENT_PROFILE_VALUE = "clickProfile"
+    val KEY_EVENT_CATEGORY_PROFILE_VALUE = "phone number verification"
+    val KEY_EVENT_ACTION_PROFILE_VALUE = "click on button verifikasi"
 
     companion object {
         val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
@@ -86,4 +89,14 @@ class PromoCheckoutAnalytics {
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    fun clickVerifikasai() {
+        val tracker = getTracker()
+        val map = DataLayer.mapOf(
+                KEY_EVENT, KEY_EVENT_PROFILE_VALUE,
+                KEY_EVENT_CATEGORY, KEY_EVENT_CATEGORY_PROFILE_VALUE,
+                KEY_EVENT_ACTION, KEY_EVENT_ACTION_PROFILE_VALUE)
+        tracker.sendEnhanceEcommerceEvent(map)
+    }
+
 }
