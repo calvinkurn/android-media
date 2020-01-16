@@ -97,16 +97,14 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     public void onOperatorItemSelected(Operator operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
         finish();
-        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay,
-                com.tokopedia.digital.R.anim.digital_slide_out_up);
+//        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay,com.tokopedia.digital.R.anim.digital_slide_out_up);
     }
 
     @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
-        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay,
-                com.tokopedia.digital.R.anim.digital_slide_out_up);
+//        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay, com.tokopedia.digital.R.anim.digital_slide_out_up);
     }
 
     @Override
@@ -137,8 +135,7 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay,
-                com.tokopedia.digital.R.anim.digital_slide_out_up);
+//        overridePendingTransition(com.tokopedia.digital.R.anim.digital_anim_stay, com.tokopedia.digital.R.anim.digital_slide_out_up);
     }
 
 //    private void invalidateHomeUpToolbarIndicator() {

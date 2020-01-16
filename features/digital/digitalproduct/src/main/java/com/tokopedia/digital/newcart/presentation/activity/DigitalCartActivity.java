@@ -97,7 +97,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     private void inflateFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent_view, fragment, getTagFragment())
+                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, getTagFragment())
                 .commit();
     }
 
