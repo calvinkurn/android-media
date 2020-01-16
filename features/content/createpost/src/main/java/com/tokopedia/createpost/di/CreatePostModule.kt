@@ -75,12 +75,6 @@ class CreatePostModule(private val context: Context) {
         return createPostPresenter
     }
 
-//    @Provides
-//    @CreatePostScope
-//    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-//        return UserSession(context)
-//    }
-
     @Provides
     @CreatePostScope
     fun provideAffiliateAnalytics(userSessionInterface: UserSessionInterface): AffiliateAnalytics {
