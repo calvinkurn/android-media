@@ -88,6 +88,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeFilter() {
         viewModel.filter.observe(viewLifecycleOwner, Observer { type ->
+            analytic.trackOnChangeFilter(type)
             when (type) {
                 VoucherType.CASH_BACK -> setActiveFilter(filterCashBack, filterFreeOngkir)
                 VoucherType.FREE_ONGKIR -> setActiveFilter(filterFreeOngkir, filterCashBack)

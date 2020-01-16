@@ -1,6 +1,8 @@
 package com.tokopedia.attachvoucher.analytic
 
 import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherType
+import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
@@ -17,8 +19,28 @@ class AttachVoucherAnalytic @Inject constructor() {
 
     object Action {
         const val CLICK_ATTACH_VOUCHER = "click pilih shop voucher"
+        const val CLICK_FILTER_VOUCHER = "click filter shop voucher"
     }
 
+    // #AV2
+    fun trackOnChangeFilter(type: Int) {
+        if (type == AttachVoucherViewModel.NO_FILTER) return
+        val label = when (type) {
+            VoucherType.CASH_BACK -> "cashback"
+            VoucherType.FREE_ONGKIR -> "free-ongkir"
+            else -> ""
+        }
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        Name.CHAT_DETAIL,
+                        Category.CHAT_DETAIL,
+                        Action.CLICK_FILTER_VOUCHER,
+                        label
+                )
+        )
+    }
+
+    // #AV3
     fun trackOnAttachVoucher(voucher: Voucher) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
