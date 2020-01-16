@@ -109,8 +109,6 @@ public interface ProductListSectionContract {
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
-        boolean isTickerHasDismissed();
-
         void redirectToBrowser(String url);
     }
 
