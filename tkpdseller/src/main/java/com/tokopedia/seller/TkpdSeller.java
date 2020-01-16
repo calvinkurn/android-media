@@ -14,7 +14,7 @@ import com.tokopedia.seller.shopsettings.ManageShopActivity;
 
 public class TkpdSeller {
 
-    public static Intent getIntentManageShop(Context context){
+    public static Intent getIntentManageShop(Context context) {
         return new Intent(context, ManageShopActivity.class);
     }
 
@@ -41,8 +41,7 @@ public class TkpdSeller {
     }
 
     public static Intent getActivitySellingTransactionShippingStatus(Context context) {
-        return ActivitySellingTransaction.createIntent(context,
-                ActivitySellingTransaction.TAB_POSITION_SELLING_SHIPPING_STATUS);
+        return RouteManager.getIntent(context, ApplinkConst.SELLER_STATUS);
     }
 
     public static Intent getActivitySellingTransactionList(Context context) {
