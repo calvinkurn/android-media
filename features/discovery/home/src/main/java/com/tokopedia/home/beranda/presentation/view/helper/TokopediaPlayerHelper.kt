@@ -281,7 +281,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityStart() {
-        if (Util.SDK_INT > 23) {
+        if (Util.SDK_INT >= 21) {
             createPlayer()
         }
     }
