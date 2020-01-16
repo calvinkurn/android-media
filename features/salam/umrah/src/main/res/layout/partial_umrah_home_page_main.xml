@@ -8,10 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/section_layout"
-        android:visibility="visible"
+        android:visibility="gone"
         >
         <ImageView
             android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:id="@+id/iv_umrah_bg_kabbah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -73,6 +74,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/partial_umrah_home_page_main_shimmering"
-        android:visibility="gone"
+        android:visibility="visible"
         />
 </FrameLayout>
