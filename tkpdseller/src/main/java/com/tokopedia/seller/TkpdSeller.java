@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.shopsettings.FragmentSettingShop;
@@ -31,13 +30,11 @@ public class TkpdSeller {
     }
 
     public static Intent getActivitySellingTransactionNewOrder(Context context) {
-        return ActivitySellingTransaction.createIntent(context,
-                ActivitySellingTransaction.TAB_POSITION_SELLING_NEW_ORDER);
+        return RouteManager.getIntent(context, ApplinkConst.SELLER_NEW_ORDER);
     }
 
     public static Intent getActivitySellingTransactionConfirmShipping(Context context) {
-        return ActivitySellingTransaction.createIntent(context,
-                ActivitySellingTransaction.TAB_POSITION_SELLING_CONFIRM_SHIPPING);
+        return RouteManager.getIntent(context, ApplinkConst.SELLER_SHIPMENT);
     }
 
     public static Intent getActivitySellingTransactionShippingStatus(Context context) {
