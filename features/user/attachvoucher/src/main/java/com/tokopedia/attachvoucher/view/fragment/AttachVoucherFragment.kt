@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
@@ -46,6 +45,12 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         fun onClickAttachVoucher(intent: Intent)
     }
 
+    override fun initInjector() = getComponent(AttachVoucherComponent::class.java).inject(this)
+    override fun getAdapterTypeFactory() = AttachVoucherTypeFactoryImpl()
+    override fun createAdapterInstance() = AttachVoucherAdapter(adapterTypeFactory).also { adapter = it }
+    override fun getScreenName() = screenName
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Listener) {
@@ -65,14 +70,20 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setupRecyclerView() {
+    override fun loadData(page: Int) {
+        if (page != 1) return
+        viewModel.loadVouchers()
+    }
 
+    private fun setupRecyclerView() {
+        recycler_view?.setHasFixedSize(true)
     }
 
     private fun setupObserver() {
         observeFilter()
         observeVoucherResponse()
         observeVoucherState()
+        observeError()
     }
 
     private fun observeFilter() {
@@ -100,6 +111,13 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
             } else {
                 disableAttachButton()
             }
+        })
+    }
+
+    private fun observeError() {
+        viewModel.error.observe(viewLifecycleOwner, Observer { throwable ->
+            showGetListError(throwable)
+            disableAttachButton()
         })
     }
 
@@ -134,29 +152,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         filterFreeOngkir?.chipType = ChipsUnify.TYPE_ALTERNATE
     }
 
-    override fun getScreenName(): String = screenName
-
-    override fun initInjector() {
-        getComponent(AttachVoucherComponent::class.java).inject(this)
-    }
-
-    override fun getAdapterTypeFactory(): AttachVoucherTypeFactory {
-        return AttachVoucherTypeFactoryImpl()
-    }
-
     override fun onItemClicked(t: Visitable<*>?) {}
-
-    override fun loadData(page: Int) {
-        if (page != 1) return
-        viewModel.loadVouchers()
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AttachVoucherTypeFactory> {
-        adapter = AttachVoucherAdapter(adapterTypeFactory)
-        return adapter
-    }
-
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
         fun createInstance(extra: Bundle?): AttachVoucherFragment {

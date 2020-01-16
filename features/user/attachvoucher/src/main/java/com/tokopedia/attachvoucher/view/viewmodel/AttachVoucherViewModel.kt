@@ -22,6 +22,7 @@ class AttachVoucherViewModel @Inject constructor(
 
     var filter: MutableLiveData<Int> = MutableLiveData()
     var vouchers: MutableLiveData<List<Voucher>> = MutableLiveData()
+    var error: MutableLiveData<Throwable> = MutableLiveData()
     var filteredVouchers: LiveData<List<Voucher>> = Transformations.map(filter) {
         vouchers.value?.filter { voucher ->
             (filter.value == NO_FILTER || filter.value == voucher.type)
@@ -57,7 +58,7 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     private fun onErrorGetVouchers(throwable: Throwable) {
-
+        error.value = throwable
     }
 
     fun getVoucherPreviewIntent(voucher: Voucher): Intent {
