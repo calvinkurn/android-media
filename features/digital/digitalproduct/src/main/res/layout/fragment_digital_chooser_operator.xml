@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <com.tokopedia.design.component.EditTextCompat
-        android:id="@+id/field_search"
+        android:id="@+id/field_search_operator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:layout_margin="@dimen/dp_10"
@@ -28,7 +28,7 @@
         android:id="@+id/rv_list_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/field_search"
+        android:layout_below="@+id/field_search_operator"
         android:layout_marginTop="@dimen/dp_5" />
 
     <ProgressBar
