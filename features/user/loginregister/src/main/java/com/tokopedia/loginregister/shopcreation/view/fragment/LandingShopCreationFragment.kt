@@ -228,7 +228,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onDestroy()
         shopCreationViewModel.getUserProfileResponse.removeObservers(this)
         shopCreationViewModel.getUserInfoResponse.removeObservers(this)
-        shopCreationViewModel.clear()
+        shopCreationViewModel.flush()
     }
 
     companion object {

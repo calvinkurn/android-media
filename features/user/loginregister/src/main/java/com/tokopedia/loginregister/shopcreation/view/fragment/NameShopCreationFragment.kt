@@ -205,7 +205,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onDestroy()
         shopCreationViewModel.addNameResponse.removeObservers(this)
         shopCreationViewModel.registerPhoneAndName.removeObservers(this)
-        shopCreationViewModel.clear()
+        shopCreationViewModel.flush()
     }
 
     companion object {

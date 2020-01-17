@@ -321,7 +321,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationViewModel.addPhoneResponse.removeObservers(this)
         shopCreationViewModel.validateUserProfileResponse.removeObservers(this)
         shopCreationViewModel.registerCheckResponse.removeObservers(this)
-        shopCreationViewModel.clear()
+        shopCreationViewModel.flush()
     }
 
     companion object {
