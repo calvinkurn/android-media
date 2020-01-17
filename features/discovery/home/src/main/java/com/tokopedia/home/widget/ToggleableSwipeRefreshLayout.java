@@ -26,21 +26,6 @@ public class ToggleableSwipeRefreshLayout extends SwipeRefreshLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        // help handle swipe between viewPager and swipe
-        // https://stackoverflow.com/a/23989911/1233979
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mPrevX = MotionEvent.obtain(event).getX();
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                final float eventX = event.getX();
-                float xDiff = Math.abs(eventX - mPrevX);
-
-                if (xDiff > mTouchSlop) {
-                    return false;
-                }
-        }
         return super.onInterceptTouchEvent(event);
     }
 

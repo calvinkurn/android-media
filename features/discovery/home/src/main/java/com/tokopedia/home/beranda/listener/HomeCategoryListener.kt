@@ -66,6 +66,8 @@ interface HomeCategoryListener {
 
     fun setActivityStateListener(activityStateListener: ActivityStateListener)
 
+    fun onPromoPageScrollChanged(state: Int)
+
     fun onSpotlightItemClicked(actionLink: String)
 
     fun onTokopointCheckNowClicked(applink: String)

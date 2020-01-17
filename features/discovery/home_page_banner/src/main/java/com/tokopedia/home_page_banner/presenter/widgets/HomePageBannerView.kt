@@ -176,6 +176,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         }
 
         override fun onPageScrollStateChanged(state: Int) {
+            listener?.onPageScrollStateChanged(state)
             if (state == ViewPager2.SCROLL_STATE_DRAGGING && viewPager?.isInTouchMode == true) {
                 disableSlider()
             } else if(state == ViewPager2.SCROLL_STATE_IDLE){

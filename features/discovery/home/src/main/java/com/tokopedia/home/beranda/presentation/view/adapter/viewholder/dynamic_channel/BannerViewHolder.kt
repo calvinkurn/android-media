@@ -82,6 +82,10 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         }
     }
 
+    override fun onPageScrollStateChanged(state: Int) {
+        listener.onPromoPageScrollChanged(state)
+    }
+
     override fun onPromoAllClick() {
         listener.onPromoAllClick()
     }
