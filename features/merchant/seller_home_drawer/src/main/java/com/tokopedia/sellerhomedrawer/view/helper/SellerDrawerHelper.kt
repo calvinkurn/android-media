@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.View
 import androidx.core.app.TaskStackBuilder
 import androidx.core.view.GravityCompat
+import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
@@ -63,26 +64,36 @@ class SellerDrawerHelper(val context: Activity,
                     if (context.application is AbstractionRouter)
                         sendClickHamburgerMenuEvent(drawerItem.label)
                     eventClickGoldMerchantViaDrawer()
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                    moveActivityInternalApplink(ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                 }
                 SellerHomeState.DrawerPosition.SHOP_NEW_ORDER -> {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
                     eventDrawerClick(EventLabel.NEW_ORDER)
+                    moveActivityInternalApplink(
+                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
+                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_NEW_ORDER)
                 }
                 SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING -> {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
                     eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
+                    moveActivityInternalApplink(
+                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
+                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_CONFIRM_SHIPPING)
                 }
                 SellerHomeState.DrawerPosition.SHOP_SHIPPING_STATUS -> {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
                     eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
+                    moveActivityInternalApplink(
+                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
+                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_SHIPPING_STATUS)
                 }
                 SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST -> {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
                     eventDrawerClick(EventLabel.SALES_LIST)
+                    moveActivityInternalApplink(
+                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
+                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_TRANSACTION_LIST)
                 }
                 SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST -> {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLING_TRANSACTION)
+                    moveActivityInternalApplink(
+                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
+                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_OPPORTUNITY)
                 }
                 SellerHomeState.DrawerPosition.ADD_PRODUCT -> {
                     //TODO : context is TkpdCoreRouter ?
@@ -205,7 +216,7 @@ class SellerDrawerHelper(val context: Activity,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun createDrawerData(): List<SellerDrawerItem> {
+    fun createDrawerData(): MutableList<SellerDrawerItem> {
         val drawerItemData = mutableListOf<SellerDrawerItem>()
         
         if (powerMerchantInstance == null) 
@@ -213,8 +224,8 @@ class SellerDrawerHelper(val context: Activity,
         
         val adapter = sellerDrawerAdapter
         val powerMerchantDrawerItem = powerMerchantInstance
-        
-        drawerItemData.apply { 
+
+        drawerItemData.apply {
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_home),
                     iconId = R.drawable.icon_home,
@@ -278,8 +289,20 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     fun initDrawer(activity: Activity) {
+//        val drawerVisitables = arrayListOf<Visitable<*>>()
+//        drawerVisitables
+//                .add(SellerDrawerHeader())
         sellerDrawerAdapter = SellerDrawerAdapter(SellerDrawerAdapterTypeFactory(this, this, this, this, this, context), createDrawerData(), drawerCache)
+        sellerDrawerAdapter?.drawerItemData = createDrawerData()
+        activity.left_drawer.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            adapter = sellerDrawerAdapter
+        }
+//        setExpand()
+        closeDrawer()
     }
+
+    fun isOpened() = context.drawer_layout_nav.isDrawerOpen(GravityCompat.START)
 
     private fun getSellerMenu() : SellerDrawerItem {
         val sellerMenu = SellerDrawerGroup(
@@ -412,6 +435,15 @@ class SellerDrawerHelper(val context: Activity,
                     iconId = R.drawable.ic_pm_badge_shop_regular,
                     id = SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                     isExpanded = true)
+    }
+
+    private fun moveActivityInternalApplink(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    private fun moveActivityInternalApplink(applink: String, vararg params: String) {
+        val intent = RouteManager.getIntent(context, applink, *params)
+        context.startActivity(intent)
     }
 
 }

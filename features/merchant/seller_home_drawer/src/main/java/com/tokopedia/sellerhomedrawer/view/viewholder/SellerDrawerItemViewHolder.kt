@@ -26,7 +26,7 @@ class SellerDrawerItemViewHolder (itemView: View,
     override fun bind(sellerDrawerItem: SellerDrawerItem) {
         with(itemView) {
             label.text = sellerDrawerItem.label
-            label.icon.setImageResource(sellerDrawerItem.iconId)
+            icon.setImageResource(sellerDrawerItem.iconId)
             setNotificationCounter(sellerDrawerItem.notif)
             setSelectedBackground(sellerDrawerItem.id)
             setDrawerHighlightVisibility(sellerDrawerItem.isNew)

@@ -164,7 +164,7 @@ object ApplinkConstInternalMarketplace {
 
     // ActivitySellingTransaction
     @JvmField
-    val SELLING_TRANSACTION = "$INTERNAL_MARKETPLACE/selling-transaction"
+    val SELLING_TRANSACTION = "$INTERNAL_MARKETPLACE/selling-transaction/{tab_position}/"
 
     // ProductDraftListActivity
     @JvmField

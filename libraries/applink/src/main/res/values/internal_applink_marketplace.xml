@@ -41,7 +41,7 @@
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
     <string name="path_shop_page" translatable="false">/shop-page</string>
-    <string name="path_selling_transaction" translatable="false">/selling-transaction</string>
+    <string name="path_selling_transaction" translatable="false">/selling-transaction/.*\\/</string>
     <string name="path_product_draft_list" translatable="false">/product-draft-list</string>
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>

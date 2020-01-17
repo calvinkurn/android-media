@@ -9,9 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import com.google.android.material.tabs.TabLayout;
-import androidx.legacy.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
@@ -22,9 +19,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.legacy.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.material.tabs.TabLayout;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -58,7 +60,6 @@ import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ActivitySellingTransaction extends TkpdActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
@@ -381,8 +382,18 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void openTab() {
         try {
-            mViewPager.setCurrentItem(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
-            setDrawerPosition(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
+            Uri uri = getIntent().getData();
+            int tabPosition;
+            List<String> pathSegments;
+            if (uri != null) {
+                //If from internal applink
+                pathSegments = uri.getPathSegments();
+                tabPosition = Integer.valueOf(pathSegments.get(pathSegments.size() - 1));
+            } else {
+                tabPosition = getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION);
+            }
+            mViewPager.setCurrentItem(tabPosition);
+            setDrawerPosition(tabPosition);
         } catch (Exception e) {
             e.printStackTrace();
         }
