@@ -16,6 +16,12 @@ import java.util.*
  */
 object DeviceConnectionInfo {
 
+    /**
+     * Return SSID device
+     * The function will return empty string when device can not get the ssid
+     *
+     * @param context an android.content.Context
+     */
     @JvmStatic
     fun getSSID(context: Context): String {
         var ssid: String = ""
