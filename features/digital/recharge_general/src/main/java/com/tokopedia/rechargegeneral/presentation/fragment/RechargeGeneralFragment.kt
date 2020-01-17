@@ -214,7 +214,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_CART_DIGITAL) {
             // Render enquiry data
-            enquiryData?.let{ renderCheckoutView(it) }
+            enquiryData?.let{
+                // Skip enquiry bottomsheet & navigate to checkout page; temporary until express checkout is implemented
+//                renderCheckoutView(it)
+            }
         }
     }
 
@@ -650,7 +653,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
         enquiryData = data.enquiry
-        renderCheckoutView(data.enquiry)
+        // Skip enquiry bottomsheet & navigate to checkout page; temporary until express checkout is implemented
+//        renderCheckoutView(data.enquiry)
+        onClickCheckout(data.enquiry)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
