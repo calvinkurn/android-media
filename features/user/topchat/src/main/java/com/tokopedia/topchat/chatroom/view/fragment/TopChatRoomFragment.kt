@@ -872,6 +872,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
+        analytics.trackChatMenuClicked(voucherMenu.label)
         pickVoucherToUpload()
     }
 
