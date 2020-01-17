@@ -1,8 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
@@ -15,7 +13,6 @@ import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProd
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
@@ -338,97 +335,130 @@ class CartListPresenterPromoTest : Spek({
             }
         }
 
-/*
-        Scenario("check promo first step after clash still clash") {
+        Scenario("apply promo global after clash success but still clashing") {
 
             val view: ICartListView = mockk(relaxed = true)
 
-            Given("success delete") {
-                val deleteCartData = DeleteCartData(isSuccess = true)
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+            Given("success check first step") {
+                val promoStackUiModel = ResponseGetPromoStackUiModel().apply {
+                    status = "OK"
+                    data = DataUiModel().apply {
+                        clashings = ClashingInfoDetailUiModel().apply {
+                            isClashedPromos = true
+                        }
+                    }
+                }
+                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.just(promoStackUiModel)
+            }
+
+            Given("data promo stack") {
+                every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
+            }
+
+            Given("cart list data") {
+                cartListPresenter.setCartListData(CartListData().apply {
+                    shopGroupAvailableDataList = mutableListOf<ShopGroupAvailableData>().apply {
+                        add(ShopGroupAvailableData().apply {
+                            cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                                add(CartItemHolderData(cartItemData = CartItemData().apply {
+                                    originData = CartItemData.OriginData().apply {
+                                        productId = "1"
+                                    }
+                                    updatedData = CartItemData.UpdatedData().apply {
+                                        quantity = 1
+                                    }
+                                }))
+                            }
+                            cartString = "12345-abcde"
+                            shopId = "99999"
+                        })
+                    }
+                })
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
 
-            When("process delete cart item") {
-                val firstCartItemData = CartItemData()
-                firstCartItemData.originData = CartItemData.OriginData()
-                val secondCartItemData = CartItemData()
-                secondCartItemData.originData = CartItemData.OriginData()
-                secondCartItemData.originData?.cartId = 1
+            When("process apply promo") {
+                val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
+                promoList.add(ClashingVoucherOrderUiModel(uniqueId = "", code = "codeGlobal"))
 
-                cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
-                        arrayListOf(firstCartItemData), arrayListOf(), false, false)
+                cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
             }
 
-            Then("should success delete") {
+            Then("should render clash") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"))
+                    view.hideProgressLoading()
+                    view.onClashCheckPromo(any(), any())
                 }
             }
         }
 
-        Scenario("check promo first step after clash error") {
+        Scenario("apply promo global after clash error") {
 
             val view: ICartListView = mockk(relaxed = true)
 
-            Given("success delete") {
-                val deleteCartData = DeleteCartData(isSuccess = true)
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+            Given("success check first step") {
+                val promoStackUiModel = ResponseGetPromoStackUiModel().apply {
+                    status = "ERROR"
+                }
+                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.just(promoStackUiModel)
+            }
+
+            Given("data promo stack") {
+                every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
 
-            When("process delete cart item") {
-                val firstCartItemData = CartItemData()
-                firstCartItemData.originData = CartItemData.OriginData()
-                val secondCartItemData = CartItemData()
-                secondCartItemData.originData = CartItemData.OriginData()
-                secondCartItemData.originData?.cartId = 1
+            When("process apply promo") {
+                val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
+                promoList.add(ClashingVoucherOrderUiModel(uniqueId = "", code = "codeGlobal"))
 
-                cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
-                        arrayListOf(firstCartItemData), arrayListOf(), false, false)
+                cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
             }
 
-            Then("should success delete") {
+            Then("should render error") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"))
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
                 }
             }
         }
 
-        Scenario("check promo first step after clash error with exception") {
+        Scenario("apply promo global after clash error with exception") {
 
             val view: ICartListView = mockk(relaxed = true)
-            val errorMessage = "fail testing delete"
 
-            Given("fail delete") {
-                val deleteCartData = DeleteCartData(isSuccess = false, message = errorMessage)
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+            Given("success check first step") {
+                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+            }
+
+            Given("data promo stack") {
+                every { checkPromoStackingCodeUseCase.setParams(any()) } just Runs
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
             }
 
-            When("process delete cart item") {
-                val cartItemData = CartItemData()
-                cartItemData.originData = CartItemData.OriginData()
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+            When("process apply promo") {
+                val promoList = arrayListOf<ClashingVoucherOrderUiModel>()
+                promoList.add(ClashingVoucherOrderUiModel(uniqueId = "", code = "codeGlobal"))
+
+                cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
             }
 
-            Then("should show error message") {
+            Then("should render error") {
                 verify {
-                    view.showToastMessageRed(errorMessage)
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(any())
                 }
             }
         }
-*/
-
     }
 
 })

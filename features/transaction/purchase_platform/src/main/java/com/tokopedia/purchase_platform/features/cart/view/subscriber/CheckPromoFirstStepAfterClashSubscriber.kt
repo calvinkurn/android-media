@@ -1,12 +1,12 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
-import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 
 /**
@@ -31,7 +31,6 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
 
     override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
         view?.hideProgressLoading()
-//        val responseGetPromoStack = checkPromoCodeStackingCodeMapper.map(response)
 
         if (responseGetPromoStack.status.equals(STATUS_OK, true)) {
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
