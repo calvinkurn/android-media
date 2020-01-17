@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.homepage.presentation.model.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelType
@@ -34,9 +35,9 @@ class HotelHomepageViewModel @Inject constructor(
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
-    private val _recentSearch = MutableLiveData<Result<HotelRecentSearchModel>>()
-    val recentSearch: MutableLiveData<Result<HotelRecentSearchModel>>
-        get() = _recentSearch
+    private val mutableRecentSearch = MutableLiveData<Result<HotelRecentSearchModel>>()
+    val recentSearch: LiveData<Result<HotelRecentSearchModel>>
+        get() = mutableRecentSearch
 
     private val _deleteRecentSearch = MutableLiveData<Result<Boolean>>()
     val deleteRecentSearch: MutableLiveData<Result<Boolean>>
@@ -51,9 +52,9 @@ class HotelHomepageViewModel @Inject constructor(
     fun getRecentSearch(rawQuery: String) {
         launchCatchError(block = {
             val data = travelRecentSearchUseCase.execute(rawQuery, true)
-            _recentSearch.value = Success(HotelRecentSearchModel(title = data.travelMeta.title, items = data.items))
+            mutableRecentSearch.value = Success(HotelRecentSearchModel(title = data.travelMeta.title, items = data.items))
         }) {
-            _recentSearch.value = Fail(it)
+            mutableRecentSearch.value = Fail(it)
         }
     }
 
