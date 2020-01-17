@@ -1,23 +1,14 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.coroutines.data.source.CloudDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.data.model.GraphqlResponseInternal
-import com.tokopedia.graphql.data.model.GraphqlError
-import timber.log.Timber
+import com.tokopedia.graphql.data.model.*
 import java.lang.reflect.Type
-import kotlin.Exception
 
-open class RepositoryImpl(private val graphqlCloudDataStore: CloudDataStore,
+open class RepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,
                           private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
 
