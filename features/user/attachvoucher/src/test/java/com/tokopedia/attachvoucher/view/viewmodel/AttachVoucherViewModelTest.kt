@@ -5,6 +5,7 @@ import com.tokopedia.attachvoucher.Constant
 import com.tokopedia.attachvoucher.InstantTaskExecutorRuleSpek
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
 import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.common.network.util.CommonUtil
 import io.mockk.*
@@ -65,6 +66,19 @@ object AttachVoucherViewModelTest : Spek({
                     viewModel.loadVouchers()
                     verify { filterObserver.onChanged(AttachVoucherViewModel.NO_FILTER) }
                 }
+                test("Filter cashback clicked") {
+                    val filterObserver = mockk<Observer<Int>>(relaxed = true)
+                    val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
+                    viewModel.filteredVouchers.observeForever(voucherObservers)
+                    viewModel.filter.observeForever(filterObserver)
+
+                    viewModel.loadVouchers()
+                    viewModel.toggleFilter(VoucherType.CASH_BACK)
+
+                    assertEquals(1, viewModel.filteredVouchers.value?.size)
+                    verify { filterObserver.onChanged(VoucherType.CASH_BACK) }
+                }
+
             }
             group("On Error load invoices") {
                 beforeEachTest {
