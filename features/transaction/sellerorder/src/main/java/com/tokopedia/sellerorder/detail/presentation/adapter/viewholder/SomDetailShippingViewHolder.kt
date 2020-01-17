@@ -22,13 +22,14 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             itemView.tv_receiver_phone.text = item.dataObject.receiverPhone
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
-            if (item.dataObject.shippingNotes.isNotEmpty()) {
-                itemView.tv_receiver_notes.visibility = View.VISIBLE
-                itemView.tv_notes_label.visibility = View.VISIBLE
-                itemView.tv_receiver_notes.text = item.dataObject.shippingNotes
-            } else {
-                itemView.tv_receiver_notes.visibility = View.GONE
-                itemView.tv_notes_label.visibility = View.GONE
+
+            itemView.copy_address_btn.apply {
+                setOnClickListener {
+                    actionListener.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
+                            "\n" + item.dataObject.receiverPhone +
+                            "\n" + item.dataObject.receiverStreet +
+                            "\n" + item.dataObject.receiverDistrict))
+                }
             }
 
             if (item.dataObject.isFreeShipping || item.dataObject.isRemoveAwb) {
@@ -116,6 +117,16 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
                     }
                 }
+            }
+
+            // dropshipper
+            if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
+                itemView.rl_som_dropshipper.visibility = View.VISIBLE
+                itemView.tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                itemView.tv_som_dropshipper_phone.text = item.dataObject.dropshipperPhone
+
+            } else {
+                itemView.rl_som_dropshipper.visibility = View.GONE
             }
         }
     }

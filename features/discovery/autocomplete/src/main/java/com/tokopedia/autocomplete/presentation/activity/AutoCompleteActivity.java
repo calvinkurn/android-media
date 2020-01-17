@@ -2,19 +2,15 @@ package com.tokopedia.autocomplete.presentation.activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
+import android.view.Window;
+import android.view.WindowManager;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -34,15 +30,13 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
 public class AutoCompleteActivity extends BaseActivity
         implements DiscoverySearchView.SearchViewListener,
         DiscoverySearchView.ImageSearchClickListener,
         DiscoverySearchView.OnQueryTextListener,
-        AutoCompleteContract.View{
+        AutoCompleteContract.View {
 
     AutocompleteTracking autocompleteTracking;
 
@@ -52,11 +46,23 @@ public class AutoCompleteActivity extends BaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(0,0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto_complete);
+
+        setStatusBarColor();
         proceed();
         initActivityOnCreate(savedInstanceState);
         handleIntent(getIntent());
+    }
+
+    private void setStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            window.setStatusBarColor(getResources().getColor(R.color.white));
+        }
     }
 
     private void proceed() {
@@ -146,7 +152,7 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void clearFocusSearchView() {
-        if(searchView != null) {
+        if (searchView != null) {
             searchView.clearFocus();
         }
     }

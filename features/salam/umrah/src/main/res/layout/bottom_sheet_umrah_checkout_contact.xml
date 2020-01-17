@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_checkout_contact"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_24"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_12">
+
+    <ImageView
+        android:id="@+id/img_umrah_checkout_bottom_sheet_closed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/umrah_ic_home_page_closed" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toRightOf="@+id/img_umrah_checkout_bottom_sheet_closed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
+        android:text="@string/umrah_checkout_bottom_sheet_contact_title"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_bottom_sheet_contact_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@+id/img_umrah_checkout_bottom_sheet_closed"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_bottom_sheet_title"
+        android:text="@string/umrah_checkout_bottom_sheet_contact_label_name"
+        android:layout_marginTop="@dimen/dp_24"
+        app:typographyType="body_3"
+        />
+    <com.tokopedia.design.component.EditTextCompat
+        android:id="@+id/et_umrah_checkout_bottom_sheet_contact_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_bottom_sheet_contact_name_label"
+        tools:text="Muhammad Salah"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_bottom_sheet_contact_email_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_umrah_checkout_bottom_sheet_contact_name"
+        android:text="@string/umrah_checkout_bottom_sheet_contact_label_email"
+        android:layout_marginTop="@dimen/dp_24"
+        app:typographyType="body_3"
+        />
+    <com.tokopedia.design.component.EditTextCompat
+        android:id="@+id/et_umrah_checkout_bottom_sheet_contact_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_bottom_sheet_contact_email_label"
+        tools:text="muhammad.salah@gmail.com"
+        android:inputType="textEmailAddress"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_bottom_sheet_contact_phone_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_umrah_checkout_bottom_sheet_contact_email"
+        android:text="@string/umrah_checkout_bottom_sheet_contact_label_phone"
+        android:layout_marginTop="@dimen/dp_24"
+        app:typographyType="body_3"
+        />
+    <com.tokopedia.design.component.EditTextCompat
+        android:id="@+id/et_umrah_checkout_bottom_sheet_contact_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_bottom_sheet_contact_phone_label"
+        tools:text="085327499272"
+        />
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="@dimen/dp_18"
+        android:id="@+id/btn_umrah_checkout_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/et_umrah_checkout_bottom_sheet_contact_phone"
+        android:text="@string/umrah_checkout_bottom_sheet_button"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
