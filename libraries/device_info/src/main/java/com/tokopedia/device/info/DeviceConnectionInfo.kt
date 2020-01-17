@@ -24,7 +24,7 @@ object DeviceConnectionInfo {
      */
     @JvmStatic
     fun getSSID(context: Context): String {
-        var ssid: String = ""
+        var ssid = ""
         try {
             val connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connManager.activeNetworkInfo
