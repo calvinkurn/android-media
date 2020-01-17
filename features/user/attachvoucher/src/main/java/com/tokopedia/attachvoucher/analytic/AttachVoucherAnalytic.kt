@@ -27,7 +27,7 @@ class AttachVoucherAnalytic @Inject constructor() {
         if (type == AttachVoucherViewModel.NO_FILTER) return
         val label = when (type) {
             VoucherType.CASH_BACK -> "cashback"
-            VoucherType.FREE_ONGKIR -> "free-ongkir"
+            VoucherType.FREE_ONGKIR -> "gratis ongkir"
             else -> ""
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(
