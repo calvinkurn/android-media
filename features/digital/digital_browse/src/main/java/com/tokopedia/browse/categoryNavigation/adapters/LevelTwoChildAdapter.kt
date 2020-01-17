@@ -26,9 +26,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?,
     }
 
     override fun getItemCount(): Int {
-        list?.let {
-            return list.size
-        } ?: return 0
+        return list?.size?:0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
