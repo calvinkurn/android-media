@@ -83,19 +83,22 @@ public class ActivitySellingTransaction extends TkpdActivity
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
 
     public static final String EXTRA_TAB_ACTIVE = "tab_active";
+    public static final String EXTRA_FILTER_STATUS = "filter_status";
     public static final String EXTRA_KEY_NEW_ORDER = "new_order";
     public static final String EXTRA_KEY_CONFIRM_SHIPPING = "confirm_shipping";
     public static final String EXTRA_KEY_IN_SHIPPING = "in_shipping";
     public static final String EXTRA_KEY_ALL_ORDER = "all_order";
-
     public static final String EXTRA_KEY_CANCELLED = "order_canceled";
-    public static final String EXTRA_KEY_WAITING_PICKUP = "waiting_pickup";
-    public static final String EXTRA_KEY_WAITING_AWB = "waiting_awb";
-    public static final String EXTRA_KEY_AWB_INVALID = "awb_invalid";
-    public static final String EXTRA_KEY_AWB_CHANGE = "awb_change";
-    public static final String EXTRA_KEY_RETUR = "retur";
-    public static final String EXTRA_KEY_COMPLAINT = "complaint";
     public static final String EXTRA_KEY_FINISHED = "done";
+    public static final String NO_TAB_ACTIVE = "";
+
+    public static final String EXTRA_FILTER_WAITING_PICKUP = "waiting_pickup";
+    public static final String EXTRA_FILTER_WAITING_AWB = "waiting_awb";
+    public static final String EXTRA_FILTER_AWB_INVALID = "awb_invalid";
+    public static final String EXTRA_FILTER_AWB_CHANGE = "awb_change";
+    public static final String EXTRA_FILTER_RETUR = "retur";
+    public static final String EXTRA_FILTER_COMPLAINT = "complaint";
+    public static final String NO_FILTER = "";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
@@ -187,47 +190,47 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @DeepLink(ApplinkConst.SELLER_HISTORY)
     public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.HISTORY, EXTRA_KEY_ALL_ORDER);
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.HISTORY, EXTRA_KEY_ALL_ORDER, NO_FILTER);
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_CANCELED)
     public static Intent getCallingIntentSellerCanceled(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.CANCELLED, EXTRA_KEY_CANCELLED);
-    }
-
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP)
-    public static Intent getCallingIntentSellerWaitingPickup(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_PICKUP, EXTRA_KEY_WAITING_PICKUP);
-    }
-
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_AWB)
-    public static Intent getCallingIntentSellerWaitingAwb(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_AWB, EXTRA_KEY_WAITING_AWB);
-    }
-
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_INVALID)
-    public static Intent getCallingIntentSellerAwbInvalid(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_INVALID, EXTRA_KEY_AWB_INVALID);
-    }
-
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE)
-    public static Intent getCallingIntentSellerAwbChange(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_CHANGE, EXTRA_KEY_AWB_CHANGE);
-    }
-
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_RETUR)
-    public static Intent getCallingIntentSellerRetur(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.RETUR, EXTRA_KEY_RETUR);
-    }
-
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_COMPLAINT)
-    public static Intent getCallingIntentSellerComplaint(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.COMPLAINT, EXTRA_KEY_COMPLAINT);
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.CANCELLED, EXTRA_KEY_CANCELLED, NO_FILTER);
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_FINISHED)
     public static Intent getCallingIntentSellerFinished(Context context, Bundle extras) {
-        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.FINISHED, EXTRA_KEY_FINISHED);
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.FINISHED, EXTRA_KEY_FINISHED, NO_FILTER);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP)
+    public static Intent getCallingIntentSellerWaitingPickup(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_PICKUP, NO_TAB_ACTIVE, EXTRA_FILTER_WAITING_PICKUP);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_AWB)
+    public static Intent getCallingIntentSellerWaitingAwb(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_AWB, NO_TAB_ACTIVE, EXTRA_FILTER_WAITING_AWB);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_INVALID)
+    public static Intent getCallingIntentSellerAwbInvalid(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_INVALID, NO_TAB_ACTIVE, EXTRA_FILTER_AWB_INVALID);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE)
+    public static Intent getCallingIntentSellerAwbChange(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_CHANGE, NO_TAB_ACTIVE, EXTRA_FILTER_AWB_CHANGE);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_RETUR)
+    public static Intent getCallingIntentSellerRetur(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.RETUR, NO_TAB_ACTIVE, EXTRA_FILTER_RETUR);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_COMPLAINT)
+    public static Intent getCallingIntentSellerComplaint(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.COMPLAINT, NO_TAB_ACTIVE, EXTRA_FILTER_COMPLAINT);
     }
 
     @DeepLink(ApplinkConst.SellerApp.SALES)
@@ -243,7 +246,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
-    private static Intent handleApplinkWithDefaultFallback(Context context, Bundle extras, String internalApplink, String filter) {
+    private static Intent handleApplinkWithDefaultFallback(Context context, Bundle extras, String internalApplink, String tabActive, String filterStatus) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, ActivitySellingTransaction.class)
@@ -256,7 +259,8 @@ public class ActivitySellingTransaction extends TkpdActivity
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
             if (true) {
                 return RouteManager.getIntent(context, internalApplink)
-                        .putExtra(EXTRA_TAB_ACTIVE, filter);
+                        .putExtra(EXTRA_TAB_ACTIVE, tabActive)
+                        .putExtra(EXTRA_FILTER_STATUS, filterStatus);
             } else {
                 return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
             }

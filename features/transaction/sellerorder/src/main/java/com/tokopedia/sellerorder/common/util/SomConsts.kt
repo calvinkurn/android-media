@@ -26,6 +26,7 @@ object SomConsts {
 
     const val TAB_ACTIVE = "tab_active"
     const val TAB_STATUS = "tab_status"
+    const val FILTER_STATUS = "filter_status"
     const val FILTER_TYPE_CHECKBOX = "checkbox"
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
@@ -132,12 +133,10 @@ object SomConsts {
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"
 
-    const val EXTRA_KEY_CANCELLED = "order_canceled"
     const val EXTRA_KEY_WAITING_PICKUP = "waiting_pickup"
     const val EXTRA_KEY_WAITING_AWB = "waiting_awb"
     const val EXTRA_KEY_AWB_INVALID = "awb_invalid"
     const val EXTRA_KEY_AWB_CHANGE = "awb_change"
     const val EXTRA_KEY_RETUR = "retur"
     const val EXTRA_KEY_COMPLAINT = "complaint"
-    const val EXTRA_KEY_FINISHED = "done"
 }
