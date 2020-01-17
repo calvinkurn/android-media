@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.hold_balance_info_item.view.*
 class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind1(list: SellerDataItem) {
-        if (list.invoice?.length==0) {
+        if (list.invoice?.length == 0) {
             itemView.tv_invoice.visibility = View.GONE
         } else {
             itemView.tv_invoice.text = list.invoice
@@ -19,7 +19,7 @@ class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
         itemView.tv_valueLiquidOnDate.text = list.releaseDate
 
         itemView.tv_reasonTitle.text = list.reasonTitle
-        if (list.reason?.isEmpty()!!) {
+        if (list.reason?.length == 0) {
             itemView.tv_valueReason.visibility = View.GONE
         } else {
             itemView.tv_valueReason.text = list.reason
@@ -27,7 +27,7 @@ class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     }
 
     fun bind2(list: BuyerDataItem) {
-        if (list.invoice?.length==0) {
+        if (list.invoice?.length == 0) {
             itemView.tv_invoice.visibility = View.GONE
         } else {
             itemView.tv_invoice.text = list.invoice
@@ -38,7 +38,7 @@ class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 
         itemView.tv_reasonTitle.text = list.reasonTitle
 
-        if (list.reason?.isEmpty()!!) {
+        if (list.reason?.length == 0) {
             itemView.tv_valueReason.visibility = View.GONE
         } else {
             itemView.tv_valueReason.text = list.reason
