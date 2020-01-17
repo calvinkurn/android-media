@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/promo_list_widget"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
