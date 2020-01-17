@@ -27,12 +27,13 @@ class PlaySocketMapperTest {
 
     @Test
     fun mappingTotalLike() {
-        val type = PlaySocketType.TotalClick.value
+        val type = PlaySocketType.TotalLike.value
         val jsonObject = JsonObject()
-        jsonObject.addProperty("total_click", "20")
+        jsonObject.addProperty("total_like", 20)
+        jsonObject.addProperty("total_like_formatted", "20k")
 
         val actual = actual(type, jsonObject)
-        val expected = TotalLike("20")
+        val expected = TotalLike(20, "20k")
 
         Assert.assertNotNull(actual)
         Assert.assertTrue(actual is TotalLike)
@@ -43,10 +44,11 @@ class PlaySocketMapperTest {
     fun mappingTotalView() {
         val type = PlaySocketType.TotalView.value
         val jsonObject = JsonObject()
-        jsonObject.addProperty("total_view", "20")
+        jsonObject.addProperty("total_view", 20)
+        jsonObject.addProperty("total_view_formatted", "20k")
 
         val actual = actual(type, jsonObject)
-        val expected = TotalView("20")
+        val expected = TotalView(20, "20k")
 
         Assert.assertNotNull(actual)
         Assert.assertTrue(actual is TotalView)
