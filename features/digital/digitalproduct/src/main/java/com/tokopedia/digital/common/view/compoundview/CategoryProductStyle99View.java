@@ -307,7 +307,7 @@ public class CategoryProductStyle99View extends
 
             @Override
             public void onButtonContactPickerClicked() {
-
+                actionListener.onButtonContactPickerClicked();
             }
 
             @Override
