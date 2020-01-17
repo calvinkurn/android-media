@@ -53,7 +53,7 @@
             android:id="@+id/tg_hotel_homepage_prefix_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_14"
             android:textColor="@color/Neutral_N700_44"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
