@@ -14,8 +14,6 @@ import rx.Subscriber
  */
 
 class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
-                                              val presenter: ICartListPresenter,
-                                              val checkPromoCodeStackingCodeMapper: CheckPromoStackingCodeMapper,
                                               val type: String) : Subscriber<ResponseGetPromoStackUiModel>() {
     private val STATUS_OK = "OK"
 

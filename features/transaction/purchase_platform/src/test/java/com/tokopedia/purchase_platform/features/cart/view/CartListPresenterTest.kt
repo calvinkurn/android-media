@@ -54,11 +54,12 @@ class CartListPresenterTest : Spek({
         val cartListPresenter by memoized {
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
-                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase, TestSchedulers
+                    checkPromoStackingCodeUseCase, compositeSubscription, addWishListUseCase,
+                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
+                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
+                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
+                    seamlessLoginUsecase, TestSchedulers
             )
         }
 

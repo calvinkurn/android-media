@@ -59,7 +59,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val deleteCartUseCase: DeleteCartUseCase?,
                                             private val updateCartUseCase: UpdateCartUseCase?,
                                             private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase?,
-                                            private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                             private val compositeSubscription: CompositeSubscription,
                                             private val addWishListUseCase: AddWishListUseCase?,
                                             private val removeWishListUseCase: RemoveWishListUseCase?,
@@ -596,7 +595,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 view.showProgressLoading()
                 checkPromoStackingCodeUseCase?.setParams(promo)
                 checkPromoStackingCodeUseCase?.createObservable(RequestParams.create())
-                        ?.subscribe(CheckPromoFirstStepAfterClashSubscriber(this.view, this, checkPromoStackingCodeMapper, type))
+                        ?.subscribe(CheckPromoFirstStepAfterClashSubscriber(this.view, type))
             }
         }
     }
