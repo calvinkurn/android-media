@@ -877,11 +877,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE).apply {
-            putExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
-            putExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, opponentName)
-        }
-        startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
+        analytics.trackChatMenuClicked(menu.label)
+        pickInvoiceToUpload()
     }
 
     private fun pickVoucherToUpload() {
@@ -889,6 +886,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId.toString())
         }
         startActivityForResult(intent, REQUEST_ATTACH_VOUCHER)
+    }
+
+    private fun pickInvoiceToUpload() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE).apply {
+            putExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
+            putExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, opponentName)
+        }
+        startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
     }
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
