@@ -430,7 +430,7 @@ class TrackingHotelUtil {
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = ACTION_LAST_SEARCH_IMPRESSION
         map[EVENT_LABEL] = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
-        map[ECOMMERCE_LABEL] = getECommerceDataLastSearch(lastSearchItems, position)
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_VIEW, getECommerceDataLastSearch(lastSearchItems, position))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -441,13 +441,13 @@ class TrackingHotelUtil {
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = ACTION_LAST_SEARCH_CLICK
         map[EVENT_LABEL] = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
-        map[ECOMMERCE_LABEL] = getECommerceDataLastSearch(lastSearchItems, position)
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_CLICK, getECommerceDataLastSearch(lastSearchItems, position))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
     private fun getECommerceDataLastSearch(lastSearchItems: TravelRecentSearchModel.Item, position: Int): MutableMap<String, Any> {
-        return DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(
+        return DataLayer.mapOf(
                 PROMOTIONS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         ID_LABEL, position + 1,
@@ -455,7 +455,7 @@ class TrackingHotelUtil {
                         CREATIVE_LABEL, lastSearchItems.appUrl,
                         POSITION_LABEL, position + 1,
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
-                ))))
+                )))
     }
 
     private fun convertDate(date: String): String =
