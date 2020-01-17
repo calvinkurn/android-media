@@ -63,13 +63,12 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
         view.hide()
     }
 
-    fun playLikeAnimation(shouldLike: Boolean) {
-        if (!shouldLike) animationLike.progress = 0f
-        else animationLike.playAnimation()
-    }
-
-    fun setIsLiked(isLiked: Boolean) {
-        animationLike.progress = if (isLiked) END_ANIMATED_PROGRESS else START_ANIMATED_PROGRESS
+    fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
+        if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
+        else {
+            if (animate) animationLike.playAnimation()
+            else animationLike.progress = END_ANIMATED_PROGRESS
+        }
     }
 
     interface Listener {

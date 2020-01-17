@@ -20,6 +20,7 @@ import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.toCompactAmountString
 import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.type.PlayVideoType
 import com.tokopedia.play.view.uimodel.*
@@ -50,47 +51,47 @@ class PlayViewModel @Inject constructor(
 
     val observableVOD: LiveData<ExoPlayer>
         get() = _observableVOD
+    val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
+        get() = _observableGetChannelInfo
+    val observableVideoStream: LiveData<VideoStreamUiModel>
+        get() = _observableVideoStream
+    val observableSocketInfo: LiveData<PlaySocketInfo>
+        get() = _observableSocketInfo
+    val observableNewChat: LiveData<PlayChatUiModel>
+        get() = _observableNewChat
+    val observableTotalLikes: LiveData<TotalLikeUiModel>
+        get() = _observableTotalLikes
+    val observableIsLikeContent: LiveData<Boolean>
+        get() = _observableIsLikeContent
+    val observableTotalViews: LiveData<TotalViewUiModel>
+        get() = _observableTotalViews
+    val observablePartnerInfo: LiveData<PartnerInfoUiModel>
+        get() = _observablePartnerInfo
+    val observableQuickReply: LiveData<QuickReplyUiModel>
+        get() = _observableQuickReply
+    val observableEvent: LiveData<EventUiModel>
+        get() = _observableEvent
+    val observableKeyboardState: LiveData<KeyboardState>
+        get() = _observableKeyboardState
+    val observablePinnedMessage: LiveData<PinnedMessageUiModel>
+        get() = _observablePinnedMessage
+    val observableVideoProperty: LiveData<VideoPropertyUiModel>
+        get() = _observableVideoProperty
+
     private val _observableVOD = MutableLiveData<ExoPlayer>()
-
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
-    val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>> = _observableGetChannelInfo
-
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
-    val observableVideoStream: LiveData<VideoStreamUiModel> = _observableVideoStream
-
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
-    val observableSocketInfo: LiveData<PlaySocketInfo> = _observableSocketInfo
-
     private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
-    val observableNewChat: LiveData<PlayChatUiModel> = _observableNewChat
-
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
-    val observableTotalLikes: LiveData<TotalLikeUiModel> = _observableTotalLikes
-
     private val _observableIsLikeContent = MutableLiveData<Boolean>()
-    val observableIsLikeContent: LiveData<Boolean> = _observableIsLikeContent
-
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
-    val observableTotalViews: LiveData<TotalViewUiModel> = _observableTotalViews
-
     private val _observablePartnerInfo: MutableLiveData<PartnerInfoUiModel> = MutableLiveData()
-    val observablePartnerInfo: LiveData<PartnerInfoUiModel> = _observablePartnerInfo
-
     private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
-    val observableQuickReply: LiveData<QuickReplyUiModel> = _observableQuickReply
-
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    val observableEvent: LiveData<EventUiModel> = _observableEvent
-
     private val _observableKeyboardState = MutableLiveData<KeyboardState>()
-    val observableKeyboardState: LiveData<KeyboardState> = _observableKeyboardState
-
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
-    val observablePinnedMessage: LiveData<PinnedMessageUiModel> = _observablePinnedMessage
-
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
-    val observableVideoProperty: LiveData<VideoPropertyUiModel> = _observableVideoProperty
-
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.videoType, _observableVideoProperty.value?.state
@@ -109,6 +110,9 @@ class PlayViewModel @Inject constructor(
             if (it.isFreeze) doOnChannelFreeze()
         }
     }
+
+    private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
+    private val amountStringStepArray = arrayOf("k", "m")
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -202,16 +206,6 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTotalLikes(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
-        getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
-        getTotalLikeUseCase.executeOnBackground()
-    }
-
-    private suspend fun getIsLike(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
-        getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
-        getIsLikeUseCase.executeOnBackground()
-    }
-
     fun destroy() {
         playSocket.destroy()
     }
@@ -232,6 +226,27 @@ class PlayViewModel @Inject constructor(
                     )
             )
         })
+    }
+
+    fun changeLikeCount(shouldLike: Boolean) {
+        val currentTotalLike = _observableTotalLikes.value ?: TotalLikeUiModel.empty()
+        if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLike.totalLikeFormatted)) {
+            val finalTotalLike = currentTotalLike.totalLike + (if (shouldLike) 1 else -1)
+            _observableTotalLikes.value = TotalLikeUiModel(
+                    finalTotalLike,
+                    finalTotalLike.toCompactAmountString(amountStringStepArray)
+            )
+        }
+    }
+
+    private suspend fun getTotalLikes(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
+        getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, isLive)
+        getTotalLikeUseCase.executeOnBackground()
+    }
+
+    private suspend fun getIsLike(contentId: Int, contentType: Int) = withContext(dispatchers.io) {
+        getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
+        getIsLikeUseCase.executeOnBackground()
     }
 
     private fun getPartnerInfo(channel: Channel) {

@@ -299,7 +299,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.IsLikedContent(it)
+                                ScreenStateEvent.LikeContent(it, false)
                         )
             }
         })
@@ -475,7 +475,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             PlayToolbarInteractionEvent.BackButtonClicked -> doLeaveRoom()
-                            is PlayToolbarInteractionEvent.FollowButtonClicked -> doActionFollowShop(it.partnerId, it.action)
+                            is PlayToolbarInteractionEvent.FollowButtonClicked -> doClickFollow(it.partnerId, it.action)
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
                         }
@@ -861,9 +861,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun doActionFollowShop(partnerId: Long, action: PartnerFollowAction) {
+    private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
         PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), playViewModel.isLive)
         viewModel.doFollow(partnerId, action)
+
+        sendEventFollowPartner(action == PartnerFollowAction.Follow)
+    }
+
+    private fun sendEventFollowPartner(shouldFollow: Boolean) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.FollowPartner(shouldFollow)
+                    )
+        }
     }
 
     private fun showMoreActionBottomSheet() {
@@ -892,6 +904,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
     }
 
+    private fun doClickFollow(partnerId: Long, followAction: PartnerFollowAction) {
+        viewModel.doInteractionEvent(InteractionEvent.Follow(partnerId, followAction))
+    }
+
     private fun doSendChat(message: String) {
         playViewModel.sendChat(message)
     }
@@ -907,6 +923,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         when (event) {
             InteractionEvent.SendChat -> sendEventComposeChat()
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
+            is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
         }
     }
 
@@ -921,6 +938,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
+        //Used to show mock like when user click like
+        playViewModel.changeLikeCount(shouldLike)
+
         viewModel.doLikeUnlike(playViewModel.contentId,
                 playViewModel.contentType,
                 playViewModel.likeType,
@@ -936,7 +956,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.LikeContent(shouldLike)
+                            ScreenStateEvent.LikeContent(shouldLike, true)
                     )
         }
     }

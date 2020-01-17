@@ -10,6 +10,9 @@ import com.tokopedia.play.view.uimodel.*
  */
 sealed class ScreenStateEvent : ComponentEvent {
 
+    /**
+     * Setter
+     */
     data class SetVideo(val videoPlayer: ExoPlayer) : ScreenStateEvent()
     data class SetChannelTitle(val title: String): ScreenStateEvent()
     data class SetPartnerInfo(val partnerInfo: PartnerInfoUiModel): ScreenStateEvent()
@@ -17,15 +20,31 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetTotalLikes(val totalLikes: TotalLikeUiModel): ScreenStateEvent()
     data class SetPinned(val pinnedMessage: PinnedMessageUiModel) : ScreenStateEvent()
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
+    /**
+     * Chat
+     */
     data class IncomingChat(val chat: PlayChatUiModel) : ScreenStateEvent()
     object ComposeChat : ScreenStateEvent()
-    object ShowOneTapOnboarding : ScreenStateEvent()
-    data class LikeContent(val shouldLike: Boolean) : ScreenStateEvent()
-    data class IsLikedContent(val isLiked: Boolean) : ScreenStateEvent()
+    /**
+     * Like
+     */
+    data class LikeContent(val shouldLike: Boolean, val animate: Boolean) : ScreenStateEvent()
+    /**
+     * Follow
+     */
+    data class FollowPartner(val shouldFollow: Boolean) : ScreenStateEvent()
+    /**
+     * Keyboard
+     */
+    data class KeyboardStateChanged(val isShown: Boolean) : ScreenStateEvent()
+    /**
+     * Video
+     */
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
-    data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
-    object NoActionMore : ScreenStateEvent()
 
-    data class KeyboardStateChanged(val isShown: Boolean) : ScreenStateEvent()
+    data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
+
+    object NoActionMore : ScreenStateEvent()
+    object ShowOneTapOnboarding : ScreenStateEvent()
 }
