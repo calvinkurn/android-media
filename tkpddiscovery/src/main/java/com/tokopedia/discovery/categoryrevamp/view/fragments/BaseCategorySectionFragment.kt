@@ -220,6 +220,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     protected fun renderDynamicFilter(data: DataValue) {
+        clearDataFilterSort()
         setFilterData(data.filter)
         setSortData(data.sort)
         if (filterController == null || searchParameter == null
@@ -373,8 +374,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
                 selectedSort?.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
                 }
-
-                clearDataFilterSort()
                 reloadData()
                 sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort?.get("ob")?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
@@ -455,7 +454,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         removeFilterFromFilterController(option)
         refreshSearchParameter(filterController.getParameter())
         refreshFilterController(HashMap(filterController.getParameter()))
-        clearDataFilterSort()
         reloadData()
     }
 

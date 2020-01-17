@@ -437,7 +437,6 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         resetPage()
         fetchProducts(getPage())
         fetchRelatedLink()
-        findNavViewModel.fetchQuickFilterList(findSearchParam)
     }
 
     override fun getDepartMentId(): String {

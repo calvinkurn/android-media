@@ -137,7 +137,7 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         }
         findNavFragment.applyFilterToSearchParameter(filterParameter)
         findNavFragment.setSelectedFilter(HashMap(filterParameter))
-        findNavFragment.clearDataFilterSort()
+//        findNavFragment.clearDataFilterSort()
         findNavFragment.reloadData()
     }
 
