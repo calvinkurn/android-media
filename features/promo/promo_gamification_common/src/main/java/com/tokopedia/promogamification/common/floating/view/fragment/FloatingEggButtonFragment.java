@@ -97,6 +97,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private boolean isMinimized;
     volatile boolean isRight = true;
 
+    String sumTokenString;
+    long timeRemainingSeconds;
+    boolean isShowTime = false;
+
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
     }
@@ -384,14 +388,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     @Override
     public void onSuccessGetToken(GamiFloatingButtonEntity tokenData) {
-        final String sumTokenString = tokenData.getSumTokenStr();
+        sumTokenString = tokenData.getSumTokenStr();
 
         FloatingCtaEntity tokenFloating = tokenData.getCta();
         final String pageUrl = tokenFloating.getUrl();
         final String appLink = tokenFloating.getAppLink();
 
-        final long timeRemainingSeconds = tokenData.getTimeRemainingSeconds();
-        final boolean isShowTime = tokenData.isShowTime();
+        timeRemainingSeconds = tokenData.getTimeRemainingSeconds();
+        isShowTime = tokenData.isShowTime();
         String imageUrl = tokenData.getImgURL();
 
         needHideFloatingToken = TextUtils.isEmpty(imageUrl);
