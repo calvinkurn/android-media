@@ -759,6 +759,7 @@ final class ProductListPresenter
         }
 
         getView().storeTotalData(productViewModel.getTotalData());
+        getView().updateScrollListener();
 
         if (isFirstTimeLoad) {
             getViewToSendTrackingOnFirstTimeLoad(productViewModel);
