@@ -1,7 +1,7 @@
 package com.tokopedia.flight.common.data.source.cloud.api;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
