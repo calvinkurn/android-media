@@ -325,9 +325,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun playVideoStream(channel: Channel) {
-        if (channel.isActive) {
-            startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
-        }
+        if (channel.isActive) initiateVideo(channel)
     }
 
     private fun setStateLiveOrVod(channel: Channel) {
@@ -418,6 +416,12 @@ class PlayViewModel @Inject constructor(
 
     private fun stopPlayer() {
         playManager.stopPlayer()
+    }
+
+    private fun initiateVideo(channel: Channel) {
+        startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
+        playManager.muteVideo(false)
+        playManager.setRepeatMode(false)
     }
 
     //region mock

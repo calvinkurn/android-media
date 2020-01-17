@@ -30,6 +30,9 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
 
+        private const val VIDEO_MAX_SOUND = 100f
+        private const val VIDEO_MIN_SOUND = 0f
+
         @Volatile
         private var INSTANCE: TokopediaPlayManager? = null
 
@@ -74,7 +77,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
     }
 
-    val videoPlayer: ExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
+    val videoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
         addListener(playerEventListener)
     }
 
@@ -116,6 +119,22 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     fun getDurationVideo(): Long {
         return videoPlayer.duration
+    }
+
+    fun isVideoMuted(): Boolean {
+        return videoPlayer.volume == VIDEO_MIN_SOUND
+    }
+
+    fun muteVideo(shouldMute: Boolean) {
+        videoPlayer.volume = if (shouldMute) VIDEO_MIN_SOUND else VIDEO_MAX_SOUND
+    }
+
+    fun setRepeatMode(shouldRepeat: Boolean) {
+        videoPlayer.repeatMode = if(shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
+    }
+
+    fun isVideoRepeat(): Boolean {
+        return videoPlayer.repeatMode != Player.REPEAT_MODE_OFF
     }
     //endregion
 
