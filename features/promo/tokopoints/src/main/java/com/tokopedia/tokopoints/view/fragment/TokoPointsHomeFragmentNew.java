@@ -48,13 +48,11 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
-import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
@@ -441,7 +439,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 }
             } else {
                 if (getActivity() != null) {
-                    RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                    RouteManager.route(getActivity(), ApplinkConst.Gamification.CRACK);
                 }
             }
 
