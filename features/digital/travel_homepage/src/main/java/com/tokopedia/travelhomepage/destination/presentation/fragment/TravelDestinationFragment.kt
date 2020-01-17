@@ -135,7 +135,10 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         indicator_banner_container.removeAllViews()
         for (count in 0 until imageCount) {
             val pointView = ImageView(context)
-            pointView.setPadding(5, 60, 5, 60)
+            pointView.setPadding(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
+                    resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60),
+                    resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
+                    resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60))
             if (count == 0) pointView.setImageResource(getIndicatorFocus())
             else pointView.setImageResource(getIndicator())
 
@@ -171,7 +174,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     display.getRealSize(size)
-                } else{
+                } else {
                     display.getSize(size)
                 }
             } catch (err: NoSuchMethodError) {
@@ -207,7 +210,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     }
 
     @SuppressLint("NewApi")
-    private fun getSoftButtonsBarHeight() : Int {
+    private fun getSoftButtonsBarHeight(): Int {
         // getRealMetrics is only available with API 17 and +
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             val metrics = DisplayMetrics();
