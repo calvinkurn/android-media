@@ -72,6 +72,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     lateinit var progressBar: ProgressBar
     lateinit var adapter: AccountAdapter
 
+    var isHaveStore: Boolean = false
+
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
     @Inject
@@ -249,6 +251,11 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun loginToken(account: UserDetail?, phone: String) {
         account?.let {
+            val shopDetail = it.shopDetail
+            if (shopDetail.name.isNotEmpty() &&
+                    shopDetail.id.isNotEmpty() &&
+                    shopDetail.domain.isNotEmpty()) isHaveStore = true
+
             when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {
                     if (phone.isNotEmpty()) {
@@ -276,7 +283,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             analytics.eventSuccessLoginPhoneNumber()
             setTrackingUserId(userId)
             setFCM()
-            it.setResult(Activity.RESULT_OK)
+
+            it.setResult(Activity.RESULT_OK, Intent()
+                    .putExtra(ApplinkConstInternalGlobal.PARAM_IS_HAVE_STORE, isHaveStore))
             it.finish()
         }
     }
@@ -370,7 +379,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun onGoToSecurityQuestion(): () -> Unit {
         return {
-            8
             activity?.let {
                 it.setResult(Activity.RESULT_OK, Intent().putExtra(PARAM_IS_SQ_CHECK, true))
                 it.finish()

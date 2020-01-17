@@ -1,0 +1,350 @@
+package com.tokopedia.loginregister.shopcreation.view.fragment
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Patterns
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
+import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_REGISTRATION_SHOP_CREATION
+import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
+import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
+import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionUpdate
+import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionValidate
+import com.tokopedia.profilecommon.domain.pojo.UserProfileUpdate
+import com.tokopedia.profilecommon.domain.pojo.UserProfileValidate
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
+
+/**
+ * Created by Ade Fulki on 2019-12-18.
+ * ade.hadian@tokopedia.com
+ */
+
+class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
+
+    lateinit var toolbarShopCreation: Toolbar
+    lateinit var buttonContinue: UnifyButton
+    lateinit var textFieldPhone: TextFieldUnify
+    lateinit var phone: String
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var shopCreationAnalytics: ShopCreationAnalytics
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val shopCreationViewModel by lazy { viewModelProvider.get(ShopCreationViewModel::class.java) }
+
+    override fun getScreenName(): String = SCREEN_REGISTRATION_SHOP_CREATION
+
+    override fun initInjector() = getComponent(ShopCreationComponent::class.java).inject(this)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_phone_shop_creation, container, false)
+        toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
+        buttonContinue = view.findViewById(R.id.btn_continue)
+        textFieldPhone = view.findViewById(R.id.text_field_phone)
+        return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        shopCreationAnalytics.trackScreen(screenName)
+    }
+
+    override fun getToolbar(): Toolbar = toolbarShopCreation
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+        initObserver()
+    }
+
+    private fun initView() {
+        textFieldPhone.textFieldInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                buttonContinue.isEnabled = isValidPhone(s.toString())
+            }
+        })
+
+        buttonContinue.setOnClickListener {
+            shopCreationAnalytics.eventClickContinuePhoneShopCreation()
+            phone = textFieldPhone.textFieldInput.text.toString().trim()
+            if(phone.isNotEmpty()){
+                phone = "0$phone"
+                buttonContinue.isLoading = true
+                if(userSession.isLoggedIn) {
+                    shopCreationViewModel.validateUserProfile(phone)
+                } else {
+                    shopCreationViewModel.registerCheck(phone)
+                }
+            } else {
+                emptyStatePhoneField()
+            }
+        }
+    }
+
+    private fun initObserver() {
+        shopCreationViewModel.addPhoneResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessAddPhone(it.data)
+                }
+                is Fail -> {
+                    onFailedAddPhone(it.throwable)
+                }
+            }
+        })
+        shopCreationViewModel.validateUserProfileResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessValidateUserProfile(it.data)
+                }
+                is Fail -> {
+                    onFailedValidateUserProfile(it.throwable)
+                }
+            }
+        })
+        shopCreationViewModel.registerCheckResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessRegisterCheck(it.data)
+                }
+                is Fail -> {
+                    onFailedRegisterCheck(it.throwable)
+                }
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                when (requestCode) {
+                    REQUEST_LOGIN_PHONE -> {
+                        data?.extras?.run {
+                            val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                            val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                            goToChooseAccountPage(accessToken, phoneNumber)
+                        }
+                    }
+                    REQUEST_REGISTER_PHONE -> {
+                        if(phone.isNotEmpty())
+                            goToRegisterAddNamePage(phone)
+                    }
+                    REQUEST_NAME_SHOP_CREARION -> {
+                        activity?.let {
+                            it.setResult(Activity.RESULT_OK)
+                            it.finish()
+                        }
+                    }
+                    REQUEST_COTP_PHONE_VERIFICATION -> {
+                        if(phone.isNotEmpty()) {
+                            shopCreationViewModel.addPhone(phone)
+                        } else {
+                            toastError(getString(R.string.please_fill_phone_number))
+                        }
+                    }
+                    REQUEST_CHOOSE_ACCOUNT -> {
+                        activity?.let {
+                            data?.run {
+                                it.setResult(Activity.RESULT_OK, this)
+                                it.finish()
+                            }
+                        }
+                    }
+                }
+            }
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+    }
+
+    private fun storeLocalSession(phone: String){
+        userSession.setIsMSISDNVerified(true)
+        userSession.phoneNumber = phone
+    }
+
+    private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
+        when(registerCheckData.registerType) {
+            PHONE_TYPE -> {
+                if (registerCheckData.isExist) {
+                    goToLoginPhoneVerifyPage(registerCheckData.view.replace("-", ""))
+                } else {
+                    goToRegisterPhoneVerifyPage(registerCheckData.view.replace("-", ""))
+                }
+            }
+            else -> invalidTypeStatePhoneField()
+        }
+
+        buttonContinue.isLoading = false
+    }
+
+    private fun onFailedRegisterCheck(throwable: Throwable) {
+        toastError(throwable)
+        buttonContinue.isLoading = false
+    }
+
+    private fun onSuccessAddPhone(userProfileUpdate: UserProfileUpdate) {
+        storeLocalSession(phone)
+        activity?.let {
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
+        }
+    }
+
+    private fun onFailedAddPhone(throwable: Throwable) {
+        toastError(throwable)
+    }
+
+    private fun onSuccessValidateUserProfile(userProfileValidate: UserProfileValidate) {
+        if(userProfileValidate.isValid && phone.isNotEmpty()) {
+            goToAddPhoneVerifyPage(phone)
+        } else {
+            toastError(getString(R.string.please_fill_phone_number))
+        }
+
+        buttonContinue.isLoading = false
+    }
+
+    private fun onFailedValidateUserProfile(throwable: Throwable) {
+        toastError(throwable)
+        buttonContinue.isLoading = false
+    }
+
+    private fun emptyStatePhoneField() {
+        setMessageFieldPhone(getString(R.string.please_fill_phone_number))
+    }
+
+    private fun invalidTypeStatePhoneField() {
+        setMessageFieldPhone(getString(R.string.phone_number_invalid))
+    }
+
+    private fun setMessageFieldPhone(message: String) {
+        textFieldPhone.setMessage(message)
+    }
+
+    private fun clearMessageFieldPhone() {
+        textFieldPhone.setMessage("")
+    }
+
+    private fun toastError (throwable: Throwable) {
+        throwable.message?.let { toastError(it) }
+    }
+
+    private fun toastError (message: String) {
+        view?.run {
+            Toaster.make(this, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun goToLoginPhoneVerifyPage(phone: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_LOGIN_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        startActivityForResult(intent, REQUEST_LOGIN_PHONE)
+    }
+
+    private fun goToRegisterPhoneVerifyPage(phone: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        startActivityForResult(intent, REQUEST_REGISTER_PHONE)
+    }
+
+    private fun goToAddPhoneVerifyPage(phoneNumber: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
+    }
+
+    private fun goToRegisterAddNamePage (phone: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
+
+        startActivityForResult(intent, REQUEST_NAME_SHOP_CREARION)
+    }
+
+    private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+        startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+    }
+
+    override fun onBackPressed(): Boolean {
+        shopCreationAnalytics.eventClickBackPhoneShopCreation()
+        return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shopCreationViewModel.addPhoneResponse.removeObservers(this)
+        shopCreationViewModel.validateUserProfileResponse.removeObservers(this)
+        shopCreationViewModel.registerCheckResponse.removeObservers(this)
+        shopCreationViewModel.clear()
+    }
+
+    companion object {
+
+        private const val REQUEST_LOGIN_PHONE = 112
+        private const val REQUEST_REGISTER_PHONE = 113
+        private const val REQUEST_NAME_SHOP_CREARION = 114
+        private const val REQUEST_COTP_PHONE_VERIFICATION = 115
+        private const val REQUEST_CHOOSE_ACCOUNT = 116
+
+        private const val OTP_TYPE_PHONE_VERIFICATION = 11
+        private const val OTP_TYPE_REGISTER_PHONE_NUMBER = 116
+        private const val OTP_TYPE_LOGIN_PHONE_NUMBER = 112
+        private const val PHONE_TYPE = "phone"
+
+        fun createInstance(bundle: Bundle): PhoneShopCreationFragment {
+            val fragment = PhoneShopCreationFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+
+        @JvmStatic
+        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() &&
+                phone.length >= 6
+    }
+}

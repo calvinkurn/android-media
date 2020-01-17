@@ -48,9 +48,11 @@ data class UserDetail(
         var msisdn_verified: Boolean = false,
         @SerializedName("image")
         @Expose
-        var image: String = ""
+        var image: String = "",
+        @SerializedName("shop_detail")
+        @Expose
+        var shopDetail: ShopDetail = ShopDetail()
 )
-
 
 data class Error(
         @SerializedName("name")
@@ -59,4 +61,16 @@ data class Error(
         @SerializedName("message")
         @Expose
         var message: String = ""
+)
+
+data class ShopDetail(
+        @SerializedName("id")
+        @Expose
+        var id: String = "",
+        @SerializedName("name")
+        @Expose
+        var name: String = "",
+        @SerializedName("domain")
+        @Expose
+        var domain: String = ""
 )

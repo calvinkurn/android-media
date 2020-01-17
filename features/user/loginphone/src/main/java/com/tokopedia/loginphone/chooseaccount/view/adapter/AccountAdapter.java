@@ -3,6 +3,7 @@ package com.tokopedia.loginphone.chooseaccount.view.adapter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginphone.R;
+import com.tokopedia.loginphone.chooseaccount.data.ShopDetail;
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail;
 import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract;
 
@@ -26,21 +28,25 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
     private ChooseAccountContract.ViewAdapter viewListener;
     private List<UserDetail> list;
     private String phone;
+    private Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView avatar;
-
         TextView name;
         TextView email;
+        TextView shopName;
+        View shopView;
         View mainView;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.avatar);
             name = itemView.findViewById(R.id.name);
             email = itemView.findViewById(R.id.email);
+            shopName = itemView.findViewById(R.id.shop_name);
             mainView = itemView.findViewById(R.id.main_view);
+            shopView = itemView.findViewById(R.id.shop_view);
 
             mainView.setOnClickListener(v -> viewListener.onSelectedAccount(list.get(getAdapterPosition()), phone));
         }
@@ -62,15 +68,24 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        context = parent.getContext();
         return new AccountAdapter.ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tokocash_account_layout, parent, false));
+                .inflate(R.layout.choose_login_phone_account_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.avatar, list.get(position).getImage());
-        holder.name.setText(MethodChecker.fromHtml(list.get(position).getFullname()));
-        holder.email.setText(list.get(position).getEmail());
+        UserDetail userDetail = list.get(position);
+        ImageHandler.loadImageCircle2(context, holder.avatar, userDetail.getImage());
+        holder.name.setText(MethodChecker.fromHtml(userDetail.getFullname()));
+        holder.email.setText(userDetail.getEmail());
+        ShopDetail shopDetail = userDetail.getShopDetail();
+        if(!shopDetail.getName().isEmpty() &&
+                !shopDetail.getId().isEmpty() &&
+                !shopDetail.getDomain().isEmpty()){
+            holder.shopView.setVisibility(View.VISIBLE);
+            holder.shopName.setText(userDetail.getShopDetail().getName());
+        }
     }
 
     @Override
