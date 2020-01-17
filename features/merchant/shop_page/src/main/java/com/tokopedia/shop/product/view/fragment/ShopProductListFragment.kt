@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst

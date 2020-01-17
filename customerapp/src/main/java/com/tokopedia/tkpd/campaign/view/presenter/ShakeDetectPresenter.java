@@ -13,7 +13,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;

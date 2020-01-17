@@ -23,7 +23,7 @@ import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler

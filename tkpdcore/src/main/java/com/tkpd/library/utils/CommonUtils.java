@@ -35,7 +35,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.network.constant.ResponseStatus;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 

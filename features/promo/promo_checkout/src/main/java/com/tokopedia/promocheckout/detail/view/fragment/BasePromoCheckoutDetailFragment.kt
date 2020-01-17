@@ -10,7 +10,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.CommonUtils

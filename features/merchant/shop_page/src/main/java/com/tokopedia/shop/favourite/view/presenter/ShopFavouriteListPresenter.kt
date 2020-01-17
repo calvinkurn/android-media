@@ -1,7 +1,7 @@
 package com.tokopedia.shop.favourite.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase

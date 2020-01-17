@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
+import com.tokopedia.network.constant.ResponseStatus;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 

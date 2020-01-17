@@ -3,7 +3,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
