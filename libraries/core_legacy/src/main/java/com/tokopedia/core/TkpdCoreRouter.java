@@ -80,6 +80,11 @@ public interface TkpdCoreRouter {
         return RouterUtils.getRouterFromContext(mContext).getInboxResCenterActivityClassReal();
     }
 
+    @Deprecated
+    static Intent getActivitySellingTransactionNewOrder(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getActivitySellingTransactionNewOrderReal(mContext);
+    }
+
     static Class<?> getInboxMessageActivityClass(Context mContext) {
         return RouterUtils.getRouterFromContext(mContext).getInboxMessageActivityClass();
     }
@@ -111,6 +116,8 @@ public interface TkpdCoreRouter {
     Class<?> getInboxMessageActivityClass();
 
     Class<?> getInboxResCenterActivityClassReal();
+
+    Intent getActivitySellingTransactionNewOrderReal(Context mContext);
 
     Intent getActivitySellingTransactionShippingStatusReal(Context mContext);
 

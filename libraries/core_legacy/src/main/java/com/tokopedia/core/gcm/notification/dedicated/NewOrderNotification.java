@@ -22,7 +22,7 @@ public class NewOrderNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, TkpdCoreRouter.getSellingActivityClass(mContext))
+              TkpdCoreRouter.getActivitySellingTransactionNewOrder(mContext)
         );
         mNotificationPass.classParentStack = TkpdCoreRouter.getSellingActivityClass(mContext);
         mNotificationPass.title = String.format(
