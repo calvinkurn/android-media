@@ -12,7 +12,6 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
