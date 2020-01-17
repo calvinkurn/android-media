@@ -67,6 +67,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
             }
         }
 
+        private fun getShopPageIntent(context: Context): Intent {
+            return if (isNewShopPageEnabled(context)) {
+                Intent(context, ShopPageActivity::class.java)
+            } else {
+                Intent(context, com.tokopedia.shop.oldpage.view.activity.ShopPageActivity::class.java)
+            }
+        }
+
         private fun openNewShopPageIfEnabled(context: Context) {
             if (isNewShopPageEnabled(context)) {
                 val intent = Intent(context, ShopPageActivity::class.java)
@@ -79,7 +87,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         @DeepLink(ApplinkConst.SHOP)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            return getShopInfoIntent(context)
+            return getShopPageIntent(context)
                     .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
                     .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                     .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
@@ -91,7 +99,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         @JvmStatic
         fun getCallingIntentHomeSelected(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return getShopInfoIntent(context)
+            return getShopPageIntent(context)
                     .setData(uri.build())
                     .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                     .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
