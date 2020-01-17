@@ -3,6 +3,8 @@ package com.tokopedia.webview;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -30,7 +32,19 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -337,6 +351,28 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
+    private void checkLocationPermission(GeolocationPermissions.Callback callback, String origin) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            permissionCheckerHelper = new PermissionCheckerHelper();
+            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(String permissionText) {
+                    callback.invoke(origin, false, false);
+                }
+
+                @Override
+                public void onNeverAskAgain(String permissionText) {
+                    callback.invoke(origin, false, false);
+                }
+
+                @Override
+                public void onPermissionGranted() {
+                    callback.invoke(origin, true, false);
+                }
+            }, getString(R.string.webview_rationale_need_location));
+        } else callback.invoke(origin, true, false);
+    }
+
     void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage) {
         uploadMessageBeforeLolipop = uploadMessage;
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
@@ -345,25 +381,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
-    private void checkLocationPermission(GeolocationPermissions.Callback callback, String origin) {
-        permissionCheckerHelper = new PermissionCheckerHelper();
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
-            @Override
-            public void onPermissionDenied(String permissionText) {
-                callback.invoke(origin, false, false);
-            }
-
-            @Override
-            public void onNeverAskAgain(String permissionText) {
-                callback.invoke(origin, false, false);
-            }
-
-            @Override
-            public void onPermissionGranted() {
-                callback.invoke(origin, true, false);
-            }
-        }, getString(R.string.webview_rationale_need_location));
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -523,4 +540,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     protected String getScreenName() {
         return null;
     }
+
+    public interface OnLocationRequestListener {
+        void onLocationPermissionRequested(GeolocationPermissions.Callback callback, String origin);
+    }
+
 }
