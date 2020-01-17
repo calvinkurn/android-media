@@ -19,8 +19,4 @@ public interface GraphqlApi {
     @POST("./")
     @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
     Observable<JsonArray> getResponse(@Body List<GraphqlRequest> requestObject);
-
-    @POST("./")
-    @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
-    Deferred<JsonArray> getResponseDeferred(@Body List<GraphqlRequest> requestObject);
 }

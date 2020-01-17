@@ -3,9 +3,9 @@ package com.tokopedia.gm.featured.view.adapter;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
