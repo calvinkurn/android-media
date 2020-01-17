@@ -556,6 +556,11 @@ class ShopPageFragment :
                         getString(R.string.shop_info_title_tab_info))
             }
         }
+        if (isOfficialStore && tabPosition == 0) {
+            tabPosition = 1
+        } else if (isOfficialStore && tabPosition == TAB_POSITION_OS_HOME) {
+            tabPosition = 0
+        }
         val selectedPosition = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         viewPagerAdapter.setTabData(generateTabData())
         viewPagerAdapter.notifyDataSetChanged()
@@ -563,11 +568,6 @@ class ShopPageFragment :
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
             }
-        }
-        if (isOfficialStore && tabPosition == 0) {
-            tabPosition = 1
-        } else if (isOfficialStore && tabPosition == TAB_POSITION_OS_HOME) {
-            tabPosition = 0
         }
         setViewState(VIEW_CONTENT)
         viewPager.currentItem = selectedPosition
