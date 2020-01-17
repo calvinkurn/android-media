@@ -82,7 +82,6 @@ class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<OldShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener {
-    override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {}
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -735,7 +734,7 @@ class ShopPageFragment :
         }
     }
 
-    fun goToChatSeller() {
+    private fun goToChatSeller() {
         context?.let { context ->
             (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                 shopPageTracking.clickMessageSeller(CustomDimensionShopPage.create(it.shopCore.shopID,
@@ -770,6 +769,14 @@ class ShopPageFragment :
         }
     }
 
+    override fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence) {
+        context?.let{
+            RouteManager.route(it, linkUrl.toString())
+        }
+    }
+
+    override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {}
+
     private fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
                                           isShopOfficaial: Boolean, isFollowed: Boolean) {
         TrackApp.getInstance().moEngage.sendTrackEvent(mapOf(
@@ -784,14 +791,6 @@ class ShopPageFragment :
                     "Seller_Removed_From_Favorite")
     }
 
-    override fun openShop() {
-        context?.run {
-            shopPageTracking.sendOpenShop();
-            RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
-        }
-    }
-
-
     private fun onErrorModerateListener(e: Throwable?) {
         activity?.run {
             val errorMessage = if (e == null) {
@@ -802,32 +801,6 @@ class ShopPageFragment :
             ToasterError.make(window.decorView.rootView, errorMessage, BaseToaster.LENGTH_INDEFINITE)
                     .setAction(R.string.title_ok) {}
                     .show()
-        }
-    }
-
-    private fun onSuccessModerateListener() {
-        activity?.run {
-            ToasterNormal.make(window.decorView.rootView, getString(R.string.moderate_shop_success), BaseToaster.LENGTH_LONG)
-                    .setAction(R.string.title_ok) {}
-                    .show()
-        }
-    }
-
-    override fun requestOpenShop(shopId: Int, moderateNotes: String) {
-        if (moderateNotes.isNotEmpty()) {
-            shopViewModel.moderateShopRequest(shopId, moderateNotes, this::onSuccessModerateListener, this::onErrorModerateListener)
-        }
-    }
-
-    override fun goToHowActivate() {
-        context?.run {
-            ShopWebViewActivity.startIntent(this, ShopUrl.SHOP_HELP_CENTER)
-        }
-    }
-
-    override fun goToHelpCenter(url: String) {
-        context?.run {
-            ShopWebViewActivity.startIntent(this, url)
         }
     }
 
@@ -873,17 +846,6 @@ class ShopPageFragment :
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
             viewPager.setPadding(0, 0, 0, 0)
-        }
-    }
-
-    private fun redirectToSettingProfileShop() {
-        view?.run {
-            Toaster.make(
-                    this,
-                    "To Shop Profile Setting",
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-            )
         }
     }
 }

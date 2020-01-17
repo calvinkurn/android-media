@@ -130,6 +130,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 when (shopInfo.statusInfo.shopStatus) {
                     ShopStatusDef.CLOSED -> {
+                        shopPageTracking.sendOpenShop()
                         shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage
                                 .create(shopInfo.shopCore.shopID,
                                         shopInfo.goldOS.isOfficial == 1,
