@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.dialog;
+package com.tokopedia.product.manage.item.video.view.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
