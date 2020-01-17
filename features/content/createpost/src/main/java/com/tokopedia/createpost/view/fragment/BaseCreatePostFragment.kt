@@ -180,6 +180,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         initVar(savedInstanceState)
         initView()
         if (userSession.isLoggedIn) {
+            presenter.getFollowersCount(isTypeAffiliate())
+            presenter.invalidateShareOptions()
             if (viewModel.isEditState){
                 presenter.getFeedDetail(viewModel.postId, isTypeAffiliate())
             } else {
