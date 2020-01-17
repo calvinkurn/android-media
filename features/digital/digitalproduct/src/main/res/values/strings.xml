@@ -30,7 +30,6 @@
     <string name="error_message_ussd_msg_not_parsed">Mohon maaf, pengecekan sisa pulsa anda tidak dapat dilakukan</string>
     <string name="error_message_ussd_operator_not_matched">Maaf, nomor yang dimasukan tidak sesuai dengan operator SIM anda</string>
     <string name="message_ussd_title">Cek Sisa Pulsa</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="dialog_accessibility_service_on">Harap berikan akses untuk membaca nomor Anda.\n Aksesibilitas > Tokopedia > Aktif </string>
     <string name="msg_ussd_sim_balance">Mohon pastikan nomor Anda sudah terisi dengan benar.</string>
     <string name="msg_ussd_sim_number">Nomor Anda tidak terdeteksi, mohon masukkan nomor <b>%1$s</b> dalam perangkat ini:</string>

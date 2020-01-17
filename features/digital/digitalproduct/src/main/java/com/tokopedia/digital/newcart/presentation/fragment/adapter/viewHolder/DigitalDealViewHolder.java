@@ -16,7 +16,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealAc
 
 public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_digital_deal;
+    public static final int LAYOUT = R.layout.view_digital_item_deals;
 
     private AppCompatImageView dealImageView;
     private AppCompatTextView brandTextView;

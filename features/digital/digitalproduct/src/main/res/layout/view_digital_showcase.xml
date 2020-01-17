@@ -4,7 +4,7 @@
     android:id="@+id/view_group_tutor_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/border_button_rounded"
+    android:background="@drawable/digital_border_button_rounded"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatTextView

@@ -26,7 +26,7 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.adapter.AutoCompleteTVAdapter;
+import com.tokopedia.digital.common.adapter.DigitalAutoCompleteTVAdapter;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class ClientNumberInputView extends LinearLayout {
     private TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
-    private AutoCompleteTVAdapter autoCompleteTVAdapter;
+    private DigitalAutoCompleteTVAdapter digitalAutoCompleteTVAdapter;
     private ClientNumber clientNumber;
 
     public ClientNumberInputView(Context context) {
@@ -66,7 +66,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     private void init(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_holder_digital_client_number_input, this, true);
 
         tvLabel = findViewById(R.id.tv_label_client_number);
         autoCompleteTextView = findViewById(R.id.ac_client_number);
@@ -100,8 +100,8 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     public void setAdapterAutoCompleteClientNumber(List<OrderClientNumber> numberList) {
-        autoCompleteTVAdapter = new AutoCompleteTVAdapter(getContext(), R.layout.item_autocomplete, numberList);
-        autoCompleteTextView.setAdapter(autoCompleteTVAdapter);
+        digitalAutoCompleteTVAdapter = new DigitalAutoCompleteTVAdapter(getContext(), R.layout.view_digital_item_autocomplete, numberList);
+        autoCompleteTextView.setAdapter(digitalAutoCompleteTVAdapter);
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setOnItemClickListener(getItemClickListener());
     }
@@ -216,7 +216,7 @@ public class ClientNumberInputView extends LinearLayout {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                OrderClientNumber orderClientNumber = autoCompleteTVAdapter.getItem(position);
+                OrderClientNumber orderClientNumber = digitalAutoCompleteTVAdapter.getItem(position);
                 actionListener.onItemAutocompletedSelected(orderClientNumber);
             }
         };

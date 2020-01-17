@@ -50,7 +50,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="end|center"
                 android:layout_marginBottom="@dimen/dp_5"
-                android:background="@drawable/green_button"
+                android:background="@drawable/digital_green_button"
                 android:gravity="center"
                 android:paddingBottom="@dimen/dp_10"
                 android:paddingLeft="@dimen/dp_15"

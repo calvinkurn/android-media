@@ -57,7 +57,7 @@ public class ETollCardInfoView extends FrameLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(context).inflate(R.layout.view_etoll_card_info, this, true);
+        View view = LayoutInflater.from(context).inflate(R.layout.view_digital_etoll_card_info, this, true);
 
         textLabelBalance = view.findViewById(R.id.text_label_balance);
         textRemainingBalance = view.findViewById(R.id.text_remaining_balance);

@@ -66,7 +66,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         DigitalCheckoutPassData cartPassData = null;
         DigitalSubscriptionParams subParams = null;
 
-        if (uriData.getHost().equals(DeeplinkConstant.SCHEME_INTERNAL)) {
+        if (uriData.getScheme().equals(DeeplinkConstant.SCHEME_INTERNAL)) {
             cartPassData = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
             subParams = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA);
         } else {
@@ -97,7 +97,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     private void inflateFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent_view, fragment, getTagFragment())
+                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, getTagFragment())
                 .commit();
     }
 

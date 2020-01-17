@@ -117,7 +117,7 @@ public class OperatorVerificationDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        return inflater.inflate(R.layout.dialog_fragment_usd_operator_verification, container);
+        return inflater.inflate(R.layout.dialog_digital_ussd_operator_verification, container);
 
     }
 
@@ -276,9 +276,9 @@ public class OperatorVerificationDialog extends DialogFragment {
     private void setOkButtonEnable(boolean enable) {
         btnOk.setEnabled(enable);
         if (enable) {
-            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+            btnOk.setTextColor(ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.tkpd_main_green));
         } else {
-            btnOk.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_200));
+            btnOk.setTextColor(ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.grey_200));
         }
     }
 

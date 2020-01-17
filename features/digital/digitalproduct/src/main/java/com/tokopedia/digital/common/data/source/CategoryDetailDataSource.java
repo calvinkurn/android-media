@@ -185,13 +185,13 @@ public class CategoryDetailDataSource {
     }
 
     private String getCategoryRequestPayload(String categoryId) {
-        String query = loadRawString(context.getResources(), R.raw.common_digital_category_query);
+        String query = loadRawString(context.getResources(), com.tokopedia.common_digital.R.raw.common_digital_category_query);
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
         return String.format(query, categoryId, isSeller);
     }
 
     private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
-        String query = loadRawString(context.getResources(), R.raw.common_digital_category_favourites_query);
+        String query = loadRawString(context.getResources(), com.tokopedia.common_digital.R.raw.common_digital_category_favourites_query);
 
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
 

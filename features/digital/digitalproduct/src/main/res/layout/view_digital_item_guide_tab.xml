@@ -36,7 +36,7 @@
                 android:scrollHorizontally="false"
                 android:text="Langkah mudah membeli pulsa di Tokopedia" />
 
-            <include layout="@layout/include_digital_guide_youtube_view" />
+            <include layout="@layout/view_digital_guide_youtube" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -262,7 +262,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         digitalAnalytics = new DigitalAnalytics();
-        View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_product, container, false);
         initView(view);
         return view;
     }
@@ -511,12 +511,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void removeCheckPulsaCards() {
         holderCheckBalance.removeAllViews();
-    }
-
-    @Override
-    public void navigateToWebview() {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
-        startActivity(intent);
     }
 
     @Override
@@ -1019,7 +1013,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             }
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_digital) {
-            presenter.onHelpMenuClicked();
+            RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -1236,23 +1230,23 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 getString(R.string.title_showcase_ussd),
                 getString(R.string.message_showcase_ussd),
                 ShowCaseContentPosition.UNDEFINED,
-                R.color.tkpd_main_green));
+                com.tokopedia.design.R.color.tkpd_main_green));
         showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
     }
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .customView(R.layout.view_layout_showcase)
-                .titleTextColorRes(R.color.white)
+                .customView(R.layout.view_digital_showcase)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .spacingRes(R.dimen.digital_spacing_show_case)
                 .arrowWidth(R.dimen.digital_arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .textSizeRes(R.dimen.dp_12)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .textSizeRes(com.tokopedia.design.R.dimen.dp_12)
+                .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .prevStringRes(R.string.digital_navigate_back_showcase)
-                .nextStringRes(R.string.next)
+                .nextStringRes(com.tokopedia.showcase.R.string.next)
                 .finishStringRes(R.string.digital_navigate_done_showcase)
                 .useCircleIndicator(true)
                 .clickable(true)
@@ -1370,20 +1364,20 @@ public class DigitalProductFragment extends BaseDaggerFragment
             checkETollBalanceView.setElevation(10);
             containerPromo.setElevation(10);
 
-            holderCheckBalance.setBackgroundResource(R.color.white);
-            holderProductDetail.setBackgroundResource(R.color.white);
-            checkETollBalanceView.setBackgroundResource(R.color.white);
-            containerPromo.setBackgroundResource(R.color.white);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.color.white);
+            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.color.white);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.color.white);
+            containerPromo.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
-            holderCheckBalance.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            holderProductDetail.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            checkETollBalanceView.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            containerPromo.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            containerPromo.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 
     private View getTickerCouponApplied() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.include_digital_ticker_coupon_applied_view, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.view_digital_ticker_coupon_applied, null);
 
         TickerView tickerView = view.findViewById(R.id.ticker_view);
         setupTickerCouponApplied(tickerView);
@@ -1396,15 +1390,15 @@ public class DigitalProductFragment extends BaseDaggerFragment
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
         tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.green_200));
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_200));
         tickerView.buildView();
 
         tickerView.postDelayed(() -> {
             tickerView.setItemPadding(
-                    getResources().getDimensionPixelSize(R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(R.dimen.dp_15),
-                    getResources().getDimensionPixelSize(R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(R.dimen.dp_15)
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
             );
             tickerView.setItemTextAppearance(R.style.TextView_Micro);
         }, DEFAULT_POST_DELAYED_VALUE);

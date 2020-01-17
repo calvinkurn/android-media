@@ -608,11 +608,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         }
     }
 
-    @Override
-    public void onHelpMenuClicked() {
-        getView().navigateToWebview();
-    }
-
     private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList) {
         String phoneNumber = getUssdPhoneNumberFromCache(simIndex);
         if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {

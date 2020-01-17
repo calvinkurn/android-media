@@ -348,7 +348,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
                     ussdMobileNumber = DeviceUtil.formatPrefixClientNumber(ussdMobileNumber);
                     renderOperatorData();
                     tvPhoneNumber.setText(ussdMobileNumber);
-                    tvPhoneNumber.setTextColor(getResources().getColor(R.color.black));
+                    tvPhoneNumber.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black));
                     presenter.storeUssdPhoneNumber(selectedSimIndex, ussdMobileNumber);
 
                 }
@@ -489,7 +489,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
 
         if (pulsaBalance.getMobileNumber() == null || "".equalsIgnoreCase(pulsaBalance.getMobileNumber().trim())) {
             tvUnknownNumber.setVisibility(View.VISIBLE);
-            tvPhoneNumber.setTextColor(getResources().getColor(R.color.green_800));
+            tvPhoneNumber.setTextColor(getResources().getColor(com.tokopedia.design.R.color.green_800));
             tvPhoneNumber.setText(getResources().getString(R.string.label_ussd_unknown));
             showVerifyUssdOperatorDialogFragment(false);
         } else if (!DeviceUtil.validateNumberAndMatchOperator(validationList, selectedOperator, pulsaBalance.getMobileNumber())) {
@@ -514,7 +514,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
                 .BottomSheetFieldBuilder()
                 .setTitle(getString(R.string.title_tooltip_instan_payment))
                 .setBody(getString(R.string.body_tooltip_instan_payment))
-                .setImg(R.drawable.ic_digital_instant_payment)
+                .setImg(R.drawable.digital_ic_digital_instant_payment)
                 .build());
         bottomSheetView.show();
     }
