@@ -49,9 +49,8 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
     }
 
     private fun bindVoucherStatus(voucher: Voucher) {
-        val amount = voucher.availableAmount
         val validDate = DateFormatUtils.getFormattedDate(voucher.validThru, "dd MMM yyyy")
-        val status = itemView.context?.getString(R.string.desc_attachvoucher_status, validDate, amount)
+        val status = itemView.context?.getString(R.string.desc_attachvoucher_status, validDate)
 
         itemView.validStatus?.text = status
     }
