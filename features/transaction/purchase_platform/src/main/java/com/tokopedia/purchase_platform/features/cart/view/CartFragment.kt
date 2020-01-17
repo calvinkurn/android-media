@@ -391,7 +391,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         llCartContainer = view.findViewById(R.id.ll_cart_container)
 
         activity?.let {
-            refreshHandler = RefreshHandler(it, view, this)
+            refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
             progressDialog = AlertDialog.Builder(it)
                     .setView(R.layout.purchase_platform_progress_dialog_view)
                     .setCancelable(false)
@@ -1955,7 +1955,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             promo, "cart", cartItemDataVoucherArrayList
                     )
                     merchantVoucherListBottomSheetFragment.actionListener = this@CartFragment
-                    merchantVoucherListBottomSheetFragment.show(fragmentManager, "")
+                    merchantVoucherListBottomSheetFragment.show(fragmentManager!!, "")
                 }
             }
         }

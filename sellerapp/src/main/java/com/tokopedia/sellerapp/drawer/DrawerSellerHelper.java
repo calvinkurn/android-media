@@ -229,7 +229,8 @@ public class DrawerSellerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0);
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0) +
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO, 0);
     }
 
     private int getTotalSellerNotif() {

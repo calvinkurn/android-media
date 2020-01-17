@@ -42,8 +42,7 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
 
         holder.parent_view.setOnClickListener {
             if (item.is_default) {
-                catAnalyticsInstance.eventClickSemuaThumbnail(item.id.toString(),
-                        item.name ?: "")
+                catAnalyticsInstance.eventClickSemuaThumbnail(item.id.toString())
 
                 subCategoryListener.OnDefaultItemClicked()
             } else {
