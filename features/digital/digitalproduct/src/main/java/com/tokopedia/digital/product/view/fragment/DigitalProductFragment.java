@@ -1400,7 +1400,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
                     getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
             );
-            tickerView.setItemTextAppearance(R.style.TextView_Micro);
+            tickerView.setItemTextAppearance(com.tokopedia.design.R.style.TextView_Micro);
         }, DEFAULT_POST_DELAYED_VALUE);
     }
 

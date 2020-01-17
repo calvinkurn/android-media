@@ -290,7 +290,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
             startActivityForResult(intent, requestCode);
         } else {
-            showToastMessage(getString(R.string.promo_none_applied));
+            showToastMessage(getString(com.tokopedia.promocheckout.common.R.string.promo_none_applied));
         }
     }
 
