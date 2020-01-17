@@ -14,7 +14,6 @@ import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
@@ -528,7 +527,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     it.showProgressLoading()
                 }
                 clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
-                clearCacheAutoApplyStackUseCase?.execute(RequestParams.create(), ClearCacheAutoApplySubscriber(view, this, shopIndex, ignoreAPIResponse))
+                clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
+                        ?.subscribe(ClearCacheAutoApplySubscriber(view, shopIndex, ignoreAPIResponse))
             }
         }
     }
@@ -540,7 +540,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.let {
             it.showProgressLoading()
             clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, oldPromoList)
-            clearCacheAutoApplyStackUseCase?.execute(RequestParams.create(), ClearCacheAutoApplyAfterClashSubscriber(view, this, promoStackingGlobalData, newPromoList, type))
+            clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
+                    ?.subscribe(ClearCacheAutoApplyAfterClashSubscriber(view, this, promoStackingGlobalData, newPromoList, type))
         }
     }
 
@@ -1192,7 +1193,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     for (cartItemHolderData in cartItemHolderDataList) {
                         val productDetail = ProductDetail()
                         try {
-                            productDetail.productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId ?: "0")
+                            productDetail.productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId
+                                    ?: "0")
                         } catch (e: NumberFormatException) {
                             e.printStackTrace()
                             productDetail.productId = 0
