@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.NestedScrollingParent3
 
 /**
  * Created by devarafikry on 02/04/19.
  */
 
-open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
+open class NestedRecyclerView : RecyclerView, NestedScrollingParent3 {
     private var nestedScrollTarget: View? = null
     private var nestedScrollTargetIsBeingDragged = false
     private var nestedScrollTargetWasUnableToScroll = false
@@ -64,6 +65,9 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
             !skipsTouchInterception && super.onInterceptTouchEvent(e)
 
     override fun onNestedScroll(target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) {
+    }
+
+    override fun onNestedScroll(target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int, consumed: IntArray) {
         if (target === nestedScrollTarget && !nestedScrollTargetIsBeingDragged) {
             if (dyConsumed != 0) {
                 // The descendent was actually scrolled, so we won't bother it any longer.
@@ -77,7 +81,8 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
                 nestedScrollTargetWasUnableToScroll = true
                 target.parent?.requestDisallowInterceptTouchEvent(false)
             }
-        }    }
+        }
+    }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
         if (axes and View.SCROLL_AXIS_VERTICAL != 0) {
@@ -103,6 +108,7 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
     fun setNestedCanScroll(canScroll: Boolean) {
         this.nestedCanScroll = canScroll
     }
+
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
     }

@@ -56,6 +56,7 @@ ext {
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
+            homePageBanner                  : ":features:discovery:home_page_banner",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
             smartRecycler                   : ":features:discovery:smart_recycler_diffutil_helper",

@@ -56,6 +56,7 @@ object HomeQuery{
               url
               imageUrl
               applinks
+              bu_identifier
             }
           }
           dynamicHomeChannel {
