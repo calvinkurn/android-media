@@ -1114,8 +1114,10 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                    log(getContext(), null, it);
-                    TagManager.getInstance(getContext()).getDataLayer().push(it);
+                    if (!GlobalConfig.isSellerApp()) {
+                        log(getContext(), null, it);
+                        TagManager.getInstance(getContext()).getDataLayer().push(it);
+                    }
                     pushIris("", it);
                     return true;
                 })
