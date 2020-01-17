@@ -852,7 +852,9 @@ public class GTMAnalytics extends ContextAnalytics {
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     log(getContext(), eventName, it);
-                    getTagManager().getDataLayer().pushEvent(eventName, it);
+                    if (!GlobalConfig.isSellerApp()) {
+                        getTagManager().getDataLayer().pushEvent(eventName, it);
+                    }
                     pushIris(eventName, it);
                     return true;
                 })
@@ -1114,8 +1116,8 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
+                    log(getContext(), null, it);
                     if (!GlobalConfig.isSellerApp()) {
-                        log(getContext(), null, it);
                         TagManager.getInstance(getContext()).getDataLayer().push(it);
                     }
                     pushIris("", it);
