@@ -20,6 +20,7 @@ import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
                     extras.putString(key, (String) params.get(key));
                 }
                 getInstanceIntentAppLinkBackToHome(this, extras);
+                checkForCurrentLocation();
             }
             categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(extras, isLocationUpdated);
             return categoryDetailHomeFragment;
@@ -102,4 +104,26 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         localCacheHandler.applyEditor();
         categoryDetailHomeFragment.setCurrentCoordinates();
     }
+
+
+    private void checkForCurrentLocation() {
+        PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                setDefaultLocationOnHomePage();
+            }
+
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Utils.getSingletonInstance().detectAndSendLocation(CategoryDetailActivity.this, permissionCheckerHelper, CategoryDetailActivity.this);
+            }
+        }, getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
+    }
+
+
 }

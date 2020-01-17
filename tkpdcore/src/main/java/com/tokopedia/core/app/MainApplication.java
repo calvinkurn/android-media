@@ -9,7 +9,6 @@ import android.os.Build;
 import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.stetho.Stetho;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -23,7 +22,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
@@ -46,6 +44,7 @@ public abstract class MainApplication extends MainRouterApplication{
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+    private UserSession userSession;
 
     public static MainApplication getInstance() {
         return instance;
@@ -81,9 +80,9 @@ public abstract class MainApplication extends MainRouterApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
+        userSession = new UserSession(this);
         init();
         initCrashlytics();
-        initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -127,7 +126,7 @@ public abstract class MainApplication extends MainRouterApplication{
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier("");
+            Crashlytics.setUserIdentifier(userSession.getUserId());
         }
     }
 
@@ -146,13 +145,8 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
-    public void initStetho() {
-        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
-    }
-
     private void initBranch() {
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-        UserSession userSession = new UserSession(this);
 
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();

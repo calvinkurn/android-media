@@ -102,6 +102,11 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             }
 
             itemView.header_invoice?.text = item.dataObject.invoice
+
+            itemView.header_invoice_copy?.setOnClickListener {
+                actionListener.onCopiedInvoice(itemView.context.getString(R.string.invoice_label), item.dataObject.invoice)
+            }
+
             itemView.header_see_invoice?.setOnClickListener {
                 actionListener.onSeeInvoice(item.dataObject.invoiceUrl)
             }

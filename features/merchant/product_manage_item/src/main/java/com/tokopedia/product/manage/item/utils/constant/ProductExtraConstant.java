@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.item.utils.constant;
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * Created by zulfikarrahman on 4/17/17.
  */
@@ -25,5 +23,6 @@ public class ProductExtraConstant {
     public static final String EXTRA_HAS_ORIGINAL_VARIANT_LV1 = "EXTRA_HAS_ORI_VAR_LV1";
     public static final String EXTRA_HAS_ORIGINAL_VARIANT_LV2 = "EXTRA_HAS_ORI_VAR_LV2";
     public static final String EXTRA_HAS_WHOLESALE = "EXTRA_HAS_WHOLESALE";
+    public static final String EXTRA_IS_ADD = "EXTRA_IS_ADD";
     public static final String SAVED_VARIANT_CHANGE_FROM_RESULT = "sdv_var_chg";
 }

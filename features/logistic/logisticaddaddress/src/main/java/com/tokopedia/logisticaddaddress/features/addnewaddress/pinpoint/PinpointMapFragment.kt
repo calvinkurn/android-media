@@ -360,7 +360,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         val autocompleteGeocodeBottomSheetFragment =
                 AutocompleteBottomSheetFragment.newInstance(lat, long, search)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)
-        autocompleteGeocodeBottomSheetFragment.show(fragmentManager, "")
+        fragmentManager?.run {
+            autocompleteGeocodeBottomSheetFragment.show(this, "")
+        }
         isShowingAutocomplete = false
     }
 
@@ -644,7 +646,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun showLocationInfoBottomSheet() {
         val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
-        locationInfoBottomSheetFragment.show(fragmentManager, "")
+        fragmentManager?.run {
+            locationInfoBottomSheetFragment.show(this, "")
+        }
     }
 
     private fun setDetailAlamatWatcher(): TextWatcher {
