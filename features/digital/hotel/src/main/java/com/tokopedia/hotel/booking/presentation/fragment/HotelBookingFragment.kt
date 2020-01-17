@@ -45,6 +45,8 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
+import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -192,6 +194,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                         if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
                             val itemPromoData = it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)
                             promoCode = itemPromoData.promoCode
+                            hotelCart.appliedVoucher.isCoupon = if (itemPromoData.typePromo == PromoData.TYPE_COUPON) 1 else 0
+
                             when (itemPromoData.state) {
                                 TickerCheckoutView.State.EMPTY -> {
                                     promoCode = ""
@@ -474,11 +478,23 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
 
                 override fun onClickDetailPromo() {
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
-                    intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
-                    intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
-                    intent.putExtra(COUPON_EXTRA_IS_USE, true)
-                    startActivityForResult(intent, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT)
+                    val intent: Intent
+                    if (promoCode.isNotEmpty()) {
+                        val requestCode: Int
+                        if (hotelCart.appliedVoucher.isCoupon == 1) {
+                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
+                            intent.putExtra(COUPON_EXTRA_IS_USE, true)
+                            intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
+                            requestCode = REQUEST_CODE_PROMO_DETAIL
+                        } else {
+                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                            intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
+                            intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, true)
+                            requestCode = REQUST_CODE_PROMO_LIST
+                        }
+                        intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
+                        startActivityForResult(intent, requestCode)
+                    }
                 }
 
                 override fun onDisablePromoDiscount() { }
@@ -644,6 +660,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         const val COUPON_EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         const val COUPON_EXTRA_CART_ID = "EXTRA_CART_ID"
+        const val COUPON_EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         const val COUPON_EXTRA_COUPON_CODE = "EXTRA_KUPON_CODE"
         const val COUPON_EXTRA_IS_USE = "EXTRA_IS_USE"
         const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
