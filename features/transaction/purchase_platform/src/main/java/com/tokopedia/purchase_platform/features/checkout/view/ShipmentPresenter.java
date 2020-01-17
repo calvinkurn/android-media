@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -70,6 +69,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
@@ -1520,7 +1520,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().showLoading();
             }
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
-            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse));
+            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse));
         }
     }
 
@@ -1534,7 +1534,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (notEligiblePromoCodes.size() > 0) {
             getView().showLoading();
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), notEligiblePromoCodes);
-            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearNotEligiblePromoSubscriber(getView(), this, checkoutType, notEligiblePromoHolderdataArrayList));
+            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new ClearNotEligiblePromoSubscriber(getView(), this, checkoutType, notEligiblePromoHolderdataArrayList));
         }
     }
 
@@ -1544,7 +1544,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         promoCodeList.add(promoCode);
 
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
+        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearCacheAutoApplyStackResponse>() {
             @Override
             public void onCompleted() {
 
@@ -1556,8 +1556,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
 
             @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                ClearCacheAutoApplyStackResponse responseData = graphqlResponse.getData(ClearCacheAutoApplyStackResponse.class);
+            public void onNext(ClearCacheAutoApplyStackResponse responseData) {
                 if (getView() != null) {
                     if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
                         tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
@@ -1579,9 +1578,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         getView().showLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(),
+        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
                 new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
-                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId, type));
+                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId, type)
+        );
     }
 
     @Override
