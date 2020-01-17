@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/vg_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/vg_floating_egg"
+        android:layout_width="@dimen/gami_core_floating_egg_widget_width"
+        android:layout_height="@dimen/gami_core_floating_egg_widget_height">
+        <FrameLayout
+            android:id="@+id/egg_counter_timer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/iv_floating_egg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:adjustViewBounds="true" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_floating_counter"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/dp_2"
+                android:minWidth="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
+                android:layout_gravity="center_vertical|end"
+                android:background="@drawable/circle_red_shadow"
+                android:gravity="center"
+                android:layout_marginRight="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:textColor="@color/white"
+                tools:text="99+"/>
+
+            <TextView
+                android:id="@+id/tv_floating_timer"
+                style="@style/TextView.Small.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
+                android:background="@drawable/gami_core_bg_countdown_timer_thin"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp_3"
+                android:paddingBottom="@dimen/dp_3"
+                android:textColor="@color/gami_core_yellow"
+                tools:text="01:12:12"/>
+        </FrameLayout>
+        <ImageView
+            android:id="@+id/minimize_img_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_gravity="center_vertical|start"
+            android:background="@drawable/gami_core_minimize_button"/>
+    </FrameLayout>
+</FrameLayout>
