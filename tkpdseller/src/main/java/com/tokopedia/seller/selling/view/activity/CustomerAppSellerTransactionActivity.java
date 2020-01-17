@@ -124,7 +124,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     public static Intent getIntentReadyToShip(Context context, Bundle extras) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-        if (true) {
+        if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.READY_TO_SHIP)
                     .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
         } else {
@@ -141,7 +141,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-        if (true) {
+        if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.SHIPPED)
                     .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
         } else {
@@ -158,7 +158,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-        if (true) {
+        if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.DELIVERED)
                     .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING)
                     .putExtra(EXTRA_TAB_STATUS, STATUS_DELIVERED);
