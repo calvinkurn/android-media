@@ -1,12 +1,13 @@
 package com.tokopedia.attachvoucher.view.viewmodel
 
 import androidx.lifecycle.Observer
-import com.tokopedia.attachvoucher.Constant
+import com.tokopedia.attachvoucher.FileUtil
 import com.tokopedia.attachvoucher.InstantTaskExecutorRuleSpek
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
 import com.tokopedia.attachvoucher.data.Voucher
 import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
+import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel.Companion.NO_FILTER
 import com.tokopedia.common.network.util.CommonUtil
 import io.mockk.*
 import org.junit.Assert.assertEquals
@@ -19,9 +20,12 @@ object AttachVoucherViewModelTest : Spek({
 
     group("Load vouchers") {
 
+        val stringVouchersResponse = FileUtil.readFileContent(javaClass, "/get_vouchers_response.json")
+
+        // Test Data
         val exShopId = "6696"
-        val exVouchersGetResponse = createDummyVouchers()
-        val vouchers = exVouchersGetResponse.vouchers
+        val exVouchersGetResponse = createDummyVouchers(stringVouchersResponse)
+        val exVouchers = exVouchersGetResponse.vouchers
         val exThrowable = Throwable()
 
         val getVoucherUseCase by memoized { mockk<GetVoucherUseCase>() }
@@ -57,14 +61,14 @@ object AttachVoucherViewModelTest : Spek({
                     val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
                     viewModel.filteredVouchers.observeForever(voucherObservers)
                     viewModel.loadVouchers()
-                    assertEquals(3, vouchers.size)
-                    verify { voucherObservers.onChanged(vouchers) }
+                    assertEquals(3, exVouchers.size)
+                    verify { voucherObservers.onChanged(exVouchers) }
                 }
                 test("Filter value changed to -1 on success") {
                     val filterObserver = mockk<Observer<Int>>(relaxed = true)
                     viewModel.filter.observeForever(filterObserver)
                     viewModel.loadVouchers()
-                    verify { filterObserver.onChanged(AttachVoucherViewModel.NO_FILTER) }
+                    verify { filterObserver.onChanged(NO_FILTER) }
                 }
                 test("Filter cashback clicked") {
                     val filterObserver = mockk<Observer<Int>>(relaxed = true)
@@ -78,7 +82,32 @@ object AttachVoucherViewModelTest : Spek({
                     assertEquals(1, viewModel.filteredVouchers.value?.size)
                     verify { filterObserver.onChanged(VoucherType.CASH_BACK) }
                 }
+                test("Filter cashback clicked twice") {
+                    val filterObserver = mockk<Observer<Int>>(relaxed = true)
+                    val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
+                    viewModel.filteredVouchers.observeForever(voucherObservers)
+                    viewModel.filter.observeForever(filterObserver)
 
+                    viewModel.loadVouchers()
+                    viewModel.toggleFilter(VoucherType.CASH_BACK)
+                    viewModel.toggleFilter(VoucherType.CASH_BACK)
+
+                    assertEquals(3, viewModel.filteredVouchers.value?.size)
+                    verify { filterObserver.onChanged(NO_FILTER) }
+                }
+                test("Filter cashback clicked then click free-ongkir filter") {
+                    val filterObserver = mockk<Observer<Int>>(relaxed = true)
+                    val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
+                    viewModel.filteredVouchers.observeForever(voucherObservers)
+                    viewModel.filter.observeForever(filterObserver)
+
+                    viewModel.loadVouchers()
+                    viewModel.toggleFilter(VoucherType.CASH_BACK)
+                    viewModel.toggleFilter(VoucherType.FREE_ONGKIR)
+
+                    assertEquals(2, viewModel.filteredVouchers.value?.size)
+                    verify { filterObserver.onChanged(VoucherType.FREE_ONGKIR) }
+                }
             }
             group("On Error load invoices") {
                 beforeEachTest {
@@ -98,6 +127,6 @@ object AttachVoucherViewModelTest : Spek({
     }
 })
 
-fun createDummyVouchers(): GetVoucherResponse {
-    return CommonUtil.fromJson(Constant.vouchersReponse, GetVoucherResponse::class.java)
+fun createDummyVouchers(vouchersResponse: String): GetVoucherResponse {
+    return CommonUtil.fromJson(vouchersResponse, GetVoucherResponse::class.java)
 }
