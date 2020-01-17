@@ -54,6 +54,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
+    private Integer PROJECT_ID = 7;
 
     private View personalDataMenu;
     private View addressMenu;
@@ -225,7 +226,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            RouteManager.route(getContext(), ApplinkConst.KYC);
+            RouteManager.route(getContext(), ApplinkConst.KYC_FORM, String.valueOf(PROJECT_ID));
         }
     }
 
@@ -256,11 +257,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void onKycMenuClicked() {
         accountAnalytics.eventClickKycSetting();
-        if (userSession.hasShop()) {
-            goToKyc();
-        } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivity(RouteManager.getIntent(getContext(), OPEN_SHOP));
-        }
+        goToKyc();
     }
 
     @Override
