@@ -57,7 +57,7 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
 
     private fun bindVoucherView(voucher: Voucher) {
         val voucherModel = MerchantVoucherViewModel(voucher)
-        itemView.voucher?.setData(voucherModel)
+        itemView.voucher?.setData(voucherModel, hasActionButton = false)
     }
 
     private fun bindClick(voucher: Voucher) {
