@@ -164,5 +164,29 @@
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
 
+    <!-- shop new info -->
+    <string name="shop_page_new_info_title">Toko Kamu</string>
+    <string name="shop_new_info_dashboard">Dashboard Toko</string>
+    <string name="shop_new_info_action_manage_sale">Lihat dan atur penjualanmu di sini</string>
+    <!-- profile -->
+    <string name="shop_new_info_profile">Profil Toko</string>
+    <string name="shop_new_info_action_change_profile">Ubah profil toko</string>
+    <string name="shop_new_info_action_change_note">Ubah catatan toko</string>
+    <string name="shop_new_info_action_manage_opening_time">Atur jam buka toko</string>
+    <string name="shop_new_info_shop_status">Status Toko</string>
+    <!-- product -->
+    <string name="shop_new_info_product">Produk</string>
+    <string name="shop_new_info_action_display_products">Lihat daftar produk</string>
+    <string name="shop_new_info_action_edit_etalage">Tambah dan ubah etalase</string>
+    <!-- support -->
+    <string name="shop_new_info_support">Bantuan</string>
+    <string name="shop_new_info_support_center">Pusat Bantuan</string>
+    <string name="shop_new_info_action_get_support">Dapatkan bantuan melalui Tokopedia Care</string>
+    <string name="shop_new_info_seller_center">Pusat Seller</string>
+    <string name="shop_new_info_action_get_tips">Dapatkan tips berjualan dan informasi penting</string>
+    <!-- shipping -->
+    <string name="shop_new_info_shipping">Lokasi dan Pengiriman</string>
+    <string name="shop_new_info_action_edit_location">Tambah dan ubah lokasi toko</string>
+    <string name="shop_new_info_action_manage_shipping_service">Atur layanan pengiriman</string>
 
 </resources>
