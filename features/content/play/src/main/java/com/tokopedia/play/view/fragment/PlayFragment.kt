@@ -92,7 +92,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "2" // TODO remove default value, handle channel_id=1865, 80 staging live not found
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: "1953" // TODO remove default value, handle channel_id=1865, 80 staging live not found
         PlayAnalytics.sendScreen(channelId)
     }
 
