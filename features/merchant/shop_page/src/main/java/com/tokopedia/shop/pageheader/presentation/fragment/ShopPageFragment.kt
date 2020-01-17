@@ -261,7 +261,7 @@ class ShopPageFragment :
         })
     }
 
-    fun updateUIByShopName(shopName: String) {
+    private fun updateUIByShopName(shopName: String) {
         searchBarText.text = getString(
                 R.string.shop_product_search_hint_2,
                 MethodChecker.fromHtml(shopName).toString()
@@ -317,7 +317,8 @@ class ShopPageFragment :
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
-        setViewState(VIEW_LOADING)
+        if(!swipeToRefresh.isRefreshing)
+            setViewState(VIEW_LOADING)
         shopViewModel.getShop(shopId, shopDomain, isRefresh)
     }
 

@@ -15,6 +15,7 @@
             android:id="@+id/shop_page_main_profile_background"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
+            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
