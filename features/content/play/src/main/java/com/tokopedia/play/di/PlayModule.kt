@@ -86,5 +86,4 @@ class PlayModule {
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
     }
-
 }
