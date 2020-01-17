@@ -120,7 +120,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             boolean enable = remoteConfig.getBoolean(
                     RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
+            if (true) {
                 return RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY);
             } else {
                 return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
