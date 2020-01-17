@@ -207,15 +207,6 @@ public class ProductListFragment
         return null;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (adapter.getItemCount() > 0) {
-            adapter.notifyDataSetChanged();
-        }
-        incrementStart();
-    }
-
     private void bindView(View rootView) {
         recyclerView = rootView.findViewById(R.id.recyclerview);
     }
