@@ -17,7 +17,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
-import com.tokopedia.shop.pageheader.presentation.ShopPageFragment;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.track.TrackApp;
