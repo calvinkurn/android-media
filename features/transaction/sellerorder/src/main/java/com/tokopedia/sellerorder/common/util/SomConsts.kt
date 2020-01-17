@@ -26,6 +26,7 @@ object SomConsts {
 
     const val TAB_ACTIVE = "tab_active"
     const val TAB_STATUS = "tab_status"
+    const val FILTER_STATUS = "filter_status"
     const val FILTER_TYPE_CHECKBOX = "checkbox"
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"

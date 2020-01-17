@@ -35,7 +35,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         if (item.dataObject is SomDetailHeader) {
             itemView.header_title?.text = item.dataObject.statusText
             itemView.header_see_history?.setOnClickListener {
-                itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.HISTORY_ORDER, "")
+                itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                         .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
                         .putExtra(EXTRA_USER_MODE, 2))
             }

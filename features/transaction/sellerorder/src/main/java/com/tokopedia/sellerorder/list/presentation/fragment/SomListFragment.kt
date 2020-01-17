@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -30,6 +30,7 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangI
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
@@ -67,7 +68,7 @@ import kotlin.collections.HashMap
 /**
  * Created by fwidjaja on 2019-08-23.
  */
-class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
+class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
         SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener {
 
     @Inject
@@ -78,11 +79,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
     private var orderList: SomListOrder.Data.OrderList = SomListOrder.Data.OrderList()
     private var mapOrderStatus = HashMap<String, List<Int>>()
-    private var paramOrder =  SomListOrderParam()
+    private var paramOrder = SomListOrderParam()
     private var refreshHandler: RefreshHandler? = null
     private var isLoading = false
     private var tabActive = ""
     private var tabStatus = ""
+    private var filterStatus = ""
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private var isFilterApplied = false
@@ -104,6 +106,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 arguments = Bundle().apply {
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
+                    putString(FILTER_STATUS, bundle.getString(FILTER_STATUS))
                 }
             }
         }
@@ -120,6 +123,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
             tabStatus = arguments?.getString(TAB_STATUS).toString()
+            filterStatus = arguments?.getString(FILTER_STATUS).toString()
         }
         loadInitial()
     }
@@ -136,6 +140,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         setInitialValue()
         observingTicker()
         observingFilter()
+        observingStatusList()
         observingOrders()
     }
 
@@ -151,10 +156,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
-            scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
+            scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
-                    println("++ onLoadMore - nextOrderId = $nextOrderId")
                     if (nextOrderId != 0) {
                         loadOrderList(nextOrderId)
                     }
@@ -191,15 +195,15 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    renderInfoTicker(it.data)
-                }
-                is Fail -> {
-                    ticker_info?.visibility = View.GONE
-                }
+        when (it) {
+            is Success -> {
+                renderInfoTicker(it.data)
             }
-        })
+            is Fail -> {
+                ticker_info?.visibility = View.GONE
+            }
+        }
+    })
 
     private fun observingFilter() {
         somListViewModel.filterListResult.observe(this, Observer {
@@ -207,12 +211,38 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     filterList = it.data
                     renderFilter()
+                    if (filterStatus.isNotBlank()) {
+                        loadFilterStatusList()
+                    } else {
+                        refreshHandler?.startRefresh()
+                    }
                 }
                 is Fail -> {
                     quick_filter?.visibility = View.GONE
                 }
             }
         })
+    }
+
+    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(this, Observer {
+        when (it) {
+            is Success -> {
+                it.data.forEach { statusList ->
+                    if (statusList.key == filterStatus) {
+                        paramOrder.statusList = statusList.orderStatusIdList
+                        return@forEach
+                    }
+                }
+                refreshHandler?.startRefresh()
+            }
+            is Fail -> {
+                refreshHandler?.startRefresh()
+            }
+        }
+    })
+
+    private fun loadFilterStatusList() {
+        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
     }
 
     private fun loadOrderList(nextOrderId: Int) {
@@ -235,7 +265,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                 context?.let {
                     val adapter = TickerPagerAdapter(it, listTickerData)
-                    adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                    adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                             SomAnalytics.eventClickSeeMoreOnTicker()
@@ -291,7 +321,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                 }
             }
-            refreshHandler?.startRefresh()
 
             listQuickFilter.add(filterItem)
             mapOrderStatus[it.key] = it.orderStatusIdList
@@ -304,7 +333,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (keySelected.equals(key, true)) {
                     tabActive = keySelected
                     SomAnalytics.eventClickQuickFilter(tabActive)
-                    println("++ selected tabActive = $tabActive")
                     if (listOrderStatusId.isNotEmpty()) {
                         this.paramOrder.statusList = listOrderStatusId
                         refreshHandler?.startRefresh()
@@ -321,7 +349,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
-                    println("++ nextOrderId = $nextOrderId")
                     if (orderList.orders.isNotEmpty()) renderOrderList()
                     else {
                         if (isFilterApplied) {
@@ -401,7 +428,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun onSearchReset() { }
+    override fun onSearchReset() {}
 
     override fun onSearchSubmitted(text: String?) {
         text?.let {
@@ -448,6 +475,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     isFilterApplied = checkFilterApplied(paramOrder)
                     tabActive = ""
                     renderFilter()
+                    refreshHandler?.startRefresh()
                 }
             }
         } else if (requestCode == FLAG_DETAIL && resultCode == Activity.RESULT_OK) {
