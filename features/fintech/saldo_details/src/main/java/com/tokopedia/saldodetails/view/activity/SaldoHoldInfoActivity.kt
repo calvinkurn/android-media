@@ -33,8 +33,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
     var isTickerShow: Boolean? = false
     var tickerMessage: String? = null
-    var sellerListSize = 0
-    var buyerListSize = 0
+    var sellerListSize:Int? = 0
+    var buyerListSize :Int?= 0
     var viewPager: ViewPager? = null
     var resultList: ArrayList<Any>? = null
     var sellerAmount: Double? = 0.0
@@ -80,8 +80,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         saldoHoldDepositHistory?.let {
 
             tv_valueTotalSaldoHold.text = it.totalFmt
-            sellerListSize = it.sellerData?.size!!
-            buyerListSize = it.buyerData?.size!!
+            sellerListSize = it.sellerData?.size
+            buyerListSize = it.buyerData?.size
             val arrayListSeller = it.sellerData as ArrayList<SellerDataItem>
             val arrayListBuyer = it.buyerData as ArrayList<BuyerDataItem>
 
@@ -113,7 +113,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         return allTransactionList
     }
 
-    private fun setUpViewPager(sellerListSize: Int, buyerListSize: Int) {
+    private fun setUpViewPager(sellerListSize: Int?, buyerListSize: Int?) {
         item = ArrayList()
         val bundle = Bundle()
         bundle.putParcelableArrayList(RESULT_LIST, resultList as ArrayList<out Parcelable>)

@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.hold_balance_info_item.view.*
 class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind1(list: SellerDataItem) {
-        if (list.invoice?.isEmpty()!!) {
+        if (list.invoice?.length==0) {
             itemView.tv_invoice.visibility = View.GONE
         } else {
             itemView.tv_invoice.text = list.invoice
@@ -27,7 +27,7 @@ class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     }
 
     fun bind2(list: BuyerDataItem) {
-        if (list.invoice?.isEmpty()!!) {
+        if (list.invoice?.length==0) {
             itemView.tv_invoice.visibility = View.GONE
         } else {
             itemView.tv_invoice.text = list.invoice

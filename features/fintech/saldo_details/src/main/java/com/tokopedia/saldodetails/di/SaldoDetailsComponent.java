@@ -30,7 +30,5 @@ public interface SaldoDetailsComponent {
 
     void inject(SaldoTransactionHistoryFragment saldoTransactionHistoryFragment);
 
-    void inject(SaldoHoldInfoFragment saldoHoldInfoFragment);
-
     void inject(SaldoHoldInfoActivity saldoHoldInfoActivity);
 }

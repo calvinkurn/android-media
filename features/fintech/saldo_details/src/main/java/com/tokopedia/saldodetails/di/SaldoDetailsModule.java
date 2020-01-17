@@ -23,7 +23,7 @@ public class SaldoDetailsModule {
     @SaldoDetailsScope
     @Provides
     GetHoldInfoUsecase getHoldInfoUsecase(@ApplicationContext Context context) {
-        return new GetHoldInfoUsecase(context, new GraphqlUseCase());
+        return new GetHoldInfoUsecase(context.getResources(), new GraphqlUseCase());
     }
 
     @SaldoDetailsScope
