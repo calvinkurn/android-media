@@ -290,8 +290,8 @@ public interface ApplinkConst {
     }
 
     interface Gamification {
-        String GAMIFICATION = "tokopedia://gamification";
-        String GAMIFICATION2 = "tokopedia://gamification2";
+        String CRACK = "tokopedia://gamification";
+        String TAP_TAP_MANTAP = "tokopedia://gamification2";
     }
 
     interface Digital {

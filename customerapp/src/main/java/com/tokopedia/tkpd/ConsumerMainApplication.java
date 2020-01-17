@@ -43,7 +43,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogWrapper;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -163,9 +163,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }).start();
         }
 
-        LogWrapper.init(this);
-        if (LogWrapper.instance != null) {
-            LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        LogManager.init(this);
+        if (LogManager.instance != null) {
+            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
 

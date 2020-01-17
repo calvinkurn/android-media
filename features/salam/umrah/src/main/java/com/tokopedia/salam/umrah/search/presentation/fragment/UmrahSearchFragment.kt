@@ -119,7 +119,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                     }
                 }
                 REQUEST_PDP -> loadInitialData()
-                REQUEST_CODE_LOGIN -> context?.let{startChatUmrah(it)}
+                REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
 
             }
 
@@ -131,13 +131,17 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         super.onViewCreated(view, savedInstanceState)
         fab_umrah_search_message.bringToFront()
         fab_umrah_search_message.setOnClickListener {
-            if (userSessionInterface.isLoggedIn) {
-                context?.let {
-                    startChatUmrah(it)
-                }
-            } else {
-                goToLoginPage()
+            checkChatSession()
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn) {
+            context?.let {
+                startChatUmrah(it)
             }
+        } else {
+            goToLoginPage()
         }
     }
 

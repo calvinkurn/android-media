@@ -424,7 +424,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                         "");
             } else {
                 if (getActivity() != null) {
-                    RouteManager.route(getActivity(), ApplinkConst.Gamification.GAMIFICATION);
+                    RouteManager.route(getActivity(), ApplinkConst.Gamification.CRACK);
                 }
 
                 AnalyticsTrackerUtil.sendEvent(source.getContext(),
@@ -435,7 +435,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             }
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
-            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(source.getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -452,7 +452,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         }
     }
 
-    private void requestHomePageData(){
+    private void requestHomePageData() {
         if (isSeeAllPage()) {
             mPresenter.getHomePageData("", "", false);
         } else {
@@ -544,7 +544,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void openWebView(String url) {
         if (getContext() != null)
-        getContext().startActivity(RouteManager.getIntent(getActivityContext(),url));
+            getContext().startActivity(RouteManager.getIntent(getActivityContext(), url));
     }
 
     @Override

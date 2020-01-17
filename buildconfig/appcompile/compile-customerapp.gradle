@@ -55,6 +55,7 @@ include 'features:discovery:similarsearch'
 include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
+include "features:discovery:home_page_banner"
 //include "features:discovery:home_no_op"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"
@@ -131,10 +132,13 @@ include "features:promo:tokopoints"
 include "features:promo:tokopoints_notification"
 include "features:promo:promo_checkout"
 include "features:promo:promo_checkout_common"
+include "features:promo:promo_gamification_common"
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
 
 include "features:top_ads:top_ads_autoads"
+include "features:top_ads:top_ads_detail_sheet"
+include "features:top_ads:top_ads_widget"
 include "features:top_ads:top_ads_dashboard"
 include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
@@ -183,6 +187,8 @@ include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
 include "features:discovery:smart_recycler_diffutil_helper"
 include "features:user:seamless_login"
+
+include 'features:fcm_common'
 
 include 'tkpdcore'
 include 'tkpdinbox'

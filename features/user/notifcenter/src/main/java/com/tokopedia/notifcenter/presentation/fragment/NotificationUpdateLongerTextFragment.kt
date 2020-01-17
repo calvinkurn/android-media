@@ -3,7 +3,10 @@ package com.tokopedia.notifcenter.presentation.fragment
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -48,7 +51,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         fun trackOnClickCtaButton(templateKey: String)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         val parent = parentFragment
         if (parent is LongerContentListener) {
@@ -85,7 +88,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         setupViewModel(savedInstanceState)
         setupCtaButton()
         contentTitleView.text = contentTitle
-        contentTextView.text = contentText
+        contentTextView.text = fromHtml(contentText)
 
         if (contentImageUrl.isNotBlank()) {
             ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_loading_toped_new)
@@ -154,6 +157,14 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, DEFAULT_CTA_BUTTON)
             appLink = getParamString(NotificationUpdateFragment.PARAM_CTA_APPLINK, arguments, null, "")
             templateKey = getParamString(NotificationUpdateFragment.PARAM_TEMPLATE_KEY, arguments, null, "")
+        }
+    }
+
+    fun fromHtml(content: String): Spanned {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(content)
         }
     }
 

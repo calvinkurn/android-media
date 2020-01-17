@@ -33,8 +33,9 @@ dependencies {
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.homePageBanner)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -72,7 +73,7 @@ dependencies {
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    implementation rootProject.ext.dbDependencies.dbRoomCoroutine
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     // Unify

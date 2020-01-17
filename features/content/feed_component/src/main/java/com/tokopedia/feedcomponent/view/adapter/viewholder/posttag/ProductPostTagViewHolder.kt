@@ -64,7 +64,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         productNameSection = itemView.findViewById(R.id.productNameSection)
         productName = itemView.findViewById(R.id.productName)
         widgetRating = itemView.findViewById(R.id.widgetRating)
-        productImage.loadImageRounded(item.thumbnail, RAD_10f)
+        productImage.loadImageRounded(item.thumbnail, RAD_20f)
         productPrice.text = item.price
 
         val btnCtaPojo = item.postTagItemPojo.buttonCTA.firstOrNull()

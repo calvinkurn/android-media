@@ -23,6 +23,7 @@ public class ProductCloud {
     private final TomeProductApi tomeProductApi;
 
     public static final int SHOW_VARIANT = 1;
+    public static final boolean IS_REAL_STOCK = true;
 
     @Inject
     public ProductCloud(TomeProductApi tomeProductApi) {
@@ -40,7 +41,7 @@ public class ProductCloud {
     }
 
     public Observable<ProductViewModel> getProductDetail(String productId) {
-        return tomeProductApi.getProductDetail(productId, SHOW_VARIANT)
+        return tomeProductApi.getProductDetail(productId, SHOW_VARIANT,IS_REAL_STOCK)
                 .map(new DataResponseMapper<ProductViewModel>())
                 .map(new Func1<ProductViewModel, ProductViewModel>() {
                     @Override
