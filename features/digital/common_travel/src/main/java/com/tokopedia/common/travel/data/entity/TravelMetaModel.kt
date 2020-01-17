@@ -1,4 +1,4 @@
-package com.tokopedia.travel.homepage.data
+package com.tokopedia.common.travel.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -6,15 +6,15 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by furqan on 06/08/2019
  */
-class MetaModel(@SerializedName("title")
+class TravelMetaModel(@SerializedName("title")
                 @Expose
                 val title: String = "",
-                @SerializedName("webURL")
+                      @SerializedName("webURL")
                 @Expose
                 val webUrl: String = "",
-                @SerializedName("appURL")
+                      @SerializedName("appURL")
                 @Expose
                 val appUrl: String = "",
-                @SerializedName("type")
+                      @SerializedName("type")
                 @Expose
                 val type: String = "")
