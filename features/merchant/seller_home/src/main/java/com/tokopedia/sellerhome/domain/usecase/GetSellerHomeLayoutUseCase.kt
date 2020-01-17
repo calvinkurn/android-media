@@ -9,7 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
  */
 
 class GetSellerHomeLayoutUseCase(
-        multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase
+        graphqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<List<TrendLineViewUiModel>>() {
 
     override suspend fun executeOnBackground(): List<TrendLineViewUiModel> {
