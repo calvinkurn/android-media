@@ -870,7 +870,7 @@ final class ProductListPresenter
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
 
-        if (isTickerHasDismissed
+        if (!isTickerHasDismissed
                 && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
             getView().trackEventImpressionSortPriceMinTicker();
