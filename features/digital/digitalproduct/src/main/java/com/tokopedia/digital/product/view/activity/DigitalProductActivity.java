@@ -34,7 +34,8 @@ public class DigitalProductActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Uri uriData = getIntent().getData();
-        if (uriData != null && uriData.getQueryParameterNames().size() > 0) {
+        if (uriData != null && uriData.getQueryParameterNames().size() > 0 &&
+                getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) == null) {
             boolean isFromWidget = false;
             if (!TextUtils.isEmpty(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET))) {
                 isFromWidget = Boolean.valueOf(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET));
