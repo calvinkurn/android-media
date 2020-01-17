@@ -13,7 +13,12 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -41,17 +46,13 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        checkApkTempered();
+        Weaver.Companion.executeWeaveRxComputation(this::checkApkTempered,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
 
         startWarmStart();
         startSplashTrace();
 
         super.onCreate(savedInstanceState);
-
-        if (isApkTempered) {
-            startActivity(new Intent(this, FallbackActivity.class));
-            finish();
-        }
 
         finishWarmStart();
 
@@ -61,13 +62,23 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     }
 
-    private void checkApkTempered() {
+    @NotNull
+    private Boolean checkApkTempered() {
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
         } catch (Exception e) {
             isApkTempered = true;
             setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
+        checkExecTemperedFlow();
+        return true;
+    }
+
+    private void checkExecTemperedFlow(){
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
         }
     }
 

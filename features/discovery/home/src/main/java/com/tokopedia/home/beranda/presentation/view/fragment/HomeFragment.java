@@ -115,6 +115,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.RxAsyncWeave;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -464,7 +467,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        sendScreen();
+        Weaver.Companion.executeWeaveRxComputation(this::sendScreen,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
         presenter.onResume();
 
         if (activityStateListener != null) {
@@ -1286,11 +1290,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            sendScreen();
+            Weaver.Companion.executeWeave(this::sendScreen,
+                    new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig),
+                    new RxAsyncWeave());
         }
     }
 
-    private void sendScreen() {
+    @NotNull
+    private Boolean sendScreen() {
         if (getActivity() != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
             lastSendScreenTimeMillis = System.currentTimeMillis();
             HomePageTracking.sendScreen(getActivity(), getScreenName(), userSession.isLoggedIn());

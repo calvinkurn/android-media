@@ -73,6 +73,11 @@ import java.util.concurrent.TimeUnit;
 
 import kotlin.jvm.functions.Function1;
 
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -102,12 +107,31 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
+
+        initializeSdk();
+        initRemoteConfig();
+        TokopediaUrl.Companion.init(this); // generate base url
+
+        TrackApp.initTrackApp(this);
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+        initReact();
+
+        Weaver.Companion.executeWeaveRxComputation(this::executePreCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+
+        super.onCreate();
+
+        Weaver.Companion.executeWeaveRxComputation(this::initGqlNWClient, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_NETWORK_CLIENT_INIT_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveRxComputation(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+    }
+
+    @NotNull
+    private Boolean executePreCreateSequence(){
         UIBlockDebugger.init(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
-
-        initializeSdk();
-
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -123,35 +147,29 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
-
-        TokopediaUrl.Companion.init(this); // generate base url
-
         generateConsumerAppNetworkKeys();
-
-        TrackApp.initTrackApp(this);
-
-        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
-        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
-        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
-        TrackApp.getInstance().initializeAllApis();
-
         PersistentCacheManager.init(this);
-        initReact();
+        return true;
+    }
 
-        super.onCreate();
+    @NotNull
+    private Boolean initGqlNWClient(){
+        GraphqlClient.init(getApplicationContext());
+        NetworkClient.init(getApplicationContext());
+        return true;
+    }
 
+    @NotNull
+    private Boolean executePostCreateSequence(){
         StethoUtil.initStetho(this);
-
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
-
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
         PushManager.getInstance().setMessageListener(new CustomPushListener());
-        GraphqlClient.init(getApplicationContext());
-        NetworkClient.init(getApplicationContext());
+
 
         if (!com.tokopedia.config.GlobalConfig.DEBUG) {
             // do not replace with method reference "Crashlytics::logException", will not work in dynamic feature
@@ -168,12 +186,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
-
         initializeAbTestVariant();
-
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
+        return true;
     }
+
+
 
     private boolean isMainProcess() {
         ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);

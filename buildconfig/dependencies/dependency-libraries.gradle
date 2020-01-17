@@ -60,6 +60,7 @@ ext {
             twitterShare            : ":libraries:twitter_share",
             videoRecorder           : ":libraries:video_recorder",
             videoUploader           : ":libraries:videouploader",
+            weaver                  : ":libraries:weaver",
             webview                 : ":libraries:webview",
             websocket               : ":libraries:websocket",
             williamchart            : ":libraries:williamchart",

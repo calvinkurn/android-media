@@ -319,7 +319,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
-    private RemoteConfig remoteConfig;
     private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
@@ -334,7 +333,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initializeDagger();
         initDaggerInjector();
         initFirebase();
-        initRemoteConfig();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         initCMPushNotification();
@@ -396,10 +394,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
