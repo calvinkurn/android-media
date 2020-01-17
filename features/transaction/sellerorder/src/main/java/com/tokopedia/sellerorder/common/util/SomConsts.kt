@@ -132,11 +132,4 @@ object SomConsts {
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"
-
-    const val EXTRA_KEY_WAITING_PICKUP = "waiting_pickup"
-    const val EXTRA_KEY_WAITING_AWB = "waiting_awb"
-    const val EXTRA_KEY_AWB_INVALID = "awb_invalid"
-    const val EXTRA_KEY_AWB_CHANGE = "awb_change"
-    const val EXTRA_KEY_RETUR = "retur"
-    const val EXTRA_KEY_COMPLAINT = "complaint"
 }

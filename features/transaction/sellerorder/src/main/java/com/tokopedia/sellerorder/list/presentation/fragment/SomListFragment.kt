@@ -242,7 +242,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     })
 
     private fun loadFilterStatusList() {
-        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_all_filter))
+        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
     }
 
     private fun loadOrderList(nextOrderId: Int) {
