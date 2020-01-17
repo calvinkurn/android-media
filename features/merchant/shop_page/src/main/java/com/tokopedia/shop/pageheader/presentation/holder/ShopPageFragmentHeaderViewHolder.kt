@@ -100,182 +100,53 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
         when (shopInfo.statusInfo.shopStatus) {
-            ShopStatusDef.CLOSED -> showShopClosed(shopInfo, isMyShop)
-            ShopStatusDef.MODERATED -> showShopModerated(isMyShop, false, shopInfo)
-            ShopStatusDef.MODERATED_PERMANENTLY -> showShopModerated(isMyShop, true, shopInfo)
-            ShopStatusDef.NOT_ACTIVE -> showShopNotActive(isMyShop, shopInfo)
+            ShopStatusDef.CLOSED -> {
+                shopPageTracking.impressionOpenOperationalShop(CustomDimensionShopPage
+                        .create(shopInfo.shopCore.shopID,
+                                shopInfo.goldOS.isOfficial == 1,
+                                shopInfo.goldOS.isGold == 1))
+                showShopStatusTicker(shopInfo, isMyShop)
+            }
+            ShopStatusDef.MODERATED, ShopStatusDef.MODERATED_PERMANENTLY -> {
+                showShopStatusTicker(shopInfo, isMyShop)
+            }
+            ShopStatusDef.NOT_ACTIVE -> {
+                shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage
+                        .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
+                                shopInfo.goldOS.isGold == 1))
+                showShopStatusTicker(shopInfo, isMyShop)
+            }
             else -> {
                 hideShopStatusTicker()
             }
         }
     }
 
-    private fun showShopNotActive(isMyShop: Boolean, shopInfo: ShopInfo) {
-        val title: String
-        val description: String
-        val tickerCallback: TickerCallback?
-        if (isMyShop) {
-            title = view.context.getString(R.string.shop_page_header_shop_not_active_title)
-            val clickableText = view.context.getString(R.string.shop_info_label_see_how_to_open)
-            description = view.context.getString(
-                    R.string.new_shop_page_header_shop_not_active_description_seller,
-                    clickableText
-            )
-            tickerCallback = object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    shopPageTracking.clickHowToActivateShop(CustomDimensionShopPage
-                            .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
-                                    shopInfo.goldOS.isGold == 1))
-                    listener.goToHowActivate()
-                }
-
-                override fun onDismiss() {}
-
-            }
-        } else {
-            title = view.context.getString(R.string.shop_page_header_shop_not_active_title_buyer)
-            description = view.context.getString(R.string.shop_page_header_shop_not_active_description_buyer)
-            tickerCallback = null
-        }
-        showShopStatusTicker(title, description, tickerCallback, isMyShop)
-        shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage
-                .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
-                        shopInfo.goldOS.isGold == 1))
-    }
-
-    private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean, shopInfo: ShopInfo) {
-        val shopId = shopInfo.shopCore.shopID.toInt()
-        val title: Int
-        val description: String
-        val tickerCallback: TickerCallback?
-        if (isMyShop) {
-            title = if (isPermanent) {
-                R.string.new_shop_page_header_shop_in_permanent_moderation
-            } else {
-                R.string.new_shop_page_header_shop_in_moderation
-            }
-            description = view.context.getString(
-                    R.string.new_shop_page_header_shop_in_moderation_desc,
-                    view.context.getString(R.string.new_shop_info_label_open_request)
-            )
-            tickerCallback = object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    initDialog(shopId)
-                }
-
-                override fun onDismiss() {}
-
-            }
-        } else {
-            title = if (isPermanent) {
-                R.string.new_shop_page_header_shop_in_permanent_moderation_buyer
-            } else {
-                R.string.new_shop_page_header_shop_in_moderation_buyer
-            }
-            description = view.context.getString(R.string.new_shop_page_header_shop_in_moderation_desc_buyer)
-            tickerCallback = null
-        }
-        showShopStatusTicker(
-                view.context.getString(title),
-                description,
-                tickerCallback,
-                isMyShop
-        )
-    }
-
-    private fun initDialog(shopId: Int) {
-        val moderateOptionOne = context.getString(R.string.moderate_shop_option_1)
-        val moderateOptionTwo = context.getString(R.string.moderate_shop_option_2)
-        val arrayOption = arrayOf(moderateOptionOne, moderateOptionTwo)
-        var moderateNotes = ""
-        val customThemeDialog = ContextThemeWrapper(context, R.style.AlertDialogTheme)
-        val dialog = AlertDialog.Builder(customThemeDialog)
-
-        dialog.setTitle(context.getString(R.string.moderate_shop_title))
-                .setSingleChoiceItems(arrayOption, 0, null)
-                .setPositiveButton(R.string.title_ok) { dialog, which ->
-                    val selectedModerateOption = (dialog as AlertDialog).listView.checkedItemPosition
-                    if (selectedModerateOption == MODERATE_OPTION_ONE) {
-                        moderateNotes = moderateOptionOne
-                    } else if (selectedModerateOption == MODERATE_OPTION_TWO) {
-                        moderateNotes = moderateOptionTwo
-                    }
-                    if (moderateNotes.isNotEmpty()) {
-                        listener.requestOpenShop(shopId, moderateNotes)
-                    }
-                    dialog.dismiss()
-                }
-                .setNegativeButton(R.string.button_cancel) { dialog, which ->
-                    dialog.cancel()
-                }
-        dialog.show()
-    }
-
-    private fun showShopClosed(shopInfo: ShopInfo, isMyShop: Boolean) {
-        val shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
-                DateFormatUtils.FORMAT_D_MMMM_YYYY, shopInfo.closedInfo.closeUntil)
-        val title: String
-        val description: String
-        val tickerCallback: TickerCallback?
-        if (isMyShop) {
-            title = view.context.getString(R.string.new_shop_page_header_shop_close_title_seller)
-            description = view.context.getString(
-                    R.string.new_shop_page_header_shop_close_description_seller,
-                    shopCloseUntilString,
-                    view.context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
-            )
-            tickerCallback = object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    listener.openShop()
-                    shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage
-                            .create(shopInfo.shopCore.shopID,
-                                    shopInfo.goldOS.isOfficial == 1,
-                                    shopInfo.goldOS.isGold == 1))
-                }
-
-                override fun onDismiss() {}
-
-            }
-        } else {
-            title = view.context.getString(R.string.new_shop_page_header_shop_close_title_buyer)
-            description = view.context.getString(
-                    R.string.new_shop_page_header_shop_close_description_buyer,
-                    shopCloseUntilString,
-                    view.context.getString(R.string.new_shop_page_header_shop_close_description_buyer_clickable_text)
-            )
-            tickerCallback = object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    listener.goToHelpCenter(ShopUrl.SHOP_HELP_CENTER)
-                }
-
-                override fun onDismiss() {}
-
-            }
-        }
-        shopPageTracking.impressionOpenOperationalShop(CustomDimensionShopPage
-                .create(shopInfo.shopCore.shopID,
-                        shopInfo.goldOS.isOfficial == 1,
-                        shopInfo.goldOS.isGold == 1))
-        showShopStatusTicker(
-                title,
-                description,
-                tickerCallback,
-                isMyShop
-        )
-    }
-
-    private fun showShopStatusTicker(
-            title: String,
-            description: String,
-            tickerCallback: TickerCallback?,
-            isMyShop: Boolean = false
-    ) {
+    private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
         view.tickerShopStatus.show()
-        view.tickerShopStatus.tickerTitle = title
-        view.tickerShopStatus.setHtmlDescription(description)
-        tickerCallback?.let {
-            view.tickerShopStatus.setDescriptionClickEvent(it)
-        }
+        view.tickerShopStatus.tickerTitle = shopInfo.statusInfo.statusTitle
+        view.tickerShopStatus.setHtmlDescription(shopInfo.statusInfo.statusMessage)
+        view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                when (shopInfo.statusInfo.shopStatus) {
+                    ShopStatusDef.CLOSED -> {
+                        shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage
+                                .create(shopInfo.shopCore.shopID,
+                                        shopInfo.goldOS.isOfficial == 1,
+                                        shopInfo.goldOS.isGold == 1))
+                    }
+                    ShopStatusDef.NOT_ACTIVE -> {
+                        shopPageTracking.clickHowToActivateShop(CustomDimensionShopPage
+                                .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
+                                        shopInfo.goldOS.isGold == 1))
+                    }
+                }
+                listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+            }
+
+            override fun onDismiss() {}
+
+        })
         if (isMyShop) {
             view.tickerShopStatus.closeButtonVisibility = View.GONE
         } else {
@@ -341,11 +212,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     interface ShopPageFragmentViewHolderListener {
         fun onFollowerTextClicked()
         fun toggleFavorite(isFavourite: Boolean)
-        fun openShop()
-        fun requestOpenShop(shopId: Int, moderateNotes: String)
-        fun goToHowActivate()
-        fun goToHelpCenter(url: String)
         fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean)
+        fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
     }
 
 

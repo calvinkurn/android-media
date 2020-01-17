@@ -163,6 +163,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
+            android:minWidth="@dimen/dp_80"
             android:text="@string/shop_header_action_follow"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_reputation"
@@ -177,21 +178,22 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            app:typographyType="heading_6"
             android:background="@drawable/bg_following_button"
+            android:minWidth="@dimen/dp_80"
             android:paddingStart="@dimen/dp_12"
             android:paddingLeft="@dimen/dp_12"
-            android:textColor="@color/clr_ae31353b"
             android:paddingTop="@dimen/dp_7"
             android:paddingEnd="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_7"
             android:text="@string/shop_header_action_following"
+            android:textColor="@color/clr_ae31353b"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_reputation"
             app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="heading_6"
             app:unifyButtonSize="small"
-            app:unifyButtonType="main"
+            app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost"
             tools:visibility="visible" />
 
@@ -200,14 +202,14 @@
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerShopStatus"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_minus4"
         android:layout_marginLeft="@dimen/dp_minus4"
         android:layout_marginTop="@dimen/dp_minus4"
-        app:tickerType="warning"
         android:layout_marginEnd="@dimen/dp_minus4"
         android:layout_marginRight="@dimen/dp_minus4"
         android:layout_marginBottom="@dimen/dp_minus4"
-        android:layout_height="wrap_content"/>
+        app:tickerType="warning" />
 
 </LinearLayout>
 
