@@ -97,12 +97,12 @@ final class ProductListPresenter
     @Named(SearchConstant.Advertising.ADVERTISING_LOCAL_CACHE)
     LocalCacheHandler advertisingLocalCache;
 
-    private boolean enableGlobalNavWidget;
-    private boolean changeParamRow;
-    private boolean isUsingBottomSheetFilter;
-    private String additionalParams;
-    private boolean isFirstTimeLoad;
-    private boolean isTickerHasDismissed;
+    private boolean enableGlobalNavWidget = true;
+    private boolean changeParamRow = false;
+    private boolean isUsingBottomSheetFilter = true;
+    private String additionalParams = "";
+    private boolean isFirstTimeLoad = false;
+    private boolean isTickerHasDismissed = false;
 
     @Override
     public void initInjector(ProductListSectionContract.View view) {
