@@ -2,11 +2,14 @@ package com.tokopedia.home_page_banner.presenter.widgets
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -14,29 +17,20 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.home_page_banner.R
 import com.tokopedia.home_page_banner.ext.CrossFadeFactory
+import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 
-class ShimmeringImageView : FrameLayout {
-    private var imageView: ImageView? = null
-    private var shimmeringView: LoaderImageView? = null
+class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        FrameLayout(context, attrs, defStyleAttr){
 
-    constructor(context: Context): super(context){
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs){
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr){
+    init {
         init()
     }
 
     private fun init(){
-        val view = View.inflate(context, R.layout.layout_shimmering_image_view, this)
-        imageView = view.findViewById(R.id.imageView)
-        shimmeringView = view.findViewById(R.id.shimmeringView)
+        View.inflate(context, R.layout.layout_shimmering_image_view, this)
         shimmeringView?.visibility = View.GONE
     }
 
@@ -61,13 +55,5 @@ class ShimmeringImageView : FrameLayout {
                     })
                     .into(it)
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        removeAllViews()
-        imageView = null
-        shimmeringView = null
-
     }
 }

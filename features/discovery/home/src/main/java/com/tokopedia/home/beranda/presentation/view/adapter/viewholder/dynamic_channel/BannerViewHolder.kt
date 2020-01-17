@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home_page_banner.presenter.handler.HomePageBannerListener
+import com.tokopedia.home_page_banner.presenter.model.BannerModel
 import com.tokopedia.home_page_banner.presenter.widgets.HomePageBannerView
 import java.util.*
 
@@ -38,12 +39,11 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 val bannerView = itemView.findViewById<HomePageBannerView>(R.id.home_page_banner)
                 bannerView?.setListener(this)
                 bannerView?.showSeeAllPromo(it.isNotEmpty())
-                bannerView?.buildView(promoUrls)
+                bannerView?.buildView(it.map { BannerModel(it.id, it.imageUrl) })
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     override fun onPromoClick(position: Int) {
@@ -82,8 +82,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         }
     }
 
-    override fun onPageScrollStateChanged(state: Int) {
-        listener.onPromoPageScrollChanged(state)
+    override fun onPageDragStateChanged(isDrag: Boolean) {
+        listener.onPageDragStateChanged(isDrag)
     }
 
     override fun onPromoAllClick() {

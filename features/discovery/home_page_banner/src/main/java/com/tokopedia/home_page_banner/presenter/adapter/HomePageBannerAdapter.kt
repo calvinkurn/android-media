@@ -1,8 +1,11 @@
 package com.tokopedia.home_page_banner.presenter.adapter
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_page_banner.presenter.adapter.viewHolder.HomePageBannerViewHolder
+import com.tokopedia.home_page_banner.presenter.callback.BannerDiffCallback
+import com.tokopedia.home_page_banner.presenter.model.BannerModel
 
 class HomePageBannerAdapter(
         private val clickCallback: (Int) -> Unit
@@ -10,21 +13,21 @@ class HomePageBannerAdapter(
     companion object{
         private const val OFFSET_LEFT_N_RIGHT = 2
     }
-    private val imagesUrl = mutableListOf<String>()
+    private val bannerModels = mutableListOf<BannerModel>()
     private var firstInitial = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomePageBannerViewHolder {
         return HomePageBannerViewHolder(parent)
     }
 
     override fun getItemCount(): Int {
-        return if (imagesUrl.size == 0) 0 else imagesUrl.size + OFFSET_LEFT_N_RIGHT
+        return if (bannerModels.size == 0) 0 else bannerModels.size + OFFSET_LEFT_N_RIGHT
     }
 
     fun getRealCount() = itemCount - OFFSET_LEFT_N_RIGHT
 
     override fun onBindViewHolder(holder: HomePageBannerViewHolder, position: Int) {
         val imagePosition = getImagesUrl(position)
-        return holder.bind(imageUrl = imagesUrl[imagePosition], clickListener = clickCallback)
+        holder.bind(imageUrl = bannerModels[imagePosition].url, clickListener = clickCallback)
     }
 
     private fun getImagesUrl(position: Int): Int{
@@ -42,9 +45,13 @@ class HomePageBannerAdapter(
         return position - 1
     }
 
-    fun setItem(list: List<String>){
-        imagesUrl.clear()
-        imagesUrl.addAll(list)
-        notifyDataSetChanged()
+    fun setItem(list: List<BannerModel>){
+        val callback = BannerDiffCallback(bannerModels, list)
+        val diffResult = DiffUtil.calculateDiff(callback)
+        bannerModels.clear()
+        bannerModels.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
     }
+
+    fun getList() = bannerModels
 }

@@ -10,10 +10,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.home_page_banner.R
+import com.tokopedia.home_page_banner.ext.isSame
 import com.tokopedia.home_page_banner.presenter.adapter.HomePageBannerAdapter
 import com.tokopedia.home_page_banner.presenter.handler.HomePageBannerActionHandler
 import com.tokopedia.home_page_banner.presenter.handler.HomePageBannerListener
 import com.tokopedia.home_page_banner.presenter.lifecycle.HomePageBannerLifecycleObserver
+import com.tokopedia.home_page_banner.presenter.model.BannerModel
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -56,6 +58,9 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         viewPager = view.findViewById(R.id.viewpager_banner)
         viewPager?.setCurrentItem(1, false)
         seeAllPromoView?.setOnClickListener { listener?.onPromoAllClick() }
+        adapter = HomePageBannerAdapter {
+            listener?.onPromoClick(it)
+        }
     }
 
     fun showSeeAllPromo(isShow: Boolean){
@@ -66,16 +71,16 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         this.listener = listener
     }
 
-    fun buildView(imagesUrl: List<String>){
-        adapter = HomePageBannerAdapter{
-            listener?.onPromoClick(it)
+    fun buildView(banners: List<BannerModel>){
+        if(viewPager?.adapter == null){
+            viewPager?.adapter = adapter
         }
-        viewPager?.offscreenPageLimit = 5
-        buildIndicator(imagesUrl.size)
-        adapter?.setItem(imagesUrl)
+        adapter?.setItem(banners)
+        if(!banners.isSame(adapter?.getList() ?: listOf())){
+            buildIndicator(banners.size)
+            viewPager?.setCurrentItem(1, false)
+        }
         resetImpressions()
-        viewPager?.adapter = adapter
-        viewPager?.setCurrentItem(1, false)
         setPageListener()
         runSlider()
     }
@@ -127,7 +132,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         indicatorView?.removeAllViews()
         for (i in 0 until size){
             val imageView = ImageView(context)
-            imageView.setPadding(resources.getDimension(R.dimen.dp_5).toInt(), 0, resources.getDimension(R.dimen.dp_5).toInt(), 0)
+            imageView.setPadding(0, 0, resources.getDimension(R.dimen.dp_5).toInt(), 0)
             if (i == 0) {
                 imageView.setImageResource(getIndicatorFocus())
             } else {
@@ -176,7 +181,7 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         }
 
         override fun onPageScrollStateChanged(state: Int) {
-            listener?.onPageScrollStateChanged(state)
+            listener?.onPageDragStateChanged(ViewPager2.SCROLL_STATE_DRAGGING == state && viewPager?.isInTouchMode == true)
             if (state == ViewPager2.SCROLL_STATE_DRAGGING && viewPager?.isInTouchMode == true) {
                 disableSlider()
             } else if(state == ViewPager2.SCROLL_STATE_IDLE){

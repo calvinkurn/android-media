@@ -26,4 +26,9 @@ object HomePageBannerLifecycleObserver : LifecycleObserver {
     fun onPause() {
         actionHandler?.onStop()
     }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop(){
+        actionHandler?.onStop()
+    }
 }

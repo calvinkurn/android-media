@@ -141,7 +141,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         HomeReviewListener {
 
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
-    private static final int SCROLL_STATE_IDLE = 0;
+    private static final int SCROLL_STATE_DRAG = 0;
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     private static final int DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111;
     private static final int REQUEST_CODE_REVIEW = 999;
@@ -788,9 +788,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onPromoPageScrollChanged(int state){
+    public void onPageDragStateChanged(boolean isDragged) {
         if (refreshLayout != null) {
-            refreshLayout.setEnabled(state == SCROLL_STATE_IDLE);
+            refreshLayout.setEnabled(!isDragged);
         }
     }
 

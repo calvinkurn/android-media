@@ -66,7 +66,7 @@ interface HomeCategoryListener {
 
     fun setActivityStateListener(activityStateListener: ActivityStateListener)
 
-    fun onPromoPageScrollChanged(state: Int)
+    fun onPageDragStateChanged(isDragged: Boolean)
 
     fun onSpotlightItemClicked(actionLink: String)
 

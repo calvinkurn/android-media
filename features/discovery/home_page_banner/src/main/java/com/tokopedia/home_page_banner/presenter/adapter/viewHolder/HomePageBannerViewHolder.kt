@@ -11,7 +11,7 @@ class HomePageBannerViewHolder constructor(itemView: View) : RecyclerView.ViewHo
     constructor(parent: ViewGroup) : this(LayoutInflater.from(parent.context).inflate(R.layout.item_home_page_banner, parent, false))
 
     fun bind(imageUrl: String, clickListener: (Int) -> Unit){
-        itemView.setOnClickListener { clickListener.invoke(adapterPosition) }
+        itemView.setOnClickListener { clickListener.invoke(adapterPosition - 1) }
         itemView.findViewById<ShimmeringImageView>(R.id.image)?.loadImage(imageUrl)
     }
 }
