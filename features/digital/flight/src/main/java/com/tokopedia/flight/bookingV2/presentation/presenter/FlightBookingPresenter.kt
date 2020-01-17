@@ -2,7 +2,6 @@ package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import android.util.Patterns
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
@@ -32,6 +31,7 @@ import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.travel.country_code.data.TravelPhoneCodeEntity
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable

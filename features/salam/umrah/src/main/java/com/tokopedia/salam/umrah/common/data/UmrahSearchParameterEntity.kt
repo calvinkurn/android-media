@@ -2,7 +2,6 @@ package com.tokopedia.salam.umrah.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageModel
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHomepageFactory
 
@@ -16,10 +15,7 @@ data class UmrahSearchParameterEntity(
         val umrahSearchParameter: UmrahSearchParameter = UmrahSearchParameter()
 ) : UmrahHomepageModel() {
 
-    companion object {
-    }
-
-    override fun type(typeFactory: UmrahHomepageFactory): Int {
+        override fun type(typeFactory: UmrahHomepageFactory): Int {
         return typeFactory.type(this)
     }
 }

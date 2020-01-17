@@ -3,7 +3,6 @@ package com.tokopedia.salam.umrah.homepage.presentation.listener
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
-import com.tokopedia.salam.umrah.homepage.data.UmrahCategoriesFeatured
 
 /**
  * @author by firman on 28/10/19

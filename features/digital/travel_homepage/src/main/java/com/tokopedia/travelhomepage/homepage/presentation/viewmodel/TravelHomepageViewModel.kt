@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -29,6 +30,7 @@ class TravelHomepageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
+        private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
@@ -126,16 +128,11 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getRecentSearch(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecentSearchModel.Response::class.java)
-                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<TravelHomepageRecentSearchModel.Response>()
+            val data = travelRecentSearchUseCase.execute(rawQuery, isFromCloud)
 
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[RECENT_SEARCHES_ORDER] = mapper.mapToSectionViewModel(data.response)
+                updatedList[RECENT_SEARCHES_ORDER] = mapper.mapToSectionViewModel(data)
                 updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
                 updatedList[RECENT_SEARCHES_ORDER].isSuccess = true
                 travelItemList.value = updatedList

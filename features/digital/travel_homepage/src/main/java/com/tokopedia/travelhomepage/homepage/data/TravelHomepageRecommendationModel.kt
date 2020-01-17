@@ -2,8 +2,7 @@ package com.tokopedia.travelhomepage.homepage.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
+import com.tokopedia.common.travel.data.entity.TravelMetaModel
 
 /**
  * @author by furqan on 06/08/2019
@@ -13,7 +12,7 @@ class TravelHomepageRecommendationModel(@SerializedName("items")
                                         val items: List<Item> = listOf(),
                                         @SerializedName("meta")
                                         @Expose
-                                        val meta: MetaModel = MetaModel()) {
+                                        val travelMeta: TravelMetaModel = TravelMetaModel()) {
 
     data class Item(@SerializedName("product")
                     @Expose

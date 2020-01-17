@@ -1,7 +1,7 @@
 package com.tokopedia.travelhomepage.homepage.data.mapper
 
+import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecentSearchModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionViewModel
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
@@ -16,8 +16,8 @@ class TravelHomepageMapper {
 
     fun mapToSectionViewModel(model: TravelHomepageOrderListModel): TravelHomepageSectionViewModel {
         val viewModel = TravelHomepageSectionViewModel()
-        viewModel.title = model.meta.title
-        viewModel.seeAllUrl = model.meta.appUrl
+        viewModel.title = model.travelMeta.title
+        viewModel.seeAllUrl = model.travelMeta.appUrl
         viewModel.list = model.orders.map {
             TravelHomepageSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix, value = it.value,
@@ -28,10 +28,10 @@ class TravelHomepageMapper {
         return viewModel
     }
 
-    fun mapToSectionViewModel(model: TravelHomepageRecentSearchModel): TravelHomepageSectionViewModel {
+    fun mapToSectionViewModel(model: TravelRecentSearchModel): TravelHomepageSectionViewModel {
         val viewModel = TravelHomepageSectionViewModel()
-        viewModel.title = model.meta.title
-        viewModel.seeAllUrl = model.meta.appUrl
+        viewModel.title = model.travelMeta.title
+        viewModel.seeAllUrl = model.travelMeta.appUrl
         viewModel.list = model.items.map {
             TravelHomepageSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix,
@@ -40,14 +40,14 @@ class TravelHomepageMapper {
             )
         }
         viewModel.type = TYPE_RECENT_SEARCH
-        viewModel.categoryType = model.meta.type
+        viewModel.categoryType = model.travelMeta.type
         return viewModel
     }
 
     fun mapToSectionViewModel(model: TravelHomepageRecommendationModel): TravelHomepageSectionViewModel {
         val viewModel = TravelHomepageSectionViewModel()
-        viewModel.title = model.meta.title
-        viewModel.seeAllUrl = model.meta.appUrl
+        viewModel.title = model.travelMeta.title
+        viewModel.seeAllUrl = model.travelMeta.appUrl
         viewModel.list = model.items.map {
             TravelHomepageSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix,

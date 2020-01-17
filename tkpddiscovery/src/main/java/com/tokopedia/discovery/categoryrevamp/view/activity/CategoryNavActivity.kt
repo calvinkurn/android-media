@@ -96,6 +96,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     companion object {
         private const val ORDER_BY = "ob"
         private const val SCREEN_NAME = "/p"
+        const val EXTRA_CATEGORY_NAME = "categoryName"
+
         fun isBannedNavigationEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
@@ -341,17 +343,23 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun fetchBundle() {
-        val bundle = intent.extras
-        bundle?.let {
-            if (it.containsKey(BrowseProductRouter.EXTRA_CATEGORY_URL)) {
-                categoryUrl = it.getString(BrowseProductRouter.EXTRA_CATEGORY_URL, "")
-                val urlParser = URLParser(categoryUrl)
-                departmentId = urlParser.getDepIDfromURI(this)
-                departmentName = ""
-                searchNavContainer?.onFilterSelected(true)
+        intent.extras?.let { bundle ->
+            if (bundle.containsKey(BrowseProductRouter.EXTRA_CATEGORY_URL)) {
+                categoryUrl = bundle.getString(BrowseProductRouter.EXTRA_CATEGORY_URL, "")
+                categoryUrl?.let {
+                    if (it.contains(EXTRA_CATEGORY_NAME)) {
+                        departmentId = URLParser.getPathSegment(0, categoryUrl)
+                        departmentName = ""
+                    } else {
+                        val urlParser = URLParser(it)
+                        departmentId = urlParser.getDepIDfromURI(this)
+                        departmentName = ""
+                        searchNavContainer?.onFilterSelected(true)
+                    }
+                }
             }
 
-            if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
+            if (bundle.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
                 departmentId = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
                 departmentName = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
 

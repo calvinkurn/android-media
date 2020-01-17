@@ -113,7 +113,7 @@ public class GTMAnalytics extends ContextAnalytics {
             pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         } catch (Exception e) {
             if (e != null && !TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2[GTMAnalytic Error]%s %s", e.getMessage(), stacktrace.toString());
+                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
             }
         }
     }
@@ -828,9 +828,18 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = new Bundle();
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
-        bundle.putString("userId", sessionHandler.getLoginID());
+        if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
+            bundle.putString("userId", sessionHandler.getLoginID());
+        }else{
+            bundle.putString("userId", "");
+        }
         bundle.putString("clientId", getClientIDString());
         bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
+        if(!TextUtils.isEmpty(sessionHandler.getShopId())) {
+            bundle.putString("shopId", sessionHandler.getShopId());
+        }else{
+            bundle.putString("shopId", "");
+        }
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
@@ -1158,7 +1167,11 @@ public class GTMAnalytics extends ContextAnalytics {
                         "promotions", null,
                         "ecommerce", null,
                         "currentSite", null,
-                        "channelId", null
+                        "channelId", null,
+                        "attribution", null,
+                        "affinityLabel", null,
+                        "categoryId", null,
+                        "shopId", null
                 )
         );
     }

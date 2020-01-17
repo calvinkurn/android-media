@@ -1,12 +1,14 @@
 package com.tokopedia.gamification.taptap.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.R;
@@ -109,9 +111,14 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
     @Override
     public void navigateToActivity(String applink, String url) {
-        ApplinkUtil.navigateToAssociatedPage(getActivity(), applink,
-                url,
-                TapTapTokenActivity.class);
+        if (!TextUtils.isEmpty(applink)) {
+            boolean isSupported = RouteManager.route(getActivity(), applink);
+            if (!isSupported) {
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), applink, url, TapTapTokenActivity.class);
+            }
+        } else {
+            ApplinkUtil.navigateToAssociatedPage(getActivity(), applink, url, TapTapTokenActivity.class);
+        }
     }
 
     @Override

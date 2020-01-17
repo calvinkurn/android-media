@@ -112,7 +112,11 @@ data class ProductsItem(
         var adapter_position: Int = 0,
 
         @field:SerializedName("free_ongkir")
-        var freeOngkir: FreeOngkir? = null
+        var freeOngkir: FreeOngkir? = null,
+
+        @field:SerializedName("dimension")
+        var dimension: String? = null
+
 
 
 ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
@@ -156,7 +160,9 @@ data class ProductsItem(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readInt())
+            parcel.readInt(),
+            parcel.readParcelable(FreeOngkir::class.java.classLoader),
+            parcel.readString())
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(this.imageURL500)
@@ -194,6 +200,8 @@ data class ProductsItem(
         dest?.writeValue(this.productClickTrackingUrl)
         dest?.writeValue(this.productWishlistTrackingUrl)
         dest?.writeInt(this.adapter_position)
+        dest?.writeValue(this.freeOngkir)
+        dest?.writeString(this.dimension)
     }
 
     override fun describeContents(): Int {
@@ -216,4 +224,28 @@ data class FreeOngkir(
         val isActive: Boolean,
         @SerializedName("img_url")
         val imageUrl: String
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readByte() != 0.toByte(),
+            parcel.readString()) {
+    }
+
+    override fun writeToParcel(dest: Parcel?, flags: Int) {
+        dest?.writeValue(isActive)
+        dest?.writeString(imageUrl)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FreeOngkir> {
+        override fun createFromParcel(parcel: Parcel): FreeOngkir {
+            return FreeOngkir(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FreeOngkir?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -587,6 +587,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             cartShipmentAddressFormData.getTickerData().getMessage())
             );
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
+        } else {
+            setTickerAnnouncementHolderData(null);
         }
 
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
@@ -875,8 +877,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())) {
-                            tickerAnnouncementHolderData.setId(String.valueOf(responseGetPromoStack.getData().getTickerInfoUiModel().getStatusCode()));
-                            tickerAnnouncementHolderData.setMessage(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage());
+                            if (tickerAnnouncementHolderData == null) {
+                                setTickerAnnouncementHolderData(
+                                        new TickerAnnouncementHolderData(
+                                                String.valueOf(responseGetPromoStack.getData().getTickerInfoUiModel().getStatusCode()),
+                                                responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())
+                                );
+                            }
                             getView().updateTickerAnnouncementMessage();
                             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
                         }
