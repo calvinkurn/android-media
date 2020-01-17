@@ -460,7 +460,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             try {
                 val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
-                        affiliateRequest,topAdsManageRequest), cacheStrategy)
+                        affiliateRequest, topAdsManageRequest), cacheStrategy)
 
                 if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
                     p2Login.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
@@ -475,14 +475,19 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .topAdsPDPAffiliate.data.affiliate.firstOrNull()
                 }
 
-        if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-            p2Login.cartType = response
-                    .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                    .getCartType.data.cartType
-        }
-    } catch (t: Throwable) {
-        Timber.d(t)
-    }
+                if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
+                    p2Login.cartType = response
+                            .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
+                            .getCartType.data.cartType
+                }
+
+                if (response.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
+                    p2Login.topAdsGetProductManage = response
+                            .getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage ?: TopAdsGetProductManage()
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
 
             p2Login
         }
