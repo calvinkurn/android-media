@@ -744,7 +744,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
-                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, getArguments().getString(KEY_ORDER_ID));
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);

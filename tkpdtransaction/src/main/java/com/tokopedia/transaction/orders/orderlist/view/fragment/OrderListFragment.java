@@ -934,7 +934,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 break;
             default:
                 if (actionButton.uri().contains(ACTION_SIMILAR_PRODUCT)) {
-                    orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, order.id());
+                    String eventLabel = "";
+                    if (order.items() != null && !order.items().isEmpty()) {
+                        eventLabel = String.valueOf(order.items().get(0).getId());
+                    }
+                    orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, eventLabel);
                 }
                 handleDefaultCase(actionButton);
                 break;
