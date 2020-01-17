@@ -30,7 +30,6 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangI
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_KEY_WAITING_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
@@ -186,7 +185,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         defaultEndDate = Date().toFormattedString("dd/MM/yyyy")
         paramOrder.startDate = defaultStartDate
         paramOrder.endDate = defaultEndDate
-//        paramOrder.statusList = STATUS_ORDER_MAP[tabStatus] ?: listOf()
     }
 
     private fun loadInitial() {
@@ -230,7 +228,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         when (it) {
             is Success -> {
                 it.data.forEach { statusList ->
-                    if (statusList.key == EXTRA_KEY_WAITING_PICKUP) {
+                    if (statusList.key == filterStatus) {
                         paramOrder.statusList = statusList.orderStatusIdList
                         return@forEach
                     }
