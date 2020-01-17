@@ -234,8 +234,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
     fun updateDataP3(it: ProductInfoP3) {
         productShipingInfoMap?.run {
-            data.first().subtitle = " ${context.getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size
-                    ?: 0)}${context.getString(R.string.ongkir_pattern_string, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")}"
+            data.first().subtitle = context.getString(R.string.ongkir_pattern_string_dynamic_pdp, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")
         }
     }
 

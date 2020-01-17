@@ -421,6 +421,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
                             userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
+                            productId = userInputVariant
                             val dynamicP1Copy = DynamicProductDetailMapper.mapProductInfoToDynamicProductInfo(selectedProductInfo, viewModel.getDynamicProductInfoP1
                                     ?: DynamicProductInfoP1())
                             viewModel.getDynamicProductInfoP1 = dynamicP1Copy
@@ -481,6 +482,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
+                isLoadingInitialData = true
                 loadProductData(true)
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
@@ -489,6 +491,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
                 shouldRenderSticky = true
                 updateStickyContent()
+                isLoadingInitialData = true
+                loadProductData(true)
+                activity?.invalidateOptionsMenu()
             }
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK)
@@ -604,14 +609,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onEtalaseClicked(url: String) {
         val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: 0
         val etalaseName = viewModel.getDynamicProductInfoP1?.basic?.menu?.name ?: ""
-        val shopId = viewModel.shopInfo?.shopCore?.shopID ?: ""
 
         dynamicProductDetailTracking.eventEtalaseClicked(etalaseId.toString(), etalaseName)
-        if (etalaseId == 0) {
-            RouteManager.route(context, ApplinkConst.SHOP, shopId)
-        } else {
-            RouteManager.route(context, url)
-        }
+        RouteManager.route(context, url)
     }
 
     /**
@@ -1349,6 +1349,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessMoveToEtalase() {
         hideProgressDialog()
         showToastSuccess(getString(R.string.success_move_etalase))
+        isLoadingInitialData = true
         loadProductData(true)
     }
 
@@ -1365,6 +1366,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessWarehouseProduct() {
         hideProgressDialog()
         showToastSuccess(getString(R.string.success_warehousing_product))
+        isLoadingInitialData = true
         loadProductData(true)
     }
 
@@ -2013,6 +2015,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 val badge = CountDrawable(this)
                 badge.setCount(if (cartCount > ProductDetailConstant.CART_MAX_COUNT) {
                     getString(R.string.pdp_label_cart_count_max)
+                } else if (!viewModel.isUserSessionActive) {
+                    "0"
                 } else {
                     cartCount.toString()
                 })

@@ -61,14 +61,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_see_all_partial"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
         android:text="@string/label_see_all"
         android:textColor="@color/tkpd_main_green"
-        app:layout_constraintBottom_toTopOf="@id/image_review_list"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_review_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_review_title"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

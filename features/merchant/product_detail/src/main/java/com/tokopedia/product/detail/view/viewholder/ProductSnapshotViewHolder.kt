@@ -49,7 +49,9 @@ class ProductSnapshotViewHolder(private val view: View,
             listener.txtTradeinClicked()
         }
 
-        view.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }
+        view.fab_detail.setOnClickListener {
+            listener.onFabWishlistClicked(it.isActivated)
+        }
         element.media?.let {
             view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
             element.shouldReinitVideoPicture = false
