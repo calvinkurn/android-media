@@ -23,7 +23,7 @@ private typealias RatesModel = ShippingRecommendationData
 class GetRatesUseCase @Inject constructor(@ApplicationContext val context: Context, val gql: GraphqlUseCase) {
 
     fun execute(param: RatesParam): Observable<RatesModel> {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesV3)
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3)
         val gqlRequest = GraphqlRequest(query, RatesGqlResponse::class.java, param.toMap())
 
         gql.clearRequest()
