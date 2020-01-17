@@ -11,5 +11,4 @@ public class KycUrl {
     public final static String SCAN_KTP = "https://ecs7.tokopedia.net/android/others/account_verification_ktp_onboarding.png";
     public final static String SCAN_FACE = "https://ecs7.tokopedia.net/lottie/scanning_the_face.json";
 //    public final static String SCAN_FACE = "https://ecs7.tokopedia.net/android/others/account_verification_scan_face.png";
-    public final static String SCAN_FACE_FAIL_TIME = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_time.png";
 }

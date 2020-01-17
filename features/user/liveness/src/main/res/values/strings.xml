@@ -1,5 +1,6 @@
 <resources>
     <string name="liveness_app_name">liveness</string>
+    <string name="liveness_title" translatable="false">Verifikasi Wajah</string>
     <string name="liveness_none"></string>
     <string name="title_liveness_detection" translatable="false">Liveness Detection</string>
     <string name="liveness_blink">Silakan berkedip</string>
@@ -23,4 +24,6 @@
     <string name="liveness_tip_move_closer">Arahkan wajah lebih dekat ke layar</string>
     <string name="liveness_tip_move_furthre">Arahkan wajah lebih jauh ke layar</string>
     <string name="liveness_device_not_support">The device does not support liveness detection</string>
+
+    <string name="liveness_retry" translatable="false">Coba Lagi</string>
 </resources>

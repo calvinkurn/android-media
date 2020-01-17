@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.view.fragment;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.LottieCompositionFactory;
+import com.airbnb.lottie.LottieTask;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc_centralized.R;
@@ -58,8 +62,12 @@ public class UserIdentificationFormFaceFragment extends
             startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
         });
 //        ImageHandler.LoadImage(onboardingImage, KycUrl.SCAN_FACE);
-        onboardingImage.setAnimationFromUrl(KycUrl.SCAN_FACE);
-        onboardingImage.playAnimation();
+        LottieTask<LottieComposition> lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(requireContext(), KycUrl.SCAN_FACE);
+        lottieCompositionLottieTask.addListener(result -> {
+            onboardingImage.setComposition(result);
+            onboardingImage.setRepeatCount(ValueAnimator.INFINITE);
+            onboardingImage.playAnimation();
+        });
 
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())

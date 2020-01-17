@@ -19,7 +19,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#aeffffff"
     android:orientation="vertical"
     tools:ignore="MissingConstraints,ResourceName">
     <!--titleBar-->
@@ -46,10 +45,8 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="3sp"
-        android:text="Verifikasi Wajah"
+        android:text="@string/liveness_title"
         android:textColor="@color/Neutral_N0"
-        android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="@id/back_view_camera_activity"
         app:layout_constraintLeft_toRightOf="@id/back_view_camera_activity"
         app:layout_constraintTop_toTopOf="@id/back_view_camera_activity"
@@ -66,19 +63,21 @@
         android:id="@+id/tip_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:typographyType="heading_4"
         android:gravity="center"
         android:lineSpacingExtra="4sp"
         android:textColor="@color/Neutral_N0"
-        android:textSize="16sp"
+        android:paddingLeft="@dimen/spacing_lvl5"
+        android:paddingRight="@dimen/spacing_lvl5"
         app:layout_constraintTop_toBottomOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:text="Silakan berkedip" />
+        tools:text="Silakan berkedip"/>
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/tip_lottie_animation_view"
-        android:layout_width="104dp"
-        android:layout_height="104dp"
+        android:layout_width="@dimen/liveness_104"
+        android:layout_height="@dimen/liveness_104"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         app:layout_constraintTop_toBottomOf="@id/tip_text_view"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -89,8 +88,8 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_layout"
         style="@style/liveness_horizontal_center"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/liveness_0"
+        android:layout_height="@dimen/liveness_0"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H,1:1"

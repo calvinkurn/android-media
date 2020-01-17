@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
@@ -22,8 +21,6 @@ import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
-
-import java.util.Objects;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
@@ -106,12 +103,6 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_file_too_big));
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_cant_be_accessed));
-        } else if (resultCode == KYCConstant.IS_LIVENESS_DETECTION_FAIL) {
-//            NetworkErrorHelper.showRedSnackbar(getActivity(), "Gagal melakukan verifikasi wajah.");
-            FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.fragment_user_identification_form_container, UserIdentificationFormFailedFragment.createInstance(), "fragment_scan_face_failed")
-                    .addToBackStack("fragment_scan_face_failed")
-                    .commit();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

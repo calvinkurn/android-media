@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="liveness_0">0dp</dimen>
     <dimen name="liveness_1">1dp</dimen>
     <dimen name="liveness_2">2dp</dimen>
     <dimen name="liveness_3">3dp</dimen>
@@ -35,13 +36,17 @@
     <dimen name="liveness_48">48dp</dimen>
     <dimen name="liveness_72">72dp</dimen>
     <dimen name="liveness_90">90dp</dimen>
+    <dimen name="liveness_104">104dp</dimen>
+    <dimen name="liveness_110">110dp</dimen>
     <dimen name="liveness_120">120dp</dimen>
     <dimen name="liveness_127">127dp</dimen>
     <dimen name="liveness_160">160dp</dimen>
-
+    <dimen name="liveness_179">179dp</dimen>
+    <dimen name="liveness_224">224dp</dimen>
     <dimen name="liveness_269">269dp</dimen>
     <dimen name="liveness_203">203dp</dimen>
-    <dimen name="liveness_110">110dp</dimen>
+
+    <dimen name="liveness_text_spacing_6">6sp</dimen>
     <dimen name="liveness_text_28">@dimen/liveness_14</dimen>
     <dimen name="liveness_text_32">@dimen/liveness_16</dimen>
     <dimen name="liveness_text_36">@dimen/liveness_18</dimen>

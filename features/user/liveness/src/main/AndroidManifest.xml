@@ -13,7 +13,7 @@
             android:label="@string/title_liveness_detection"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -26,10 +26,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ai.advance.liveness.activity.ResultActivity"
+            android:name="ai.advance.liveness.activity.LivenessFailedActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.White" />
 
     </application>
 </manifest>
