@@ -75,11 +75,14 @@ class HomePageBannerView : FrameLayout, CoroutineScope, HomePageBannerActionHand
         if(viewPager?.adapter == null){
             viewPager?.adapter = adapter
         }
-        adapter?.setItem(banners)
         if(!banners.isSame(adapter?.getList() ?: listOf())){
             buildIndicator(banners.size)
+            adapter?.setItem(banners)
             viewPager?.setCurrentItem(1, false)
+        }else {
+            adapter?.setItem(banners)
         }
+        viewPager?.offscreenPageLimit = banners.size
         resetImpressions()
         setPageListener()
         runSlider()

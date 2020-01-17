@@ -2,10 +2,4 @@
 <com.tokopedia.home_page_banner.presenter.widgets.ShimmeringImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/image"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:adjustViewBounds="true"
-    android:clickable="true"
-    android:background="?attr/selectableItemBackground"
-    android:focusable="true"
-    android:maxHeight="200dp"
-    android:contentDescription="@string/banner_see_all" />
+    android:layout_height="match_parent"/>
