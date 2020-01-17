@@ -39,9 +39,9 @@ class HotelHomepageViewModel @Inject constructor(
     val recentSearch: LiveData<Result<HotelRecentSearchModel>>
         get() = mutableRecentSearch
 
-    private val _deleteRecentSearch = MutableLiveData<Result<Boolean>>()
-    val deleteRecentSearch: MutableLiveData<Result<Boolean>>
-        get() = _deleteRecentSearch
+    private val mutableDeleteRecentSearch = MutableLiveData<Result<Boolean>>()
+    val deleteRecentSearch: LiveData<Result<Boolean>>
+        get() = mutableDeleteRecentSearch
 
     fun getHotelPromo(rawQuery: String) {
         launch {
@@ -66,9 +66,9 @@ class HotelHomepageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelDeleteRecentSearchEntity.Response>()
 
-            _deleteRecentSearch.value = Success(data.travelRecentSearchHotelDelete.result)
+            mutableDeleteRecentSearch.value = Success(data.travelRecentSearchHotelDelete.result)
         }) {
-            _deleteRecentSearch.value = Fail(it)
+            mutableDeleteRecentSearch.value = Fail(it)
         }
     }
 }
