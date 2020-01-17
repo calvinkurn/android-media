@@ -65,8 +65,10 @@ class LivenessActivity : AppCompatActivity() {
         if (allPermissionsGranted()) {
             if (GuardianLivenessDetectionSDK.isDeviceSupportLiveness) {
                 mLivenessFragment = LivenessFragment.newInstance()
-                if (!mLivenessFragment!!.isAdded) {
-                    supportFragmentManager.beginTransaction().replace(R.id.container, mLivenessFragment!!).commitAllowingStateLoss()
+                if (mLivenessFragment?.isAdded == false) {
+                    mLivenessFragment?.let {fragment ->
+                        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss()
+                    }
                 }
             } else {
                 val errorMsg = getString(R.string.liveness_device_not_support)
@@ -78,22 +80,24 @@ class LivenessActivity : AppCompatActivity() {
                             setResult(Activity.RESULT_OK)
                             finish()
                         }.create()
-                mErrorDialog!!.show()
+                mErrorDialog?.show()
             }
         }
     }
 
     override fun onPause() {
-        if (mLivenessFragment != null && mLivenessFragment!!.isAdded) {
-            mLivenessFragment!!.release()
-            supportFragmentManager.beginTransaction().remove(mLivenessFragment!!).commitAllowingStateLoss()
+        if (mLivenessFragment != null && mLivenessFragment?.isAdded == true) {
+            mLivenessFragment?.release()
+            mLivenessFragment?.let {fragment ->
+                supportFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
+            }
         }
         super.onPause()
     }
 
     override fun onDestroy() {
-        if (mErrorDialog != null && mErrorDialog!!.isShowing) {
-            mErrorDialog!!.dismiss()
+        if (mErrorDialog != null && mErrorDialog?.isShowing == true) {
+            mErrorDialog?.dismiss()
         }
         super.onDestroy()
     }

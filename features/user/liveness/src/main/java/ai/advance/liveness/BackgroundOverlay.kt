@@ -30,17 +30,17 @@ class BackgroundOverlay : View {
 
     private fun initPaints() {
         mTransparentPaint = Paint()
-        mTransparentPaint!!.color = Color.TRANSPARENT
-        mTransparentPaint!!.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mTransparentPaint?.color = Color.TRANSPARENT
+        mTransparentPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
 
         mSemiBlackPaint = Paint()
-        mSemiBlackPaint!!.color = Color.TRANSPARENT
-        mSemiBlackPaint!!.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mSemiBlackPaint?.color = Color.TRANSPARENT
+        mSemiBlackPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
 
         mStatusPaint = Paint()
-        mStatusPaint!!.style = Paint.Style.STROKE
-        mStatusPaint!!.color = Color.WHITE
-        mStatusPaint!!.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mStatusPaint?.style = Paint.Style.STROKE
+        mStatusPaint?.color = Color.WHITE
+        mStatusPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
     }
 
     fun changeColor() {
@@ -88,19 +88,20 @@ class BackgroundOverlay : View {
                 Path.Direction.CW)  //invisible circle
         mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
 
-        canvas.drawPath(mPath, mSemiBlackPaint!!)
+        mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
         canvas.drawColor(Color.parseColor("#ae000000"))
 
-        canvas.drawCircle((right / 2).toFloat(),
+        mStatusPaint?.let { canvas.drawCircle((right / 2).toFloat(),
                 (bottom / 3).toFloat(),
                 radius,
-                mStatusPaint!!)
+                it)
+        }
 
     }
 
     companion object {
 
-        private val CONST_STROKE_WIDTH = 10
+        private const val CONST_STROKE_WIDTH = 10
     }
 }
