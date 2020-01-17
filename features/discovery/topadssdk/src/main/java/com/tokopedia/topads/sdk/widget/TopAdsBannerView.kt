@@ -91,7 +91,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun renderViewCpmShop(context: Context, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (activityIsFinishing(context))
             return
-        if (template == NO_TEMPLATE) {
+        if (template == NO_TEMPLATE && isEligible(cpmData)) {
             var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
             if (variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
@@ -138,27 +138,27 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {
-        if (cpmData != null && cpmData.cpm.cpmShop != null) {
+        if (isEligible(cpmData)) {
             var shop_badge = findViewById<ImageView>(R.id.shop_badge)
             shop_badge?.let {
-                if (cpmData.cpm.badges.size > 0) {
+                if (cpmData?.cpm?.badges!!.size > 0) {
                     shop_badge.visibility = View.VISIBLE
-                    Glide.with(shop_badge).load(cpmData.cpm.badges[0].imageUrl).into(shop_badge)
+                    Glide.with(shop_badge).load(cpmData?.cpm.badges[0].imageUrl).into(shop_badge)
                 } else {
                     shop_badge.visibility = View.GONE
                 }
             }
-            shop_name?.text = cpmData.cpm.cpmShop.name
-            description?.text = cpmData.cpm.cpmShop.tagline
+            shop_name?.text = cpmData?.cpm?.cpmShop?.name
+            description?.text = cpmData?.cpm?.cpmShop?.tagline
             kunjungi_toko?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
-                    ImpresionTask().execute(cpmData.adClickUrl)
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
                 }
             }
             val items = ArrayList<Item<*>>()
             items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
-            for (i in 0 until cpmData.cpm.cpmShop.products.size) {
+            for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
                 if (i < 3) {
                     items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
                             appLink, adsClickUrl))
@@ -170,6 +170,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             bannerAdsAdapter!!.setList(items)
         }
     }
+
+    private fun isEligible(cpmData: CpmData?) =
+            cpmData != null
+                    && cpmData.cpm.cpmShop != null
+                    && cpmData.cpm.cpmShop.products.size > 1
 
     private fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {
