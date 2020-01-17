@@ -17,8 +17,8 @@ import java.util.*
 object DeviceConnectionInfo {
 
     @JvmStatic
-    fun getSSID(context: Context): String? {
-        var ssid: String? = null
+    fun getSSID(context: Context): String {
+        var ssid: String = ""
         try {
             val connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connManager.activeNetworkInfo
@@ -31,7 +31,7 @@ object DeviceConnectionInfo {
                 }
             }
         } catch (e: Exception) {
-            return null
+            return ""
         }
 
         return ssid
@@ -104,8 +104,8 @@ object DeviceConnectionInfo {
     }
 
     @JvmStatic
-    fun getHttpAgent(): String? {
-        return System.getProperty("http.agent")
+    fun getHttpAgent(): String {
+        return System.getProperty("http.agent").orEmpty()
     }
 
     @JvmStatic

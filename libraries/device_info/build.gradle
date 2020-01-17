@@ -14,10 +14,10 @@ buildscript {
 
 android {
     defaultConfig {
-        testInstrumentationRunner 'androidx.test.ext.junit.runners.AndroidJUnit4'
+        multiDexEnabled true
     }
 }
 
 dependencies {
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    implementation rootProject.ext.miscDependencies.multiDex
 }
