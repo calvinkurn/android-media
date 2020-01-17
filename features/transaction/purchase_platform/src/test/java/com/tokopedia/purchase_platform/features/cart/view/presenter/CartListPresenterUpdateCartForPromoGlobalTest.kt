@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.cart.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
@@ -38,7 +37,6 @@ class CartListPresenterUpdateCartForPromoGlobalTest : Spek({
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase = mockk()
-    val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper = mockk()
     val compositeSubscription = CompositeSubscription()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
