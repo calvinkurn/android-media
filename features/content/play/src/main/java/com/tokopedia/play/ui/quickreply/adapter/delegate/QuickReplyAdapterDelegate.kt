@@ -11,7 +11,7 @@ import com.tokopedia.play.ui.chatlist.viewholder.ChatViewHolder
  */
 class QuickReplyAdapterDelegate(
         private val onQuickReplyClicked: (String) -> Unit
-) : TypedAdapterDelegate<String, String, ChatViewHolder>(R.layout.item_play_chat) {
+) : TypedAdapterDelegate<String, String, ChatViewHolder>(R.layout.item_play_quick_reply) {
 
     override fun onBindViewHolder(item: String, holder: ChatViewHolder) {
         holder.bind(item, onQuickReplyClicked)
