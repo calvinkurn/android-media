@@ -54,25 +54,6 @@ public class MethodChecker {
         }
     }
 
-
-    public static void removeAllCookies(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
-                @Override
-                public void onReceiveValue(Boolean value) {
-                    CommonUtils.dumper("Success Clear Cookie");
-                }
-            });
-        } else {
-            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
-            cookieSyncMngr.startSync();
-            CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.removeAllCookie();
-            cookieManager.removeSessionCookie();
-            cookieSyncMngr.stopSync();
-        }
-    }
-
     public static Uri getUri(Context context, File outputMediaFile) {
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return FileProvider.getUriForFile(context,
@@ -100,17 +81,6 @@ public class MethodChecker {
         return fromHtml(lineBreakHtmlResult);
     }
 
-    public static SmsMessage createSmsFromPdu(Intent intent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);
-            return msgs[0];
-        } else {
-            final Object[] pdusObj = (Object[]) intent.getExtras().get("pdus");
-
-            return SmsMessage.createFromPdu((byte[]) (pdusObj != null ? pdusObj[0] : ""));
-        }
-    }
-
     public static void setAllowMixedContent(WebSettings webSettings) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -121,25 +91,5 @@ public class MethodChecker {
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
         else
             return AppCompatResources.getDrawable(context, resId);
-    }
-
-    public static Intent getSmsIntent(Activity activity, String shareText) {
-        Intent smsIntent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(activity);
-            smsIntent = new Intent(Intent.ACTION_SEND);
-            smsIntent.setType("text/plain");
-            smsIntent.putExtra(Intent.EXTRA_TEXT, shareText);
-            if (defaultSmsPackageName != null) {
-                smsIntent.setPackage(defaultSmsPackageName);
-
-            }
-
-        } else {
-            smsIntent = new Intent(Intent.ACTION_VIEW);
-            smsIntent.setType("vnd.android-dir/mms-sms");
-            smsIntent.putExtra("sms_body", shareText);
-        }
-        return smsIntent;
     }
 }

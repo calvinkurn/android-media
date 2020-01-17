@@ -1,10 +1,10 @@
 package com.tokopedia.events.data;
 
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import rx.functions.Func1;
+import timber.log.Timber;
 
 /**
  * Created by pranaymohapatra on 15/02/18.
@@ -13,7 +13,7 @@ import rx.functions.Func1;
 public class SearchResponseMapper implements Func1<SearchResponse, SearchDomainModel> {
     @Override
     public SearchDomainModel call(SearchResponse searchResponseEntity) {
-        CommonUtils.dumper("inside SearchResponseEntity = " + searchResponseEntity);
+        Timber.d("inside SearchResponseEntity = " + searchResponseEntity);
         return EventSearchMapper.getSearchMapper().convertToSearchDomain(searchResponseEntity);
     }
 }

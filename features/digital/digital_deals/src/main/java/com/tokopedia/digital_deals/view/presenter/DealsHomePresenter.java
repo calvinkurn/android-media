@@ -13,7 +13,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
@@ -64,6 +63,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         implements DealsContract.Presenter {
@@ -263,7 +263,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
@@ -271,7 +271,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 if (getView() == null) {
                     return;
                 }
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -331,7 +331,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
@@ -339,7 +339,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 if (getView() == null) {
                     return;
                 }
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -367,7 +367,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 }
                 isBrandsLoaded = true;
                 showHideViews();
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
             }
         });
     }
@@ -621,7 +621,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper(e);
+                Timber.d(e);
             }
 
             @Override

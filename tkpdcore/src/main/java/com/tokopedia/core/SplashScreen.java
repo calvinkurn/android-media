@@ -6,19 +6,19 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.URLUtil;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -32,8 +32,6 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-
-import com.tokopedia.applink.ApplinkConst;
 
 import timber.log.Timber;
 
@@ -135,7 +133,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        CommonUtils.dumper(resultData);
+        Timber.d(resultData.toString());
         if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 

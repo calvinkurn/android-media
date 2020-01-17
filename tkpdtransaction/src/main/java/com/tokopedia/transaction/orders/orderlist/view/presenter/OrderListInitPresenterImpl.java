@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -10,6 +9,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.TabData;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 public class OrderListInitPresenterImpl implements OrderListInitContract.Presenter {
     OrderListInitContract.View view;
@@ -34,7 +34,7 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper(e.toString());
+                Timber.d(e.toString());
                 view.removeProgressBarView();
                 view.showErrorNetwork(
                         ErrorHandler.getErrorMessage(view.getAppContext(), e));

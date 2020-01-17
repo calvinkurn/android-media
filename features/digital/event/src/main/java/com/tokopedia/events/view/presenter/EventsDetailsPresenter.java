@@ -4,9 +4,7 @@ import android.content.Intent;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
@@ -32,18 +30,17 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by ashwanityagi on 23/11/17.
@@ -135,7 +132,7 @@ public class EventsDetailsPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 throwable.printStackTrace();
                 mView.hideProgressBar();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
@@ -148,7 +145,7 @@ public class EventsDetailsPresenter
                 hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
                 mView.hideProgressBar();
                 checkForScan(detailsViewModel.getId());
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
             }
         });
     }
@@ -199,7 +196,7 @@ public class EventsDetailsPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 throwable.printStackTrace();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
                         mView.getRootView(), () -> sendNsqEvent(userId, data));
@@ -243,7 +240,7 @@ public class EventsDetailsPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 throwable.printStackTrace();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
                         mView.getRootView(), () -> sendNsqTravelEvent(userId, data));

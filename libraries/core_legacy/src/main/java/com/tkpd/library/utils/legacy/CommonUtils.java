@@ -50,6 +50,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
+
 @Deprecated
 public class CommonUtils {
 
@@ -64,61 +66,14 @@ public class CommonUtils {
         return Math.round(px);
     }
 
-    public static boolean isFinishActivitiesOptionEnabled(Context context) {
-        int result = 0;
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                result = Settings.System.getInt(context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
-            } else {
-                result = Settings.Global.getInt(context.getContentResolver(), Settings.System.ALWAYS_FINISH_ACTIVITIES, 0);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            return result == 1;
-        }
-    }
-
-    public static void dumper(Object o) {
-        if (BuildConfig.DEBUG) {
-            Log.i("Dumper", o.toString());
-        }
-    }
-
-    public static void dumper(String str) {
-        if (BuildConfig.DEBUG) {
-            Log.i("Dumper", str);
-        }
-    }
-
     public static String getUniqueDeviceID(Context context) {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String DeviceID = tm.getDeviceId();
         String Brand = Build.BRAND;
         String Model = Build.MODEL;
         String UniqueDeviceID = Brand + "~" + Model + "~" + DeviceID;
-        CommonUtils.dumper("Device ID" + UniqueDeviceID);
+        Timber.d("Device ID" + UniqueDeviceID);
         return UniqueDeviceID;
-    }
-
-    public static String SaveImageFromBitmap(Activity context, Bitmap bitmap, String PicName) {
-        File pictureFile = getOutputMediaFile(context, PicName);
-        String path = "";
-        if (pictureFile == null) {
-            return null;
-        }
-        try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-            addImageToGallery(pictureFile.getPath(), context);
-            path = pictureFile.getPath();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return path;
     }
 
     public static void addImageToGallery(final String filePath, final Context context) {
@@ -155,23 +110,6 @@ public class CommonUtils {
         return mediaFile;
     }
 
-    private static boolean isDownloadManagerAvailable(Context context) {
-        try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
-                return false;
-            }
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setClassName("com.android.providers.downloads.ui", "com.android.providers.downloads.ui.DownloadList");
-            List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(intent,
-                    PackageManager.MATCH_DEFAULT_ONLY);
-            return list.size() > 0;
-        } catch (Exception e) {
-            Toast.makeText(context, "Download gagal", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
-
     public static float DptoPx(Context context, int dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
@@ -188,65 +126,6 @@ public class CommonUtils {
 
 
     ///////////////////////////////////////////////////////////////////////////////
-
-    public static Bitmap drawViewToBitmap(Bitmap dest, View view, int width, int height, int downSampling, Drawable drawable) {
-        float scale = 1f / downSampling;
-        int heightCopy = view.getHeight();
-        view.layout(0, 0, width, height);
-        int bmpWidth = (int) (width * scale);
-        int bmpHeight = (int) (height * scale);
-        if (dest == null || dest.getWidth() != bmpWidth || dest.getHeight() != bmpHeight) {
-            dest = Bitmap.createBitmap(bmpWidth, bmpHeight, Bitmap.Config.ARGB_8888);
-        }
-        Canvas c = new Canvas(dest);
-        drawable.setBounds(new Rect(0, 0, width, height));
-        drawable.draw(c);
-        if (downSampling > 1) {
-            c.scale(scale, scale);
-        }
-        view.draw(c);
-        view.layout(0, 0, width, heightCopy);
-        // saveToSdCard(original, "original.png");
-        return dest;
-    }
-
-    public static Bitmap getScreenShotToBitmap(Bitmap bitmap, Activity context) {
-        Rect fucker = new Rect();
-        context.getWindow().getDecorView().getWindowVisibleDisplayFrame(fucker);
-        bitmap = Bitmap.createBitmap(context.getWindow().getDecorView().getRootView().getWidth(), context.getWindow().getDecorView().getRootView().getHeight(), Bitmap.Config.ARGB_8888);
-        Drawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-        Canvas c = new Canvas(bitmap);
-        drawable.setBounds(new Rect(0, 0, context.getWindow().getDecorView().getRootView().getWidth(), context.getWindow().getDecorView().getRootView().getHeight()));
-        context.getWindow().getDecorView().getRootView().draw(c);
-        bitmap = Bitmap.createBitmap(bitmap, 0, context.getActionBar().getHeight() + fucker.top, context.getWindow().getDecorView().getRootView().getWidth(), bitmap.getHeight() - context.getActionBar().getHeight() - fucker.top);
-        return bitmap;
-    }
-
-    public static Bitmap DownScaleBitmap(Bitmap bitmap) {
-        BitmapFactory.Options mBFO = new BitmapFactory.Options();
-        mBFO.inDensity = 120;
-        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, false);
-        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, false);
-        return bitmap;
-    }
-
-    public static void OpenHtmlLink(Activity context, String link) {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        List<Intent> targetedShareIntents = new ArrayList<Intent>();
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(myIntent, 0);
-        if (!resInfo.isEmpty()) {
-            for (ResolveInfo info : resInfo) {
-                if (!info.activityInfo.packageName.equals("com.tokopedia.tkpd")) {
-                    Intent targetedShare = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                    targetedShare.setPackage(info.activityInfo.packageName);
-                    targetedShareIntents.add(targetedShare);
-                }
-            }
-        }
-        Intent chooserIntent = Intent.createChooser(targetedShareIntents.remove(0), "Open with");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray(new Parcelable[]{}));
-        context.startActivity(chooserIntent);
-    }
 
     public static String getDate(long time) {
         Calendar calendar = Calendar.getInstance();

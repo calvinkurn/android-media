@@ -5,15 +5,14 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.network.constant.ErrorNetMessage
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
@@ -33,6 +32,7 @@ import com.tokopedia.promocheckout.widget.TimerPromoCheckout
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
@@ -299,7 +299,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         try {
             progressDialog?.show()
         } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
+            Timber.d(exception)
         }
     }
 

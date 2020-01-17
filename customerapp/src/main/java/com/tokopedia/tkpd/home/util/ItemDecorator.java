@@ -2,12 +2,13 @@ package com.tokopedia.tkpd.home.util;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.View;
+
 import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
-import com.tkpd.library.utils.CommonUtils;
+import timber.log.Timber;
 
 /**
  * Created by Nisie on 15/07/15.
@@ -35,7 +36,7 @@ public class ItemDecorator extends RecyclerView.ItemDecoration {
         int position = parent.getChildPosition(view);
         int viewType = parent.getAdapter().getItemViewType(position);
         if (viewType == rightMostView) {
-            CommonUtils.dumper("NISIETAG : Masuk sini");
+            Timber.d("NISIETAG : Masuk sini");
             outRect.set(0, 0, mItemOffset, 0);
         }
 
