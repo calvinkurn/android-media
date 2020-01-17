@@ -108,6 +108,7 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -153,7 +154,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
     private boolean shouldDisplayReview = true;
-    private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -512,7 +512,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
                     presenter.setCache(true);
                 } else {
-                    showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
+                    showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
                 }
             }
         });
@@ -522,7 +522,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 hideLoading();
             } else if(resource.getStatus() == Resource.Status.ERROR){
                 hideLoading();
-                showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(resource.getError()));
+                showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             } else {
                 showLoading();
             }
@@ -545,7 +545,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
-                showNetworkError();
+                showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             }
         }
     }
@@ -1141,12 +1141,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (isAdded() && getActivity() != null) {
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            onRefresh();
-                        }
-                    });
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> onRefresh());
                 }
                 messageSnackbar.showRetrySnackbar();
             } else {
@@ -1729,5 +1724,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean needToPerformanceMonitoring() {
         return homePerformanceMonitoringListener != null;
+    }
+
+    private void showToaster(String message, int typeToaster){
+        showToasterWithAction(message, typeToaster, "", v -> {});
+    }
+
+    private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
+        Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
     }
 }

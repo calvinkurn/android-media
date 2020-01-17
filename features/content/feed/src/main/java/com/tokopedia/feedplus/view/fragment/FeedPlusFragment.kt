@@ -126,6 +126,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
+import timber.log.Timber
 import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
@@ -438,9 +439,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.localizedMessage
+                        Timber.e(it.throwable)
                         view?.let {
-                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            Toaster.make(it, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -1209,17 +1210,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
-        val shop = postTagItem.shop.firstOrNull()
-        feedAnalytics.eventFeedAddToCart(
-                postTagItem.id,
-                postTagItem.text,
-                postTagItem.price,
-                1,
-                shop?.shopId?.toIntOrZero() ?: -1,
-                "",
-                authorType
-        )
-        feedViewModel.doAtc(postTagItem)
+        if (userSession.isLoggedIn) {
+            val shop = postTagItem.shop.firstOrNull()
+            feedAnalytics.eventFeedAddToCart(
+                    postTagItem.id,
+                    postTagItem.text,
+                    postTagItem.price,
+                    1,
+                    shop?.shopId?.toIntOrZero() ?: -1,
+                    "",
+                    authorType
+            )
+            feedViewModel.doAtc(postTagItem)
+        } else {
+            onGoToLogin()
+        }
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int,
