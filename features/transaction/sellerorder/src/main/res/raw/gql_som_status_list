@@ -1,7 +1,7 @@
 query OrderFilterList {
   order_filter_som_single {
    status_list {
-     key
+     id
      value
    }
  }

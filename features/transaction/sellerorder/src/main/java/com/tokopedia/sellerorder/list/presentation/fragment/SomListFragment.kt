@@ -30,7 +30,7 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangI
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
@@ -84,7 +84,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var isLoading = false
     private var tabActive = ""
     private var tabStatus = ""
-    private var filterStatus = ""
+    private var filterStatusId = -1
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private var isFilterApplied = false
@@ -106,7 +106,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 arguments = Bundle().apply {
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
-                    putString(FILTER_STATUS, bundle.getString(FILTER_STATUS))
+                    putInt(FILTER_STATUS_ID, bundle.getInt(FILTER_STATUS_ID))
                 }
             }
         }
@@ -123,7 +123,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
             tabStatus = arguments?.getString(TAB_STATUS).toString()
-            filterStatus = arguments?.getString(FILTER_STATUS).toString()
+            filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
         }
         loadInitial()
     }
@@ -211,7 +211,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     filterList = it.data
                     renderFilter()
-                    if (filterStatus.isNotBlank()) {
+                    if (filterStatusId != 0) {
                         loadFilterStatusList()
                     } else {
                         refreshHandler?.startRefresh()
@@ -228,7 +228,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         when (it) {
             is Success -> {
                 it.data.forEach { statusList ->
-                    if (statusList.key == filterStatus) {
+                    if (statusList.id == filterStatusId) {
                         paramOrder.statusList = statusList.orderStatusIdList
                         return@forEach
                     }
