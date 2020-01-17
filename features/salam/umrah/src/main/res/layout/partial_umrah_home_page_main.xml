@@ -12,7 +12,7 @@
         >
         <ImageView
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:id="@+id/iv_umrah_bg_kabbah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
