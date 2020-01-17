@@ -22,6 +22,7 @@ import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignGqlResponse;
@@ -29,7 +30,6 @@ import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.entity.ValidCampaignPojo;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
-import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
 import java.net.ConnectException;
@@ -46,6 +46,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.tokopedia.tkpd.ConsumerMainApplication.ACTION_SHAKE_SHAKE_SYNCED;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -124,7 +126,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                     @Override
                     public void onError(Throwable e) {
-                        Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                        Intent intent = new Intent(ACTION_SHAKE_SHAKE_SYNCED);
                         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
 
                         intent.putExtra("isSuccess", false);
@@ -195,7 +197,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                                     return;
                                 }
 
-                                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                                Intent intent = new Intent(ACTION_SHAKE_SHAKE_SYNCED);
                                 intent.putExtra("isSuccess", true);
                                 intent.putExtra("data", campaign.getUrl());
 

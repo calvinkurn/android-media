@@ -1,46 +1,33 @@
-package com.tokopedia.tkpd.campaign.view;
+package com.tokopedia.shakedetect;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
-import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
-import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
 import static android.content.Context.SENSOR_SERVICE;
 
-/**
- * Created by sandeepgoyal on 20/02/18.
- */
-
 public class ShakeDetectManager implements ShakeDetector.Listener {
+
+    private static String SHAKE_DETECT_CAMPAIGN_ACTIVITY_SCREEN_NAME = "ShakeDetectCampaignActivity";
 
     private static ShakeDetectManager shakeDetectManager = new ShakeDetectManager();
     ShakeDetector sd;
     private Context mContext;
+    private Callback callback;
     private RemoteConfig remoteConfig;
     private SensorManager sensorManager;
-    public static final String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
     public static final String FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY = "app_shake_feature_enabled";
     public static final String FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY = "audio_campaign_is_audio";
     private SharedPreferences sharedPreferences;
-    private String NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
+    private String NOTIFICATION_SHAKE_SHAKE = "notification_shake_shake";
     public static final int MESSAGE_ENABLE_SHAKE = 1;
     public static final int MESSAGE_DISABLE_SHAKE = 2;
     public static final int MESSAGE_SHAKE_START = 3;
@@ -69,7 +56,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         if (isShakeShakeEnable()) {
             sd.registerListener(this);
             sd.start(sensorManager);
-            if (!screenName.equals(ShakeDetectCampaignActivity.SCREEN_NAME)) {
+            if (!screenName.equals(SHAKE_DETECT_CAMPAIGN_ACTIVITY_SCREEN_NAME)) {
                 mOpenedActivity = screenName;
                 this.activity = activity;
             }
@@ -83,9 +70,10 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
 
-    public void init() {
+    public void init(Context context, Callback callback) {
         if(sd == null) {
-            mContext = MainApplication.getAppContext();
+            mContext = context;
+            this.callback = callback;
             sd = new ShakeDetector();
             sensorManager = (SensorManager)mContext.getSystemService(SENSOR_SERVICE);
             initRemoteConfig();
@@ -148,10 +136,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void startShake(boolean isLongShake) {
-        Intent intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(mContext,isLongShake);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(intent);
-        mContext.registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
+
     }
 
     Handler mShakeEnabler = new Handler() {
@@ -177,48 +162,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         }
     };
 
-
-    public void deinit() {
-        mContext.unregisterReceiver(receiver);
-    }
-
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            if(intent.getAction() == ACTION_SHAKE_SHAKE_SYNCED) {
-                if (intent.getBooleanExtra("isSuccess", false)) {
-                    final Intent intent1 = new Intent(context, DeepLinkActivity.class);;
-                    if (intent.getStringExtra("data") != null) {
-
-                        Uri uri = Uri.parse("" + intent.getStringExtra("data"));
-                        intent1.setData(uri);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                if(intent1.resolveActivity(context.getPackageManager()) != null)
-                                    RouteManager.route(activity,intent.getStringExtra("data"));
-
-                            }
-                        }, 500);
-                    }
-                } else if (intent.getBooleanExtra("needLogin", false)) {
-                    final Intent intent1 = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getLoginIntent(context);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            if(intent1.resolveActivity(context.getPackageManager()) != null)
-                                context.startActivity(intent1);
-                        }
-                    }, 500);
-                }
-            }
-            deinit();
-        }
-    };
-
     public void onDestroy(String screenName,Activity activity) {
         if (!screenName.equals(mOpenedActivity) && activity.equals(this.activity)) {
             mOpenedActivity = null;
@@ -227,4 +170,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     }
 
+    public interface Callback {
+        void onShakeDetected(boolean isLongShake);
+    }
 }

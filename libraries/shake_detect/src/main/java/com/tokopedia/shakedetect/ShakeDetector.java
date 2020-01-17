@@ -1,9 +1,10 @@
-package com.tokopedia.tkpd.campaign.configuration;
+package com.tokopedia.shakedetect;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
 import java.util.ArrayList;
 import java.util.List;
 

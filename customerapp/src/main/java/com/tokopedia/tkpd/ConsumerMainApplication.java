@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,6 +14,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -31,6 +33,8 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -50,6 +54,9 @@ import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.shakedetect.ShakeDetectManager;
+import com.tokopedia.shakedetect.ShakeSubscriber;
+import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -90,6 +97,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
+
+    public static final String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -173,7 +182,59 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
+
+        ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
+            @Override
+            public void onShakeDetected(boolean isLongShake) {
+                Intent intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(getApplicationContext(), isLongShake);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+                getApplicationContext().registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
+            }
+        });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
     }
+
+    public void deinit() {
+        getApplicationContext().unregisterReceiver(receiver);
+    }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            if(intent.getAction() == ACTION_SHAKE_SHAKE_SYNCED) {
+                if (intent.getBooleanExtra("isSuccess", false)) {
+                    final Intent intent1 = new Intent(context, DeepLinkActivity.class);;
+                    if (intent.getStringExtra("data") != null) {
+
+                        Uri uri = Uri.parse("" + intent.getStringExtra("data"));
+                        intent1.setData(uri);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                if(intent1.resolveActivity(context.getPackageManager()) != null)
+                                    RouteManager.route(context, intent.getStringExtra("data"));
+
+                            }
+                        }, 500);
+                    }
+                } else if (intent.getBooleanExtra("needLogin", false)) {
+                    final Intent intent1 = RouteManager.getIntent(context, ApplinkConst.LOGIN);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            if(intent1.resolveActivity(context.getPackageManager()) != null)
+                                context.startActivity(intent1);
+                        }
+                    }, 500);
+                }
+            }
+            deinit();
+        }
+    };
 
     private boolean isMainProcess() {
         ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);

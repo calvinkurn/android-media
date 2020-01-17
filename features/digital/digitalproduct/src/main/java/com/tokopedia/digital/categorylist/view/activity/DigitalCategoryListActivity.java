@@ -39,7 +39,11 @@ public class DigitalCategoryListActivity extends BaseSimpleActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     public static Intent newInstance(Context context) {

@@ -53,6 +53,7 @@ ext {
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
+            shakeDetect             : ":libraries:shake_detect",
             sharedata               : ":libraries:sharedata",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",

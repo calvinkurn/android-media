@@ -210,9 +210,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return null;
     }
-
-    @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
-    }
 }

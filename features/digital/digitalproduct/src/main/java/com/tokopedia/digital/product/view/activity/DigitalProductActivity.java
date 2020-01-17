@@ -105,7 +105,11 @@ public class DigitalProductActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     @Override
