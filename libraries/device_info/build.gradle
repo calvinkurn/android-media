@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -12,6 +12,12 @@ buildscript {
     }
 }
 
-dependencies {
+android {
+    defaultConfig {
+        testInstrumentationRunner 'androidx.test.ext.junit.runners.AndroidJUnit4'
+    }
+}
 
+dependencies {
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 }
