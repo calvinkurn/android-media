@@ -124,6 +124,7 @@
 /features/user/kyc_centralized/                         @tokopedia/minion-kevin
 /features/user/attachinvoice/                           @tokopedia/minion-kevin
 /features/user/attachvoucher/                           @tokopedia/minion-kevin
+/features/user/attachcommon/                            @tokopedia/minion-kevin
 
 /features/digital/event                 				@tokopedia/minion-darth
 /features/operational/contact_us        				@tokopedia/minion-darth

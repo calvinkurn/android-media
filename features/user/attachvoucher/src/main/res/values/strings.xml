@@ -5,4 +5,6 @@
     <string name="title_attachvoucher_empty">Kamu belum punya \nVoucher Toko</string>
     <string name="desc_attachvoucher_empty">Silakan atur Voucher Toko \ndi Tokopedia versi desktop</string>
     <string name="action_attachvoucher_create_voucher">Buat Voucher</string>
+    <string name="title_attachvoucher_free_ongkir">Gratis Ongkir</string>
+    <string name="title_attachvoucher_cashback">Cashback</string>
 </resources>

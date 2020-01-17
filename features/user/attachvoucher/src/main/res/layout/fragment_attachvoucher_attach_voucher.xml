@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:chipSize="medium"
-            app:chipText="Cashback"
+            app:chipText="@string/title_attachvoucher_cashback"
             app:chipType="alternate" />
 
         <com.tokopedia.unifycomponents.ChipsUnify
@@ -31,7 +31,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             app:chipSize="medium"
-            app:chipText="Gratis Ongkir"
+            app:chipText="@string/title_attachvoucher_free_ongkir"
             app:chipType="alternate" />
     </LinearLayout>
 

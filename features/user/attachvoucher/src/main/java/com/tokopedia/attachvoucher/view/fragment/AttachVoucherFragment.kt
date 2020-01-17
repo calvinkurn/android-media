@@ -1,8 +1,6 @@
 package com.tokopedia.attachvoucher.view.fragment
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,24 +37,12 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     private val viewModel by lazy { viewModelFragmentProvider.get(AttachVoucherViewModel::class.java) }
 
     private lateinit var adapter: AttachVoucherAdapter
-    private var listener: Listener? = null
-
-    interface Listener {
-        fun onClickAttachVoucher(intent: Intent)
-    }
 
     override fun initInjector() = getComponent(AttachVoucherComponent::class.java).inject(this)
     override fun getAdapterTypeFactory() = AttachVoucherTypeFactoryImpl()
     override fun createAdapterInstance() = AttachVoucherAdapter(adapterTypeFactory).also { adapter = it }
     override fun getScreenName() = screenName
     override fun getRecyclerViewResourceId() = R.id.recycler_view
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Listener) {
-            listener = context
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_attachvoucher_attach_voucher, container, false)

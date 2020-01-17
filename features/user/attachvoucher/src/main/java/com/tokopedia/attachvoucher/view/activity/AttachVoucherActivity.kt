@@ -1,7 +1,5 @@
 package com.tokopedia.attachvoucher.view.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -15,8 +13,7 @@ import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.di.DaggerAttachVoucherComponent
 import com.tokopedia.attachvoucher.view.fragment.AttachVoucherFragment
 
-class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherComponent>,
-        AttachVoucherFragment.Listener {
+class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherComponent> {
 
     override fun getNewFragment(): Fragment? {
         return AttachVoucherFragment.createInstance(intent.extras)
@@ -47,10 +44,5 @@ class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherCo
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             window.statusBarColor = Color.WHITE
         }
-    }
-
-    override fun onClickAttachVoucher(intent: Intent) {
-        setResult(Activity.RESULT_OK, intent)
-        finish()
     }
 }
