@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
@@ -83,7 +85,7 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     void onShopLayoutClicked() {
         eventFavoriteShop();
-        Intent intent = ShopPageActivity.createIntent(context, favoriteShop.getShopId());
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShop.getShopId());
         context.startActivity(intent);
     }
 
