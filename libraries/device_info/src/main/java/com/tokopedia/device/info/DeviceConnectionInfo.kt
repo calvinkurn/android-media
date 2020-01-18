@@ -10,10 +10,6 @@ import android.text.TextUtils
 import java.net.NetworkInterface
 import java.util.*
 
-
-/**
- * Created by mzennis on 2020-01-16.
- */
 object DeviceConnectionInfo {
 
     /**

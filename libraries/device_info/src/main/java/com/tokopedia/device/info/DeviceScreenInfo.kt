@@ -4,10 +4,6 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.view.WindowManager
 
-
-/**
- * Created by mzennis on 2020-01-16.
- */
 object DeviceScreenInfo {
 
     @JvmStatic
