@@ -549,10 +549,9 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Message.LABEL.toLowerCase()
+                ProductTrackingConstant.Action.CLICK_PAGE_CHAT,
+                productId
         )
-        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 

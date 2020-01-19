@@ -421,7 +421,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
                             userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
-                            productId = userInputVariant
                             val dynamicP1Copy = DynamicProductDetailMapper.mapProductInfoToDynamicProductInfo(selectedProductInfo, viewModel.getDynamicProductInfoP1
                                     ?: DynamicProductInfoP1())
                             viewModel.getDynamicProductInfoP1 = dynamicP1Copy
@@ -431,6 +430,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                     viewModel.multiOrigin = it.warehouseInfo
                                 }
                             }
+                            updateProductId()
                             pdpHashMapUtil.updateDataP1(dynamicP1Copy)
                             dynamicAdapter.notifyDataSetChanged()
                         }
@@ -482,18 +482,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
-                isLoadingInitialData = true
-                loadProductData(true)
+                onSwipeRefresh()
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    onSwipeRefresh()
+                    activity?.invalidateOptionsMenu()
+                }
+
                 shouldRenderSticky = true
                 updateStickyContent()
-                isLoadingInitialData = true
-                loadProductData(true)
-                activity?.invalidateOptionsMenu()
             }
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK)
@@ -509,11 +510,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
                 if (data != null) {
                     val isFavorite = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
-                    val isSticky = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
+                    val isUserLogin = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
                     val favorite = pdpHashMapUtil.getShopInfo.shopInfo?.favoriteData?.alreadyFavorited == 1
 
                     shouldRenderSticky = true
-                    if (isSticky) updateStickyContent()
+                    if (isUserLogin) updateStickyContent()
 
                     if (isFavorite != favorite) {
                         onSuccessFavoriteShop(true)
@@ -1020,10 +1021,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             pdpHashMapUtil.updateDataP1(productInfo)
-            // if when first time and the product is actually a variant product, then select the default variant
-            if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
-                userInputVariant = productId
-            }
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.isLeasing = productInfo.basic.isLeasing
             actionButtonView.renderData(!productInfo.basic.isActive(),
@@ -1349,8 +1346,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessMoveToEtalase() {
         hideProgressDialog()
         showToastSuccess(getString(R.string.success_move_etalase))
-        isLoadingInitialData = true
-        loadProductData(true)
+        onSwipeRefresh()
     }
 
     private fun onErrorMoveToEtalase(throwable: Throwable) {
@@ -1366,8 +1362,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessWarehouseProduct() {
         hideProgressDialog()
         showToastSuccess(getString(R.string.success_warehousing_product))
-        isLoadingInitialData = true
-        loadProductData(true)
+        onSwipeRefresh()
     }
 
     private fun reportProduct() {
@@ -1931,7 +1926,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
-        productDetailTracking.eventSendMessage()
         productDetailTracking.eventSendChat(productId ?: "")
     }
 
@@ -2102,6 +2096,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (!isShowing) {
                 show()
             }
+        }
+    }
+
+    private fun updateProductId() {
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
+                userInputVariant = productId
+            }
+
+            productId = productInfo.basic.productID
         }
     }
 
