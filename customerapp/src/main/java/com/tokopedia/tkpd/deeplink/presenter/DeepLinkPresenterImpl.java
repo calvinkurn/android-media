@@ -272,7 +272,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = "";
                     break;
                 case DeepLinkChecker.FLIGHT:
-                    openFlight(defaultBundle);
+                    openFlight(uriData, defaultBundle);
                     screenName = "";
                     break;
                 case DeepLinkChecker.PROFILE:
@@ -409,10 +409,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openFlight(Bundle bundle) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalTravel.DASHBOARD_FLIGHT);
-        intent.putExtras(bundle);
-        viewListener.goToPage(intent);
+    private void openFlight(Uri uri, Bundle bundle) {
+        RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
     }
 
     private void openProfile(List<String> linkSegment, Bundle bundle) {
