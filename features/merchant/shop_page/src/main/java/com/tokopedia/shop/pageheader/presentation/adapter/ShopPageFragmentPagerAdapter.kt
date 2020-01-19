@@ -5,53 +5,42 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.collection.SparseArrayCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.lifecycle.LiveData
+import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
-internal class ShopPagePagerAdapter(
+internal class ShopPageFragmentPagerAdapter(
         ctx: Context?,
-        fragmentManager: FragmentManager,
-        val shopData: LiveData<Result<ShopInfo>>
+        fragmentManager: FragmentManager
 ) : FragmentStatePagerAdapter(fragmentManager) {
+    private val registeredFragments = SparseArrayCompat<Fragment>()
+    private var listTitleIcon = listOf<Int>()
+    private var listFragment = listOf<Fragment>()
 
     private companion object {
-        const val SHOP_PAGE_HOME = 0
-        const val SHOP_PAGE_PRODUCTS = 1
-        const val SHOP_PAGE_FEED = 2
-        const val SHOP_PAGE_REVIEW = 3
-
         val tabViewLayout = R.layout.shop_page_tab_view
     }
 
     private val ctxRef = WeakReference(ctx)
 
-    override fun getCount(): Int = 4
+    override fun getCount(): Int = listTitleIcon.size
 
     override fun getItem(position: Int): Fragment {
-        val fragment = ShopInfoFragment.createInstance()
-        (shopData.value as? Success)?.also { result ->
-            fragment.shopInfo = result.data
-        }
-
-        return fragment
+        return listFragment[position]
     }
 
-    @SuppressLint("InflateParams")
-    fun getTabView(position: Int): View? = LayoutInflater.from(ctxRef.get())
+    fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
-                shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position))
+                shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
             }
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
@@ -63,13 +52,7 @@ internal class ShopPagePagerAdapter(
     private fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
         ContextCompat.getDrawable(
                 this,
-                when (position) {
-                    SHOP_PAGE_HOME -> R.drawable.ic_shop_tab_home_inactive
-                    SHOP_PAGE_PRODUCTS -> R.drawable.ic_shop_tab_products_inactive
-                    SHOP_PAGE_FEED -> R.drawable.ic_shop_tab_feed_inactive
-                    SHOP_PAGE_REVIEW -> R.drawable.ic_shop_tab_review_inactive
-                    else -> R.drawable.ic_shop_tab_home_inactive
-                }
+                listTitleIcon[position]
         )?.let { iconDrawable ->
             DrawableCompat.wrap(iconDrawable)
         }?.also { iconDrawable ->
@@ -78,5 +61,29 @@ internal class ShopPagePagerAdapter(
                     if (isActive) R.color.Green_G500 else R.color.Neutral_N200
             ))
         }
+    }
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val o = super.instantiateItem(container, position)
+        registeredFragments.put(position, o as Fragment)
+        return o
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        registeredFragments.remove(position)
+        super.destroyItem(container, position, `object`)
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return PagerAdapter.POSITION_NONE
+    }
+
+    fun getRegisteredFragment(position: Int): Fragment? {
+        return registeredFragments.get(position)
+    }
+
+    fun setTabData(tabData: Pair<List<Int>, List<Fragment>>) {
+        listTitleIcon = tabData.first
+        listFragment = tabData.second
     }
 }

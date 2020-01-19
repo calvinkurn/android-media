@@ -7,15 +7,17 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.shop.pageheader.presentation.ShopPageFragment;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.track.TrackApp;
@@ -82,16 +84,8 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     void onShopLayoutClicked() {
         eventFavoriteShop();
-
-        FragmentManager manager = ((FragmentActivity) context).getSupportFragmentManager();
-
-        if (manager != null) {
-            FragmentTransaction transaction = manager.beginTransaction();
-
-            transaction.add(android.R.id.content, ShopPageFragment.initInstance(null));
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShop.getShopId());
+        context.startActivity(intent);
     }
 
     public void eventFavoriteShop() {
