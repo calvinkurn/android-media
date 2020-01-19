@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -35,6 +36,7 @@ import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailCont
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import com.tokopedia.promocheckout.widget.TimerPromoCheckout
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
@@ -235,36 +237,39 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
         }
-        //todo check error type phone verification
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException || e is MessageErrorException) {
             message = e.message
         }
-        NetworkErrorHelper.showRedCloseSnackbar(activity, message)
-        setDisabledButtonUse()
+        if (message.equals(resources.getString(R.string.promo_phone_verification_message))) {
+            val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
 
-        var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, "")
-
-        //todo
-        //todo check for phone verifiaction error
-        //todo enable gunakan button . hide error . open bottomsheet for phone verification . redirect applink
-
-        openPhoneVerificationBottomSheet()
-
+            if (variant.isNotEmpty() && variant == AB_TESTING_CTA_VARIANT_A) {
+                buttonUse.setOnClickListener{
+                    openPhoneVerificationBottomSheet()
+                }
+            }
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(activity, message)
+            setDisabledButtonUse()
+        }
     }
 
     private fun openPhoneVerificationBottomSheet() {
         val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeableBottomSheetDialog.setContentView(view)
-        btn_verifikasi.setOnClickListener {
+        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
+        btnVerifikasi.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
             promoCheckoutAnalytics.clickVerifikasai()
+            closeableBottomSheetDialog.cancel()
         }
 
-        cancel_verifikasi.setOnClickListener{
-            closeableBottomSheetDialog.hide()
+        btnCancel.setOnClickListener {
+            closeableBottomSheetDialog.cancel()
             promoCheckoutAnalytics.clickCancelVerifikasi()
         }
 
@@ -371,15 +376,23 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_VERIFICATION_PHONE) {
-            onClickUse()
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            REQUEST_CODE_VERIFICATION_PHONE -> {
+                when(resultCode) {
+                    Activity.RESULT_OK -> {
+                        onClickUse()
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        super.onActivityResult(requestCode, resultCode, data)
+                    }
+                }
+            }
         }
     }
 
     companion object {
-        val AB_TEST_PHONE_VERIFICATION_KEY="AB_TEST_PHONE_VERIFICATION_KEY"
+        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
+        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
         val REQUEST_CODE_VERIFICATION_PHONE = 301
         val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
         val EXTRA_IS_USE = "EXTRA_IS_USE"
