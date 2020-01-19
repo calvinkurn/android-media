@@ -38,14 +38,6 @@ public class MethodChecker {
         }
     }
 
-    public static void setBackgroundTintList(View view, ColorStateList tint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view.setBackgroundTintList(tint);
-        } else {
-            ViewCompat.setBackgroundTintList(view, tint);
-        }
-    }
-
     public static int getColor(Context context, int id) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return ContextCompat.getColor(context, id);
