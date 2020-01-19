@@ -137,12 +137,6 @@ class ShopPageProductListViewModel @Inject constructor(
                     })
                 }
                 val productListDataModel = productListDataAsync.await()
-                if (productListDataModel.second.isNotEmpty()) {
-                    shopProductEtalaseTitleData.postValue(Success(ShopProductEtalaseTitleViewModel(
-                            shopProductEtalaseListViewModel.selectedEtalaseName,
-                            shopProductEtalaseListViewModel.selectedEtalaseBadge
-                    )))
-                }
                 productListData.postValue(Success(productListDataModel))
             }
         }, {
