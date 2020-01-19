@@ -11,7 +11,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel
  * Created by nathan on 2/6/18.
  */
 
-class ShopSellerEmptyProductViewModel : BaseShopProductViewModel {
+class ShopSellerEmptyProductAllEtalaseViewModel : BaseShopProductViewModel {
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)
