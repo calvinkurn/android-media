@@ -59,13 +59,6 @@ public class CommonUtils {
 
     }
 
-    public static int convertDpToPixel(float dp, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return Math.round(px);
-    }
-
     public static String getUniqueDeviceID(Context context) {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String DeviceID = tm.getDeviceId();
@@ -76,48 +69,8 @@ public class CommonUtils {
         return UniqueDeviceID;
     }
 
-    public static void addImageToGallery(final String filePath, final Context context) {
-        try {
-            ContentValues values = new ContentValues();
-
-            values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
-            values.put(Images.Media.MIME_TYPE, "image/jpeg");
-            values.put(MediaStore.MediaColumns.DATA, filePath);
-
-            context.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
-        } catch (Exception ex) {
-        }
-    }
-
-    private static File getOutputMediaFile(Activity context, String PicName) {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Tokopedia");
-
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-        // Create a media file name
-        File mediaFile;
-        String mImageName = PicName + ".jpg";
-        mediaFile = new File(mediaStorageDir, mImageName);
-        return mediaFile;
-    }
-
     public static float DptoPx(Context context, int dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-    }
-
-    public static float DimentoPx(Context context, int dimen) {
-        return context.getResources().getDimension(dimen);
-        //int dp = (int) context.getResources().getDimension(dimen);
-        //return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     public static Boolean isUrl(String url) {
@@ -136,18 +89,6 @@ public class CommonUtils {
         return sdf.format(currenTimeZone);
     }
 
-    public static String replaceCreditCardNumber(String text) {
-        final String MASKCARD = "$1<XTKPDX>$2";
-        final Pattern PATTERNCARD =
-                Pattern.compile("\\b([0-9]{4})[0-9]{0,9}([0-9]{4})\\b");
-        Matcher matcher = PATTERNCARD.matcher(text);
-        if (matcher.find()) {
-            return matcher.replaceAll(MASKCARD);
-        }
-        return text;
-
-    }
-
     /**
      * chek nullability at json parsing
      *
@@ -160,27 +101,6 @@ public class CommonUtils {
 
         return true;
     }
-
-    public static String parseNullForZeroJson(String input) {
-        if (checkNullForZeroJson(input)) {
-            return input;
-        } else {
-            return null;
-        }
-    }
-
-    public static List<String> checkNullMessageError(List<String> messageError) {
-        boolean isNull = false;
-        if (messageError == null && messageError.size() <= 0)
-            return new ArrayList<String>();
-
-        for (String msg : messageError) {
-            if (!checkNullForZeroJson(msg))
-                return new ArrayList<String>();
-        }
-        return messageError;
-    }
-
 
     public static void hideKeyboard(Activity activity, View view) {
         if (view != null) {
@@ -196,23 +116,6 @@ public class CommonUtils {
         } else {
             return true;
         }
-    }
-
-    public static <T> boolean checkStringNotNull(T reference) {
-        if (checkNotNull(reference) && (!reference.equals("")) && (!reference.equals("0"))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static Double parsePriceToDouble(String price, String currency) {
-        price = price.replace(",", "");
-        if (!currency.equals("US$")) {
-            // remove cent
-            price = price.replace(".", "");
-        }
-        return Double.parseDouble(price);
     }
 
     /**
@@ -249,40 +152,6 @@ public class CommonUtils {
 
 
         return result;
-    }
-
-    /**
-     * @param errorMessages
-     * @return true if empty, false is not empty
-     */
-    public static boolean checkErrorMessageEmpty(String errorMessages) {
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("");
-
-        if (checkNotNull(errorMessages)) {
-            if (strings.toString().equals(errorMessages)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static void forceShowKeyboard(Context context) {
-        ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
-    public static boolean checkStringNotEmpty(String message) {
-        if (message != null && message.equals("") && message.equals("0")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static void closeKeyboard(Context c, IBinder windowToken) {
-        InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(windowToken, 0);
     }
 
     public static double round(double value, int places) {

@@ -68,16 +68,6 @@ public class MethodChecker {
         return result;
     }
 
-    public static Spanned fromHtmlPreserveLineBreak(String text) {
-        String lineBreakHtmlResult = text.replace("\n", "<br />");
-        return fromHtml(lineBreakHtmlResult);
-    }
-
-    public static void setAllowMixedContent(WebSettings webSettings) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-    }
-
     public static Drawable getDrawable(Context context, int resId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
