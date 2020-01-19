@@ -40,7 +40,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.promogamification.common.CoreGamificationEventTracking;
 import com.tokopedia.promogamification.common.R;

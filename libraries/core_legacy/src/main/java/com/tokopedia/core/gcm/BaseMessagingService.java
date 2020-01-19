@@ -69,33 +69,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     public static IAppNotificationReceiver createInstance(Context context) {
         if (GlobalConfig.isSellerApp()) {
             return TkpdCoreRouter.getAppNotificationReceiver(context);
-        } else if(GlobalConfig.isPosApp()) {
-            return new IAppNotificationReceiver() {
-                @Override
-                public void init(Application application) {
-                    // no-op
-                }
-
-                @Override
-                public void onNotificationReceived(String from, Bundle bundle) {
-                    // no-op
-                }
-
-                @Override
-                public void onMoengageNotificationReceived(RemoteMessage message) {
-                    // no-op
-                }
-
-                @Override
-                public void onCampaignManagementNotificationReceived(RemoteMessage message) {
-
-                }
-
-                @Override
-                public boolean isFromCMNotificationPlatform(Map<String, String> extra) {
-                    return false;
-                }
-            };
         } else {
             return HomeRouter.getAppNotificationReceiver();
         }
