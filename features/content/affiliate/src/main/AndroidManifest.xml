@@ -2,10 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.affiliate">
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/title_affiliate"
-        android:supportsRtl="true">
+    <application>
         <activity
             android:name=".feature.dashboard.view.activity.AffiliateDashboardActivity"
             android:label="@string/title_af_dashboard"
