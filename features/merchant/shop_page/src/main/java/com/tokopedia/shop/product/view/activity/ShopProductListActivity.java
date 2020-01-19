@@ -191,7 +191,8 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 this,
                 keyword,
                 cacheManagerId,
-                attribution
+                attribution,
+                sort
         ));
     }
 

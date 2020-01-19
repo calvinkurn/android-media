@@ -317,7 +317,7 @@ class ShopPageFragment :
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
-        if(!swipeToRefresh.isRefreshing)
+        if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         shopViewModel.getShop(shopId, shopDomain, isRefresh)
     }
@@ -452,14 +452,10 @@ class ShopPageFragment :
     }
 
     private fun redirectToShopInfoPage() {
-        view?.run {
-            Toaster.make(
-                    this,
-                    "Open Shop Info",
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    context.getString(R.string.oke)
-            )
+        context?.let { context ->
+            shopId?.let { shopId ->
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_INFO, shopId)
+            }
         }
     }
 
@@ -771,7 +767,7 @@ class ShopPageFragment :
     }
 
     override fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence) {
-        context?.let{
+        context?.let {
             RouteManager.route(it, linkUrl.toString())
         }
     }
