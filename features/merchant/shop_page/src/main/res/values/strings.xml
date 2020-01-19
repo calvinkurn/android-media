@@ -171,14 +171,17 @@
     <string name="shop_search_product_in_tokopedia">di Tokopedia</string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
-    <string name="shop_product_seller_empty_state_label"><![CDATA[Kata orang,<br/><b>jutaan mimpi</b><br/>berawal dari satu<br/>langkah kecil.<br/>Tambah produk <br/>pertamamu]]></string>
+    <string name="shop_product_seller_empty_state_label"><![CDATA[Kata orang, <b>jutaan mimpi</b> berawal dari satu langkah kecil.Tambah produk pertamamu]]></string>
     <string name="text_shop_no_product">Toko belum memiliki produk</string>
+    <string name="text_shop_no_product_seller">Kamu belum memiliki produk di etalase ini</string>
     <string name="text_shop_no_product_follow">Mulai follow untuk mendapatkan update dari toko ini</string>
+    <string name="text_shop_no_product_description_buyer">Silahkan tambahkan produk untuk etalase ini</string>
     <string name="shop_menu_action_cart">Cart</string>
     <string name="shop_menu_action_store_info">Info</string>
     <string name="shop_header_action_follow">Follow</string>
     <string name="shop_header_action_following">Following</string>
     <string name="shop_menu_search_placeholder_text">Cari barang di sini</string>
+    <string name="shop_empty_product_seller_other_etalase_choose_product">Pilih produk</string>
     <string name="text_search">Search</string>
     <string name="text_settings">Settings</string>
     <string name="text_your_shop">Toko Kamu</string>
@@ -189,6 +192,5 @@
     <string name="new_shop_page_header_shop_close_title_seller">Toko Anda Sedang Tutup</string>
     <string name="new_shop_page_header_shop_close_description_buyer_clickable_text">Help Center</string>
     <string name="new_shop_page_header_shop_close_description_seller_clickable_text">Buka Toko</string>
-
 
 </resources>

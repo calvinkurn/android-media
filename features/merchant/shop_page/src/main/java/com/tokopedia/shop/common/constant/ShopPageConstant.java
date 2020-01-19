@@ -39,10 +39,8 @@ public class ShopPageConstant {
     public static final String KEY_ETALASE_TITLE_DATA_MODEL = "KEY_ETALASE_TITLE_DATA_MODEL_POSITION";
     public static final String KEY_SHOP_PRODUCT_FIRST_DATA_MODEL = "KEY_SHOP_PRODUCT_FIRST_DATA_MODEL";
     public static final String KEY_SHOP_PRODUCT_ADD_DATA_MODEL = "KEY_SHOP_PRODUCT_ADD_DATA_MODEL";
-    public static final String KEY_SHOP_SELLER_EMPTY_PRODUCT_DATA_MODEL = "KEY_SHOP_SELLER_EMPTY_PRODUCT_DATA_MODEL";
+    public static final String KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL = "KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL";
     public static final String KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL = "KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL";
-    public static final String URL_IMAGE_SELLER_EMPTY_STATE_BACKGROUND_PATTERN = "https://ecs7.tokopedia.net/android/shop_page/seller_empty_product_card_background.png";
-    public static final String URL_IMAGE_SELLER_EMPTY_STATE_STAR_ICON = "https://ecs7.tokopedia.net/android/shop_page/seller_empty_product_card_star.png";
-    public static final String URL_IMAGE_SELLER_EMPTY_STATE_TOKOPEDIA_ICON = "https://ecs7.tokopedia.net/android/shop_page/seller_empty_product_card_icon.png";
+    public static final String URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND= "https://ecs7.tokopedia.net/android/shop_page/seller_shop_product_empty_background.png";
     public static final String URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE = "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png";
 }
