@@ -13,7 +13,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenef
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.newproduct.view.datamodel.*
-import com.tokopedia.shop.newproduct.view.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCaseNew
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -54,7 +54,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     val userId: String
         get() = userSession.userId
-    val etalaseListData = MutableLiveData<Result<ShopProductEtalaseListViewModel>>()
+    val etalaseListData = MutableLiveData<Result<List<ShopProductEtalaseChipItemViewModel>>>()
     val membershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
     val newMembershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
     val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
@@ -224,24 +224,10 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    private fun getShopEtalaseData(shopId: String, selectedEtalaseId: String): ShopProductEtalaseListViewModel {
+    private fun getShopEtalaseData(shopId: String): List<ShopProductEtalaseChipItemViewModel> {
         val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isMyShop(shopId))
         val listShopEtalaseResponse = getShopEtalaseByShopUseCase.createObservable(params).toBlocking().first()
-        val firstShopEtalase = listShopEtalaseResponse.first()
-        val fixSelectedEtalaseId = if (selectedEtalaseId.isEmpty()) {
-            if (firstShopEtalase.type == ETALASE_DEFAULT) firstShopEtalase.alias else firstShopEtalase.id
-        } else {
-            selectedEtalaseId
-        }
-        val selectedEtalaseName = firstShopEtalase.name
-        val selectedEtalaseBadge = firstShopEtalase.badge
-        return ShopPageProductListMapper.mapToShopProductEtalaseListDataModel(
-                listShopEtalaseResponse,
-                fixSelectedEtalaseId,
-                selectedEtalaseName,
-                selectedEtalaseBadge,
-                isMyShop(shopId)
-        )
+        return ShopPageProductListMapper.mapToShopProductEtalaseListDataModel(listShopEtalaseResponse)
     }
 
     private suspend fun getProductList(
@@ -350,9 +336,9 @@ class ShopPageProductListViewModel @Inject constructor(
         getMerchantVoucherListUseCase.clearCache()
     }
 
-    fun getEtalaseData(shopId: String, selectedEtalaseId: String) {
+    fun getEtalaseData(shopId: String) {
         launchCatchError(coroutineContext, block = {
-            val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId, selectedEtalaseId) }
+            val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId) }
             etalaseListData.postValue(Success(etalaseListDataResult))
         }) {
             etalaseListData.postValue(Fail(it))

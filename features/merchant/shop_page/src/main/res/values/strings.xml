@@ -181,6 +181,7 @@
     <string name="shop_header_action_follow">Follow</string>
     <string name="shop_header_action_following">Following</string>
     <string name="shop_menu_search_placeholder_text">Cari barang di sini</string>
+    <string name="shop_newproduct_result_cancel">Cancel</string>
     <string name="shop_empty_product_seller_other_etalase_choose_product">Pilih produk</string>
     <string name="text_search">Search</string>
     <string name="text_settings">Settings</string>

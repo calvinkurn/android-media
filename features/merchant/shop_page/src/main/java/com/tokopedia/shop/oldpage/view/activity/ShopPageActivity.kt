@@ -41,6 +41,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
@@ -63,6 +64,7 @@ import com.tokopedia.shop.oldpage.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.oldpage.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -78,7 +80,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
-        ShopPageHeaderViewHolder.ShopPageHeaderListener, ShopProductListFragment.OnShopProductListFragmentListener {
+        ShopPageHeaderViewHolder.ShopPageHeaderListener, OnShopProductListFragmentListener {
 
     var shopId: String? = null
     var shopDomain: String? = null

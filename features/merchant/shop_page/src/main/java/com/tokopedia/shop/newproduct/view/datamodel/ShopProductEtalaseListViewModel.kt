@@ -9,11 +9,11 @@ data class ShopProductEtalaseListViewModel(
         val etalaseModelList: List<BaseShopProductEtalaseViewModel> = listOf(),
         var selectedEtalaseId: String = "",
         var selectedEtalaseName: String = "",
-        var selectedEtalaseBadge: String = "",
-        val defaultSelectedEtalaseId : String = "",
-        var isButtonEtalaseMoreShown: Boolean = false,
-        var recyclerViewState: Parcelable? = null
+        var selectedEtalaseBadge: String = ""
 ) : BaseShopProductViewModel {
+    var isButtonEtalaseMoreShown: Boolean = false
+    var recyclerViewState: Parcelable? = null
+
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
