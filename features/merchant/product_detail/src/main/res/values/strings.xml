@@ -166,7 +166,7 @@
     <string name="pdp_installment_desc">Lihat Semua Metode</string>
 
     <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
-    <string name="pdp_category_applink">https://staging.tokopedia.com/p/</string>
+    <string name="pdp_category_applink">https://tokopedia.com/p/</string>
 
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>
