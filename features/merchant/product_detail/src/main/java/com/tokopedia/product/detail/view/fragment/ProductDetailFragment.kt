@@ -220,7 +220,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
     private var shouldShowCod = false
-//    private lateinit var tradeInParams: TradeInParams
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -1481,8 +1480,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
             if (tradeinResponse.isEligible) {
                 if (tv_trade_in_promo != null) {
-                    tv_trade_in_promo.visible()
-                    tv_available_at?.visible()
+                    tradein_header_container.show()
                 }
 
                 tv_text_price.text = if (tradeinResponse.usedPrice > 0) {
@@ -1493,6 +1491,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
                 baseTradein.show()
             } else {
+                tradein_header_container.hide()
                 baseTradein.hide()
             }
 

@@ -511,7 +511,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             try {
                 val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
-                        affiliateRequest,topAdsManageRequest), cacheStrategy)
+                        affiliateRequest, topAdsManageRequest), cacheStrategy)
 
                 if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
                     p2Login.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
@@ -533,8 +533,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 }
 
                 if (response.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
-                    p2Login.topAdsGetProductManage = response.getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage
-                            ?: TopAdsGetProductManage()
+                    p2Login.topAdsGetProductManage = response
+                            .getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage ?: TopAdsGetProductManage()
                 }
             } catch (t: Throwable) {
                 Timber.d(t)

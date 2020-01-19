@@ -422,6 +422,7 @@ dependencies {
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
+    implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.atc_variant)

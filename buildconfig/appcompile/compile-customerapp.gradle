@@ -55,6 +55,7 @@ include 'features:discovery:similarsearch'
 include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
+include "features:discovery:home_page_banner"
 //include "features:discovery:home_no_op"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"
@@ -131,6 +132,7 @@ include "features:promo:tokopoints"
 include "features:promo:tokopoints_notification"
 include "features:promo:promo_checkout"
 include "features:promo:promo_checkout_common"
+include "features:promo:promo_gamification_common"
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
 

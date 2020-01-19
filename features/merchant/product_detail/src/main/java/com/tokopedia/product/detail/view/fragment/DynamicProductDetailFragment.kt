@@ -425,6 +425,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                     ?: DynamicProductInfoP1())
                             viewModel.getDynamicProductInfoP1 = dynamicP1Copy
                             pdpHashMapUtil.snapShotMap.apply {
+                                shouldReinitVideoPicture = true
                                 selectedWarehouse?.let {
                                     nearestWarehouse = it
                                     viewModel.multiOrigin = it.warehouseInfo
@@ -490,7 +491,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
                     onSwipeRefresh()
-                    activity?.invalidateOptionsMenu()
                 }
 
                 shouldRenderSticky = true
@@ -1038,6 +1038,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 viewModel.hitAffiliateTracker(affiliateString
                         ?: "", viewModel.deviceId)
             }
+
+            assignDefaultVariantId(productInfo)
 
             activity?.invalidateOptionsMenu()
             renderList(data)
@@ -2101,11 +2103,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun updateProductId() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
-                userInputVariant = productId
-            }
+            assignDefaultVariantId(productInfo)
 
             productId = productInfo.basic.productID
+        }
+    }
+
+    private fun assignDefaultVariantId(productInfo: DynamicProductInfoP1) {
+        if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
+            userInputVariant = productId
         }
     }
 
