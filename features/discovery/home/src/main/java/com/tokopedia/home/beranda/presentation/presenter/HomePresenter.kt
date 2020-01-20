@@ -453,6 +453,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     visitable -> visitable is HomeRetryModel
                 }
 
+                if (findRecommendationModel != null) return
+
                 visitableMutableList.remove(findLoadingModel)
                 visitableMutableList.remove(findRetryModel)
 
@@ -480,6 +482,9 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 }
                 val findRetryModel = _homeLiveData.value?.list?.find {
                     visitable -> visitable is HomeRetryModel
+                }
+                val findRecommendationModel = _homeLiveData.value?.list?.find {
+                    visitable -> visitable is HomeRecommendationFeedViewModel
                 }
 
                 visitableMutableList.remove(findLoadingModel)
