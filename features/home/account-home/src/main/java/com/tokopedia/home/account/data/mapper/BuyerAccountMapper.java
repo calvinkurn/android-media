@@ -257,7 +257,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         if (accountModel.getProfile().getCompletion() != null) {
-            buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
+            buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
         }
         buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 
