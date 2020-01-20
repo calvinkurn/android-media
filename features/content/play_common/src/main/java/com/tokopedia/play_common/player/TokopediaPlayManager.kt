@@ -84,6 +84,8 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                 }
             } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
+
+
     }
 
     val videoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
