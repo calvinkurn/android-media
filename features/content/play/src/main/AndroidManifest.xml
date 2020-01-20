@@ -5,6 +5,7 @@
         <activity
             android:name=".view.activity.PlayActivity"
             android:theme="@style/Play.FullScreen"
+            android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

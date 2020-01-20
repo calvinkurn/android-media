@@ -76,11 +76,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         surfaceView?.layoutParams = params
         contentFrame?.addView(surfaceView, 0)
-        val newVideoComponent = player?.videoComponent
-        newVideoComponent?.setVideoTextureView(surfaceView)
-        newVideoComponent?.addVideoListener(componentListener)
-        player?.addListener(componentListener)
-
         // Buffering view.
         bufferingView = findViewById(R.id.exo_buffering)
         bufferingView?.visibility = View.GONE
@@ -93,10 +88,10 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
     }
 
     private fun updateBuffering() {
-        bufferingView?.let{
-            val showBufferingSpinner = player != null && player?.playbackState == Player.STATE_BUFFERING && player?.playWhenReady == true
-            bufferingView?.visibility = if (showBufferingSpinner) View.VISIBLE else View.GONE
-        }
+//        bufferingView?.let{
+//            val showBufferingSpinner = player != null && player?.playbackState == Player.STATE_BUFFERING && player?.playWhenReady == true
+//            bufferingView?.visibility = if (showBufferingSpinner) View.VISIBLE else View.GONE
+//        }
     }
 
     private fun setResizeModeRaw(aspectRatioFrame: AspectRatioFrameLayout, resizeMode: Int) {
