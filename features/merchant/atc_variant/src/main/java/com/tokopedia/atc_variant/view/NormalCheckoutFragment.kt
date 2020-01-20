@@ -224,9 +224,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 } else {
                     if (!viewModel.isUserSessionActive()) {
                         tv_trade_in.setOnClickListener {
-                            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ATC)
-                            startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+                            startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_TRADE_IN)
                         }
                     } else {
                         tv_trade_in.setOnClickListener(null)
@@ -247,6 +245,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             generateInsuranceRequest()
             viewModel.getInsuranceProductRecommendation(insuranceRecommendationRequest)
         }
+    }
+
+    private fun generateIntentLogin(): Intent {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ATC)
+        return intent
     }
 
     private fun goToHargaFinal() {
@@ -568,8 +572,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             if (!viewModel.isUserSessionActive()) {
                 context?.run {
                     //do tracking
-                    val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ATC)
+                    val intent = generateIntentLogin()
                     if (action == ATC_ONLY) {
                         normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_ATC)
@@ -589,9 +592,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 context?.run {
                     //do tracking
                     if (action == APPLY_CREDIT) {
-                        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ATC)
-                        startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT)
+                        startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT)
                     }
                 }
                 return@setOnClickListener
@@ -607,9 +608,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 //do tracking
                 normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
                 //do login
-                val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ATC)
-                startActivityForResult(intent, REQUEST_CODE_LOGIN_THEN_ATC)
+                startActivityForResult(generateIntentLogin(), REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
                 addToCart()
             }
