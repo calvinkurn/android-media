@@ -146,10 +146,6 @@ public class AutoCompleteActivity extends BaseActivity
         searchBarView.setOnSuggestionViewUpdateListener(this);
     }
 
-    protected void setLastQuerySearchView(String lastQuerySearchView) {
-        searchBarView.setLastQuery(lastQuerySearchView);
-    }
-
     @Override
     public boolean onQueryTextSubmit(@NotNull SearchParameter searchParameter) {
         this.searchParameter = new SearchParameter(searchParameter);
@@ -232,17 +228,17 @@ public class AutoCompleteActivity extends BaseActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case SearchBarView.REQUEST_VOICE:
-                    List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    if (results != null && results.size() > 0) {
-                        searchBarView.setQuery(results.get(0), false);
-                        sendVoiceSearchGTM(results.get(0));
-                    }
-                    break;
-                default:
-                    break;
+            if (requestCode == SearchBarView.REQUEST_VOICE) {
+                onVoiceSearchClicked(data);
             }
+        }
+    }
+
+    public void onVoiceSearchClicked(Intent data){
+        List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+        if (results != null && results.size() > 0) {
+            searchBarView.setQuery(results.get(0), false);
+            sendVoiceSearchGTM(results.get(0));
         }
     }
 

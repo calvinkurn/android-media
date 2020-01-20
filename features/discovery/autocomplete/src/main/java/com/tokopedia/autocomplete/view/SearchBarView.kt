@@ -19,13 +19,12 @@ import android.util.AttributeSet
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Filter
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -40,30 +39,21 @@ import com.tokopedia.showcase.*
 import kotlinx.android.synthetic.main.autocomplete_search_bar_view.view.*
 import rx.Observable
 import rx.Subscriber
-import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-/**
- * @author Erry Suprayogi
- */
-class SearchBarView @JvmOverloads constructor(private val mContext: Context, attrs: AttributeSet, defStyleAttr: Int = 0) : ConstraintLayout(mContext, attrs), Filter.FilterListener {
+class SearchBarView constructor(private val mContext: Context, attrs: AttributeSet) : ConstraintLayout(mContext, attrs), Filter.FilterListener {
 
     companion object {
         const val REQUEST_VOICE = 9999
         private val TAG = SearchBarView::class.java.simpleName
-        private val LOCALE_INDONESIA = "in_ID"
-        val TAB_SHOP_SUGGESTION = 1
-        val TAB_PRODUCT_SUGGESTION = 0
-        val TAB_DEFAULT_SUGGESTION = TAB_PRODUCT_SUGGESTION
-        private val IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY: Long = 600
+        private const val LOCALE_INDONESIA = "in_ID"
+        private const val IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY: Long = 600
     }
 
-    private val mMenuItem: MenuItem? = null
-    private val mAnimationDuration: Int = 0
     private var mClearingFocus: Boolean = false
 
     private var mOldQueryText: CharSequence? = null
@@ -74,18 +64,12 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
     private lateinit var mSuggestionViewUpdateListener: SuggestionViewUpdateListener
     private var activity: AppCompatActivity? = null
     private var mSavedState: SavedState? = null
-    private var submit = false
     private var searchParameter = SearchParameter()
-
-    private var ellipsize = false
 
     private var allowVoiceSearch: Boolean = false
     private var isAllowImageSearch: Boolean = false
-        private set
-    private var suggestionIcon: Drawable? = null
     private var copyText = false
     private var compositeSubscription: CompositeSubscription? = null
-    private var querySubscription: Subscription? = null
     private var queryListener: QueryListener? = null
     private var showCaseDialog: ShowCaseDialog? = null
     private lateinit var remoteConfig: RemoteConfig
@@ -124,8 +108,6 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
     init {
 
         initiateView()
-
-        initStyle(attrs, defStyleAttr)
 
         initCompositeSubscriber()
 
@@ -174,7 +156,7 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
         action_image_search_btn?.setOnClickListener(mOnClickListener)
     }
 
-    fun showVoiceButton(show: Boolean) {
+    private fun showVoiceButton(show: Boolean) {
         if (show && isVoiceAvailable && allowVoiceSearch) {
             action_voice_btn?.visibility = View.VISIBLE
         } else {
@@ -198,7 +180,7 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), r.displayMetrics).toInt()
     }
 
-    fun showImageSearch(show: Boolean) {
+    private fun showImageSearch(show: Boolean) {
         if (show && isAllowImageSearch) {
             action_image_search_btn?.visibility = View.VISIBLE
         } else {
@@ -264,88 +246,8 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
         imm.showSoftInput(view, 0)
     }
 
-    private fun initStyle(attrs: AttributeSet, defStyleAttr: Int) {
-        val a = mContext.obtainStyledAttributes(attrs, R.styleable.SearchBarView, defStyleAttr, 0)
-
-        if (a != null) {
-            if (a.hasValue(R.styleable.SearchBarView_searchBackground)) {
-                background = a.getDrawable(R.styleable.SearchBarView_searchBackground)
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_android_textColor)) {
-                setTextColor(a.getColor(R.styleable.SearchBarView_android_textColor, 0))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_android_textColorHint)) {
-                setHintTextColor(a.getColor(R.styleable.SearchBarView_android_textColorHint, 0))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_android_hint)) {
-                setTextViewHint(a.getString(R.styleable.SearchBarView_android_hint))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_searchVoiceIcon)) {
-                setVoiceIcon(a.getDrawable(R.styleable.SearchBarView_searchVoiceIcon))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_searchImageIcon)) {
-                setImageIcon(a.getDrawable(R.styleable.SearchBarView_searchImageIcon))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_searchCloseIcon)) {
-                setCloseIcon(a.getDrawable(R.styleable.SearchBarView_searchCloseIcon))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_searchBackIcon)) {
-                setBackIcon(a.getDrawable(R.styleable.SearchBarView_searchBackIcon))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_searchSuggestionIcon)) {
-                setSuggestionIcon(a.getDrawable(R.styleable.SearchBarView_searchSuggestionIcon))
-            }
-
-            if (a.hasValue(R.styleable.SearchBarView_android_inputType)) {
-                setInputType(a.getInt(R.styleable.SearchBarView_android_inputType, EditorInfo.TYPE_NULL))
-            }
-
-            a.recycle()
-        }
-    }
-
-    private fun setTextColor(color: Int) {
-        searchTextView?.setTextColor(color)
-    }
-
-    private fun setHintTextColor(color: Int) {
-        searchTextView?.setHintTextColor(color)
-    }
-
     private fun setTextViewHint(hint: CharSequence?) {
         searchTextView?.hint = hint
-    }
-
-    private fun setVoiceIcon(drawable: Drawable?) {
-        action_voice_btn?.setImageDrawable(drawable)
-    }
-
-    private fun setImageIcon(drawable: Drawable?) {
-        action_image_search_btn?.setImageDrawable(drawable)
-    }
-
-    private fun setCloseIcon(drawable: Drawable?) {
-        action_empty_btn?.setImageDrawable(drawable)
-    }
-
-    private fun setBackIcon(drawable: Drawable?) {
-        action_up_btn?.setImageDrawable(drawable)
-    }
-
-    private fun setSuggestionIcon(drawable: Drawable?) {
-        suggestionIcon = drawable
-    }
-
-    private fun setInputType(inputType: Int) {
-        searchTextView?.inputType = inputType
     }
 
     private fun initCompositeSubscriber() {
@@ -422,14 +324,6 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
         this.activity = activity
     }
 
-    fun setCopyText(copyText: Boolean) {
-        this.copyText = copyText
-    }
-
-    fun hideShowCaseDialog(b: Boolean) {
-        isShowShowCase = true
-    }
-
     private fun startShowCase() {
         if (shouldShowImageSearchShowCase()) {
             val showCaseTag = "Image Search ShowCase"
@@ -441,10 +335,6 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
             }
             showCaseDialog = createShowCase()
             showCaseDialog?.setShowCaseStepListener { _, _, showCaseObject -> false }
-
-            if (remoteConfig == null) {
-                remoteConfig = FirebaseRemoteConfigImpl(context)
-            }
 
             val showCaseObjectList = ArrayList<ShowCaseObject>()
             showCaseObjectList.add(ShowCaseObject(
@@ -531,16 +421,8 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
 
     }
 
-    fun setVoiceSearch(voiceSearch: Boolean) {
-        allowVoiceSearch = voiceSearch
-    }
-
-    fun setImageSearch(imageSearch: Boolean) {
+    private fun setImageSearch(imageSearch: Boolean) {
         isAllowImageSearch = imageSearch
-    }
-
-    fun setSubmitOnClick(submit: Boolean) {
-        this.submit = submit
     }
 
     fun setQuery(query: CharSequence, submit: Boolean, copyText: Boolean) {
@@ -569,7 +451,7 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
         showSearch()
     }
 
-    fun showSearch() {
+    private fun showSearch() {
         textViewRequestFocus()
 
         search_top_bar?.visibility = View.VISIBLE
@@ -599,15 +481,11 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
         searchTextViewShowKeyboard()
     }
 
-    fun searchTextViewShowKeyboard() {
+    private fun searchTextViewShowKeyboard() {
         searchTextView?.postDelayed({
             showKeyboard(searchTextView)
             searchTextView?.text?.length?.let { searchTextView?.setSelection(it) }
         }, 200)
-    }
-
-    fun searchTextViewSetCursorSelectionAtTextEnd() {
-        searchTextView?.text?.length?.let { searchTextView?.setSelection(it) }
     }
 
     fun setOnQueryTextListener(listener: OnQueryTextListener) {
@@ -620,10 +498,6 @@ class SearchBarView @JvmOverloads constructor(private val mContext: Context, att
 
     fun setOnSuggestionViewUpdateListener(suggestionViewUpdateListener: SuggestionViewUpdateListener) {
         mSuggestionViewUpdateListener = suggestionViewUpdateListener
-    }
-
-    fun setEllipsize(ellipsize: Boolean) {
-        this.ellipsize = ellipsize
     }
 
     override fun onFilterComplete(count: Int) {
