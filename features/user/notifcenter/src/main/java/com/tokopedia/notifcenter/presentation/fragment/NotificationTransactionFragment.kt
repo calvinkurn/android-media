@@ -36,7 +36,7 @@ import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationTransactionAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.endLess
@@ -335,6 +335,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
+    override fun addProductToCheckout(product: ProductData) {}
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME

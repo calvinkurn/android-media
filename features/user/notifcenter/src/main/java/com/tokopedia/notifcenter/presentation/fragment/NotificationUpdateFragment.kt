@@ -41,7 +41,7 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
@@ -322,6 +322,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
         presenter.addProductToCart(product, onSuccessAddToCart)
+    }
+
+    override fun addProductToCheckout(product: ProductData) {
+        TODO("belum ada")
     }
 
     override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {
