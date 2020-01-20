@@ -43,7 +43,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.digital.common.analytic.DigitalEventTracking;
+import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -99,9 +99,6 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -724,20 +721,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         intent.putExtra(EXTRA_SHOP_ID, shopId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
-    }
-
-
-    @Override
-    public void onDigitalMoreClicked(int pos) {
-        Analytics tracker = HomePageTracking.getTracker();
-        if (tracker != null) {
-            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                    DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                    DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
-                    DigitalEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
-                    ""
-            ));
-        }
     }
 
     @Override

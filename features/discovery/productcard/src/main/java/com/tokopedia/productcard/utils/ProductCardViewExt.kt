@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -60,7 +59,7 @@ internal fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boo
     }
 }
 
-private fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
+internal fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
     return if (blankSpaceConfigValue) {
         View.INVISIBLE
     }

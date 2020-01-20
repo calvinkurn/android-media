@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.factory
 
-import androidx.fragment.app.FragmentManager
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -62,10 +62,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
     override fun type(tickerViewModel: TickerViewModel): Int {
         return TickerViewHolder.LAYOUT
-    }
-
-    override fun type(digitalsViewModel: DigitalsViewModel): Int {
-        return DigitalsViewHolder.LAYOUT
     }
 
     override fun type(businessUnitViewModel: BusinessUnitViewModel): Int {
@@ -196,8 +192,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            DigitalsViewHolder.LAYOUT -> viewHolder = DigitalsViewHolder(listener, fragmentManager, view)
-            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(listener, view)
+            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(fragmentManager, view)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
