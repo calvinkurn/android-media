@@ -39,10 +39,6 @@ public interface HomeContract {
 
         void setHint(SearchPlaceholder searchPlaceholder);
 
-        void showNetworkError(String message);
-
-        void showNetworkError();
-
         void removeNetworkError();
 
         String getString(@StringRes int res);

@@ -99,10 +99,7 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homeUsecase(homeRepository: HomeRepository,
-                    @ApplicationContext context: Context, homeVisitableFactory: HomeVisitableFactory) = HomeUseCase(homeRepository, HomeDataMapper(
-            context, homeVisitableFactory
-    ))
+    fun homeUsecase(homeRepository: HomeRepository) = HomeUseCase(homeRepository)
 
     @Provides
     fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository?): SendGeolocationInfoUseCase {

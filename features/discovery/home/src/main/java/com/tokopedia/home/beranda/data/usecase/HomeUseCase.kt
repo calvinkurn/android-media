@@ -8,20 +8,21 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class HomeUseCase @Inject constructor(
-        private val homeRepository: HomeRepository,
-        private val homeDataMapper: HomeDataMapper
+        private val homeRepository: HomeRepository
 ) {
-    fun getHomeData(): Flow<HomeViewModel> = flow {
+    var homeDataMapper: HomeDataMapper? = null
+
+    fun getHomeData(): Flow<HomeViewModel?> = flow {
         var firstTimeDataHasBeenConsumed = false
         homeRepository.getHomeData().collect { data->
             if (!firstTimeDataHasBeenConsumed) {
                 //first time observe, get latest data from cache
-                emit(homeDataMapper.mapToHomeViewModel(data, true))
+                emit(homeDataMapper?.mapToHomeViewModel(data, true))
                 //fetch new data
                 firstTimeDataHasBeenConsumed = true
             }
             //not first time, emit real data from network
-            else emit(homeDataMapper.mapToHomeViewModel(data, false))
+            else emit(homeDataMapper?.mapToHomeViewModel(data, false))
         }
     }
 
