@@ -329,13 +329,18 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         quick_filter?.renderFilter(listQuickFilter, currentIndex)
         quick_filter?.setListener { keySelected ->
-            mapOrderStatus.forEach { (key, listOrderStatusId) ->
-                if (keySelected.equals(key, true)) {
-                    tabActive = keySelected
-                    SomAnalytics.eventClickQuickFilter(tabActive)
-                    if (listOrderStatusId.isNotEmpty()) {
-                        this.paramOrder.statusList = listOrderStatusId
-                        refreshHandler?.startRefresh()
+            if (keySelected == "0") {
+                paramOrder.statusList = mapOrderStatus[SomConsts.STATUS_ALL_ORDER] ?: emptyList()
+                refreshHandler?.startRefresh()
+            } else {
+                mapOrderStatus.forEach { (key, listOrderStatusId) ->
+                    if (keySelected.equals(key, true)) {
+                        tabActive = keySelected
+                        SomAnalytics.eventClickQuickFilter(tabActive)
+                        if (listOrderStatusId.isNotEmpty()) {
+                            this.paramOrder.statusList = listOrderStatusId
+                            refreshHandler?.startRefresh()
+                        }
                     }
                 }
             }
