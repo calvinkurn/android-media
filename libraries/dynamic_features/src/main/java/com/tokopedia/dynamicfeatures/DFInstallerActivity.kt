@@ -248,7 +248,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             image.setImageResource(R.drawable.ic_ill_insuficient_memory)
             title_txt.setText(getString(R.string.download_error_insuficient_memory_title))
-            subtitle_txt.setText(String.format(getString(R.string.download_error_insuficient_memory_subtitle), (moduleSize.toFloat() / ONE_KB)))
+            subtitle_txt.setText(String.format(getString(R.string.download_error_insuficient_memory_subtitle)))
             button_download.setText(getString(R.string.goto_seting))
             button_download.setOnClickListener {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)

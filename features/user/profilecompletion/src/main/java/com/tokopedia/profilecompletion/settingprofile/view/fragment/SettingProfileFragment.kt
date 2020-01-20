@@ -40,7 +40,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.url.Url
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -320,7 +319,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
-        userSession.phoneNumber = profileCompletionData.phone
+        userSession.phoneNumber = profileCompletionData.msisdn
         userSession.email = profileCompletionData.email
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
@@ -400,9 +399,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     true,
                     true,
                     View.OnClickListener {
-                        if(profileCompletionData.phone.isNotEmpty() && profileCompletionData.isPhoneVerified){
+                        if(profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified){
                             goToChangeEmail(profileCompletionData.email)
-                        } else if(profileCompletionData.phone.isNotEmpty() && !profileCompletionData.isPhoneVerified) {
+                        } else if(profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
                             showVerifyEmailDialog()
                         }else{
                             showChangeEmailDialog()
@@ -411,7 +410,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
             )
         }
 
-        if (profileCompletionData.phone.isEmpty()) {
+        if (profileCompletionData.msisdn.isEmpty()) {
             phone.showEmpty(
                     getString(R.string.subtitle_phone_setting_profile),
                     getString(R.string.hint_phone_setting_profile),
@@ -425,19 +424,19 @@ class SettingProfileFragment : BaseDaggerFragment() {
         } else {
             phone.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
-                    PhoneNumberUtils.transform(profileCompletionData.phone),
-                    profileCompletionData.isPhoneVerified,
+                    PhoneNumberUtils.transform(profileCompletionData.msisdn),
+                    profileCompletionData.isMsisdnVerified,
                     true,
                     View.OnClickListener {
-                        if (profileCompletionData.isPhoneVerified) {
-                            goToChangePhone(profileCompletionData.phone, profileCompletionData.email)
+                        if (profileCompletionData.isMsisdnVerified) {
+                            goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
                             goToVerifyPhone()
                         }
                     }
             )
 
-            if (profileCompletionData.isPhoneVerified) {
+            if (profileCompletionData.isMsisdnVerified) {
                 tickerPhoneVerification.visibility = View.GONE
             } else {
                 tickerPhoneVerification.visibility = View.VISIBLE

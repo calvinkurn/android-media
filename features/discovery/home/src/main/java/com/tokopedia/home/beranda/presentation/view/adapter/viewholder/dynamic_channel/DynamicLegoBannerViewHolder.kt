@@ -87,14 +87,18 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                     when(legoBannerType) {
                         TYPE_SIX_GRID_LEGO -> {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                    holder.context,
-                                    channels.getEnhanceClickLegoBannerHomePage(grid, position + 1)
+                                    HomePageTracking.getEnhanceClickLegoBannerHomePage(
+                                            grid,
+                                            channels,
+                                            position + 1)
                             )
                         }
                         TYPE_THREE_GRID_LEGO -> {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                    holder.context,
-                                    channels.getEnhanceClickThreeLegoBannerHomePage(grid, position + 1)
+                                    HomePageTracking.getEnhanceClickThreeLegoBannerHomePage(
+                                            grid,
+                                            channels,
+                                            position + 1)
                             )
                         }
                     }
