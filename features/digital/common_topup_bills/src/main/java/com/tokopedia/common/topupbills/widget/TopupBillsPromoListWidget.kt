@@ -97,7 +97,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
     fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
-
+      
     interface ActionListener {
         fun onCopiedPromoCode(promoId: Int, voucherCode: String)
 
