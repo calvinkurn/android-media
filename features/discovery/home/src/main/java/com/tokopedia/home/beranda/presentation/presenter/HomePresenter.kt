@@ -452,6 +452,9 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 val findRetryModel = _homeLiveData.value?.list?.find {
                     visitable -> visitable is HomeRetryModel
                 }
+                val findRecommendationModel = _homeLiveData.value?.list?.find {
+                    visitable -> visitable is HomeRecommendationFeedViewModel
+                }
 
                 if (findRecommendationModel != null) return
 
