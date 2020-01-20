@@ -257,10 +257,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
 
     private fun prepareAndPlayByPosition(position: Int) {
         val newPlayer: TokopediaPlayerHelper? = getExoPlayerByPosition(position)
-        if (newPlayer != null) {
-            newPlayer.preparePlayer()
-            newPlayer.playerPlay()
-        }
+        newPlayer?.preparePlayer()
     }
 
     private fun pausePlayerByPosition(position: Int) {

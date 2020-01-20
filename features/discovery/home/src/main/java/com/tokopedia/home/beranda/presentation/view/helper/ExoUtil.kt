@@ -8,6 +8,7 @@ import android.view.ViewParent
 import androidx.annotation.FloatRange
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
+import com.tokopedia.home.util.ConnectionUtils.isWifiConnected
 import com.tokopedia.home.util.DimensionUtils
 
 object ExoUtil {
@@ -28,5 +29,5 @@ object ExoUtil {
         return offset
     }
 
-    fun isDeviceHasRequirementAutoPlay(context: Context) = DimensionUtils.getDensityMatrix(context) >= 1.5f
+    fun isDeviceHasRequirementAutoPlay(context: Context) = DimensionUtils.getDensityMatrix(context) >= 1.5f && isWifiConnected(context)
 }

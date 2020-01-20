@@ -7,15 +7,12 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
-import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
-import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil
+import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
-import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
-import com.tokopedia.home.beranda.presentation.view.helper.setValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -51,11 +48,12 @@ class PlayCardViewHolder(
             title.setValue(element.getChannel()?.header?.name ?: "Play Channel")
             description.setValue("")
             mVideoUrl = if(model?.videoStream?.config?.streamUrl?.isEmpty() == true) "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" else model?.videoStream?.config?.streamUrl ?: ""
-            mThumbUrl = if(model?.coverUrl?.isEmpty() == true) "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQsXmNcM4cLjmjXv-_9QJe5McOfdu6652WGC4LBq8FpirMHT9xl" else model?.coverUrl ?: ""
+//            mThumbUrl = if(model?.coverUrl?.isEmpty() == true) "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQsXmNcM4cLjmjXv-_9QJe5McOfdu6652WGC4LBq8FpirMHT9xl" else model?.coverUrl ?: ""
+            mThumbUrl = model?.coverUrl ?: ""
             createHelper()
             playCardViewModel = element
 
-            thumbnailView.loadImage(mThumbUrl, 350, 150, true)
+            thumbnailView.loadImageWithoutPlaceholder(mThumbUrl, 350, 150, true)
 
             broadcasterName.text = model?.moderatorName ?: ""
             titlePlay.text = model?.title ?: ""
@@ -64,7 +62,7 @@ class PlayCardViewHolder(
             if(model?.videoStream?.isLive == true) live.show()
             else live.hide()
 
-            itemView.setOnClickListener {
+            itemView.setSafeOnClickListener {
                 videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId) }
             }
 
@@ -82,24 +80,21 @@ class PlayCardViewHolder(
             helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
                     .setVideoUrls(mVideoUrl)
                     .setExoPlayerEventsListener(this)
-                    .setRepeatModeOn(true)
-                    .setToPrepareOnResume(true)
                     .create()
         }
 
-        if(helper?.isPlayerNull() == true){
+        if(helper != null && helper!!.isPlayerNull()){
             helper?.createPlayer()
+            if(mThumbUrl.isEmpty()) helper?.seekToDefaultPosition()
         }
     }
 
     fun resume(){
         helper?.onActivityResume()
-        thumbnailView.show()
     }
 
     fun pause(){
         helper?.onActivityPause()
-        thumbnailView.show()
     }
 
     fun getHelper() = helper
