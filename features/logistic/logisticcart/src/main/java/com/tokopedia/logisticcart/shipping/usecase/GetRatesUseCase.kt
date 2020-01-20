@@ -6,11 +6,10 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.R
-import com.tokopedia.logisticcart.shipping.model.RatesParam
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesDetailData
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -32,14 +31,35 @@ class GetRatesUseCase @Inject constructor(@ApplicationContext val context: Conte
                 .map { graphqlResponse: GraphqlResponse ->
                     val response = graphqlResponse.getData<RatesGqlResponse>(RatesGqlResponse::class.java)
                     val model = RatesModel()
-                    val details = response.ratesData.ratesDetailData
+                    val details: RatesDetailData? = response.ratesData?.ratesDetailData
                     // Check has service / duration list
-                    if (details.services.isNotEmpty()) {
+                    if (details?.services?.isNotEmpty() == true) {
+
                         // Check if has info
-                        if (details.error.errorMessage.isNotEmpty()) {
+                        if (details.error?.errorMessage?.isNotEmpty() == true) {
                             model.errorMessage = details.error.errorMessage
                             model.errorId = details.error.errorId
                         }
+
+                        // Setting for Promo Stacking
+                        val promoStacking: PromoStacking? = details.promoStacking
+                        var promoModel: LogisticPromoViewModel? = null
+                        if (promoStacking != null && promoStacking.isPromo == 1) {
+                            val applied = promoStacking.isApplied == 1
+                            promoModel = LogisticPromoViewModel(
+                                    promoStacking.getPromoCode(), promoStacking.getTitle(),
+                                    promoStacking.getBenefitDesc(), promoStacking.getShipperName(),
+                                    promoStacking.getServiceId(), promoStacking.getShipperId(),
+                                    promoStacking.getShipperProductId(),
+                                    promoStacking.getShipperDesc(),
+                                    promoStacking.getShipperDisableText(),
+                                    promoStacking.getPromoTncHtml(), applied,
+                                    promoStacking.getImageUrl(), promoStacking.getDiscontedRate(),
+                                    promoStacking.getShippingRate(),
+                                    promoStacking.getBenefitAmount(), promoStacking.isDisabled(),
+                                    promoStacking.isHideShipperName())
+                        }
+                        model.logisticPromo = promoModel
 
                         model.shippingDurationViewModels = details.services.map { service ->
                             val durationViewModel = ShippingDurationViewModel()
