@@ -829,7 +829,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     override fun onSeeInvoice(url: String) {
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, url)
-            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice)
+            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
             startActivity(this)
         }
     }
