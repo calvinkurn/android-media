@@ -1,5 +1,9 @@
 package com.tokopedia.logisticcart.shipping.model
 
+private const val VALUE_ANDROID = "android"
+private const val VALUE_CLIENT = "client"
+private const val VALUE_LANG_ID = "id"
+
 data class RatesParam(
         val spids: String,
         var shop_id: String = "",
@@ -8,13 +12,13 @@ data class RatesParam(
         val weight: String,
         var token: String = "",
         var ut: String = "",
-        var type: String = "",
-        var from: String = "",
+        val type: String = VALUE_ANDROID,
+        val from: String = VALUE_CLIENT,
         var insurance: String = "",
         var product_insurance: String = "",
         var order_value: String = "",
         var cat_id: String = "",
-        var lang: String = "",
+        val lang: String = VALUE_LANG_ID,
         var user_history: Int = 0,
         var is_corner: Int = 0,
         var is_blackbox: Int = 0,
