@@ -28,6 +28,7 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
@@ -69,12 +70,16 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private String timeFilter;
     private String scoreFilter;
     private View filterButton;
+    private boolean isFromWhitespace;
 
     @Inject
     InboxReputationPresenter presenter;
 
     @Inject
     PersistentCacheManager persistentCacheManager;
+
+    @Inject
+    ReputationTracking reputationTracking;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
@@ -293,6 +298,23 @@ public class InboxReputationFragment extends BaseDaggerFragment
                              String revieweeName, String revieweeImage,
                              ReputationDataViewModel reputationDataViewModel, String textDeadline,
                              int adapterPosition, int role) {
+
+        if(reputationDataViewModel.getActionMessage().equals("Lihat Semua")) {
+            reputationTracking.seeAllReviewItemOnClickTracker(
+                    invoice,
+                    (adapterPosition + 1),
+                    isFromWhitespace,
+                    getTab()
+            );
+        } else {
+            reputationTracking.reviewItemOnClickTracker(
+                    invoice,
+                    (adapterPosition + 1),
+                    isFromWhitespace,
+                    getTab()
+            );
+        }
+
         savePassModelToDB(getInboxReputationDetailPassModel(reputationId, invoice, createTime,
                 revieweeImage, revieweeName, textDeadline,
                 reputationDataViewModel, role));
@@ -303,6 +325,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
                         adapterPosition,
                         getTab()),
                 REQUEST_OPEN_DETAIL);
+    }
+
+    @Override
+    public void clickFromWhitespace(boolean source) {
+        isFromWhitespace = source;
     }
 
     private void savePassModelToDB(InboxReputationDetailPassModel inboxReputationDetailPassModel) {

@@ -76,6 +76,24 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewListener.clickFromWhitespace(true);
+                viewListener.onGoToDetail(
+                        element.getReputationId(),
+                        element.getInvoice(),
+                        element.getCreateTime(),
+                        element.getRevieweeName(),
+                        element.getRevieweePicture(),
+                        element.getReputationDataViewModel(),
+                        getTextDeadline(element),
+                        getAdapterPosition(),
+                        element.getRole());
+            }
+        });
+
+        action.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.clickFromWhitespace(false);
                 viewListener.onGoToDetail(
                         element.getReputationId(),
                         element.getInvoice(),

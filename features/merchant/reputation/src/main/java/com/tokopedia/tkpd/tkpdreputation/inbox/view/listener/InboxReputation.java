@@ -48,6 +48,8 @@ public interface InboxReputation {
 
         void onShowEmptyFilteredInboxReputation();
 
+        void clickFromWhitespace(boolean source);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

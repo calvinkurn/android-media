@@ -284,6 +284,40 @@ public class ReputationTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 
+    public void reviewItemOnClickTracker(String invoice, int position, boolean isFromWhitespace, int tab) {
+        String clickSource = isFromWhitespace ? ReputationTrackingConstant.CLICK_ON_WHITESPACE : ReputationTrackingConstant.CLICK_ON_TEXT_REVIEW;
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.CLICK_GIVE_REVIEW_FROM + tabSource,
+                invoice+" - "+position+" - "+clickSource
+        ));
+    }
+
+    public void seeAllReviewItemOnClickTracker(String invoice, int position, boolean isFromWhitespace, int tab) {
+        String clickSource = isFromWhitespace ? ReputationTrackingConstant.CLICK_ON_WHITESPACE : ReputationTrackingConstant.CLICK_ON_TEXT_REVIEW;
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.CLICK_SEE_ALL_REVIEW_FROM + tabSource,
+                invoice+" - "+position+" - "+clickSource
+        ));
+    }
+
+    public void onBackPressedInboxReviewClickTracker(int tab) {
+        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.BACK_PRESSED_REVIEW + tabSource,
+                ""
+        ));
+    }
+
+
+
 
 
     private String getEditMarker(boolean isEditReview) {

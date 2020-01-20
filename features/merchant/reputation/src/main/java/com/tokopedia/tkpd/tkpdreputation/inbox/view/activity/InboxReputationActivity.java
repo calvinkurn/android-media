@@ -10,6 +10,8 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,7 +26,9 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.GlobalMainTabSelectedListener;
@@ -34,6 +38,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author by nisie on 8/10/17.
@@ -60,6 +66,9 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
 
     private boolean goToReputationHistory;
 
+    @Inject
+    ReputationTracking reputationTracking;
+
     @Override
     protected int getPageLimit() {
         return OFFSCREEN_PAGE_LIMIT;
@@ -83,6 +92,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
         userSession = new UserSession(this);
         super.onCreate(savedInstanceState);
         clearCacheIfFromNotification();
+        initInjector();
     }
 
     @Override
@@ -95,6 +105,15 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
     protected void setupFragment(Bundle savedinstancestate) {
         super.setupFragment(savedinstancestate);
         viewPager.setAdapter(getViewPagerAdapter());
+    }
+
+    private void initInjector() {
+        DaggerReputationComponent reputationComponent =
+                (DaggerReputationComponent) DaggerReputationComponent
+                        .builder()
+                        .baseAppComponent(getComponent())
+                        .build();
+        reputationComponent.inject(this);
     }
 
     private void initView() {
@@ -201,7 +220,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
             finish();
         }
         super.onBackPressed();
-
+        reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getSelectedTabPosition());
     }
 
     @Override
