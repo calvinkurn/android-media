@@ -19,7 +19,6 @@ import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -36,7 +35,7 @@ class ChangePasswordDependencyInjector {
 
         fun inject(context: Context): ChangePasswordPresenter {
 
-            val userSession : UserSessionInterface = UserSession(context)
+            val userSession = UserSession(context)
 
             val gson: Gson = GsonBuilder()
                     .setDateFormat(DATE_FORMAT)
@@ -87,7 +86,7 @@ class ChangePasswordDependencyInjector {
                     changePasswordMapper)
 
             val logoutApi: LogoutApi = retrofit.create(LogoutApi::class.java)
-            val logoutUseCase = LogoutUseCase(logoutApi, LogoutMapper(), userSession as UserSession)
+            val logoutUseCase = LogoutUseCase(logoutApi, LogoutMapper(), userSession)
 
             return ChangePasswordPresenter(changePasswordUseCase, logoutUseCase, userSession)
         }

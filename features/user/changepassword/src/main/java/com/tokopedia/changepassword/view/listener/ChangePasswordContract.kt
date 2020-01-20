@@ -40,7 +40,7 @@ interface ChangePasswordContract {
 
         fun isValidForm(oldPassword: String, newPassword: String, confirmPassword: String): Boolean
 
-        fun doLogout(userSession: UserSession)
+        fun doLogout()
 
     }
 }

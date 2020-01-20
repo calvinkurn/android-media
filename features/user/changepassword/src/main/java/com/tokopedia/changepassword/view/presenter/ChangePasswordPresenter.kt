@@ -17,7 +17,7 @@ import rx.Subscriber
 class ChangePasswordPresenter(
         private val changePasswordUseCase: ChangePasswordUseCase,
         private val logoutUseCase: LogoutUseCase,
-        val userSession: UserSessionInterface
+        val userSession: UserSession
 ) : ChangePasswordContract.Presenter, BaseDaggerPresenter<ChangePasswordContract.View>() {
 
     override fun submitChangePasswordForm(oldPassword: String,
@@ -65,7 +65,7 @@ class ChangePasswordPresenter(
                 && confirmPassword.isNotBlank()
     }
 
-    override fun doLogout(userSession: UserSession) {
+    override fun doLogout() {
         logoutUseCase.execute(
                 LogoutUseCase.getParam(userSession), object : Subscriber<LogoutDomain>() {
 

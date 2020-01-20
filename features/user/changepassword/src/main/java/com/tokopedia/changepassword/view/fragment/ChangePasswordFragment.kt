@@ -13,11 +13,8 @@ import android.widget.EditText
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.changepassword.ChangePasswordRouter
 import com.tokopedia.changepassword.R
 import com.tokopedia.changepassword.common.analytics.ChangePasswordAnalytics
 import com.tokopedia.changepassword.common.di.ChangePasswordDependencyInjector
@@ -104,16 +101,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun disableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
-                .bg_button_disabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.grey_500))
         submit_button.isEnabled = false
     }
 
     private fun enableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
-                .button_curvy_green))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.white))
         submit_button.isEnabled = true
     }
 
@@ -124,20 +115,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 newPasswordTextField.textFieldInput.text.toString(),
                 confPasswordTextField.textFieldInput.text.toString())
 
-    }
-
-    override fun onSuccessLogout() {
-        val stickyPref = activity?.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
-        stickyPref?.edit()?.clear()?.apply()
-
-        sendBroadcast()
-    }
-
-    private fun sendBroadcast() {
-        val intent = Intent(BROADCAST_LOGOUT)
-        context?.let {
-            LocalBroadcastManager.getInstance(it).sendBroadcast(intent)
-        }
     }
 
     override fun showLoading() {
@@ -152,12 +129,20 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onSuccessChangePassword() {
         hideLoading()
-        if (activity != null && context != null && context!!.applicationContext is
-                        ChangePasswordRouter) {
-            (context!!.applicationContext as ChangePasswordRouter)
-                    .logoutToHome(activity!!)
-        } else {
-            activity!!.finish()
+        presenter.doLogout()
+    }
+
+    override fun onSuccessLogout() {
+        val stickyPref = activity?.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
+        stickyPref?.edit()?.clear()?.apply()
+
+        sendBroadcast()
+    }
+
+    private fun sendBroadcast() {
+        val intent = Intent(BROADCAST_LOGOUT)
+        context?.let {
+            LocalBroadcastManager.getInstance(it).sendBroadcast(intent)
         }
     }
 
