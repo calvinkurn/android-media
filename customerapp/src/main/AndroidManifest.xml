@@ -300,11 +300,6 @@
             </intent-filter>
         </activity>
 
-
-        <activity android:name=".campaign.view.activity.ShakeDetectCampaignActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Translucent"/>
-
         <activity
             android:name=".flight.presentation.FlightPhoneVerificationActivity"
             android:label="@string/flight_title_activity_phone_verification"

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.campaign.di;
+package com.tokopedia.campaign.shake.landing.di;
 
 import android.content.Context;
 import android.content.res.Resources;

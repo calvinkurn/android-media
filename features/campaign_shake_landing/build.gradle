@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+dependencies {
+
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+
+}
+
+project.ext {
+    artifactId = 'campaign-shake-landing'
+    groupId = 'com.tokopedia.campaign.shake.landing'
+    versionName = "0.0.1"
+    artifactName = "campaign_shake_landing-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.campaign.view.activity;
+package com.tokopedia.campaign.shake.landing.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -51,7 +51,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     ShakeDetectPresenter presenter;
 
     TextView shakeShakeMessage;
-    public static final String KEY_LONG_SHAKE = "KEY_LONG_SHAKE_SHAKE";
     private View cancelBtn1;
     private View cancelBtn2;
 
@@ -115,14 +114,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     protected void shakeDetect() {
         presenter.onShakeDetect();
-    }
-
-
-    public static Intent getShakeDetectCampaignActivity(Context context, boolean isLongShake) {
-        Intent i = new Intent(context, ShakeDetectCampaignActivity.class);
-        i.putExtra(KEY_LONG_SHAKE, isLongShake);
-        return i;
-
     }
 
     @Override
@@ -198,7 +189,16 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public boolean isLongShakeTriggered() {
-        return getIntent().getBooleanExtra(KEY_LONG_SHAKE, false);
+        Uri uri = getIntent().getData();
+
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, uri);
+            if (!paths.isEmpty()) {
+                boolean isLongShake = Boolean.parseBoolean(paths.get(0));
+                return isLongShake;
+            }
+        }
+        return false;
     }
 
     static int TOAST_LENGTH = 3000;

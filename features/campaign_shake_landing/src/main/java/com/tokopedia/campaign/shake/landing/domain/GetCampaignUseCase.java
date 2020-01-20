@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.campaign.domain.shake;
+package com.tokopedia.campaign.shake.landing.domain;
 
 import android.content.res.Resources;
 

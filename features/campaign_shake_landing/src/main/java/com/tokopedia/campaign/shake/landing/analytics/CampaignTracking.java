@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.campaign.analytics;
+package com.tokopedia.campaign.shake.landing.analytics;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;

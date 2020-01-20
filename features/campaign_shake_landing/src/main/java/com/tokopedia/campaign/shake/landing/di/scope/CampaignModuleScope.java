@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.campaign.di.scope;
+package com.tokopedia.campaign.shake.landing.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

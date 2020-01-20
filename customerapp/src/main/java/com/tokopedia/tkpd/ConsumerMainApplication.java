@@ -35,6 +35,7 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -56,7 +57,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
-import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -186,13 +186,17 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
-                Intent intent = ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(getApplicationContext(), isLongShake);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(intent);
-                getApplicationContext().registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
+                openShakeDetectCampaignPage(isLongShake);
             }
         });
         registerActivityLifecycleCallbacks(shakeSubscriber);
+    }
+
+    private void openShakeDetectCampaignPage(boolean isLongShake) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+        getApplicationContext().registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
     }
 
     public void deinit() {
