@@ -54,7 +54,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
+            <com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
                 android:id="@+id/recent_numbers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15" />
 
-            <com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
+            <com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
                 android:id="@+id/promo_widget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,19 +105,12 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:visibility="visible" />
 
-            <RelativeLayout
+            <ProgressBar
                 android:id="@+id/layout_progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/tab_layout"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
-
-            </RelativeLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -127,7 +120,9 @@
         android:id="@+id/buy_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15" />
 
 </RelativeLayout>
 

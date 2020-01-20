@@ -62,10 +62,10 @@ import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_contact.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_error.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_error.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_term_condition.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_umrah_mandatory_document.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_mandatory_document.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_checkout.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_content_order.*
