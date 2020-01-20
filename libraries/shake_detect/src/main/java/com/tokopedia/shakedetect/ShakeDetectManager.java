@@ -116,10 +116,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     @Override
     public void hearShake() {
         sTopActivity = mOpenedActivity;
-        /*if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
-            mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);
-        }*/
+
         if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
             mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
@@ -127,16 +124,13 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         }
 
         if (isShakeShakeEnable && isShakeShakeEnable() && isReactNativeOnReleaseMode()) {
-           /* mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);*/
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
-
         }
     }
 
     public void startShake(boolean isLongShake) {
-
+        callback.onShakeDetected(isLongShake);
     }
 
     Handler mShakeEnabler = new Handler() {
