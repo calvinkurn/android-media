@@ -9,6 +9,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.SuccessData
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
@@ -240,9 +241,6 @@ class CartListPresenterClearPromoTest : Spek({
             }
         }
 
-
-
-/*
         Scenario("clear promo after clash success") {
 
             val view: ICartListView = mockk(relaxed = true)
@@ -253,6 +251,7 @@ class CartListPresenterClearPromoTest : Spek({
                         success = true
                     }
                 }
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
@@ -261,27 +260,28 @@ class CartListPresenterClearPromoTest : Spek({
             }
 
             When("process clear promo") {
-                cartListPresenter.processCancelAutoApplyPromoStackAfterClash(1, arrayListOf("code"), false)
+                cartListPresenter.processCancelAutoApplyPromoStackAfterClash(PromoStackingData(), arrayListOf("code"), arrayListOf(), "")
             }
 
             Then("should render success") {
                 verify {
                     view.hideProgressLoading()
-                    view.onSuccessClearPromoStack(any())
+                    view.onSuccessClearPromoStackAfterClash()
                 }
             }
         }
 
-        Scenario("clear promo after clash success error") {
+        Scenario("clear promo after clash error") {
 
             val view: ICartListView = mockk(relaxed = true)
 
             Given("success response") {
                 val response = ClearCacheAutoApplyStackResponse().apply {
                     successData = SuccessData().apply {
-                        success = true
+                        success = false
                     }
                 }
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
@@ -290,28 +290,24 @@ class CartListPresenterClearPromoTest : Spek({
             }
 
             When("process clear promo") {
-                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), false)
+                cartListPresenter.processCancelAutoApplyPromoStackAfterClash(PromoStackingData(), arrayListOf("code"), arrayListOf(), "")
             }
 
-            Then("should render success") {
+            Then("should render error") {
                 verify {
                     view.hideProgressLoading()
-                    view.onSuccessClearPromoStack(any())
+                    view.onFailedClearPromoStack(any())
                 }
             }
         }
 
-        Scenario("clear promo after clash success error with exception") {
+        Scenario("clear promo after clash error with exception") {
 
             val view: ICartListView = mockk(relaxed = true)
 
             Given("success response") {
-                val response = ClearCacheAutoApplyStackResponse().apply {
-                    successData = SuccessData().apply {
-                        success = true
-                    }
-                }
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
+                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
             Given("attach view") {
@@ -319,17 +315,17 @@ class CartListPresenterClearPromoTest : Spek({
             }
 
             When("process clear promo") {
-                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), false)
+                cartListPresenter.processCancelAutoApplyPromoStackAfterClash(PromoStackingData(), arrayListOf("code"), arrayListOf(), "")
             }
 
-            Then("should render success") {
+            Then("should render error") {
                 verify {
                     view.hideProgressLoading()
-                    view.onSuccessClearPromoStack(any())
+                    view.onFailedClearPromoStack(any())
                 }
             }
         }
-*/
+
     }
 
 })
