@@ -27,13 +27,13 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:gravity="center"
                 android:text="@string/umrah_home_page_bg_label"
                 android:textColor="@color/white"
-                app:typographyType="heading_2"
+                app:typographyType="heading_1"
                 app:typographyWeight="bold" />
 
             <androidx.cardview.widget.CardView
