@@ -1,25 +1,26 @@
 package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Handler
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.TouchDelegate
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import org.jetbrains.annotations.NotNull
+import java.util.*
 
 /**
  * Created by resakemal on 20/08/19.
@@ -27,71 +28,82 @@ import org.jetbrains.annotations.NotNull
 class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context,
                                                            attrs: AttributeSet? = null,
                                                            defStyleAttr: Int = 0,
-                                                           var listener: ActionListener? = null)
-    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsInputDropdownBottomSheet.OnClickListener {
+                                                           var actionListener: ActionListener? = null)
+    : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var isDropdown = false
-    private var dropdownBottomSheet = BottomSheetUnify()
-    private var dropdownView: TopupBillsInputDropdownBottomSheet
-    private var fragmentManager: FragmentManager? = null
+    var isCustomInput = false
+    set(value) {
+        field = value
+        if (value) iv_input_dropdown.show() else iv_input_dropdown.hide()
+    }
+
+    var infoListener: InfoListener? = null
+    set(value) {
+        field = value
+        if (value != null) input_info.show() else input_info.hide()
+    }
+
+    private var delayTextChanged: Long = DEFAULT_DELAY_TEXT_CHANGED_MILLIS
 
     init {
         View.inflate(context, getLayout(), this)
 
+        if (attrs != null) {
+            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopupBillsInputFieldWidget, 0, 0)
+            try {
+                isCustomInput = styledAttributes.getBoolean(R.styleable.TopupBillsInputFieldWidget_isDropdown, false)
+            } finally {
+                styledAttributes.recycle()
+            }
+        }
+      
         ac_input.clearFocus()
 
         btn_clear_input.setOnClickListener {
             ac_input.setText("")
-            listener?.onFinishInput("")
+            actionListener?.onFinishInput("")
             error_label.visibility = View.GONE
         }
 
-        ac_input.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count == 0 || isDropdown) {
-                    btn_clear_input.visibility = View.GONE
-                } else {
-                    if (count > 1) {
-                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputMethodManager.showSoftInput(ac_input, InputMethod.SHOW_FORCED)
-                    }
-                    btn_clear_input.visibility = View.VISIBLE
-                }
-            }
-
-        })
+        ac_input.addTextChangedListener(getTextWatcher())
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                listener?.onFinishInput("")
-                clearFocus()
+                actionListener?.onFinishInput(getInputText())
+                ac_input.clearFocus()
             }
             false
         }
         ac_input.setKeyImeChangeListener { _, event ->
             if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                listener?.onFinishInput("")
-                clearFocus()
+                actionListener?.onFinishInput(getInputText())
+                ac_input.clearFocus()
             }
         }
-        ac_input.setOnFocusChangeListener { _, b ->
-            onFocusChangeDropdown(b)
+        ac_input.setOnTouchListener { view, motionEvent ->
+            if(motionEvent.action == MotionEvent.ACTION_UP) {
+                if (isCustomInput) {
+                    actionListener?.onCustomInputClick()
+                    return@setOnTouchListener true
+                }
+            }
+            false
         }
 
-        iv_input_dropdown.gone()
-        dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = this)
-        dropdownBottomSheet.setFullPage(true)
-        dropdownBottomSheet.clearAction()
-        dropdownBottomSheet.setCloseClickListener {
-            dropdownBottomSheet.dismiss()
+        input_info.setOnClickListener {
+            infoListener?.onInfoClick()
+        }
+        // Enlarge info button touch area with TouchDelegate
+        input_field_container.post {
+            val delegateArea = Rect()
+            input_info.getHitRect(delegateArea)
+
+            delegateArea.top -= INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.left -= INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.bottom += INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.right += INFO_TOUCH_AREA_SIZE_PX
+
+            input_field_container.apply { touchDelegate = TouchDelegate(delegateArea, input_info) }
         }
     }
 
@@ -107,8 +119,9 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         return ac_input.text.toString()
     }
 
-    fun setInputText(input: String) {
+    fun setInputText(input: String, triggerListener: Boolean = true) {
         ac_input.setText(input)
+        if (triggerListener) actionListener?.onFinishInput(input)
     }
 
     fun setErrorMessage(message: String) {
@@ -125,57 +138,88 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         return R.layout.view_voucher_game_input_field
     }
 
-    fun setActionListener(listener: ActionListener) {
-        this.listener = listener
-    }
+    private fun getTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            var timer: Timer? = Timer()
 
-    override fun onItemClicked(item: TopupBillsInputDropdownData) {
-        ac_input.setText(item.value)
-        listener?.onFinishInput(item.value)
-        dropdownBottomSheet.dismiss()
-    }
-
-    fun setupDropdownBottomSheet(data: List<TopupBillsInputDropdownData>) {
-        isDropdown = true
-        iv_input_dropdown.show()
-
-        dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = this)
-        dropdownView.setData(data)
-
-        this.fragmentManager = (context as AppCompatActivity).supportFragmentManager
-        dropdownBottomSheet.setChild(dropdownView)
-    }
-
-    private fun showDropdownBottomSheet() {
-        if (isDropdown && fragmentManager != null) {
-            fragmentManager?.let {
-                dropdownBottomSheet.show(it,"Enquiry input field dropdown bottom sheet")
+            override fun afterTextChanged(s: Editable?) {
+                runTimer(s.toString())
             }
-            // Open keyboard with delay so it opens when bottom sheet is fully visible
-            Handler().postDelayed({
-                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-            }, SHOW_KEYBOARD_DELAY)
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Reset timer if it is still ongoing
+                timer?.cancel()
+
+                if (s.isNullOrEmpty() || isCustomInput) {
+                    btn_clear_input.visibility = View.GONE
+                } else {
+                    if (count > 1) {
+                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.showSoftInput(ac_input, InputMethod.SHOW_FORCED)
+                    }
+                    btn_clear_input.visibility = View.VISIBLE
+                }
+            }
+
+            private fun runTimer(input: String) {
+                // Setup timer
+                timer = Timer()
+                timer?.schedule(object: TimerTask() {
+                    override fun run() {
+                        triggerListener(input)
+                    }
+                }, DEFAULT_DELAY_TEXT_CHANGED_MILLIS)
+            }
+
+            private fun triggerListener(input: String) {
+                actionListener?.run {
+                    val mainHandler = Handler(ac_input.context.mainLooper)
+                    val myRunnable = Runnable { onFinishInput(input) }
+                    mainHandler.post(myRunnable)
+                }
+            }
+
+        }
+    }
+
+    fun setDelayTextChanged(delay: Long) {
+        delayTextChanged = delay
+    }
+
+    fun setInputType(type: String) {
+        ac_input.inputType = when (type) {
+            INPUT_NUMERIC ->  InputType.TYPE_CLASS_NUMBER
+            INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
+            INPUT_TELCO -> InputType.TYPE_CLASS_PHONE
+            else -> InputType.TYPE_CLASS_NUMBER
         }
     }
 
     fun resetState() {
-        isDropdown = false
-        iv_input_dropdown.hide()
-    }
-
-    private fun onFocusChangeDropdown(hasFocus: Boolean) {
-        if (hasFocus && isDropdown) {
-            ac_input.clearFocus()
-            showDropdownBottomSheet()
-        }
+        isCustomInput = false
+        ac_input.setText("")
+        hideErrorMessage()
     }
 
     interface ActionListener {
         fun onFinishInput(input: String)
+        fun onCustomInputClick()
+    }
+
+    interface InfoListener {
+        fun onInfoClick()
     }
 
     companion object {
-        const val SHOW_KEYBOARD_DELAY: Long = 200
+        const val INPUT_ALPHANUMERIC = "input_alphanumeric"
+        const val INPUT_NUMERIC = "input_numeric"
+        const val INPUT_TELCO = "input_tel"
+
+        const val INFO_TOUCH_AREA_SIZE_PX = 20
+        const val DEFAULT_DELAY_TEXT_CHANGED_MILLIS: Long = 300
     }
 }

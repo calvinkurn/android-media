@@ -77,6 +77,7 @@
 /features/digital/digital_topup_bills                   @tokopedia/minion-mark
 /features/digital/flight_orderlist                      @tokopedia/minion-mark
 /features/digital/rechargeocr                           @tokopedia/minion-mark
+/features/digital/recharge_general                      @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob

@@ -1,7 +1,6 @@
 package com.tokopedia.vouchergame.detail.view.adapter.viewholder
 
 import android.graphics.Paint
-import androidx.appcompat.content.res.AppCompatResources
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchergame.R
@@ -41,7 +40,7 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
 
                 if (detail.isNotEmpty()) {
                     product_detail.visibility = View.VISIBLE
-                    if (detailCompat.isNotEmpty()) product_detail.text = detailCompat
+                    if (detailCompact.isNotEmpty()) product_detail.text = detailCompact
                     product_detail.setOnClickListener { listener.onDetailClicked(product) }
                 } else {
                     product_detail.visibility = if (hasMoreDetails) View.INVISIBLE else View.GONE

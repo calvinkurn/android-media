@@ -11,6 +11,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -38,9 +40,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
     }
 
     fun setPromoList(promoList: List<TopupBillsPromo>) {
-        titleWidget.visibility = View.VISIBLE
-        titleWidget.text = context.getString(R.string.title_promo)
-
+        titleWidget.text = context.getString(R.string.common_topup_title_promo)
         topupBillsPromoListAdapter = TopupBillsPromoListAdapter(promoList)
         recyclerView.adapter = topupBillsPromoListAdapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -94,6 +94,10 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         }
     }
 
+    fun toggleTitle(value: Boolean) {
+        if (value) titleWidget.show() else titleWidget.hide()
+    }
+      
     interface ActionListener {
         fun onCopiedPromoCode(promoId: Int, voucherCode: String)
 

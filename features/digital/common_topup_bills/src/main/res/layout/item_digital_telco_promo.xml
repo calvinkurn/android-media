@@ -40,7 +40,7 @@
                 android:layout_alignBottom="@id/btn_copy_promo"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:gravity="center_vertical"
-                app:srcCompat="@drawable/digital_ic_voucher" />
+                app:srcCompat="@drawable/common_topup_ic_voucher" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_promo_code"
@@ -52,7 +52,7 @@
                 android:layout_marginRight="@dimen/dp_5"
                 android:layout_toRightOf="@+id/img_voucher"
                 android:gravity="center_vertical"
-                android:text="@string/title_promo_code"
+                android:text="@string/common_topup_title_promo_code"
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="body_3" />
 

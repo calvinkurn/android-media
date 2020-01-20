@@ -35,9 +35,9 @@ open class CatalogProduct(
                 @SerializedName("detail")
                 @Expose
                 val detail: String = "",
-                @SerializedName("detail_compat")
+                @SerializedName("detail_compact")
                 @Expose
-                val detailCompat: String = "",
+                val detailCompact: String = "",
                 @SerializedName("detail_url")
                 @Expose
                 val detailUrl: String = "",

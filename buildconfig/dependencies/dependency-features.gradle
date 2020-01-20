@@ -38,6 +38,7 @@ ext {
             commonTopupBills                : ":features:digital:common_topup_bills",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
             voucherGame                     : ":features:digital:voucher_game",
+            rechargeGeneral                 : ":features:digital:recharge_general",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
             flightOrderList                 : ":features:digital:flight_orderlist",
