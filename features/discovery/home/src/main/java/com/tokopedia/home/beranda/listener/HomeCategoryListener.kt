@@ -35,7 +35,7 @@ interface HomeCategoryListener {
 
     fun onSectionItemClicked(actionLink: String)
 
-    fun onCloseTicker(pos: Int)
+    fun onCloseTicker()
 
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
