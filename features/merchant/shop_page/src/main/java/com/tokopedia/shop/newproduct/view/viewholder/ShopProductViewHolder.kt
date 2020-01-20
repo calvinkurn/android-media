@@ -73,12 +73,16 @@ class ShopProductViewHolder(
     }
 
     override fun bind(shopProductViewModel: ShopProductViewModel) {
-        var totalReview = 0
-        try {
-            totalReview = NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
+        val totalReview = try {
+            NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
         } catch (ignored: ParseException) {
+            0
         }
-
+        val discountPercentage = if (shopProductViewModel.discountPercentage == "0") {
+            ""
+        } else {
+            "${shopProductViewModel.discountPercentage}%"
+        }
         productCard.setProductModel(
                 ProductCardModel(
                         shopProductViewModel.imageUrl!!,
@@ -88,7 +92,7 @@ class ShopProductViewHolder(
                         "",
                         "",
                         shopProductViewModel.name!!,
-                        shopProductViewModel.discountPercentage!!,
+                        discountPercentage,
                         shopProductViewModel.originalPrice!!,
                         shopProductViewModel.displayedPrice!!,
                         ArrayList(),
@@ -107,7 +111,7 @@ class ShopProductViewHolder(
             itemView.layoutParams.width = (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN).toInt()
         }
 
-        productCard.setOnClickListener{
+        productCard.setOnClickListener {
             shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, adapterPosition)
         }
         productCard.setButtonWishlistOnClickListener {

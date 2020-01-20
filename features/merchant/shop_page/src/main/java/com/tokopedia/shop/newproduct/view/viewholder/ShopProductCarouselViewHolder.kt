@@ -44,7 +44,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     init {
         shopProductCarouselAdapter = ShopProductAdapter(ShopProductAdapterTypeFactory(null,
                 shopProductClickedListener, null, null, null, null, null,
-                false, deviceWidth, shopTrackType))
+                null,false, deviceWidth, shopTrackType))
         findViews(itemView)
         tvTitle!!.text = titleString
     }

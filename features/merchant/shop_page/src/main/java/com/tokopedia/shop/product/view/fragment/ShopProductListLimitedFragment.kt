@@ -74,6 +74,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
+import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.model.*
@@ -110,7 +111,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private var shopInfo: ShopInfo? = null
     private var shopModuleRouter: ShopModuleRouter? = null
 
-    private var onShopProductListFragmentListener: ShopProductListFragment.OnShopProductListFragmentListener? = null
+    private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
 
     private val sortName = Integer.toString(Integer.MIN_VALUE)
     private var recyclerView: RecyclerView? = null
@@ -1086,7 +1087,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         shopModuleRouter = context.applicationContext as ShopModuleRouter
-        onShopProductListFragmentListener = context as? ShopProductListFragment.OnShopProductListFragmentListener
+        onShopProductListFragmentListener = context as? OnShopProductListFragmentListener
 
     }
 

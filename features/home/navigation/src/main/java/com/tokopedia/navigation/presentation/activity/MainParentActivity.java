@@ -96,6 +96,7 @@ import javax.inject.Inject;
 import static com.tokopedia.applink.DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
 
 /**
  * Created by meta on 19/06/18.
@@ -965,7 +966,7 @@ public class MainParentActivity extends BaseActivity implements
                         if (!userSession.hasShop()) {
                             shopIntent = RouteManager.getIntent(getContext(), OPEN_SHOP);
                         } else {
-                            shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
+                            shopIntent = RouteManager.getIntent(getContext(), SHOP_PAGE, shopID);
                         }
 
                         shopIntent.setAction(Intent.ACTION_VIEW);

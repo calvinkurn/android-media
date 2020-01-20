@@ -1,4 +1,4 @@
-package com.tokopedia.shop.newproduct.view.mapper
+package com.tokopedia.shop.newproduct.utils.mapper
 
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
@@ -16,32 +16,10 @@ import kotlin.math.roundToInt
 
 object ShopPageProductListMapper {
 
-    private const val ETALASE_TO_SHOW = 5
-
     fun mapToShopProductEtalaseListDataModel(
-            listShopEtalaseModel: List<ShopEtalaseModel>,
-            selectedEtalaseId: String,
-            selectedEtalaseName: String,
-            selectedEtalaseBadge: String,
-            isMyShop: Boolean
-    ): ShopProductEtalaseListViewModel {
-        val listShopEtalaseDataModel = mutableListOf<BaseShopProductEtalaseViewModel>()
-        val listShopEtalaseChipItemDataModel = listShopEtalaseModel.map { mapToShopEtalaseViewModel(it) }
-        if (listShopEtalaseChipItemDataModel.size > ETALASE_TO_SHOW) {
-            listShopEtalaseDataModel.addAll(listShopEtalaseChipItemDataModel.subList(0, ETALASE_TO_SHOW))
-        } else {
-            listShopEtalaseDataModel.addAll(listShopEtalaseChipItemDataModel)
-        }
-        if (isMyShop) {
-            listShopEtalaseDataModel.add(0, ShopProductAddEtalaseChipViewModel())
-        }
-        return ShopProductEtalaseListViewModel(
-                listShopEtalaseDataModel,
-                selectedEtalaseId,
-                selectedEtalaseName,
-                selectedEtalaseBadge,
-                listShopEtalaseChipItemDataModel.first().etalaseId
-        )
+            listShopEtalaseModel: List<ShopEtalaseModel>
+    ): List<ShopProductEtalaseChipItemViewModel>{
+        return listShopEtalaseModel.map { mapToShopEtalaseViewModel(it) }
     }
 
     private fun mapToShopEtalaseViewModel(shopEtalaseModel: ShopEtalaseModel): ShopProductEtalaseChipItemViewModel {

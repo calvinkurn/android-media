@@ -16,7 +16,7 @@ import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import com.tokopedia.shop.newproduct.view.datamodel.*
-import com.tokopedia.shop.newproduct.view.viewholder.ShopProductAddInfoViewHolder
+import com.tokopedia.shop.newproduct.view.viewholder.ShopProductSellerAllEtalaseEmptyViewHolder
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductViewHolder
 
@@ -47,8 +47,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_MERCHANT_VOUCHER_DATA_MODEL] as? ShopMerchantVoucherViewModel
     private val shopProductFeaturedViewModel: ShopProductFeaturedViewModel?
         get() = mapOfDataModel[KEY_FEATURED_PRODUCT_DATA_MODEL] as? ShopProductFeaturedViewModel
-    private val sellerEmptyProductDataModel: ShopSellerEmptyProductViewModel?
-        get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_DATA_MODEL] as? ShopSellerEmptyProductViewModel
+    private val sellerEmptyProductAllEtalaseDataModel: ShopSellerEmptyProductAllEtalaseViewModel?
+        get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] as? ShopSellerEmptyProductAllEtalaseViewModel
     private val buyerEmptyProductDataModel: EmptyOwnShopModel?
         get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? EmptyOwnShopModel
     private val shopProductAddViewModel: ShopProductAddViewModel?
@@ -85,7 +85,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             val staggeredLayoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
             staggeredLayoutParams.isFullSpan = !(getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT ||
                     getItemViewType(position) == ShopProductAddViewHolder.LAYOUT ||
-                    getItemViewType(position) == ShopProductAddInfoViewHolder.LAYOUT)
+                    getItemViewType(position) == ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT)
         }
         super.onBindViewHolder(holder, position)
     }
@@ -138,7 +138,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     override fun clearAllNonDataElement() {
         super.clearAllNonDataElement()
-        sellerEmptyProductDataModel?.let {
+        sellerEmptyProductAllEtalaseDataModel?.let {
             visitables.remove(it)
         }
         buyerEmptyProductDataModel?.let {
@@ -405,8 +405,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopProductAddViewModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] = data
                 }
-                is ShopSellerEmptyProductViewModel -> {
-                    mutableMapDataModelPosition[KEY_SHOP_SELLER_EMPTY_PRODUCT_DATA_MODEL] = data
+                is ShopSellerEmptyProductAllEtalaseViewModel -> {
+                    mutableMapDataModelPosition[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] = data
                 }
                 is EmptyOwnShopModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] = data
