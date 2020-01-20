@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -63,11 +64,15 @@ public class UploadProductService extends BaseService implements AddProductServi
     private ProductViewModel productViewModel = null;
     private SaveInstanceCacheManager cacheManager = null;
     private boolean isUploadProductFromDraft = true;
+
     @Inject
     AddProductServicePresenter presenter;
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    Gson gson;
 
     private NotificationManager notificationManager;
     private HashMap<Integer, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
@@ -187,10 +192,11 @@ public class UploadProductService extends BaseService implements AddProductServi
         try {
             if (!BuildConfig.DEBUG) {
                 String errorMessage = String.format(
-                        "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
+                        "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",\"%s\"",
                         userSession.getUserId(),
                         userSession.getEmail(),
-                        getExceptionMessage(t));
+                        getExceptionMessage(t),
+                        gson.toJson(productViewModel));
                 AddProductException exception = new AddProductException(errorMessage, t);
                 Crashlytics.logException(exception);
 
