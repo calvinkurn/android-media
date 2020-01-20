@@ -163,7 +163,6 @@ object DeeplinkMapper {
             ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.NOTIFICATION -> return ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
-            ApplinkConst.SHOP -> return ApplinkConstInternalMarketplace.SHOP_PAGE
             else -> ""
         }
         when {
@@ -208,7 +207,6 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
-            ApplinkConst.SHOP -> return ApplinkConstInternalMarketplace.SHOP_PAGE
             else -> ""
         }
     }
