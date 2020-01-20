@@ -12,7 +12,7 @@ import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 
 
 
-class CampaignLayout @JvmOverloads constructor(
+class CampaignGreenView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
@@ -21,7 +21,7 @@ class CampaignLayout @JvmOverloads constructor(
     private val campaignDiscount: TextView
 
     init {
-        View.inflate(getContext(), R.layout.widget_campaign, this)
+        View.inflate(getContext(), R.layout.widget_campaign_price_discount, this)
         campaignContainer = findViewById(R.id.ll_campaign)
         campaignPrice = findViewById(R.id.tv_campaign)
         campaignDiscount = findViewById(R.id.tv_discount)
