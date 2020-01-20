@@ -375,14 +375,14 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
-        pbMainLoading = view.findViewById(R.id.pb_main_loading);
-        holderProductDetail = view.findViewById(R.id.holder_product_detail);
-        holderCheckBalance = view.findViewById(R.id.holder_check_balance);
-        checkETollBalanceView = view.findViewById(R.id.holder_check_emoney_balance);
-        promoTabLayout = view.findViewById(R.id.indicator);
-        promoViewPager = view.findViewById(R.id.pager);
-        containerPromo = view.findViewById(R.id.container_promo);
-        mainHolderContainer = view.findViewById(R.id.main_container);
+        pbMainLoading = view.findViewById(com.tokopedia.digital.R.id.pb_main_loading);
+        holderProductDetail = view.findViewById(com.tokopedia.digital.R.id.digital_holder_product_detail);
+        holderCheckBalance = view.findViewById(com.tokopedia.digital.R.id.digital_holder_check_balance);
+        checkETollBalanceView = view.findViewById(com.tokopedia.digital.R.id.digital_holder_check_emoney_balance);
+        promoTabLayout = view.findViewById(com.tokopedia.digital.R.id.indicator);
+        promoViewPager = view.findViewById(com.tokopedia.digital.R.id.pager);
+        containerPromo = view.findViewById(com.tokopedia.digital.R.id.digital_container_promo);
+        mainHolderContainer = view.findViewById(com.tokopedia.digital.R.id.main_container);
 
         mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         mainHolderContainer.setFillViewport(true);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:orientation="vertical">
 
             <com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView
-                android:id="@+id/holder_check_emoney_balance"
+                android:id="@+id/digital_holder_check_emoney_balance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_8"
@@ -27,24 +28,23 @@
                 android:visibility="gone" />
 
             <LinearLayout
-                android:id="@+id/holder_product_detail"
+                android:id="@+id/digital_holder_product_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
             <LinearLayout
-                android:id="@+id/holder_check_balance"
+                android:id="@+id/digital_holder_check_balance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
             <LinearLayout
-                android:id="@+id/container_promo"
+                android:id="@+id/digital_container_promo"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/white"
                 android:orientation="vertical">
 
                 <com.google.android.material.tabs.TabLayout
