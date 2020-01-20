@@ -10,6 +10,8 @@ import com.tokopedia.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.di.scope.ShopScope
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -47,5 +49,10 @@ class ShopModule {
     fun provideGetShopReputationUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
                                         @Named(GQLQueryNamedConstant.SHOP_REPUTATION) gqlQuery: String?): GetShopReputationUseCase {
         return GetShopReputationUseCase(gqlQuery!!, graphqlUseCase!!)
+    }
+
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 }
