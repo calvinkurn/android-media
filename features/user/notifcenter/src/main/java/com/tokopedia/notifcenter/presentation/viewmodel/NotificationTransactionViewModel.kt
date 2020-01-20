@@ -107,7 +107,7 @@ class NotificationTransactionViewModel @Inject constructor(
                 lastNotificationId)
 
         notificationTransactionUseCase.get(params, {
-            val data = notificationMapper.mapToNotifTransaction(it)
+            val data = notificationMapper.map(it)
             _hasNotification.value = data.list.isNotEmpty()
             _notification.postValue(data)
         }, {
