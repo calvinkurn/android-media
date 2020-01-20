@@ -19,7 +19,7 @@ class BroadcastMessageCreatePresenter @Inject constructor(private val userSessio
                     view?.onSuccessGetShopInfo(it)
                 },
                 {
-                    Timber.d(it)
+                    view?.onErrorGetShopInfo(it)
                 }
         )
     }

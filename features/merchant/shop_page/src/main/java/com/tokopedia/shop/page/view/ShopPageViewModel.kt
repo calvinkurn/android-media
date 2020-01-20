@@ -35,7 +35,7 @@ import javax.inject.Inject
 class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRepository,
                                             private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
                                             private val userSessionInterface: UserSessionInterface,
-                                            private val getShopInfoUseCase: GQLGetShopInfoUseCase,
+                                            private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
@@ -89,9 +89,9 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
     private suspend fun getShopInfoShopReputationDataFeedWhitelist(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfoShopBadgeFeedWhitelist {
         val shopInfoShopBadgeFeedWhitelist = ShopInfoShopBadgeFeedWhitelist()
 
-        getShopInfoUseCase.params = GQLGetShopInfoUseCase
+        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase
                 .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain)
-        val shopInfoRequest = getShopInfoUseCase.request
+        val shopInfoRequest = gqlGetShopInfoUseCase.request
 
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
         val shopReputationRequest = getShopReputationUseCase.request

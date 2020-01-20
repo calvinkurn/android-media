@@ -8,15 +8,17 @@ import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.Unit;
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -47,7 +49,28 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     @Override
     public void getShopInfo() {
-        //TODO
+        ArrayList<Integer> shopIds = new ArrayList<>();
+        try {
+            shopIds.add(Integer.parseInt(userSession.getShopId()));
+        }
+        catch (NumberFormatException exception) {
+            Timber.d("Failed to convert shop ID to integer");
+        }
+        gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields()));
+        gqlGetShopInfoUseCase.execute(
+                shopInfo -> {
+                    getView().onSuccessLoadShopInfo(
+                            shopInfo.getGoldOS().isGold() == 1,
+                            false,
+                            shopInfo.getGoldOS().isOfficial() == 1
+                    );
+                    return Unit.INSTANCE;
+                },
+                throwable -> {
+                    getView().onErrorLoadShopInfo(ViewUtils.getErrorMessage(throwable));
+                    return Unit.INSTANCE;
+                }
+        );
     }
 
     @Override
@@ -122,7 +145,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     public void detachView() {
         super.detachView();
-//        getShopInfoUseCase.unsubscribe();
+        gqlGetShopInfoUseCase.cancelJobs();
         saveDraftProductUseCase.unsubscribe();
         fetchProductVariantByCatUseCase.unsubscribe();
     }

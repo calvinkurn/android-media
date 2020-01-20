@@ -29,7 +29,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * Created by nathan on 2/6/18.
@@ -44,7 +46,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
     private final UserSessionInterface userSession;
 
-    private final GQLGetShopInfoUseCase getShopInfoUseCase;
+    private final GQLGetShopInfoUseCase gqlGetShopInfoUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
     private WishListActionListener wishListActionListener;
 
@@ -60,7 +62,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
-        this.getShopInfoUseCase = gqlGetShopInfoUseCase;
+        this.gqlGetShopInfoUseCase = gqlGetShopInfoUseCase;
         this.getShopEtalaseByShopUseCase = getShopEtalaseByShopUseCase;
         this.userSession = userSession;
     }
@@ -79,7 +81,26 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     }
 
     public void getShopInfo(final String shopId) {
-        //TODO
+        ArrayList<Integer> shopIds = new ArrayList<>();
+        try {
+            shopIds.add(Integer.parseInt(userSession.getShopId()));
+        }
+        catch (NumberFormatException exception) {
+            Timber.d("Failed to convert shop ID to integer");
+        }
+        gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields()));
+        gqlGetShopInfoUseCase.execute(
+                shopInfo -> {
+                    getView().onSuccessGetShopInfo(shopInfo);
+                    return Unit.INSTANCE;
+                },
+                throwable -> {
+                    if (isViewAttached()) {
+                        getView().onErrorGetShopInfo(throwable);
+                    }
+                    return Unit.INSTANCE;
+                }
+        );
     }
 
     @NonNull
@@ -199,7 +220,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         removeWishListUseCase.unsubscribe();
         productListWithAttributeNewUseCase.unsubscribe();
         getShopEtalaseByShopUseCase.unsubscribe();
-        getShopInfoUseCase.cancelJobs();
+        gqlGetShopInfoUseCase.cancelJobs();
         deleteShopProductUseCase.unsubscribe();
     }
 }

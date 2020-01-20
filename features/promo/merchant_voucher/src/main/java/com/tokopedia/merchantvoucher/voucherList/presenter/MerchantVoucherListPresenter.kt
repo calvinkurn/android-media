@@ -38,7 +38,8 @@ constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
                 view?.onSuccessGetShopInfo(it)
             },
             {
-                Timber.d(it)
+                it.printStackTrace()
+                view?.onErrorGetShopInfo(it)
             }
         )
     }

@@ -4,22 +4,22 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.GetShopFollowerListData
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.ShopFollowerData
 import com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView
-import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel
 import com.tokopedia.shop.favourite.view.model.ShopFollowerListResultUiModel
+import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
-
-import javax.inject.Inject
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import rx.Subscriber
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.max
 
@@ -93,7 +93,9 @@ constructor(private val getShopFollowerListUseCase: GetShopFollowerListUseCase,
                     view?.onSuccessGetShopInfo(it)
                 },
                 {
-                    Timber.d(it)
+                    if(isViewAttached) {
+                        view.showGetListError(it)
+                    }
                 }
         )
     }
