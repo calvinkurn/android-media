@@ -171,6 +171,8 @@ class NotificationActivity : BaseTabActivity(),
 
     override fun getViewPagerResourceId(): Int = R.id.pager
 
+    override fun getTabLayoutResourceId(): Int = R.id.indicator
+
     private fun changeTabPager(position: Int) {
         viewPager.setCurrentItem(position, true)
         cacheManager.entry(KEY_TAB_POSITION, position)
