@@ -54,7 +54,7 @@ data class HotelCart (
                 val titleDescription: String = "",
                 @SerializedName("isCoupon")
                 @Expose
-                val isCoupon: Int = 0
+                var isCoupon: Int = 0
         )
 }
 

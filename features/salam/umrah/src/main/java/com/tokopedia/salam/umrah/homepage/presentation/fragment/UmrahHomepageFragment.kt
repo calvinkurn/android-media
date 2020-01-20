@@ -82,13 +82,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         rv_umrah_home_page.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH)
         fab_umrah_home_page_message.bringToFront()
         fab_umrah_home_page_message.setOnClickListener {
-            if (userSessionInterface.isLoggedIn){
-                context?.let {
-                    startChatUmrah(it)
-                }
-            }else{
-                goToLoginPage()
-            }
+            checkChatSession()
         }
     }
 
@@ -96,8 +90,18 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CODE_LOGIN -> context?.let{startChatUmrah(it)}
+                REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
             }
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn){
+            context?.let {
+                startChatUmrah(it)
+            }
+        }else{
+            goToLoginPage()
         }
     }
 

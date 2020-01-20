@@ -284,6 +284,11 @@ public interface ApplinkConst {
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
 
+    interface Gamification{
+        String CRACK = "tokopedia://gamification";
+        String TAP_TAP_MANTAP = "tokopedia://gamification2";
+    }
+
     interface TokoPoints {
         String HOMEPAGE = "tokopedia://tokopoints";
         String HOMEPAGE2 = "tokopedia://tokopoints/";

@@ -51,5 +51,7 @@ interface CreatePostContract {
         fun fetchProductSuggestion(type: String,
                                    onSuccess: (List<ProductSuggestionItem>) -> Unit,
                                    onError: (Throwable) -> Unit)
+
+        fun getFollowersCount(isAffiliateType: Boolean)
     }
 }
