@@ -61,13 +61,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     }
 
     protected void setBottomHour(BaseChatViewModel element) {
-        String hourTime;
-        try {
-            hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()) /
-                    MILISECONDS);
-        } catch (NumberFormatException e) {
-            hourTime = element.getReplyTime();
-        }
+        String hourTime = getHourTime(element.getReplyTime());
 
         if (hour != null
                 && (TextUtils.isEmpty(hourTime) || !element.isShowTime())) {
@@ -77,7 +71,17 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             hour.setText(hourTime);
             hour.setVisibility(View.VISIBLE);
         }
+    }
 
+    protected String getHourTime(String replyTime) {
+        String hourTime;
+        try {
+            hourTime = ChatTimeConverter.formatTime(Long.parseLong(replyTime) /
+                    MILISECONDS);
+        } catch (NumberFormatException e) {
+            hourTime = replyTime;
+        }
+        return hourTime;
     }
 
     protected void setHeaderDate(BaseChatViewModel element) {
