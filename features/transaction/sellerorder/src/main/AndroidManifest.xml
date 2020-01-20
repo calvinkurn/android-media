@@ -69,6 +69,12 @@
         </activity>
 
         <activity
+            android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
+            android:label="@string/title_invoice"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+        <activity
             android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"
             android:label="@string/title_som_confirm_req_pickup"
             android:screenOrientation="portrait"
