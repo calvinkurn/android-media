@@ -45,6 +45,6 @@ public class CustomRecyclerView extends RecyclerView {
     }
 
     public OverScroller getOverScroller() {
-        return mViewFlinger.mScroller;
+        return mViewFlinger.mOverScroller;
     }
 }

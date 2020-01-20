@@ -1110,21 +1110,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void showNetworkError() {
-        if (isAdded() && getActivity() != null) {
-            if (adapter.getItemCount() > 0) {
-                if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> onRefresh());
-                }
-                messageSnackbar.showRetrySnackbar();
-            } else {
-                NetworkErrorHelper.showEmptyState(getActivity(), root, getString(R.string.msg_network_error),
-                        () -> onRefresh());
-            }
-        }
-    }
-
-    @Override
     public void onDynamicChannelClicked(String actionLink) {
         onActionLinkClicked(actionLink);
     }
