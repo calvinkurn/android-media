@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
+import android.animation.LayoutTransition
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -62,8 +64,15 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     /*
     * last item of recyclerView;
-    * for tracking purpose*/
+    * for tracking purpose
+    * */
     private var lastListItem = 0
+
+    /*
+     * track mark all as read counter
+     * counting notification item to as read
+     * */
+    private var markAllReadCounter = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = viewModelProvider(viewModelFactory)
@@ -72,7 +81,33 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObservable()
         onListLastScroll(view)
+
+        //enable transition of filter type on kitkat above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            btnFilter?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+        }
+
+        btnFilter?.setButton1OnClickListener {
+            viewModel.markAllReadNotification()
+            analytics.trackMarkAllAsRead(markAllReadCounter.toString())
+        }
+
+        swipeRefresh?.setOnRefreshListener {
+            swipeRefresh?.isRefreshing = true
+            fetchUpdateFilter(hashMapOf())
+
+            /*
+            * add some delay for 1 sec to
+            * preventing twice swipe to refresh*/
+            Handler().postDelayed({
+                loadInitialData()
+            }, REFRESH_DELAY)
+        }
+    }
+
+    private fun initObservable() {
         viewModel.errorMessage.observe(this, onViewError())
         viewModel.infoNotification.observe(this, Observer {
             if (NotificationMapper.isHasShop(it)) {
@@ -97,18 +132,13 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         viewModel.lastNotificationId.observe(this, Observer {
             viewModel.getNotification(it)
         })
-
-        swipeRefresh?.setOnRefreshListener {
-            swipeRefresh?.isRefreshing = true
-            fetchUpdateFilter(hashMapOf())
-
-            /*
-            * add some delay for 1 sec to
-            * preventing twice swipe to refresh*/
-            Handler().postDelayed({
-                loadInitialData()
-            }, REFRESH_DELAY)
-        }
+        viewModel.markAllNotification.observe(this, Observer {
+            onSuccessMarkAllRead()
+        })
+        viewModel.totalUnreadNotification.observe(this, Observer {
+            markAllReadCounter = it
+            notifyStateFilterActionView()
+        })
     }
 
     override fun onPause() {
@@ -121,12 +151,34 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         super.onDestroyView()
     }
 
+    private fun onSuccessMarkAllRead() {
+        _adapter.markAllAsRead()
+        markAllReadCounter = 0L
+        notifyStateFilterActionView()
+    }
+
+    private fun notifyStateFilterActionView() {
+        btnFilter?.let {
+            if (markAllReadCounter != 0L) {
+                it.show()
+            } else {
+                it.hide()
+            }
+        }
+    }
+
     private fun onListLastScroll(view: View) {
-        super.getRecyclerView(view).endLess {
+        super.getRecyclerView(view).endLess({
+            if (it < 0) { // going up
+                notifyStateFilterActionView()
+            } else if (it > 0) { // going down
+                btnFilter?.hide()
+            }
+        }, {
             if (it > lastListItem) {
                 lastListItem = it
             }
-        }
+        })
     }
 
     private fun getNotification(position: String) {
@@ -164,7 +216,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         hideLoading()
 
         val pagination = notification.paging.hasNext
-        if (pagination && !notification.list.isEmpty()) {
+        if (pagination && notification.list.isNotEmpty()) {
             cursor = (notification.list.last().notificationId)
         }
         _adapter.addElement(notification.list)
@@ -179,10 +231,21 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
         val payloadBackground = BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
         adapter.notifyItemChanged(adapterPosition, payloadBackground)
-        viewModel.markReadNotification(notification.notificationId)
 
         //tracking
         analytics.trackNotificationClick(notification)
+
+        //reader
+        viewModel.markReadNotification(notification.notificationId)
+        val needToResetCounter = !notification.isRead
+        if (needToResetCounter) {
+            updateMarkAllReadCounter()
+            notifyStateFilterActionView()
+        }
+    }
+
+    private fun updateMarkAllReadCounter() {
+        markAllReadCounter -= 1
     }
 
     private fun fetchUpdateFilter(filter: HashMap<String, Int>) {

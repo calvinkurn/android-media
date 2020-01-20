@@ -30,6 +30,8 @@ const val UMRAH_IMPRESSION_DYNAMIC_CONTENT = "impression dynamic content"
 const val UMRAH_CLICK_DYNAMIC_CONTENT = "click dynamic content"
 const val UMRAH_IMPRESSION_DREAM_FUND = "impression dana impian umroh"
 const val UMRAH_CLICK_DREAM_FUND = "click dana impian umroh"
+const val UMRAH_IMPRESSION_BANNER = "impression slider banner"
+const val UMRAH_CLICK_BANNER = "click slider banner"
 
 
 const val UMRAH_CLICK_CHECKOUT_CATEGORY = "checkout page umroh"
@@ -112,5 +114,6 @@ const val BULAN_KEBERANGKATAN = "bulan keberangkatan"
 const val KOTA_KEBERANGKATAN = "kota keberangkatan"
 const val DURASI_PERJALANAN = "durasi perjalanan"
 const val HARGA_PAKET = "harga paket"
+const val SLIDER_BANNER = "slider banner"
 
 const val MY_UMRAH_AND_DREAM_FUND_CREATIVE = "https://ecs7.tokopedia.net/assets-tokopedia-lite/v2/firdaus/kratos/a61bc722.png"

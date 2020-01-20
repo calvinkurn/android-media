@@ -1,5 +1,5 @@
-query TravelCollectiveOrderList($page: Int!, $perPage: Int!, $filterStatus: String!) {
-  TravelCollectiveOrderList(product: ALL, page: $page, perPage: $perPage, filterStatus: $filterStatus) {
+query TravelCollectiveOrderList($page: Int!, $perPage: Int!, $filterStatus: String!, $cityID: Int) {
+  TravelCollectiveOrderList(product: ALL, page: $page, perPage: $perPage, filterStatus: $filterStatus, cityID: $cityID) {
       orders{
         product
         title

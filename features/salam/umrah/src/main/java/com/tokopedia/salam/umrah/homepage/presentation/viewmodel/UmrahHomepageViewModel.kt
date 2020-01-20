@@ -5,12 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.salam.umrah.homepage.data.*
-import com.tokopedia.salam.umrah.homepage.presentation.usecase.UmrahHomepageEmptyDataUseCase
 import com.tokopedia.salam.umrah.common.usecase.UmrahSearchParameterUseCase
 import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
-import com.tokopedia.salam.umrah.homepage.presentation.usecase.UmrahHomepageCategoryFeaturedUseCase
-import com.tokopedia.salam.umrah.homepage.presentation.usecase.UmrahHomepageCategoryUseCase
-import com.tokopedia.salam.umrah.homepage.presentation.usecase.UmrahHomepageMyUmrahUseCase
+import com.tokopedia.salam.umrah.homepage.presentation.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
@@ -25,6 +22,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                                                  private val umrahCategoriesUseCase: UmrahHomepageCategoryUseCase,
                                                  private val umrahSearchParamUseCase: UmrahSearchParameterUseCase,
                                                  private val umrahHomepageMyUmrahUseCase: UmrahHomepageMyUmrahUseCase,
+                                                 private val umrahHomepageBannerUseCase : UmrahHomepageBannerUseCase,
                                                  dispatcher: UmrahDispatchersProvider) : BaseViewModel(dispatcher.Main) {
 
 
@@ -149,10 +147,38 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
         }
     }
 
+
+    fun getBannerData(rawQuery: String, isLoadFromCloud: Boolean) {
+        launch {
+            val result = umrahHomepageBannerUseCase.executeBanner(rawQuery, isLoadFromCloud)
+            when (result) {
+                is Success -> {
+                    homePageModel.value?.let {
+                        val updatedList = it.toMutableList()
+                        updatedList[BANNER_ORDER] = result.data
+                        updatedList[BANNER_ORDER].isLoaded = true
+                        updatedList[BANNER_ORDER].isSuccess = true
+                        homePageModelMutable.value = updatedList
+                    }
+                }
+                is Fail -> {
+                    homePageModel.value?.let {
+                        val updatedList = it.toMutableList()
+                        updatedList[BANNER_ORDER].isLoaded = false
+                        updatedList[BANNER_ORDER].isSuccess = false
+                        homePageModelMutable.value = updatedList
+                        isErrorMutable.value = true
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         const val SEARCH_PARAM_ORDER = 0
-        const val DREAM_FUND_ORDER = 1
-        const val CATEGORY_ORDER = 2
-        const val CATEGORY_FEATURED_ORDER = 3
+        const val BANNER_ORDER = 1
+        const val DREAM_FUND_ORDER = 2
+        const val CATEGORY_ORDER = 3
+        const val CATEGORY_FEATURED_ORDER = 4
     }
 }
