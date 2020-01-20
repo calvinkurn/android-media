@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.utils.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -23,7 +24,7 @@ class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
     lateinit var bannersItemList: ArrayList<BannerItem>
 
     init {
-        constraintLayout = itemView.banner_container_layout
+        constraintLayout = itemView.findViewById(R.id.banner_container_layout)
         context = constraintLayout.context
     }
 

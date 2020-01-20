@@ -57,7 +57,20 @@ data class DataItem(
         val leftMarginMobile: String? = "0",
 
         @SerializedName("right_margin_mobile")
-        val rightMarginMobile: String? = "0"
+        val rightMarginMobile: String? = "0",
+
+        @SerializedName("background_url_mobile")
+        val backgroundUrlMobile: String? = "",
+
+        @SerializedName("alternate_background_url_mobile")
+        val alternateBackgroundUrlMobile: String? = "",
+
+        @SerializedName("box_color")
+        val boxColor: String? = "",
+
+        @SerializedName("font_color")
+        val fontColor: String? = ""
+
 ) {
     val leftMargin: Int
         get() {

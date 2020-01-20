@@ -24,7 +24,7 @@ class BannerItem(val bannerItemData: DataItem, val constraintLayout: ConstraintL
 
         constraintLayout.addView(bannerImageView)
         constraintSet.clear(bannerImageView.id)
-        constraintSet.constrainWidth(bannerImageView.getId(), ConstraintSet.MATCH_CONSTRAINT);
+        constraintSet.constrainWidth(bannerImageView.getId(), ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.constrainHeight(bannerImageView.getId(), ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
         constraintSet.setHorizontalWeight(bannerImageView.id, 1.0F)
