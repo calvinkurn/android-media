@@ -76,9 +76,6 @@ public class SearchProductModel {
         @SerializedName("source")
         @Expose
         private String source;
-        @SerializedName("shareUrl")
-        @Expose
-        private String shareUrl;
         @SerializedName("errorMessage")
         @Expose
         private String errorMessage;
@@ -134,10 +131,6 @@ public class SearchProductModel {
 
         public String getSource() {
             return source;
-        }
-
-        public String getShareUrl() {
-            return shareUrl;
         }
 
         public boolean isFilter() {

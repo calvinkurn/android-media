@@ -1,11 +1,13 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -18,6 +20,14 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
 internal fun FeatureBody.createTestInstance() {
     val productListView by memoized {
         mockk<ProductListSectionContract.View>(relaxed = true)
+    }
+
+    val getDynamicFilterUseCase by memoized {
+        mockk<UseCase<DynamicFilterModel>>(relaxed = true)
+    }
+
+    val searchLocalCacheHandler by memoized {
+        mockk<SearchLocalCacheHandler>(relaxed = true)
     }
 
     val searchProductFirstPageUseCase by memoized {
@@ -63,6 +73,8 @@ internal fun FeatureBody.createTestInstance() {
 
 internal fun TestBody.createProductListPresenter(): ProductListPresenter {
     val productListView by memoized<ProductListSectionContract.View>()
+    val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+    val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
     val searchProductFirstPageUseCase by memoized<UseCase<SearchProductModel>>()
     val searchProductLoadMoreUseCase by memoized<UseCase<SearchProductModel>>()
     val productWishlistUrlUseCase by memoized<UseCase<Boolean>>()
@@ -76,6 +88,8 @@ internal fun TestBody.createProductListPresenter(): ProductListPresenter {
 
     return ProductListPresenter().also {
         it.attachView(productListView)
+        it.getDynamicFilterUseCase = getDynamicFilterUseCase
+        it.searchLocalCacheHandler = searchLocalCacheHandler
         it.searchProductFirstPageUseCase = searchProductFirstPageUseCase
         it.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase
         it.productWishlistUrlUseCase = productWishlistUrlUseCase
