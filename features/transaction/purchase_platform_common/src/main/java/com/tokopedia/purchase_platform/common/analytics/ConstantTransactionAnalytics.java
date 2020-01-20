@@ -14,6 +14,13 @@ public interface ConstantTransactionAnalytics {
         String E_COMMERCE = "ecommerce";
         String PAYMENT_ID = "payment_id";
         String CURRENT_SITE = "currentSite";
+        String PROMOTIONS = "promotions";
+        String ID = "id";
+        String NAME = "name";
+        String CREATIVE = "creative";
+        String POSITION = "position";
+        String PROMO_ID_ = "promo_id";
+        String PROMO_CODE = "promo_code";
     }
 
 

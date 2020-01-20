@@ -34,7 +34,6 @@ class TrackingPromoCheckoutUtil {
 
     fun cartClickUsePromoCodeFailed(e: Throwable) {
         val eventMap = createMapEvent(CLICK_ATC, CART, CLICK_USE_PROMO_FROM_SELECT_MVC, FAILED + e.message)
-        //eventMap[KEY_PROMO_ID] = promoCode
 
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_ATC, CART, CLICK_USE_PROMO_CODE, FAILED)

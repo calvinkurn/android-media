@@ -28,7 +28,6 @@ class PromoCheckoutListFlightPresenter(private val checkVoucherUseCase: FlightCh
                     throw MessageErrorException(errorMessage.title)
                 } else {
                     val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
-
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
                 }
             }

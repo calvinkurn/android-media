@@ -587,6 +587,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    // PROMO STACKING
     public void eventClickPilihMerchantVoucher() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
@@ -978,7 +979,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         mapEvent.put("productId", productId);
         sendGeneralEvent(mapEvent);
     }
-
     public void eventClickBrowseButtonOnTickerProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,

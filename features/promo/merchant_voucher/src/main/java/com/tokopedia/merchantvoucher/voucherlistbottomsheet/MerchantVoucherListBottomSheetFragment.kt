@@ -35,6 +35,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
 
@@ -239,7 +240,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     private fun sendClickDetailMerchantVoucher(merchantVoucherViewModel: MerchantVoucherViewModel) {
         val position = merchantVoucherViewModelList.indexOf(merchantVoucherViewModel)
-        val ecommerceMap = createEcommerceMap(listOf(merchantVoucherViewModel), "promoClick", position)
+        val ecommerceMap = createEcommerceMap(listOf(merchantVoucherViewModel), ConstantTransactionAnalytics.EventName.PROMO_CLICK, position)
 
         if (source.equals(CART, true))
             cartPageAnalytics.eventClickDetailMerchantVoucher(ecommerceMap, merchantVoucherViewModel.voucherId.toString(), merchantVoucherViewModel.voucherCode)
@@ -290,7 +291,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     private fun sendMvcImpressionEventTracking(merchantVoucherViewModelList: List<MerchantVoucherViewModel>) {
         if (merchantVoucherViewModelList.isEmpty()) return
-        val ecommerceMap = createEcommerceMap(merchantVoucherViewModelList, "promoView", 0)
+        val ecommerceMap = createEcommerceMap(merchantVoucherViewModelList, ConstantTransactionAnalytics.EventName.PROMO_VIEW, 0)
 
         if (source.equals(CART, true))
             cartPageAnalytics.eventImpressionUseMerchantVoucher(merchantVoucherViewModelList[0].voucherId.toString(), ecommerceMap)
@@ -305,14 +306,14 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         val page = if (isFromCart) "Cart" else "Checkout"
         return mapOf<String, Any>(
                 eventType to mapOf(
-                        "promotions" to mvcList.mapIndexed { i, mvc ->
+                        ConstantTransactionAnalytics.Key.PROMOTIONS to mvcList.mapIndexed { i, mvc ->
                             return@mapIndexed mapOf(
-                                    "id" to shopId.toString(),
-                                    "name" to "$page - ${startPosition.plus(i).plus(1)} - ${mvc.voucherName}",
-                                    "creative" to "",
-                                    "position" to startPosition.plus(i).plus(1),
-                                    "promo_id" to mvc.voucherId.toString(),
-                                    "promo_code" to mvc.voucherCode
+                                    ConstantTransactionAnalytics.Key.ID to shopId.toString(),
+                                    ConstantTransactionAnalytics.Key.NAME to "$page - ${startPosition.plus(i).plus(1)} - ${mvc.voucherName}",
+                                    ConstantTransactionAnalytics.Key.CREATIVE to "",
+                                    ConstantTransactionAnalytics.Key.POSITION to startPosition.plus(i).plus(1),
+                                    ConstantTransactionAnalytics.Key.PROMO_ID_ to mvc.voucherId.toString(),
+                                    ConstantTransactionAnalytics.Key.PROMO_CODE to mvc.voucherCode
                             )
                         }
                 )

@@ -19,7 +19,6 @@ class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: Digital
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
-
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData.voucherData))
                 } else {
