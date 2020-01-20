@@ -46,7 +46,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import kotlinx.android.synthetic.main.fragment_validator.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -168,7 +167,9 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     override fun onDestroy() {
         super.onDestroy()
-        countDownTimer.cancel()
+        if (::countDownTimer.isInitialized) {
+            countDownTimer.cancel()
+        }
     }
 
     private fun prepareView(){
@@ -320,13 +321,17 @@ class ValidatorFragment: BaseDaggerFragment(){
         inputVerifyCode.text.clear()
         inputVerifyCode.requestFocus()
         inputVerifyCode.requestFocusFromTouch()
-        throwable.message?.let {
-            analytics.trackFailedClickOkResendButton(it)
-            analytics.trackFailedClickResendButton(it)
-            if (it.isEmpty()) {
-                NetworkErrorHelper.showSnackbar(activity)
-            } else {
-                NetworkErrorHelper.showSnackbar(activity, it)
+        throwable.let {message ->
+            message.message?.let {
+                analytics.trackFailedClickOkResendButton(it)
+                analytics.trackFailedClickResendButton(it)
+            }
+
+            view?.let {
+                val error = ErrorHandlerSession.getErrorMessage(message, context, true)
+                NetworkErrorHelper.showEmptyState(context, it, error) {
+                    requestCode(true)
+                }
             }
         }
     }

@@ -13,18 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-
-import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -50,19 +38,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.analytics.screen.IndexScreenTracking;
-import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.dynamicbanner.entity.PlayCardHome;
-import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
+import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -103,6 +87,7 @@ import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
+import com.tokopedia.home_page_banner.presenter.lifecycle.HomePageBannerLifecycleObserver;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.locationmanager.DeviceLocation;
@@ -112,8 +97,8 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
-import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -123,10 +108,8 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -144,8 +127,6 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
 
-import static rx.schedulers.Schedulers.start;
-
 /**
  * @author by errysuprayogi on 11/27/17.
  */
@@ -155,29 +136,24 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
         HomeReviewListener {
 
-    private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
+    private static final int SCROLL_STATE_DRAG = 0;
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     private static final int DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111;
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
-    private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
-    public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
-    public static final String KEY_DIMEN = "dimen";
-    public static final String KEY_DEF_PACKAGE = "android";
-    public static final String REVIEW_CLICK_AT = "REVIEW_CLICK_AT";
-    public static final String EXTRA_URL = "url";
-    public static final String EXTRA_TITLE = "core_web_view_extra_title";
+    private static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
+    private static final String REVIEW_CLICK_AT = "REVIEW_CLICK_AT";
+    private static final String EXTRA_URL = "url";
+    private static final String EXTRA_TITLE = "core_web_view_extra_title";
+    private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
+    @NonNull
     public static Boolean HIDE_TICKER = false;
-    public static Boolean HIDE_GEO = false;
+    private static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
     private boolean shouldDisplayReview = true;
-    private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
-
-    String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
 
     @Inject
@@ -186,7 +162,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     PermissionCheckerHelper permissionCheckerHelper;
 
-    RemoteConfig remoteConfig;
+    private RemoteConfig remoteConfig;
 
     private UserSessionInterface userSession;
     private NestedRecyclerView homeRecyclerView;
@@ -208,7 +184,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private HomeMainToolbar homeMainToolbar;
 
-    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
+    private static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
     private boolean isFeedLoaded = false;
 
@@ -227,7 +203,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
 
     private boolean isLightThemeStatusBar = true;
-    public static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
+    private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -264,7 +240,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
-        startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 4;
+        startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
     }
 
     @Override
@@ -409,6 +385,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        HomePageBannerLifecycleObserver.INSTANCE.registerLifecycle(getLifecycle());
     }
 
     @Override
@@ -438,23 +415,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
 
         stickyLoginView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> updateStickyState());
-        stickyLoginView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
-                onGoToLogin();
-            }
+        stickyLoginView.setOnClickListener(v -> {
+            stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
+            onGoToLogin();
         });
-        stickyLoginView.setOnDismissListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
-                stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
+        stickyLoginView.setOnDismissListener(v -> {
+            stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
+            stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
 
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    updateEggBottomMargin(floatingEggButtonFragment);
-                }
+            FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+            if (floatingEggButtonFragment != null) {
+                updateEggBottomMargin(floatingEggButtonFragment);
             }
         });
     }
@@ -533,7 +504,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
                     presenter.setCache(true);
                 } else {
-                    showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
+                    showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
                 }
             }
         });
@@ -543,7 +514,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 hideLoading();
             } else if(resource.getStatus() == Resource.Status.ERROR){
                 hideLoading();
-                showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(resource.getError()));
+                showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             } else {
                 showLoading();
             }
@@ -566,7 +537,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
-                showNetworkError();
+                showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             }
         }
     }
@@ -606,14 +577,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (offsetAlpha < 0) {
             offsetAlpha = 0;
         }
-
-        if (offsetAlpha >= 255) {
-            offsetAlpha = 255;
+        if(offsetAlpha >= 150){
             homeMainToolbar.switchToDarkToolbar();
             requestStatusBarDark();
         } else {
             homeMainToolbar.switchToLightToolbar();
             requestStatusBarLight();
+        }
+
+        if (offsetAlpha >= 255) {
+            offsetAlpha = 255;
         }
 
         if (offsetAlpha >= 0 && offsetAlpha <= 255) {
@@ -730,20 +703,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().startActivity(intent);
     }
 
-
-    @Override
-    public void onDigitalMoreClicked(int pos) {
-        Analytics tracker = HomePageTracking.getTracker();
-        if (tracker != null) {
-            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                    DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                    DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
-                    DigitalEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
-                    ""
-            ));
-        }
-    }
-
     @Override
     public void openShop() {
         onGoToSell();
@@ -808,6 +767,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         HomePageTracking.sendTokopointTrackerClick();
+    }
+
+    @Override
+    public void onPageDragStateChanged(boolean isDragged) {
+        if (refreshLayout != null) {
+            refreshLayout.setEnabled(!isDragged);
+        }
     }
 
     @Override
@@ -1176,12 +1142,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (isAdded() && getActivity() != null) {
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            onRefresh();
-                        }
-                    });
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> onRefresh());
                 }
                 messageSnackbar.showRetrySnackbar();
             } else {
@@ -1751,8 +1712,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public int getWindowWidth() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
-        return width;
+        return displayMetrics.widthPixels;
     }
 
     @Override
@@ -1764,5 +1724,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean needToPerformanceMonitoring() {
         return homePerformanceMonitoringListener != null;
+    }
+
+    private void showToaster(String message, int typeToaster){
+        showToasterWithAction(message, typeToaster, "", v -> {});
+    }
+
+    private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
+        Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
     }
 }
