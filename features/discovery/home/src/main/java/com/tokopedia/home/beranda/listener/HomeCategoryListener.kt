@@ -66,6 +66,8 @@ interface HomeCategoryListener {
 
     fun setActivityStateListener(activityStateListener: ActivityStateListener)
 
+    fun onPageDragStateChanged(isDragged: Boolean)
+
     fun onSpotlightItemClicked(actionLink: String)
 
     fun onTokopointCheckNowClicked(applink: String)

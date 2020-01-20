@@ -35,7 +35,7 @@ class SeeMoreBannerMixViewHolder(view: View,
                 .centerCrop()
                 .into(bannerBackgroundImage)
         container.setOnClickListener {
-            HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, channel.id, channel.header.name)
+            HomePageTracking.eventClickSeeAllBannerMixChannel(channel.id, channel.header.name)
         }
     }
 
