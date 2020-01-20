@@ -9,7 +9,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import rx.Subscriber
 
-
 class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: ShipmentContract.View?,
                                                       private val presenter: ShipmentPresenter,
                                                       private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
@@ -30,7 +29,6 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: Shipment
         view?.hideLoading()
         presenter.couponStateChanged = true
         checkPromoStackingCodeMapper.isFinal = false
-//        val responseGetPromoStack = checkPromoStackingCodeMapper.map(response)
         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
             val message = responseGetPromoStack.data.message.text
             view?.showToastError(message)
