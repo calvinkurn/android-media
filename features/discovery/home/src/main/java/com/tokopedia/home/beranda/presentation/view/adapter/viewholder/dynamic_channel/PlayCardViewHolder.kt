@@ -83,11 +83,8 @@ class PlayCardViewHolder(
                     .create()
         }
 
-        if(helper != null){
-            if(helper?.isPlayerNull() == true){
-                helper?.createPlayer()
-            }
-
+        if(helper != null && helper!!.isPlayerNull()){
+            helper?.createPlayer()
             if(mThumbUrl.isEmpty()) helper?.seekToDefaultPosition()
         }
     }
