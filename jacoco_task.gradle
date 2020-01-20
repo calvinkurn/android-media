@@ -1,5 +1,10 @@
-def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: unitTestJavaIncludes)
-def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", includes: unitTestKotlinIncludes)
+def fileExecute = [
+        '**/*ViewModel.*',
+        '**/*Presenter.*'
+]
+
+def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: fileExecute)
+def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", includes: fileExecute)
 def javaSrc = "$project.projectDir/src/main/java"
 def kotlinSrc = "$project.projectDir/src/main/kotlin"
 def executionDataFiles = fileTree(dir: project.buildDir, includes: ['jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'])
@@ -19,12 +24,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
 
 task customJacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
 
-    sourceDirectories = files([javaSrc, kotlinSrc])
-    classDirectories = files([javaClasses, kotlinClasses])
-    executionData = fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
-
+    sourceDirectories.setFrom([javaSrc, kotlinSrc])
+    classDirectories.setFrom([javaClasses, kotlinClasses])
+    executionData.setFrom(executionDataFiles)
 
     violationRules {
         setFailOnViolation(true)
