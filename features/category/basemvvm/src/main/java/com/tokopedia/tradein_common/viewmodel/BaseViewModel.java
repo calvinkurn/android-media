@@ -5,10 +5,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import android.content.Intent;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 
 import com.tokopedia.tradein_common.repository.BaseRepository;
 
-public abstract class BaseViewModel extends AndroidViewModel {
+public abstract class BaseViewModel extends ViewModel {
     protected MutableLiveData<Boolean> progBarVisibility = new MutableLiveData<>();
     protected MutableLiveData<String> warningMessage = new MutableLiveData<>();
     protected MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -16,10 +17,10 @@ public abstract class BaseViewModel extends AndroidViewModel {
 
     protected BaseRepository repository;
 
-    public BaseViewModel(@NonNull Application application) {
-        super(application);
-        applicationInstance = application;
-    }
+//    public BaseViewModel(@NonNull Application application) {
+//        super(application);
+//        applicationInstance = application;
+//    }
 
     protected void doOnStart() {
 

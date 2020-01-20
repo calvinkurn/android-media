@@ -1,36 +1,38 @@
 package com.tokopedia.discovery2.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery2.GenerateUrl
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class DiscoveryViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
+class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase) : BaseViewModel(), CoroutineScope {
 
     private val discoveryResponse = MutableLiveData<Result<DiscoveryResponse>>()
+    var pageIdentifier: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    fun getDiscoveryData(endPoint: String) {
+
+    fun getDiscoveryData() {
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    withContext(Dispatchers.IO){
-                        val data = DiscoveryDataUseCase().getDiscoveryData(repository, GenerateUrl.getUrl(endPoint))
-                        data?.let {
+                    withContext(Dispatchers.IO) {
+                        val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
+                        data.let {
                             discoveryResponse.postValue(Success(it))
                         }
                     }
@@ -42,5 +44,8 @@ class DiscoveryViewModel(application: Application) : BaseViewModel(application),
 
     }
 
-    fun getDiscoveryResponse():MutableLiveData<Result<DiscoveryResponse>> = discoveryResponse
+    fun getDiscoveryResponse(): MutableLiveData<Result<DiscoveryResponse>> = discoveryResponse
+
+
+
 }

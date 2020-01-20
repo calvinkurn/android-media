@@ -18,6 +18,8 @@ import com.tokopedia.tradein.viewmodel.TradeInResponseObserver;
 import com.tokopedia.tradein.viewmodel.TradeInTextViewModel;
 import com.tokopedia.tradein.viewmodel.TradeInVMFactory;
 
+import java.util.ArrayList;
+
 public class TradeInTextView extends ConstraintLayout {
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
     public static final String EXTRA_ISELLIGIBLE = "EXTRA_ISELLIGIBLE";

@@ -35,7 +35,7 @@ data class DataItem(
         @SerializedName("image_url_dynamic_mobile")
         val imageUrlDynamicMobile: String? = "",
 
-        @SerializedName("applinks")
+        @SerializedName("applinks", alternate = ["applink"])
         val applinks: String? = "",
 
         @SerializedName("name")
@@ -51,5 +51,23 @@ data class DataItem(
         val notificationDescription: String? = "",
 
         @SerializedName("start_date")
-        val startDate: String? = ""
-)
+        val startDate: String? = "",
+
+        @SerializedName("left_margin_mobile")
+        val leftMarginMobile: String? = "0",
+
+        @SerializedName("right_margin_mobile")
+        val rightMarginMobile: String? = "0"
+) {
+    val leftMargin: Int
+        get() {
+            if (leftMarginMobile != null && !leftMarginMobile.isEmpty()) leftMarginMobile.toInt()
+            return 0
+        }
+
+    val rightMargin: Int
+        get() {
+            if (rightMarginMobile != null && !rightMarginMobile.isEmpty()) rightMarginMobile.toInt()
+            return 0
+        }
+}
