@@ -1,5 +1,4 @@
 mutation favouriteNumber($categoryID : Int!){
-  status
   recharge_favorite_number(categoryID: $categoryID) {
     list {
       client_number
