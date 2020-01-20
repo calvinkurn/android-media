@@ -43,4 +43,6 @@ public interface AbstractionRouter {
     void logInvalidGrant(Response response);
 
     boolean isAllowLogOnChuckInterceptorNotification();
+
+    void onActivityDestroyed(String screenName, Activity baseActivity);
 }

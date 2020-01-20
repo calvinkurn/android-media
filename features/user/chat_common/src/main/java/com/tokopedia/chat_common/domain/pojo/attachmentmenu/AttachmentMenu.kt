@@ -2,7 +2,7 @@ package com.tokopedia.chat_common.domain.pojo.attachmentmenu
 
 import androidx.annotation.DrawableRes
 
-abstract class AttachmentMenu (
+abstract class AttachmentMenu(
         @DrawableRes
         val icon: Int,
         val title: String,
@@ -10,9 +10,11 @@ abstract class AttachmentMenu (
 ) {
 
     interface AttachmentMenuListener {
+        fun createAttachmentMenus(): List<AttachmentMenu>
         fun onClickAttachProduct(menu: AttachmentMenu)
         fun onClickAttachImage(menu: AttachmentMenu)
-        fun createAttachmentMenus(): List<AttachmentMenu>
+        fun onClickAttachInvoice(menu: AttachmentMenu)
+        fun onClickAttachVoucher(voucherMenu: VoucherMenu)
     }
 
     abstract fun onClick(listener: AttachmentMenuListener)

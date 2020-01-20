@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selectable_background_tokopedia"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_check_green_24dp"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sort_height"
+        android:layout_toRightOf="@id/check"
+        android:drawablePadding="@dimen/dp_10"
+        android:gravity="center_vertical"
+        tools:text="Test 1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/title"
+        android:layout_alignLeft="@id/title"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@color/grey_300" />
+
+</RelativeLayout>

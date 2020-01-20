@@ -1,0 +1,22 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/transaction"
+    tools:context="com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetailFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small"
+        android:orientation="vertical">
+
+        <include layout="@layout/shop_statistic_transaction"/>
+
+        <include layout="@layout/shop_statistic_review"/>
+
+        <include layout="@layout/shop_statistic_satisfaction"/>
+
+        <include layout="@layout/shop_statistic_response"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -230,7 +230,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         initData()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu?.let {
             it.add(Menu.NONE, ID_ACTION_LOGIN, 0, "")
             val menuItem = it.findItem(ID_ACTION_LOGIN)
@@ -243,7 +243,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         item?.let {
             activity?.run {
                 val id = it.itemId
@@ -265,12 +265,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         showLoadingDiscover()
         registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
-        registerInitialViewModel.getTickerInfo()
+
+        if (!GlobalConfig.isSellerApp())
+            registerInitialViewModel.getTickerInfo()
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+
     }
 
     @SuppressLint("RtlHardcoded")
@@ -1201,7 +1204,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.goToActivationPageAfterRelogin.removeObservers(this)
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.removeObservers(this)
         combineLoginTokenAndValidateToken.removeObservers(this)
-        registerInitialViewModel.clear()
+        registerInitialViewModel.flush()
     }
 
     companion object {
@@ -1220,8 +1223,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private val REQUEST_OTP_VALIDATE = 113
         private val REQUEST_PENDING_OTP_VALIDATE = 114
 
-        private const val OTP_TYPE_ACTIVATE = "143"
-        private const val OTP_TYPE_REGISTER = "126"
+        private const val OTP_TYPE_ACTIVATE = 143
+        private const val OTP_TYPE_REGISTER = 126
 
         private const val FACEBOOK = "facebook"
         private const val GPLUS = "gplus"

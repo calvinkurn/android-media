@@ -15,10 +15,10 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.List;
 
-import kotlinx.coroutines.CoroutineScope;
 import rx.Observable;
 
 /**
@@ -68,6 +68,10 @@ public interface HomeContract {
         void hideStickyLogin();
 
         boolean needToShowGeolocationComponent();
+
+        void setPlayContentBanner(PlayCardHome playContentBanner, int adapterPosition);
+
+        TrackingQueue getTrackingQueue();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -95,8 +99,6 @@ public interface HomeContract {
         void onRefreshTokoCash();
 
         void onResume();
-
-        void onFirstLaunch();
 
         void onDestroy();
 

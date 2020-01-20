@@ -59,10 +59,15 @@ class PricePillsAdapter(private val callback: Callback?) : RecyclerView.Adapter<
                 if (!isPricePillSelected) {
                     callback?.onPriceRangeSelected(
                             NumberParseHelper.safeParseInt(pricePillOption.valMin),
-                            NumberParseHelper.safeParseInt(pricePillOption.valMax)
+                            NumberParseHelper.safeParseInt(pricePillOption.valMax),
+                            adapterPosition
                     )
                 } else {
-                    callback?.onPriceRangeRemoved()
+                    callback?.onPriceRangeRemoved(
+                            NumberParseHelper.safeParseInt(pricePillOption.valMin),
+                            NumberParseHelper.safeParseInt(pricePillOption.valMax),
+                            adapterPosition
+                    )
                 }
             }
         }
@@ -82,7 +87,7 @@ class PricePillsAdapter(private val callback: Callback?) : RecyclerView.Adapter<
     interface Callback {
         val currentPriceMin: Int
         val currentPriceMax: Int
-        fun onPriceRangeSelected(minValue: Int, maxValue: Int)
-        fun onPriceRangeRemoved()
+        fun onPriceRangeSelected(minValue: Int, maxValue: Int, position: Int)
+        fun onPriceRangeRemoved(minValue: Int, maxValue: Int, position: Int)
     }
 }

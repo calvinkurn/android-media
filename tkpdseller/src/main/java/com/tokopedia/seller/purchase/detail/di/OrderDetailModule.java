@@ -3,14 +3,13 @@ package com.tokopedia.seller.purchase.detail.di;
 import com.tokopedia.core.network.apiservices.replacement.ReplacementActService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
-import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.seller.purchase.network.MyShopOrderActService;
-import com.tokopedia.seller.purchase.network.ProductChangeService;
 import com.tokopedia.seller.purchase.detail.domain.OrderDetailRepository;
 import com.tokopedia.seller.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.seller.purchase.detail.interactor.OrderDetailInteractorImpl;
 import com.tokopedia.seller.purchase.detail.presenter.OrderDetailPresenterImpl;
+import com.tokopedia.seller.purchase.network.MyShopOrderActService;
+import com.tokopedia.seller.purchase.network.ProductChangeService;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,12 +40,6 @@ public class OrderDetailModule {
     @OrderDetailScope
     OrderDetailMapper provideOrderDetailMapper() {
         return new OrderDetailMapper();
-    }
-
-    @Provides
-    @OrderDetailScope
-    TXOrderService provideTransactionOrderService() {
-        return new TXOrderService();
     }
 
     @Provides

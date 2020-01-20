@@ -82,11 +82,12 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
-    String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
+    String OFFICIAL_STORE_CATEGORY = "tokopedia://official-store/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
+    String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String TOPCHAT_OLD = "tokopedia://topchatold";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
@@ -140,7 +141,7 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
-    String DIGITAL_SUBHOMEPAGE = "tokopedia://recharge";
+    String DIGITAL_RECHARGE = "tokopedia://recharge";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
@@ -241,7 +242,7 @@ public interface ApplinkConst {
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
-    String KYC = "tokopedia://kyc?projectId={projectId}";
+    String KYC = "tokopedia://kyc?projectId=1";
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
@@ -274,6 +275,19 @@ public interface ApplinkConst {
     String DEALS_BRAND_DETAIL = "tokopedia://deals/brand/{slug}";
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
     String DEALS_CATEGORY = "tokopedia://deals/category/page";
+
+    String SALAM_UMRAH_ORDER_DETAIL = "tokopedia://order-details/umroh";
+    String SALAM_UMRAH = "tokopedia://s/umroh";
+    String SALAM_UMRAH_SEARCH = "tokopedia://s/umroh/search";
+    String SALAM_UMRAH_PACKET = "tokopedia://s/umroh/paket/{category_id}";
+    String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
+    String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
+    String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+
+    interface Gamification{
+        String CRACK = "tokopedia://gamification";
+        String TAP_TAP_MANTAP = "tokopedia://gamification2";
+    }
 
     interface TokoPoints {
         String HOMEPAGE = "tokopedia://tokopoints";
@@ -371,6 +385,16 @@ public interface ApplinkConst {
         String INVOICE_STATUS_ID = "invoice_status_id";
         String INVOICE_STATUS = "invoice_status";
         String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
+    }
+
+    interface AttachInvoice {
+        String PARAM_MESSAGE_ID = "msgId";
+        String PARAM_OPPONENT_NAME = "opponentName";
+    }
+
+    interface AttachVoucher {
+        String PARAM_SHOP_ID = "shop_id";
+        String PARAM_VOUCHER_PREVIEW = "voucher_preview";
     }
 
     interface Play {

@@ -10,6 +10,8 @@ import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
@@ -108,6 +110,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
     val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
 
+    private var homeDataMapper: HomeDataMapper? = null
+
     private var currentCursor = ""
     private var fetchFirstData = false
     private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
@@ -123,8 +127,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    override fun onFirstLaunch() {
-        fetchFirstData = true
+    override fun attachView(view: HomeContract.View?) {
+        super.attachView(view)
+        view?.let {
+            homeDataMapper = HomeDataMapper(it.context, HomeVisitableFactoryImpl(userSession), it.trackingQueue)
+        }
     }
 
     override fun onResume() {

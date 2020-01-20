@@ -4,11 +4,11 @@ import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 
-import com.tokopedia.design.color.ColorSampleView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.DynamicFilterDetailViewHolder
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView
+import com.tokopedia.filter.widget.ColorSampleView
 
 class DynamicFilterDetailColorAdapter(filterDetailView: DynamicFilterDetailView) : DynamicFilterDetailAdapter(filterDetailView) {
 

@@ -91,12 +91,6 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeDataMapper(@ApplicationContext context: Context, homeVisitableFactory: HomeVisitableFactory): HomeDataMapper{
-        return HomeDataMapper(context, homeVisitableFactory)
-    }
-
-    @HomeScope
-    @Provides
     fun homeRepository(homeDataSource: HomeDataSource,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource): HomeRepository {

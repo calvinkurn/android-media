@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -32,11 +34,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedType
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -189,6 +193,20 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
         return new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        hideLoading();
+
+        updateStateScrollListener();
+
+        // Note: add element should be the last in line.
+        if (getAdapter().getItemCount() > 0) {
+            Toaster.INSTANCE.make(getView(), getString(R.string.home_error_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", (v)->{});
+        } else {
+            onGetListErrorWithEmptyData(throwable);
+        }
     }
 
     @NonNull

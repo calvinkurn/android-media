@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 
-import com.tokopedia.design.price.PriceRangeInputView
+import com.tokopedia.design.text.DecimalRangeInputView
 import com.tokopedia.design.text.RangeInputView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Filter
@@ -16,6 +16,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.NumberParseHelper
 import com.tokopedia.filter.newdynamicfilter.adapter.PricePillsAdapter
 import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
 import java.util.ArrayList
@@ -25,7 +26,7 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
     private val wholesaleTitle: TextView? = itemView.findViewById(R.id.wholesale_title)
     private val wholesaleToggle: SwitchCompat? = itemView.findViewById(R.id.wholesale_toggle)
     private val wholesaleContainer: View? = itemView.findViewById(R.id.wholesale_container)
-    private val priceRangeInputView: PriceRangeInputView? = itemView.findViewById(R.id.price_range_input_view)
+    private val priceRangeInputView: DecimalRangeInputView? = itemView.findViewById(R.id.price_range_input_view)
     private var priceMinOption: Option? = null
     private var priceMaxOption: Option? = null
     private var priceMinMaxOption: Option? = null
@@ -143,13 +144,15 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
             override val currentPriceMax: Int
                 get() = NumberParseHelper.safeParseInt(dynamicFilterView.getFilterValue(Option.KEY_PRICE_MAX))
 
-            override fun onPriceRangeSelected(minValue: Int, maxValue: Int) {
+            override fun onPriceRangeSelected(minValue: Int, maxValue: Int, position: Int) {
+                FilterTracking.eventClickPricePills(minValue, maxValue, position, true)
                 priceRangeInputView?.setData(minBound, maxBound, minValue, maxValue)
                 refreshPricePills()
                 dynamicFilterView.onPriceRangeClicked()
             }
 
-            override fun onPriceRangeRemoved() {
+            override fun onPriceRangeRemoved(minValue: Int, maxValue: Int, position: Int) {
+                FilterTracking.eventClickPricePills(minValue, maxValue, position, false)
                 priceRangeInputView?.setData(minBound, maxBound, minBound, maxBound)
                 refreshPricePills()
                 dynamicFilterView.onPriceRangeClicked()

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.facade;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -11,7 +12,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdUrl;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
@@ -56,6 +56,8 @@ public class FacadeShopTransaction {
 
         void OnError();
 
+        void onErrorWithMessage(String message);
+
         void onNetworkTimeOut();
     }
 
@@ -65,6 +67,8 @@ public class FacadeShopTransaction {
         void OnNoResult();
 
         void OnError();
+
+        void onErrorWithMessage(String message);
 
         void onNetworkTimeOut();
     }
@@ -76,26 +80,21 @@ public class FacadeShopTransaction {
 
         void OnError();
 
+        void onErrorWithMessage(String message);
+
         void onNetworkTimeOut();
     }
 
-    private static final String ACT_GET_NEW_ORDER = "get_order";
     private static final String ACT_GET_STATUS = "get_status_order";
-    private static final String ACT_GET_TX = "get_list_order";
-    private static final String ACT_GET_SHIPPING = "get_process_order";
-
 
     private Context context;
-    private String URL;
     private MyShopOrderService service = new MyShopOrderService();
-    private GetNewOrderListener listener;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public static FacadeShopTransaction createInstance(Context context) {
         FacadeShopTransaction facade = new FacadeShopTransaction();
         facade.context = context;
-        facade.URL = TkpdUrl.MY_SHOP_ORDER;
         return facade;
     }
 
@@ -135,15 +134,21 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        jsonObject = new JSONObject(response.getStringData());
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
+                                            jsonObject = new JSONObject(response.getStringData());
 
-                                        Gson gson = new GsonBuilder().create();
-                                        OrderShippingData data =
-                                                gson.fromJson(jsonObject.toString(), OrderShippingData.class);
-                                        listener.OnSuccess(getNewOrderModel(data), data);
-
+                                            Gson gson = new GsonBuilder().create();
+                                            OrderShippingData data =
+                                                    gson.fromJson(jsonObject.toString(), OrderShippingData.class);
+                                            listener.OnSuccess(getNewOrderModel(data), data);
+                                        } else {
+                                            JSONObject errorObject = new JSONObject(response.getStrResponse());
+                                            String messageError = errorObject.getString("message");
+                                            listener.onErrorWithMessage(messageError);
+                                        }
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();
@@ -151,8 +156,6 @@ public class FacadeShopTransaction {
                             }
                         }
                 ));
-
-        this.listener = listener;
     }
 
     private HashMap<String, String> getNewOrderParam(int page, int deadline, String filter) {
@@ -171,11 +174,6 @@ public class FacadeShopTransaction {
 
     public void getNewOrder(PagingHandler page, String filter, int deadline, final GetNewOrderListener listener) {
         getNewOrderV4(page, filter, deadline, listener);
-    }
-
-
-    private boolean isNewOrderHasResult(JSONObject Result) {
-        return !Result.equals("null");
     }
 
     //================================================= GET STATUS ==========================================================================
@@ -225,15 +223,21 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        jsonObject = new JSONObject(response.getStringData());
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
+                                            jsonObject = new JSONObject(response.getStringData());
 
-                                        Gson gson = new GsonBuilder().create();
-                                        OrderShippingData data =
-                                                gson.fromJson(jsonObject.toString(), OrderShippingData.class);
-                                        listener.OnSuccess(getStatusModel(data), data);
-
+                                            Gson gson = new GsonBuilder().create();
+                                            OrderShippingData data =
+                                                    gson.fromJson(jsonObject.toString(), OrderShippingData.class);
+                                            listener.OnSuccess(getStatusModel(data), data);
+                                        } else {
+                                            JSONObject errorObject = new JSONObject(response.getStrResponse());
+                                            String messageError = errorObject.getString("message");
+                                            listener.onErrorWithMessage(messageError);
+                                        }
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();
@@ -326,17 +330,21 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        jsonObject = new JSONObject(response.getStringData());
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
+                                            jsonObject = new JSONObject(response.getStringData());
 
-                                        Gson gson = new GsonBuilder().create();
-                                        OrderShippingData data =
-                                                gson.fromJson(jsonObject.toString(), OrderShippingData.class);
-
-                                        ;
-                                        listener.OnSuccess(getStatusModel(data), data);
-
+                                            Gson gson = new GsonBuilder().create();
+                                            OrderShippingData data =
+                                                    gson.fromJson(jsonObject.toString(), OrderShippingData.class);
+                                            listener.OnSuccess(getStatusModel(data), data);
+                                        } else {
+                                            JSONObject errorObject = new JSONObject(response.getStrResponse());
+                                            String messageError = errorObject.getString("message");
+                                            listener.onErrorWithMessage(messageError);
+                                        }
                                     } catch (JSONException je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();
@@ -392,15 +400,21 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        jsonObject = new JSONObject(response.getStringData());
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
+                                            jsonObject = new JSONObject(response.getStringData());
 
-                                        Gson gson = new GsonBuilder().create();
-                                        OrderShippingData data =
-                                                gson.fromJson(jsonObject.toString(), OrderShippingData.class);
-                                        listener.OnSuccess(getShippingModel(data), data);
-
+                                            Gson gson = new GsonBuilder().create();
+                                            OrderShippingData data =
+                                                    gson.fromJson(jsonObject.toString(), OrderShippingData.class);
+                                            listener.OnSuccess(getShippingModel(data), data);
+                                        } else {
+                                            JSONObject errorObject = new JSONObject(response.getStrResponse());
+                                            String messageError = errorObject.getString("message");
+                                            listener.onErrorWithMessage(messageError);
+                                        }
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();

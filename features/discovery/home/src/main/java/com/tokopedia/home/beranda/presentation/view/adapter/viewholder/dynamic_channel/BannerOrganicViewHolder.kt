@@ -43,9 +43,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener,
                               countDownListener: CountDownView.CountDownListener,
@@ -57,7 +54,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, channel.id, channel.header.name)
+        HomePageTracking.eventClickSeeAllBannerMixChannel(channel.id, channel.header.name)
     }
 
     private var adapter: BannerItemAdapter? = null
@@ -188,7 +185,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             }
         }
         itemView.setOnClickListener {
-            HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
+            HomePageTracking.eventClickBannerChannelMix(channel)
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
         }
     }

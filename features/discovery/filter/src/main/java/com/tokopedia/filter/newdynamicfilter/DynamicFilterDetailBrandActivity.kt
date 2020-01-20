@@ -4,11 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 
-import com.tokopedia.design.list.widget.AlphabeticalSideBar
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterBrandAdapter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
+import com.tokopedia.filter.widget.AlphabeticalSideBar
 
 import java.util.ArrayList
 
