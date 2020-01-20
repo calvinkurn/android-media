@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -19,6 +18,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
@@ -58,7 +58,6 @@ class NotificationActivity : BaseTabActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationTransactionFragment()))
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
-
         super.onCreate(savedInstanceState)
         initInjector()
         initView()
@@ -72,11 +71,6 @@ class NotificationActivity : BaseTabActivity(),
                 presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
             }
         }
-    }
-
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
-        tabLayout.setupWithViewPager(viewPager)
     }
 
     private fun onSuccessSendNotif(): (NotifCenterSendNotifData) -> Unit {
@@ -175,6 +169,8 @@ class NotificationActivity : BaseTabActivity(),
         tab?.select()
     }
 
+    override fun getViewPagerResourceId(): Int = R.id.pager
+
     private fun changeTabPager(position: Int) {
         viewPager.setCurrentItem(position, true)
         cacheManager.entry(KEY_TAB_POSITION, position)
@@ -195,8 +191,8 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     private fun resetCircle(customView: View?) {
-        var notif = customView?.findViewById<View>(R.id.circle)
-        notif?.visibility = View.GONE
+        val notif = customView?.findViewById<View>(R.id.circle)
+        notif?.hide()
     }
 
     private fun setTabSelectedView(customView: View?) {
@@ -210,7 +206,7 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     private fun createCustomView(title: String): View? {
-        val customView = LayoutInflater.from(this).inflate(R.layout.item_notification_tab_title, null)
+        val customView = LayoutInflater.from(this).inflate(R.layout.item_notification_tab_title, null);
         val titleView = customView.findViewById<TextView>(R.id.title)
         titleView.text = title
         return customView
@@ -223,11 +219,9 @@ class NotificationActivity : BaseTabActivity(),
         return fragmentAdapter
     }
 
-    override fun getLayoutRes(): Int = R.layout.activity_notification_page
-
-    override fun getTabLayoutResourceId(): Int = R.id.indicator
-
-    override fun getViewPagerResourceId(): Int = R.id.pager
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_notification_page
+    }
 
     override fun getPageLimit(): Int {
         return tabList.size + 1
@@ -274,11 +268,11 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     companion object {
-        const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
         private const val KEY_TAB_POSITION = "tab_position"
 
-        const val INDEX_NOTIFICATION_ACTIVITY = 0
-        const val INDEX_NOTIFICATION_UPDATE = 1
+        var INDEX_NOTIFICATION_ACTIVITY = 0
+        var INDEX_NOTIFICATION_UPDATE = 1
+        const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
 
         fun start(context: Context): Intent {
             return Intent(context, NotificationActivity::class.java)
