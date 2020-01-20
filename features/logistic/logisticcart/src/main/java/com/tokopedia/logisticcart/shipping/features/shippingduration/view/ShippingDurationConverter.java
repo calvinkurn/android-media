@@ -2,12 +2,16 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import android.text.TextUtils;
 
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesDetailData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
@@ -28,10 +32,41 @@ public class ShippingDurationConverter {
     public ShippingDurationConverter() {
     }
 
-    public List<ShippingDurationViewModel> convertToViewModel(RatesDetailData ratesDetailData,
-                                                              List<ShopShipment> shopShipmentList,
-                                                              int selectedSpId,
-                                                              int selectedServiceId) {
+    public ShippingRecommendationData convertModel(RatesData ratesData,
+                                                   List<ShopShipment> shopShipments,
+                                                   int selectedSpId, int selectedServiceId) {
+        ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
+
+        // Check response not null
+        if (ratesData != null && ratesData.getRatesDetailData() != null) {
+            // Check has service / duration list
+            if (ratesData.getRatesDetailData().getServices() != null &&
+                    ratesData.getRatesDetailData().getServices().size() > 0) {
+                // Check if has error
+                if (ratesData.getRatesDetailData().getError() != null &&
+                        !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
+                    shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
+                    shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
+                }
+
+                // Setting up for Logistic Promo
+                shippingRecommendationData.setLogisticPromo(
+                        convertToPromoModel(ratesData.getRatesDetailData().getPromoStacking()));
+
+                // Has service / duration list
+                shippingRecommendationData.setShippingDurationViewModels(
+                        convertShippingDuration(
+                                ratesData.getRatesDetailData(), shopShipments, selectedSpId,
+                                selectedServiceId));
+            }
+        }
+        return shippingRecommendationData;
+    }
+
+    private List<ShippingDurationViewModel> convertShippingDuration(RatesDetailData ratesDetailData,
+                                                                    List<ShopShipment> shopShipmentList,
+                                                                    int selectedSpId,
+                                                                    int selectedServiceId) {
         List<ServiceData> serviceDataList = ratesDetailData.getServices();
         String ratesId = ratesDetailData.getRatesId();
         boolean isPromoStackingApplied = isPromoStackingApplied(ratesDetailData);
@@ -137,6 +172,17 @@ public class ShippingDurationConverter {
             }
         }
         return false;
+    }
+
+    private LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {
+        if (promo == null || promo.getIsPromo() != 1) return null;
+        boolean applied = promo.getIsApplied() == 1;
+        return new LogisticPromoViewModel(
+                promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
+                promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
+                promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
+                promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
+                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName());
     }
 
     private boolean isPromoStackingApplied(RatesDetailData ratesDetailData) {

@@ -92,7 +92,6 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                                                      List<ShopShipment> shopShipments,
                                                                      int selectedSpId,
                                                                      int selectedServiceId) {
-        ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
         RatesData ratesData = null;
         if (data instanceof GetRatesCourierRecommendationData) {
             ratesData = ((GetRatesCourierRecommendationData) data).getRatesData();
@@ -100,30 +99,8 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
             ratesData = ((GetRatesCourierRecommendationTradeInDropOffData) data).getRatesData();
         }
 
-        // Check response not null
-        if (data != null && ratesData != null && ratesData.getRatesDetailData() != null) {
-            // Check has service / duration list
-            if (ratesData.getRatesDetailData().getServices() != null &&
-                    ratesData.getRatesDetailData().getServices().size() > 0) {
-                // Check if has error
-                if (ratesData.getRatesDetailData().getError() != null &&
-                        !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
-                    shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
-                    shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
-                }
-
-                // Setting up for Logistic Promo
-                shippingRecommendationData.setLogisticPromo(
-                        convertToPromoModel(ratesData.getRatesDetailData().getPromoStacking()));
-
-                // Has service / duration list
-                shippingRecommendationData.setShippingDurationViewModels(
-                        shippingDurationConverter.convertToViewModel(
-                                ratesData.getRatesDetailData(), shopShipments, selectedSpId,
-                                selectedServiceId));
-            }
-        }
-        return shippingRecommendationData;
+        return shippingDurationConverter.convertModel(
+                ratesData, shopShipments, selectedSpId, selectedServiceId);
     }
 
     private String getQueryWithParams(String query, int codHistory, boolean isCorner,
@@ -215,17 +192,6 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         return originalString.replace(originalString.indexOf(paramName),
                 originalString.indexOf(paramName) + paramName.length(),
                 paramValue);
-    }
-
-    private LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {
-        if (promo == null || promo.getIsPromo() != 1) return null;
-        boolean applied = promo.getIsApplied() == 1;
-        return new LogisticPromoViewModel(
-                promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
-                promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
-                promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
-                promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
-                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName());
     }
 
     private static final class Param {
