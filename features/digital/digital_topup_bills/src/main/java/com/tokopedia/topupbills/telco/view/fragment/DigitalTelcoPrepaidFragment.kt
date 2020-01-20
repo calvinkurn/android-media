@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -55,7 +56,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModel: SharedProductTelcoViewModel
-    private lateinit var layoutProgressBar: RelativeLayout
+    private lateinit var layoutProgressBar: ProgressBar
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var clientNumber = ""
 

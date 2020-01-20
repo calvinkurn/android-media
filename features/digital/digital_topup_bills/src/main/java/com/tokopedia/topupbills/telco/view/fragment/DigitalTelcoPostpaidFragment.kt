@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -45,7 +46,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
-    private lateinit var layoutProgressBar: RelativeLayout
+    private lateinit var layoutProgressBar: ProgressBar
 
     private lateinit var operatorSelected: TelcoCustomDataCollection
     private lateinit var operatorName: String
