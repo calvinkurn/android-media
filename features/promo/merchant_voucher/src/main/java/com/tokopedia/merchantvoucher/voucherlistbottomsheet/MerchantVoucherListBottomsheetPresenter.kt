@@ -95,7 +95,6 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
                             if (isViewAttached) {
                                 view.hideLoadingDialog()
-//                        val responseGetPromoStack = checkPromoStackingCodeMapper.map(response)
                                 if (responseGetPromoStack.status.equals(statusOK, true)) {
                                     if (responseGetPromoStack.data.clashings.isClashedPromos) {
                                         view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)

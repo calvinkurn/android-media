@@ -247,9 +247,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (checkPromoStackingCodeFinalUseCase != null) {
             checkPromoStackingCodeFinalUseCase.unsubscribe();
         }
-        if (checkPromoStackingCodeUseCase != null) {
-            checkPromoStackingCodeUseCase.unsubscribe();
-        }
     }
 
     @Override
@@ -1069,62 +1066,63 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             currentApplyCode.setCode(code);
             currentApplyCode.setType(PARAM_LOGISTIC);
             generatedPromo.setCurrentApplyCode(currentApplyCode);
-        }
-        checkPromoStackingCodeUseCase.setParams(generatedPromo);
-        checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
-                .subscribe(new Subscriber<ResponseGetPromoStackUiModel>() {
-                    @Override
-                    public void onCompleted() {
+            checkPromoStackingCodeUseCase.setParams(generatedPromo);
+            compositeSubscription.add(
+                    checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                            .subscribe(new Subscriber<ResponseGetPromoStackUiModel>() {
+                                @Override
+                                public void onCompleted() {
 
-                    }
+                                }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (getView() != null) {
-                            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
-                            getView().showToastError(e.getMessage());
-                            getView().resetCourier(cartPosition);
-                        }
-                    }
+                                @Override
+                                public void onError(Throwable e) {
+                                    e.printStackTrace();
+                                    if (getView() != null) {
+                                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
+                                        getView().showToastError(e.getMessage());
+                                        getView().resetCourier(cartPosition);
+                                    }
+                                }
 
-                    @Override
-                    public void onNext(ResponseGetPromoStackUiModel responseGetPromoStack) {
-                        if (getView() != null) {
-                            checkPromoStackingCodeMapper.setFinal(false);
-//                    ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.map(graphqlResponse);
-                            String errMessage = "";
+                                @Override
+                                public void onNext(ResponseGetPromoStackUiModel responseGetPromoStack) {
+                                    if (getView() != null) {
+                                        checkPromoStackingCodeMapper.setFinal(false);
+                                        String errMessage = "";
 
-                            if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
-                                if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                                    getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
-                                } else {
-                                    for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
-                                        if (voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
-                                            // reset duration if getting red state
-                                            if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
-                                                getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
-                                                getView().resetCourier(cartPosition);
+                                        if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
+                                            if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                                                getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
                                             } else {
-                                                mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
-                                                getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack, code);
+                                                for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
+                                                    if (voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
+                                                        // reset duration if getting red state
+                                                        if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
+                                                            getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
+                                                            getView().resetCourier(cartPosition);
+                                                        } else {
+                                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
+                                                            getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack, code);
+                                                        }
+                                                    }
+                                                }
                                             }
+                                        } else {
+                                            // reset duration when response error
+                                            if (!responseGetPromoStack.getMessage().isEmpty()) {
+                                                errMessage = responseGetPromoStack.getMessage().get(0);
+                                            }
+                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
+                                            getView().showToastError(errMessage);
+                                            getView().resetCourier(cartPosition);
                                         }
                                     }
                                 }
-                            } else {
-                                // reset duration when response error
-                                if (!responseGetPromoStack.getMessage().isEmpty()) {
-                                    errMessage = responseGetPromoStack.getMessage().get(0);
-                                }
-                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
-                                getView().showToastError(errMessage);
-                                getView().resetCourier(cartPosition);
-                            }
-                        }
-                    }
-                });
+                            })
+            );
+        }
     }
 
     @Override
@@ -1143,52 +1141,53 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         promo.setCodes(listCodes);
         checkPromoStackingCodeUseCase.setParams(promo);
-        checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
-                .subscribe(new Subscriber<ResponseGetPromoStackUiModel>() {
-                    @Override
-                    public void onCompleted() {
+        compositeSubscription.add(
+                checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                        .subscribe(new Subscriber<ResponseGetPromoStackUiModel>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (getView() != null) {
-                            if (e instanceof CheckPromoCodeException) {
-                                getView().showToastError(e.getMessage());
-                            } else {
-                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onNext(ResponseGetPromoStackUiModel responseGetPromoStack) {
-                        setCouponStateChanged(true);
-                        checkPromoStackingCodeMapper.setFinal(false);
-//                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.map(graphqlResponse);
-                        if (getView() != null) {
-                            if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
-                                if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                                    getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_GLOBAL);
-                                } else {
-                                    if (responseGetPromoStack.getData().getCodes().get(0).equalsIgnoreCase(promoCode)) {
-                                        if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                                            String message = responseGetPromoStack.getData().getMessage().getText();
-                                            getView().renderErrorCheckPromoShipmentData(message);
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (getView() != null) {
+                                    if (e instanceof CheckPromoCodeException) {
+                                        getView().showToastError(e.getMessage());
+                                    } else {
+                                        getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNext(ResponseGetPromoStackUiModel responseGetPromoStack) {
+                                setCouponStateChanged(true);
+                                checkPromoStackingCodeMapper.setFinal(false);
+                                if (getView() != null) {
+                                    if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
+                                        if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_GLOBAL);
                                         } else {
-                                            getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
+                                            if (responseGetPromoStack.getData().getCodes().get(0).equalsIgnoreCase(promoCode)) {
+                                                if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                                                    String message = responseGetPromoStack.getData().getMessage().getText();
+                                                    getView().renderErrorCheckPromoShipmentData(message);
+                                                } else {
+                                                    getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if (!noToast) {
+                                            getView().showToastError(responseGetPromoStack.getMessage().get(0));
                                         }
                                     }
                                 }
-                            } else {
-                                if (!noToast) {
-                                    getView().showToastError(responseGetPromoStack.getMessage().get(0));
-                                }
                             }
-                        }
-                    }
-                });
+                        })
+        );
     }
 
     @Override
@@ -1650,8 +1649,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
             getView().showLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
-            checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
-                    .subscribe(new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this, checkPromoStackingCodeMapper, type, newPromoList.get(0).getCode()));
+            compositeSubscription.add(
+                    checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                            .subscribe(new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this, checkPromoStackingCodeMapper, type, newPromoList.get(0).getCode()))
+            );
         }
     }
 
