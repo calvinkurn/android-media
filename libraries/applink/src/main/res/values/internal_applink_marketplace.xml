@@ -3,6 +3,8 @@
     <string name="host_marketplace" translatable="false">marketplace</string>
     <string name="host_hotlist" translatable="false">hot</string>
     <string name="host_hotlist_revamp" translatable="false">hotlist</string>
+    <string name="host_find" translatable="false">find</string>
+    <string name="host_amp_find" translatable="false">amp/find</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"

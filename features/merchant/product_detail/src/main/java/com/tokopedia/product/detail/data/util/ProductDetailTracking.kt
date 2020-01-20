@@ -33,6 +33,20 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 shopType, "/product", productId)
     }
 
+    fun trackTradeinBeforeDiagnotics(){
+        sendGeneralEvent(" clickPDP",
+                "product detail page",
+                "click trade in widget",
+                "before diagnostic")
+    }
+
+    fun trackTradeinAfterDiagnotics(){
+        sendGeneralEvent(" clickPDP",
+                "product detail page",
+                "click trade in widget",
+                "after diagnostic")
+    }
+
     fun eventTalkClicked() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -63,12 +77,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventProductImageOnSwipe(productId: String?, swipeDirection: String) {
+    fun eventProductImageOnSwipe(productId: String?, swipeDirection: String, imagePosition: Int) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
-                "$swipeDirection - " + ProductTrackingConstant.Label.PDP
+                "$swipeDirection - " + ProductTrackingConstant.Label.PDP + " - $imagePosition"
         )
         mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -144,15 +158,14 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "isOfficialStore" to isOfficial,
                 "shopId" to productInfo?.basic?.shopID,
                 "shopName" to shopName,
-                "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt()
-                        ?: 0)
+                "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0)
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
     }
 
     fun eventDiscussionClickedIris(productInfo: ProductInfo?, deeplinkUrl: String,
-                                   isOfficial: Boolean, shopName: String) {
+                               isOfficial: Boolean, shopName: String) {
 
         var categoryNameLvl2 = ""
         var categoryIdLvl2 = ""
@@ -169,25 +182,24 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
         val mapOfData: Map<String, Any?> =
                 mapOf(KEY_EVENT to "clickPDP",
-                        KEY_CATEGORY to "product detail page",
-                        KEY_ACTION to "Click",
-                        KEY_LABEL to "Talk",
-                        "subcategory" to categoryNameLvl2,
-                        "subcategoryId" to categoryIdLvl2,
-                        "category" to productInfo?.category?.name,
-                        "categoryId" to productInfo?.category?.id,
-                        "productName" to productInfo?.basic?.name,
-                        "productId" to productInfo?.basic?.id,
-                        "productUrl" to productInfo?.basic?.url,
-                        "productDepplinkUrl" to deeplinkUrl,
-                        "productImageUrl" to imageUrl,
-                        "productPrice" to productInfo?.basic?.price?.toInt(),
-                        "isOfficialStore" to isOfficial,
-                        "shopId" to productInfo?.basic?.shopID,
-                        "shopName" to shopName,
-                        "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt()
-                                ?: 0)
-                )
+                KEY_CATEGORY to "product detail page",
+                KEY_ACTION to "Click",
+                KEY_LABEL to "Talk",
+                "subcategory" to categoryNameLvl2,
+                "subcategoryId" to categoryIdLvl2,
+                "category" to productInfo?.category?.name,
+                "categoryId" to productInfo?.category?.id,
+                "productName" to productInfo?.basic?.name,
+                "productId" to productInfo?.basic?.id,
+                "productUrl" to productInfo?.basic?.url,
+                "productDepplinkUrl" to deeplinkUrl,
+                "productImageUrl" to imageUrl,
+                "productPrice" to productInfo?.basic?.price?.toInt(),
+                "isOfficialStore" to isOfficial,
+                "shopId" to productInfo?.basic?.shopID,
+                "shopName" to shopName,
+                "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0)
+        )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
     }
@@ -250,7 +262,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 )
             }
         }
-
         return list
     }
 
@@ -560,10 +571,9 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Message.LABEL.toLowerCase()
+                ProductTrackingConstant.Action.CLICK_PAGE_CHAT,
+                productId
         )
-        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
