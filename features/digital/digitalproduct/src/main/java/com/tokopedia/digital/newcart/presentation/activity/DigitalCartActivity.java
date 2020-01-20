@@ -58,7 +58,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         String token = AuthHelper.getMD5Hash(timeMillis);
         UserSession userSession = new UserSession(context);
         String tokenRecharge = String.format(getString(R.string.digital_generate_token_checkout),
-                userSession.getUserId(), (token.isEmpty() ? timeMillis : token))
+                userSession.getUserId(), (token.isEmpty() ? timeMillis : token));
         return tokenRecharge;
     }
 
