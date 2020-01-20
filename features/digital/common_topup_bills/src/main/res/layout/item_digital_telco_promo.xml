@@ -52,7 +52,7 @@
                 android:layout_marginRight="@dimen/dp_5"
                 android:layout_toRightOf="@+id/img_voucher"
                 android:gravity="center_vertical"
-                android:text="@string/recharge_title_promo_code"
+                android:text="@string/common_topup_title_promo_code"
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="body_3" />
 
