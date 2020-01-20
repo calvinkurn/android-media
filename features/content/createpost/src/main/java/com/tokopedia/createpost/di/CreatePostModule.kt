@@ -126,4 +126,10 @@ class CreatePostModule(private val context: Context) {
     fun provideTwitterManager(userSession: UserSessionInterface): TwitterManager {
         return TwitterManager(userSession)
     }
+
+    @Provides
+    @CreatePostScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 }
