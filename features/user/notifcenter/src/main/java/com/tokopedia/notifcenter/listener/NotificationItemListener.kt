@@ -8,6 +8,7 @@ interface NotificationItemListener {
     fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int)
     fun getAnalytic(): NotificationUpdateAnalytics
     fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)
+    fun addProductToCheckout(product: ProductData)
     fun showTextLonger(element: NotificationItemViewBean)
     fun trackNotificationImpression(element: NotificationItemViewBean)
 }
