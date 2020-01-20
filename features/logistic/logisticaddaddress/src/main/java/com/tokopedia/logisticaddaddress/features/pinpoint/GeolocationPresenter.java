@@ -33,8 +33,11 @@ import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.di.ActivityContext;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
+import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper;
+import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
-import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
@@ -44,15 +47,11 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-/**
- * Created by Fajar Ulin Nuha on 29/10/18.
- */
+import rx.Subscriber;
+
 @GeolocationScope
 public class GeolocationPresenter implements GeolocationContract.GeolocationPresenter, LocationListener {
 
-    private static final String TAG = GeolocationPresenter.class.getSimpleName();
-    private static final String STATE_IS_ALLOW_GENERATE_ADDRESS = "STATE_IS_ALLOW_GENERATE_ADDRESS";
-    private static final String STATE_IS_USE_EXISTING_LOCATION = "STATE_IS_USE_EXISTING_LOCATION";
     public static final String CACHE_LATITUDE_LONGITUDE = "cache_latitude_longitude";
     public static final String CACHE_LATITUDE = "cache_latitude";
     public static final String CACHE_LONGITUDE = "cache_longitude";
@@ -62,10 +61,11 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private final GoogleApiClient googleApiClient;
     private final LocationRequest locationRequest;
     private UserSession userSession;
+    private AutofillUseCase autofillUseCase;
+    private GeolocationMapper mapper;
 
     private Context context;
 
-    private boolean isUseExistingLocation;
     private boolean isAllowGenerateAddress;
 
     private boolean hasLocation;
@@ -73,11 +73,14 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     @Inject
     public GeolocationPresenter(@ActivityContext Context context, RetrofitInteractorImpl retrofitInteractor,
-                                UserSession userSession, GoogleMapFragment googleMapFragment) {
+                                UserSession userSession, AutofillUseCase autofillUseCase,
+                                GoogleMapFragment googleMapFragment, GeolocationMapper geolocationMapper) {
         this.context = context;
         this.userSession = userSession;
         this.view = googleMapFragment;
         this.retrofitInteractor = retrofitInteractor;
+        this.autofillUseCase = autofillUseCase;
+        this.mapper = geolocationMapper;
         this.locationRequest = LocationRequest.create()
                 .setInterval(DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS)
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
@@ -123,11 +126,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private void getExistingLocation() {
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
-
-    private void setExistingLocationState(boolean state) {
-        isUseExistingLocation = state;
-    }
-
     private void checkLocationSettings() {
         LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
@@ -232,72 +230,33 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     }
 
     @Override
-    public void onCameraChange(Context context, CameraPosition cameraPosition) {
-        setAutoCompleteBoundary();
-        if (!isUseExistingLocation) {
-            saveLatLng(cameraPosition.target);
-            generateAddress(context);
-        } else {
-            setExistingLocationState(false);
-            view.setValuePointer(locationPass.getGeneratedAddress());
-        }
-    }
+    public void getReverseGeoCoding(String latitude, String longitude) {
+        String keyword = String.format("%s,%s", latitude, longitude);
+        view.setLoading(true);
+        autofillUseCase.execute(keyword)
+                .subscribe(new Subscriber<AutofillResponseUiModel>() {
+                    @Override
+                    public void onCompleted() {
 
-    private void setAutoCompleteBoundary() {
-        view.generateBoundsFromCamera();
-    }
-
-    private void generateAddress(final Context context) {
-        if (isAllowGenerateAddress) {
-            retrofitInteractor.generateAddress(context, new RetrofitInteractor.GenerateAddressListener() {
-
-                @Override
-                public void onSuccess(LocationPass locationPass) {
-                    allowReverseGeocode(true);
-                    setNewLocationPass(locationPass);
-                    view.setValuePointer(locationPass.getGeneratedAddress());
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    allowReverseGeocode(true);
-                    view.setValuePointer("Error");
-                }
-
-                @Override
-                public void onPreConnection() {
-                    allowReverseGeocode(false);
-                    view.setValuePointer(context.getString(R.string.wait_generate_address));
-                }
-
-                @Override
-                public String getAddress(double latitude, double longitude) {
-                    String resultGeocode = GeoLocationUtils.reverseGeoCode(context, latitude, longitude);
-                    if (resultGeocode.contains(String.valueOf(latitude)) || resultGeocode.contains(String.valueOf(longitude))) {
-                        return context.getString(R.string.choose_this_location);
-                    } else {
-                        return resultGeocode;
                     }
-                }
 
-                @Override
-                public LocationPass convertData(double latitude, double longitude) {
-                    LocationPass temp = new LocationPass();
-                    temp.setLatitude(String.valueOf(latitude));
-                    temp.setLongitude(String.valueOf(longitude));
-                    temp.setGeneratedAddress(getAddress(latitude, longitude));
-                    return temp;
-                }
-            });
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                        view.setLoading(false);
+                        view.setValuePointer("Error");
+                    }
+
+                    @Override
+                    public void onNext(AutofillResponseUiModel autofillResponseUiModel) {
+                        view.setLoading(false);
+                        view.setValuePointer(autofillResponseUiModel.getData().getFormattedAddress());
+                        setNewLocationPass(mapper.map(autofillResponseUiModel));
+                    }
+                });
     }
 
     private void setNewLocationPass(LocationPass locationPass) {
         this.locationPass = locationPass;
-    }
-
-    private void allowReverseGeocode(boolean b) {
-        isAllowGenerateAddress = b;
     }
 
     private void saveLatLng(LatLng target) {
@@ -359,33 +318,19 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     public void onSubmitPointer(Activity activity) {
         if (isAllowGenerateAddress) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
             Intent intent = new Intent();
             intent.putExtras(bundle);
-            intent.putExtra(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            intent.putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }
     }
 
     @Override
-    public void restoreStateData(Bundle savedState) {
-        if (savedState != null) {
-            isAllowGenerateAddress = savedState.getBoolean(STATE_IS_ALLOW_GENERATE_ADDRESS);
-            isUseExistingLocation = savedState.getBoolean(STATE_IS_USE_EXISTING_LOCATION);
-        }
-    }
-
-    @Override
-    public Bundle saveStateCurrentLocation(Bundle state) {
-        state.putBoolean(STATE_IS_ALLOW_GENERATE_ADDRESS, isAllowGenerateAddress);
-        state.putBoolean(STATE_IS_USE_EXISTING_LOCATION, isUseExistingLocation);
-        return state;
-    }
-
-    @Override
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
+        autofillUseCase.unsubscribe();
     }
 
     private RetrofitInteractor.GenerateLatLongListener latLongListener() {

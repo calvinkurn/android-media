@@ -66,4 +66,6 @@
     <string name="discovery_home_snackbar_geolocation_setting">Atur</string>
 
     <string name="discovery_home_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
+
+    <string name="discovery_home_see_more_dc_mix">Lihat Produk Lainnya</string>
 </resources>

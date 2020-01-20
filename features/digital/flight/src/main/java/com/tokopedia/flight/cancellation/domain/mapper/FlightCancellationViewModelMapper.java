@@ -1,9 +1,9 @@
 package com.tokopedia.flight.cancellation.domain.mapper;
 
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,21 +17,37 @@ import javax.inject.Inject;
  */
 
 public class FlightCancellationViewModelMapper {
+    private static final String CANCELLABLES_KEY = "cancellablePassengers";
+    private static final String NON_CANCELLABLES_KEY = "nonCancellablePassengers";
 
     @Inject
     public FlightCancellationViewModelMapper() {
     }
 
-    public List<FlightCancellationViewModel> transform(List<Passenger> passengerList) {
+    public List<FlightCancellationViewModel> transform(Map<String, List<Passenger>> passengerMap) {
         HashMap<String, List<FlightCancellationPassengerViewModel>> map = new HashMap<>();
 
-        for (Passenger passenger : passengerList) {
-            if (map.containsKey(passenger.getJourneyId())) {
-                map.get(passenger.getJourneyId()).add(transform(passenger));
-            } else {
-                List<FlightCancellationPassengerViewModel> passengerViewModelList = new ArrayList<>();
-                passengerViewModelList.add(transform(passenger));
-                map.put(passenger.getJourneyId(), passengerViewModelList);
+        if (passengerMap.containsKey(CANCELLABLES_KEY)) {
+            for (Passenger passenger : passengerMap.get(CANCELLABLES_KEY)) {
+                if (map.containsKey(passenger.getJourneyId())) {
+                    map.get(passenger.getJourneyId()).add(transform(passenger));
+                } else {
+                    List<FlightCancellationPassengerViewModel> passengerViewModelList = new ArrayList<>();
+                    passengerViewModelList.add(transform(passenger));
+                    map.put(passenger.getJourneyId(), passengerViewModelList);
+                }
+            }
+        }
+
+        if (passengerMap.containsKey(NON_CANCELLABLES_KEY)) {
+            for (Passenger passenger : passengerMap.get(NON_CANCELLABLES_KEY)) {
+                if (map.containsKey(passenger.getJourneyId())) {
+                    map.get(passenger.getJourneyId()).add(transform(passenger));
+                } else {
+                    List<FlightCancellationPassengerViewModel> passengerViewModelList = new ArrayList<>();
+                    passengerViewModelList.add(transform(passenger));
+                    map.put(passenger.getJourneyId(), passengerViewModelList);
+                }
             }
         }
 
@@ -62,6 +78,8 @@ public class FlightCancellationViewModelMapper {
         flightCancellationPassengerViewModel.setLastName(passenger.getLastName());
         flightCancellationPassengerViewModel.setRelationId(passenger.getRelationId());
         flightCancellationPassengerViewModel.setRelations(passenger.getRelations());
+        flightCancellationPassengerViewModel.setStatus(passenger.getStatus());
+        flightCancellationPassengerViewModel.setStatusString(passenger.getStatusString());
 
         return flightCancellationPassengerViewModel;
     }

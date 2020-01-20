@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.wallet">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+        <activity
+            android:name=".ovoactivation.view.IntroOvoActivity"
+            android:label="@string/wallet_title_header_ovo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_ovo"
+                    android:path="@string/path_intro_ovo" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".ovoactivation.view.ActivationOvoActivity"
+            android:label="@string/wallet_title_header_activation_ovo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_ovo"
+                    android:path="@string/path_activation_ovo" />
+            </intent-filter>
+
+        </activity>
+    </application>
+
+</manifest>

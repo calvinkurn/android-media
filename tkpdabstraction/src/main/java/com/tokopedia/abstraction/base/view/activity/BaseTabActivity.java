@@ -23,8 +23,8 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.indicator);
+        viewPager = (ViewPager) findViewById(getViewPagerResourceId());
+        tabLayout = (TabLayout) findViewById(getTabLayoutResourceId());
         viewPager.setOffscreenPageLimit(getPageLimit());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
@@ -32,6 +32,14 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     @Override
     protected void setupFragment(Bundle savedinstancestate) {
         viewPager.setAdapter(getViewPagerAdapter());
+    }
+
+    protected int getViewPagerResourceId() {
+        return R.id.pager;
+    }
+
+    protected int getTabLayoutResourceId() {
+        return R.id.indicator;
     }
 
     @Override

@@ -17,6 +17,9 @@ class VoucherGameEnquiryFields(
         @SerializedName("name")
         @Expose
         val name: String = "",
+        @SerializedName("style")
+        @Expose
+        val style: String = "",
         @SerializedName("text")
         @Expose
         val text: String = "",
@@ -26,6 +29,9 @@ class VoucherGameEnquiryFields(
         @SerializedName("help")
         @Expose
         val help: String = "",
+        @SerializedName("data_collections")
+        @Expose
+        val dataCollections: List<DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
         val validations: List<Validation> = listOf()
@@ -44,5 +50,11 @@ class VoucherGameEnquiryFields(
                 @SerializedName("message")
                 @Expose
                 val message: String = ""
+        )
+
+        class DataCollection(
+                @SerializedName("value")
+                @Expose
+                val value: String = ""
         )
 }

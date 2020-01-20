@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.flight.orderlist">
+
+    <application android:label="@string/flight_order_list">
+        <activity
+            android:name=".view.FlightOrderListActivity"
+            android:label="@string/flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+    </application>
+</manifest>

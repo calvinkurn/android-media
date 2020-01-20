@@ -43,12 +43,20 @@ ExecuteImageCompression (){
   fi
 }
 
-for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg")
-do
-  echo "Crushing $file"
-  ExecuteImageCompression
-  git add $file;
-  #mv -f ${file%.jpg}.new $file
-done
+IterateCommitedImages (){
+  for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg")
+  do
+    echo "Crushing $file"
+    ExecuteImageCompression
+    git add $file;
+    #mv -f ${file%.jpg}.new $file
+  done
+}
+
+if [ -e .git/MERGE_MSG ]; then
+    echo "Merge commit skipping image compression"
+else
+    IterateCommitedImages
+fi
 
 #git diff --diff-filter=ACM --name-only HEAD | grep ".png\|.jpg" | xargs tinypng -k JeyuQt7BvAPMu9TQNy8C2uSMVqY3Qcsf

@@ -70,6 +70,7 @@ interface HomeCategoryListener {
 
     fun onTokopointCheckNowClicked(applink: String)
 
+
     fun launchPermissionChecker()
 
     fun onCloseGeolocationView()
@@ -77,4 +78,8 @@ interface HomeCategoryListener {
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
+
+    fun onGetPlayBanner(adapterPosition: Int)
+
+    fun getWindowWidth(): Int
 }

@@ -19,7 +19,6 @@ import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TncBottomSheetFragment;
 import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
 import com.tokopedia.oms.di.OmsModule;
-import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
 
@@ -27,8 +26,6 @@ import dagger.Component;
 @Component(modules = OmsModule.class, dependencies = BaseAppComponent.class)
 
 public interface DealsComponent {
-
-    PostVerifyCartUseCase getPostVerifyCartUseCase();
 
     void inject(DealsSearchActivity activity);
 

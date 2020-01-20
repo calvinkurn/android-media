@@ -12,6 +12,8 @@ import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
@@ -68,16 +70,31 @@ import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadIma
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 8/11/17.
  */
 
-@Module
+@Module(includes = {ReputationRawModule.class})
 public class ReputationModule {
+
+    @ReputationScope
+    @Provides
+    GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }
+
+    @ReputationScope
+    @Provides
+    @Named("Main")
+    CoroutineDispatcher provideMainDispatcher() {
+        return Dispatchers.getMain();
+    }
 
     @ReputationScope
     @Provides

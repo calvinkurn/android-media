@@ -3,8 +3,6 @@ package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
  * Created by okasurya on 12/7/17.
  */
@@ -13,27 +11,24 @@ public class OrderData {
     @SerializedName("order_id")
     @Expose
     private int orderId;
-    @SerializedName("phone")
+    @SerializedName("order_info")
     @Expose
-    private String phone;
-    @SerializedName("order_detail")
-    @Expose
-    private List<OrderDetail> orderDetail;
-    @SerializedName("shop")
+    private OrderInfo orderInfo;
+    @SerializedName("shop_info")
     @Expose
     private Shop shop;
-    @SerializedName("shipping")
-    @Expose
-    private Shipping shipping;
-    @SerializedName("shipping_price")
-    @Expose
-    private float shippingPrice;
     @SerializedName("item_price")
     @Expose
     private float itemPrice;
     @SerializedName("is_fulfillment")
     @Expose
     private boolean isFulfillment;
+    @SerializedName("is_new_buyer")
+    @Expose
+    private boolean isNewBuyer;
+    @SerializedName("is_free_shipping")
+    @Expose
+    private boolean isFreeShipping;
 
     public int getOrderId() {
         return orderId;
@@ -43,20 +38,12 @@ public class OrderData {
         this.orderId = orderId;
     }
 
-    public String getPhone() {
-        return phone;
+    public OrderInfo getOrderInfo() {
+        return orderInfo;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public List<OrderDetail> getOrderDetail() {
-        return orderDetail;
-    }
-
-    public void setOrderDetail(List<OrderDetail> orderDetail) {
-        this.orderDetail = orderDetail;
+    public void setOrderInfo(OrderInfo orderInfo) {
+        this.orderInfo = orderInfo;
     }
 
     public Shop getShop() {
@@ -65,22 +52,6 @@ public class OrderData {
 
     public void setShop(Shop shop) {
         this.shop = shop;
-    }
-
-    public Shipping getShipping() {
-        return shipping;
-    }
-
-    public void setShipping(Shipping shipping) {
-        this.shipping = shipping;
-    }
-
-    public float getShippingPrice() {
-        return shippingPrice;
-    }
-
-    public void setShippingPrice(float shippingPrice) {
-        this.shippingPrice = shippingPrice;
     }
 
     public float getItemPrice() {
@@ -97,5 +68,21 @@ public class OrderData {
 
     public void setFulfillment(boolean fulfillment) {
         isFulfillment = fulfillment;
+    }
+
+    public boolean isNewBuyer() {
+        return isNewBuyer;
+    }
+
+    public void setNewBuyer(boolean newBuyer) {
+        isNewBuyer = newBuyer;
+    }
+
+    public boolean isFreeShipping() {
+        return isFreeShipping;
+    }
+
+    public void setFreeShipping(boolean freeShipping) {
+        isFreeShipping = freeShipping;
     }
 }

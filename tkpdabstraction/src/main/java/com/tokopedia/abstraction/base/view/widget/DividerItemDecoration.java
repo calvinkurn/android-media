@@ -38,7 +38,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
 
-            if (i == (childCount - 1)) {
+            if (i == (childCount - 1) && !shouldDrawOnLastItem()) {
                 continue;
             }
 
@@ -52,5 +52,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
+    }
+
+    protected boolean shouldDrawOnLastItem() {
+        return false;
     }
 }

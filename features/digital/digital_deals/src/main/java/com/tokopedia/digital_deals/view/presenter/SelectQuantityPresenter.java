@@ -9,7 +9,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
@@ -99,8 +100,7 @@ public class SelectQuantityPresenter
 
     private void getProfile() {
         if (!userSession.isLoggedIn()) {
-            Intent intent = ((DealsModuleRouter) getView().getActivity().getApplication()).
-                    getLoginIntent(getView().getActivity());
+            Intent intent = RouteManager.getIntent(getView().getActivity(), ApplinkConst.LOGIN);
             getView().navigateToActivityRequest(intent, getView().getRequestCode());
         } else {
             verifyMyCart();

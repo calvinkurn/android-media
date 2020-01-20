@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.presenter.FeedShopPresenter
+import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -28,5 +29,4 @@ class FeedShopModule {
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
     }
-
 }

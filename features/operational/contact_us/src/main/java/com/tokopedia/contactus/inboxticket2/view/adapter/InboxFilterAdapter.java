@@ -74,10 +74,10 @@ public class InboxFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             filterText.setText(valueItem);
             if (getAdapterPosition() == selected) {
                 tvDayTime.setVisibility(View.VISIBLE);
-                filterText.setTextColor(mContext.getResources().getColor(R.color.green_nob));
+                filterText.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.green_nob));
             } else {
                 tvDayTime.setVisibility(View.GONE);
-                filterText.setTextColor(mContext.getResources().getColor(R.color.black_70));
+                filterText.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.black_70));
             }
 
             locationDateItem.setOnClickListener(new View.OnClickListener() {

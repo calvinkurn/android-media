@@ -27,6 +27,10 @@ query GetKolComment($idPost: Int!, $limit: Int!, $cursor: String) {
           caption
         }
       }
+      source {
+        origin
+        type
+      }
     }
     comments {
       id
@@ -38,6 +42,7 @@ query GetKolComment($idPost: Int!, $limit: Int!, $cursor: String) {
       create_time
       comment
       userBadge
+      isShop
     }
     lastCursor
     error

@@ -25,8 +25,17 @@ class SearchPropertyViewHolder(view: View): AbstractViewHolder<Property>(view) {
             title.text = element.name
             type.text = element.type
             location.text = element.location.description
-            rating_counter.text = element.review.score.toString()
-            rate.text = element.review.description
+
+            if (element.review.score == 0f) {
+                rating_counter.visibility = View.INVISIBLE
+                rate.visibility = View.INVISIBLE
+            } else {
+                rating_counter.visibility = View.VISIBLE
+                rate.visibility = View.VISIBLE
+                rating_counter.text = element.review.score.toString()
+                rate.text = element.review.description
+            }
+
             if(element.roomAvailability <= MINIMUM_ROOM_AVAILALE){
                 info.visible()
                 info.text = getString(R.string.hotel_room_room_left_text,
@@ -35,8 +44,10 @@ class SearchPropertyViewHolder(view: View): AbstractViewHolder<Property>(view) {
             price.text = element.roomPrice.firstOrNull()?.price ?: ""
             if(!element.isDirectPayment) {
                 container_pay_at_hotel.show()
+                container_pay_at_hotel_shadow.hide()
             }else{
                 container_pay_at_hotel.hide()
+                container_pay_at_hotel_shadow.show()
             }
         }
     }

@@ -33,9 +33,12 @@ public class Comment {
     @SerializedName("userBadge")
     @Expose
     private String userBadges;
+    @SerializedName("isShop")
+    @Expose
+    private boolean isShop;
 
     public Comment(int id, int userID, String userName, String userPhoto, boolean isKol, boolean
-            isCommentOwner, String createTime, String comment, String userBadges) {
+            isCommentOwner, String createTime, String comment, String userBadges, boolean isShop) {
         this.id = id;
         this.userID = userID;
         this.userName = userName;
@@ -45,6 +48,7 @@ public class Comment {
         this.createTime = createTime;
         this.comment = comment;
         this.userBadges = userBadges;
+        this.isShop = isShop;
     }
 
     public int getId() {
@@ -81,5 +85,9 @@ public class Comment {
 
     public String getUserBadges() {
         return userBadges;
+    }
+
+    public boolean isShop() {
+        return isShop;
     }
 }

@@ -11,6 +11,7 @@ class DynamicIconSectionViewModel : HomeVisitable<HomeTypeFactory> {
     private var trackingDataForCombination: List<Any> = emptyList()
     val itemList: MutableList<HomeIconItem>
     private var isCache: Boolean = false
+    var dynamicIconWrap: Boolean = false
 
     override fun isCache(): Boolean {
         return isCache

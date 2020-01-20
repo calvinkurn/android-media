@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
 /**
@@ -17,7 +16,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 public class FlightPassengerListViewHolder extends AbstractViewHolder<FlightBookingPassengerViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_booking_saved_passenger;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_saved_passenger;
 
     public interface ListenerCheckedSavedPassenger {
         void deletePassenger(String passengerId);
@@ -33,9 +32,9 @@ public class FlightPassengerListViewHolder extends AbstractViewHolder<FlightBook
 
     public FlightPassengerListViewHolder(View itemView, final ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
         super(itemView);
-        txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
-        imgDelete = itemView.findViewById(R.id.image_passenger_delete);
-        imgEdit = itemView.findViewById(R.id.image_passenger_edit);
+        txtPassengerName = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_name);
+        imgDelete = itemView.findViewById(com.tokopedia.flight.R.id.image_passenger_delete);
+        imgEdit = itemView.findViewById(com.tokopedia.flight.R.id.image_passenger_edit);
         this.listenerCheckedSavedPassenger = listenerCheckedSavedPassenger;
         this.context = itemView.getContext();
     }

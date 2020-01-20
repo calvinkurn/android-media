@@ -116,12 +116,16 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button confirmShipping;
         confirmShipping = mainView.findViewById(R.id.confirm_shipping);
-        switchConfirmButtonMode(confirmShipping,
-                buttonData.getConfirmShippingVisibility(),
-                buttonData.getChangeCourier(),
-                data,
-                presenter,
-                context);
+        if (data.isFreeShipping()) {
+            confirmShipping.setVisibility(View.GONE);
+        } else {
+            switchConfirmButtonMode(confirmShipping,
+                    buttonData.getConfirmShippingVisibility(),
+                    buttonData.getChangeCourier(),
+                    data,
+                    presenter,
+                    context);
+        }
 
         Button requestPickup;
         requestPickup = mainView.findViewById(R.id.request_pickup);

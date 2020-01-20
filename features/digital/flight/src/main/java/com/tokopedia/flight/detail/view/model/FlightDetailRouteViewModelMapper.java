@@ -1,6 +1,9 @@
 package com.tokopedia.flight.detail.view.model;
 
+import com.tokopedia.flight.orderlist.data.cloud.entity.Amenity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.OrderStopDetailEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel;
 import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity;
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
@@ -44,15 +47,16 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getInfos()));
             flightDetailRouteViewModel.setAmenities(route.getAmenities());
             flightDetailRouteViewModel.setStopOver(route.getStops());
-            flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetails()));
+            flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetails(), null));
             flightDetailRouteViewModel.setOperatingAirline(route.getOperatingAirline());
         }
         return flightDetailRouteViewModel;
     }
 
-    private List<FlightStopOverViewModel> transform(List<StopDetailEntity> stopDetails) {
+    private List<FlightStopOverViewModel> transform(List<StopDetailEntity> stopDetails, List<OrderStopDetailEntity> orderStopDetails) {
         List<FlightStopOverViewModel> details = new ArrayList<>();
         FlightStopOverViewModel viewModel = null;
+
         if (stopDetails != null) {
             for (StopDetailEntity entity : stopDetails) {
                 viewModel = transform(entity);
@@ -60,10 +64,28 @@ public class FlightDetailRouteViewModelMapper {
                     details.add(viewModel);
             }
         }
+        if (orderStopDetails != null) {
+            for (OrderStopDetailEntity entity : orderStopDetails) {
+                viewModel = transform(entity);
+                if (viewModel != null)
+                    details.add(viewModel);
+            }
+        }
+
         return details;
     }
 
     private FlightStopOverViewModel transform(StopDetailEntity entity) {
+        FlightStopOverViewModel viewModel = null;
+        if (entity != null) {
+            viewModel = new FlightStopOverViewModel();
+            viewModel.setAirportCode(entity.getCode());
+            viewModel.setCityName(entity.getCity());
+        }
+        return viewModel;
+    }
+
+    private FlightStopOverViewModel transform(OrderStopDetailEntity entity) {
         FlightStopOverViewModel viewModel = null;
         if (entity != null) {
             viewModel = new FlightStopOverViewModel();
@@ -109,7 +131,7 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setRefundable(route.isRefundable());
             flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getFreeAmenities()));
-            flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetailEntities()));
+            flightDetailRouteViewModel.setStopOverDetail(transform(null, route.getStopDetailEntities()));
             flightDetailRouteViewModel.setOperatingAirline(route.getOperatingAirline());
 
             if (route.getDepartureTerminal() != null && route.getDepartureTerminal().length() > 0) {

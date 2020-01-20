@@ -16,12 +16,12 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdateContract;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdatePresenter;
@@ -78,18 +78,18 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_passenger_update, container, false);
-        spPassengerTitle = view.findViewById(R.id.sp_title);
-        etPassengerType = view.findViewById(R.id.et_passenger_type);
-        etPassengerFirstName = view.findViewById(R.id.et_first_name);
-        etPassengerLastName = view.findViewById(R.id.et_last_name);
-        etPassengerBirthdate = view.findViewById(R.id.et_birth_date);
-        etPassportNumber = view.findViewById(R.id.et_passport_no);
-        etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
-        etPassportNationality = view.findViewById(R.id.et_nationality);
-        etPassportIssuerCountry = view.findViewById(R.id.et_passport_issuer_country);
-        passportContainer = view.findViewById(R.id.container_passport_data);
-        btnSavePassengerInfo = view.findViewById(R.id.button_submit);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_passenger_update, container, false);
+        spPassengerTitle = view.findViewById(com.tokopedia.flight.R.id.sp_title);
+        etPassengerType = view.findViewById(com.tokopedia.flight.R.id.et_passenger_type);
+        etPassengerFirstName = view.findViewById(com.tokopedia.flight.R.id.et_first_name);
+        etPassengerLastName = view.findViewById(com.tokopedia.flight.R.id.et_last_name);
+        etPassengerBirthdate = view.findViewById(com.tokopedia.flight.R.id.et_birth_date);
+        etPassportNumber = view.findViewById(com.tokopedia.flight.R.id.et_passport_no);
+        etPassportExpired = view.findViewById(com.tokopedia.flight.R.id.et_passport_expiration_date);
+        etPassportNationality = view.findViewById(com.tokopedia.flight.R.id.et_nationality);
+        etPassportIssuerCountry = view.findViewById(com.tokopedia.flight.R.id.et_passport_issuer_country);
+        passportContainer = view.findViewById(com.tokopedia.flight.R.id.container_passport_data);
+        btnSavePassengerInfo = view.findViewById(com.tokopedia.flight.R.id.button_submit);
 
         etPassportExpired.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +176,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public String getPassengerTitle() {
         return spPassengerTitle.getSpinnerValue().equalsIgnoreCase(
-                getString(R.string.flight_passenger_choose_salutation)) ? "" :
+                getString(com.tokopedia.flight.R.string.flight_passenger_choose_salutation)) ? "" :
                 spPassengerTitle.getSpinnerValue();
     }
 
@@ -459,11 +459,11 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     }
 
     private void navigateToChooseNationality() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
     }
 
     private void navigateToChooseIssuerCountry() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
+        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 
     private void showMessageErrorInSnackbar(int resId) {

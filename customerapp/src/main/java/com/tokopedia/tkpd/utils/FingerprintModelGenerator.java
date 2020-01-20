@@ -78,6 +78,9 @@ public class FingerprintModelGenerator {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
             } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
                 e.printStackTrace();
+                Timber.w("P2" + e.toString() + " | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                        + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+                        + " | "+Build.TAGS);
                 return "";
             }
 
@@ -95,7 +98,7 @@ public class FingerprintModelGenerator {
     }
 
     private static String generateFingerprintData(Context context) {
-        Timber.w("P2" + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+        Timber.w("P2#FINGERPRINT#" + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
             + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
             + " | "+Build.TAGS);
 
@@ -115,8 +118,10 @@ public class FingerprintModelGenerator {
         String isNakama = "False";
         if(context instanceof UserSessionInterface)
             isNakama = Utilities.isNakama((UserSessionInterface)context);
+        String adsId = getGoogleAdId(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
+                .uniqueId(adsId)
                 .isNakama(isNakama)
                 .deviceName(deviceName)
                 .deviceManufacturer(deviceFabrik)

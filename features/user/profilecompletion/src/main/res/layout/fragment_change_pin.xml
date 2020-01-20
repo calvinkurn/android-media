@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/changePinTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="@string/change_pin_title_old_pin"
+            android:textAlignment="center"
+            android:textColor="@color/color_subtitle_value_setting_profile"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/changePinSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_pin_input_old_pin"
+            android:textSize="@dimen/sp_14"
+            android:textAlignment="center"
+            android:textColor="@color/Neutral_N700_68"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@+id/changePinTitle" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutPin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_24"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/changePinSubtitle">
+
+            <com.tokopedia.design.widget.PinEditText
+                android:id="@+id/changePinInput"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_50"
+                android:layout_marginTop="@dimen/dp_14"
+                android:layout_weight="1"
+                android:background="@null"
+                android:cursorVisible="false"
+                android:digits="1234567890"
+                android:fontFamily="sans-serif-medium"
+                android:imeOptions="actionDone"
+                android:inputType="number|textPassword"
+                android:maxLength="6"
+                android:paddingBottom="@dimen/dp_10"
+                android:textColor="@color/font_black_primary_70"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="normal"
+                android:visibility="visible"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:TextBottomPadding="@dimen/dp_20"
+                app:PinInputLineColors="@color/add_pin_input_line_colors" />
+        </LinearLayout>
+
+        <TextView
+            android:padding="@dimen/dp_13"
+            android:textAlignment="center"
+            android:id="@+id/errorPin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:text="@string/error_wrong_pin"
+            android:textColor="@color/red_500"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutPin"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/changePinForgotBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/change_pin_forgot_btn"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/green_500"
+            android:layout_marginTop="@dimen/dp_40"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutPin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/changePinProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+</RelativeLayout>

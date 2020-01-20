@@ -9,6 +9,7 @@
     >
 
         <receiver android:name=".DismissBroadcastReceiver"/>
+        <receiver android:name=".util.ReviewNotificationBroadcastReceiver" />
 
     </application>
 

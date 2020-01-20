@@ -1,6 +1,5 @@
-package com.tokopedia.flight.country.database
+package com.tokopedia.common.travel.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy

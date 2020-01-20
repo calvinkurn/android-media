@@ -80,7 +80,7 @@ public class SubmitProductUseCase extends UseCase<Integer> {
                 })
                 .onErrorResumeNext(throwable -> {
                     if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
-                        throw new ImageUploadErrorException(throwable);
+                        throw new ImageUploadErrorException(throwable.getLocalizedMessage(), throwable);
                     }
                     return Observable.error(throwable);
                 })

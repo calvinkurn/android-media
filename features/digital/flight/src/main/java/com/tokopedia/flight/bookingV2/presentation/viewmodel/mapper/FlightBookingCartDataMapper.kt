@@ -8,9 +8,9 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingAmenityViewModelMapper
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightInsuranceViewModelMapper
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel
+import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import javax.inject.Inject
 
 /**
@@ -120,16 +120,15 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
 
     private fun setRouteRefundable(routeDetailList: List<FlightDetailRouteViewModel>, routeEntityList: List<RouteEntity>)
             : List<FlightDetailRouteViewModel> {
-        val detailRouteList = routeDetailList
-        for (itemDetail in detailRouteList) {
+        for (itemDetail in routeDetailList) {
             for (itemRoute in routeEntityList) {
-                if (itemDetail.getDepartureAirportCode().equals(itemRoute.departureAirportCode, true) &&
-                        itemDetail.getArrivalAirportCode().equals(itemRoute.arrivalAirportCode, true)) {
-                    itemDetail.setRefundable(itemRoute.isRefundable)
+                if (itemDetail.departureAirportCode.equals(itemRoute.departureAirportCode, true) &&
+                        itemDetail.arrivalAirportCode.equals(itemRoute.arrivalAirportCode, true)) {
+                    itemDetail.isRefundable = itemRoute.isRefundable
                 }
             }
         }
-        return detailRouteList
+        return routeDetailList
     }
 
     private fun transform(voucher: Voucher): FlightBookingVoucherViewModel {

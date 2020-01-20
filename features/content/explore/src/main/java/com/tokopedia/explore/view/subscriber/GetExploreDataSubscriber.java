@@ -10,13 +10,15 @@ import com.tokopedia.explore.domain.entity.GetDiscoveryKolData;
 import com.tokopedia.explore.domain.entity.GetExploreData;
 import com.tokopedia.explore.domain.entity.PostKol;
 import com.tokopedia.explore.domain.entity.Tag;
+import com.tokopedia.explore.domain.entity.Tracking;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
+import com.tokopedia.explore.view.type.ExploreCardType;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.kol.common.util.TimeConverter;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kolcommon.util.TimeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,54 +88,34 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
     private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {
         List<ExploreImageViewModel> kolPostViewModelList = new ArrayList<>();
+        int i = 0;
         for (PostKol postKol : postKolList) {
             if (!postKol.getContent().isEmpty()) {
-                kolPostViewModelList.add(convertToKolPostViewModel(postKol));
+                kolPostViewModelList.add(convertToKolPostViewModel(postKol, i));
+                i++;
             }
         }
         return kolPostViewModelList;
     }
 
-    private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol) {
+    private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol, int pos) {
         Content content = getContent(postKol);
-        Tag tag = getKolTag(content);
-        List<String> imageList = new ArrayList<>();
-        imageList.add(getImageUrl(content));
 
-        KolPostViewModel kolPostViewModel = new KolPostViewModel(
-                postKol.getUserId(),
-                checkType(postKol, content),
-                "",
-                postKol.getUserName() == null ? "" : postKol.getUserName(),
-                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
-                postKol.getUserInfo() == null ? "" : postKol.getUserInfo(),
-                postKol.getUserUrl() == null ? "" : postKol.getUserUrl(),
-                postKol.isIsFollow(),
-                postKol.getDescription() == null ? "" : postKol.getDescription(),
-                postKol.isIsLiked(),
-                postKol.getLikeCount(),
-                postKol.getCommentCount(),
-                0,
+        return new ExploreImageViewModel(
                 postKol.getId(),
-                postKol.getCreateTime() == null ? "" : generateTime(postKol.getCreateTime()),
-                true,
-                true,
-                imageList,
-                getTagId(tag),
-                "",
-                getTagType(tag),
-                getTagCaption(tag),
-                getTagLink(tag)
+                postKol.getUserName(),
+                getImageUrl(content),
+                pos,
+                checkType(postKol, content),
+                convertToTrackingViewModel(postKol.getTracking())
         );
-
-        return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel);
     }
 
-    private String checkType(PostKol postKol, Content content) {
+    private ExploreCardType checkType(PostKol postKol, Content content) {
         if (postKol.getContent().size() > 1) {
-            return KolPostViewModel.TYPE_MULTI;
+            return ExploreCardType.Multi;
         } else {
-            return content.getType() == null ? "" : content.getType();
+            return ExploreCardType.getCardTypeByString(content.getType());
         }
     }
 
@@ -211,5 +193,20 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 category.getId(),
                 category.getName() == null ? "" : category.getName()
         );
+    }
+
+    private List<TrackingViewModel> convertToTrackingViewModel(List<Tracking> trackingList) {
+        List<TrackingViewModel> trackingViewModelList = new ArrayList<>();
+        for (Tracking tracking: trackingList) {
+            trackingViewModelList.add(
+                    new TrackingViewModel(
+                            tracking.getClickURL(),
+                            tracking.getViewURL(),
+                            tracking.getType(),
+                            tracking.getSource()
+                    )
+            );
+        }
+        return trackingViewModelList;
     }
 }

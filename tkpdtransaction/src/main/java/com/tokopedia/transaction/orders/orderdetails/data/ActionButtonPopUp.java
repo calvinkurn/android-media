@@ -3,21 +3,22 @@ package com.tokopedia.transaction.orders.orderdetails.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActionButtonPopUp {
 
     @SerializedName("title")
     @Expose
-    private String title;
+    private String title = "";
 
     @SerializedName("body")
     @Expose
-    private String body;
+    private String body = "";
 
     @SerializedName("actionButtons")
     @Expose
-    private List<ActionButton> actionButtonList;
+    private List<ActionButton> actionButtonList = new ArrayList<>();
 
     public String getTitle() {
         return title;

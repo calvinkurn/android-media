@@ -20,7 +20,7 @@ import com.tokopedia.applink.RouteManager;
 /**
  * @author okasurya on 1/29/18.
  */
-
+@Deprecated
 public class TokoPointWebViewFragment extends BaseSessionWebViewFragment {
 
     public static TokoPointWebViewFragment createInstance(String url) {

@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdreactnative.react.data;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkAuthDataSource;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;

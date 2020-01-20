@@ -14,6 +14,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.travelcalendar.data.TravelCalendarHolidayRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -67,7 +68,13 @@ public class DashboardModule {
     @Provides
     @Named("travel_calendar_holiday_query")
     String providerTravelCalendarHolidayQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_travel_calendar_holiday);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday);
+    }
+
+    @DashboardScope
+    @Provides
+    TravelCalendarHolidayRepository provideTravelCalendarHolidayRepository(CacheManager cacheManager) {
+        return new TravelCalendarHolidayRepository(cacheManager);
     }
 
     @DashboardScope

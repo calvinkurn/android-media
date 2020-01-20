@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.data.mapper
 
+import com.tokopedia.navigation.domain.model.NotificationFilterSection
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateFilter
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel.FilterType
@@ -30,4 +31,23 @@ class GetNotificationUpdateFilterMapper @Inject constructor(){
         return list
     }
 
+    open fun mapToFilter(pojo: NotificationUpdateFilter) : ArrayList<NotificationFilterSection> {
+        var item = pojo.pojo
+        var list = arrayListOf<NotificationFilterSection>()
+
+        var typeList = arrayListOf<NotificationUpdateFilterSectionItemViewModel>()
+        for (notifFilterType in item.typeList.list) {
+            typeList.add(NotificationUpdateFilterSectionItemViewModel(notifFilterType.name, notifFilterType.id))
+        }
+        val typeItem = NotificationFilterSection(FilterType.TYPE_ID.type,"Kategori", typeList)
+        list.add(typeItem)
+
+        var tagList = arrayListOf<NotificationUpdateFilterSectionItemViewModel>()
+        for (notifTagType in item.tagList.list) {
+            tagList.add(NotificationUpdateFilterSectionItemViewModel(notifTagType.tagName, notifTagType.tagId, notifTagType.tagKey))
+        }
+        val tagItem = NotificationFilterSection(FilterType.TAG_ID.type,"Notifikasi", tagList)
+        list.add(tagItem)
+        return list
+    }
 }

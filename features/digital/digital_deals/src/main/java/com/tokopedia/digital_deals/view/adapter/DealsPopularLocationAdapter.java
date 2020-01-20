@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
@@ -128,7 +127,7 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
     @Override
     protected BaseVH getItemViewHolder(ViewGroup parent, LayoutInflater inflater, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.popular_location_item, parent, false);
+                .inflate(com.tokopedia.digital_deals.R.layout.popular_location_item, parent, false);
         return new DealsPopularLocationAdapter.ItemViewHolder(itemView);
 
     }
@@ -147,10 +146,10 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
-            locationName = itemView.findViewById(R.id.location_name);
-            locAddress = itemView.findViewById(R.id.location_address);
-            locType = itemView.findViewById(R.id.location_type);
-            locImage = itemView.findViewById(R.id.popular_loc_img);
+            locationName = itemView.findViewById(com.tokopedia.digital_deals.R.id.location_name);
+            locAddress = itemView.findViewById(com.tokopedia.digital_deals.R.id.location_address);
+            locType = itemView.findViewById(com.tokopedia.digital_deals.R.id.location_type);
+            locImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.popular_loc_img);
             itemView.setOnClickListener(this);
         }
 
@@ -182,9 +181,9 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
                     locationName.setText(location.getName());
                 } else {
                     SpannableString highlightedTitle = new SpannableString(location.getName());
-                    highlightedTitle.setSpan(new TextAppearanceSpan(itemView.getContext(), R.style.searchTextHiglight),
+                    highlightedTitle.setSpan(new TextAppearanceSpan(itemView.getContext(), com.tokopedia.digital_deals.R.style.searchTextHiglight),
                             0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    highlightedTitle.setSpan(new TextAppearanceSpan(itemView.getContext(), R.style.searchTextHiglight),
+                    highlightedTitle.setSpan(new TextAppearanceSpan(itemView.getContext(), com.tokopedia.digital_deals.R.style.searchTextHiglight),
                             startIndex + searchText.length(), location.getName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     locationName.setText(highlightedTitle);
                 }
@@ -201,8 +200,8 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
                 locType.setVisibility(View.VISIBLE);
                 locType.setText(location.getLocType().getDisplayName());
-                locType.setBackground(context.getResources().getDrawable(R.drawable.rect_grey_loc_type_background));
-                ImageHandler.loadImage(context, locImage, location.getLocType().getIcon(), R.color.grey_1100, R.color.grey_1100);
+                locType.setBackground(context.getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.rect_grey_loc_type_background));
+                ImageHandler.loadImage(context, locImage, location.getLocType().getIcon(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             }
 
         }

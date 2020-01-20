@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +15,17 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.ApplinkOMSConstant;
+import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
+import com.tokopedia.transaction.orders.orderdetails.data.Body;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Header;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
@@ -35,18 +39,24 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface, RedeemVoucherView.SetTapActionDeals {
 
     public static final String KEY_BUTTON = "button";
+    public static final String KEY_REFRESH = "refresh";
     public static final String KEY_TEXT = "text";
     public static final String KEY_REDIRECT = "redirect";
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
+    public static final String KEY_RETRY = "Cek Ulang";
     private static final int DEALS_CATEGORY_ID = 35;
     private static final int EVENTS_CATEGORY_ID_1 = 32;
     private static final int EVENTS_CATEGORY_ID_2 = 23;
+    private static final int EVENTS_CATEGORY_INSURANCE = 61;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
@@ -54,15 +64,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM_DEALS_SHORT = 2;
     public static final int ITEM_EVENTS = 3;
     private static final int ITEM_DEFAULT = 4;
+    private static final int ITEM_INSURANCE = 5;
     private String Insurance_File_Name = "E-policy Asuransi";
     OrderListDetailPresenter presenter;
-    private String categoryDeals = "deal";
-    private String categoryEvents = "event";
+    public static String categoryDeals = "deal";
+    public static String categoryEvents = "event";
     SetEventDetails setEventDetails;
     private int position;
     private String orderId;
     private PermissionCheckerHelper permissionCheckerHelper;
-
+    public static final int TEXT_SIZE_LARGE = 14;
+    private int totalTicketCount;
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
         this.context = context;
@@ -101,6 +113,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
                 holder = new ItemViewHolder(v, viewType);
                 break;
+            case ITEM_INSURANCE:
+                v = inflater.inflate(R.layout.voucher_item_insurance,parent,false);
+                holder = new ItemViewHolder(v,viewType);
+                break;
             case ITEM_DEFAULT:
                 v = inflater.inflate(R.layout.voucher_item_default, parent, false);
                 holder = new DefaultViewHolder(v, viewType);
@@ -133,7 +149,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2) {
             return ITEM_EVENTS;
-        } else {
+        }else if(itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_INSURANCE){
+            return ITEM_INSURANCE;
+        } else{
             return ITEM_DEFAULT;
         }
     }
@@ -157,9 +175,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void tapActionClicked(TextView view, ActionButton actionButton, Items item) {
-        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, position, true);
+    public void tapActionClicked(TextView view, ActionButton actionButton, Items item, int count, int pos) {
+        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
+            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, pos, true);
         } else {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
@@ -175,11 +193,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         }
                         context.startActivity(intent);
                     }
-//                        ((UnifiedOrderListRouter) context.getApplicationContext())
-//                                .actionOpenGeneralWebView((Activity) context, actionButton.getBody().getAppURL());
                 }
             }
         }
+
     }
 
 
@@ -190,22 +207,19 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView brandName;
         private TextView cityName;
         private TextView validDate;
+        private TextView productQuantity;
+        private TextView productPrice;
         private ProgressBar progressBar;
         private LinearLayout tapActionLayoutDeals, tapActionLayoutEvents;
-        private LinearLayout actionLayout;
+        private LinearLayout statusDetail;
         private LinearLayout voucherCodeLayout;
         private CustomTicketView customTicketView;
-        private View clCard;
+        private CustomTicketView customTicketView1;
         private View llValid;
-        private View llTanggalEvent;
-        private TextView tvEventDate;
-        private TextView tvRightTypeofEvents;
-        private TextView tvRightAddress;
-        private TextView tvRightCategoryTicket;
-        private TextView tvRightNumberOfBooking;
         private TextView tvValidTill;
         private TextView tanggalEventsTitle, tanggalEvents, eventCity, eventAddress;
         private int index;
+
 
         public ItemViewHolder(View itemView, int itemType) {
             super(itemView);
@@ -221,6 +235,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 eventAddress = itemView.findViewById(R.id.address_event);
                 voucherCodeLayout = itemView.findViewById(R.id.voucerCodeLayout);
                 customTicketView = itemView.findViewById(R.id.customView2);
+                customTicketView1 = itemView.findViewById(R.id.customView1);
             }
 
             if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
@@ -228,11 +243,38 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 validDate = itemView.findViewById(R.id.tv_valid_till_date);
                 tapActionLayoutDeals = itemView.findViewById(R.id.tapAction_deals);
                 tapActionLayoutEvents = itemView.findViewById(R.id.tapAction_events);
-                clCard = itemView.findViewById(R.id.cl_card);
                 llValid = itemView.findViewById(R.id.ll_valid);
             }
-            itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            progressBar = itemView.findViewById(R.id.prog_bar);
+
+            if (itemType == ITEM_INSURANCE) {
+                dealImage = itemView.findViewById(R.id.img_product);
+                dealsDetails = itemView.findViewById(R.id.txt_product_name);
+                brandName = itemView.findViewById(R.id.txt_product_name);
+                productQuantity = itemView.findViewById(R.id.txt_quantity);
+                productPrice = itemView.findViewById(R.id.txt_item_price);
+                statusDetail = itemView.findViewById(R.id.status_detail);
+
+            } else if (itemType != ITEM_INSURANCE) {
+                itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                progressBar = itemView.findViewById(R.id.prog_bar);
+            }
+
+        }
+
+        private void setProductDetails(Map<String, String> map) {
+
+            Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, String> entry = it.next();
+                DoubleTextView doubleTextView = new DoubleTextView(context, LinearLayout.HORIZONTAL);
+                doubleTextView.setTopText(entry.getKey());
+                doubleTextView.setTopTextColor(context.getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setBottomText(entry.getValue());
+                doubleTextView.setBottomTextColor(context.getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextStyle("bold");
+                doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
+                statusDetail.addView(doubleTextView);
+            }
 
         }
 
@@ -257,6 +299,35 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         dealsDetails.setText(metaDataInfo.getEntityProductName());
                     }
                 }
+                if (itemType == ITEM_INSURANCE) {
+
+                    if (TextUtils.isEmpty(metaDataInfo.getProuductImage())) {
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                    } else {
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProuductImage(), R.color.grey_1100, R.color.grey_1100);
+                    }
+                    if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
+                        dealsDetails.setText(item.getTitle());
+                    } else {
+
+                        dealsDetails.setText(metaDataInfo.getProductName());
+                    }
+
+                    setEventDetails.setDetailTitle(context.getResources().getString(R.string.insurance_detail_label));
+                    productQuantity.setText(metaDataInfo.getProductQuantity());
+                    productPrice.setText(metaDataInfo.getProductPrice());
+                    String productCategory = presenter.getProductCategory();
+                    Map<String, String> map = new LinkedHashMap<>();
+                    map.put(context.getResources().getString(R.string.product_category), productCategory);
+                    map.put(context.getResources().getString(R.string.insurance_type), metaDataInfo.getInsuranceType());
+                    map.put(context.getResources().getString(R.string.insurance_quantity), metaDataInfo.getProductQuantity());
+                    map.put(context.getResources().getString(R.string.insurance_length), metaDataInfo.getInsuranceLength());
+                    map.put(context.getResources().getString(R.string.insurance_price), metaDataInfo.getPremiumPrice());
+                    setProductDetails(map);
+                    setEventDetails.setInsuranceDetail();
+
+
+                }
                 if (itemType == ITEM_DEALS) {
                     presenter.sendThankYouEvent(metaDataInfo, ITEM_DEALS);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
@@ -271,7 +342,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                     brandName.setText(metaDataInfo.getEntityBrandName());
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label));
-                    dealImage.setOnClickListener(new View.OnClickListener() {
+                    customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             RouteManager.route(context, ApplinkOMSConstant.INTERNAL_DEALS + metaDataInfo1.getSeoUrl());
@@ -313,7 +384,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
-                    dealImage.setOnClickListener(new View.OnClickListener() {
+                    customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             RouteManager.route(context, ApplinkOMSConstant.INTERNAL_EVENTS + metaDataInfo1.getSeoUrl());
@@ -360,7 +431,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     int size = item.getTapActions().size();
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getTapActions().get(i);
-                        RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, ItemsAdapter.this);
+                        RedeemVoucherView redeemVoucherView;
+                        redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
                         tapActionLayoutDeals.addView(redeemVoucherView);
                     }
                 }
@@ -398,29 +470,47 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     customTicketView.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.removeAllViews();
+                    totalTicketCount = metaDataInfo.getTotalTicketCount();
                     int size = item.getTapActions().size();
+                    tapActionLayoutEvents.removeAllViews();
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getTapActions().get(i);
                         TextView tapActionTextView = renderActionButtons(i, actionButton, item);
-                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                        if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
+                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
+                            tapActionLayoutEvents.addView(redeemVoucherView);
                         } else {
-                            setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getTotalTicketCount());
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            } else {
+                                setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getTotalTicketCount());
+                            }
+                            tapActionLayoutEvents.addView(tapActionTextView);
                         }
-                        tapActionLayoutEvents.addView(tapActionTextView);
+                        setEventInfo(actionButton, totalTicketCount);
                     }
                 }
             }
         }
 
-
-        private void setActionButtonClick(TextView view, ActionButton actionButton, Items item, int totalTicketCount) {
-            if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
+        private void setEventInfo(ActionButton actionButton, int totalTicketCount) {
+            if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
                 if (totalTicketCount > 0) {
                     brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
                 } else {
                     brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
                 }
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                if (totalTicketCount > 0) {
+                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_qrcode_multiple)));
+                } else {
+                    brandName.setText(context.getResources().getString(R.string.event_ticket_qrcode_count));
+                }
+            }
+        }
+
+        private void setActionButtonClick(TextView view, ActionButton actionButton, Items item, int totalTicketCount) {
+            if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
                     if (view == null) {
                         RouteManager.route(context, actionButton.getBody().getAppURL());
@@ -434,11 +524,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
-                if (totalTicketCount > 0) {
-                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_qrcode_multiple)));
-                } else {
-                    brandName.setText(context.getResources().getString(R.string.event_ticket_qrcode_count));
-                }
                 view.setOnClickListener(v -> {
                     setEventDetails.openShowQRFragment(actionButton, item);
                 });
@@ -528,6 +613,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void setDetailTitle(String title);
 
+        void setInsuranceDetail();
+
     }
 
     private class DefaultViewHolder extends RecyclerView.ViewHolder {
@@ -536,7 +623,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private ProgressBar progressBar;
         private CustomTicketView customTicketView1;
         private CustomTicketView customTicketView2;
-        private View clCard;
         private View llValid;
         private View llTanggalEvent;
         private TextView tvEventDate;
@@ -557,7 +643,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             tvValidTill = itemView.findViewById(R.id.tv_valid_till);
             validDate = itemView.findViewById(R.id.tv_valid_till_date);
-            clCard = itemView.findViewById(R.id.cl_card);
             llValid = itemView.findViewById(R.id.ll_valid);
             itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             progressBar = itemView.findViewById(R.id.prog_bar);

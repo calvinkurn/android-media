@@ -16,21 +16,23 @@ import com.tokopedia.shop.note.view.fragment.ShopNoteDetailFragment;
 public class ShopNoteDetailActivity extends BaseSimpleActivity {
 
     private String shopNoteId;
-
-    public static Intent createIntent(Context context, String shopNoteId) {
+    private String shopId;
+    public static Intent createIntent(Context context, String shopId, String shopNoteId) {
         Intent intent = new Intent(context, ShopNoteDetailActivity.class);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_NOTE_ID, shopNoteId);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         shopNoteId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_NOTE_ID);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopNoteDetailFragment.newInstance(shopNoteId);
+        return ShopNoteDetailFragment.newInstance(shopId, shopNoteId);
     }
 }

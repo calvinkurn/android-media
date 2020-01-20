@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
+import com.tokopedia.affiliatecommon.analytics.CheckQuotaQuery;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
@@ -25,7 +25,7 @@ public class CheckQuotaUseCase extends GraphqlUseCase {
 
     public GraphqlRequest getRequest() {
         return new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_af_quota),
+                GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.affiliatecommon.R.raw.query_af_quota),
                 CheckQuotaQuery.class, false
         );
     }

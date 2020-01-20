@@ -16,6 +16,8 @@ public interface FlightSelectPassengerView extends CustomerView {
 
     void showInfantGreaterThanAdultErrorMessage(@StringRes int resId);
 
+    void showInfantMoreThanFourErrorMessage(@StringRes int resId);
+
     void showAdultShouldAtleastOneErrorMessage(@StringRes int resId);
 
     void renderPassengerView(FlightPassengerViewModel passengerPassData);

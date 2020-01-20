@@ -1,7 +1,7 @@
 package com.tokopedia.tradein.adapter
 
+import com.tokopedia.datepicker.numberpicker.NumberPickerAdapter
 import com.tokopedia.kotlin.extensions.view.clamp
-import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPickerAdapter
 
 class TimeAdapter(var time: ArrayList<String> = arrayListOf()) : NumberPickerAdapter() {
 

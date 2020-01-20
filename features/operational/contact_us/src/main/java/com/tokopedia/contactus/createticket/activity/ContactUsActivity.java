@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -123,7 +124,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
                 getIntent().getExtras() != null
                         && getIntent().getExtras()
                         .getString(InboxRouter.PARAM_URL, "").equals(""))) {
-            toolbar.setTitle(R.string.title_help);
+            toolbar.setTitle(com.tokopedia.inbox.R.string.title_help);
         } else {
             toolbar.setTitle(R.string.title_activity_contact_us);
         }
@@ -150,7 +151,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
         if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
+            transaction.setCustomAnimations(R.animator.contactus_slide_in_left, 0, 0, R.animator.contactus_slide_out_right);
             transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
             if (!getIntent().getBooleanExtra(ContactUsConstant.EXTRAS_IS_CHAT_BOT, false)) {
                 transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
@@ -179,8 +180,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             startActivity(intent);
             finish();
         } else {
-            Intent intent = ((ContactUsModuleRouter) MainApplication.getAppContext())
-                    .getHomeIntent(this);
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

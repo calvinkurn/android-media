@@ -89,6 +89,14 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun getArrivalAirport(): FlightAirportViewModel = flightSearchPassData.departureAirport
 
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun isReturning(): Boolean = true
 
     override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {
@@ -139,7 +147,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         if (isAdded) {
             val dialog = AlertDialog.Builder(activity)
             dialog.setMessage(R.string.flight_search_return_departure_should_greater_message)
-            dialog.setPositiveButton(activity!!.getString(R.string.title_ok)
+            dialog.setPositiveButton(activity!!.getString(com.tokopedia.abstraction.R.string.title_ok)
             ) { dialog, which ->
                 dialog.dismiss()
             }

@@ -7,7 +7,7 @@ import com.tokopedia.navigation.domain.pojo.Paging
 import com.tokopedia.navigation.domain.pojo.UserInfo
 import java.util.*
 
-open class NotificationUpdateViewModel() : Parcelable{
+open class NotificationUpdateViewModel() : Parcelable {
 
     var paging: Paging = Paging()
     var list: List<NotificationUpdateItemViewModel> = arrayListOf()

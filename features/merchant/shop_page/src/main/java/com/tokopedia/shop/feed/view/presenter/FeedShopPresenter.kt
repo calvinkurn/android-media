@@ -12,11 +12,11 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.shop.feed.domain.DynamicFeedShopDomain
 import com.tokopedia.shop.feed.domain.usecase.GetFeedShopFirstUseCase
@@ -84,7 +84,11 @@ class FeedShopPresenter @Inject constructor(
             )
         } else {
             getDynamicFeedUseCase.execute(
-                    GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
+                    GetDynamicFeedUseCase.createRequestParams(
+                            userId = getUserId(),
+                            cursor = cursor,
+                            source = GetDynamicFeedUseCase.FeedV2Source.Shop,
+                            sourceId = shopId),
                     object : Subscriber<DynamicFeedDomainModel>() {
                         override fun onNext(t: DynamicFeedDomainModel?) {
                             t?.let {
@@ -110,7 +114,11 @@ class FeedShopPresenter @Inject constructor(
 
     override fun getFeed(shopId: String) {
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.FeedV2Source.Shop,
+                        sourceId = shopId),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -221,20 +229,20 @@ class FeedShopPresenter @Inject constructor(
         })
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
-                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
             )
         }
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
-                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
             )
         }
     }
@@ -271,8 +279,8 @@ class FeedShopPresenter @Inject constructor(
         trackAffiliateClickUseCase.execute(
                 TrackAffiliateClickUseCase.createRequestParams(
                         uniqueTrackingId,
-                        view.getUserSession().deviceId,
-                        if (view.getUserSession().isLoggedIn) view.getUserSession().userId else "0"
+                        view.userSession.deviceId,
+                        if (view.userSession.isLoggedIn) view.userSession.userId else "0"
                 ),
                 object : Subscriber<Boolean>() {
                     override fun onNext(isSuccess: Boolean?) {
@@ -341,8 +349,8 @@ class FeedShopPresenter @Inject constructor(
 
     private fun getUserId(): String {
         var userId = "0"
-        if (!view.getUserSession().userId.isEmpty()) {
-            userId = view.getUserSession().userId
+        if (view.userSession.userId.isNotEmpty()) {
+            userId = view.userSession.userId
         }
         return userId
     }

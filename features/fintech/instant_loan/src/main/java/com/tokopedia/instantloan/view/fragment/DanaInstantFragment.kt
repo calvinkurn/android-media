@@ -16,14 +16,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.instantloan.InstantLoanComponentInstance
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_OTP
-import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter
 import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
@@ -48,13 +46,11 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     @Inject
     lateinit var userSession: UserSession
 
-    private var mCurrentTab: Int = 0
     private var mCurrentPagePosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun initInjector() {
@@ -64,7 +60,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.content_instant_loan_home_page, null)
+        return inflater.inflate(com.tokopedia.instantloan.R.layout.content_instant_loan_home_page, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,14 +101,14 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
                 openWebView(data.whiteListUrl!!)
             } else {
                 NetworkErrorHelper.showSnackbar(activity,
-                        resources.getString(R.string.instant_loan_coming_soon))
+                        resources.getString(com.tokopedia.instantloan.R.string.instant_loan_coming_soon))
             }
         } else if (!data.dataCollection || data.dataCollection && data.dataCollected) {
             if (!TextUtils.isEmpty(data.redirectUrl)) {
                 openWebView(data.redirectUrl!!)
             } else {
                 NetworkErrorHelper.showSnackbar(activity,
-                        resources.getString(R.string.default_request_error_unknown))
+                        resources.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
             }
 
         } else {
@@ -150,25 +146,24 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun navigateToLoginPage() {
-        if (activity != null && activity!!.application is InstantLoanRouter) {
-            startActivityForResult((activity!!.application as InstantLoanRouter).getLoginIntent(getContext()), LOGIN_REQUEST_CODE)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
 
     override fun startIntroSlider() {
 
-        val view = layoutInflater.inflate(R.layout.dialog_intro_instnat_loan, null)
-        val pager = view.findViewById<ViewPager>(R.id.view_pager_il_intro)
-        val pageIndicator = view.findViewById<CirclePageIndicator>(R.id.page_indicator_il_intro)
-        val btnNext = view.findViewById<FloatingActionButton>(R.id.button_next)
+        val view = layoutInflater.inflate(com.tokopedia.instantloan.R.layout.dialog_intro_instnat_loan, null)
+        val pager = view.findViewById<ViewPager>(com.tokopedia.instantloan.R.id.view_pager_il_intro)
+        val pageIndicator = view.findViewById<CirclePageIndicator>(com.tokopedia.instantloan.R.id.page_indicator_il_intro)
+        val btnNext = view.findViewById<FloatingActionButton>(com.tokopedia.instantloan.R.id.button_next)
 
-        val layouts = intArrayOf(R.layout.intro_instant_loan_slide_1, R.layout.intro_instant_loan_slide_2, R.layout.intro_instant_loan_slide_3)
+        val layouts = intArrayOf(com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_1, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_2, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_3)
 
         pager.adapter = InstantLoanIntroViewPagerAdapter(activity as InstantLoanActivity,
                 layouts, presenter)
-        pageIndicator.fillColor = ContextCompat.getColor(getContext()!!, R.color.tkpd_main_green)
-        pageIndicator.pageColor = ContextCompat.getColor(getContext()!!, R.color.black_38)
+        pageIndicator.fillColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.tkpd_main_green)
+        pageIndicator.pageColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.black_54)
         pageIndicator.setViewPager(pager, 0)
         btnNext.show()
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -273,13 +268,13 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
         mDialogIntro!!.window!!.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
-        if (mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro) != null &&
-                mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro).findViewWithTag<View>(2) != null &&
-                mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro).findViewWithTag<View>(2)
-                        .findViewById<View>(R.id.progress_bar_status) != null) {
+        if (mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro) != null &&
+                mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro).findViewWithTag<View>(2) != null &&
+                mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro).findViewWithTag<View>(2)
+                        .findViewById<View>(com.tokopedia.instantloan.R.id.progress_bar_status) != null) {
 
-            mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro).findViewWithTag<View>(2)
-                    .findViewById<View>(R.id.progress_bar_status).visibility = View.VISIBLE
+            mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro).findViewWithTag<View>(2)
+                    .findViewById<View>(com.tokopedia.instantloan.R.id.progress_bar_status).visibility = View.VISIBLE
 
         }
     }
@@ -291,13 +286,13 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
 
         mDialogIntro!!.window!!.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
-        if (mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro) != null &&
-                mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro).findViewWithTag<View>(2) != null &&
-                mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro).findViewWithTag<View>(2)
-                        .findViewById<View>(R.id.progress_bar_status) != null) {
+        if (mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro) != null &&
+                mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro).findViewWithTag<View>(2) != null &&
+                mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro).findViewWithTag<View>(2)
+                        .findViewById<View>(com.tokopedia.instantloan.R.id.progress_bar_status) != null) {
 
-            mDialogIntro!!.findViewById<View>(R.id.view_pager_il_intro).findViewWithTag<View>(2)
-                    .findViewById<View>(R.id.progress_bar_status).visibility = View.INVISIBLE
+            mDialogIntro!!.findViewById<View>(com.tokopedia.instantloan.R.id.view_pager_il_intro).findViewWithTag<View>(2)
+                    .findViewById<View>(com.tokopedia.instantloan.R.id.progress_bar_status).visibility = View.INVISIBLE
 
         }
     }
@@ -316,7 +311,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
                 presenter.getLoanProfileStatus()
             } else {
                 NetworkErrorHelper.showSnackbar(activity,
-                        resources.getString(R.string.login_to_proceed))
+                        resources.getString(com.tokopedia.instantloan.R.string.login_to_proceed))
             }
         }
     }
@@ -342,11 +337,9 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     companion object {
 
         val LOGIN_REQUEST_CODE = 1005
-        private val TAB_POSITION = "tab_position"
 
-        fun createInstance(position: Int): DanaInstantFragment {
+        fun createInstance(): DanaInstantFragment {
             val args = Bundle()
-            args.putInt(TAB_POSITION, position)
             val danaInstantFragment = DanaInstantFragment()
             danaInstantFragment.arguments = args
             return danaInstantFragment

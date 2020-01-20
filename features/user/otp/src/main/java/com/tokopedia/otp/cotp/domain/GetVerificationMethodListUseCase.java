@@ -17,6 +17,8 @@ public class GetVerificationMethodListUseCase extends UseCase<ListVerificationMe
     public static final String PARAM_MSISDN = "msisdn";
     private static final String PARAM_OTP_TYPE = "otp_type";
     private static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_PLATFORM = "platform";
+    private static final String ANDROID = "android";
 
     private final VerificationMethodSource source;
 
@@ -36,6 +38,7 @@ public class GetVerificationMethodListUseCase extends UseCase<ListVerificationMe
         requestParams.putString(PARAM_MSISDN, phoneNumber.replace("-",""));
         requestParams.putInt(PARAM_OTP_TYPE, otpType);
         requestParams.putString(PARAM_USER_ID, userId);
+        requestParams.putString(PARAM_PLATFORM, ANDROID);
         return requestParams;
     }
 }

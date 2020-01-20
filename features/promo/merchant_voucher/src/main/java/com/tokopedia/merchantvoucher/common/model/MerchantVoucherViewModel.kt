@@ -37,6 +37,7 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
     @MerchantVoucherOwnerTypeDef
     var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
     var enableButtonUse = false
+    var restrictedForLiquidProduct: Boolean = false
 
     fun isAvailable() = status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
 
@@ -52,7 +53,13 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
         validThru = merchantVoucherModel.validThru.toLong()
         tnc = merchantVoucherModel.tnc
         bannerUrl = merchantVoucherModel.merchantVoucherBanner?.mobileUrl
-        status = merchantVoucherModel.merchantVoucherStatus?.status ?: MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
+        restrictedForLiquidProduct = merchantVoucherModel.restrictedForLiquidProduct
+        if (restrictedForLiquidProduct) {
+            status = MerchantVoucherStatusTypeDef.TYPE_RESTRICTED
+        } else {
+            status = merchantVoucherModel.merchantVoucherStatus?.status
+                    ?: MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
+        }
     }
 
     override fun type(typeFactory: MerchantVoucherAdapterTypeFactory): Int {
@@ -72,6 +79,7 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
         parcel.writeString(bannerUrl)
         parcel.writeValue(status)
         parcel.writeValue(ownerId)
+        parcel.writeByte(if (restrictedForLiquidProduct) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -91,6 +99,7 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
         bannerUrl = parcel.readString()
         status = parcel.readValue(Int::class.java.classLoader) as? Int
         ownerId = parcel.readValue(Int::class.java.classLoader) as? Int
+        restrictedForLiquidProduct = parcel.readByte() != 0.toByte()
     }
 
     companion object CREATOR : Parcelable.Creator<MerchantVoucherViewModel> {
@@ -158,6 +167,7 @@ fun MerchantVoucherViewModel.getStatusString(context: Context): String {
         MerchantVoucherStatusTypeDef.TYPE_AVAILABLE -> context.getString(R.string.available)
         MerchantVoucherStatusTypeDef.TYPE_IN_USE -> context.getString(R.string.in_use)
         MerchantVoucherStatusTypeDef.TYPE_RUN_OUT -> context.getString(R.string.run_out)
+        MerchantVoucherStatusTypeDef.TYPE_RESTRICTED -> context.getString(R.string.restricted)
         else -> ""
     }
 }

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="opacity_disabled" type="dimen" format="float">0.48</item>
+</resources>

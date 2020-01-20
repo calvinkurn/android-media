@@ -4,6 +4,8 @@ query profile() {
     full_name
     first_name
   	email
+  	bday
+  	gender
     phone
     phone_masked
   	phone_verified

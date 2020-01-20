@@ -17,10 +17,4 @@
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance" />
 
-    <fragment
-        android:id="@+id/parent_view"
-        android:name="com.tokopedia.home.account.presentation.fragment.setting.AppNotificationSettingFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </LinearLayout>

@@ -75,11 +75,11 @@ class PlayWelcomeHelper constructor(
         title.text = channelInfoViewModel.title
         subtitle.text = channelInfoViewModel.description
 
-        ImageHandler.loadImage2(image, channelInfoViewModel.image, R.drawable.loading_page)
+        ImageHandler.loadImage2(image, channelInfoViewModel.image, com.tokopedia.abstraction.R.drawable.loading_page)
         ImageHandler.loadImageCircle2(profile.context,
                 profile,
                 channelInfoViewModel.adminPicture,
-                R.drawable.loading_page)
+                com.tokopedia.abstraction.R.drawable.loading_page)
 
         ctaButton.setOnClickListener {
             welcomeInfoDialog.dismiss()

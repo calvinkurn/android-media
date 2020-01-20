@@ -39,17 +39,11 @@ public interface DigitalModuleRouter {
                                boolean enableShare,
                                boolean enableLike);
 
-    Intent getPromoDetailIntent(Context context, String slug);
-
-    Intent getPromoListIntent(Activity activity);
-
     Intent getOrderListIntent(Context activity);
 
     String getAfUniqueId();
 
     String getAdsId();
-
-    Observable<TokoCashData> getDigitalTokoCashBalance();
 
     void showForceLogoutDialog();
 

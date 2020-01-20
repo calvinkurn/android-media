@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -49,12 +50,12 @@ public class ImageSearchTracking {
                 "");
     }
 
-    public static void trackEventClickImageSearchResultProduct(Object item) {
+    public static void trackEventClickImageSearchResultProduct(Object item, String token) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, ImageSearchEventTracking.Event.PRODUCT_CLICK,
                 EVENT_CATEGORY, ImageSearchEventTracking.Category.IMAGE_SEARCH_RESULT,
                 EVENT_ACTION, ImageSearchEventTracking.Action.CLICK_PRODUCT,
-                EVENT_LABEL, "",
+                EVENT_LABEL, token,
                 ECOMMERCE, DataLayer.mapOf(
                         "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", ACTION_IMAGE_SEARCH),
@@ -65,12 +66,12 @@ public class ImageSearchTracking {
         );
     }
 
-    public static void eventImpressionImageSearchResultProduct(Context context, List<Object> list) {
+    public static void eventImpressionImageSearchResultProduct(List<Object> list, String token) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productView",
                         "eventCategory", ImageSearchEventTracking.Category.IMAGE_SEARCH_RESULT,
                         "eventAction", "impression - product",
-                        "eventLabel", "",
+                        "eventLabel", token,
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
@@ -80,78 +81,7 @@ public class ImageSearchTracking {
         );
     }
 
-    public static void eventSearchResultShare(Context context, String screenName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                ImageSearchEventTracking.Event.SEARCH_RESULT,
-                ImageSearchEventTracking.Category.SEARCH_SHARE,
-                ImageSearchEventTracking.Action.CLICK_BAR + screenName,
-                ""
-        ));
-    }
-
-    public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                ImageSearchEventTracking.Event.SEARCH_RESULT,
-                ImageSearchEventTracking.Category.GRID_MENU,
-                ImageSearchEventTracking.Action.CLICK_CHANGE_GRID + gridName,
-                screenName
-        ));
-    }
-
-    public static void eventSearchResultCatalogClick(Context context, String keyword, String catalogName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                ImageSearchEventTracking.Event.SEARCH_RESULT,
-                ImageSearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                ImageSearchEventTracking.Action.CLICK_CATALOG,
-                keyword + " - " + catalogName
-        ));
-    }
-
-    private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
-        if (selectedFilter == null) {
-            return "";
-        }
-        List<String> filterList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
-            filterList.add(entry.getKey() + "=" + entry.getValue());
-        }
-        return TextUtils.join("&", filterList);
-    }
-
-    public static void eventSearchNoResult(Context context,
-                                           String keyword, String screenName,
-                                           Map<String, String> selectedFilter) {
-
-        eventSearchNoResult(keyword, screenName, selectedFilter, "", "");
-    }
-
-    private static void eventSearchNoResult(String keyword, String screenName,
-                                           Map<String, String> selectedFilter,
-                                           String alternativeKeyword,
-                                           String resultCode) {
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                ImageSearchEventTracking.Event.EVENT_VIEW_SEARCH_RESULT,
-                ImageSearchEventTracking.Category.EVENT_TOP_NAV,
-                String.format(ImageSearchEventTracking.Action.NO_SEARCH_RESULT_WITH_TAB, screenName),
-                String.format("keyword: %s - type: %s - alternative: %s - param: %s",
-                        keyword,
-                        !TextUtils.isEmpty(resultCode) ? resultCode : "none/other",
-                        !TextUtils.isEmpty(alternativeKeyword) ? alternativeKeyword : "none/other",
-                        generateFilterEventLabel(selectedFilter))
-        );
-    }
-
-    public static void eventUserClickNewSearchOnEmptySearch(Context context, String screenName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENT_CATEGORY_EMPTY_SEARCH,
-                EVENT_ACTION_CLICK_NEW_SEARCH,
-                String.format("tab: %s", screenName)
-        );
-    }
-
-    public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword, String userId) {
+    public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword, String userId, String token) {
         sendGeneralEventWithUserId(
                 ImageSearchEventTracking.Event.PRODUCT_VIEW,
                 ImageSearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
@@ -188,7 +118,7 @@ public class ImageSearchTracking {
         return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
-    public static void trackEventProductLongPress(String keyword, String productId) {
+    public static void trackEventProductLongPress(String keyword, String productId, String token) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 "clickSearchResult",
                 "search result",

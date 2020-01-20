@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import android.widget.TextView;
 
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
@@ -61,10 +60,10 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
     private void initView() {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.curated_deals, this, true);
-        dealTitle = view.findViewById(R.id.tv_popular);
-        seeAllCuratedDeals = view.findViewById(R.id.tv_see_all_curated_deals);
-        curatedDealsRecyclerView = view.findViewById(R.id.rv_curated_deals);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.curated_deals, this, true);
+        dealTitle = view.findViewById(com.tokopedia.digital_deals.R.id.tv_popular);
+        seeAllCuratedDeals = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_curated_deals);
+        curatedDealsRecyclerView = view.findViewById(com.tokopedia.digital_deals.R.id.rv_curated_deals);
 
 
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {

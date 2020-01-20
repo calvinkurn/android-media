@@ -56,7 +56,7 @@ class ReviewGalleryPresenterTest : Spek ({
             reviewGalleryPresenter.loadData(productId, page)
 
             it("execute use case") {
-                verify(getImageReviewUseCase).execute(
+                verify(getImageReviewtestingUseCase).execute(
                         requestParams.capture(),
                         getImageReviewSubscriber.capture()
                 )

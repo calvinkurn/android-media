@@ -15,4 +15,16 @@ class VoucherGameSearchInputView @JvmOverloads constructor(@NotNull context: Con
         return R.layout.widget_vg_search_input_view
     }
 
+    override fun getSearchImageViewResourceId(): Int {
+        return R.id.image_view_search
+    }
+
+    override fun getSearchTextViewResourceId(): Int {
+        return R.id.edit_text_search
+    }
+
+    override fun getCloseImageButtonResourceId(): Int {
+        return R.id.image_button_close
+    }
+
 }

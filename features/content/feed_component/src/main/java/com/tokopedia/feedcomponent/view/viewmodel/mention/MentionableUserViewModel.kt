@@ -8,7 +8,8 @@ data class MentionableUserViewModel(
         val id: String,
         val userName: String?,
         val fullName: String,
-        val avatarUrl: String?
+        val avatarUrl: String?,
+        val isShop: Boolean = false
 ) {
 
     override fun toString(): String {

@@ -24,14 +24,14 @@ class GetPostDetailUseCase @Inject constructor(
         private const val LIMIT_3 = 3
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: String, sourceId:
+        fun createRequestParams(userId: String, cursor: String = "", source: GetDynamicFeedUseCase.FeedV2Source, sourceId:
         String = ""):
                 RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(GetDynamicFeedUseCase.PARAM_USER_ID, userId)
             requestParams.putInt(GetDynamicFeedUseCase.PARAM_LIMIT, LIMIT_3)
             requestParams.putString(GetDynamicFeedUseCase.PARAM_CURSOR, cursor)
-            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE, source)
+            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE, source.sourceString)
             requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, sourceId)
             requestParams.putInt(GetKolPostDetailUseCase.PARAM_ID, sourceId.toIntOrZero())
             return requestParams
@@ -46,24 +46,23 @@ class GetPostDetailUseCase @Inject constructor(
 
     private fun createParamDynamicFeed(requestParams: RequestParams): RequestParams {
         return GetDynamicFeedUseCase.createRequestParams(
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_USER_ID, ""),
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_CURSOR, ""),
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE, ""),
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, "")
+                userId = requestParams.getString(GetDynamicFeedUseCase.PARAM_USER_ID, ""),
+                cursor = requestParams.getString(GetDynamicFeedUseCase.PARAM_CURSOR, ""),
+                source = GetDynamicFeedUseCase.FeedV2Source.getSourceByString(
+                        requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE, "")
+                ),
+                sourceId = requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, "")
         )
     }
 
-    private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams?):
+    private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams):
             Observable<PostDetailViewModel> {
-        return getDynamicFeedUseCase.createObservable(requestParams)
-                .flatMap {
-                    domain.dynamicPostViewModel.cursor = it.cursor
-                    domain.dynamicPostViewModel.hasNext = it.hasNext
-                    domain.dynamicPostViewModel.postList = it.postList
-                    Observable.just(domain)
-                }
-                .flatMap { addFooter(domain) }
-
+        return getDynamicFeedUseCase.createObservable(requestParams).flatMap { dynamicFeed ->
+            domain.dynamicPostViewModel.cursor = dynamicFeed.cursor
+            domain.dynamicPostViewModel.hasNext = dynamicFeed.hasNext
+            domain.dynamicPostViewModel.postList = dynamicFeed.postList
+            Observable.just(domain)
+        }.flatMap { addFooter(domain) }
     }
 
     private fun addFooter(domain: PostDetailViewModel): Observable<PostDetailViewModel> {

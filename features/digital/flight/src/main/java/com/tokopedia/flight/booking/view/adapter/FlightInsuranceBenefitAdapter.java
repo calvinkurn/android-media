@@ -51,7 +51,7 @@ public class FlightInsuranceBenefitAdapter extends RecyclerView.Adapter<FlightIn
 
         public void bind(FlightInsuranceBenefitViewModel benefitViewModel) {
             ImageHandler.loadImageWithoutPlaceholder(logoImageView, benefitViewModel.getIcon(),
-                    ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
+                    ContextCompat.getDrawable(itemView.getContext(), R.drawable.flight_ic_airline_default)
             );
             titleTextView.setText(benefitViewModel.getTitle());
             descriptionTextView.setText(benefitViewModel.getDescription());

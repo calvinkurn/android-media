@@ -43,7 +43,7 @@ dependencies {
 project.ext {
     artifactId = 'gallery'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="gallery-release"
 }
 

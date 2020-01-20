@@ -24,7 +24,7 @@ data class ResponseKeywordSuggestion(
                     @SerializedName("keyword")
                     val keyword: String = "",
                     @SerializedName("total_search")
-                    val totalSearch: Int = 0
+                    val totalSearch: String = ""
             )
         }
     }

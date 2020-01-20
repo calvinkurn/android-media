@@ -12,7 +12,7 @@
         app:tabType="secondary"
         app:tabTextAppearance="@style/Tabs.Secondary"/>
 
-    <com.tkpd.library.ui.widget.TouchViewPager
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

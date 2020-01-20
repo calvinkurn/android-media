@@ -100,13 +100,13 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/info_bottom_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="33dp"
             android:text="@string/info_create_pin"
             android:textAlignment="center"
-            android:textColor="#85000000"
+            android:textColor="@color/Neutral_N700_44"
             android:textSize="@dimen/sp_14"
             app:layout_constraintTop_toBottomOf="@+id/linearLayoutPin"
             tools:layout_editor_absoluteX="16dp" />

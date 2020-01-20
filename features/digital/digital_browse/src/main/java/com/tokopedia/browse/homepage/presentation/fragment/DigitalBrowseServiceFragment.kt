@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
-import com.tokopedia.browse.common.DigitalBrowseRouter
 import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
@@ -29,9 +28,7 @@ import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCate
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel
 import com.tokopedia.browse.homepage.presentation.presenter.DigitalBrowseServicePresenter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * @author by furqan on 30/08/18.
@@ -40,8 +37,10 @@ import kotlin.collections.ArrayList
 class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceContract.View,
         DigitalBrowseServiceViewHolder.CategoryListener {
 
-    @Inject lateinit var presenter: DigitalBrowseServicePresenter
-    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
+    @Inject
+    lateinit var presenter: DigitalBrowseServicePresenter
+    @Inject
+    lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private lateinit var tabLayout: TabLayout
     private lateinit var rvCategory: RecyclerView
@@ -307,32 +306,31 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         digitalBrowseAnalytics.eventClickIconLayanan(analyticsModel)
 
-        if (viewModel.appLinks != null && RouteManager.isSupportApplink(context, viewModel.appLinks)) {
-            RouteManager.route(context, viewModel.appLinks)
-        } else if (RouteManager.isSupportApplink(context, viewModel.url)) {
+        val intent = RouteManager.getIntentNoFallback(context, viewModel.appLinks)
+
+        if (viewModel.appLinks != null && intent != null) {
+            startActivity(intent)
+        } else {
             RouteManager.route(context, viewModel.url)
-        } else if (activity!!.application is DigitalBrowseRouter) {
-            (activity!!.application as DigitalBrowseRouter)
-                    .goToWebview(activity!!, viewModel.url!!)
         }
     }
 
     override fun sendImpressionAnalytics(viewModels: List<DigitalBrowseServiceCategoryViewModel>) {
         //create analytics model (combine data objects with their corresponding header name
-        var dataObjects : ArrayList<DigitalBrowseServiceAnalyticsModel> =
+        var dataObjects: ArrayList<DigitalBrowseServiceAnalyticsModel> =
                 arrayListOf<DigitalBrowseServiceAnalyticsModel>()
         var position = 1
         for (item: DigitalBrowseServiceCategoryViewModel in viewModels) {
             val analyticsModel = presenter.getItemPositionInGroup(
                     this.viewModel.titleMap!!,
                     position)
-            analyticsModel.iconName = item.name?:""
+            analyticsModel.iconName = item.name ?: ""
             dataObjects.add(analyticsModel)
             position++
         }
 
         //hit impression based on their header name
-        var dataObjectsPerHeader : ArrayList<DigitalBrowseServiceAnalyticsModel> =
+        var dataObjectsPerHeader: ArrayList<DigitalBrowseServiceAnalyticsModel> =
                 arrayListOf()
         var currentHeader = ""
         for (item: DigitalBrowseServiceAnalyticsModel in dataObjects) {

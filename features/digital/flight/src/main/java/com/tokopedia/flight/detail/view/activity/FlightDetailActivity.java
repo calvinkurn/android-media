@@ -158,11 +158,11 @@ public class FlightDetailActivity extends BaseTabActivity {
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return getString(R.string.flight_label);
+                        return getString(com.tokopedia.flight.R.string.flight_label);
                     case 1:
-                        return getString(R.string.flight_label_facility);
+                        return getString(com.tokopedia.flight.R.string.flight_label_facility);
                     case 2:
-                        return getString(R.string.flight_label_price);
+                        return getString(com.tokopedia.flight.R.string.flight_label_price);
                     default:
                         return super.getPageTitle(position);
                 }
@@ -223,5 +223,20 @@ public class FlightDetailActivity extends BaseTabActivity {
     @Override
     protected int getPageLimit() {
         return 3;
+    }
+
+    @Override
+    protected int getViewPagerResourceId() {
+        return R.id.pager;
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
+    protected int getTabLayoutResourceId() {
+        return R.id.indicator;
     }
 }

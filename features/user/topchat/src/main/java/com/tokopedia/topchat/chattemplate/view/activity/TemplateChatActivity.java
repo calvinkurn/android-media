@@ -24,7 +24,7 @@ public class TemplateChatActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setTitle(getString(R.string.drawer_title_setting));
+        toolbar.setTitle(getString(R.string.title_template_chat));
     }
 
     @Override
@@ -34,6 +34,6 @@ public class TemplateChatActivity extends BaseSimpleActivity {
 
     @Override
     public String getScreenName() {
-        return ChatTemplateAnalytics.Companion.SCREEN_TEMPLATE_CHAT_SETTING;
+        return ChatTemplateAnalytics.Companions.SCREEN_TEMPLATE_CHAT_SETTING;
     }
 }

@@ -36,7 +36,7 @@
             android:layout_height="1dp"
             android:background="#e5e7e9"/>
 
-        <com.tokopedia.profilecompletion.addbod.view.widget.datepicker.DatePicker
+        <com.tokopedia.datepicker.DatePicker
             android:id="@+id/datePicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

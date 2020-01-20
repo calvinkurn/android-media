@@ -41,6 +41,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
                                                       private val getMembershipUseCase: GetMembershipUseCase,
@@ -206,8 +207,10 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         addWishListUseCase.createObservable(productId, userId, listener)
     }
 
-    fun clearEtalaseCache() {
+    fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
+        getShopProductUseCase.clearCache()
+        getShopFeaturedProductUseCase.clearCache()
     }
 
 
@@ -253,7 +256,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         it.imageUrl = primaryImage.original
         it.imageUrl300 = primaryImage.resize300
         it.totalReview = stats.reviewCount.toString()
-        it.rating = stats.rating.toDouble()
+        it.rating = (stats.rating.toDouble() / 20).roundToInt().toDouble()
         if (cashback.cashbackPercent > 0) {
             it.cashback = cashback.cashbackPercent.toDouble()
         }

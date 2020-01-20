@@ -29,10 +29,14 @@ object SendWebsocketParam {
         return json
     }
 
-    fun generateParamSendProductAttachment(messageId: String,
-                                           product: ResultProduct,
-                                           startTime: String,
-                                           toUid : String): JsonObject {
+    fun generateParamSendProductAttachment(
+        messageId: String,
+        product: ResultProduct,
+        startTime: String,
+        toUid : String,
+        productFsIsActive: Boolean = false,
+        productFsImageUrl: String = ""
+    ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
@@ -48,6 +52,12 @@ object SendWebsocketParam {
         productProfile.addProperty("price", product.price)
         productProfile.addProperty("image_url", product.productImageThumbnail)
         productProfile.addProperty("url", product.productUrl)
+
+        val freeShipping = JsonObject()
+        freeShipping.addProperty("is_active", productFsIsActive)
+        freeShipping.addProperty("image_url", productFsImageUrl)
+        productProfile.add("free_ongkir", freeShipping)
+
         data.add("product_profile", productProfile)
         json.add("data", data)
         return json
@@ -112,6 +122,7 @@ object SendWebsocketParam {
         json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
         data.addProperty("msg_id", Integer.valueOf(messageId))
+        data.addProperty("no_update", true)
         json.add("data", data)
         return json
     }

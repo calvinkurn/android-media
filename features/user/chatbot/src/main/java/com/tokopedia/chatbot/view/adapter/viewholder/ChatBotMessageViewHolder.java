@@ -47,7 +47,7 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
 
         } else {
             mesageBottom.setVisibility(View.GONE);
-            chatBalloon.setBackgroundDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.left_bubble));
+            chatBalloon.setBackgroundDrawable(ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.chat_common.R.drawable.left_bubble));
         }
     }
 
@@ -56,5 +56,45 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
         super.setChatRight(chatBalloon);
         mesageBottom.setVisibility(View.GONE);
 
+    }
+
+    @Override
+    protected int getMessageId() {
+        return R.id.message;
+    }
+
+    @Override
+    protected int getChatStatusId() {
+        return R.id.chat_status;
+    }
+
+    @Override
+    protected int getNameId() {
+        return R.id.name;
+    }
+
+    @Override
+    protected int getLabelId() {
+        return R.id.label;
+    }
+
+    @Override
+    protected int getDotId() {
+        return R.id.dot;
+    }
+
+    @Override
+    protected int getMainId() {
+        return R.id.main;
+    }
+
+    @Override
+    protected int getHourId() {
+        return R.id.hour;
+    }
+
+    @Override
+    protected int getDateId() {
+        return R.id.date;
     }
 }

@@ -4,4 +4,6 @@
     <color name="profile_share_color">#999</color>
     <color name="gradient_1">#0fc21b</color>
     <color name="gradient_2">#5db6ef</color>
+
+    <color name="profile_showcase_shadow">#B0000000</color>
 </resources>

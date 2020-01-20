@@ -1,7 +1,6 @@
 package com.tokopedia.kol.feature.post.view.viewmodel;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ import java.util.List;
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
+public class KolPostViewModel extends BaseKolViewModel {
     public final static int DEFAULT_ID = -1;
 
     public final static String TYPE_YOUTUBE = "youtube";
@@ -25,6 +24,7 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     private String tagsLink;
     private String trackingId;
     private String info;
+    private List<TrackingViewModel> trackingViewModel;
     private boolean showTopShadow;
 
     public KolPostViewModel(int userId, String activityType, String cardType, String title, String name, String avatar, String label, String kolProfileUrl, boolean followed, String review, boolean liked, int totalLike, int totalComment, int page, int contentId, String time, boolean isShowComment, boolean isShowLike, boolean editable, boolean deletable, boolean multipleContent) {
@@ -36,7 +36,7 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
                             boolean liked, int totalLike, int totalComment, int page, int kolId,
                             String time, boolean isShowComment, boolean isShowLike,
                             List<String> imageList, int tagsId, String contentName, String tagsType,
-                            String tagsCaption, String tagsLink) {
+                            String tagsCaption, String tagsLink, List<TrackingViewModel> trackingViewModel) {
         super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
                 review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
                 isShowLike, false, false, imageList.size() > 1);
@@ -46,6 +46,7 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
         this.tagsType = tagsType;
         this.tagsCaption = tagsCaption;
         this.tagsLink = tagsLink;
+        this.trackingViewModel = trackingViewModel;
     }
 
     public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
@@ -140,9 +141,8 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
         this.showTopShadow = showTopShadow;
     }
 
-    @Override
-    public int type(KolPostTypeFactory typeFactory) {
-        return typeFactory.type(this);
+    public List<TrackingViewModel> getTrackingViewModel() {
+        return trackingViewModel;
     }
 }
 

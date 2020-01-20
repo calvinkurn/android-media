@@ -1,9 +1,10 @@
 package com.tokopedia.profile.di
 
-import com.tokopedia.kol.common.di.KolComponent
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
+import com.tokopedia.kolcommon.di.KolCommonModule
 import dagger.Component
 
 /**
@@ -11,8 +12,8 @@ import dagger.Component
  */
 @ProfileScope
 @Component(
-        modules = arrayOf(ProfileModule::class),
-        dependencies = arrayOf(KolComponent::class)
+        modules = [ProfileModule::class, KolCommonModule::class],
+        dependencies = [BaseAppComponent::class]
 )
 interface ProfileComponent {
     fun inject(fragment: ProfileFragment)

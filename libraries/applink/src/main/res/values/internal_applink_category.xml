@@ -2,8 +2,13 @@
 <resources>
     <string name="host_category" translatable="false">category</string>
     <string name="host_moneyin" translatable="false">money_in</string>
+    <string name="host_tradein" translatable="false">tradein</string>
+    <string name="path_final_price" translatable="false">/host_final_price</string>
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
     <string name="path_tradein" translatable="false">/tradein</string>
     <string name="path_device_validation" translatable="false">/device_validation</string>
     <string name="applink_title_age_restriction" >Konten Dewasa</string>
+    <string name="applink_title_tradein" >Tukar Tambah</string>
+    <string name="applink_harga_final">Harga Final</string>
+    <string name="money_in">Langsung Laku</string>
 </resources>

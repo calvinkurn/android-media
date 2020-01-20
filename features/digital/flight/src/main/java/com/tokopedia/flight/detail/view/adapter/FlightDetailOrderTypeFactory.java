@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
 
 /**
  * Created by alvarisi on 12/27/17.
@@ -21,7 +21,7 @@ public class FlightDetailOrderTypeFactory extends BaseAdapterTypeFactory {
         this.titleFontSize = titleFontSize;
     }
 
-    public int type(FlightOrderJourney flightOrderJourney) {
+    public int type(FlightDetailOrderJourney flightOrderJourney) {
         return FlightDetailOrderViewHolder.LAYOUT;
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.referral.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.referral.analytics.ReferralAnalytics
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -25,5 +26,10 @@ class ReferralModule {
     @Provides
     fun provideRemoteConfig(@ApplicationContext context:Context) : RemoteConfig{
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    fun providesReferralAnalytics() : ReferralAnalytics {
+        return ReferralAnalytics()
     }
 }

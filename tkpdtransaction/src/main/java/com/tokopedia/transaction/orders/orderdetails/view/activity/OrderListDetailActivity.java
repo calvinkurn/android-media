@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -32,14 +33,20 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
     private static final String ORDER_ID = "order_id";
     private static final String FROM_PAYMENT = "from_payment";;
+    private static final String UPSTREAM = "upstream";
     private static final int REQUEST_CODE = 100;
     private String fromPayment = "false";
     private String orderId;
     private OrderDetailsComponent orderListComponent;
     String category = null;
+    String upstream = null;
 
 
-    @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL, TransactionAppLink.ORDER_MARKETPLACE_DETAIL})
+    @DeepLink({TransactionAppLink.ORDER_DETAIL,
+            TransactionAppLink.ORDER_OMS_DETAIL,
+            TransactionAppLink.ORDER_MARKETPLACE_DETAIL,
+            TransactionAppLink.ORDER_OMS_DETAIL_UPSTREAM
+    })
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, OrderListDetailActivity.class)
@@ -57,7 +64,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
             } else if (category.contains(OrderCategory.MARKETPLACE)) {
                 return MarketPlaceDetailFragment.getInstance(orderId, OrderCategory.MARKETPLACE);
             } else if(category.contains("")) {
-                return OmsDetailFragment.getInstance(orderId, "", fromPayment);
+                return OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream);
             }
         }
         return null;
@@ -79,6 +86,8 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
             category = getIntent().getStringExtra((DeepLink.URI));
+            if (getIntent().getData() != null)
+                upstream = getIntent().getData().getQueryParameter(UPSTREAM);
         }
         super.onCreate(arg);
         if (fromPayment != null) {
@@ -107,6 +116,8 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 category = getIntent().getStringExtra((DeepLink.URI));
+                if (getIntent().getData() != null)
+                    upstream = getIntent().getData().getQueryParameter(UPSTREAM);
 
                 if (category != null) {
                     category = category.toUpperCase();
@@ -117,7 +128,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
                     } else if (category.contains("")) {
                         getSupportFragmentManager().beginTransaction()
-                                .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment)).commit();
+                                .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream)).commit();
                     }
                 }
             } else {

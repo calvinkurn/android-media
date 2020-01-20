@@ -294,6 +294,11 @@
 
     <style name="TransparentBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
-    </style>
 
+    </style>
+    <style name="TokoPointTransparentStatus" parent="Theme.Tokopoints3">
+
+    </style>
+    <style name="Theme.Tokopoints3" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
 </resources>

@@ -14,5 +14,4 @@ public interface ShopCommonRepository {
 
     Observable<ShopInfo> getShopInfoByDomain(String shopDomain);
 
-    Observable<Boolean> toggleFavouriteShop(String shopId);
 }

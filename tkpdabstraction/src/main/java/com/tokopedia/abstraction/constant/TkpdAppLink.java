@@ -5,9 +5,6 @@ package com.tokopedia.abstraction.constant;
  * Parent class for Applink constant on modules
  */
 public abstract class TkpdAppLink {
-    public static final String CUSTOMER_APP_HOME = "tokopedia://home";
-    public static final String SELLER_APP_HOME = "sellerapp://home";
-
     public static final String EXPLORE = "tokopedia://jump/{section}";
 
 }

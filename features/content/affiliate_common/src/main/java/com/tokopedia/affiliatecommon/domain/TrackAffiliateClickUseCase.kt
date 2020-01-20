@@ -35,6 +35,7 @@ class TrackAffiliateClickUseCase @Inject constructor(
             return requestParams
         }
 
+        @JvmStatic
         fun createRequestParams(url: String)
                 : RequestParams {
             val requestParams = RequestParams.create()

@@ -1,0 +1,50 @@
+query ($params: String) {
+  displayAdsV3(displayParams: $params) {
+    data {
+      id
+      ad_ref_key
+      redirect
+      sticker_id
+      sticker_image
+      ad_click_url
+      headline {
+        description
+        name
+        shop {
+          city
+          domain
+          gold_shop
+          gold_shop_badge
+          id
+          image_shop {
+            xs_url
+          }
+          product {
+            applinks
+            id
+            image_product {
+              image_click_url
+              image_url
+              product_id
+              product_name
+
+            }
+            price_format
+            name
+
+          }
+        }
+        badges {
+          image_url
+        }
+        description
+        image {
+          full_url
+          full_ecs
+        }
+      }
+      applinks
+    }
+
+  }
+}

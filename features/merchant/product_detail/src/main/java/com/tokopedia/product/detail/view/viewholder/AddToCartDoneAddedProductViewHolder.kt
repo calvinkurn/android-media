@@ -3,6 +3,9 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import kotlinx.android.synthetic.main.add_to_cart_done_added_product_layout.view.*
@@ -18,12 +21,11 @@ class AddToCartDoneAddedProductViewHolder(
 
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
         with(itemView) {
-            when {
-                element.isFreeOngkir -> {
-                    ImageHandler.loadImage(context, img_free_ongkir, element.freeOngkirImg, R.drawable.ic_loading_image)
-                    img_free_ongkir.visibility = View.VISIBLE
-                }
-                else -> img_free_ongkir.visibility = View.GONE
+            if (element.isFreeOngkir && element.freeOngkirImg.isNotBlank()) {
+                img_free_ongkir.visible()
+                img_free_ongkir.loadImageRounded(element.freeOngkirImg)
+            } else {
+                img_free_ongkir.gone()
             }
             text_view_product_name.text = element.productName
             ImageHandler.loadImage(

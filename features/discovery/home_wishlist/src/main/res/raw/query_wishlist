@@ -1,0 +1,52 @@
+query wishlist($query: String!, $page: Int, $count: Int){
+  wishlist(page: $page, count: $count, query: $query){
+      has_next_page
+      total_data
+      items {
+        id
+        name
+        url
+        image_url
+        raw_price
+        condition
+        available
+        status
+        price
+        rating
+        review_count
+        minimum_order
+        wholesale_price {
+          minimum
+          maximum
+          price
+        }
+        shop {
+          id
+          name
+          url
+          gold_merchant
+          official_store
+          status
+          location
+
+        }
+        preorder
+        badges {
+          title
+          image_url
+        }
+        label_group {
+            title
+            type
+            position
+        }
+        free_ongkir{
+          is_active
+          image_url
+        }
+      }
+      pagination {
+        next_url
+      }
+  }
+}

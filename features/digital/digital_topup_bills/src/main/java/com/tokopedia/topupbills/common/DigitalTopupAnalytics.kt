@@ -150,8 +150,8 @@ class DigitalTopupAnalytics {
                         "eventAction", DigitalTopupEventTracking.Action.PRODUCT_CARD_IMPRESSION,
                         "eventLabel", getCategoryName(digitalTrackProductTelcoList[0].itemProduct.product.attributes.categoryId),
                         "ecommerce", DataLayer.mapOf(
-                        "impressions", DataLayer.mapOf(
-                        "products", productTelcoList.toArray()
+                        "impressions", DataLayer.listOf(
+                        *productTelcoList.toTypedArray()
                 )
                 )
                 )
@@ -212,8 +212,8 @@ class DigitalTopupAnalytics {
                         "eventAction", DigitalTopupEventTracking.Action.RECENT_ICON_IMPRESSION,
                         "eventLabel", "none",
                         "ecommerce", DataLayer.mapOf(
-                        "impressions", DataLayer.mapOf(
-                        "products", recentList.toArray()
+                        "impressions", DataLayer.listOf(
+                        *recentList.toTypedArray()
                 )
                 )
                 )
@@ -313,7 +313,7 @@ class DigitalTopupAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    private fun getCategoryName(categoryId: Int): String {
+    fun getCategoryName(categoryId: Int): String {
         return when (categoryId) {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA.toLowerCase()

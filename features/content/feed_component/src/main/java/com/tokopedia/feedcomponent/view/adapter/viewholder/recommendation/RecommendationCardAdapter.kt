@@ -11,6 +11,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_recommendation_card.view.*
 
@@ -56,6 +57,10 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
         }
 
         private fun initView(element: RecommendationCardViewModel) {
+            itemView.addOnImpressionListener(element.impressHolder) {
+                listener.onAffiliateTrackClicked(element.tracking, false)
+            }
+
             loadImageOrDefault(itemView.ivImage1, element.image1Url)
             loadImageOrDefault(itemView.ivImage2, element.image2Url)
             loadImageOrDefault(itemView.ivImage3, element.image3Url)
@@ -137,5 +142,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
         fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String)
 
         fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean)
+
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

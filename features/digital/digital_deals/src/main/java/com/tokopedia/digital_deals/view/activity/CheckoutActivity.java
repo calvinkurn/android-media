@@ -7,9 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
@@ -30,13 +28,23 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_simple_deals_appbar;
+        return com.tokopedia.digital_deals.R.layout.activity_base_simple_deals_appbar;
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return com.tokopedia.digital_deals.R.id.toolbar_checkout;
+    }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return com.tokopedia.digital_deals.R.id.deals_checkout_parent_view;
     }
 
     @Override
     protected Fragment getNewFragment() {
         drawable=toolbar.getNavigationIcon();
-        updateTitle(getResources().getString(R.string.activity_checkout_title));
+        updateTitle(getResources().getString(com.tokopedia.digital_deals.R.string.activity_checkout_title));
 
         getSupportFragmentManager().addOnBackStackChangedListener(getListener());
         return CheckoutHomeFragment.createInstance(getIntent().getExtras());
@@ -64,8 +72,9 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
     public void replaceFragment(List<Outlet> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
-        transaction.add(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up);
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_checkout_parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(LOCATION_FRAGMENT);
         transaction.commit();
     }
@@ -99,15 +108,15 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
                     if (manager.getBackStackEntryCount() >= 1) {
                         String topOnStack = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
                         if (topOnStack.equals(LOCATION_FRAGMENT)) {
-                            updateTitle(getResources().getString(R.string.redeem_locations));
-                            toolbar.setNavigationIcon(R.drawable.ic_close_deals);
+                            updateTitle(getResources().getString(com.tokopedia.digital_deals.R.string.redeem_locations));
+                            toolbar.setNavigationIcon(com.tokopedia.digital_deals.R.drawable.ic_close_deals);
 
                         } else {
-                            updateTitle(getResources().getString(R.string.activity_checkout_title));
+                            updateTitle(getResources().getString(com.tokopedia.digital_deals.R.string.activity_checkout_title));
                             toolbar.setNavigationIcon(drawable);
                         }
                     } else {
-                        updateTitle(getResources().getString(R.string.activity_checkout_title));
+                        updateTitle(getResources().getString(com.tokopedia.digital_deals.R.string.activity_checkout_title));
                         toolbar.setNavigationIcon(drawable);
 
                     }

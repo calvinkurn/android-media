@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class PaymentGateway {
+    @SerializedName("gateway_fee")
+    @Expose
+    private float gatewayFee;
     @SerializedName("gateway_id")
     @Expose
     private int gatewayId;
@@ -17,8 +20,6 @@ public class PaymentGateway {
     @SerializedName("gateway_name")
     @Expose
     private String gatewayName;
-    @SerializedName("gateway_fee")
-    private float gatewayFee;
 
     public int getGatewayId() {
         return gatewayId;

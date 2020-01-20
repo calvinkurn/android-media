@@ -4,6 +4,7 @@ import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -42,11 +43,7 @@ open class PlayActivity : BaseSimpleActivity() {
     @Inject
     lateinit var analytics: GroupChatAnalytics
 
-    var channelId: String? = null
-
-    var pipDuration = 0L
-    var pipStartTime = 0L
-    var pipEndTime = 0L
+    var channelId: String? = ""
 
     private val mPictureInPictureParamsBuilder
             = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -82,9 +79,10 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-        if(channelId == null) {
-            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        channelId = when {
+            intent.data != null -> Uri.parse(intent?.data?.toString()).lastPathSegment
+            intent.extras != null -> intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+            else -> intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
         }
         initInjector()
         initView()
@@ -135,7 +133,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
     fun changeHomeDrawableColor(resId: Int) {
         supportActionBar?.let {
-            val drawable = MethodChecker.getDrawable(this, R.drawable.ic_action_back)
+            val drawable = MethodChecker.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back)
             val wrapped = DrawableCompat.wrap(drawable)
             drawable.mutate()
             DrawableCompat.setTint(wrapped, MethodChecker.getColor(this, resId))

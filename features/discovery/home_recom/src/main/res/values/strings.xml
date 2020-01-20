@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <string name="recom_global_applink">rekomendasi</string>
+    <string name="recom_global_applink">/rekomendasi</string>
     <string name="recom_global_applink_pattern">/.*\\/</string>
     <string name="recom_app_name">home_recom</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
@@ -14,4 +14,9 @@
     <string name="recom_another_product_title">Produk Lain dari Toko Ini</string>
     <string name="home_recom_screen_name">/rekomendasi</string>
     <string name="recom_see_more_title">Lihat Semua</string>
+    <string name="recom_title_empty_product_info">Oops, stok habis</string>
+    <string name="recom_message_empty_product_info">Tunggu barang tersedia lagi atau cek rekomendasi terbaik di bawah ini.</string>
+    <string name="default_error_title_product_info">Produk detail gagal ditampilkan</string>
+    <string name="konten_gagal_ditampilkan">Konten gagal ditampilkan</string>
+    <string name="recom_message_retry_general">Ketuk ikon untuk memuat ulang</string>
 </resources>

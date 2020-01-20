@@ -47,7 +47,7 @@ dependencies {
 project.ext {
     artifactId = 'session-common'
     groupId = 'com.tokopedia.user'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "sessioncommon-release"
 }
 

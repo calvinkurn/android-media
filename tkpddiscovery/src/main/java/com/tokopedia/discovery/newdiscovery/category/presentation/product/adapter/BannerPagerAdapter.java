@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.DeepLinkChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.BannerModel;
 import com.tokopedia.track.TrackApp;
@@ -29,7 +30,7 @@ import java.util.List;
 public class BannerPagerAdapter extends PagerAdapter {
 
     List<BannerModel> bannerList = new ArrayList<>();
-    private final Context context;
+    final Context context;
     private final String categoryId;
     private static final String URL = "url";
 
@@ -50,20 +51,20 @@ public class BannerPagerAdapter extends PagerAdapter {
                 @Override
                 public void onClick(View view) {
                     eventBannerClickCategory(categoryId,bannerList.get(position).getUrl());
-                    switch ((DeepLinkChecker.getDeepLinkType(bannerList.get(position).getUrl()))) {
+                    boolean goToNative = true;
+                    switch ((DeepLinkChecker.getDeepLinkType(context, bannerList.get(position).getUrl()))) {
                         case DeepLinkChecker.BROWSE:
-                            DeepLinkChecker.openBrowse(bannerList.get(position).getUrl(), context);
+                            goToNative = DeepLinkChecker.openBrowse(bannerList.get(position).getUrl(), context);
                             break;
                         case DeepLinkChecker.HOT:
-                            DeepLinkChecker.openHot(bannerList.get(position).getUrl(), context);
+                            goToNative = DeepLinkChecker.openHot(bannerList.get(position).getUrl(), context);
                             break;
                         case DeepLinkChecker.CATALOG:
-                            DeepLinkChecker.openCatalog(bannerList.get(position).getUrl(), context);
+                            goToNative = DeepLinkChecker.openCatalog(bannerList.get(position).getUrl(), context);
                             break;
-                        default:
-                            Intent intent = new Intent(context, BannerWebView.class);
-                            intent.putExtra(URL, bannerList.get(position).getUrl());
-                            context.startActivity(intent);
+                    }
+                    if (!goToNative) {
+                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, bannerList.get(position).getUrl());
                     }
 
                 }

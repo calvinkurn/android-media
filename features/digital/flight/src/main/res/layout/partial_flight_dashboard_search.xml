@@ -148,7 +148,7 @@
             android:paddingLeft="@dimen/dp_15"
             android:paddingRight="@dimen/dp_15"
             android:paddingTop="@dimen/dp_8"
-            app:tiv_icon="@drawable/ic_calendar_general"
+            app:tiv_icon="@drawable/flight_ic_calendar_general"
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_date_departure_title" />
 
@@ -169,7 +169,7 @@
             android:paddingRight="@dimen/dp_15"
             android:paddingTop="@dimen/dp_8"
             android:visibility="gone"
-            app:tiv_icon="@drawable/ic_calendar_general"
+            app:tiv_icon="@drawable/flight_ic_calendar_general"
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_date_arrival_title"
             tools:visibility="visible" />

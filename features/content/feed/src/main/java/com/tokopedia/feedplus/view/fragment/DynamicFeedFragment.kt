@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
@@ -27,9 +30,7 @@ import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.view.adapter.typefactory.dynamicfeed.DynamicFeedTypeFactoryImpl
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
-import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
 
@@ -43,8 +44,16 @@ class DynamicFeedFragment:
         DynamicFeedContract.View {
 
     companion object {
+        private const val REQUEST_LOGIN = 345
         private const val KOL_COMMENT_CODE = 13
         private const val KEY_FEED  = "KEY_FEED"
+
+        //region Kol Comment Param
+        private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
+        private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
+        private const val COMMENT_ARGS_POSITION_COLUMN = "ARGS_SERVER_ERROR_MSG"
+        //endregion
+
         fun newInstance(feedKey: String): DynamicFeedFragment {
             val fragment = DynamicFeedFragment()
             val bundle = Bundle()
@@ -59,6 +68,9 @@ class DynamicFeedFragment:
 
     @Inject
     lateinit var feedAnalyticTracker: FeedAnalyticTracker
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var isLoading = false
     private var isForceRefresh = false
@@ -151,21 +163,19 @@ class DynamicFeedFragment:
     }
 
     override fun getScreenName(): String {
-        var screenName = ""
-        when(feedKey){
-            FeedTabs.KEY_TRENDING -> screenName = FeedAnalyticTracker.Screen.TRENDING
+        return when(feedKey){
+            FeedTabs.KEY_TRENDING -> FeedAnalyticTracker.Screen.TRENDING
+            else -> ""
         }
-        return screenName
     }
 
     override fun initInjector() {
-        if (activity != null && activity!!.application != null) {
-            DaggerFeedPlusComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(activity!!
-                            .application))
-                    .build()
-                    .inject(this)
-        }
+        DaggerFeedPlusComponent.builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -184,11 +194,29 @@ class DynamicFeedFragment:
     }
 
     override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
-        presenter.likeKol(id, positionInFeed, columnNumber)
+        if (userSession.isLoggedIn) {
+            presenter.likeKol(id, positionInFeed, columnNumber)
+        } else {
+            routeToLogin()
+        }
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
-        startActivityForResult(KolCommentActivity.getCallingIntent(activity, id, positionInFeed, columnNumber), KOL_COMMENT_CODE)
+        if (userSession.isLoggedIn) {
+            RouteManager.getIntent(
+                    requireContext(),
+                    UriUtil.buildUriAppendParam(
+                            ApplinkConstInternalContent.COMMENT,
+                            mapOf(
+                                    COMMENT_ARGS_POSITION to positionInFeed.toString(),
+                                    COMMENT_ARGS_POSITION_COLUMN to columnNumber.toString()
+                            )
+                    ),
+                    id.toString()
+            ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
+        } else {
+            routeToLogin()
+        }
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
@@ -207,7 +235,13 @@ class DynamicFeedFragment:
         showSnackbar(err)
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
+        for (track in trackList) {
+            presenter.trackAffiliate(
+                    if (isClick) track.clickURL
+                    else track.viewURL
+            )
+        }
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
@@ -221,9 +255,9 @@ class DynamicFeedFragment:
             KOL_COMMENT_CODE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     onSuccessAddDeleteKolComment(
-                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
-                            data.getIntExtra(KolCommentActivity.ARGS_POSITION_COLUMN, -1),
-                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
+                            data.getIntExtra(COMMENT_ARGS_POSITION, -1),
+                            data.getIntExtra(COMMENT_ARGS_POSITION_COLUMN, -1),
+                            data.getIntExtra(COMMENT_ARGS_TOTAL_COMMENT, 0))
                 }
             }
         }
@@ -297,5 +331,11 @@ class DynamicFeedFragment:
 
     private fun showSnackbar(s: String) {
         NetworkErrorHelper.showSnackbar(activity, s)
+    }
+
+    private fun routeToLogin() {
+        activity?.let {
+            it.startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_LOGIN)
+        }
     }
 }

@@ -7,15 +7,19 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
  */
 
-public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
+public class HeaderViewModel implements Parcelable, HomeVisitable<HomeTypeFactory> {
 
     public static final Creator<HeaderViewModel> CREATOR = new Creator<HeaderViewModel>() {
         @Override
@@ -146,5 +150,40 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         parcel.writeByte((byte) (pendingTokocashChecked ? 1 : 0));
         parcel.writeByte((byte) (isWalletError ? 1 : 0));
         parcel.writeByte((byte) (isTokoPointError ? 1 : 0));
+    }
+
+    @Override
+    public void setTrackingData(Map<String, Object> trackingData) {
+
+    }
+
+    @Override
+    public Map<String, Object> getTrackingData() {
+        return null;
+    }
+
+    @Override
+    public List<Object> getTrackingDataForCombination() {
+        return null;
+    }
+
+    @Override
+    public void setTrackingDataForCombination(List<Object> object) {
+
+    }
+
+    @Override
+    public boolean isTrackingCombined() {
+        return false;
+    }
+
+    @Override
+    public void setTrackingCombined(boolean isCombined) {
+
+    }
+
+    @Override
+    public boolean isCache() {
+        return false;
     }
 }

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_req_pickup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        android:text="@string/request_pickup_info_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_0"
+        android:layout_marginTop="@dimen/dp_10">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/label_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/request_pickup_location_label"
+                tools:text="@string/request_pickup_location_label"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"/>
+
+            <ImageView
+                android:id="@+id/ic_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/request_pickup_location_icon"
+                app:srcCompat="@drawable/ic_req_pickup_location"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_below="@id/label_location"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shop_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="reguler"
+                app:typographyType="body_3"
+                tools:text="@string/request_pickup_location_desc_sample"
+                android:text="@string/request_pickup_location_desc_sample"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_toRightOf="@id/ic_location"
+                android:layout_toEndOf="@id/ic_location"
+                android:layout_below="@id/label_location"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_pastikan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_address"
+        android:text="@string/request_pickup_info_title"
+        android:layout_marginTop="@dimen/dp_20"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_info_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintTop_toBottomOf="@id/label_pastikan"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/ic_info_1"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            app:srcCompat="@drawable/ic_req_pickup_label_1"
+            android:contentDescription="@string/request_pickup_info_icon"
+            android:layout_centerVertical="true"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_info_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
+            android:text="@string/request_pickup_info_label_1"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/ic_info_1"
+            android:layout_toEndOf="@id/ic_info_1"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_info_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintTop_toBottomOf="@id/rl_info_1"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/ic_info_2"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            app:srcCompat="@drawable/ic_req_pickup_label_2"
+            android:contentDescription="@string/request_pickup_info_icon"
+            android:layout_centerVertical="true"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_info_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
+            android:text="@string/request_pickup_info_label_2"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/ic_info_2"
+            android:layout_toEndOf="@id/ic_info_2"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_info_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintTop_toBottomOf="@id/rl_info_2"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/ic_info_3"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            app:srcCompat="@drawable/ic_req_pickup_label_3"
+            android:contentDescription="@string/request_pickup_info_icon"
+            android:layout_centerVertical="true"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_info_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
+            android:text="@string/request_pickup_info_label_3"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/ic_info_3"
+            android:layout_toEndOf="@id/ic_info_3"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

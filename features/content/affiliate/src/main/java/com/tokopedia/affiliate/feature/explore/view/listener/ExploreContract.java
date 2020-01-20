@@ -6,7 +6,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerChildViewModel;
@@ -45,6 +45,7 @@ public interface ExploreContract {
 
         void onSuccessGetData(List<Visitable<?>> products,
                               String cursor,
+                              String keyword,
                               boolean isSearch);
 
         void onErrorGetData(String error);
@@ -75,7 +76,7 @@ public interface ExploreContract {
 
         void onErrorCheckQuota(String error, String productId, String adId);
 
-        void onAutoCompleteItemClicked(String keyword);
+        void onAutoCompleteItemClicked(String suggestionText, String keyword);
 
         void onAutoCompleteIconClicked(String keyword);
 

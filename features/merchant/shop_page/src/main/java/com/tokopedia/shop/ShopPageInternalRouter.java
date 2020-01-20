@@ -15,10 +15,6 @@ public class ShopPageInternalRouter {
         return ShopPageActivity.createIntent(context, shopId);
     }
 
-    public static Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageActivity.createIntentWithDomain(context, domain);
-    }
-
     public static Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
     }

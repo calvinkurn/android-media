@@ -5,7 +5,7 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultE
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract.Presenter;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;

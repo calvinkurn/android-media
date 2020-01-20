@@ -29,8 +29,15 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     public BaseChatViewHolder(View itemView) {
         super(itemView);
         view = itemView;
-        hour = itemView.findViewById(R.id.hour);
-        date = itemView.findViewById(R.id.date);
+        hour = itemView.findViewById(getHourId());
+        date = itemView.findViewById(getDateId());
+    }
+
+    protected int getHourId() {
+        return R.id.hour;
+    }
+    protected int getDateId() {
+        return R.id.date;
     }
 
     @Override

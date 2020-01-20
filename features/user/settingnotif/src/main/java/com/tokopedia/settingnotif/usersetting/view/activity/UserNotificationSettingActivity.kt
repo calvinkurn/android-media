@@ -23,11 +23,11 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun bindView() {
-        fragmentContainer = findViewById(R.id.parent_view)
+        fragmentContainer = findViewById(parentViewResourceID)
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, R.color.white)
+        val color = ContextCompat.getColor(this, com.tokopedia.design.R.color.white)
         fragmentContainer?.setBackgroundColor(color)
     }
 
@@ -36,17 +36,17 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     override fun openSettingField(settingType: SettingType) {
-        goToNewSettingPage(settingType)
-    }
-
-    private fun goToNewSettingPage(settingType: SettingType) {
         val fragment = supportFragmentManager.findFragmentByTag(settingType.name)
                 ?: settingType.createNewFragmentInstance()
 
         supportFragmentManager.beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.parent_view, fragment, settingType.name)
+                .replace(parentViewResourceID, fragment, settingType.name)
                 .commit()
     }
+
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
 }

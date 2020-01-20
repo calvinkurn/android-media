@@ -9,6 +9,7 @@ import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
+import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
 import dagger.Binds
@@ -21,6 +22,11 @@ abstract class ProfileCompletionViewModelsModule {
     @Binds
     @ProfileCompletionSettingScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChangeNameViewModel::class)
+    internal abstract fun changeNameViewModel(viewModel: ChangeNameViewModel): ViewModel
 
     @Binds
     @IntoMap

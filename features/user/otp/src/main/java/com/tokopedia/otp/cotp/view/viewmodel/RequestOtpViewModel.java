@@ -7,10 +7,12 @@ package com.tokopedia.otp.cotp.view.viewmodel;
 public class RequestOtpViewModel {
     private boolean isSuccess;
     private String messageStatus;
+    private String phoneHint;
 
-    public RequestOtpViewModel(boolean isSuccess, String messageStatus) {
+    public RequestOtpViewModel(boolean isSuccess, String messageStatus, String phoneHint) {
         this.isSuccess = isSuccess;
         this.messageStatus = messageStatus;
+        this.phoneHint = phoneHint;
     }
 
     public boolean isSuccess() {
@@ -20,4 +22,7 @@ public class RequestOtpViewModel {
     public String getMessageStatus() {
         return messageStatus;
     }
+
+    public String getPhoneHint() { return phoneHint; }
 }
+

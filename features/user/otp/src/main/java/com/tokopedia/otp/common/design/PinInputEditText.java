@@ -17,6 +17,8 @@ import android.os.Build;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.TextUtilsCompat;
 import androidx.core.view.ViewCompat;
+
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -211,6 +213,12 @@ public class PinInputEditText extends EditText {
 
     public void setMask(String mask){
         mMask = mask;
+    }
+
+    public void setLength(int length) {
+        mMaxLength = length;
+        mNumChars = length;
+        this.setFilters(new InputFilter[] { new InputFilter.LengthFilter(length)});
     }
 
     @Override

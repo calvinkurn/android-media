@@ -1,5 +1,7 @@
 package com.tokopedia.otp.cotp.domain.interactor;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.otp.cotp.domain.source.OtpSource;
 import com.tokopedia.otp.cotp.view.viewmodel.RequestOtpViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -24,6 +26,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
     protected static final String PARAM_EMAIL = "user_email";
     public static final String PARAM_USER_ID = "user";
     private static final String PARAM_OS_TYPE = "os_type";
+    private static final String PARAM_NUMBER_OTP_DIGIT = "number_otp_digit";
     private static final String PARAM_TIMESTAMP = "device_time";
 
     public static final String MODE_SMS = "sms";
@@ -44,6 +47,8 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     private static final String TYPE_ANDROID = "1";
 
+    private static final int DEFAULT_CODE_OTP_LENGTH = 6;
+
     private final OtpSource otpSource;
 
     @Inject
@@ -57,25 +62,29 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
         return otpSource.requestOtp(requestParams.getParameters());
     }
 
-    public static RequestParams getParam(String mode, String phone, int otpType, String
-            userId) {
+    public static RequestParams getParam(String mode, String phone, int otpType, String userId, int numberOtpDigit) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_USER_ID, userId);
         param.putString(PARAM_MSISDN, phone);
         param.putString(PARAM_MODE, mode);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_OS_TYPE, TYPE_ANDROID);
+        if (numberOtpDigit != DEFAULT_CODE_OTP_LENGTH) {
+            param.putInt(PARAM_NUMBER_OTP_DIGIT, numberOtpDigit);
+        }
         return param;
     }
 
-    public static RequestParams getParamEmail(String email, int otpType,
-                                              String userId) {
+    public static RequestParams getParamEmail(String email, int otpType, String userId, int numberOtpDigit) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_USER_ID, userId);
         param.putString(PARAM_EMAIL, email);
         param.putString(PARAM_MODE, MODE_EMAIL);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_OS_TYPE, TYPE_ANDROID);
+        if (numberOtpDigit != DEFAULT_CODE_OTP_LENGTH) {
+            param.putInt(PARAM_NUMBER_OTP_DIGIT, numberOtpDigit);
+        }
         return param;
     }
 

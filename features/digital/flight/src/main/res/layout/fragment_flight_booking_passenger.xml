@@ -221,13 +221,14 @@
                     android:textColor="@color/font_black_primary_70"
                     app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24"  />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/passport_expiration_helper_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_20"
-                android:text="flight_booking_passenger_passport_expiry_helper_text"
+                android:text="@string/flight_booking_passenger_passport_expiry_helper_text"
                 app:typographyType="body_3" />
 
 

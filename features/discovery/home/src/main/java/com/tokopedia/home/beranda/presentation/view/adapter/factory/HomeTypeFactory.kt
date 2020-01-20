@@ -8,7 +8,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.SearchPlaceholderViewModel
 
 /**
  * Created by Lukas on 2019-08-20
@@ -48,4 +47,8 @@ interface HomeTypeFactory {
     fun type(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel): Int
 
     fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int
+
+    fun type(reviewViewModel: ReviewViewModel): Int
+    fun type(playCard: PlayCardViewModel): Int
+
 }

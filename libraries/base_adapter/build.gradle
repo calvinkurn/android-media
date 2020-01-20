@@ -33,7 +33,7 @@ dependencies {
 project.ext {
     artifactId = 'base-adapter'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "base_adapter-release"
 }
 

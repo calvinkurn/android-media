@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">payment_setting</string>
+    <string name="payment_setting_app_name">payment_setting</string>
     <string name="payment_label_auth_credit_card">Verifikasi Kartu Kredit</string>
     <string name="payment_label_saved_card">Kartu Kredit / Debit Online Tersimpan (%1$d/4)</string>
     <string name="payment_label_button_add_card">Tambah Kartu</string>

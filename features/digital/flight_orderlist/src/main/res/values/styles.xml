@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.White.Flight">
+        <item name="popupTheme">@style/FlightPopupTheme</item>
+    </style>
+
+    <style name="FlightPopupTheme">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+</resources>

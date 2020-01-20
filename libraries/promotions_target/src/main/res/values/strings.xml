@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">image_preview</string>
+    <string name="download">Download</string>
+    <string name="download_in_process">Unduh gambar dalam proses</string>
+    <string name="storage_permission_enabled_needed">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
+    <string name="download_failed">Gambar gagal diunduh</string>
+    <string name="download_success">Gambar berhasil diunduh</string>
+    <string name="t_promo_min_transaction">Min. transaksi</string>
+    <string name="t_promo_disturbance_at_toko_house">Ada gangguan di rumah Toped</string>
+    <string name="t_promo_we_will_fix_it_as_soon_as_poss">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+    <string name="t_promo_coba_lagi">Coba Lagi</string>
+    <string name="t_promo_ke_homepage">Ke Homepage</string>
+</resources>

@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
     private TextView buyWishlistBtn;
     private View wishlistBtn;
     private RelativeLayout container;
+    private ImageView imageFreeOngkirPromo;
 
     public WishlistProductListViewHolder(View itemView, WishlistAnalytics wishlistAnalytics, WishListView wishlistView) {
         super(itemView);
@@ -55,6 +57,7 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
         this.buyWishlistBtn = itemView.findViewById(R.id.buy_button);
         this.wishlistBtn = itemView.findViewById(R.id.wishlist);
         this.container = itemView.findViewById(R.id.container);
+        this.imageFreeOngkirPromo = itemView.findViewById(R.id.imageFreeOngkirPromo);
     }
 
     @Override
@@ -74,6 +77,7 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
         }
         setBadges(product);
         setLabels(product);
+        setFreeOngkir(product);
         container.setOnClickListener(onProductItemClicked(product, getAdapterPosition()));
         if (product.getIsWishlist()){
             wishlistBtn.setVisibility(View.VISIBLE);
@@ -134,7 +138,9 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventWishlistView(v.getContext(), data.name);
-                wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf((position + 1)), data.getProductAsObjectDataLayerForWishlistClick(position + 1));
+                wishlistAnalytics.trackEventClickOnProductWishlist(
+                        String.valueOf((position + 1)),
+                        data.getProductAsObjectDataLayerForWishlistClick(position + 1, data.getFreeOngkir()));
                 Intent intent = getProductIntent(data.getId());
                 context.startActivity(intent);
             }
@@ -157,7 +163,7 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                if (label.getColor().toLowerCase() != context.getString(R.string.white_hex_color)) {
+                if (!label.getColor().toLowerCase().equals(context.getString(R.string.white_hex_color))) {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
@@ -166,8 +172,18 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
                     } else {
                         ViewCompat.setBackgroundTintList(labelText, tint);
                     }
+                    container.addView(view);
+                } else {
+                    labelText.setBackgroundResource(R.drawable.bg_label);
+                    labelText.setTextColor(ContextCompat.getColor(context, R.color.tkpd_dark_gray_toolbar));
+                    ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.gray_background));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        labelText.setBackgroundTintList(tint);
+                    } else {
+                        ViewCompat.setBackgroundTintList(labelText, tint);
+                    }
+                    container.addView(view);
                 }
-                container.addView(view);
             }
         }
     }
@@ -180,5 +196,10 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), container);
             }
         }
+    }
+
+    private void setFreeOngkir(ProductItem data){
+        imageFreeOngkirPromo.setVisibility(data.getFreeOngkir() ? View.VISIBLE : View.GONE);
+        ImageHandler.loadImageRounded2(context, imageFreeOngkirPromo, data.getImageFreeOngkir());
     }
 }

@@ -34,6 +34,12 @@ public class Passenger {
     @SerializedName("relations")
     @Expose
     private List<String> relations;
+    @SerializedName("status")
+    @Expose
+    private int status;
+    @SerializedName("status_string")
+    @Expose
+    private String statusString;
 
     public String getPassengerId() {
         return passengerId;
@@ -97,5 +103,21 @@ public class Passenger {
 
     public void setRelations(List<String> relations) {
         this.relations = relations;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getStatusString() {
+        return statusString;
+    }
+
+    public void setStatusString(String statusString) {
+        this.statusString = statusString;
     }
 }

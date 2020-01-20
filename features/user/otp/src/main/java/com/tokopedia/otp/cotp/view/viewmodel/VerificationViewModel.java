@@ -18,6 +18,7 @@ public class VerificationViewModel implements Parcelable {
     private int iconResId;
     private String message;
     private boolean canUseOtherMethod;
+    private int numberOtpDigit;
 
     /**
      * Passing Model for default verification page (without choose otp method).
@@ -29,9 +30,7 @@ public class VerificationViewModel implements Parcelable {
      * @param appScreen
      * @param canUseOtherMethod
      */
-    public VerificationViewModel(String phoneNumber, String email,
-                                 int otpType, String mode, int iconResId,
-                                 String message, String appScreen, boolean canUseOtherMethod) {
+    public VerificationViewModel(String phoneNumber, String email, int otpType, String mode, int iconResId, String message, String appScreen, boolean canUseOtherMethod, int numberOtpDigit) {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.otpType = otpType;
@@ -41,6 +40,7 @@ public class VerificationViewModel implements Parcelable {
         this.appScreen = appScreen;
         this.imageUrl = "";
         this.canUseOtherMethod = canUseOtherMethod;
+        this.numberOtpDigit = numberOtpDigit;
     }
 
     /**
@@ -52,9 +52,7 @@ public class VerificationViewModel implements Parcelable {
      * @param appScreen
      * @param canUseOtherMethod
      */
-    public VerificationViewModel(String phoneNumber, String email, int otpType,
-                                 String mode, String imageUrl, String message,
-                                 String appScreen, boolean canUseOtherMethod) {
+    public VerificationViewModel(String phoneNumber, String email, int otpType, String mode, String imageUrl, String message, String appScreen, boolean canUseOtherMethod, int numberOtpDigit) {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.otpType = otpType;
@@ -64,6 +62,7 @@ public class VerificationViewModel implements Parcelable {
         this.appScreen = appScreen;
         this.imageUrl = imageUrl;
         this.canUseOtherMethod = canUseOtherMethod;
+        this.numberOtpDigit = numberOtpDigit;
     }
 
     protected VerificationViewModel(Parcel in) {
@@ -76,6 +75,7 @@ public class VerificationViewModel implements Parcelable {
         iconResId = in.readInt();
         message = in.readString();
         canUseOtherMethod = in.readByte() != 0;
+        numberOtpDigit = in.readInt();
     }
 
     public static final Creator<VerificationViewModel> CREATOR = new Creator<VerificationViewModel>() {
@@ -166,6 +166,10 @@ public class VerificationViewModel implements Parcelable {
         this.canUseOtherMethod = canUseOtherMethod;
     }
 
+    public int getNumberOtpDigit() { return numberOtpDigit; }
+
+    public void setNumberOtpDigit(int numberOtpDigit) { this.numberOtpDigit = numberOtpDigit; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -182,5 +186,6 @@ public class VerificationViewModel implements Parcelable {
         dest.writeInt(iconResId);
         dest.writeString(message);
         dest.writeByte((byte) (canUseOtherMethod ? 1 : 0));
+        dest.writeInt(numberOtpDigit);
     }
 }

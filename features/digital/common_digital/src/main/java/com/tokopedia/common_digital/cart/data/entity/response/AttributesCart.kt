@@ -2,6 +2,7 @@ package com.tokopedia.common_digital.cart.data.entity.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_digital.cart.view.model.cart.FintechProduct
 import com.tokopedia.common_digital.product.data.response.PostPaidPopup
 
 /**
@@ -76,4 +77,7 @@ class AttributesCart {
     @SerializedName("pop_up")
     @Expose
     var postPaidPopUp: PostPaidPopup? = null
+    @SerializedName("fintech_product")
+    @Expose
+    var fintechProduct: List<FintechProduct>? = null
 }

@@ -21,5 +21,6 @@
     <string name="skip">Skip</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
     <string name="error_field_required">Harus diisi</string>
+    <string name="phone_verification_next">Lanjutkan</string>
 
 </resources>

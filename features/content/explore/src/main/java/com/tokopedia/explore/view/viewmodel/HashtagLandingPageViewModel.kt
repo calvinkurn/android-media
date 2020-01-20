@@ -2,10 +2,10 @@ package com.tokopedia.explore.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.explore.data.CoroutineThread
 import com.tokopedia.explore.domain.entity.GetExploreData
-import com.tokopedia.explore.domain.entity.PostKol
-import com.tokopedia.explore.domain.interactor.GetExploreDataUseCase
+import com.tokopedia.explore.view.subscriber.EmptySubscriber
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -15,15 +15,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.Subscriber
 import javax.inject.Inject
 
 class HashtagLandingPageViewModel
     @Inject constructor(private val coroutineThread: CoroutineThread,
-                        private val graphqlUseCase: GraphqlUseCase<GetExploreData>)
+                        private val graphqlUseCase: GraphqlUseCase<GetExploreData>,
+                        private val trackClickAffiliateClickUseCase: TrackAffiliateClickUseCase)
     : BaseViewModel(coroutineThread.MAIN) {
 
     val canLoadMore: Boolean
@@ -39,7 +37,6 @@ class HashtagLandingPageViewModel
                 .setSessionIncluded(true)
                 .build())
     }
-
 
     fun getContentByHashtag(isForceRefresh: Boolean = false) {
         if (isForceRefresh) cursor = ""
@@ -57,6 +54,13 @@ class HashtagLandingPageViewModel
         }) {
             postResponse.value = Fail(it)
         }
+    }
+
+    fun trackAffiliate(url: String) {
+        trackClickAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.createRequestParams(url),
+                EmptySubscriber()
+        )
     }
 
     companion object{

@@ -1,8 +1,8 @@
 package com.tokopedia.flight.search.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.search.domain.usecase.FlightSearchCountUseCase;
-import com.tokopedia.flight.search.domain.usecase.FlightSearchStatisticsUseCase;
+import com.tokopedia.flight.search.domain.FlightSearchCountUseCase;
+import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase;
 import com.tokopedia.flight.search.presentation.FlightFilterCountView;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel;

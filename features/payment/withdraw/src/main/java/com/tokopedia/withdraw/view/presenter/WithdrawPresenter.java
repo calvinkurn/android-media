@@ -59,18 +59,21 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
 
             @Override
             public void onError(Throwable throwable) {
-                getView().hideLoading();
-                getView().showError(throwable.getMessage());
+                if(isViewAttached()) {
+                    getView().hideLoading();
+                    getView().showError(throwable.getMessage());
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                GqlGetBankDataResponse gqlGetBankDataResponse = graphqlResponse.getData(GqlGetBankDataResponse.class);
-                if (gqlGetBankDataResponse != null) {
-                    getView().onSuccessGetWithdrawForm(gqlGetBankDataResponse.getBankAccount().getBankAccountList());
+                if(isViewAttached()) {
+                    GqlGetBankDataResponse gqlGetBankDataResponse = graphqlResponse.getData(GqlGetBankDataResponse.class);
+                    if (gqlGetBankDataResponse != null) {
+                        getView().onSuccessGetWithdrawForm(gqlGetBankDataResponse.getBankAccount().getBankAccountList());
+                    }
+                    getView().hideLoading();
                 }
-                getView().hideLoading();
-
             }
         });
 
@@ -91,17 +94,21 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
 
             @Override
             public void onError(Throwable throwable) {
-                getView().hideLoading();
-                getView().showError(throwable.getMessage());
+                if(isViewAttached()) {
+                    getView().hideLoading();
+                    getView().showError(throwable.getMessage());
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                GqlGetValidatePopUpResponse response = graphqlResponse.getData(GqlGetValidatePopUpResponse.class);
-                if (response != null) {
-                    getView().showConfirmationDialog(response.getValidatePopUpWithdrawal());
+                if(isViewAttached()) {
+                    GqlGetValidatePopUpResponse response = graphqlResponse.getData(GqlGetValidatePopUpResponse.class);
+                    if (response != null) {
+                        getView().showConfirmationDialog(response.getValidatePopUpWithdrawal());
+                    }
+                    getView().hideLoading();
                 }
-                getView().hideLoading();
 
             }
         }, requestParams);
@@ -119,17 +126,21 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
 
             @Override
             public void onError(Throwable throwable) {
-                getView().hideLoading();
-                getView().showError(throwable.getMessage());
+                if(isViewAttached()) {
+                    getView().hideLoading();
+                    getView().showError(throwable.getMessage());
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                GqlCheckPremiumAccountResponse responseData = graphqlResponse.getData(GqlCheckPremiumAccountResponse.class);
-                if (responseData != null) {
-                    getView().showCheckProgramData(responseData.getCheckEligible());
+                if(isViewAttached()) {
+                    GqlCheckPremiumAccountResponse responseData = graphqlResponse.getData(GqlCheckPremiumAccountResponse.class);
+                    if (responseData != null) {
+                        getView().showCheckProgramData(responseData.getCheckEligible());
+                    }
+                    getView().hideLoading();
                 }
-                getView().hideLoading();
 
             }
         });
@@ -167,6 +178,13 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
     public void detachView() {
         if (gqlGetBankDataUseCase != null) {
             gqlGetBankDataUseCase.unsubscribe();
+        }
+        if(getGqlCheckPremiumAccountUseCase != null){
+            getGqlCheckPremiumAccountUseCase.unsubscribe();
+        }
+
+        if(gqlGetValidatePopupUseCase != null){
+            gqlGetValidatePopupUseCase.unsubscribe();
         }
         super.detachView();
     }

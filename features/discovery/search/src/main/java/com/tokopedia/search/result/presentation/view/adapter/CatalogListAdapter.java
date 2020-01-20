@@ -22,11 +22,6 @@ import java.util.List;
 
 public class CatalogListAdapter extends SearchSectionGeneralAdapter {
 
-    private static final String INSTANCE_NEXT_PAGE = "INSTANCE_NEXT_PAGE";
-    private static final String INSTANCE_LIST_DATA = "INSTANCE_LIST_DATA";
-    private static final String INSTANCE_START_FROM = "INSTANCE_START_FROM";
-    public static final int THRESHOLD_CRASH_LIST_COUNT = 12;
-
     private List<Visitable> mVisitables;
     private final CatalogListTypeFactory typeFactory;
 
@@ -68,12 +63,6 @@ public class CatalogListAdapter extends SearchSectionGeneralAdapter {
         notifyDataSetChanged();
     }
 
-    public void addElement(Visitable visitable) {
-        int start = getItemCount();
-        mVisitables.add(visitable);
-        notifyItemRangeInserted(start, 1);
-    }
-
     public void addElements(List<Visitable> data) {
         int start = getItemCount();
         mVisitables.addAll(data);
@@ -82,14 +71,6 @@ public class CatalogListAdapter extends SearchSectionGeneralAdapter {
 
     public List<Visitable> getElements() {
         return mVisitables;
-    }
-
-    public void setChangedItem(int position, Visitable visitable) {
-        if (position < mVisitables.size()) {
-            mVisitables.remove(position);
-            mVisitables.add(position, visitable);
-            notifyItemChanged(position);
-        }
     }
 
     public void removeItem(int position) {
@@ -107,51 +88,6 @@ public class CatalogListAdapter extends SearchSectionGeneralAdapter {
 
     public void setNextPage(boolean nextPage) {
         this.nextPage = nextPage;
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        //assume that 12 object is potential crash
-        if ((getElements() != null && getElements().size() > THRESHOLD_CRASH_LIST_COUNT)) {
-            return;
-        }
-        ArrayList<Parcelable> parcelables = mappingIntoParcelableArrayList(getElements());
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(INSTANCE_LIST_DATA, parcelables);
-        if (!TooLargeTool.isPotentialCrash(bundle)) {
-            outState.putBoolean(INSTANCE_NEXT_PAGE, hasNextPage());
-            outState.putInt(INSTANCE_START_FROM, getStartFrom());
-            outState.putParcelableArrayList(INSTANCE_LIST_DATA, parcelables);
-        }
-        bundle.clear();
-    }
-
-    private ArrayList<Parcelable> mappingIntoParcelableArrayList(List<Visitable> elements) {
-        ArrayList<Parcelable> list = new ArrayList<>();
-        for (Visitable visitable : elements) {
-            if (visitable instanceof CatalogViewModel) {
-                list.add((CatalogViewModel) visitable);
-            }
-        }
-        return list;
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState.containsKey(INSTANCE_LIST_DATA)) {
-            setNextPage(savedInstanceState.getBoolean(INSTANCE_NEXT_PAGE));
-            setStartFrom(savedInstanceState.getInt(INSTANCE_START_FROM));
-            setElement(mappingIntoVisitable(savedInstanceState.getParcelableArrayList(INSTANCE_LIST_DATA)));
-            notifyDataSetChanged();
-        }
-    }
-
-    private List<Visitable> mappingIntoVisitable(ArrayList<Parcelable> parcelableArrayList) {
-        List<Visitable> list = new ArrayList<>();
-        for (Parcelable parcelable : parcelableArrayList) {
-            if (parcelable instanceof CatalogViewModel) {
-                list.add((CatalogViewModel) parcelable);
-            }
-        }
-        return list;
     }
 
     public void incrementStart() {

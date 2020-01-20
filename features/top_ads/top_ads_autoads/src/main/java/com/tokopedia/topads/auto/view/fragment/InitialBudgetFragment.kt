@@ -45,11 +45,11 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater!!.inflate(R.menu.menu_info, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val i = item!!.itemId
         if (i == R.id.action_info) {
             InfoAutoAdsSheet.newInstance(activity!!).show()
@@ -75,7 +75,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
     override fun onManualAdsClicked() {
         if(AppUtil.isSellerInstalled(context)) {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
-//            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
+         //   startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
         } else {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
         }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
@@ -86,12 +85,9 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
 
     @Override
     public FlightBookingComponent getComponent() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            return DaggerFlightBookingComponent.builder()
-                    .flightComponent(getFlightComponent())
-                    .build();
-        }
-        throw new RuntimeException("Application must implement FlightModuleRouter");
+        return DaggerFlightBookingComponent.builder()
+                .flightComponent(getFlightComponent())
+                .build();
     }
 
     @Override

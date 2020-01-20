@@ -285,7 +285,6 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
         void onAllResourceDownloaded() {
             if (isViewAttached()) {
-                getView().hideLoading();
                 getView().onSuccessDownloadAllAsset();
             }
         }

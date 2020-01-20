@@ -5,7 +5,7 @@
     <string name="description_instant_fund">Alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.</string>
     <string name="label_amount">Jumlah Pinjaman</string>
     <string name="label_duration">Periode Pinjaman</string>
-    <string name="label_processing_time">Waktu Proses</string>
+    <string name="label_processing_time">Waktu Pencairan</string>
     <string name="label_interest_rate">Bunga Pinjaman</string>
     <string name="label_nominal_pinjaman">Nominal Pinjaman</string>
     <string name="label_search_loans">Cari Pinjaman</string>
@@ -61,10 +61,11 @@
     <string name="il_loan_period_value_label">Pilih Jumlah</string>
     <string name="il_min_loan_amount_warning">Minimal Pinjaman %s</string>
     <string name="il_max_loan_amount_warning">Maksimal Pinjaman %s</string>
-    <string name="il_dana_instant_loan_value">Rp600 Rb - Rp1,2 Juta</string>
+    <string name="il_dana_instant_loan_value">Rp600 Rb - Rp2,3 Juta</string>
     <string name="il_loan_processing_time_value">Kurang dari 24 Jam</string>
-    <string name="il_dana_instant_interest_rate">Rp50.400 - Rp151.200</string>
+    <string name="il_dana_instant_interest_rate">Rp105,600 - Rp280,140</string>
     <string name="il_loan_category_label" >Pilih Kategori</string>
+    <string name="il_title_sort_but">Urutkan</string>
 
 
 </resources>

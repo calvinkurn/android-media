@@ -41,7 +41,7 @@ dependencies {
 project.ext {
     artifactId = 'nps'
     groupId = 'com.tokopedia.common'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "nps-release"
 }
 

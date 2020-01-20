@@ -6,4 +6,4 @@
     android:layout_height="@dimen/dp_32"
     android:layout_marginLeft="@dimen/dp_3"
     android:layout_marginRight="@dimen/dp_3"
-    tools:src="@drawable/ic_multi_airlines" />
+    tools:src="@drawable/flight_ic_multi_airlines" />

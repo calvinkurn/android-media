@@ -11,7 +11,8 @@
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_radius_20dp">
 
         <ImageView
             android:layout_width="@dimen/dp_56"

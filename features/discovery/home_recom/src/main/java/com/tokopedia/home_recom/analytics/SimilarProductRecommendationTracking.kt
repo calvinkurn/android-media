@@ -28,7 +28,7 @@ object SimilarProductRecommendationTracking {
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation"
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN = "click - product recommendation - non login"
 
-    private const val IMPRESSION = "impression"
+    private const val IMPRESSION = "impressions"
     private const val CLICK = "click"
     private const val ECOMMERCE = "ecommerce"
     private const val CURRENCY_CODE = "currencyCode"

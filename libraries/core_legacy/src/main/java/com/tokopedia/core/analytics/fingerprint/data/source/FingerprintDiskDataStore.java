@@ -1,15 +1,24 @@
 package com.tokopedia.core.analytics.fingerprint.data.source;
 
 import android.content.Context;
+import android.os.Build;
+import android.text.TextUtils;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataStore;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
+import com.tokopedia.core.var.TkpdCache;
+
+import java.io.IOException;
 
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 /**
  * Created by Herdi_WORK on 20.06.17.
@@ -43,8 +52,10 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         String deviceLanguage = Utilities.getLanguage();
                         String ssid         = Utilities.getSSID(context);
                         String carrier      = Utilities.getCarrierName(context);
+                        String adsId = getGoogleAdId(context);
 
                         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
+                                .uniqueId(adsId)
                                 .deviceName(deviceName)
                                 .deviceManufacturer(deviceFabrik)
                                 .model(deviceName)
@@ -75,5 +86,23 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
 
                     }
                 });
+    }
+
+    private static String getGoogleAdId(final Context context) {
+        AdvertisingIdClient.Info adInfo;
+        try {
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+            Timber.w("P2" + e.toString() + " | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+                    + " | "+Build.TAGS);
+            return "";
+        }
+
+        if (adInfo != null) {
+            return adInfo.getId();
+        }
+        return "";
     }
 }

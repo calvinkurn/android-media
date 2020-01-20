@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdreactnative.react.domain;
 
-import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
-
 import rx.Observable;
 
 /**

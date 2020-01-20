@@ -37,8 +37,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
-import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING;
 
 
@@ -151,14 +149,6 @@ public class PromoCouponFragment extends BaseDaggerFragment
                 null, 0,
                 getRetryGetCouponListErrorHandlerListener()
         );
-    }
-
-    @Override
-    public void sendTrackingOnCheckTrainVoucherError(String errorMessage) {
-        if (getActivity() instanceof LoyaltyModuleRouter) {
-            ((LoyaltyModuleRouter) getActivity())
-                    .trainSendTrackingOnCheckVoucherCodeError(errorMessage);
-        }
     }
 
     @Override
@@ -454,9 +444,6 @@ public class PromoCouponFragment extends BaseDaggerFragment
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
             dPresenter.parseAndSubmitEventVoucher(jsonbody, data, getArguments().getString(PLATFORM_KEY));
-        } else if (platformString.equalsIgnoreCase(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
-            dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
             dPresenter.processCheckMarketPlaceCartListPromoCode(
                     getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, "")

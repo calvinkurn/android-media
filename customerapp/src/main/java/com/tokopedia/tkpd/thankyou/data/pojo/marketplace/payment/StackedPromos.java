@@ -9,44 +9,32 @@ import java.util.List;
  * Created by fwidjaja on 18/04/19.
  */
 public class StackedPromos {
-    @SerializedName("promo_code_id")
-    @Expose
-    private long promoCodeId;
-
-    @SerializedName("final_benefit_amount")
-    @Expose
-    private int finalBenefitAmount;
-
-    @SerializedName("final_benefit_discount_amount")
-    @Expose
-    private int finalBenefitDiscountAmount;
-
     @SerializedName("benefits_by_orders")
     @Expose
     private List<BenefitByOrder> listBenefitByOrders;
 
-    public long getPromoCodeId() {
+    @SerializedName("final_benefit_amount")
+    @Expose
+    private float finalBenefitAmount;
+
+    @SerializedName("promo_code_id")
+    @Expose
+    private String promoCodeId;
+
+    public String getPromoCodeId() {
         return promoCodeId;
     }
 
-    public void setPromoCodeId(long promoCodeId) {
+    public void setPromoCodeId(String promoCodeId) {
         this.promoCodeId = promoCodeId;
     }
 
-    public int getFinalBenefitAmount() {
+    public float getFinalBenefitAmount() {
         return finalBenefitAmount;
     }
 
-    public void setFinalBenefitAmount(int finalBenefitAmount) {
+    public void setFinalBenefitAmount(float finalBenefitAmount) {
         this.finalBenefitAmount = finalBenefitAmount;
-    }
-
-    public int getFinalBenefitDiscountAmount() {
-        return finalBenefitDiscountAmount;
-    }
-
-    public void setFinalBenefitDiscountAmount(int finalBenefitDiscountAmount) {
-        this.finalBenefitDiscountAmount = finalBenefitDiscountAmount;
     }
 
     public List<BenefitByOrder> getListBenefitByOrders() {

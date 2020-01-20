@@ -6,8 +6,8 @@ import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
-import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase
+import com.tokopedia.user_identification_common.domain.pojo.GetApprovalStatusPojo
+import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase
 import rx.Observable
 import rx.schedulers.Schedulers
 import javax.inject.Inject

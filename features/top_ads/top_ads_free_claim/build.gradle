@@ -29,7 +29,7 @@ dependencies {
 project.ext {
     artifactId = 'free-claim'
     groupId = 'com.tokopedia.topads'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "top_ads_free_claim-release"
 }
 

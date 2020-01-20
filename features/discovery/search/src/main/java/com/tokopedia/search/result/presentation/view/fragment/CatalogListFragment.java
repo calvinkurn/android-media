@@ -207,12 +207,12 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        catalogAdapter.onSaveInstanceState(outState);
         saveDataToBundle(outState);
     }
 
     private void saveDataToBundle(Bundle outState) {
         outState.putString(EXTRA_SHARE_URL, getShareUrl());
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
     }
 
     @Override
@@ -368,11 +368,8 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
-
-        if(catalogAdapter != null) {
-            catalogAdapter.onRestoreInstanceState(savedInstanceState);
-        }
     }
 
     @Override

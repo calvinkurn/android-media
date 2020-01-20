@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.widget.FlightInsuranceView;
 
@@ -21,7 +20,7 @@ public class FlightInsuranceAdapter extends RecyclerView.Adapter<FlightInsurance
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight_insurance, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.flight.R.layout.item_flight_insurance, parent, false);
         return new ViewHolder(view, actionListener);
     }
 
@@ -44,7 +43,7 @@ public class FlightInsuranceAdapter extends RecyclerView.Adapter<FlightInsurance
 
         public ViewHolder(View itemView, FlightInsuranceView.ActionListener actionListener) {
             super(itemView);
-            flightInsuranceView = itemView.findViewById(R.id.iv_insurance);
+            flightInsuranceView = itemView.findViewById(com.tokopedia.flight.R.id.iv_insurance);
             flightInsuranceView.setListener(actionListener);
         }
 

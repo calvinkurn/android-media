@@ -16,9 +16,11 @@ public class FlightDetailAdapterTypeFactory extends BaseAdapterTypeFactory imple
     }
 
     private OnFlightDetailListener onFlightDetailListener;
+    private Boolean isShowRefundableTag = false;
 
-    public FlightDetailAdapterTypeFactory(OnFlightDetailListener onFlightDetailListener) {
+    public FlightDetailAdapterTypeFactory(OnFlightDetailListener onFlightDetailListener, boolean isShowRefundableTag) {
         this.onFlightDetailListener = onFlightDetailListener;
+        this.isShowRefundableTag = isShowRefundableTag;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class FlightDetailAdapterTypeFactory extends BaseAdapterTypeFactory imple
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == FlightDetailViewHolder.LAYOUT) {
-            return new FlightDetailViewHolder(parent, onFlightDetailListener);
+            return new FlightDetailViewHolder(parent, onFlightDetailListener, isShowRefundableTag);
         } else {
             return super.createViewHolder(parent, type);
         }

@@ -25,7 +25,7 @@ dependencies {
 project.ext {
     artifactId = 'williamchart'
     groupId = 'com.db.williamchart'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "williamchart-release"
 }
 

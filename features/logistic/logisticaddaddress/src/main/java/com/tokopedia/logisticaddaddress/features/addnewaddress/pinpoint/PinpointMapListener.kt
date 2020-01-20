@@ -9,10 +9,11 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
  * Created by fwidjaja on 2019-05-09.
  */
 interface PinpointMapListener: CustomerView {
+    fun showLoading()
     fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel)
     fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel)
     fun showFailedDialog()
-    fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean)
+    fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean)
     fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel)
     fun showAutoComplete(lat: Double, long: Double)
     fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean)

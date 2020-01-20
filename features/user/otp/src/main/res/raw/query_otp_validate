@@ -1,0 +1,8 @@
+query otp_validate($code: String!, $otpType: String, $email: String){
+    OTPValidate(code: $code, otpType: $otpType, email: $email) {
+        success
+        message
+        errorMessage
+        validateToken
+    }
+}

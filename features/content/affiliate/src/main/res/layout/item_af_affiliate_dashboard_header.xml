@@ -93,7 +93,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:background="@drawable/bg_btn_green"
+        android:background="@drawable/bg_af_btn_green"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"

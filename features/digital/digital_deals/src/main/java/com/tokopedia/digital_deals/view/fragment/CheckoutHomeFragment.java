@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
@@ -33,11 +33,6 @@ import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -93,7 +88,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_checkout_deal, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_checkout_deal, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
         return view;
@@ -106,40 +101,40 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     private void setViewIds(View view) {
-        imageViewBrand = view.findViewById(R.id.image_view_brand);
-        tvDealDetails = view.findViewById(R.id.tv_deal_details);
-        tvBrandName = view.findViewById(R.id.tv_brand_name);
-        tvMrp = view.findViewById(R.id.tv_mrp_per_quantity);
-        tvSalesPrice = view.findViewById(R.id.tv_sales_price_per_quantity);
-        tvTotalQuantityPrice = view.findViewById(R.id.tv_sales_price_all_quantity);
-        tvServiceFee = view.findViewById(R.id.tv_service_fee_amount);
-        tvAmount = view.findViewById(R.id.tv_total_amount);
-        tvExpiryDate = view.findViewById(R.id.tv_expiry_date);
-        tvNumberLocations = view.findViewById(R.id.tv_no_locations);
-        tvVoucherCode = view.findViewById(R.id.tv_voucher_code);
-        tvDiscount = view.findViewById(R.id.amount_of_cashback);
-        tvNumberVouchers = view.findViewById(R.id.tv_number_vouchers);
-        etEmailID = view.findViewById(R.id.tv_email);
-        paymentMethod = view.findViewById(R.id.cl_btn_payment);
+        imageViewBrand = view.findViewById(com.tokopedia.digital_deals.R.id.image_view_brand);
+        tvDealDetails = view.findViewById(com.tokopedia.digital_deals.R.id.tv_deal_details);
+        tvBrandName = view.findViewById(com.tokopedia.digital_deals.R.id.tv_brand_name);
+        tvMrp = view.findViewById(com.tokopedia.digital_deals.R.id.tv_mrp_per_quantity);
+        tvSalesPrice = view.findViewById(com.tokopedia.digital_deals.R.id.tv_sales_price_per_quantity);
+        tvTotalQuantityPrice = view.findViewById(com.tokopedia.digital_deals.R.id.tv_sales_price_all_quantity);
+        tvServiceFee = view.findViewById(com.tokopedia.digital_deals.R.id.tv_service_fee_amount);
+        tvAmount = view.findViewById(com.tokopedia.digital_deals.R.id.tv_total_amount);
+        tvExpiryDate = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expiry_date);
+        tvNumberLocations = view.findViewById(com.tokopedia.digital_deals.R.id.tv_no_locations);
+        tvVoucherCode = view.findViewById(com.tokopedia.digital_deals.R.id.tv_voucher_code);
+        tvDiscount = view.findViewById(com.tokopedia.digital_deals.R.id.amount_of_cashback);
+        tvNumberVouchers = view.findViewById(com.tokopedia.digital_deals.R.id.tv_number_vouchers);
+        etEmailID = view.findViewById(com.tokopedia.digital_deals.R.id.tv_email);
+        paymentMethod = view.findViewById(com.tokopedia.digital_deals.R.id.cl_btn_payment);
         setCardViewElevation();
-        tvPaymentMethod = view.findViewById(R.id.ll_select_payment_method);
-        tvApplyPromo = view.findViewById(R.id.tv_promocode);
-        clPromoApplied = view.findViewById(R.id.cl_promo_applied);
-        baseMainContent = view.findViewById(R.id.base_main_content);
-        mainContent = view.findViewById(R.id.main_content);
-        progressParLayout = view.findViewById(R.id.progress_bar_layout);
-        ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
-        clPromoAmount = view.findViewById(R.id.cl_promo);
-        Drawable img = MethodChecker.getDrawable(getActivity(),R.drawable.ic_promo_code);
+        tvPaymentMethod = view.findViewById(com.tokopedia.digital_deals.R.id.ll_select_payment_method);
+        tvApplyPromo = view.findViewById(com.tokopedia.digital_deals.R.id.tv_promocode);
+        clPromoApplied = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo_applied);
+        baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
+        mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
+        progressParLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
+        ivRemovePromo = view.findViewById(com.tokopedia.digital_deals.R.id.iv_remove_promo);
+        clPromoAmount = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo);
+        Drawable img = MethodChecker.getDrawable(getActivity(),com.tokopedia.digital_deals.R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
     }
 
     private void setCardViewElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_8));
+            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_8));
         } else {
-            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_0));
+            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
         }
     }
 
@@ -164,19 +159,19 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         quantity = packageViewModel.getSelectedQuantity();
         ImageHandler.loadImage(getContext(), imageViewBrand,
                 dealDetails.getImageWeb(),
-                R.color.grey_1100, R.color.grey_1100);
+                com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         if (dealDetails.getBrand() != null)
             tvBrandName.setText(dealDetails.getBrand().getTitle());
 
 
         tvDealDetails.setText(dealDetails.getDisplayName());
-        tvExpiryDate.setText(String.format(getString(R.string.valid_through),
+        tvExpiryDate.setText(String.format(getString(com.tokopedia.digital_deals.R.string.valid_through),
                 Utils.convertEpochToString(dealDetails.getSaleEndDate())));
 
-        TextView availableLocations = getView().findViewById(R.id.tv_available_locations);
+        TextView availableLocations = getView().findViewById(com.tokopedia.digital_deals.R.id.tv_available_locations);
         if (dealDetails.getOutlets() == null || dealDetails.getOutlets().isEmpty())
-            availableLocations.setText(R.string.deals_all_indonesia);
+            availableLocations.setText(com.tokopedia.digital_deals.R.string.deals_all_indonesia);
         if (dealDetails.getMrp() != 0 && dealDetails.getMrp() != dealDetails.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
@@ -189,8 +184,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvTotalQuantityPrice.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
                 packageViewModel.getSelectedQuantity()));
         if (packageViewModel.getCommission() == 0) {
-            getRootView().findViewById(R.id.tv_service_fee).setVisibility(View.GONE);
-            getRootView().findViewById(R.id.tv_service_fee_amount).setVisibility(View.GONE);
+            getRootView().findViewById(com.tokopedia.digital_deals.R.id.tv_service_fee).setVisibility(View.GONE);
+            getRootView().findViewById(com.tokopedia.digital_deals.R.id.tv_service_fee_amount).setVisibility(View.GONE);
         } else {
             tvServiceFee.setText(Utils.convertToCurrencyString(packageViewModel.getCommission()));
 
@@ -199,10 +194,10 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvAmount.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
                 packageViewModel.getSelectedQuantity() +
                 packageViewModel.getCommission()));
-        tvNumberVouchers.setText(String.format(getActivity().getResources().getString(R.string.number_of_vouchers),
+        tvNumberVouchers.setText(String.format(getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.number_of_vouchers),
                 packageViewModel.getSelectedQuantity()));
         if (dealDetails.getOutlets() != null && dealDetails.getOutlets().size() > 0) {
-            tvNumberLocations.setText(String.format(getResources().getString(R.string.number_of_locations)
+            tvNumberLocations.setText(String.format(getResources().getString(com.tokopedia.digital_deals.R.string.number_of_locations)
                     , dealDetails.getOutlets().size()));
         }
         tvPaymentMethod.setOnClickListener(this);
@@ -228,7 +223,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void setEmailIDPhoneNumber(String emailID, String phoneNumber) {
         etEmailID.setText(emailID);
-        EditText etPhone = getRootView().findViewById(R.id.tv_phone);
+        EditText etPhone = getRootView().findViewById(com.tokopedia.digital_deals.R.id.tv_phone);
         etPhone.setText(phoneNumber);
     }
 
@@ -246,7 +241,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         promoApplied = true;
         if (discountAmount != 0) {
             clPromoAmount.setVisibility(View.VISIBLE);
-            TextView view = getRootView().findViewById(R.id.tv_promo_discount);
+            TextView view = getRootView().findViewById(com.tokopedia.digital_deals.R.id.tv_promo_discount);
             view.setText(Utils.convertToCurrencyString(discountAmount));
         } else {
             clPromoAmount.setVisibility(View.GONE);
@@ -263,7 +258,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     public void showFailureMessageProductExpired() {
-        Utils.getSingletonInstance().showSnackBarDeals(getContext().getResources().getString(R.string.product_expired)
+        Utils.getSingletonInstance().showSnackBarDeals(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.product_expired)
                 , getContext(), mainContent, false);
     }
 
@@ -280,18 +275,18 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.ll_select_payment_method) {
+        if (v.getId() == com.tokopedia.digital_deals.R.id.ll_select_payment_method) {
             mPresenter.getPaymentLink();
             if (dealDetails.getBrand() != null) {
                 dealsAnalytics.sendEcommercePayment(dealDetails.getCategoryId(), dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
             }
-        } else if (v.getId() == R.id.tv_promocode) {
+        } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_promocode) {
             dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
             mPresenter.clickGoToPromo();
-        } else if (v.getId() == R.id.tv_no_locations) {
+        } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);
-        } else if (v.getId() == R.id.iv_remove_promo) {
+        } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_remove_promo) {
             promoApplied = false;
             mPresenter.updatePromoCode("");
             tvApplyPromo.setVisibility(View.VISIBLE);

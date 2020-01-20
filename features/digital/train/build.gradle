@@ -57,7 +57,7 @@ dependencies {
 project.ext {
     artifactId = 'train'
     groupId = 'com.tokopedia.travel'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="train-release"
 }
 

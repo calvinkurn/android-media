@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
-import com.tokopedia.profilecompletion.addbod.view.widget.datepicker.OnDateChangedListener
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,6 +31,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.layout_datepicker_bottomsheet.view.datePicker
 import java.text.SimpleDateFormat
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
 import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.getCurrentLocale
 
@@ -73,7 +73,7 @@ class AddBodFragment: BaseDaggerFragment(){
         val viewBottomSheetDialog = View.inflate(context, R.layout.layout_datepicker_bottomsheet, null)
         val datePicker = viewBottomSheetDialog.datePicker
         datePicker.init(defaultDate.timeInMillis, minDate.timeInMillis, maxDate.timeInMillis,
-                object : OnDateChangedListener{
+                object : OnDateChangedListener {
                     override fun onDateChanged(date: Long) {
 
                     }

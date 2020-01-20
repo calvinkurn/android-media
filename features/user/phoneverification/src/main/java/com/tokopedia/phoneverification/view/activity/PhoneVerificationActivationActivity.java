@@ -29,7 +29,6 @@ import com.tokopedia.user.session.UserSession;
 import javax.inject.Inject;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
-import static com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity.getCallingIntent;
 
 /**
  * Created by nisie on 2/22/17.

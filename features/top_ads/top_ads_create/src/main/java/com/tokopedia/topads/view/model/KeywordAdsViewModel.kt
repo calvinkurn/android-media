@@ -74,7 +74,7 @@ class KeywordAdsViewModel @Inject constructor(
         data.forEach { index ->
             keywordList.add(KeywordItemViewModel(index).data.keyword)
             map.add(KeywordItemViewModel(index).data.bidSuggest)
-            map.add(KeywordItemViewModel(index).data.totalSearch)
+            map.add(Integer.parseInt(KeywordItemViewModel(index).data.totalSearch))
             searchCount[KeywordItemViewModel(index).data.keyword] = map
         }
 
@@ -82,10 +82,10 @@ class KeywordAdsViewModel @Inject constructor(
 
     fun addNewKeyword(keyword: String): KeywordItemViewModel {
         var item :KeywordItemViewModel = if (keywordList.contains(keyword) && searchCount.containsKey(keyword)) {
-            KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(searchCount[keyword]?.get(0)!!, keyword, searchCount[keyword]?.get(1)!!))
+            KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(searchCount[keyword]?.get(0)!!, keyword, searchCount[keyword]?.get(1)!!.toString()))
         }
         else
-            KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(0, keyword, 0))
+            KeywordItemViewModel(ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data(0, keyword, "Tidak diketahui"))
         selectedKeywordList.postValue(item)
         return item
     }

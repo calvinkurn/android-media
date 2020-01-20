@@ -17,8 +17,8 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
     private String tagsLink;
 
     public KolCommentHeaderViewModel(String avatarUrl, String name, String review, String time,
-                                     String userId, String tagsLink, String userBadges) {
-        super("0", userId, avatarUrl, name, review, time, true, false, userBadges);
+                                     String userId, String userUrl, String tagsLink, String userBadges, boolean isShop) {
+        super("0", userId, userUrl, avatarUrl, name, review, time, true, false, userBadges, isShop);
         this.canLoadMore = false;
         this.isLoading = false;
         this.tagsLink = tagsLink;

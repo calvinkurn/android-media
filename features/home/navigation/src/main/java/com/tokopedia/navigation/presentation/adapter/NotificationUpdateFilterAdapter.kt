@@ -113,7 +113,8 @@ class NotificationUpdateFilterAdapter(
             if (visitables.size <= filterPosition) continue
 
             val data = visitables[filterPosition]
-            if (data !is NotificationUpdateFilterSectionItemViewModel) continue
+                    as? NotificationUpdateFilterSectionItemViewModel
+                    ?: continue
 
             when (filterType) {
                 NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type -> typeName = data.text

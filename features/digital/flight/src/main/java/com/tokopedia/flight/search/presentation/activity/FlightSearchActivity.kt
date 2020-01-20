@@ -83,7 +83,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private fun setupSearchToolbar() {
         toolbar.contentInsetStartWithNavigation = 0
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500))
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500))
         val title = "${getDepartureAirport().cityName} ➝ ${getArrivalAirport().cityName}"
         val subtitle = "$dateString | $passengerString | $classString"
         updateTitle(title, subtitle)

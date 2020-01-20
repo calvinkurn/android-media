@@ -17,11 +17,10 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
 
 public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickReplyItemViewModel> {
 
-    @LayoutRes
-    public static final int LAYOUT = R.layout.item_quick_reply;
+    @LayoutRes public static final int LAYOUT = R.layout.item_quick_play_reply;
+
     private final ChatroomContract.QuickReply viewListener;
     private TextView textHolder;
-
 
     public QuickReplyItemViewHolder(View parent, ChatroomContract.QuickReply listener) {
         super(parent);
@@ -31,16 +30,9 @@ public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickR
 
     @Override
     public void bind(final GroupChatQuickReplyItemViewModel element) {
-
         textHolder.setText(Html.fromHtml(element.getText()));
-
-        textHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewListener.addQuickReply(element.getText());
-            }
-        });
-
+        textHolder.setOnClickListener(view -> viewListener.addQuickReply(element.getText()));
         textHolder.setVisibility(View.VISIBLE);
     }
+
 }

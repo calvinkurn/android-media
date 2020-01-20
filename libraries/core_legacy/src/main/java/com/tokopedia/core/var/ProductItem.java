@@ -102,6 +102,9 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
 
     Boolean isTopAds = false;
 
+    private Boolean isFreeOngkir = false;
+    private String imageFreeOngkir = "";
+
     TopAds topAds;
     private String trackerListName;
     private String trackerAttribution;
@@ -333,6 +336,22 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.discountPercentage = discountPercentage;
     }
 
+    public Boolean getFreeOngkir() {
+        return isFreeOngkir;
+    }
+
+    public void setFreeOngkir(Boolean freeOngkir) {
+        isFreeOngkir = freeOngkir;
+    }
+
+    public String getImageFreeOngkir() {
+        return imageFreeOngkir;
+    }
+
+    public void setImageFreeOngkir(String imageFreeOngkir) {
+        this.imageFreeOngkir = imageFreeOngkir;
+    }
+
     public int getCountCourier() {
         return countCourier;
     }
@@ -451,6 +470,8 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         dest.writeString(originalPrice);
         dest.writeInt(discountPercentage);
         dest.writeString(cashback);
+        dest.writeValue(this.isFreeOngkir);
+        dest.writeString(imageFreeOngkir);
     }
 
     protected ProductItem(android.os.Parcel in) {
@@ -487,6 +508,8 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
         this.cashback = in.readString();
+        this.isFreeOngkir = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.imageFreeOngkir = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -517,7 +540,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         return trackerAttribution;
     }
 
-    public Object getProductAsObjectDataLayerForWishlistClick(int position) {
+    public Object getProductAsObjectDataLayerForWishlistClick(int position, boolean isFreeOngkir) {
         return DataLayer.mapOf(
                 "name", getName(),
                 "id", getId(),
@@ -525,7 +548,8 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
                 "brand", DEFAULT_VALUE_NONE_OTHER,
                 "category", DEFAULT_VALUE_NONE_OTHER,
                 "variant", DEFAULT_VALUE_NONE_OTHER,
-                "position", Integer.toString(position)
+                "position", Integer.toString(position),
+                "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other"
         );
     }
 }

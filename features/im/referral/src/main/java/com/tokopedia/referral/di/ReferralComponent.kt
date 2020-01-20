@@ -1,6 +1,7 @@
 package com.tokopedia.referral.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.referral.view.activity.ReferralActivity
 import com.tokopedia.referral.view.fragment.FragmentReferral
 import com.tokopedia.referral.view.fragment.FragmentReferralFriendsWelcome
 
@@ -15,4 +16,7 @@ import dagger.Component
 interface ReferralComponent {
     fun inject(fragmentReferral: FragmentReferral)
     fun inject(fragmentReferral: FragmentReferralFriendsWelcome)
+    fun inject(referralActivity: ReferralActivity) {
+
+    }
 }

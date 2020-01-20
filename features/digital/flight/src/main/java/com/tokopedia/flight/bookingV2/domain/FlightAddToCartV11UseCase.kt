@@ -8,7 +8,7 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightRequest
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
+import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

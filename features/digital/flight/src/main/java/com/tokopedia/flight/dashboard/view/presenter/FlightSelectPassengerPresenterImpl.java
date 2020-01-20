@@ -25,8 +25,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
         passengerViewModel.setAdult(number);
         if (validatePassenger(passengerViewModel)) {
             getView().renderPassengerView(passengerViewModel);
-        }
-        else
+        } else
             getView().renderPassengerView(getView().getCurrentPassengerViewModel());
     }
 
@@ -45,13 +44,16 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
         boolean isValid = true;
         if (!validator.validateTotalPassenger(passengerPassData)) {
             isValid = false;
-            getView().showTotalPassengerErrorMessage(R.string.select_passenger_total_passenger_error_message);
+            getView().showTotalPassengerErrorMessage(com.tokopedia.flight.R.string.select_passenger_total_passenger_error_message);
         } else if (!validator.validateInfantNotGreaterThanAdult(passengerPassData)) {
             isValid = false;
             getView().showInfantGreaterThanAdultErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+        } else if (!validator.validateInfantMoreThanFour(passengerPassData.getInfant())) {
+            isValid = false;
+            getView().showInfantMoreThanFourErrorMessage(R.string.select_passenger_infant_more_than_four_error_message);
         } else if (!validator.validateAdultCountAtleastOne(passengerPassData)) {
             isValid = false;
-            getView().showAdultShouldAtleastOneErrorMessage(R.string.select_passenger_adult_atleast_one_error_message);
+            getView().showAdultShouldAtleastOneErrorMessage(com.tokopedia.flight.R.string.select_passenger_adult_atleast_one_error_message);
         }
         return isValid;
     }

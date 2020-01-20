@@ -11,7 +11,6 @@ import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
-import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -35,20 +34,20 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
     private GraphqlUseCase graphqlUseCase;
     private BuyerAccountMapper mapper;
-    private Observable<WalletModel> tokocashAccountBalance;
+    private GetBuyerWalletBalanceUseCase getBuyerWalletBalanceUseCase;
     private WalletPref walletPref;
     private UserSession userSession;
     private CheckAffiliateUseCase checkAffiliateUseCase;
 
     @Inject
     public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase,
-                                  Observable<WalletModel> tokocashAccountBalance,
+                                  GetBuyerWalletBalanceUseCase getBuyerWalletBalanceUseCase,
                                   BuyerAccountMapper mapper,
                                   WalletPref walletPref,
                                   UserSession userSession,
                                   CheckAffiliateUseCase checkAffiliateUseCase) {
         this.graphqlUseCase = graphqlUseCase;
-        this.tokocashAccountBalance = tokocashAccountBalance;
+        this.getBuyerWalletBalanceUseCase = getBuyerWalletBalanceUseCase;
         this.mapper = mapper;
         this.walletPref = walletPref;
         this.userSession = userSession;
@@ -59,7 +58,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     public Observable<BuyerViewModel> createObservable(RequestParams requestParams) {
         return Observable.zip(
                 getAccountData(requestParams),
-                tokocashAccountBalance,
+                getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY),
                 checkIsAffiliate(requestParams),
                 (accountModel, walletModel, isAffiliate) -> {
                     accountModel.setWallet(walletModel);

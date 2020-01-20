@@ -30,6 +30,7 @@ public class SortProductActivity extends BaseActivity {
 
     public static final String EXTRA_SORT_DATA = "EXTRA_SORT_DATA";
     public static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
+    public static final String EXTRA_AUTO_APPLY_FILTER = "EXTRA_AUTO_APPLY_FILTER";
     public static final String EXTRA_SELECTED_SORT_NAME = "EXTRA_SELECTED_SORT_NAME";
     public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
 
@@ -64,12 +65,13 @@ public class SortProductActivity extends BaseActivity {
         generateSelectedKeyValue((HashMap<String, String>) getIntent().getSerializableExtra(EXTRA_SELECTED_SORT));
         adapter = new ListAdapter(data, selectedKey, selectedValue, new OnItemClickListener() {
             @Override
-            public void onItemClicked(String sort, String ob, String label) {
+            public void onItemClicked(Sort item) {
                 Intent intent = new Intent();
                 HashMap<String, String> params = new HashMap<>();
-                params.put(sort, ob);
+                params.put(item.getKey(), item.getValue());
                 intent.putExtra(EXTRA_SELECTED_SORT, params);
-                intent.putExtra(EXTRA_SELECTED_SORT_NAME, label);
+                intent.putExtra(EXTRA_AUTO_APPLY_FILTER, item.getApplyFilter());
+                intent.putExtra(EXTRA_SELECTED_SORT_NAME, item.getName());
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -159,9 +161,8 @@ public class SortProductActivity extends BaseActivity {
                     }
                     selectedKey = sortList.get(holder.getAdapterPosition()).getKey();
                     selectedValue = sortList.get(holder.getAdapterPosition()).getValue();
-                    String selectedName = sortList.get(holder.getAdapterPosition()).getName();
 
-                    clickListener.onItemClicked(selectedKey, selectedValue, selectedName);
+                    clickListener.onItemClicked(sortList.get(holder.getAdapterPosition()));
 
                     notifyDataSetChanged();
                 }
@@ -187,9 +188,7 @@ public class SortProductActivity extends BaseActivity {
             public void onClick(View v) {
                 TextView textView = (TextView) v;
                 textView.setSelected(true);
-                clickListener.onItemClicked(sortList.get(getAdapterPosition()).getKey(),
-                        sortList.get(getAdapterPosition()).getValue(),
-                        sortList.get(getAdapterPosition()).getName());
+                clickListener.onItemClicked(sortList.get(getAdapterPosition()));
                 notifyDataSetChanged();
             }
 
@@ -198,6 +197,6 @@ public class SortProductActivity extends BaseActivity {
     }
 
     private interface OnItemClickListener {
-        void onItemClicked(String sort, String ob, String label);
+        void onItemClicked(Sort sortItem);
     }
 }

@@ -17,11 +17,11 @@ public class OrderLevel {
 
     @SerializedName("total_discount")
     @Expose
-    private int totalDiscount;
+    private float totalDiscount;
 
     @SerializedName("total_benefit")
     @Expose
-    private int totalBenefit;
+    private float totalBenefit;
 
     public String getPromoCode() {
         return promoCode;
@@ -39,19 +39,19 @@ public class OrderLevel {
         this.type = type;
     }
 
-    public int getTotalDiscount() {
+    public float getTotalDiscount() {
         return totalDiscount;
     }
 
-    public void setTotalDiscount(int totalDiscount) {
+    public void setTotalDiscount(float totalDiscount) {
         this.totalDiscount = totalDiscount;
     }
 
-    public int getTotalBenefit() {
+    public float getTotalBenefit() {
         return totalBenefit;
     }
 
-    public void setTotalBenefit(int totalBenefit) {
+    public void setTotalBenefit(float totalBenefit) {
         this.totalBenefit = totalBenefit;
     }
 }

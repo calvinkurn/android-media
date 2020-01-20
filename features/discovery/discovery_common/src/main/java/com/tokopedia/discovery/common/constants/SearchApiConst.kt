@@ -50,6 +50,8 @@ class SearchApiConst {
         const val KEYWORD = "keyword"
         const val HINT = "hint"
         const val ACTIVE_TAB = "st"
+        const val ORIGIN_FILTER = "origin_filter" // which page filter params come from
+        const val TOKEN = "token"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
@@ -57,9 +59,11 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE = 12
         const val DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE = "200"
         const val DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE = "true"
+        const val DEFAULT_VALUE_OF_PARAMETER_IMAGE_PAGE_SIZE = "100"
         const val DEFAULT_VALUE_OF_PARAMETER_SORT = "23"
         const val DEFAULT_VALUE_SOURCE_HOTLIST = "hot_product"
         const val DEFAULT_VALUE_SOURCE_SEARCH = "search"
+        const val DEFAULT_VALUE_SOURCE_IMAGE_SEARCH = "imagesearch"
         const val DEFAULT_VALUE_SOURCE_DIRECTORY = "directory"
         const val DEFAULT_VALUE_SOURCE_PRODUCT = "search_product"
         const val DEFAULT_VALUE_SOURCE_CATALOG = "search_catalog"
@@ -69,5 +73,7 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_PARAMETER_BREADCRUMB = "false"
         const val DEFAULT_VALUE_OF_PARAMETER_START = "0"
         const val DEFAULT_VALUE_OF_PARAMETER_SC = "0"
+        const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE = "sort"
+        const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE = "filter"
     }
 }

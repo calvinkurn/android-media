@@ -70,10 +70,39 @@ data class ProductInfo(
 
 
 ) {
+
+    fun getProductImageUrl(): String? {
+        if (pictures == null || pictures.isEmpty()) return null
+        return pictures[0].urlThumbnail
+    }
+
+    fun getProductName(): String? {
+        return basic.name
+    }
+
+    fun getProductPrice(): Float {
+        return basic.price
+    }
+
+    fun getProductUrl(): String? {
+        return basic.url
+    }
+
+    fun getFsProductIsActive(): Boolean {
+        return freeOngkir.isFreeOngkirActive
+    }
+
+    fun getFsProductImageUrl(): String {
+        return freeOngkir.freeOngkirImgUrl
+    }
+
     data class Response(
             @SerializedName("getPDPInfo")
             @Expose
-            val data: ProductInfo? = null
+            val data: ProductInfo? = null,
+            @SerializedName("topAdsGetProductManage")
+            @Expose
+            val topAdsGetProductManage: TopAdsGetProductManage? = null
     )
 
     data class WishlistStatus(

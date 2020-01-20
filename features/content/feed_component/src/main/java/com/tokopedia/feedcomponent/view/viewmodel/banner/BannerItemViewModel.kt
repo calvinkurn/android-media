@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.viewmodel.banner
 
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.model.ImpressHolder
 
 
 /**
@@ -12,5 +13,6 @@ data class BannerItemViewModel(
         val imageUrl: String = "",
         val redirectUrl: String = "",
         val trackingBannerModel: TrackingBannerModel = TrackingBannerModel(),
-        val tracking: MutableList<TrackingViewModel> = ArrayList()
+        val tracking: MutableList<TrackingViewModel> = ArrayList(),
+        val impressHolder: ImpressHolder = ImpressHolder()
 )

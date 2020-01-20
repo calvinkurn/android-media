@@ -29,7 +29,7 @@ dependencies {
 project.ext {
     artifactId = 'twitter-share'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "twitter_share-release"
 }
 

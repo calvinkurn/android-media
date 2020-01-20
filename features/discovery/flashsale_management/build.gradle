@@ -42,7 +42,7 @@ dependencies {
 project.ext {
     artifactId = 'flashsale-management'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="flashsale_management-release"
 }
 

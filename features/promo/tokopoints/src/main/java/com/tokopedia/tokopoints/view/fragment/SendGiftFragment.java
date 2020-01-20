@@ -55,7 +55,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme);
+        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, com.tokopedia.design.R.style.TransparentBottomSheetDialogTheme);
     }
 
     @Nullable
@@ -206,7 +206,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
         TextView textEmail = getView().findViewById(R.id.email);
         TextView textNotes = getView().findViewById(R.id.message);
         ImageView imgBanner = getView().findViewById(R.id.iv_banner);
-        ImageHandler.loadImage(this.getContext(), imgBanner, getArguments().getString(CommonConstant.EXTRA_COUPON_BANNER), R.color.grey_100);
+        ImageHandler.loadImage(this.getContext(), imgBanner, getArguments().getString(CommonConstant.EXTRA_COUPON_BANNER), com.tokopedia.design.R.color.grey_100);
 
 
         textTitle.setText(getCouponTitle());
@@ -234,8 +234,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
-    }
+        return getActivity();    }
 
     @Override
     public Context getActivityContext() {
@@ -292,7 +291,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
     }

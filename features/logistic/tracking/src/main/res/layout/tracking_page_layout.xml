@@ -293,12 +293,18 @@
                 android:layout_marginRight="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_16">
 
-                <TextView
+                <!--DO NOT DELETE - requested to be replaced by ticker-->
+                <!--<TextView
                     android:id="@+id/further_information_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    tools:text="Untuk informasi lengkap mengenai jasa pengiriman yang disediakan Tokopedia. Silakan lihat disini." />
+                    tools:text="Untuk informasi lengkap mengenai jasa pengiriman yang disediakan Tokopedia. Silakan lihat disini." />-->
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_info_courier"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 

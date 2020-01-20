@@ -85,8 +85,7 @@
         android:text="@string/il_dana_instant_interest_rate"
         app:layout_constraintBottom_toBottomOf="@+id/text_interest_rate"
         app:layout_constraintEnd_toEndOf="@+id/text_form_description"
-        app:layout_constraintTop_toTopOf="@+id/text_interest_rate"
-        tools:text="Rp66.000 - Rp201.600" />
+        app:layout_constraintTop_toTopOf="@+id/text_interest_rate" />
 
     <View
         android:id="@+id/line_separator_vertical_two"
@@ -132,7 +131,7 @@
         android:layout_weight="1"
         android:background="@drawable/il_card_background"
         android:padding="@dimen/dp_8"
-        android:src="@drawable/il_koin_works_logo"
+        android:src="@drawable/il_solusiku_logo"
         app:layout_constraintEnd_toStartOf="@+id/imageview_2"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="@+id/text_form_description"

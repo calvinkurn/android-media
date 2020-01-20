@@ -99,7 +99,7 @@ class VideoVerticalHelper constructor (
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = MethodChecker.getColor(context, R.color.Green_G300)
+                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G300)
             }
         }, sourceString.indexOf(hyperlinkString), sourceString.length, 0)
 

@@ -6,7 +6,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
@@ -36,8 +35,6 @@ public interface OtpComponent {
     ChuckInterceptor provideChuckInterceptor();
 
     AbstractionRouter provideAbstractionRouter();
-
-    TkpdAuthInterceptor tkpdAuthInterceptor();
 
     @MethodListQualifier
     OkHttpClient provideMethodListOkHttpClient();

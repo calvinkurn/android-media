@@ -174,4 +174,6 @@
     <string name="digital_check_balance">Cek Pulsa</string>
     <string name="digital_title_buy">Beli</string>
     <string name="digital_title_nominal">Nominal</string>
+
+    <string name="digital_egold_more_info">Pelajari lebih lanjut</string>
 </resources>

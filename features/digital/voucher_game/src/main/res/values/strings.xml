@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">voucher_game</string>
-    <string name="app_label">Voucher</string>
+
     <string name="vg_menu_promo">Promo</string>
     <string name="vg_menu_help">Bantuan</string>
     <string name="vg_menu_transaction_list">Daftar Transaksi</string>
@@ -12,6 +12,7 @@
     <string name="vg_input_field_label_message">Masukkan nomor ID</string>
     <string name="vg_input_field_error_message">Masukkan nomor ID terlebih dahulu</string>
     <string name="vg_enquiry_result_title">ID Details</string>
+    <string name="vg_input_field_dropdown_title">Server ID</string>
 
     <string name="vg_operator_info_title">Di mana saya dapat menemukan User ID Mobile Legends saya?</string>
     <string name="vg_operator_info_desc">Nomor User ID dan Server ID Dapat dilihat di halaman ini.</string>

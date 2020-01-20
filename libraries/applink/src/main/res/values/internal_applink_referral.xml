@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+
+    <string name="host_referral" translatable="false">referral</string>
+
+    <string name="path_referral_welcome" translatable="false">/.*\</string>
+    <string name="applink_title_im_referral">referral</string>
+</resources>

@@ -102,7 +102,10 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.variant.toString(),
                 pojoAttribute.productProfile.dropPercentage,
                 pojoAttribute.productProfile.priceBefore,
-                pojoAttribute.productProfile.shopId
+                pojoAttribute.productProfile.shopId,
+                pojoAttribute.productProfile.freeShipping,
+                pojoAttribute.productProfile.categoryId,
+                pojoAttribute.productProfile.playStoreData
         )
     }
 

@@ -10,7 +10,6 @@ import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi
@@ -80,17 +79,12 @@ class TopAdsDashboardModule {
         return retrofit.create(ShopCommonApi::class.java)
     }
 
-    @Provides
-    @TopAdsDashboardScope
-    fun provideShopCommonWsApi(@ShopWsQualifier retrofit: Retrofit): ShopCommonWSApi {
-        return retrofit.create(ShopCommonWSApi::class.java)
-    }
 
     @Provides
     @TopAdsDashboardScope
-    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi, shopCommonWS4Api: ShopCommonWSApi,
+    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi,
                                          userSession: UserSessionInterface): ShopCommonCloudDataSource {
-        return ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession)
+        return ShopCommonCloudDataSource(shopCommonApi, userSession)
     }
 
     @Provides

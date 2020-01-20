@@ -22,7 +22,7 @@ object ApplinkConstInternalMarketplace {
 
     // QrScannerActivity
     @JvmField
-    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner"
+    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
 
     // IntermediaryActivity
     @JvmField
@@ -34,9 +34,15 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // ShipmentActivity
+    @JvmField
+    val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
     // NormalCheckoutActivity
     @JvmField
     val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
+    // CartAddressChoiceActivity
+    @JvmField
+    val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
 
     // ProductDetailActivity
     @JvmField
@@ -64,6 +70,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
+    // CreateReviewActivity
+    @JvmField
+    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
@@ -74,6 +84,9 @@ object ApplinkConstInternalMarketplace {
     //ShopOpenRoutingActivity
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
+
+    @JvmField
+    val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
 
     // GmSubscribeHomeActivity
     @JvmField
@@ -106,6 +119,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_SETTINGS_ETALASE = "$SHOP_SETTINGS_BASE-etalase"
 
+    @JvmField
+    val SHOP_SETTINGS_ETALASE_ADD = "$SHOP_SETTINGS_ETALASE/add"
+
     //ShopSettingsAddressActivity
     @JvmField
     val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
@@ -113,6 +129,14 @@ object ApplinkConstInternalMarketplace {
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
+
+    //GeolocationActivity
+    @JvmField
+    val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
+
+    //CodActivity
+    @JvmField
+    val COD = "$INTERNAL_MARKETPLACE/cod"
 
     // OnboardingActivity
     @JvmField
@@ -122,9 +146,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
-    // SettingField for old push notification page(phase 1)
     @JvmField
-    val USER_PUSH_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-push-notification-setting"
+    val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
     //Report Product
     @JvmField
@@ -137,5 +160,12 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     @JvmField
     val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
+
+    // PowerMerchantSubscribeActivity
+    @JvmField
+    val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
+
+    @JvmField
+    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
 }

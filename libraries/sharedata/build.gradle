@@ -31,7 +31,7 @@ dependencies {
 project.ext {
     artifactId = 'share-data'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "sharedata-release"
 }
 

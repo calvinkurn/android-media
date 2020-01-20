@@ -16,6 +16,7 @@
     <string name="min_spend_x">min. pembelian %1$s</string>
     <string name="run_out">Habis</string>
     <string name="in_use">Diterapkan</string>
+    <string name="restricted">Lihat S&amp;K</string>
     <string name="no_min_spend" tools:ignore="ExtraTranslation">Tidak ada minimum pembelian</string>
     <string name="available">Tersedia</string>
     <string name="retry">Ulangi</string>

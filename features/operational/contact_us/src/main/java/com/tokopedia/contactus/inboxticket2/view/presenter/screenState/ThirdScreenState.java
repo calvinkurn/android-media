@@ -17,7 +17,7 @@ public class ThirdScreenState extends ScreenState {
 
     @Override
     public int getThirdEmoji() {
-        return R.drawable.rating_active_3;
+        return R.drawable.ic_rating_active_3;
     }
 
     @Override

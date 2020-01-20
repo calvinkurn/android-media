@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_30"
                 android:layout_gravity="bottom"
-                android:background="@drawable/background_banner_image_mask"
+                android:background="@drawable/travel_background_banner_image_mask"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </FrameLayout>

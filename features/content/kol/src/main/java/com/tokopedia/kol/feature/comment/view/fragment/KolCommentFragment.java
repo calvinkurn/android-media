@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.feedcomponent.util.MentionTextHelper;
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter;
 import com.tokopedia.feedcomponent.view.custom.MentionEditText;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
@@ -158,7 +159,7 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     private void prepareView() {
         adapter = new KolCommentAdapter(typeFactory);
-        listComment.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
+        listComment.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
         listComment.setAdapter(adapter);
         sendButton.setOnClickListener(v -> {
@@ -168,7 +169,7 @@ public class KolCommentFragment extends BaseDaggerFragment
                         kolComment.getRawText()
                 );
             } else {
-                RouteManager.route(getActivity(), ApplinkConst.LOGIN);
+                RouteManager.route(getContext(), ApplinkConst.LOGIN);
             }
 
         });
@@ -202,7 +203,7 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetCommentsFirstTime(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+        NetworkErrorHelper.showEmptyState(getContext(), getView(), errorMessage,
                 () -> presenter.getCommentFirstTime(
                         getArguments().getInt(KolCommentActivity.ARGS_ID))
         );
@@ -219,7 +220,7 @@ public class KolCommentFragment extends BaseDaggerFragment
             getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();
         } else {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+            NetworkErrorHelper.showEmptyState(getContext(), getView(), errorMessage,
                     () -> presenter.getCommentFirstTime(
                             getArguments().getInt(KolCommentActivity.ARGS_ID))
             );
@@ -282,6 +283,23 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void replyToUser(MentionableUserViewModel user) {
+        if (!user.isShop()) {
+            CharSequence userToMention = MentionTextHelper.createValidMentionText(user.toString());
+            kolComment.append(userToMention);
+        } else {
+            StringBuilder mentionFormatBuilder = new StringBuilder();
+            if (kolComment.getText().length() > 0 && kolComment.getText().charAt(kolComment.length() - 1) != ' ') mentionFormatBuilder.append(" ");
+            mentionFormatBuilder
+                    .append("@")
+                    .append(user.getFullName())
+                    .append(" ");
+            kolComment.append(mentionFormatBuilder.toString());
+        }
+        kolComment.setSelection(kolComment.length());
+    }
+
+    @Override
     public void onSuccessChangeWishlist() {
         setWishlist(true);
     }
@@ -319,26 +337,24 @@ public class KolCommentFragment extends BaseDaggerFragment
         adapter.addItem(new KolCommentViewModel(
                 sendKolCommentDomain.getId(),
                 String.valueOf(sendKolCommentDomain.getDomainUser().getId()),
+                null,
                 sendKolCommentDomain.getDomainUser().getPhoto(),
                 sendKolCommentDomain.getDomainUser().getName(),
                 sendKolCommentDomain.getComment(),
                 sendKolCommentDomain.getTime(),
                 sendKolCommentDomain.getDomainUser().isKol(),
                 sendKolCommentDomain.canDeleteComment(),
-                ""
+                "",
+                false
         ));
 
         kolComment.setText("");
         enableSendComment();
-        KeyboardHandler.DropKeyboard(getActivity(), kolComment);
+        KeyboardHandler.DropKeyboard(getContext(), kolComment);
         totalNewComment += 1;
 
         listComment.scrollToPosition(adapter.getItemCount() - 1);
-        Intent intent = new Intent();
-        intent.putExtras(getActivity().getIntent().getExtras());
-        intent.putExtra(ARGS_TOTAL_COMMENT, totalNewComment);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-
+        getActivity().setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment));
     }
 
     @Override
@@ -390,21 +406,11 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     private void showDeleteDialog(final String id, final int adapterPosition) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setMessage(R.string.prompt_delete_comment_kol);
-        builder.setPositiveButton(R.string.kol_title_delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                presenter.deleteComment(id, adapterPosition);
-            }
-        });
-        builder.setNegativeButton(R.string.kol_title_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setPositiveButton(com.tokopedia.kolcommon.R.string.kol_title_delete, (dialog, which) -> presenter.deleteComment(id, adapterPosition));
+        builder.setNegativeButton(com.tokopedia.kolcommon.R.string.kol_title_cancel, (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -424,29 +430,35 @@ public class KolCommentFragment extends BaseDaggerFragment
                     getString(R.string.success_delete_kol_comment));
 
             totalNewComment -= 1;
-            Intent intent = new Intent();
-            intent.putExtras(getActivity().getIntent().getExtras());
-            intent.putExtra(ARGS_TOTAL_COMMENT, totalNewComment);
-            getActivity().setResult(Activity.RESULT_OK, intent);
+
+            getActivity().setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment));
         }
     }
 
     private void setWishlist(boolean wishlisted) {
         if (wishlisted)
-            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_checked);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, com.tokopedia.design.R.drawable.ic_wishlist_checked);
         else
-            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_unchecked);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, com.tokopedia.design.R.drawable.ic_wishlist_unchecked);
     }
 
     private void routeUrl(String url) {
-        if (RouteManager.isSupportApplink(getActivity(), url)) {
-            RouteManager.route(getActivity(), url);
+        if (RouteManager.isSupportApplink(getContext(), url)) {
+            RouteManager.route(getContext(), url);
         } else {
             RouteManager.route(
-                    getActivity(),
+                    getContext(),
                     String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
             );
         }
+    }
+
+    private Intent getReturnIntent(int totalNewComment) {
+        Intent intent = new Intent();
+        Bundle arguments = getArguments();
+        if (arguments != null && arguments.size() > 0) intent.putExtras(arguments);
+        intent.putExtra(ARGS_TOTAL_COMMENT, totalNewComment);
+        return intent;
     }
 
     @Override

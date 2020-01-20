@@ -6,11 +6,12 @@ ext {
     buildToolsVersion = "28.0.3"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.3.0"
+    kotlinVersion = "1.3.61"
 
     lifeCycleVersion = "2.1.0"
 
-    supportLibraryVersion = '1.0.0'
+    supportLibraryVersion = '1.1.0'
+    supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '10.1.0'
     coroutineVersion = '1.3.0'
@@ -26,13 +27,15 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.7.0'
     cardioVersion = '5.5.1'
-    reactNativeVersion = '0.59.5'
+    reactNativeVersion = '0.60.4'
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
-    roomVersion = '2.0.0-rc01'
+    roomVersion = '2.2.1'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     guavaVersion = '20.0'
+    constraintLayoutVersion = '2.0.0-beta3'
+    materialVersion = '1.0.0'
 
     exoPlayerVersion = '2.9.6'
 
@@ -58,6 +61,8 @@ ext {
     playServiceFirebaseCore = '16.0.6'
     playServiceTagManager = '16.0.6'
     playServiceSafetyNet = '16.0.0'
+    playServiceMeasurementBase = '16.0.5'
+    playServiceMeasurementApi = '16.0.4'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -66,6 +71,7 @@ ext {
     SpekVersion = "1.1.5"
     crashlyticsGradleVersion = '1.27.1'
     googleServiceGradleVersion = '4.3.0'
+    coroutineTestVersion = '1.3.2'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -73,17 +79,19 @@ ext {
     // Sort and categorize alphabetically by folder name
     app = [
         customerapp     : ":customerapp",
-        sellerapp       : ":sellerapp",
-        mitraapp        : ":kelontongapp"
+        sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '0.0.8x'
-    unifyComponentsVersion = '0.0.15x'
-    unifyCoachMarkVersion = '1.0.7x'
-    unifyCalendarVersion = '0.0.7x'
-    unifyBannerVersion = '0.0.8x'
-
+    unifyPrinciplesVersion = '1.0.0'
+    unifyComponentsVersion = '1.1.3'
+    unifyCoachMarkVersion = '1.2.0'
+    unifyCalendarVersion = '1.0.2'
+    unifyBannerVersion = '1.0.0'
+    unifyDialogVersion = '1.0.0'
+    unifyDatePickerVersion = '0.0.1'
+    unifyEmptyStateVersion = '1.0.2'
+    unifyGlobalErrorVersion = '1.0.1'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -105,23 +113,25 @@ ext {
             dbFlowCore     : "com.github.agrosner.DBFlow:dbflow-core:${dbFlowVersion}",
             dbFlowProcessor: "com.github.agrosner.DBFlow:dbflow-processor:${dbFlowVersion}",
             dbRoomRuntime  : "androidx.room:room-runtime:${roomVersion}",
+            dbRoomKtx      : "androidx.room:room-ktx:${roomVersion}",
             dbRoomCompiler : "androidx.room:room-compiler:${roomVersion}",
             dbRoomTesting  : "androidx.room:room-testing:${roomVersion}"
     ]
 
     supportLibDependencies = [
             recyclerViewV7      : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
-            supportV4           : "androidx.legacy:legacy-support-v4:${supportLibraryVersion}",
+            supportV4           : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
             appCompactV7        : "androidx.appcompat:appcompat:${supportLibraryVersion}",
-            supportV13          : "androidx.legacy:legacy-support-v13:${supportLibraryVersion}",
-            design              : "com.google.android.material:material:${supportLibraryVersion}",
-            cardViewV7          : "androidx.cardview:cardview:${supportLibraryVersion}",
+            supportV13          : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
+            design              : "com.google.android.material:material:${materialVersion}",
+            cardViewV7          : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
             exifinterface       : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
-            constraintLayout    : "androidx.constraintlayout:constraintlayout:1.1.2",
+            constraintLayout    : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
             preferenceV7        : "androidx.preference:preference:${supportLibraryVersion}",
             kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
             kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
             kotlinSupportJdk8   : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}",
+            kotlinStdlibCommon  : "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}",
             kotlinReflection    : "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     ]
 
@@ -139,7 +149,8 @@ ext {
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
             tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
-            safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}"
+            safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}",
+            measurementApi   : "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}",
     ]
 
     firebase = [
@@ -169,23 +180,16 @@ ext {
 
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.9.9",
-            crashlyticsAnswers : "com.crashlytics.sdk.android:answers:1.4.6@aar",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
-            moengage   : "com.moengage:moe-android-sdk:9.3.02",
-            moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
-            moengageMSG: "com.moengage:addon-messaging:3.2.01",
-            moengageSdk         : "com.moengage:moengagesdk:3.3.02",
-            moengagePushbase    : "com.moengage:pushbase:3.2.00",
-            moengageInapp   : "com.moengage:inapp:3.2.02",
-            moengageMSG: "com.moengage:addon-messaging:3.2.01",
-            branch     : "io.branch.sdk.android:library:3.0.4+",
-            rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:2.4.1@aar"
+            moengage   : "com.moengage:moe-android-sdk:9.7.02",
+            moengageAmp: "com.moengage:push-amp-plus:0.3.00",
+            branch     : "io.branch.sdk.android:library:4.1.1",
+            rapid7     : "com.rapid7:r7insight_java:1.1.39"
     ]
 
     deeplinkDispatchDependencies = [
@@ -200,6 +204,7 @@ ext {
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
             rxAndroid             : "io.reactivex:rxandroid:1.0.1",
+            rxKotlin             : "io.reactivex:rxkotlin:0.60.0",
             rxJava                : "io.reactivex:rxjava:1.2.9",
             rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
@@ -214,11 +219,11 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:2.0.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
-            hansel                : "io.hansel.preprocessor:preprocessor:8.3.3",
+            hansel                : "io.hansel.preprocessor:preprocessor:8.3.11",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -233,9 +238,12 @@ ext {
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
+            archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
+            archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2@aar",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.2",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
+            rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
     ]
 
     testDependencies = [
@@ -266,11 +274,12 @@ ext {
             kotlinMockito      : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
             kotlinMockito2     : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0",
             spekApi            : "org.jetbrains.spek:spek-api:${SpekVersion}",
-            spek2Api           : "org.spekframework.spek2:spek-runner-junit5:2.0.6",
-            spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.6",
+            spek2Api           : "org.spekframework.spek2:spek-runner-junit5:2.0.8",
+            spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.8",
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
             junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
-            archCoreTesting    : "androidx.arch.core:core-testing:$lifeCycleVersion"
+            archCoreTesting    : "androidx.arch.core:core-testing:$lifeCycleVersion",
+            couroutinesTest    : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion"
     ]
 
     debugToolsDependencies = [
@@ -304,6 +313,10 @@ ext {
        components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
        coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar"
+       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+       empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+       global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
     ]
 }

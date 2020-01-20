@@ -16,6 +16,10 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var id: Int = 0
     private var name: String = ""
     private var type: String = ""
+    private var checkIn: String = ""
+    private var checkOut: String = ""
+    private var room: Int = 0
+    private var adult: Int = 0
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
@@ -41,6 +45,12 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
                 name = uri.getQueryParameter(PARAM_REGION_NAME)
                 type = TYPE_REGION
             }
+
+            if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkIn = uri.getQueryParameter(PARAM_CHECK_IN)
+            if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOut = uri.getQueryParameter(PARAM_CHECK_OUT)
+            if (!uri.getQueryParameter(PARAM_ROOM).isNullOrEmpty()) room = uri.getQueryParameter(PARAM_ROOM).toInt()
+            if (!uri.getQueryParameter(PARAM_ADULT).isNullOrEmpty()) adult = uri.getQueryParameter(PARAM_ADULT).toInt()
+
         }
 
         super.onCreate(savedInstanceState)
@@ -52,10 +62,10 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = HOMEPAGE_SCREEN_NAME
 
     override fun getNewFragment(): Fragment = if (type.isNotEmpty())
-        HotelHomepageFragment.getInstance(id, name, type)
+        HotelHomepageFragment.getInstance(id, name, type, checkIn, checkOut, adult, room)
     else
         HotelHomepageFragment.getInstance()
 
@@ -73,10 +83,16 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         const val PARAM_CITY_NAME = "city_name"
         const val PARAM_REGION_ID = "region_id"
         const val PARAM_REGION_NAME = "region_name"
+        const val PARAM_CHECK_IN = "check_in"
+        const val PARAM_CHECK_OUT = "check_out"
+        const val PARAM_ROOM = "room"
+        const val PARAM_ADULT = "adult"
 
         const val TYPE_REGION = "region"
         const val TYPE_DISTRICT = "district"
         const val TYPE_CITY = "city"
         const val TYPE_PROPERTY = "property"
+
+        const val HOMEPAGE_SCREEN_NAME = "/hotel/homepage"
     }
 }

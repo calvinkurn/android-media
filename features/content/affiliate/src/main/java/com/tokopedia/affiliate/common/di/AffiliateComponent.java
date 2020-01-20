@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
 
 import dagger.Component;

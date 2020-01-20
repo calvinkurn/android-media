@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +20,9 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -40,7 +38,6 @@ import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,35 +156,35 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         View v;
         switch (viewType) {
             case ITEM_PRODUCT_NORMAL:
-                v = inflater.inflate(R.layout.deal_item_card, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.deal_item_card, parent, false);
                 holder = new ItemViewHolderNormal(v);
                 break;
             case ITEM_PRODUCT_SHORT:
-                v = inflater.inflate(R.layout.deal_item_card_short, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.deal_item_card_short, parent, false);
                 holder = new ItemViewHolderShort(v);
                 break;
             case ITEM_PRODUCT_HOME:
-                v = inflater.inflate(R.layout.deal_item_card_home, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.deal_item_card_home, parent, false);
                 holder = new ItemViewHolderNormal(v);
                 break;
             case ITEM_PRODUCT_TOP_DEALS:
-                v = inflater.inflate(R.layout.item_top_suggestions, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.item_top_suggestions, parent, false);
                 holder = new TopSuggestionHolder(v);
                 break;
             case HEADER_TRENDING_DEALS:
-                v = inflater.inflate(R.layout.header_layout, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.header_layout, parent, false);
                 holder = new HeaderViewHolder(v);
                 break;
             case HEADER_TRENDING_DEALS_SEARCHED:
-                v = inflater.inflate(R.layout.header_layout_trending_deals, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.header_layout_trending_deals, parent, false);
                 holder = new HeaderViewHolder(v);
                 break;
             case HEADER_BRAND:
-                v = inflater.inflate(R.layout.header_layout_brand_page, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.header_layout_brand_page, parent, false);
                 holder = new HeaderBrandViewHolder(v);
                 break;
             case FOOTER:
-                v = inflater.inflate(R.layout.footer_layout, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.deals_footer_layout, parent, false);
                 holder = new FooterViewHolder(v);
                 break;
             default:
@@ -460,9 +457,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void showLoginSnackbar(String message, int position) {
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
-                getActivity().getResources().getString(R.string.title_activity_login), v -> {
-                    Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
-                            getLoginIntent(getActivity());
+                getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
+                    Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
                     toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
                 }
         ).show();
@@ -503,26 +499,26 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         ItemViewHolderNormal(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            dealImage = itemView.findViewById(R.id.iv_product);
-            tvLikes = itemView.findViewById(R.id.tv_wish_list);
-            discount = itemView.findViewById(R.id.tv_off);
-            dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
-            brandName = itemView.findViewById(R.id.tv_brand_name);
-            ivFavourite = itemView.findViewById(R.id.iv_wish_list);
-            dealavailableLocations = itemView.findViewById(R.id.tv_available_locations);
-            dealListPrice = itemView.findViewById(R.id.tv_mrp);
-            brandImage = itemView.findViewById(R.id.iv_brand);
-            ivShareVia = itemView.findViewById(R.id.iv_share);
-            dealSellingPrice = itemView.findViewById(R.id.tv_sales_price);
-            hotDeal = itemView.findViewById(R.id.tv_hot_deal);
-            cvBrand = itemView.findViewById(R.id.cv_brand);
+            dealImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_product);
+            tvLikes = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_wish_list);
+            discount = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_off);
+            dealsDetails = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_deal_intro);
+            brandName = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_brand_name);
+            ivFavourite = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_wish_list);
+            dealavailableLocations = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_available_locations);
+            dealListPrice = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_mrp);
+            brandImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
+            ivShareVia = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_share);
+            dealSellingPrice = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_sales_price);
+            hotDeal = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_hot_deal);
+            cvBrand = itemView.findViewById(com.tokopedia.digital_deals.R.id.cv_brand);
         }
 
         void bindData(final ProductItem productItem) {
             dealsDetails.setText(productItem.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             if (!brandPageCard) {
-                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 brandName.setText(productItem.getBrand().getTitle());
                 if (productItem.getBrand().getUrl() != null) {
                     cvBrand.setOnClickListener(this);
@@ -531,9 +527,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 productItem.setBrand(brand);
                 cvBrand.setVisibility(View.GONE);
                 brandName.setVisibility(View.GONE);
-                Drawable img = MethodChecker.getDrawable(getActivity(), R.drawable.ic_location);
+                Drawable img = MethodChecker.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_location);
                 dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
+                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8));
 
             }
             int likes = Utils.getSingletonInstance().containsLikedEvent(productItem.getId());
@@ -588,9 +584,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 tvLikes.setVisibility(View.GONE);
             }
             if (isLiked) {
-                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(), R.drawable.ic_wishlist_filled));
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(), com.tokopedia.digital_deals.R.drawable.ic_wishlist_filled));
             } else {
-                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(), R.drawable.ic_wishlist_unfilled));
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(), com.tokopedia.digital_deals.R.drawable.ic_wishlist_unfilled));
             }
         }
 
@@ -637,14 +633,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (isHeaderAdded || isBrandHeaderAdded)
                 position -= 1;
 
-            if (v.getId() == R.id.iv_share) {
+            if (v.getId() == com.tokopedia.digital_deals.R.id.iv_share) {
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SHARE,
                         getShareLabel(position));
 
                 Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
                         context, categoryItems.get(getIndex()).getDisplayName(),
                         categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getDesktopUrl());
-            } else if (v.getId() == R.id.iv_wish_list) {
+            } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_wish_list) {
                 ProductItem item = categoryItems.get(getIndex());
                 boolean isLoggedIn = mPresenter.setDealLike(item.getId(), item.isLiked(), getIndex(), item.getLikes());
                 if (isLoggedIn) {
@@ -655,7 +651,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         setLikes(categoryItems.get(getIndex()).getLikes() + 1, !categoryItems.get(getIndex()).isLiked());
                     }
                 }
-            } else if (v.getId() == R.id.cv_brand) {
+            } else if (v.getId() == com.tokopedia.digital_deals.R.id.cv_brand) {
                 Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
                 detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
                 context.startActivity(detailsIntent);
@@ -710,15 +706,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         ItemViewHolderShort(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            dealImage = itemView.findViewById(R.id.iv_product);
-            discount = itemView.findViewById(R.id.tv_off);
-            dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
-            brandName = itemView.findViewById(R.id.tv_brand_name);
-            dealListPrice = itemView.findViewById(R.id.tv_mrp);
-            brandImage = itemView.findViewById(R.id.iv_brand);
-            dealSellingPrice = itemView.findViewById(R.id.tv_sales_price);
-            hotDeal = itemView.findViewById(R.id.tv_hot_deal);
-            cvBrand = itemView.findViewById(R.id.cv_brand);
+            dealImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_product);
+            discount = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_off);
+            dealsDetails = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_deal_intro);
+            brandName = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_brand_name);
+            dealListPrice = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_mrp);
+            brandImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
+            dealSellingPrice = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_sales_price);
+            hotDeal = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_hot_deal);
+            cvBrand = itemView.findViewById(com.tokopedia.digital_deals.R.id.cv_brand);
 
 
             DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -730,8 +726,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         void bindData(final ProductItem productItem) {
             dealsDetails.setText(productItem.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
-            ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             brandName.setText(productItem.getBrand().getTitle());
             if (productItem.getDisplayTags() != null) {
                 hotDeal.setVisibility(View.VISIBLE);
@@ -777,7 +773,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.cv_brand) {
+            if (v.getId() == com.tokopedia.digital_deals.R.id.cv_brand) {
                 Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
                 detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
                 context.startActivity(detailsIntent);
@@ -796,7 +792,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private FooterViewHolder(View itemView) {
             super(itemView);
-            loadingLayout = itemView.findViewById(R.id.loading_fl);
+            loadingLayout = itemView.findViewById(com.tokopedia.digital_deals.R.id.loading_fl);
         }
     }
 
@@ -806,7 +802,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private HeaderViewHolder(View itemView) {
             super(itemView);
-            dealsInCity = itemView.findViewById(R.id.deals_in_city);
+            dealsInCity = itemView.findViewById(com.tokopedia.digital_deals.R.id.deals_in_city);
         }
 
         void bindData(SpannableString headerText) {
@@ -830,12 +826,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             super(itemView);
             this.itemView = itemView;
             itemView.setOnClickListener(this);
-            tvDealTitle = itemView.findViewById(R.id.tv_simple_item);
-            tvBrandName = itemView.findViewById(R.id.tv_brand_name);
-            brandImage = itemView.findViewById(R.id.iv_brand);
-            salesPrice = itemView.findViewById(R.id.tv_sales_price);
-            mrpPrice = itemView.findViewById(R.id.mrp);
-            discount = itemView.findViewById(R.id.tv_off);
+            tvDealTitle = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_simple_item);
+            tvBrandName = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_brand_name);
+            brandImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
+            salesPrice = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_sales_price);
+            mrpPrice = itemView.findViewById(com.tokopedia.digital_deals.R.id.mrp);
+            discount = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_off);
         }
 
         private void setDealTitle(int position, ProductItem value) {
@@ -843,7 +839,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 this.valueItem = value;
                 tvDealTitle.setText(valueItem.getDisplayName());
                 tvBrandName.setText(value.getBrand().getTitle());
-                ImageHandler.loadImage(context, brandImage, value.getThumbnailWeb(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(context, brandImage, value.getThumbnailWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 if (value.getMrp() > 0) {
                     mrpPrice.setText(Utils.convertToCurrencyString(value.getMrp()));
                     mrpPrice.setPaintFlags(mrpPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -852,7 +848,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
                 if (!TextUtils.isEmpty(value.getSavingPercentage())) {
                     discount.setText(value.getSavingPercentage());
-                    discount.setBackground(context.getResources().getDrawable(R.drawable.background_lightgreen_oval));
+                    discount.setBackground(context.getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.background_lightgreen_oval));
                 } else {
                     discount.setVisibility(View.GONE);
                     discount.setBackground(null);
@@ -913,23 +909,23 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private HeaderBrandViewHolder(View view) {
             super(view);
             this.itemView = view;
-            tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-            tvSeeMoreBtn = view.findViewById(R.id.seemorebutton_description);
-            tvDealsCount = view.findViewById(R.id.number_of_locations);
-            tvCityName = view.findViewById(R.id.tv_popular);
-            tvSeeMore = view.findViewById(R.id.seemorebutton_description);
+            tvExpandableDesc = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expandable_description);
+            tvSeeMoreBtn = view.findViewById(com.tokopedia.digital_deals.R.id.seemorebutton_description);
+            tvDealsCount = view.findViewById(com.tokopedia.digital_deals.R.id.number_of_locations);
+            tvCityName = view.findViewById(com.tokopedia.digital_deals.R.id.tv_popular);
+            tvSeeMore = view.findViewById(com.tokopedia.digital_deals.R.id.seemorebutton_description);
         }
 
         void bindData(final String headerText, int count) {
             tvExpandableDesc.setText(headerText);
             Location location = Utils.getSingletonInstance().getLocation(getActivity());
             if (location != null) {
-                tvCityName.setText(String.format(context.getResources().getString(R.string.deals_brand_detail_location), location.getName()));
+                tvCityName.setText(String.format(context.getResources().getString(com.tokopedia.digital_deals.R.string.deals_brand_detail_location), location.getName()));
 
             } else {
-                tvCityName.setText(context.getResources().getString(R.string.text_deals));
+                tvCityName.setText(context.getResources().getString(com.tokopedia.digital_deals.R.string.text_deals));
             }
-            tvDealsCount.setText(String.format(context.getResources().getString(R.string.number_of_items), count));
+            tvDealsCount.setText(String.format(context.getResources().getString(com.tokopedia.digital_deals.R.string.number_of_items), count));
             tvSeeMoreBtn.setOnClickListener(this);
             tvExpandableDesc.setInterpolator(new OvershootInterpolator());
 
@@ -937,13 +933,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.seemorebutton_description) {
+            if (v.getId() == com.tokopedia.digital_deals.R.id.seemorebutton_description) {
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_MORE_BRAND_DETAIL, highLightText);
                 if (tvExpandableDesc.isExpanded()) {
-                    tvSeeMore.setText(R.string.expand);
+                    tvSeeMore.setText(com.tokopedia.digital_deals.R.string.expand);
 
                 } else {
-                    tvSeeMore.setText(R.string.collapse);
+                    tvSeeMore.setText(com.tokopedia.digital_deals.R.string.collapse);
 
                 }
                 tvExpandableDesc.toggle();

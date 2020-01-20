@@ -112,7 +112,7 @@
             android:id="@+id/copy_pnr"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            app:srcCompat="@drawable/ic_copy_order" />
+            app:srcCompat="@drawable/flight_ic_copy_order" />
     </LinearLayout>
 
     <View

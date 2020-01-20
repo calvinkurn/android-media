@@ -18,15 +18,15 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.TestAppModule;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
-import com.tokopedia.checkout.domain.mapper.MapperUtil;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.di.component.DaggerTestCartListComponent;
-import com.tokopedia.checkout.view.di.component.TestCartListComponent;
-import com.tokopedia.checkout.view.di.module.TestCartListModule;
-import com.tokopedia.checkout.view.di.module.TestTrackingAnalyticsModule;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper;
+import com.tokopedia.purchase_platform.common.base.MapperUtil;
+import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
+import com.tokopedia.purchase_platform.common.di.component.DaggerTestCartListComponent;
+import com.tokopedia.purchase_platform.common.di.component.TestCartListComponent;
+import com.tokopedia.purchase_platform.common.di.module.TestCartListModule;
+import com.tokopedia.purchase_platform.common.di.module.TestTrackingAnalyticsModule;
+import com.tokopedia.purchase_platform.features.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
@@ -60,7 +60,7 @@ import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import org.junit.After;
@@ -262,7 +262,7 @@ public class MainParentActivityTest {
 
         // reset all inbox state
         TestCartListComponent navComponent = DaggerTestCartListComponent.builder()
-                .cartComponent(CartComponentInjector.newInstance(mIntentsRule.getActivity().getApplication()).getCartApiServiceComponent())
+//                .cartComponent(CartComponentInjector.newInstance(mIntentsRule.getActivity().getApplication()).getCartApiServiceComponent())
                 .testCartListModule(new TestCartListModule(fragment))
                 .testTrackingAnalyticsModule(new TestTrackingAnalyticsModule())
                 .build();

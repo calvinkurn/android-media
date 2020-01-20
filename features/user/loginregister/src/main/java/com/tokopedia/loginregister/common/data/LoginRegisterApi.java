@@ -2,13 +2,10 @@ package com.tokopedia.loginregister.common.data;
 
 
 import com.tokopedia.loginregister.activation.domain.pojo.ActionPojo;
-import com.tokopedia.loginregister.activation.domain.pojo.ActivateUnicodePojo;
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo;
-import com.tokopedia.loginregister.registeremail.domain.pojo.RegisterEmailPojo;
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo;
 import com.tokopedia.network.data.model.response.DataResponse;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -41,10 +38,5 @@ public interface LoginRegisterApi {
     @POST(LoginRegisterUrl.PATH_REGISTER_VALIDATION)
     Observable<Response<DataResponse<RegisterValidationPojo>>> validateRegister(@FieldMap Map<String, Object>
                                                                 parameters);
-
-    @FormUrlEncoded
-    @POST(LoginRegisterUrl.DO_REGISTER)
-    Observable<Response<DataResponse<RegisterEmailPojo>>> registerEmail(@FieldMap Map<String, Object>
-                                                                       params);
 
 }

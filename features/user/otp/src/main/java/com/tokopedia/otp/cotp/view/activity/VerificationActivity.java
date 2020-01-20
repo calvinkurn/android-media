@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
-import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
@@ -49,6 +49,7 @@ public class VerificationActivity extends BaseSimpleActivity {
     protected static final String CHOOSE_FRAGMENT_TAG = "choose";
     protected static final String REGEX_MASK_PHONE_NUMBER =
             "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,4})";
+    private static final int DEFAULT_OTP_CODE_LENGTH = 6;
 
     private String phoneNumber;
     private String email;
@@ -194,7 +195,7 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     public void goToOnboardingMiscallPage(MethodItem methodItem) {
         if (!(getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
-                VerificationFragment)) {
+                OnboardingOtpMiscallFragment)) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -208,7 +209,6 @@ public class VerificationActivity extends BaseSimpleActivity {
     }
 
     protected VerificationViewModel createSmsBundle() {
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -217,12 +217,12 @@ public class VerificationActivity extends BaseSimpleActivity {
                 R.drawable.ic_verification_sms,
                 createSmsMessage(phoneNumber, otpType),
                 OTPAnalytics.Screen.SCREEN_COTP_SMS,
-                canUseOtherMethod
+                canUseOtherMethod,
+                DEFAULT_OTP_CODE_LENGTH
         );
     }
 
     private VerificationViewModel createEmailBundle() {
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -231,13 +231,12 @@ public class VerificationActivity extends BaseSimpleActivity {
                 R.drawable.ic_verification_email,
                 createEmailMessage(email),
                 OTPAnalytics.Screen.SCREEN_COTP_EMAIL,
-                canUseOtherMethod
+                canUseOtherMethod,
+                DEFAULT_OTP_CODE_LENGTH
         );
     }
 
     protected VerificationViewModel createDynamicBundle(MethodItem methodItem) {
-
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -246,7 +245,8 @@ public class VerificationActivity extends BaseSimpleActivity {
                 methodItem.getImageUrl(),
                 methodItem.getVerificationText(),
                 getDynamicAppScreen(methodItem.getModeName()),
-                canUseOtherMethod
+                canUseOtherMethod,
+                methodItem.getNumberOtpDigit()
         );
     }
 

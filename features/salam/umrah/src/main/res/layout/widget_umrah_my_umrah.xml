@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/umrah_bg_my_umrah_widget"
+    android:elevation="@dimen/dp_4"
+    android:padding="@dimen/dp_16">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_my_umrah"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_umrah_salam_svg" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_package"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintLeft_toRightOf="@+id/iv_my_umrah"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        android:maxLines="1"
+        tools:text="Umroh VIP Direct Madinah 9 hari" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_departure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toRightOf="@+id/iv_my_umrah"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_package"
+        app:typographyType="heading_4"
+        tools:text="Berangkat 256 hari lagi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_next_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/my_umrah_widget_next_step_label"
+        android:textColor="@color/Neutral_N700_44"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_my_umrah"
+        app:typographyType="small" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Red_R500"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_next_label"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Upload dokumen" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_my_umrah_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/umrah_my_umrah_show_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_my_umrah"
+        app:unifyButtonSize="small"
+        app:unifyButtonVariant="filled" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/iv_my_umrah_loading"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tg_umrah_package_loading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_my_umrah_loading"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tg_umrah_departure_loading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_my_umrah_loading"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_package_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tg_umrah_next_label_loading"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_my_umrah_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tg_umrah_next_loading"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_next_label_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/btn_my_umrah_detail_loading"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_next_loading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tg_umrah_next_label_loading" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

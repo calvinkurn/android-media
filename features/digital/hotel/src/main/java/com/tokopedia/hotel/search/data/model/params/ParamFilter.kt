@@ -26,7 +26,7 @@ data class ParamFilter(
 
         @SerializedName("reviewScore")
         @Expose
-        var reviewScore: Int = 5,
+        var reviewScore: Int = 0,
 
         @SerializedName("hotelFacilities")
         @Expose

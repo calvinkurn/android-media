@@ -41,6 +41,8 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                     list_recycler_view.layoutManager = layoutManager
                     list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator())
                     list_recycler_view.adapter = recentSearchAdapter
+                } else {
+                    recentSearchAdapter.updateList(element.destination)
                 }
             }
         } else {

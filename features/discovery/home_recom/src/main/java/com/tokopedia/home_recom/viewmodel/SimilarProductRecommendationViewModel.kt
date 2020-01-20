@@ -34,11 +34,11 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     internal val recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()
     private var hasNextPage = true
 
-    fun getSimilarProductRecommendation(page: Int = 1, ref: String, productId: String){
+    fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
         if(page == 1 && recommendationItem.value != null) recommendationItem.value = null
         if (recommendationItem.value == null) recommendationItem.postValue(Response.loading())
         else recommendationItem.postValue(Response.loadingMore(recommendationItem.value?.data))
-        val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), ref = ref)
+        val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
         singleRecommendationUseCase.execute(params,object: Subscriber<List<RecommendationItem>>(){
             override fun onNext(list: List<RecommendationItem>) {
                 recommendationItem.postValue(Response.success(combineList(recommendationItem.value?.data

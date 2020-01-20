@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LobItem;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -64,7 +64,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
                     if (uri.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
                         RouteManager.route(itemView.getContext(), uri);
                     } else {
-                        ((TokopointRouter) itemView.getContext().getApplicationContext()).openTokoPoint(itemView.getContext(), uri);
+                        RouteManager.route(itemView.getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,uri));
                     }
                 });
 

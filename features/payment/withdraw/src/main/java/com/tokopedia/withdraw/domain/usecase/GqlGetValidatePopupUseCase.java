@@ -18,8 +18,8 @@ public class GqlGetValidatePopupUseCase {
     private String query;
 
     @Inject
-    public GqlGetValidatePopupUseCase() {
-        graphqlUseCase = new GraphqlUseCase();
+    public GqlGetValidatePopupUseCase(GraphqlUseCase graphqlUseCase) {
+        this.graphqlUseCase = graphqlUseCase;
     }
 
     public void unsubscribe() {

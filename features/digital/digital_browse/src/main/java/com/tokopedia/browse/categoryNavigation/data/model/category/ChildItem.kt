@@ -2,6 +2,7 @@ package com.tokopedia.browse.categoryNavigation.data.model.category
 
 import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 @Generated("com.robohorse.robopojogenerator")
 data class ChildItem(
@@ -49,7 +50,7 @@ data class ChildItem(
         var parentCategoryname: String? = null
 
 
-){
+) : ImpressHolder() {
 
         constructor(applink:String?,name: String,id:String,type: Int):this(null, null, null, null, applink, name, null, id, null, null, null, false, type)
 }

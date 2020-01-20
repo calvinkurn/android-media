@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.presentation.fragment;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.presentation.adapter.FlightFilterTransitAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
@@ -31,6 +32,11 @@ public class FlightFilterTransitFragment extends BaseFlightFilterFragment<Transi
     @Override
     public void onItemClicked(TransitStat transitStat) {
         // no op
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 
     @Override

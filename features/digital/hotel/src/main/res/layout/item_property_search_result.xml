@@ -162,6 +162,17 @@
             app:layout_constraintStart_toEndOf="@+id/rating_counter"
             tools:text="Mengesankan" />
 
+        <View
+            android:id="@+id/container_pay_at_hotel_shadow"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_16"
+            app:layout_constraintStart_toStartOf="@+id/container_pay_at_hotel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rating_counter"
+            android:layout_marginTop="@dimen/dp_16"
+            android:visibility="gone"
+            />
+
         <LinearLayout
             android:id="@+id/container_price_origin"
             android:layout_width="wrap_content"
@@ -173,7 +184,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintRight_toRightOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/rate">
+            app:layout_constraintTop_toBottomOf="@+id/container_pay_at_hotel_shadow">
 
 
             <com.tokopedia.design.component.TextViewCompat
@@ -258,7 +269,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include_tax"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"

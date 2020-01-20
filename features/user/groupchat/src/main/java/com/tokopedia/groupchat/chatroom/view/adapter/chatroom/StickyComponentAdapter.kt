@@ -57,13 +57,14 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
             title.text = getTitle(stickyComponentViewModel.title)
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             title.setTypeface(null, Typeface.NORMAL)
-            title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
+            title.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.black_70))
 
             subtitle.text = MethodChecker.fromHtml(stickyComponentViewModel.subtitle)
             subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             subtitle.setTypeface(null, Typeface.BOLD)
-            subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.orange_red))
+            subtitle.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.orange_red))
             atcStickyPlay.hide()
+
 
             itemView.animate().setDuration(200)
                     .alpha(1f)
@@ -167,8 +168,10 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
     private fun dismissItem(position: Int): () -> Unit {
         return {
-            list.removeAt(position)
-            notifyItemRemoved(position)
+            if(list.size > position) {
+                list.removeAt(position)
+                notifyItemRemoved(position)
+            }
         }
     }
 }

@@ -4,39 +4,103 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
+        android:label="@string/title_digital_deals"
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.DealsHomeActivity"
             android:label="@string/title_activity_deals"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.DealsSearchActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.activity.DealDetailsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.CategoryDetailActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.AllBrandsActivity"
-            android:label="@string/title_activity_all_brands"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity
-            android:name=".view.activity.BrandDetailsActivity"
-            android:screenOrientation="portrait" />
+            android:theme="@style/Theme.White">
 
-        <activity
-            android:name=".view.activity.CheckoutActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+        <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
 
-    </application>
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
 
-</manifest>
+            <data
+                android:host="@string/host_global"
+                android:path="/deals"
+                android:scheme="@string/internal_scheme"/>
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".view.activity.DealsSearchActivity"
+        android:screenOrientation="portrait">
+    </activity>
+    <activity
+        android:name=".view.activity.DealDetailsActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.White">
+        <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+            android:host="@string/host_global"
+            android:pathPattern="/deals-slug/.*\\/"
+            android:scheme="@string/internal_scheme" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".view.activity.CategoryDetailActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.White">
+
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="@string/host_global"
+                android:pathPattern="/deals/category/page"
+                android:scheme="@string/internal_scheme" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".view.activity.AllBrandsActivity"
+        android:label="@string/title_activity_all_brands"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.White"
+        android:windowSoftInputMode="stateHidden">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="@string/host_global"
+                android:pathPattern="/deals-allbrands/.*\\/"
+                android:scheme="@string/internal_scheme" />
+        </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".view.activity.BrandDetailsActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="@string/host_global"
+                android:pathPattern="/deals-brand/.*\\/"
+                android:scheme="@string/internal_scheme" />
+        </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".view.activity.CheckoutActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.White" />
+
+</application>
+
+    </manifest>

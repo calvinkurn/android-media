@@ -98,7 +98,7 @@ class ProductManageListViewHolder(view: View, checkableListener: CheckableIntera
         if (!statusStockEmpty && productManageViewModel.productUsingStock == ProductManageStockDef.USING_STOCK) {
             stockTextView.visibility = View.VISIBLE
             if (productManageViewModel.isProductVariant) {
-                stockTextView.text = itemView.context.getString(R.string.pml_product_variant_stock_limited)
+                stockTextView.text = itemView.context.getString(R.string.pml_product_variant_stock_active)
             } else {
                 stockTextView.text = itemView.context.getString(R.string.product_manage_label_stock_counter, productManageViewModel.productStock)
             }

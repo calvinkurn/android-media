@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.core2.R;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
-public class ManageWebViewActivity extends BasePresenterActivity
-        implements FragmentGeneralWebView.OnFragmentInteractionListener {
+public class ManageWebViewActivity extends BasePresenterActivity {
 
     private static final String ARG_TITLE = "ARG_TITLE";
     private Uri mUri;
@@ -70,8 +68,8 @@ public class ManageWebViewActivity extends BasePresenterActivity
     }
 
     private void openWebView(String uri) {
-        FragmentGeneralWebView fragment = FragmentGeneralWebView.createInstance(uri);
-        getFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.container,
+                BaseSessionWebViewFragment.newInstance(uri)).commit();
     }
 
     @Override
@@ -79,21 +77,6 @@ public class ManageWebViewActivity extends BasePresenterActivity
         return mPageTitle;
     }
 
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-        Toast.makeText(this, getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
-        finish();
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

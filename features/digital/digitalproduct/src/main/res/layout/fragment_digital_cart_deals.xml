@@ -22,15 +22,15 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_deal"
             style="@style/Tabs.Secondary"
-            footerColor="@color/colorPrimary"
+            footerColor="@color/green_250"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:elevation="@dimen/dp_2"
             app:tabBackground="@color/white"
-            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabIndicatorColor="@color/green_250"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabSelectedTextColor="@color/green_250"
             app:tabTextAppearance="@style/TitlePageWhiteIndicator"
             app:tabTextColor="@color/font_black_disabled_38" />
 

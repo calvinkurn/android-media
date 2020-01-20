@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_name"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_70"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="center_vertical"
+            app:typographyType="heading_5"
+            app:layout_constraintStart_toEndOf="@id/iv_avatar"
+            app:layout_constraintTop_toTopOf="@id/iv_avatar"
+            app:layout_constraintEnd_toStartOf="@+id/btn_unfav"
+            tools:text="1901 Jewelry" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_etalase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_44"
+            android:gravity="center_vertical"
+            app:typographyType="heading_6"
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_name"
+            app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
+            tools:text="9 Etalase"
+        />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_44"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:gravity="center_vertical"
+            app:typographyType="heading_6"
+            app:layout_constraintStart_toEndOf="@id/tv_etalase"
+            app:layout_constraintTop_toTopOf="@id/tv_etalase"
+            app:layout_constraintBottom_toBottomOf="@id/tv_etalase"
+            tools:text="305 Produk"
+        />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_unfav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kol_title_delete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="micro"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+    />
+
+</RelativeLayout>

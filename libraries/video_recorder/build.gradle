@@ -36,7 +36,7 @@ dependencies {
 project.ext {
     artifactId = 'video-recorder'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "video_recorder-release"
 }
 

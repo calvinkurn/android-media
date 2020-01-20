@@ -1,9 +1,13 @@
 package com.tokopedia.applink;
 
 import android.net.Uri;
+import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import android.text.TextUtils;
+
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UriUtil {
+
+    private final static String ENCODING = "UTF-8";
+    private final static String QUERY_PARAM_SEPRATOR = "&";
+
     /**
      * Build pattern uri to uri String
      *
@@ -72,6 +80,41 @@ public class UriUtil {
         return result;
     }
 
+    /**
+     * Destructure uri to Bundle
+     *
+     * @param uriPatternString example: "tokopedia-android-internal://marketplace/shop/{id_1}/etalase/{id_2}/"
+     * @param uri              example: "tokopedia-android-internal://marketplace/shop/123/etalase/345"
+     * @param bundle            it can be nullable if not then it will add key value in this bundle
+     * @return bundle of ("id_1":123,"id_2":345)
+     */
+
+    public static Bundle destructiveUriBundle(@NonNull String uriPatternString, Uri uri, Bundle bundle){
+        try {
+            if (bundle == null)
+                bundle = new Bundle();
+            Uri uriPattern = Uri.parse(uriPatternString);
+            if (uriPattern == null) {
+                return bundle;
+            }
+
+            int size = Math.min(uri.getPathSegments().size(), uriPattern.getPathSegments().size());
+            int i = 0;
+            while (i < size) {
+                if (uriPattern.getPathSegments().get(i).startsWith("{") &&
+                        uriPattern.getPathSegments().get(i).endsWith("}")) {
+                    bundle.putString(uriPattern.getPathSegments().get(i).substring(1, uriPattern.getPathSegments().get(i).length() - 1), uri.getPathSegments().get(i));
+                }
+                i++;
+            }
+        } catch (Exception e){
+            return bundle;
+        }
+
+        return bundle;
+
+    }
+
     public static List<String> destructureUri(@NonNull String uriPatternString, @NonNull Uri uri) {
         return destructureUri(uriPatternString, uri, true);
     }
@@ -91,14 +134,14 @@ public class UriUtil {
             if (uriSegmentSize == 0) {
                 uriSegmentSize = uriPattern.getQueryParameterNames().size();
                 if(uriSegmentSize > 0){
-                        Iterator itr = uriPattern.getQueryParameterNames().iterator();
-                        while (itr.hasNext()){
-                            String paramName = itr.next().toString();
-                            Object paramValue = uri.getQueryParameter(paramName);
-                            if(paramValue != null) {
-                                result.put(paramName, paramValue);
-                            }
+                    Iterator itr = uriPattern.getQueryParameterNames().iterator();
+                    while (itr.hasNext()){
+                        String paramName = itr.next().toString();
+                        Object paramValue = uri.getQueryParameter(paramName);
+                        if(paramValue != null) {
+                            result.put(paramName, paramValue);
                         }
+                    }
                 }
                 else {
                     return result;
@@ -139,6 +182,25 @@ public class UriUtil {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static Map<String, String> uriQueryParamsToMap(@NonNull String url) {
+        Map<String, String> map = new HashMap<>();
+        try {
+            Uri uri = Uri.parse(url);
+            String query = uri.getQuery();
+            if (!TextUtils.isEmpty(query)) {
+                String[] pairs = query.split(QUERY_PARAM_SEPRATOR);
+                for (String pair : pairs) {
+                    int idx = pair.indexOf("=");
+                    map.put(URLDecoder.decode(pair.substring(0, idx), ENCODING), URLDecoder.decode(pair.substring(idx + 1), ENCODING));
+                }
+            }
+            return map;
+        } catch (Exception e) {
+
+        }
+        return map;
     }
 
 }

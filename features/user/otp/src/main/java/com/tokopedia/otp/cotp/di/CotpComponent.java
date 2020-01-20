@@ -4,6 +4,7 @@ import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.cotp.view.fragment.VerificationOtpMiscallFragment;
 
 import dagger.Component;
 
@@ -20,5 +21,7 @@ public interface CotpComponent {
     void inject(ChooseVerificationMethodFragment fragment);
 
     void inject(VerificationFragment fragment);
+
+    void inject(VerificationOtpMiscallFragment fragment);
 
 }

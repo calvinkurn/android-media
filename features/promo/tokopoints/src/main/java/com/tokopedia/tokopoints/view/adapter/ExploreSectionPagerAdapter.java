@@ -17,10 +17,11 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.section.CountdownAttr;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
@@ -28,6 +29,7 @@ import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +42,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     private TokoPointsHomePresenterNew mPresenter;
     private SwipeToRefresh swipeToRefresh[] = new SwipeToRefresh[2];
     private CountDownView countDownView;
+    private ArrayList<CouponListAdapter> mCouponListAdapterList = new ArrayList<>();
 
     public ExploreSectionPagerAdapter(Context context, TokoPointsHomePresenterNew presenter, List<SectionContent> sections) {
         this.mLayoutInflater = LayoutInflater.from(context);
@@ -173,9 +176,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
                 view.setVisibility(View.GONE);
             });
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_180);
+            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180);
         } else {
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_280);
+            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280);
         }
 
         if (!content.getCta().isEmpty()) {
@@ -199,7 +202,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             view.setPadding(0, view.getPaddingTop(), 0, 0);
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             CatalogListCarouselAdapter adapter = new CatalogListCarouselAdapter(mPresenter, content.getLayoutCatalogAttr().getCatalogList(), rvCarousel);
             rvCarousel.setAdapter(adapter);
@@ -645,7 +648,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_1_1));
         }
@@ -685,7 +688,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_2_1));
         }
@@ -725,7 +728,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_3_1));
         }
@@ -754,9 +757,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
                 view.setVisibility(View.GONE);
             });
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_180);
+            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180);
         } else {
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_280);
+            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280);
         }
 
         if (!content.getCta().isEmpty()) {
@@ -780,10 +783,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             view.setPadding(0, view.getPaddingTop(), 0, 0);
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new NonCarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new NonCarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             CouponListAdapter adapter = new CouponListAdapter(content.getLayoutCouponAttr().getCouponList());
             rvCarousel.setAdapter(adapter);
+            mCouponListAdapterList.add(adapter);
         }
 
         return view;
@@ -796,7 +800,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
 
             if (TextUtils.isEmpty(appLink)) {
-                ((TokopointRouter) mLayoutInflater.getContext().getApplicationContext()).openTokoPoint(mLayoutInflater.getContext(), webLink);
+                 RouteManager.getIntent(mLayoutInflater.getContext(), ApplinkConstInternalGlobal.WEBVIEW,webLink);
             } else {
                 RouteManager.route(mLayoutInflater.getContext(), appLink);
             }
@@ -847,6 +851,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             view.setVisibility(View.VISIBLE);
         } else {
             view.setVisibility(View.GONE);
+        }
+    }
+
+    public void onDestroyView(){
+        if (mCouponListAdapterList != null){
+            for (CouponListAdapter adapter : mCouponListAdapterList){
+                adapter.onDestroyView();
+            }
         }
     }
 }

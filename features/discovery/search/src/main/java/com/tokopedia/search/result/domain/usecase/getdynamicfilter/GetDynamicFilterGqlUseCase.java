@@ -49,17 +49,7 @@ class GetDynamicFilterGqlUseCase extends UseCase<DynamicFilterModel> {
 
     private Map<String, Object> createParametersForQuery(Map<String, Object> parameters) {
         Map<String, Object> variables = new HashMap<>();
-
-        variables.put(KEY_QUERY, getQueryFromParameters(parameters));
         variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(parameters));
-        variables.put(KEY_SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
-
         return variables;
-    }
-
-    private Object getQueryFromParameters(Map<String, Object> parameters) {
-        Object query = parameters.get(SearchApiConst.Q);
-
-        return query == null ? "" : query;
     }
 }

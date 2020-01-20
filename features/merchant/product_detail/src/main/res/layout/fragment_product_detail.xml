@@ -44,6 +44,7 @@
                     android:layout_toStartOf="@+id/btn_wishlist"
                     android:layout_toLeftOf="@+id/btn_wishlist"
                     android:orientation="horizontal"
+                    android:visibility="visible"
                     android:padding="@dimen/dp_4">
 
                     <ImageView
@@ -123,7 +124,7 @@
 
                 <include layout="@layout/partial_product_detail_wholesale"/>
 
-                <com.tokopedia.tradein.view.customview.TradeInTextView
+                <com.tokopedia.common_tradein.customviews.TradeInTextView
                     android:id="@+id/tv_trade_in"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

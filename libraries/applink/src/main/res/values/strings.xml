@@ -4,12 +4,24 @@
     <string name="sellerapp_scheme" translatable="false">sellerapp</string>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
+    <!--Product Page-->
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
+
+    <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
+
+    <!--Digital Topup-->
+    <string name="instant_loan_title">Dana Instan</string>
     <string name="digital_topup_title">Digital Topup</string>
     <string name="title_image_search" >Pencarian Gambar</string>
     <string name="title_similar_search" >Pencarian Serupa</string>
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_search_result" >Hasil Pencarian</string>
+    <string name="title_digital_deals" >Deals</string>
+
+    <string name="title_applink_pm_subscribe">Power Merchant</string>
+
+    <string name="notif_settings_title">Pengaturan Notifikasi</string>
+    <string name="payment_settings_title">Pengaturan Pembayaran</string>
 </resources>

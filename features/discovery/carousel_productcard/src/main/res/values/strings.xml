@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="review_count_format">(%d)</string>
+    <string name="product_card_module_label_add_to_card">+ Keranjang</string>
+</resources>

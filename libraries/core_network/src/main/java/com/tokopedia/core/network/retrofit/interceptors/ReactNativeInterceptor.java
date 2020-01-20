@@ -2,8 +2,6 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

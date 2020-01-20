@@ -33,7 +33,7 @@ dependencies {
 project.ext {
     artifactId = 'home-credit'
     groupId = 'com.tokopedia.fintech'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="home_credit-release"
 }
 

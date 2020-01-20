@@ -48,7 +48,5 @@ public interface IPromoCouponView extends IBaseView {
 
     void sendTrackingOnCheckDigitalVoucherSuccess(String voucherCode);
 
-    void sendTrackingOnCheckTrainVoucherError(String errorMessage);
-
     void sendEventDigitalEventTracking(Context context, String text, String failmsg);
 }

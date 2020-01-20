@@ -4,13 +4,13 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.navigation.data.entity.NotifcenterIsTabUpdateEntity
-import com.tokopedia.navigation.presentation.di.notification.QUERY_IS_TAB_UPDATE
+import com.tokopedia.navigation.data.consts.NotificationQueriesConstant
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
 class GetIsTabUpdateUseCase @Inject constructor(
-        @Named(QUERY_IS_TAB_UPDATE)
+        @Named(NotificationQueriesConstant.QUERY_IS_TAB_UPDATE)
         private val query: String,
         private val graphQlRequest: MultiRequestGraphqlUseCase
 ) : UseCase<NotifcenterIsTabUpdateEntity>() {

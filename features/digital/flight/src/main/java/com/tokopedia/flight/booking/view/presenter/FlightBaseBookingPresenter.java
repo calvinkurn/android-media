@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
@@ -271,7 +270,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     formatPassengerFarePriceDetail(
                             departureDetailViewModel.getDepartureAirport(),
                             departureDetailViewModel.getArrivalAirport(),
-                            getView().getString(R.string.flightbooking_price_adult_label),
+                            getView().getString(com.tokopedia.flight.R.string.flightbooking_price_adult_label),
                             departureDetailViewModel.getCountAdult(),
                             departureDetailViewModel.getAdultNumericPrice() * departureDetailViewModel.getCountAdult()
                     )
@@ -283,7 +282,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     formatPassengerFarePriceDetail(
                             departureDetailViewModel.getDepartureAirport(),
                             departureDetailViewModel.getArrivalAirport(),
-                            getView().getString(R.string.flightbooking_price_child_label),
+                            getView().getString(com.tokopedia.flight.R.string.flightbooking_price_child_label),
                             departureDetailViewModel.getCountChild(),
                             departureDetailViewModel.getChildNumericPrice() * departureDetailViewModel.getCountChild()
                     )
@@ -295,7 +294,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     formatPassengerFarePriceDetail(
                             departureDetailViewModel.getDepartureAirport(),
                             departureDetailViewModel.getArrivalAirport(),
-                            getView().getString(R.string.flightbooking_price_infant_label),
+                            getView().getString(com.tokopedia.flight.R.string.flightbooking_price_infant_label),
                             departureDetailViewModel.getCountInfant(),
                             departureDetailViewModel.getInfantNumericPrice() * departureDetailViewModel.getCountInfant()
                     )
@@ -308,7 +307,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         formatPassengerFarePriceDetail(
                                 returnDetailViewModel.getDepartureAirport(),
                                 returnDetailViewModel.getArrivalAirport(),
-                                getView().getString(R.string.flightbooking_price_adult_label),
+                                getView().getString(com.tokopedia.flight.R.string.flightbooking_price_adult_label),
                                 returnDetailViewModel.getCountAdult(),
                                 returnDetailViewModel.getAdultNumericPrice() * returnDetailViewModel.getCountAdult()
                         )
@@ -320,7 +319,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         formatPassengerFarePriceDetail(
                                 returnDetailViewModel.getDepartureAirport(),
                                 returnDetailViewModel.getArrivalAirport(),
-                                getView().getString(R.string.flightbooking_price_child_label),
+                                getView().getString(com.tokopedia.flight.R.string.flightbooking_price_child_label),
                                 returnDetailViewModel.getCountChild(),
                                 returnDetailViewModel.getChildNumericPrice() * returnDetailViewModel.getCountChild()
                         )
@@ -332,7 +331,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         formatPassengerFarePriceDetail(
                                 returnDetailViewModel.getDepartureAirport(),
                                 returnDetailViewModel.getArrivalAirport(),
-                                getView().getString(R.string.flightbooking_price_infant_label),
+                                getView().getString(com.tokopedia.flight.R.string.flightbooking_price_infant_label),
                                 returnDetailViewModel.getCountInfant(),
                                 returnDetailViewModel.getInfantNumericPrice() * returnDetailViewModel.getCountInfant()
                         )
@@ -370,14 +369,14 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         }
         for (Map.Entry<String, Integer> entry : meals.entrySet()) {
             simpleViewModels.add(new SimpleViewModel(
-                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
+                    String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
 
         }
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
             simpleViewModels.add(new SimpleViewModel(
-                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label),
+                    String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
 
@@ -401,7 +400,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                                                            int passengerCount,
                                                            int price) {
         return new SimpleViewModel(
-                String.format(getView().getString(R.string.flight_booking_passenger_price_format),
+                String.format(getView().getString(com.tokopedia.flight.R.string.flight_booking_passenger_price_format),
                         departureAirport,
                         arrivalAirport,
                         label,

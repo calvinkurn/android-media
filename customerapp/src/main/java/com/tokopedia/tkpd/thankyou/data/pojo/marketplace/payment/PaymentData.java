@@ -10,36 +10,38 @@ import java.util.List;
  */
 
 public class PaymentData {
-    @SerializedName("payment_id")
-    @Expose
-    private int paymentId;
-    @SerializedName("payment_ref_num")
-    @Expose
-    private String paymentRefNum;
-    @SerializedName("orders")
-    @Expose
-    private List<OrderData> orders;
-    @SerializedName("payment_method")
-    @Expose
-    private PaymentMethod paymentMethod;
-    @SerializedName("payment_amount")
-    @Expose
-    private float paymentAmount;
-    @SerializedName("voucher")
-    @Expose
-    private Voucher voucher;
     @SerializedName("fee_amount")
     @Expose
     private float feeAmount;
+    @SerializedName("payment_amount")
+    @Expose
+    private float paymentAmount;
     @SerializedName("payment_gateway")
     @Expose
     private PaymentGateway paymentGateway;
+    @SerializedName("payment_id")
+    @Expose
+    private int paymentId;
+    @SerializedName("payment_method")
+    @Expose
+    private PaymentMethod paymentMethod;
+    @SerializedName("payment_ref_num")
+    @Expose
+    private String paymentRefNum;
+    @SerializedName("payment_status")
+    @Expose
+    private String paymentStatus;
     @SerializedName("payment_type")
     @Expose
     private PaymentType paymentType;
     @SerializedName("stacked_promos")
     @Expose
     private StackedPromos stackedPromos;
+    @SerializedName("voucher")
+    @Expose
+    private Voucher voucher;
+
+    private List<OrderData> orders;
 
     public int getPaymentId() {
         return paymentId;
@@ -115,5 +117,13 @@ public class PaymentData {
 
     public StackedPromos getStackedPromos() {
         return stackedPromos;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

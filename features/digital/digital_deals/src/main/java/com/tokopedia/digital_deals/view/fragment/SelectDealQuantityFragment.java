@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
@@ -90,7 +89,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_deal_quantity, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_deal_quantity, container, false);
         setHasOptionsMenu(true);
         setViewIds(view);
         mPresenter.initialize(dealDetails);
@@ -110,40 +109,40 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     }
 
     private void setViewIds(View view) {
-        toolbar = view.findViewById(R.id.toolbar);
+        toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
-        toolbar.setTitle(getActivity().getResources().getString(R.string.select_number_of_voucher));
-        ivBrand = view.findViewById(R.id.iv_brand);
-        ivAdd = view.findViewById(R.id.iv_add);
-        ivSubtract = view.findViewById(R.id.iv_subtract);
-        tvDealDetails = view.findViewById(R.id.tv_deal_details);
-        tvBrandName = view.findViewById(R.id.tv_brand_name);
-        tvQuantity = view.findViewById(R.id.tv_no_quantity);
-        tvMrp = view.findViewById(R.id.tv_mrp);
-        tvSalesPrice = view.findViewById(R.id.tv_sales_price);
-        tvTotalAmount = view.findViewById(R.id.tv_total_amount);
-        tvContinue = view.findViewById(R.id.tv_continue);
-        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        mainContent = view.findViewById(R.id.main_content);
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_close_deals));
+        toolbar.setTitle(getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.select_number_of_voucher));
+        ivBrand = view.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
+        ivAdd = view.findViewById(com.tokopedia.digital_deals.R.id.iv_add);
+        ivSubtract = view.findViewById(com.tokopedia.digital_deals.R.id.iv_subtract);
+        tvDealDetails = view.findViewById(com.tokopedia.digital_deals.R.id.tv_deal_details);
+        tvBrandName = view.findViewById(com.tokopedia.digital_deals.R.id.tv_brand_name);
+        tvQuantity = view.findViewById(com.tokopedia.digital_deals.R.id.tv_no_quantity);
+        tvMrp = view.findViewById(com.tokopedia.digital_deals.R.id.tv_mrp);
+        tvSalesPrice = view.findViewById(com.tokopedia.digital_deals.R.id.tv_sales_price);
+        tvTotalAmount = view.findViewById(com.tokopedia.digital_deals.R.id.tv_total_amount);
+        tvContinue = view.findViewById(com.tokopedia.digital_deals.R.id.tv_continue);
+        progressBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
+        mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
     }
 
     void setButtons() {
 
         if (currentQuantity > 1) {
-            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(true);
 
         } else {
-            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_400), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.grey_400), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(false);
         }
         if (currentQuantity < maxQuantity) {
-            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(true);
 
         } else {
-            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_400), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.grey_400), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(false);
         }
     }
@@ -157,23 +156,23 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.iv_subtract) {
+        if (v.getId() == com.tokopedia.digital_deals.R.id.iv_subtract) {
             if (currentQuantity > minQuantity) {
                 currentQuantity--;
-                tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), currentQuantity));
+                tvQuantity.setText(String.format(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.quantity_of_deals), currentQuantity));
             }
             setUpTotalAmount();
             setButtons();
 
-        } else if (v.getId() == R.id.iv_add) {
+        } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_add) {
             if (currentQuantity < maxQuantity) {
                 currentQuantity++;
-                tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), currentQuantity));
+                tvQuantity.setText(String.format(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.quantity_of_deals), currentQuantity));
             }
             setUpTotalAmount();
             setButtons();
 
-        } else if (v.getId() == R.id.tv_continue) {
+        } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_continue) {
             packageViewModel = new PackageViewModel();
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
@@ -212,7 +211,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         if (dealDetail == null)
             return;
 
-        ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
         if (dealDetails.getBrand() != null) {
             tvBrandName.setText(dealDetails.getBrand().getTitle());
         }
@@ -221,7 +220,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         minQuantity = dealDetail.getMinQty() > 0 ? dealDetail.getMinQty() : minQuantity;
         maxQuantity = dealDetail.getMaxQty() > 0 ? dealDetail.getMaxQty() : maxQuantity;
         currentQuantity = minQuantity;
-        tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), currentQuantity));
+        tvQuantity.setText(String.format(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.quantity_of_deals), currentQuantity));
         if (dealDetails.getMrp() != 0 && dealDetail.getMrp() != dealDetail.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));

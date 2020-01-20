@@ -6,6 +6,8 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+        jcenter()
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -21,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.firebase.core
     implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -33,9 +36,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.playServicesDependencies.analytics
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger
@@ -47,7 +50,7 @@ dependencies {
 project.ext {
     artifactId = 'sdk'
     groupId = 'com.tokopedia.topads'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="topadssdk-release"
 }
 

@@ -74,21 +74,22 @@ public class ServerErrorView extends NestedScrollView {
         btnError = findViewById(R.id.text_failed_action);
     }
 
-    public void showErrorUi(boolean hasInternet) {
+
+    public void showErrorUi(boolean hasInternet ) {
 
         int noConnectionImageId = R.drawable.ic_tp_toped_sorry;
         int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
-        int buttonColor = MethodChecker.getColor(getContext(), R.color.transparent);
-        int buttonFontColor = MethodChecker.getColor(getContext(), R.color.tkpd_main_green);
+        int buttonColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.transparent);
+        int buttonFontColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.tkpd_main_green);
 
         if (!hasInternet) {
 
             noConnectionImageId = R.drawable.ic_tp_no_connection;
             buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
 
-            buttonColor = MethodChecker.getColor(getContext(), R.color.bg_button_green_border_outline);
+            buttonColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.bg_button_green_border_outline);
 
-            buttonFontColor = MethodChecker.getColor(getContext(), R.color.white);
+            buttonFontColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white);
             errorTitle = getResources().getText(R.string.tp_no_internet_title);
             errorSubTitle = getResources().getText(R.string.tp_no_internet_label);
         }
@@ -98,8 +99,13 @@ public class ServerErrorView extends NestedScrollView {
         btnError.setTextColor(buttonFontColor);
         btnError.setButtonColor(buttonColor);
         btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
-
         tvTitleError.setText(errorTitle);
         tvLabelError.setText(errorSubTitle);
     }
+
+    public void setErrorButtonClickListener(OnClickListener onClickListener){
+        btnError.setOnClickListener(onClickListener);
+    }
+
+
 }

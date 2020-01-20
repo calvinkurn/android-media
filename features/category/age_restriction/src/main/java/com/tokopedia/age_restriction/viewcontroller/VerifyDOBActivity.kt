@@ -12,6 +12,7 @@ import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.main.layout_activity_dob.*
+import kotlinx.android.synthetic.main.layout_activity_dob.progress_bar_layout
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -172,5 +173,15 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         if (!travelCalenderSheet!!.isVisible) {
             travelCalenderSheet!!.show(supportFragmentManager, "CalendarBottomSheet")
         }
+    }
+
+
+
+    override fun showProgressBar() {
+        progress_bar_layout.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        progress_bar_layout.visibility = View.GONE
     }
 }

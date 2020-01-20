@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinOnboardingFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -28,5 +27,14 @@ class PinOnboardingActivity: BaseSimpleActivity(), HasComponent<ProfileCompletio
             bundle.putAll(intent.extras)
         }
         return PinOnboardingFragment.createInstance(bundle)
+    }
+
+    override fun onBackPressed() {
+        if(fragment != null && fragment is PinOnboardingFragment){
+            (fragment as PinOnboardingFragment).onBackPressed()
+            super.onBackPressed()
+        }else{
+            super.onBackPressed()
+        }
     }
 }

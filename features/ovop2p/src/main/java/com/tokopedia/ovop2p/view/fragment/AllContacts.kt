@@ -11,8 +11,9 @@ import android.view.ViewGroup
 import android.widget.*
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.ovop2p.Constants
-import com.tokopedia.ovop2p.OvoP2pRouter
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.view.adapters.AllContactsListCursorAdapter
@@ -21,6 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
+
+const val PARAM_NEED_RESULT = "1"
 
 class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
     override val coroutineContext: CoroutineContext
@@ -55,8 +58,9 @@ class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
         if (id != -1) {
             when (id) {
                 R.id.scanqr_imgvw -> {
-                    startActivityForResult((context?.applicationContext as OvoP2pRouter)
-                            .gotoQrScannerPage(true), Constants.Keys.CODE_QR_SCANNER_ACTIVITY)
+                    val intent = RouteManager.getIntent(context,
+                            ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT)
+                    startActivityForResult(intent, Constants.Keys.CODE_QR_SCANNER_ACTIVITY)
                 }
             }
         }

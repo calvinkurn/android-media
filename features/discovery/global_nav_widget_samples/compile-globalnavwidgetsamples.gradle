@@ -1,0 +1,2 @@
+include "features:discovery:global_nav_widget_samples"
+apply from: "../global_nav_widget/compile-globalnavwidget.gradle"

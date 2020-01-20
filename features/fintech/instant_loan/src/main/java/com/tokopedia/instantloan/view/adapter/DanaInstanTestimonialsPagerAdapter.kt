@@ -32,7 +32,7 @@ class DanaInstanTestimonialsPagerAdapter(private val context: Context, private v
     }
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
-        val banner = inflater.inflate(R.layout.item_pager_testimonial, view, false) as CardView
+        val banner = inflater.inflate(com.tokopedia.instantloan.R.layout.item_pager_testimonial, view, false) as CardView
         ImageHandler.loadImageCircle2(context, banner.il_person_image, testimonialList[position].imageURL)
         banner.il_testimonial_text.text = testimonialList[position].review
         banner.il_testimonial_person_name.text = testimonialList[position].name

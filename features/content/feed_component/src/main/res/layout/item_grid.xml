@@ -13,16 +13,13 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <FrameLayout
         android:id="@+id/productLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_2"
-        app:cardCornerRadius="@dimen/dp_4"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false"
-        app:contentPadding="0dp">
+        android:background="@drawable/bg_frame_rounded">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,7 +55,7 @@
                 tools:background="@color/black_38"
                 tools:text="+2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/text"

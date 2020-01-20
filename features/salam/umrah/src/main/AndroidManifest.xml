@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.salam.umrah">
+
+    <application>
+        <activity
+            android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity"
+            android:label="@string/umrah_order_detail_activity_label"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_order_detail_umrah"
+                    android:pathPattern="@string/path_umrah_order_detail"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

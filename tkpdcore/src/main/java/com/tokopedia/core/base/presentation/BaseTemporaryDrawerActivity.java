@@ -1,21 +1,80 @@
 package com.tokopedia.core.base.presentation;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tokopedia.core2.R;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
+import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core2.R;
 
 /**
  * Created by meta on 23/07/18.
  */
-public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
+public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
+
+    private BroadcastReceiver drawerGetNotificationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (null == context || null == intent.getAction()) {
+                return;
+            }
+
+            if (intent.getAction().equals(PushNotificationIntentService.BROADCAST_GET_NOTIFICATION)
+                    && intent.getBooleanExtra(PushNotificationIntentService.GET_NOTIFICATION_SUCCESS, false)){
+                updateDrawerData();
+            }
+
+            if (intent.getAction().equals(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA)){
+                DrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, true);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (GlobalConfig.isSellerApp()) {
+            registerBroadcastReceiver();
+            startDrawerGetNotificationServiceOnResume();
+        }
+    }
+
+    protected void startDrawerGetNotificationServiceOnResume(){
+        DrawerGetNotificationService.startService(this,true,false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (GlobalConfig.isSellerApp())
+            unregisterBroadcastReceiver();
+    }
+
+    private void registerBroadcastReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PushNotificationIntentService.BROADCAST_GET_NOTIFICATION);
+        intentFilter.addAction(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA);
+        LocalBroadcastManager.getInstance(this).registerReceiver(drawerGetNotificationReceiver, intentFilter);
+    }
+
+    private void unregisterBroadcastReceiver() {
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(drawerGetNotificationReceiver);
     }
 
     @Override
@@ -34,8 +93,9 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
 
     @Override
     protected void updateDrawerData() {
-        if (GlobalConfig.isSellerApp())
+        if (GlobalConfig.isSellerApp()) {
             super.updateDrawerData();
+        }
     }
 
     @Override

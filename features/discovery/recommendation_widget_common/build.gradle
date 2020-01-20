@@ -42,7 +42,7 @@ dependencies {
 project.ext {
     artifactId = 'recommendation-widget-common'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="recommendation_widget_common-release"
 }
 

@@ -402,17 +402,4 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 trackingModel,
                 String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
     }
-
-    fun trackClickPostTagBuyKol(
-            postTag: PostTagItem,
-            postTagPosition: Int,
-            author: String
-    ) {
-        getBasicClickBuyButtonPostTagEvent(
-                screenName = Screen.PROFILE,
-                category = Category.USER_PROFILE_SOCIALCOMMERCE_DETAIL,
-                postTag = postTag,
-                postTagPosition = postTagPosition,
-                listSource = String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
-    }
 }

@@ -17,6 +17,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -75,7 +77,7 @@ class ExploreUseCase @Inject constructor(
                             it.adId,
                             it.productId,
                             context.getString(R.string.af_product_title),
-                            0
+                            it.commission.getDigits().toZeroIfNull()
                     ))
             )
         }

@@ -19,10 +19,10 @@ public final class LevelTwoCategory implements Parcelable {
     @SerializedName("value")
     @Expose
     String value;
-    @SerializedName("input_type")
+    @SerializedName(value="input_type", alternate={"inputType"})
     @Expose
     String inputType;
-    @SerializedName("total_data")
+    @SerializedName(value="total_data", alternate={"totalData"})
     @Expose
     String totalData;
     @SerializedName("child")

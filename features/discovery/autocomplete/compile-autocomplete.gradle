@@ -1,0 +1,9 @@
+include ':features:discovery:autocomplete'
+
+include ':features:discovery:discovery_common'
+include ':features:discovery:topadssdk'
+include ':features:discovery:wishlist_common'
+include ':features:merchant:gold_merchant_resource'
+
+include ':libraries:analytics'
+include ':libraries:tracking_optimizer'

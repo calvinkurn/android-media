@@ -8,10 +8,9 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightAddToCartV11UseCase
@@ -26,9 +25,12 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
 import com.tokopedia.flight.search.data.api.single.response.Fare
-import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
+import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
@@ -50,6 +52,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                                  val userSession: UserSessionInterface,
                                                  val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
                                                  private val travelTickerUseCase: TravelTickerUseCase,
+                                                 private val getProfileUseCase: GetProfileUseCase,
                                                  flightGetCartDataUseCase: FlightGetCartDataUseCase,
                                                  flightBookingCartDataMapper: FlightBookingCartDataMapper)
     : FlightBaseBookingPresenter<FlightBookingContract.View>(flightGetCartDataUseCase, flightBookingCartDataMapper), FlightBookingContract.Presenter {
@@ -91,8 +94,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     override fun updateTotalPrice(totalPrice: Int) {
         view.getCurrentBookingParamViewModel().totalPriceNumeric = totalPrice
         view.getCurrentBookingParamViewModel().totalPriceFmt =
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice)
-        view.renderTotalPrices(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice))
+                FlightCurrencyFormatUtil.convertToIdrPrice(totalPrice)
+        view.renderTotalPrices(FlightCurrencyFormatUtil.convertToIdrPrice(totalPrice))
     }
 
     override fun onCountDownTimestampChanged(timestamp: String) {
@@ -116,42 +119,43 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onGetProfileData() {
         view.showContactDataProgressBar()
-        compositeSubscription.add(view.getProfileObservable()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<ProfileInfo>() {
-                    override fun onNext(profileInfo: ProfileInfo?) {
-                        if (profileInfo != null && isViewAttached) {
-                            view.hideContactDataProgressBar()
-                            if (view.getContactName().isEmpty()) {
-                                view.setContactName(profileInfo.fullname)
-                            }
-                            if (view.getContactEmail().isEmpty()) {
-                                view.setContactEmail(profileInfo.email)
-                            }
-                            if (view.getContactPhoneNumber().isEmpty()) {
-                                view.setContactPhoneNumber(transform(profileInfo.phoneNumber))
-                            }
-                            view.setContactBirthdate(
-                                    FlightDateUtil.dateToString(
-                                            FlightDateUtil.stringToDate(profileInfo.bday),
-                                            FlightDateUtil.DEFAULT_FORMAT
-                                    )
-                            )
-                            view.setContactGender(profileInfo.gender)
-                        }
+        getProfileUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onNext(graphqlResponse: GraphqlResponse) {
+                val data = graphqlResponse.getData<ProfilePojo>(ProfilePojo::class.java)
+                val profileInfo = data.profileInfo
+                if (isViewAttached) {
+                    view.hideContactDataProgressBar()
+                    if (view.getContactName().isEmpty()) {
+                        view.setContactName(profileInfo.fullName)
                     }
+                    if (view.getContactEmail().isEmpty()) {
+                        view.setContactEmail(profileInfo.email)
+                    }
+                    if (view.getContactPhoneNumber().isEmpty()) {
+                        view.setContactPhoneNumber(transform(profileInfo.phone))
+                    }
+                    if (profileInfo.birthday.isNotEmpty()) {
+                        view.setContactBirthdate(
+                                FlightDateUtil.dateToString(
+                                        FlightDateUtil.stringToDate(profileInfo.birthday),
+                                        FlightDateUtil.DEFAULT_FORMAT
+                                )
+                        )
+                    }
+                    if (profileInfo.gender.isNotEmpty()) {
+                        view.setContactGender(profileInfo.gender.toInt())
+                    }
+                }
+            }
 
-                    override fun onCompleted() {
-                    }
+            override fun onCompleted() {
+            }
 
-                    override fun onError(e: Throwable?) {
-                        view.hideContactDataProgressBar()
-                        e?.printStackTrace()
-                    }
-                }))
+            override fun onError(e: Throwable?) {
+                view.hideContactDataProgressBar()
+                e?.printStackTrace()
+            }
+        })
     }
 
     override fun onButtonSubmitClicked() {
@@ -168,10 +172,10 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     view.getCurrentCartPassData(),
                     view.getDepartureTripId(),
                     view.getReturnTripId(),
-                    view.getString(R.string.flight_luggage_prefix),
-                    view.getString(R.string.flight_meal_prefix),
-                    view.getString(R.string.flight_birthdate_prefix),
-                    view.getString(R.string.flight_passenger_passport_number_hint)
+                    view.getString(com.tokopedia.flight.R.string.flight_luggage_prefix),
+                    view.getString(com.tokopedia.flight.R.string.flight_meal_prefix),
+                    view.getString(com.tokopedia.flight.R.string.flight_birthdate_prefix),
+                    view.getString(com.tokopedia.flight.R.string.flight_passenger_passport_number_hint)
             ))
         }
     }
@@ -347,7 +351,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 val newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.departureTrip, flightBookingCartData.returnTrip)
                 if (newTotalPrice != oldTotalPrice && getCurrentCartData().total > 0) {
                     resultTotalPrice = newTotalPrice
-                    view.showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(resultTotalPrice), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(oldTotalPrice))
+                    view.showPriceChangesDialog(FlightCurrencyFormatUtil.convertToIdrPrice(resultTotalPrice), FlightCurrencyFormatUtil.convertToIdrPrice(oldTotalPrice))
                 }
             }
             updateTotalPrice(resultTotalPrice)
@@ -398,6 +402,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         flightAddToCartUseCase.unsubscribe()
         getPhoneCodeUseCase.unsubscribe()
         flightSearchJourneyByIdUseCase.unsubscribe()
+        getProfileUseCase.unsubscribe()
         detachView()
     }
 
@@ -623,9 +628,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         val baseCartData = getCurrentCartData()
         val fares = arrayListOf<Fare>()
         fares.add(Fare(
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.adultNumericPrice),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.childNumericPrice),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.infantNumericPrice),
+                FlightCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.adultNumericPrice),
+                FlightCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.childNumericPrice),
+                FlightCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.infantNumericPrice),
                 departureFlightDetailViewModel.adultNumericPrice,
                 departureFlightDetailViewModel.childNumericPrice,
                 departureFlightDetailViewModel.infantNumericPrice
@@ -634,9 +639,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         if (returnFlightDetailViewModel != null) {
             fares.add(
                     Fare(
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.adultNumericPrice),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.childNumericPrice),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.infantNumericPrice),
+                            FlightCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.adultNumericPrice),
+                            FlightCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.childNumericPrice),
+                            FlightCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.infantNumericPrice),
                             returnFlightDetailViewModel.adultNumericPrice,
                             returnFlightDetailViewModel.childNumericPrice,
                             returnFlightDetailViewModel.infantNumericPrice
@@ -661,9 +666,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             viewModel.passengerLocalId = passengerNumber
             viewModel.type = FlightBookingPassenger.ADULT
             viewModel.headerTitle = formatPassengerHeader(
-                    view.getString(R.string.flight_booking_prefix_passenger),
+                    view.getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                     passengerNumber,
-                    view.getString(R.string.flight_booking_postfix_adult_passenger)
+                    view.getString(com.tokopedia.flight.R.string.flight_booking_postfix_adult_passenger)
             )
             viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
             viewModel.flightBookingMealMetaViewModels = arrayListOf()
@@ -676,9 +681,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 viewModel.passengerLocalId = passengerNumber
                 viewModel.type = FlightBookingPassenger.CHILDREN
                 viewModel.headerTitle = formatPassengerHeader(
-                        view.getString(R.string.flight_booking_prefix_passenger),
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                         passengerNumber,
-                        view.getString(R.string.flight_booking_postfix_children_passenger))
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_postfix_children_passenger))
                 viewModel.flightBookingMealMetaViewModels = ArrayList()
                 viewModel.flightBookingLuggageMetaViewModels = ArrayList()
                 viewModels.add(viewModel)
@@ -691,9 +696,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 viewModel.passengerLocalId = passengerNumber
                 viewModel.type = FlightBookingPassenger.INFANT
                 viewModel.headerTitle = formatPassengerHeader(
-                        view.getString(R.string.flight_booking_prefix_passenger),
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                         passengerNumber,
-                        view.getString(R.string.flight_booking_postfix_infant_passenger))
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_postfix_infant_passenger))
 
                 viewModel.flightBookingLuggageMetaViewModels = ArrayList()
                 viewModel.flightBookingMealMetaViewModels = ArrayList()
@@ -706,7 +711,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     }
 
     private fun formatPassengerHeader(prefix: String, number: Int, postix: String): String {
-        return String.format(view.getString(R.string.flight_booking_header_passenger_format),
+        return String.format(view.getString(com.tokopedia.flight.R.string.flight_booking_header_passenger_format),
                 prefix,
                 number,
                 postix
@@ -747,34 +752,34 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         var isValid = true
         if (view.getContactName().isEmpty()) {
             isValid = false
-            view.showContactNameEmptyError(R.string.flight_booking_contact_name_empty_error)
+            view.showContactNameEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_name_empty_error)
         } else if (view.getContactName().isNotEmpty() && !isAlphabetAndSpaceOnly(view.getContactName())) {
             isValid = false
-            view.showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error)
+            view.showContactNameInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_name_alpha_space_error)
         } else if (view.getContactEmail().isEmpty()) {
             isValid = false
-            view.showContactEmailEmptyError(R.string.flight_booking_contact_email_empty_error)
+            view.showContactEmailEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_email_empty_error)
         } else if (!isValidEmail(view.getContactEmail())) {
             isValid = false
-            view.showContactEmailInvalidError(R.string.flight_booking_contact_email_invalid_error)
+            view.showContactEmailInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_email_invalid_error)
         } else if (!isEmailWithoutProhibitSymbol(view.getContactEmail())) {
             isValid = false
-            view.showContactEmailInvalidSymbolError(R.string.flight_booking_contact_email_invalid_symbol_error)
+            view.showContactEmailInvalidSymbolError(com.tokopedia.flight.R.string.flight_booking_contact_email_invalid_symbol_error)
         } else if (view.getContactPhoneNumber().isEmpty()) {
             isValid = false
-            view.showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error)
+            view.showContactPhoneNumberEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_phone_empty_error)
         } else if (view.getContactPhoneNumber().isNotEmpty() && !isNumericOnly(view.getContactPhoneNumber())) {
             isValid = false
-            view.showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_invalid_error)
+            view.showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_invalid_error)
         } else if (view.getContactPhoneNumber().length > 13) {
             isValid = false
-            view.showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_max_length_error)
+            view.showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_max_length_error)
         } else if (view.getContactPhoneNumber().length < 9) {
             isValid = false
-            view.showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_min_length_error)
+            view.showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_min_length_error)
         } else if (!isAllPassengerFilled(view.getCurrentBookingParamViewModel().passengerViewModels)) {
             isValid = false
-            view.showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error)
+            view.showPassengerInfoNotFullfilled(com.tokopedia.flight.R.string.flight_booking_passenger_not_fullfilled_error)
         }
         return isValid
     }

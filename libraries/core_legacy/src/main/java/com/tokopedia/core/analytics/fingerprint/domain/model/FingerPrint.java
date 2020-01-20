@@ -23,6 +23,7 @@ public class FingerPrint {
     private String location_latitude;
     private String location_longitude;
     private String is_nakama;
+    private String unique_id;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -42,6 +43,15 @@ public class FingerPrint {
         ssid = fingerPrintBuilder.ssid;
         carrier = fingerPrintBuilder.carrier;
         is_nakama = fingerPrintBuilder.is_nakama;
+        unique_id = fingerPrintBuilder.unique_id;
+    }
+
+    public String getUnique_id() {
+        return unique_id;
+    }
+
+    public void setUnique_id(String unique_id) {
+        this.unique_id = unique_id;
     }
 
     public String getDevice_model() {
@@ -190,9 +200,15 @@ public class FingerPrint {
         private String ssid;
         private String carrier;
         private String is_nakama;
+        private String unique_id;
 
         public FingerPrintBuilder() {
 
+        }
+
+        public FingerPrintBuilder uniqueId(String unique_id){
+            this.unique_id = unique_id;
+            return this;
         }
 
         public FingerPrintBuilder isNakama(String isNakama){

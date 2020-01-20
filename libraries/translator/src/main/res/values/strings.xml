@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Translator</string>
+
+    <string-array name="supported_languages">
+        <item>English-en</item>
+        <item>Indonesian-id</item>
+        <item>Hindi-hi</item>
+        <item>Arabic-ar</item>
+        <item>Greek-el</item>
+        <item>Italian-it</item>
+        <item>Spanish-es</item>
+        <item>Chinese-zh</item>
+        <item>German-de</item>
+        <item>Korean-ko</item>
+        <item>Latin-la</item>
+        <item>Japanese-ja</item>
+        <item>Swedish-sv</item>
+        <item>French-fr</item>
+        <item>Urdu-ur</item>
+        <item>Ukrainian-uk</item>
+        <item>Turkish-tr</item>
+        <item>Tamil-ta</item>
+        <item>Thai-th</item>
+        <item>Russian-ru</item>
+        <item>Romanian-ro</item>
+        <item>Portuguese-pt</item>
+        <item>Punjabi-pa</item>
+    </string-array>
+</resources>

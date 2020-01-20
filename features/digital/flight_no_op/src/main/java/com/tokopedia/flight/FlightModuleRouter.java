@@ -54,10 +54,6 @@ public interface FlightModuleRouter {
 
     FlightVoucherCodeWrapper getFlightVoucherCodeWrapper();
 
-    Intent getPromoListIntent(Activity activity);
-
-    Intent getPromoDetailIntent(Context context, String slug);
-
     File writeImage(String filePath, int qualityProcentage);
 
     Intent getOrderListIntent(Context context);

@@ -27,25 +27,34 @@ class MentionTokenizer : MultiAutoCompleteTextView.Tokenizer {
         return textLength
     }
 
+    /**
+     * Condition to show list of suggestions:
+     * 1. When detected '@' then followed by minimum 3 words
+     * 2. Previous words should not already been spanned
+     */
     override fun findTokenStart(text: CharSequence?, cursor: Int): Int {
         if (text == null) return 0
 
         var movingTempCursor = cursor
 
+        /**
+         * Search for '@'
+         */
         while (movingTempCursor > 0 && text[movingTempCursor - 1] != '@') {
             movingTempCursor--
         }
 
         val spannableString = SpannableString(text)
-        val allMentionSpans = MentionTextHelper.getAllMentionSpansFromText(spannableString)
-        val isPreviousAlreadySpanned = allMentionSpans.any { (movingTempCursor - 1) >= it.start && (movingTempCursor - 1) <= it.end }
+        val allMentionSpans = MentionTextHelper.getRenewedMentionSpans(spannableString)
+        val isPreviousAlreadySpanned =
+                allMentionSpans
+                        .asSequence()
+                        .filter { it.start <= movingTempCursor }
+                        .any { (movingTempCursor - 1) <= it.end }
 
-        return if (
-                movingTempCursor < 1
-                || text[movingTempCursor - 1] != '@'
-                || isPreviousAlreadySpanned
-        ) cursor
-        else movingTempCursor
+        return if (movingTempCursor > 0 &&
+                text[movingTempCursor - 1] == '@' &&
+                !isPreviousAlreadySpanned) movingTempCursor else cursor
     }
 
     override fun terminateToken(text: CharSequence?): CharSequence {

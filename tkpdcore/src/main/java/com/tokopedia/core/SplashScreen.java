@@ -95,7 +95,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         super.onResume();
         boolean status = GCMHandler.isPlayServicesAvailable(this);
         if(!status){
-            Timber.w("P2Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+            Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                     + " | "+Build.TAGS);
         }
@@ -207,5 +207,11 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                     public void onError(LinkerError linkerError) {
                     }
                 }, this));
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getBranchDefferedDeeplink();
     }
 }

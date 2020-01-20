@@ -76,6 +76,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     private ImageTextViewHolder locationHolder;
     private ImageTextViewHolder addressHolder;
     private Menu mMenu;
+    private TextView eventExpired;
 
 
     EventsDetailsContract.EventDetailPresenter eventsDetailsPresenter;
@@ -173,6 +174,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         expandLayout = findViewById(R.id.expand_view);
         expandTnc = findViewById(R.id.expand_view_tnc);
         ivArrowSeatingTnC = findViewById(R.id.down_arrow_tnc);
+        eventExpired = findViewById(R.id.event_ended);
         eventPrice = findViewById(R.id.tv_event_price);
         View view = findViewById(R.id.event_detail_card).findViewById(R.id.event_details_layout);
         dateRangeName = view.findViewById(R.id.event_time).findViewById(R.id.textview_holder_small);
@@ -288,11 +290,26 @@ public class EventDetailsActivity extends EventBaseActivity implements
             if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getaDdress())) {
                 address.setText(data.getSchedulesViewModels().get(0).getaDdress());
                 addressImageView.setImageResource(R.drawable.ic_skyline);
+            } else {
+                address.setVisibility(View.GONE);
+                addressImageView.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getCityName())) {
                 cityName.setText(data.getSchedulesViewModels().get(0).getCityName());
                 cityImageView.setImageResource(R.drawable.ic_placeholder);
+            } else {
+                cityName.setVisibility(View.GONE);
+                cityImageView.setVisibility(View.GONE);
             }
+            btnBook.setVisibility(View.VISIBLE);
+            eventExpired.setVisibility(View.GONE);
+        } else {
+            address.setVisibility(View.GONE);
+            addressImageView.setVisibility(View.GONE);
+            cityName.setVisibility(View.GONE);
+            cityImageView.setVisibility(View.GONE);
+            btnBook.setVisibility(View.GONE);
+            eventExpired.setVisibility(View.VISIBLE);
         }
 
         textViewTitle.setText(data.getTitle());

@@ -8,7 +8,7 @@
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:theme="@style/FlightProgressBar"
-        android:progressDrawable="@drawable/progress_bar"
+        android:progressDrawable="@drawable/flight_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/progress_bar_height"
         android:layout_gravity="center" />

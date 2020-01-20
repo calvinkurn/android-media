@@ -8,7 +8,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 
 import static com.tokopedia.kol.analytics.KolEventTracking.Action.CLICK_PROMPT;
@@ -17,8 +17,6 @@ import static com.tokopedia.kol.analytics.KolEventTracking.Event.EVENT_CLICK_TOP
 import static com.tokopedia.kol.analytics.KolEventTracking.EventLabel.GO_TO_EXPLORE_FORMAT;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by milhamj on 18/05/18.
@@ -33,10 +31,10 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
     private static final String CATEGORY_ID = "{category_id}";
     private static final String CATEGORY_0 = "0";
 
-    private final KolPostListener.View.ViewHolder viewListener;
+    private final KolPostViewHolderListener viewListener;
     private final ButtonCompat exploreMoreButton;
 
-    public ExploreViewHolder(View itemView, KolPostListener.View.ViewHolder viewListener) {
+    public ExploreViewHolder(View itemView, KolPostViewHolderListener viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         exploreMoreButton = itemView.findViewById(R.id.explore_more_button);

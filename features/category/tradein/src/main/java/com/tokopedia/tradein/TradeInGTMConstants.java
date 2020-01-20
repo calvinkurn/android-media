@@ -49,5 +49,6 @@ public class TradeInGTMConstants {
 
     public static final String CATEGORY_MONEYIN_PRICERANGE_PAGE ="money in price range page";
     public static final String CATEGORY_MONEYIN_COURIER_SELECTION ="courier selection money in";
+    public static final String CATEGORY_MONEYIN_COURIER_SELECTION_DROP ="courier selection money in-drop";
 
 }

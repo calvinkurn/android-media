@@ -9,10 +9,6 @@ public class Body {
     @Expose
     private String Body;
 
-    @SerializedName("webURL")
-    @Expose
-    private String WebURL;
-
     @SerializedName("method")
     @Expose
     private String Method;
@@ -27,14 +23,6 @@ public class Body {
 
     public void setBody(String Body) {
         this.Body = Body;
-    }
-
-    public String getWebURL() {
-        return WebURL;
-    }
-
-    public void setWebURL(String WebURL) {
-        this.WebURL = WebURL;
     }
 
     public String getMethod() {
@@ -55,6 +43,6 @@ public class Body {
 
     @Override
     public String toString() {
-        return "ClassPojo [Body = " + Body + ", WebURL = " + WebURL + ", Method = " + Method + ", AppURL = " + AppURL + "]";
+        return "ClassPojo [Body = " + Body + ", Method = " + Method + ", AppURL = " + AppURL + "]";
     }
 }

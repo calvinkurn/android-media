@@ -18,16 +18,20 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
-import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -35,17 +39,13 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
-import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
-import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 
-import javax.inject.Inject;
+import java.util.List;
 
-import rx.Observable;
+import javax.inject.Inject;
 
 public class QrScannerActivity extends BaseScannerQRActivity implements QrScannerContract.View,
         HasComponent<CampaignComponent> {
@@ -54,6 +54,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final int REQUEST_CODE_NOMINAL = 211;
     private static final int REQUEST_CODE_LOGIN = 3;
     private static final int REQUEST_PAY_WITH_QR = 4;
+    private static final String PARAM_NEED_RESULT = "1";
 
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
@@ -65,6 +66,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private boolean isTorchOn;
     private ProgressBar progressBar;
     private PermissionCheckerHelper permissionCheckerHelper;
+    private boolean mNeedResult = false;
 
     public static Intent newInstance(Context context, boolean needResult) {
         Intent intent = new Intent(context, QrScannerActivity.class);
@@ -92,6 +94,21 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternalMarketplace.QR_SCANNEER, uri);
+            if (!paths.isEmpty()) {
+                String param = paths.get(0);
+                mNeedResult = param.equals(PARAM_NEED_RESULT);
+            }
+        }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (!mNeedResult) {
+                mNeedResult = extras.getBoolean(QR_NEED_RESULT, false);
+            }
+        }
+
         progressBar = findViewById(R.id.progress_bar_scanner);
         permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(
@@ -118,28 +135,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public Observable<InfoQrTokoCash> getInfoQrTokoCash(RequestParams requestParams) {
-        return ((TokoCashRouter) getApplication()).getInfoQrTokoCashUseCase(requestParams);
-    }
-
-    @Override
-    public Observable<BalanceTokoCash> getBalanceTokoCash() {
-        return ((TokoCashRouter) getApplication()).getBalanceTokoCash();
-    }
-
-    @Override
-    public void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash) {
-        Intent intent = ((TokoCashRouter) getApplication()).getNominalActivityIntent(getApplicationContext(), qrcode, infoQrTokoCash);
-        startActivityForResult(intent, REQUEST_CODE_NOMINAL);
-    }
-
-    @Override
-    public void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData) {
+    public void goToPaymentPage(String imeiNumber, JsonObject barcodeData) {
         UserSession session = new UserSession(this);
         if (session.isLoggedIn()) {
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, true);
             cacheManager.put(QR_RESPONSE, barcodeData);
-            Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY);
             intent.putExtra(QR_DATA, cacheManager.getId());
             intent.putExtra(IMEI, imeiNumber);
             startActivity(intent);
@@ -232,13 +234,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected void findResult(BarcodeResult barcodeResult) {
-        if (getIntent().getBooleanExtra(QR_NEED_RESULT, false)) {
+        if (mNeedResult) {
             Intent intent = new Intent();
             intent.putExtra("scanResult", barcodeResult.getText());
             setResult(RESULT_OK, intent);
             finish();
         } else {
-            decoratedBarcodeView.pause();
+            decoratedBarcodeView.pauseAndWait();
             hideAnimation();
             presenter.onBarCodeScanComplete(barcodeResult.getText());
         }
@@ -327,11 +329,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         super.onDestroy();
         presenter.destroyView();
         presenter.detachView();
-    }
-
-    @Override
-    public void interruptToLoginPage() {
-        startActivityForResult(LoginActivity.DeepLinkIntents.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
     }
 
     @Override

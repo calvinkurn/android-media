@@ -24,8 +24,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun providePresenter() : PromoCheckoutListPresenter {
-        return PromoCheckoutListPresenter(GraphqlUseCase())
+    fun providePresenter(): PromoCheckoutListPresenter {
+        return PromoCheckoutListPresenter(GraphqlUseCase(), GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -48,26 +48,26 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideMarketplacePresenter(checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : PromoCheckoutListMarketplacePresenter {
-        return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper)
+    fun provideMarketplacePresenter(checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper, getCatalogHighlightUseCase: GraphqlUseCase): PromoCheckoutListMarketplacePresenter {
+        return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, getCatalogHighlightUseCase)
     }
 
     @PromoCheckoutListScope
     @Provides
-    fun provideDigitalPresenter(digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase, digitalCheckVoucherMapper: DigitalCheckVoucherMapper) : PromoCheckoutListDigitalPresenter {
+    fun provideDigitalPresenter(digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase, digitalCheckVoucherMapper: DigitalCheckVoucherMapper): PromoCheckoutListDigitalPresenter {
         return PromoCheckoutListDigitalPresenter(digitalCheckVoucherUseCase, digitalCheckVoucherMapper)
     }
 
     @PromoCheckoutListScope
     @Provides
     fun provideFlightPresenter(flightCheckVoucherUseCase: FlightCheckVoucherUseCase,
-                               flightCheckVoucherMapper: FlightCheckVoucherMapper) : PromoCheckoutListFlightPresenter {
+                               flightCheckVoucherMapper: FlightCheckVoucherMapper): PromoCheckoutListFlightPresenter {
         return PromoCheckoutListFlightPresenter(flightCheckVoucherUseCase, flightCheckVoucherMapper)
     }
 
     @PromoCheckoutListScope
     @Provides
-    fun provideTrackingPromo(@ApplicationContext context: Context) : TrackingPromoCheckoutUtil{
+    fun provideTrackingPromo(@ApplicationContext context: Context): TrackingPromoCheckoutUtil {
         return TrackingPromoCheckoutUtil()
     }
 }

@@ -1,12 +1,14 @@
 package com.tokopedia.home.beranda.di.module;
 
 import android.content.Context;
+
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.dynamicbanner.di.PlayCardModule;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -19,13 +21,20 @@ import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
 import com.tokopedia.home.beranda.di.HomeScope;
-import com.tokopedia.home.beranda.domain.interactor.*;
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel;
 import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
@@ -33,18 +42,19 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
+
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import kotlinx.coroutines.CoroutineDispatcher;
 import kotlinx.coroutines.Dispatchers;
 
-import javax.inject.Named;
-
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module(includes = TopAdsWishlistModule.class)
+@Module(includes = {TopAdsWishlistModule.class, PlayCardModule.class})
 public class HomeModule {
 
     @HomeScope
@@ -206,13 +216,18 @@ public class HomeModule {
 
     @Provides
     @HomeScope
-    protected HomeVisitableFactory provideHomeVisitableFactory() {
-        return new HomeVisitableFactoryImpl();
+    protected HomeVisitableFactory provideHomeVisitableFactory(UserSessionInterface userSessionInterface) {
+        return new HomeVisitableFactoryImpl(userSessionInterface);
     }
   
     @Provides
     @HomeScope
     protected StickyLoginUseCase provideStickyLoginUseCase(@ApplicationContext Context context, GraphqlRepository graphqlRepository) {
         return new StickyLoginUseCase(context.getResources(), graphqlRepository);
+    }
+
+    @Provides
+    RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
+        return new FirebaseRemoteConfigImpl(context);
     }
 }

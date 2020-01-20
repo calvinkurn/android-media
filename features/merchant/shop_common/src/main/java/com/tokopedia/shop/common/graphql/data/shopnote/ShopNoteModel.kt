@@ -30,6 +30,9 @@ data class ShopNoteModel(@SerializedName("id")
                          val url: String = "",
                          @SerializedName("updateTime")
                          @Expose
-                         val updateTime: String? = null) {
+                         val updateTime: String? = null,
+                         @SerializedName("updateTimeUTC")
+                         @Expose
+                         val updateTimeUtc: String? = null) {
 
 }

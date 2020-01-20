@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 
 public class TncBottomSheetFragment extends BaseDaggerFragment {
@@ -38,7 +37,7 @@ public class TncBottomSheetFragment extends BaseDaggerFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tandc_bottomsheet, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_tandc_bottomsheet, container, false);
 
         if (getArguments() != null) {
             text = getArguments().getString(TEXT);
@@ -58,10 +57,10 @@ public class TncBottomSheetFragment extends BaseDaggerFragment {
     }
 
     private void setViewIds(View view) {
-        toolbar = view.findViewById(R.id.toolbar);
-        textView = view.findViewById(R.id.tv_expandable_description);
+        toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
+        textView = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expandable_description);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_close_deals));
     }
 
     private void setExpandableItemText(String tnc) {

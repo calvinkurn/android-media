@@ -99,7 +99,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         txtExpiredDate.text = MethodChecker.fromHtml(getString(R.string.expired_label_bs, expiredDate))
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         updateHeight()
     }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
 
 /**
@@ -22,9 +21,9 @@ class FlightCancellationRefundBottomAdapter(val layout: Int = TYPE_NORMAL) : Rec
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CancellationRefundBottomViewHolder {
         val view = if (layout == TYPE_RED)
-            LayoutInflater.from(parent.context).inflate(R.layout.item_flight_cancellation_detail_bottom_red, parent, false)
+            LayoutInflater.from(parent.context).inflate(com.tokopedia.flight.R.layout.item_flight_cancellation_detail_bottom_red, parent, false)
         else
-            LayoutInflater.from(parent.context).inflate(R.layout.item_flight_cancellation_detail_bottom, parent, false)
+            LayoutInflater.from(parent.context).inflate(com.tokopedia.flight.R.layout.item_flight_cancellation_detail_bottom, parent, false)
 
         return CancellationRefundBottomViewHolder(view)
     }
@@ -45,8 +44,8 @@ class FlightCancellationRefundBottomAdapter(val layout: Int = TYPE_NORMAL) : Rec
 
     class CancellationRefundBottomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val titleInfo = itemView.findViewById(R.id.key) as TextView
-        private val descInfo = itemView.findViewById(R.id.value) as TextView
+        private val titleInfo = itemView.findViewById(com.tokopedia.flight.R.id.key) as TextView
+        private val descInfo = itemView.findViewById(com.tokopedia.flight.R.id.value) as TextView
 
         fun bindData(info: SimpleViewModel) {
             titleInfo.text = info.label.trim()

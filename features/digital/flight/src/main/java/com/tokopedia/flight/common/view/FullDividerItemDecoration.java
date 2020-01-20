@@ -6,13 +6,11 @@ import android.graphics.drawable.Drawable;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.flight.R;
-
 public class FullDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
 
     public FullDividerItemDecoration(Context context) {
-        this(context, context.getResources().getDrawable(R.drawable.bg_line_separator));
+        this(context, context.getResources().getDrawable(com.tokopedia.design.R.drawable.bg_line_separator));
     }
 
     public FullDividerItemDecoration(Context context, Drawable drawable) {

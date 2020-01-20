@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.product.detail.view.activity.ProductFullDescriptionTabActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
@@ -23,4 +24,5 @@ interface ProductDetailComponent {
     fun inject(fragment: ReportDialogFragment)
     fun inject(activity: ProductInstallmentActivity)
     fun inject(bottomSheetFragment: AddToCartDoneBottomSheet)
+    fun inject(activity: ProductFullDescriptionTabActivity)
 }

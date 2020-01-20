@@ -80,9 +80,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_product, container, false)
         telcoTelcoProductView = view.findViewById(R.id.telco_product_view)
-        emptyStateProductView = view.findViewById(R.id.telco_empty_state_layout)
-        titleEmptyState = view.findViewById(R.id.title_empty_product)
-        descEmptyState = view.findViewById(R.id.desc_empty_product)
+        emptyStateProductView = view.findViewById(com.tokopedia.common.topupbills.R.id.telco_empty_state_layout)
+        titleEmptyState = view.findViewById(com.tokopedia.common.topupbills.R.id.title_empty_product)
+        descEmptyState = view.findViewById(com.tokopedia.common.topupbills.R.id.desc_empty_product)
         progressBar = view.findViewById(R.id.progress_bar)
         return view
     }

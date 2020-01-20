@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -46,7 +48,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
             val fragment = KeywordAdsListFragment()
             val args = Bundle()
-            fragment.setArguments(args)
+            fragment.arguments = args
             return fragment
         }
     }
@@ -88,6 +90,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
         keywordListAdapter.items.add (KeywordGroupViewModel("Rekomendasi"))
+        keywordListAdapter.favoured.clear()
+        keywordListAdapter.remains.clear()
         keywords.forEach {
             index-> keywordListAdapter.items.add(KeywordItemViewModel(index))
             keywordList.add(KeywordItemViewModel(index).data.keyword)
@@ -125,7 +129,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return list
     }
 
-    private fun getSelectedData():List<KeywordViewModel>{
+    private fun getSelectedData():List<KeywordItemViewModel>{
         return keywordListAdapter.getSelectedItems()
     }
 
@@ -148,7 +152,14 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onViewCreated(view, savedInstanceState)
         add_btn.isEnabled = false
         add_btn.setOnClickListener {
-            keywordListAdapter.addNewKeyword( viewModel.addNewKeyword(editText.text.toString()))
+            var bool : Boolean
+           bool= keywordListAdapter.addNewKeyword( viewModel.addNewKeyword(editText.text.toString()))
+           if(bool){
+               SnackbarManager.make(activity,
+                       "already added",
+                       Snackbar.LENGTH_LONG)
+                       .show()
+           }
         }
         btn_next.setOnClickListener { gotoNextPage() }
         tip_btn.setOnClickListener { TipSheetKeywordList.newInstance(view.context).show() }
@@ -166,11 +177,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (!s.isNullOrBlank()) {
-                    add_btn.isEnabled = true
-                } else {
-                    add_btn.isEnabled = false
-                }
+                add_btn.isEnabled = !s.isNullOrBlank()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

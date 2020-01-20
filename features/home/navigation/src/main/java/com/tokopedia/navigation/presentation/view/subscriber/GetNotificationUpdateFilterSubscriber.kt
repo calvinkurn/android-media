@@ -7,23 +7,18 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateCon
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 
 class GetNotificationUpdateFilterSubscriber(
-        val view: NotificationUpdateContract.View,
         val mapper: GetNotificationUpdateFilterMapper,
         private val onSuccessInitiateData: (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit
 ) : BaseNotificationSubscriber() {
 
-    override fun onCompleted() {
-    }
+    override fun onCompleted() {}
 
-    override fun onError(e: Throwable) {
-
-    }
+    override fun onError(e: Throwable) {}
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, NotificationUpdateFilter::class.java,
                 routingOnNext(graphqlResponse))
     }
-
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
         return {

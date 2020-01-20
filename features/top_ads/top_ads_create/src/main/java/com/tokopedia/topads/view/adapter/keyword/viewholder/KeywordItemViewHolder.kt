@@ -7,6 +7,7 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.checkBox
+import java.lang.Exception
 
 /**
  * Author errysuprayogi on 11,November,2019
@@ -30,7 +31,11 @@ class KeywordItemViewHolder(val view: View, var actionSelected: (() -> Unit)?): 
             view.keyword_name.text = it.keyword
             view.checkBox.setOnCheckedChangeListener(null)
             view.checkBox.isChecked = item.isChecked
-            view.keyword_count.setText(Utils.format(it.totalSearch.toLong()))
+            try{
+                view.keyword_count.text = Utils.format(Integer.parseInt(it.totalSearch).toLong())
+            }catch (e:Exception){
+                view.keyword_count.text = it.totalSearch
+            }
             view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
                 actionSelected?.invoke()

@@ -1,0 +1,19 @@
+include ":libraries:inappupdate"
+
+include ":features:discovery:carousel_productcard"
+
+include ":features:common:resources_common"
+//include ":features:discovery:topadssdk"
+//include ":features:merchant:gold_merchant_resource"
+//include ":features:discovery:wishlist_common"
+
+include ":libraries:analytics"
+include ":libraries:track"
+include ":libraries:kotlin_extensions"
+include ":libraries:remote_config"
+include ":libraries:tracking_optimizer"
+
+include "tkpddesign"
+include "tkpdabstraction"
+
+apply from: "../productcard/compile-productcard.gradle"

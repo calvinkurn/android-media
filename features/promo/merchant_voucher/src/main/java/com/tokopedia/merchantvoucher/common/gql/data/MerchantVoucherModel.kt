@@ -41,7 +41,10 @@ data class MerchantVoucherModel(
         var merchantVoucherBanner: MerchantVoucherBanner? = null,
         @SerializedName("status")
         @Expose
-        var merchantVoucherStatus: MerchantVoucherStatus? = null
+        var merchantVoucherStatus: MerchantVoucherStatus? = null,
+        @SerializedName("restricted_for_liquid_product")
+        @Expose
+        var restrictedForLiquidProduct: Boolean = false
 )
 
 data class MerchantVoucherType(

@@ -28,6 +28,6 @@ public class QuickReplyItemDecoration extends RecyclerView.ItemDecoration {
         } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
             outRect.right = space;
         }
-        outRect.top = (int) view.getContext().getResources().getDimension(R.dimen.dp_8);
+        outRect.top = (int) view.getContext().getResources().getDimension(com.tokopedia.design.R.dimen.dp_8);
     }
 }

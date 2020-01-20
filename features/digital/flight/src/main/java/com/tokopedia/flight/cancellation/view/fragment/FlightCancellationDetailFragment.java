@@ -30,8 +30,10 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
 import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RefundDetailEntity;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import java.util.ArrayList;
@@ -81,22 +83,22 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation_detail, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_detail, container, false);
 
-        layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
-        imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
-        rvFlights = view.findViewById(R.id.recycler_view_flight);
-        rvPassengers = view.findViewById(R.id.recycler_view_data_passenger);
-        txtCancellationStatus = view.findViewById(R.id.cancellation_status);
-        txtCancellationDate = view.findViewById(R.id.cancellation_date);
-        tickerRefundInfo = view.findViewById(R.id.ticker_refund_info);
-        containerBottomInfo = view.findViewById(R.id.container_bottom_info);
-        rvBottomTopInfo = view.findViewById(R.id.rv_bottom_top_info);
-        rvBottomMiddleInfo = view.findViewById(R.id.rv_bottom_middle_info);
-        rvBottomBottomInfo = view.findViewById(R.id.rv_bottom_bottom_info);
-        rvBottomNotes = view.findViewById(R.id.rv_bottom_notes);
-        bottomFirstSeparator = view.findViewById(R.id.bottom_first_separator);
-        bottomSecondSeparator = view.findViewById(R.id.bottom_second_separator);
+        layoutExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.layout_expendable_passenger);
+        imageExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.image_expendable_passenger);
+        rvFlights = view.findViewById(com.tokopedia.flight.R.id.recycler_view_flight);
+        rvPassengers = view.findViewById(com.tokopedia.flight.R.id.recycler_view_data_passenger);
+        txtCancellationStatus = view.findViewById(com.tokopedia.flight.R.id.cancellation_status);
+        txtCancellationDate = view.findViewById(com.tokopedia.flight.R.id.cancellation_date);
+        tickerRefundInfo = view.findViewById(com.tokopedia.flight.R.id.ticker_refund_info);
+        containerBottomInfo = view.findViewById(com.tokopedia.flight.R.id.container_bottom_info);
+        rvBottomTopInfo = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_top_info);
+        rvBottomMiddleInfo = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_middle_info);
+        rvBottomBottomInfo = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_bottom_info);
+        rvBottomNotes = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_notes);
+        bottomFirstSeparator = view.findViewById(com.tokopedia.flight.R.id.bottom_first_separator);
+        bottomSecondSeparator = view.findViewById(com.tokopedia.flight.R.id.bottom_second_separator);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
@@ -109,7 +111,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         layoutExpendablePassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_reverse));
+                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.flight_rotate_reverse));
                 togglePassengerInfo();
             }
         });
@@ -148,8 +150,8 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         txtCancellationStatus.requestFocus();
         txtCancellationStatus.setText(flightCancellationListViewModel.getCancellations().getStatusStr());
 
-        flightDetailOrderAdapter.addElement(flightCancellationListViewModel
-                .getCancellations().getJourneys());
+        flightDetailOrderAdapter.addElement(transform(flightCancellationListViewModel
+                .getCancellations().getJourneys()));
         flightDetailOrderAdapter.notifyDataSetChanged();
 
         flightCancellationDetailPassengerAdapter.addElement(flightCancellationListViewModel
@@ -253,5 +255,26 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         isPassengerInfoShowed = true;
         rvPassengers.setVisibility(View.VISIBLE);
         imageExpendablePassenger.setRotation(0);
+    }
+
+    private List<FlightDetailOrderJourney> transform(List<FlightOrderJourney> list) {
+        List<FlightDetailOrderJourney> journeyList = new ArrayList<>();
+
+        for (FlightOrderJourney item : list) {
+            journeyList.add(new FlightDetailOrderJourney(
+                    item.getJourneyId(),
+                    item.getDepartureCity(),
+                    item.getDepartureCityCode(),
+                    item.getDepartureAiportId(),
+                    item.getDepartureTime(),
+                    item.getArrivalCity(),
+                    item.getArrivalCityCode(),
+                    item.getArrivalAirportId(),
+                    item.getArrivalTime(),
+                    item.getStatus(),
+                    item.getRouteViewModels()));
+        }
+
+        return journeyList;
     }
 }

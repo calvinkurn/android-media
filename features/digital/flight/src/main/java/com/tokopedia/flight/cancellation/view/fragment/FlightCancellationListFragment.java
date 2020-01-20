@@ -45,7 +45,7 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flight_cancellation_list, container, false);
+        return inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_list, container, false);
     }
 
     @Override
@@ -107,5 +107,8 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
         this.cancellationListViewModelList = cancellationList;
     }
 
-
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
+    }
 }

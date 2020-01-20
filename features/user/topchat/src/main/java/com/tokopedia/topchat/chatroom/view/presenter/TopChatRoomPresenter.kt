@@ -31,8 +31,6 @@ import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
-import com.tokopedia.kotlin.extensions.view.debug
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -255,7 +253,6 @@ class TopChatRoomPresenter @Inject constructor(
                                 }
                             }
                         }
-                        templateList.add(TemplateChatModel(false) as Visitable<Any>)
                         view.onSuccessGetTemplate(templateList)
                     }
 
@@ -498,8 +495,6 @@ class TopChatRoomPresenter @Inject constructor(
         if (isValidReply(sendMessage)) {
             sendAttachments(messageId, opponentId)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
-        } else {
-            showErrorSnackbar(R.string.error_empty_product)
         }
     }
 
@@ -599,6 +594,8 @@ class TopChatRoomPresenter @Inject constructor(
         val productColorVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, savedInstanceState)
         val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
         val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
+        val productFsIsActive = view.getBooleanArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, savedInstanceState)
+        val productFsImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, savedInstanceState)
 
         val productPreviewViewModel = ProductPreviewViewModel(
                 productId,
@@ -608,7 +605,9 @@ class TopChatRoomPresenter @Inject constructor(
                 productColorVariant,
                 productColorHexVariant,
                 productSizeVariant,
-                productUrl
+                productUrl,
+                productFsIsActive,
+                productFsImageUrl
         )
 
         attachmentsPreview.add(productPreviewViewModel)
@@ -673,6 +672,9 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
             putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
         }
     }
 }

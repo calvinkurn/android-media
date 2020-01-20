@@ -23,6 +23,7 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.network.ChatbotUrl
@@ -77,7 +78,8 @@ class ChatbotPresenter @Inject constructor(
         private val sendRatingReasonUseCase: SendRatingReasonUseCase,
         private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
         private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
-        private val leaveQueueUseCase: LeaveQueueUseCase
+        private val leaveQueueUseCase: LeaveQueueUseCase,
+        private val getTickerDataUseCase: GetTickerDataUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
 
@@ -258,6 +260,20 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor)
     }
 
+    private fun sendReadEventWebSocket(messageId: String) {
+        RxWebSocket.send(getReadMessageWebSocket(messageId),
+                listInterceptor)
+    }
+
+    private fun getReadMessageWebSocket(messageId: String): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("msg_id", Integer.valueOf(messageId))
+        json.add("data", data)
+        return json
+    }
+
     override fun sendRating(messageId: String, rating: Int, timestamp: String,
                             onError: (Throwable) -> Unit,
                             onSuccess: (SendRatingPojo) -> Unit) {
@@ -312,8 +328,10 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                if (!pojo.attachment?.fallbackAttachment?.message.equals(""))
+                if (!pojo.attachment?.fallbackAttachment?.message.equals("")){
                     view.onReceiveMessageEvent(mapToVisitable(pojo))
+                    sendReadEventWebSocket(messageId)
+                }
             }
         }
     }
@@ -454,9 +472,11 @@ class ChatbotPresenter @Inject constructor(
         sendRatingReasonUseCase.unsubscribe()
         submitCsatRatingUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
+        getTickerDataUseCase.unsubscribe()
         super.detachView()
     }
 
-
-
+    override fun showTickerData(onError: (Throwable) -> Unit, onSuccesGetTickerData: (TickerData) -> Unit) {
+        getTickerDataUseCase.execute(TickerDataSubscriber(onError,onSuccesGetTickerData))
+    }
 }

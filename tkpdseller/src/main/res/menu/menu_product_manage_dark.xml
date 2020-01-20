@@ -18,10 +18,4 @@
                 android:title="@string/import_from_instagram_to_draft" />
         </menu>
     </item>
-
-    <item
-        android:id="@+id/checklist_product_menu"
-        android:icon="@drawable/ic_action_checkable_black"
-        android:title="@string/title_multiple_select"
-        app:showAsAction="always"/>
 </menu>

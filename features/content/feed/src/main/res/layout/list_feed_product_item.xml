@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/dp_5"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
-        android:contentDescription="@string/image_product_desc"
+        android:contentDescription="@string/text_feed_image_product_desc"
         android:gravity="center"
         android:scaleType="fitCenter"
         tools:src="@color/colorAccent" />

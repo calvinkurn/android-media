@@ -45,6 +45,10 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(), LoaderUiListener, ActivityL
         return R.layout.activity_ovop2p_transfer
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun getNewFragment(): Fragment {
         var fragBundle = Bundle()
         fragBundle.putString(Constants.Keys.RECIEVER_NAME, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))

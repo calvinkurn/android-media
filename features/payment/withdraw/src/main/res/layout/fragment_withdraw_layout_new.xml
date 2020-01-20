@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <ImageView
             android:id="@+id/ivButtonLeft"
             android:layout_width="@dimen/dp_12"
@@ -76,12 +75,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_info" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/add_account"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_12"
-            android:drawableLeft="@drawable/ic_add_round"
             android:drawablePadding="@dimen/dp_12"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/sp_11"
@@ -89,6 +87,7 @@
             android:text="Tambah Rekening"
             android:textSize="@dimen/sp_14"
             android:visibility="gone"
+            app:drawableLeftCompat="@drawable/ic_add_round"
             app:layout_constraintStart_toStartOf="@+id/saldo_title"
             app:layout_constraintTop_toBottomOf="@+id/recycler_view_bank" />
 

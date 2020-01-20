@@ -8,19 +8,19 @@ import java.util.List;
 
 public class PaymentType {
 
-    @SerializedName("metadata")
+    @SerializedName("error")
     @Expose
-    private String metadata;
+    private String error;
     @SerializedName("types")
     @Expose
     private List<String> types = new ArrayList<>();
 
-    public String getMetadata() {
-        return metadata;
+    public String getError() {
+        return error;
     }
 
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
+    public void setError(String error) {
+        this.error = error;
     }
 
     public List<String> getTypes() {

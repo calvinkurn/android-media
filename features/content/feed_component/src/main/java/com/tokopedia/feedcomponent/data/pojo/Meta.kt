@@ -14,6 +14,9 @@ data class Meta (
     @SerializedName("lastCursor")
     @Expose
     val lastCursor: String = "",
+    @SerializedName("firstPageCursor")
+    @Expose
+    val firstPageCursor: String = "",
     @SerializedName("hasNextPage")
     @Expose
     val hasNextPage: Boolean = false,

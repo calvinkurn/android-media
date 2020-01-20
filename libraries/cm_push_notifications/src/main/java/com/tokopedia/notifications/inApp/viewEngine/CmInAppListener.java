@@ -15,9 +15,9 @@ public interface CmInAppListener {
 
     void onCMinAppDismiss();
 
-    void onCMInAppLinkClick(Uri deepLinkUri, String screenName);
+    void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType);
 
-    void onCMInAppClosed();
+    void onCMInAppClosed(CMInApp cmInApp);
 
     void onCMInAppInflateException(CMInApp inApp);
 }

@@ -39,8 +39,8 @@
         android:orientation="vertical"
         android:scrollbars="none">
 
-        <WebView
-            android:id="@+id/catalog_webview"
+        <com.tokopedia.webview.TkpdWebView
+            android:id="@+id/swd_tnc_webview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_16"

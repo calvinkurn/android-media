@@ -1,5 +1,9 @@
 package com.tokopedia.promocheckout.detail.model.couponredeem
 
+import com.google.gson.annotations.SerializedName
+
 data class PromoRedeemCouponResponse(
-	val hachikoRedeem: HachikoRedeem? = null
+
+        @SerializedName("hachikoRedeem")
+        val hachikoRedeem: HachikoRedeem? = null
 )

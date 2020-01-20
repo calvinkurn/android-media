@@ -26,6 +26,12 @@ import dagger.Provides
 @Module(includes = arrayOf(ImageUploaderModule::class))
 class ChatbotModule {
 
+    constructor(context: Context){
+        thisContext = context
+    }
+
+    private var thisContext: Context
+
     @ChatbotScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
@@ -34,8 +40,8 @@ class ChatbotModule {
 
     @ChatbotScope
     @Provides
-    fun provideResource(@ApplicationContext context: Context): Resources {
-        return context.resources
+    fun provideResource(): Resources {
+        return thisContext.resources
     }
 
     @ChatbotScope

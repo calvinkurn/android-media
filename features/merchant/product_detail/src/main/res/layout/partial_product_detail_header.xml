@@ -42,7 +42,7 @@
         android:layout_height="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_10"
         android:visibility="gone"
-        android:scaleType="fitXY"
+        android:scaleType="fitStart"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@+id/tv_price_pdp"
         app:layout_constraintLeft_toRightOf="@+id/text_cashback"

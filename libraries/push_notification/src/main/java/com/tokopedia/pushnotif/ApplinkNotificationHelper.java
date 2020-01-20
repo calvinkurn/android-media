@@ -13,6 +13,8 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import static com.tokopedia.pushnotif.Constant.Host.CHATBOT;
+
 /**
  * @author ricoharisin .
  */
@@ -47,6 +49,7 @@ public class ApplinkNotificationHelper {
         model.setTitle(data.getString("title", ""));
         model.setTargetApp(data.getString("target_app", ""));
         model.setTransactionId(data.getString("trans_id", ""));
+        model.setImages(data.getString("images", ""));
 
         return model;
     }
@@ -89,6 +92,10 @@ public class ApplinkNotificationHelper {
                     return Constant.NotificationId.SELLER;
                 case "resolution":
                     return Constant.NotificationId.RESOLUTION;
+                case CHATBOT:
+                    return Constant.NotificationId.CHAT_BOT;
+                case "product-review":
+                    return Constant.NotificationId.REVIEW;
                 default:
                     return Constant.NotificationId.GENERAL;
             }

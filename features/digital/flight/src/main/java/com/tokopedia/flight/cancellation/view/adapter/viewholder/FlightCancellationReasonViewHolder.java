@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
 
 /**
@@ -16,7 +15,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReason
 public class FlightCancellationReasonViewHolder extends AbstractViewHolder<FlightCancellationReasonViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_booking_amenity;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_amenity;
 
     private ReasonListener listener;
 
@@ -26,8 +25,8 @@ public class FlightCancellationReasonViewHolder extends AbstractViewHolder<Fligh
     public FlightCancellationReasonViewHolder(View itemView, ReasonListener listener) {
         super(itemView);
 
-        title = (TextView) itemView.findViewById(R.id.tv_title);
-        imageChecked = (ImageView) itemView.findViewById(R.id.image_checked);
+        title = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
+        imageChecked = (ImageView) itemView.findViewById(com.tokopedia.flight.R.id.image_checked);
         this.listener = listener;
     }
 

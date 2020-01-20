@@ -14,6 +14,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 
 import java.util.List;
 import java.util.Map;
@@ -109,6 +110,8 @@ public interface DigitalBaseContract {
         void startPerfomanceMonitoringTrace();
 
         void stopPerfomanceMonitoringTrace();
+
+        DigitalSubscriptionParams getDigitalSubscriptionParams();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{

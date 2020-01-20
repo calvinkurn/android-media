@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/spacing_lvl2"
+    android:paddingRight="@dimen/spacing_lvl2"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/image_icon_benefit"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/spacing_lvl2"/>
+
+    <TextView
+        android:id="@+id/title_benefit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Purple_P600"
+        android:textSize="@dimen/fontSize_lvl2"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

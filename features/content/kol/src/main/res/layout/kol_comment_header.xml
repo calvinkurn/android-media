@@ -5,7 +5,10 @@
               android:background="@color/white"
               android:orientation="vertical">
 
-    <include layout="@layout/kol_comment_item"/>
+    <com.tokopedia.kol.feature.comment.view.custom.KolCommentCardView
+        android:id="@+id/kcv_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <View
         android:layout_width="match_parent"

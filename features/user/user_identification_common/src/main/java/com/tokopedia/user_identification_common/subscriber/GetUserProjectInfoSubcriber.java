@@ -4,7 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.user_identification_common.KYCConstant;
-import com.tokopedia.user_identification_common.pojo.KycUserProjectInfoPojo;
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo;
 
 import java.util.List;
 

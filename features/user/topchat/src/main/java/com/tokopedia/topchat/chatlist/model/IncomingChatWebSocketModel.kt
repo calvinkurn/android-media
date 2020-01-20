@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.model
 
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 
 
@@ -13,8 +14,6 @@ data class IncomingChatWebSocketModel(val msgId: String = ""): BaseIncomingItemW
     var time: String = ""
     var contact: ItemChatAttributesContactPojo? = null
 
-
-
     constructor(messageId: String,
                 message: String,
                 time: String,
@@ -23,4 +22,22 @@ data class IncomingChatWebSocketModel(val msgId: String = ""): BaseIncomingItemW
         this.time = time
         this.contact = contact
     }
+
+    constructor(
+            messageId: String,
+            message: String,
+            time: String
+    ) : this(messageId) {
+        this.message = message
+        this.time = time
+    }
+
+    override fun getContactId(): String {
+        return contact?.contactId.toEmptyStringIfNull()
+    }
+
+    override fun getTag(): String {
+        return contact?.tag.toEmptyStringIfNull()
+    }
+
 }

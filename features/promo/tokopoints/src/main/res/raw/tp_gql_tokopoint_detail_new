@@ -1,6 +1,5 @@
 {
   tokopoints {
-
     resultStatus {
       code
       message
@@ -25,6 +24,17 @@
         loyaltyStr
         rewardExpiryInfo
         loyaltyExpiryInfo
+      }
+      emptyMessage {
+        title
+        subTitle
+      }
+      cta {
+        icon
+        text
+        url
+        appLink
+        type
       }
     }
     sheetHowToGet {

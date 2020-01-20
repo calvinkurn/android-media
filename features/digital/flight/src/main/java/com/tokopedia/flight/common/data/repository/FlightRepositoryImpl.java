@@ -1,8 +1,6 @@
 package com.tokopedia.flight.common.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.flight.country.data.FlightCountryListDbSource;
-import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
@@ -19,12 +17,13 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.country.data.FlightCountryListDbSource;
+import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
-import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.FlightOrderRepositoryImpl;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
@@ -50,15 +49,13 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 10/25/17.
  */
 
-public class FlightRepositoryImpl implements FlightRepository {
+public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements FlightRepository {
     private BannerDataSource bannerDataSource;
     private FlightCountryListDbSource flightCountryListDbSource;
     private FlightClassesDataSource flightClassesDataSource;
     private FlightCartDataSource flightCartDataSource;
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
     private FlightBookingDataSource flightBookingDataSource;
-    private FlightOrderDataSource flightOrderDataSource;
-    private FlightOrderMapper flightOrderMapper;
     private FlightPassengerFactorySource flightPassengerFactorySource;
     private FlightCancellationCloudDataSource flightCancellationCloudDataSource;
     private FlightCancelVoucherDataSource flightCancelVoucherDataSource;
@@ -76,14 +73,14 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightCancellationCloudDataSource flightCancellationCloudDataSource,
                                 FlightCancelVoucherDataSource flightCancelVoucherDataSource,
                                 FlightBookingCartDataSource flightBookingCartDataSource) {
+        super(flightOrderDataSource, flightOrderMapper);
+
         this.bannerDataSource = bannerDataSource;
         this.flightCountryListDbSource = flightCountryListDbSource;
         this.flightClassesDataSource = flightClassesDataSource;
         this.flightCartDataSource = flightCartDataSource;
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
         this.flightBookingDataSource = flightBookingDataSource;
-        this.flightOrderDataSource = flightOrderDataSource;
-        this.flightOrderMapper = flightOrderMapper;
         this.flightPassengerFactorySource = flightPassengerFactorySource;
         this.flightCancellationCloudDataSource = flightCancellationCloudDataSource;
         this.flightCancelVoucherDataSource = flightCancelVoucherDataSource;
@@ -98,11 +95,6 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<FlightAirportCountryTable> getAirportByCountryId(String id) {
         return flightCountryListDbSource.getAirportByCountryId(id);
-    }
-
-    @Override
-    public Observable<SendEmailEntity> sendEmail(Map<String, Object> params) {
-        return flightOrderDataSource.sendEmail(params);
     }
 
     @Override
@@ -158,20 +150,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightOrder>> getOrders(Map<String, Object> maps) {
-        return flightOrderDataSource.getOrders(maps)
-                .map(it -> flightOrderMapper.transform(it));
-    }
-
-    @Override
-    public Observable<FlightOrder> getOrder(String id) {
-        return flightOrderDataSource.getOrder(id)
-                .map(it -> flightOrderMapper.transform(it));
-    }
-
-    @Override
     public Observable<OrderEntity> getOrderEntity(String id) {
-        return flightOrderDataSource.getOrder(id);
+        return getFlightOrderDataSource().getOrder(id);
     }
 
     @Override
@@ -205,7 +185,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
+    public Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId) {
         return flightCancellationCloudDataSource.getCancelablePassenger(invoiceId);
     }
 

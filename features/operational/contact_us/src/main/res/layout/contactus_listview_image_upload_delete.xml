@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/margin_vs"
+    android:paddingBottom="@dimen/padding_small">
+
+    <ImageView
+        android:id="@+id/image_upload"
+        android:layout_width="@dimen/img_thumb_m"
+        android:layout_height="@dimen/img_thumb_m"
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="@dimen/padding_small"
+        app:srcCompat="@drawable/addproduct" />
+
+    <ImageView
+        android:id="@+id/delete_but"
+        android:layout_width="@dimen/padding_med"
+        android:layout_height="@dimen/padding_med"
+        android:padding="2dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/image_upload"
+        app:srcCompat="@drawable/navigation_cancel" />
+
+</RelativeLayout>

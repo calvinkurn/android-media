@@ -5,12 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase;
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 
 import dagger.Module;
 import dagger.Provides;

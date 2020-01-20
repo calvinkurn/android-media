@@ -240,7 +240,7 @@
     <string name="error_message_sms_app_not_found">Maaf, aplikasi SMS tidak ditemukan</string>
     <string name="error_message_phone_dialer_app_not_found">Maaf, aplikasi telepon tidak ditemukan</string>
     <string name="weight_place_holder">(WEIGHT)</string>
-    <string name="protection_count_label">Biaya Proteksi Gadget (%d barang)</string>
+    <string name="protection_count_label">Biaya Proteksi Produk (%d barang)</string>
     <string name="label_title_button_no">Tidak</string>
     <string name="label_title_button_yes">Ya</string>
     <string name="label_response_auto_finish">Selesai Otomatis :</string>
@@ -281,7 +281,7 @@
     <string name="label_colon">:</string>
     <string name="request_pickup_step_2"><![CDATA[Mohon untuk <b>tidak</b> memberikan ongkos kirim pada driver]]></string>
     <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di pick up</string>
-    <string name="request_pickup_step_3">Perkiraan driver akan datang untuk mengambil barang:\n - Same day maksimal 4 jam \n - Instan maksimal 2 jam</string>
+    <string name="request_pickup_step_3_seller">Perkiraan driver akan datang untuk mengambil barang:\n - Reguler &amp; Next Day maksimal 1 x 24 jam \n - Same day maksimal 4 jam \n - Instan maksimal 2 jam</string>
     <string name="request_pickup_info"><![CDATA[Pelajari informasi lebih lengkap mengenai kurir yang menggunakan layanan pickup <font color = \'#42b549\'>disini</font>]]></string>
     <string name="title_dialog_finish_order">Selesaikan Pesanan</string>
     <string name="body_dialog_finish_order">Pilih selesai apabila barang sudah diterima dan tidak bermasalah</string>
@@ -342,5 +342,37 @@
     <string name="title_scan_awb">Scan Barcode</string>
     <string name="label_no_color_variant">Tidak ada varian yang terpilih</string>
 
+    <string name="label_harus_sesuai">Harus Sesuai</string>
+    <string name="title_immutable_courier">Kurir tidak dapat diubah</string>
+    <string name="title_immutable_wajib_tulis_kode_booking">Wajib tulis kode booking</string>
+    <string name="icon_harus_sesuai">Icon Harus Sesuai</string>
+    <string name="label_mengerti">Mengerti</string>
+    <string name="bottomsheet_harus_sesuai_desc">Kurir dan layanan pengiriman harus sesuai dengan pesanan.</string>
+    <string name="label_kode_booking_str">Kode booking</string>
+    <string name="label_wajib_dicantumkan_str">Wajib Dicantumkan</string>
+    <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
+    <string name="bottomsheet_wajib_tulis_kode_booking_desc">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah sesuai.</string>
+    <string name="title_bottomsheet_accept_order">Konfirmasi terima pesanan</string>
+    <string name="action_batal">Batal</string>
+    <string name="action_terima">Terima</string>
+    <string name="ic_checklist_desc">ic_checklist</string>
+    <string name="confirm_msg_1a">Dengan menerima pesanan, kamu </string>
+    <string name="confirm_msg_1b">tidak dapat mengubah pilihan kurir</string>
+    <string name="confirm_msg_2a_reguler">Segera Konfirmasi atau Request Pickup </string>
+    <string name="confirm_msg_2a_free_shipping">Segera Request Pickup </string>
+    <string name="confirm_msg_2b">sebelum batas respons berakhir</string>
+    <string name="confirm_msg_3_reguler">Untuk pesanan dengan Kode Booking, cetak label pengiriman atau tulis kode booking di kemasan paket</string>
+    <string name="confirm_msg_3_free_shipping">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
+
+    <string name="request_pickup_title">Konfirmasi Request Pick-Up</string>
+    <string name="request_pickup_location_label">Lokasi Tokomu:</string>
+    <string name="request_pickup_location_icon">Icon Location</string>
+    <string name="request_pickup_location_desc_sample">Tokopedia Tower Ciputra World 2 \n Prof. DR. Satrio No. Kav. 11, RT.3/RW.3, \n Karet Semanggi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950</string>
+    <string name="request_pickup_info_title">Pastikan :</string>
+    <string name="request_pickup_info_label_1">Pesanan sudah terbungkus rapi</string>
+    <string name="request_pickup_info_label_2">Kode booking, alamat, dan nomor telepon tertulis di kemasan paket</string>
+    <string name="request_pickup_info_label_3">Tidak perlu memberikan ongkir ke kurir</string>
+    <string name="request_pickup_info_icon">Icon info confirm request pickup</string>
+    <string name="request_pickup_info_button">Request Pick-Up</string>
 
 </resources>

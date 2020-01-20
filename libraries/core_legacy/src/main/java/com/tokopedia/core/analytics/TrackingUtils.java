@@ -26,6 +26,10 @@ import java.util.Map;
 @Deprecated
 public class TrackingUtils{
     public static void eventCampaign(Context context, Campaign campaign) {
+        // V5
+        TrackApp.getInstance().getGTM().sendCampaign(campaign.getCampaign());
+
+        // v4
         TrackApp.getInstance().getGTM().pushEvent("campaignTrack", campaign.getCampaign());
         TrackApp.getInstance().getGTM().sendGeneralEvent(campaign.getNullCampaignMap());
     }

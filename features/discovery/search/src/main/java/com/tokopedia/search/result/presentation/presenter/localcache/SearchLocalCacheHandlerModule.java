@@ -14,7 +14,7 @@ public class SearchLocalCacheHandlerModule {
 
     @SearchScope
     @Provides
-    SearchLocalCacheHandler provideSearchLocalCacheHandler(@ApplicationContext Context context) {
+    public SearchLocalCacheHandler provideSearchLocalCacheHandler(@ApplicationContext Context context) {
         return new SearchLocalCacheHandler(context);
     }
 }

@@ -13,6 +13,9 @@ public class CancelPassengerAttribute {
     @SerializedName("passengers")
     @Expose
     private List<Passenger> passengers;
+    @SerializedName("non_cancellables")
+    @Expose
+    private List<Passenger> nonCancellablePassengers;
     @SerializedName("cancellation_reason")
     @Expose
     private List<Reason> reasons;
@@ -33,4 +36,11 @@ public class CancelPassengerAttribute {
         this.reasons = reasons;
     }
 
+    public List<Passenger> getNonCancellablePassengers() {
+        return nonCancellablePassengers;
+    }
+
+    public void setNonCancellablePassengers(List<Passenger> nonCancellablePassengers) {
+        this.nonCancellablePassengers = nonCancellablePassengers;
+    }
 }

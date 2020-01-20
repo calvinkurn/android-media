@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
-import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
@@ -56,12 +54,6 @@ public class ShopPageModule {
     @Provides
     public DeleteShopNoteUseCase provideDeleteShopNoteUseCase(@ApplicationContext Context context) {
         return new DeleteShopNoteUseCase(context);
-    }
-
-    @ShopPageScope
-    @Provides
-    public DeleteReputationSpeedDailyCacheUseCase provideDeleteReputationSpeedDailyCacheUseCase(@ApplicationContext Context context) {
-        return new DeleteReputationSpeedDailyCacheUseCase(context);
     }
 
     @ShopPageScope

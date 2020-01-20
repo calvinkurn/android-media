@@ -3,6 +3,7 @@ package com.tokopedia.events.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
@@ -34,8 +35,11 @@ import com.tokopedia.user.session.UserSession;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -54,12 +58,16 @@ import rx.schedulers.Schedulers;
 public class Utils {
 
     public static int MAX_ITEMS_FOR_GA = 5;
+    public static int SHOW_DATE_PICKER = 16384;
     private static Utils singleInstance;
     private List<CategoryItemsViewModel> topEvents;
     private HashSet<Integer> likedEventSet;
     private HashSet<Integer> unLikedEventSet;
+    public static final String DEFAULT_FORMAT = "EEEE, d MMM yyyy";
+    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     public static final String NSQ_SERVICE = "Recommendation_For_You";
     public static final String NSQ_USE_CASE = "23";
+    private static final String SHOWCASE_PREFERENCES = "event_show_case_pref";
 
 
     synchronized public static Utils getSingletonInstance() {
@@ -293,6 +301,15 @@ public class Utils {
         return sdf.format(date);
     }
 
+
+    public String convertEpochToSelectedDateFormat(int time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", new Locale("in", "ID", ""));
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        Long epochTime = time * 1000L;
+        Date date = new Date(epochTime);
+        return sdf.format(date);
+    }
+
     public String convertLongEpoch(long epoch) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd'/'MM'/'yy", new Locale("in", "ID", ""));
         Date date = new Date(epoch);
@@ -413,5 +430,53 @@ public class Utils {
     public static UserSession getUserSession(Context context) {
         UserSession userSession = new UserSession(context);
         return userSession;
+    }
+
+    public static Date addTimeToCurrentDate(int field, int value) {
+        Calendar now = getCurrentCalendar();
+        now
+                .add(field, value);
+        return now.getTime();
+    }
+
+
+    public static Date getCurrentDate() {
+        Calendar now = getCurrentCalendar();
+        return now.getTime();
+    }
+
+    public static Calendar getCurrentCalendar() {
+        return Calendar.getInstance();
+    }
+
+    public static Date addTimeToSpesificDate(Date date, int field, int value) {
+        Calendar now = getCurrentCalendar();
+        now.setTime(date);
+        now.add(field, value);
+        return now.getTime();
+    }
+
+    public static Date stringToDate(String input) {
+        DateFormat fromFormat = new SimpleDateFormat(DEFAULT_FORMAT, DEFAULT_LOCALE);
+        try {
+            return fromFormat.parse(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Date doesnt valid (" + input + ") with format" + DEFAULT_FORMAT);
+        }
+    }
+
+
+    public static boolean hasShown(Context context, String tag){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(tag, false);
+    }
+
+    public static void setShown(Context context, String tag, boolean hasShown){
+        SharedPreferences.Editor sharedPreferencesEditor = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE).edit();
+        sharedPreferencesEditor.putBoolean (tag, hasShown);
+        sharedPreferencesEditor.apply();
     }
 }

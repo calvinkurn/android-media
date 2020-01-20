@@ -1,7 +1,6 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
@@ -33,7 +31,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
     @Override
     public PromosViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        View imageLayout = LayoutInflater.from(context).inflate(R.layout.promo_item, parent, false);
+        View imageLayout = LayoutInflater.from(context).inflate(com.tokopedia.digital_deals.R.layout.promo_item, parent, false);
         dealsAnalytics = new DealsAnalytics();
 
         PromosViewHolder vh = new PromosViewHolder(imageLayout);
@@ -71,7 +69,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
 
         public PromosViewHolder(View itemView) {
             super(itemView);
-            promoImage = itemView.findViewById(R.id.banner_item);
+            promoImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.banner_item);
         }
 
         boolean isShown() {
@@ -91,7 +89,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
         }
 
         void bindData(ProductItem item, int position) {
-            ImageHandler.loadImage(context, promoImage, item.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, promoImage, item.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             promoImage.setOnClickListener(view -> {
                 mPresenter.sendEventEcommerce(item, position, item.getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
                         , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_SUGGESTED_DEALS);

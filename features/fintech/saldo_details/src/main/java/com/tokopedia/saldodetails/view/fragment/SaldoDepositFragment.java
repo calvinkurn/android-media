@@ -34,9 +34,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
@@ -45,7 +48,6 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
-import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -60,12 +62,15 @@ import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
 
+
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
 
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
     public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details";
+    public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id";
+
     private final long animation_duration = 300;
 
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
@@ -106,7 +111,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     private long sellerSaldoBalance;
     private long buyerSaldoBalance;
-    private float totalSaldoBalance;
+    private long totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
 
@@ -118,7 +123,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private LinearLayout merchantStatusLL;
     private long CHECK_VISIBILITY_DELAY = 700;
 
-    private ConstraintLayout layoutTicker;
+    private View layoutTicker;
     private TextView tvTickerMessage;
     private ImageView ivDismissTicker;
     private int mclLateCount = 0;
@@ -130,6 +135,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private static final String IS_SELLER = "is_seller";
     private boolean showMclBlockTickerFirebaseFlag = false;
     private FirebaseRemoteConfigImpl remoteConfig;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
     public SaldoDepositFragment() {
     }
@@ -567,7 +573,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         drawButton.setClickable(state);
     }
 
-        @SuppressLint("Range")
+    @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
@@ -708,7 +714,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
-
         if (response != null && response.isEligible()) {
             statusWithDrawLock = response.getStatus();
             switch (statusWithDrawLock) {
@@ -739,7 +744,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showMerchantCreditLineWidget(GqlMerchantCreditResponse response) {
         merchantStatusLL.setVisibility(View.VISIBLE);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+        saveInstanceCacheManager=new SaveInstanceCacheManager(context,true);
+        saveInstanceCacheManager.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+        if (saveInstanceCacheManager.getId()!=null) {
+            bundle.putInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, Integer.parseInt(saveInstanceCacheManager.getId()));
+        }
         getChildFragmentManager()
                 .beginTransaction()
                 .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))

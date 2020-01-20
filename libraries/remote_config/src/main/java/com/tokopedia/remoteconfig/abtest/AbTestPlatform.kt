@@ -158,7 +158,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                 "event" to "abtesting",
                 "eventCategory" to "abtesting",
                 "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
-                "session_id" to userSession.deviceId,
                 "feature" to featureVariants.featureVariants
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)

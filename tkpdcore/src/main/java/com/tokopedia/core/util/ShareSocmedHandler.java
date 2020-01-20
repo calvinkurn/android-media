@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -202,9 +204,7 @@ public class ShareSocmedHandler {
             link = link.replace("m.tokopedia.com/hot/", "");
             String[] div = link.split("/");
             if (div.length == 1) {
-                Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntentByDomain(context, div[0]);
-                context.startActivity(intent);
-                context.startActivity(intent);
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_DOMAIN, div[0]);
                 return 1;
             } else if (div.length == 2) {
                 Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);

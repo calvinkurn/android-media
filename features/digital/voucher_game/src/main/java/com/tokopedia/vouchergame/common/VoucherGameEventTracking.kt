@@ -47,12 +47,6 @@ interface VoucherGameEventTracking {
         }
     }
 
-    interface Screen {
-        companion object {
-            val VOUCHER_GAME = "/digital/voucher game"
-        }
-    }
-
     interface EnhanceEccomerce {
         companion object {
             var NAME = "name"

@@ -40,9 +40,9 @@ interface TopChatContract {
 
         fun showErrorWebSocket(b: Boolean)
 
-        fun onBackPressedEvent()
-
         fun getStringArgument(key: String, savedInstanceState: Bundle?): String
+
+        fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean
 
         fun focusOnReply()
 

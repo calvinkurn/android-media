@@ -53,11 +53,14 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
+import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -88,6 +91,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
@@ -118,6 +122,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
+    private static final String SOURCE_ACCOUNT = "account";
     @Inject
     UserSessionInterface userSession;
     @Inject
@@ -237,10 +242,12 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        Intent intent = RouteManager.getIntent(this,
-                ApplinkConstInternalMarketplace.ONBOARDING);
-        startActivity(intent);
-        finish();
+        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void setDefaultShakeEnable() {
@@ -390,8 +397,9 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.isUserLogin()) {
-            String applink = String.format("%s?source=%s", ApplinkConst.LOGIN, "account");
-            RouteManager.route(this, applink);
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
+            startActivity(intent);
             return false;
         }
 
@@ -475,7 +483,7 @@ public class MainParentActivity extends BaseActivity implements
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
             }
-            ft.commitAllowingStateLoss();
+            ft.commitNowAllowingStateLoss();
         });
     }
 
@@ -619,14 +627,16 @@ public class MainParentActivity extends BaseActivity implements
      * Notification
      */
     private void setBadgeNotifCounter(Fragment fragment) {
-        if (fragment == null)
-            return;
+        handler.post(() -> {
+            if (fragment == null)
+                return;
 
-        if (fragment instanceof AllNotificationListener && notification != null) {
-            ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
-        }
+            if (fragment instanceof AllNotificationListener && notification != null) {
+                ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
+            }
 
-        invalidateOptionsMenu();
+            invalidateOptionsMenu();
+        });
     }
 
     @Override
@@ -883,7 +893,7 @@ public class MainParentActivity extends BaseActivity implements
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
+                    Intent digitalIntent = RouteManager.getIntent(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 

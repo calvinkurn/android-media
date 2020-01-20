@@ -6,10 +6,11 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
+import com.tokopedia.referral.analytics.ReferralAnalytics;
 import com.tokopedia.referral.view.activity.ReferralActivity;
-import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.referral.view.listener.FriendsWelcomeView;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -26,20 +27,21 @@ import javax.inject.Inject;
 
 public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<FriendsWelcomeView> implements IReferralFriendsWelcomePresenter {
 
-    private final String CODE_KEY = "code";
     private UserSession userSession;
     private RemoteConfig remoteConfig;
+    private ReferralAnalytics referralAnalytics;
 
     @Inject
-    public ReferralFriendsWelcomePresenter(UserSession userSession, RemoteConfig remoteConfig) {
+    public ReferralFriendsWelcomePresenter(UserSession userSession, RemoteConfig remoteConfig,
+                                           ReferralAnalytics referralAnalytics) {
         this.userSession = userSession;
         this.remoteConfig = remoteConfig;
+        this.referralAnalytics = referralAnalytics;
     }
 
     @Override
-    public void initialize() {
-        if (getView().getActivity().getIntent() != null && getView().getActivity().getIntent().getExtras() != null) {
-            String code = getView().getActivity().getIntent().getExtras().getString(CODE_KEY);
+    public void initialize(String code) {
+        if (!TextUtils.isEmpty(code)) {
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), Constants.Values.Companion.REFERRAL);
             if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(Constants.Key.Companion.REFERRAL_CODE, ""))) {
                 if (userSession.isLoggedIn()) {
@@ -47,7 +49,7 @@ public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<Friends
                 }
                 getView().closeView();
             }
-            ((ReferralRouter)getView().getActivity().getApplicationContext()).setBranchReferralCode(code);
+            PersistentCacheManager.instance.put(Constants.Cache.KEY_CACHE_PROMO_CODE, code);
         }
 
     }
@@ -57,11 +59,10 @@ public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<Friends
     }
 
     @Override
-    public String getSubHeaderFromFirebase() {
+    public String getSubHeaderFromFirebase(String owner) {
         String subHeaderMessage = remoteConfig.getString(RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, getView().getActivity().getString(R.string.referral_welcome_desc));
         String user = "Topper";
-        if(userSession.isLoggedIn()) user = userSession.getName();
-        String owner = getView().getActivity().getIntent().getExtras().getString(Constants.Key.OWNER);
+        if (userSession.isLoggedIn()) user = userSession.getName();
         try {
             owner = URLDecoder.decode(owner, Constants.Values.ENCODING);
         } catch (UnsupportedEncodingException e) {
@@ -81,7 +82,7 @@ public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<Friends
         } else {
             getView().showToastMessage(getView().getActivity().getString(R.string.copy_coupon_code_text) + " " + code);
         }
-        ((ReferralRouter)getView().getActivity().getApplicationContext()).eventReferralAndShare(getView().getActivity(),
+        referralAnalytics.eventReferralAndShare(
                 Constants.Action.Companion.CLICK_COPY_REFERRAL_CODE, code);
     }
 

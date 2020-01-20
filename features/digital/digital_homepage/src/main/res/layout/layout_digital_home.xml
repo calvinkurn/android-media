@@ -7,6 +7,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/digital_homepage_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
@@ -17,21 +18,49 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.tokopedia.digital.home.presentation.customview.TravelHomepageToolbar
+        <com.tokopedia.digital.home.presentation.customview.DigitalHomepageToolbar
             android:id="@+id/digital_homepage_toolbar"
             style="@style/Toolbar.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16"
+            android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:elevation="@dimen/dp_4"
-            app:navigationIcon="@drawable/ic_action_back"
-            app:title="@string/digital_subhomepage_name"
-            app:titleTextAppearance="@style/TitleTextAppearance" />
+            app:navigationIcon="@drawable/ic_action_back">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:orientation="horizontal">
+
+                <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
+                    android:id="@+id/digital_homepage_search_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    app:siv_search_hint="@string/digital_home_search_view_hint" />
+
+                <ImageView
+                    android:id="@+id/digital_homepage_order_list"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    app:srcCompat="@drawable/ic_tagihan" />
+
+            </LinearLayout>
+
+        </com.tokopedia.digital.home.presentation.customview.DigitalHomepageToolbar>
 
     </RelativeLayout>
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

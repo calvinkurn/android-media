@@ -1,6 +1,7 @@
 package com.tokopedia.browse.categoryNavigation.data.model.hotlist
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ListItem(
 
@@ -49,4 +50,4 @@ data class ListItem(
         var parentName: String? = null
 
 
-)
+) : ImpressHolder()

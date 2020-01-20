@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 
 public interface ValidateMerchantPinContract {
 
@@ -12,7 +13,7 @@ public interface ValidateMerchantPinContract {
 
         void hideLoading();
 
-        void onSuccess();
+        void onSuccess(CouponSwipeUpdate couponSwipeUpdate);
 
         void onError(String error);
 

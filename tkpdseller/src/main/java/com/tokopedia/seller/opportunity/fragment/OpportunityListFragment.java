@@ -23,7 +23,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.PagingHandler;
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.showcase.ShowCaseDialogFactory;
@@ -109,6 +111,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return fragment;
     }
 
+    public static OpportunityListFragment createInstance(Bundle extras) {
+        OpportunityListFragment fragment = new OpportunityListFragment();
+        fragment.setArguments(extras);
+        return fragment;
+    }
+
     @Override
     protected boolean isRetainInstance() {
         return true;
@@ -177,8 +185,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             opportunityParam = savedInstanceState.getParcelable(ARGS_PARAM);
         else {
             opportunityParam = new GetOpportunityListParam();
-            if (getArguments().containsKey(EXTRA_QUERY)) {
-                opportunityParam.setQuery(getArguments().getString(EXTRA_QUERY));
+            if (getArguments() != null) {
+                if (getArguments().containsKey(EXTRA_QUERY)) {
+                    opportunityParam.setQuery(getArguments().getString(EXTRA_QUERY));
+                }
             }
         }
 
@@ -271,6 +281,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
+                if (GlobalConfig.isSellerApp()) {
+                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
+                }
                 resetOpportunityList();
             }
         };

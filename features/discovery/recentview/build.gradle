@@ -46,7 +46,7 @@ dependencies {
 project.ext {
     artifactId = 'recent-view'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="recentview-release"
 }
 

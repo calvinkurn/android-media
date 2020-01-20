@@ -95,7 +95,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_weight="1"
-            android:text="@string/pm_upgrade_shop"
+            android:text="@string/pm_upgrade_shop_settings"
             android:textSize="14sp" />
 
         <com.tokopedia.design.component.TextViewCompat
@@ -126,7 +126,7 @@
                 android:id="@+id/pm_ticker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_rectangle_yellow"
+                android:background="@drawable/border_rectangle_yellow_shop"
                 app:cardBackgroundColor="@color/ticker_blue"
                 app:cardCornerRadius="@dimen/dp_8">
 
@@ -137,14 +137,13 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_5"
                     android:lineSpacingExtra="@dimen/sp_6"
-                    android:padding="@dimen/dp_8"
-                    tools:text="@string/pm_label_price_cashback" />
+                    android:padding="@dimen/dp_8" />
 
                 <ImageView
                     android:id="@+id/iv_ticker_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_ticker_announcement_cropped"
+                    app:srcCompat="@drawable/ic_ticker_warning_cropped"
                     tools:ignore="ContentDescription" />
 
             </androidx.cardview.widget.CardView>

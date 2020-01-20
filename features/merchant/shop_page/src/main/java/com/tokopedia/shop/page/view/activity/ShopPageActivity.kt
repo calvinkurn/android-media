@@ -85,7 +85,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
-        ShopPageHeaderViewHolder.ShopPageHeaderListener, ShopProductListFragment.OnShopProductListFragmentListener {
+    ShopPageHeaderViewHolder.ShopPageHeaderListener, ShopProductListFragment.OnShopProductListFragmentListener {
 
 
     var shopId: String? = null
@@ -124,11 +124,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
-        const val SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN"
+        const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
         const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
+        const val TAB_POSITION_OS_HOME = -1
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
@@ -154,11 +155,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
-                .apply { putExtra(SHOP_ID, shopId) }
-
-        @JvmStatic
-        fun createIntentWithDomain(context: Context, shopDomain: String) = Intent(context, ShopPageActivity::class.java)
-                .apply { putExtra(SHOP_DOMAIN, shopDomain) }
+            .apply { putExtra(SHOP_ID, shopId) }
     }
 
     object DeepLinkIntents {
@@ -166,22 +163,22 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             return Intent(context, ShopPageActivity::class.java)
-                    .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
-                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
-                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
-                    .putExtras(extras)
+                .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
+                .putExtras(extras)
         }
 
         @DeepLink(ApplinkConst.SHOP_INFO)
         @JvmStatic
         fun getCallingIntentInfoSelected(context: Context, extras: Bundle): Intent {
             return Intent(context, ShopPageActivity::class.java)
-                    .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
-                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
-                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
-                    .putExtras(extras)
+                .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
+                .putExtras(extras)
         }
 
         @DeepLink(ApplinkConst.SHOP_NOTE)
@@ -189,22 +186,33 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         fun getCallingIntentNoteSelected(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             return Intent(context, ShopPageActivity::class.java)
-                    .setData(uri.build())
-                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
-                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
+                .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
+        }
+
+        @DeepLink(ApplinkConst.SHOP_HOME)
+        @JvmStatic
+        fun getCallingIntentHomeSelected(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return Intent(context, ShopPageActivity::class.java)
+                .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_OS_HOME)
         }
     }
 
 
     override fun updateUIByShopName(shopName: String) {
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
-                MethodChecker.fromHtml(shopName).toString()))
+            MethodChecker.fromHtml(shopName).toString()))
     }
 
     override fun updateUIByEtalaseName(etalaseName: String?) {
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_3,
-                MethodChecker.fromHtml(etalaseName).toString()))
+            MethodChecker.fromHtml(etalaseName).toString()))
     }
 
 
@@ -215,16 +223,27 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         cartLocalCacheHandler = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
         shopPageTracking = ShopPageTrackingBuyer(
-                TrackingQueue(this))
+            TrackingQueue(this))
 
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
-                getString(R.string.shop_info_title_tab_info))
+            getString(R.string.shop_info_title_tab_info))
 
         intent.run {
             shopId = getStringExtra(SHOP_ID)
             shopDomain = getStringExtra(SHOP_DOMAIN)
             shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
+        }
+        intent?.data?.run {
+            if (shopId.isNullOrEmpty()) {
+                shopId = getQueryParameter(SHOP_ID)
+            }
+            if (shopDomain.isNullOrEmpty()) {
+                shopDomain = getQueryParameter(SHOP_DOMAIN)
+            }
+            if (shopAttribution.isNullOrEmpty()) {
+                shopAttribution = getQueryParameter(SHOP_ATTRIBUTION)
+            }
         }
         super.onCreate(savedInstanceState)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
@@ -235,7 +254,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
         })
 
-        shopViewModel.shopFavourite.observe(this, Observer {
+        shopViewModel.shopFavouriteResp.observe(this, Observer {
             shopPageViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
         })
 
@@ -254,8 +273,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         tabLayout.setupWithViewPager(viewPager)
         tabItemFeed = LayoutInflater
-                .from(this)
-                .inflate(R.layout.item_tablayout_new_badge, tabLayout, false)
+            .from(this)
+            .inflate(R.layout.item_tablayout_new_badge, tabLayout, false)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
@@ -264,9 +283,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             override fun onTabSelected(tab: TabLayout.Tab) {
                 (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                     shopPageTracking.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
-                            titles[tab.position],
-                            CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                                    it.goldOS.isGold == 1))
+                        titles[tab.position],
+                        CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1))
 
                     val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(tab.position)
                     if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
@@ -279,7 +298,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         R.color.tkpd_main_green else
                         R.color.font_black_disabled_38
                     tabItemFeed.tabName.setTextColor(
-                            MethodChecker.getColor(this@ShopPageActivity, tabNameColor)
+                        MethodChecker.getColor(this@ShopPageActivity, tabNameColor)
                     )
                     (shopViewModel.shopInfoResp.value as? Success)?.data?.run {
                         val feedShopFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
@@ -301,7 +320,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopViewModel.whiteListResp.observe(this, Observer { response ->
             when (response) {
                 is Success -> onSuccessGetFeedWhitelist(response.data.first, response.data.second)
-                is Fail -> onErrorGetFeedWhitelist()
             }
         })
 
@@ -357,10 +375,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private fun redirectToShopSearchProduct(cacheManagerId: String) {
         startActivity(ShopSearchProductActivity.createIntent(
-                this,
-                "",
-                cacheManagerId,
-                shopAttribution
+            this,
+            "",
+            cacheManagerId,
+            shopAttribution
         ))
     }
 
@@ -403,18 +421,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private fun initInjector() {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
-                .shopComponent(component).build().inject(this)
+            .shopComponent(component).build().inject(this)
     }
 
     override fun getNewFragment(): Fragment? = null
 
     private fun initAdapter() {
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager,
-                titles,
-                shopId,
-                shopAttribution,
-                (application as ShopModuleRouter),
-                this)
+            titles,
+            shopId,
+            shopAttribution,
+            (application as ShopModuleRouter),
+            this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -456,20 +474,20 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onShareShop() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickShareButton(shopViewModel.isMyShop(it.shopCore.shopID),
-                    CustomDimensionShopPage.create(it.shopCore.shopID,
-                            it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1))
+                CustomDimensionShopPage.create(it.shopCore.shopID,
+                    it.goldOS.isOfficial == 1,
+                    it.goldOS.isGold == 1))
             var shopShareMsg: String = remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
             if (!TextUtils.isEmpty(shopShareMsg)) {
                 shopShareMsg = FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
-                        SHOP_LOCATION_PLACEHOLDER, it.location)
+                    SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
+                    SHOP_LOCATION_PLACEHOLDER, it.location)
             } else {
                 shopShareMsg = getString(R.string.shop_label_share_formatted,
-                        MethodChecker.fromHtml(it.shopCore.name).toString(), it.location)
+                    MethodChecker.fromHtml(it.shopCore.name).toString(), it.location)
             }
             (application as ShopModuleRouter).goToShareShop(this@ShopPageActivity,
-                    shopId, it.shopCore.url, shopShareMsg)
+                shopId, it.shopCore.url, shopShareMsg)
         }
 
     }
@@ -477,9 +495,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onClickCart() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickCartButton(shopViewModel.isMyShop(it.shopCore.shopID),
-                    CustomDimensionShopPage.create(it.shopCore.shopID,
-                            it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1))
+                CustomDimensionShopPage.create(it.shopCore.shopID,
+                    it.goldOS.isOfficial == 1,
+                    it.goldOS.isGold == 1))
             goToCart()
         }
     }
@@ -490,16 +508,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             startActivity(RouteManager.getIntent(this, ApplinkConst.CART))
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                    REQUEST_CODE_USER_LOGIN_CART)
+                REQUEST_CODE_USER_LOGIN_CART)
         }
     }
 
     override fun onBackPressed() {
         if (isTaskRoot) {
-            val applink = if (GlobalConfig.isSellerApp()) ApplinkConst.SellerApp.SELLER_APP_HOME else ApplinkConst.HOME
-            val router = applicationContext as ApplinkRouter
-            if (router.isSupportApplink(applink)) {
-                val intent = router.getApplinkIntent(this, applink)
+            val intent = RouteManager.getIntentNoFallback(this, ApplinkConst.HOME)
+            if (intent != null) {
                 startActivity(intent)
                 finish()
             } else {
@@ -520,28 +536,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageViewPagerAdapter.shopId = shopCore.shopID
             shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             updateUIByShopName(shopCore.name)
-            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
-            if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
-                productListFragment.displayProduct(this)
-            }
-
-            val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(getShopInfoPosition())
-            if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
-                shopInfoFragment.reset()
-                shopInfoFragment.updateShopInfo(this)
-            }
-
-            val feedShopFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
-            if (feedShopFragment != null && feedShopFragment is FeedShopFragment) {
-                feedShopFragment.updateShopInfo(this)
-            }
-
+            setupTabs()
             shopPageTracking.sendScreenShopPage(this@ShopPageActivity,
                     CustomDimensionShopPage.create(shopCore.shopID, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
-
-            shopViewModel.getFeedWhiteList(shopCore.shopID)
-
             if (shopInfo.statusInfo.shopStatus != ShopStatusDef.OPEN) {
                 shopViewModel.getModerateShopInfo()
             }
@@ -559,23 +557,23 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         titles = when {
             isShowFeed and isOfficialStore -> {
                 arrayOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_info))
+                    getString(R.string.shop_info_title_tab_product),
+                    getString(R.string.shop_info_title_tab_feed),
+                    getString(R.string.shop_info_title_tab_info))
             }
             isShowFeed -> {
                 arrayOf(getString(R.string.shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_info))
+                    getString(R.string.shop_info_title_tab_feed),
+                    getString(R.string.shop_info_title_tab_info))
             }
             isOfficialStore -> {
                 arrayOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_info))
+                    getString(R.string.shop_info_title_tab_product),
+                    getString(R.string.shop_info_title_tab_info))
             }
             else -> {
                 arrayOf(getString(R.string.shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_info))
+                    getString(R.string.shop_info_title_tab_info))
             }
         }
         shopPageViewPagerAdapter.titles = titles
@@ -586,6 +584,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         if (isOfficialStore && tabPosition == 0) {
             tabPosition = 1
+        } else if (isOfficialStore && tabPosition == TAB_POSITION_OS_HOME) {
+            tabPosition = 0
         }
         setViewState(VIEW_CONTENT)
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
@@ -632,11 +632,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
         this.isShowFeed = isWhitelist
         this.createPostUrl = createPostUrl
-        setupTabs()
-    }
-
-    private fun onErrorGetFeedWhitelist() {
-        setupTabs()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -657,7 +652,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun refreshData() {
-        val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
+        val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (f != null && f is ShopProductListLimitedFragment) {
             f.clearCache()
         }
@@ -675,10 +670,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onFollowerTextClicked() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickFollowerList(shopViewModel.isMyShop(it.shopCore.shopID),
-                    CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1))
+                CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                    it.goldOS.isGold == 1))
             startActivityForResult(ShopFavouriteListActivity.createIntent(this, it.shopCore.shopID),
-                    REQUEST_CODE_FOLLOW)
+                REQUEST_CODE_FOLLOW)
         }
 
     }
@@ -686,12 +681,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun goToChatSeller() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickMessageSeller(CustomDimensionShopPage.create(it.shopCore.shopID,
-                    it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
+                it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
 
             if (shopViewModel.isUserSessionActive) {
                 shopPageTracking.eventShopSendChat()
                 val intent = RouteManager.getIntent(this, ApplinkConst.TOPCHAT_ASKSELLER,
-                        it.shopCore.shopID, "", SOURCE_SHOP, it.shopCore.name, it.shopAssets.avatar)
+                    it.shopCore.shopID, "", SOURCE_SHOP, it.shopCore.name, it.shopAssets.avatar)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
@@ -703,51 +698,51 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun goToManageShop() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickManageShop(CustomDimensionShopPage.create(it.shopCore.shopID,
-                    it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
+                it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
         }
 
         val intent = RouteManager.getIntent(this,
-                if (GlobalConfig.isCustomerApp()) ApplinkConstInternalMarketplace.STORE_SETTING
-                else ApplinkConsInternalHome.MANAGE_SHOP_SELLERAPP_TEMP) ?: return
+            if (GlobalConfig.isCustomerApp()) ApplinkConstInternalMarketplace.STORE_SETTING
+            else ApplinkConsInternalHome.MANAGE_SHOP_SELLERAPP_TEMP) ?: return
         startActivity(intent)
     }
 
     override fun toggleFavorite(isFavourite: Boolean) {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickFollowUnfollowShop(isFavourite,
-                    CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1))
+                CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                    it.goldOS.isGold == 1))
 
             sendMoEngageFavoriteEvent(it.shopCore.name,
-                    it.shopCore.shopID,
-                    it.shopCore.domain,
-                    it.location,
-                    it.goldOS.isOfficial == 1,
-                    isFavourite)
+                it.shopCore.shopID,
+                it.shopCore.domain,
+                it.location,
+                it.goldOS.isOfficial == 1,
+                isFavourite)
 
             shopViewModel.toggleFavorite(it.shopCore.shopID, this::onSuccessToggleFavourite,
-                    this::onErrorToggleFavourite)
+                this::onErrorToggleFavourite)
         }
     }
 
     private fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
                                           isShopOfficaial: Boolean, isFollowed: Boolean) {
         TrackApp.getInstance().moEngage.sendTrackEvent(mapOf(
-                "shop_name" to shopName,
-                "shop_id" to shopID,
-                "shop_location" to shopLocation,
-                "url_slug" to shopDomain,
-                "is_official_store" to isShopOfficaial),
-                if (isFollowed)
-                    "Seller_Added_To_Favorite"
-                else
-                    "Seller_Removed_From_Favorite")
+            "shop_name" to shopName,
+            "shop_id" to shopID,
+            "shop_location" to shopLocation,
+            "url_slug" to shopDomain,
+            "is_official_store" to isShopOfficaial),
+            if (isFollowed)
+                "Seller_Added_To_Favorite"
+            else
+                "Seller_Removed_From_Favorite")
     }
 
     override fun goToAddProduct() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickAddProduct(CustomDimensionShopPage.create(it.shopCore.shopID,
-                    it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
+                it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
         }
         RouteManager.route(this, ApplinkConst.PRODUCT_ADD)
     }
@@ -766,15 +761,15 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
 
         ToasterError.make(window.decorView.rootView, errorMessage, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(R.string.title_ok) {}
-                .show()
+            .setAction(R.string.title_ok) {}
+            .show()
     }
 
     private fun onSuccessModerateListener() {
         buttonActionAbnormal.visibility = View.GONE
         ToasterNormal.make(window.decorView.rootView, getString(R.string.moderate_shop_success), BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_ok) {}
-                .show()
+            .setAction(R.string.title_ok) {}
+            .show()
     }
 
     override fun requestOpenShop(shopId: Int, moderateNotes: String) {

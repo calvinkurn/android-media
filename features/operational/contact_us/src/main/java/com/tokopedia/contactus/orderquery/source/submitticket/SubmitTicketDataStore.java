@@ -192,7 +192,7 @@ public class SubmitTicketDataStore {
                         try {
                             file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
                         } catch (IOException e) {
-                            throw new RuntimeException(context.getString(R.string.error_upload_image));
+                            throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 networkCalculator.getContent().get(NetworkCalculator.USER_ID));

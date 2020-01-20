@@ -35,7 +35,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     }
 
     public BaseAdapter(F adapterTypeFactory) {
-        this(adapterTypeFactory, new ArrayList<Visitable>());
+        this(adapterTypeFactory, new ArrayList<>());
     }
 
     @Override

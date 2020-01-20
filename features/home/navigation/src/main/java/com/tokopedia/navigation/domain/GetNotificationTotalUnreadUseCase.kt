@@ -22,7 +22,7 @@ class GetNotificationTotalUnreadUseCase @Inject constructor(
 ){
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources
-                , R.raw.query_notification_update_total_unread)
+                , R.raw.query_notification_center_total_unread)
         val graphqlRequest = GraphqlRequest(query,
                 NotificationUpdateTotalUnread::class.java)
 

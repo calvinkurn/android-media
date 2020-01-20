@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
+import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
@@ -37,8 +38,8 @@ public class AddressModule {
     @AddressScope
     AddAddressContract.Presenter provideAddAddressPresenter(
             @LogisticUserSessionQualifier UserSessionInterface userSessionInterface,
-            AddressRepository addressRepository) {
-        return new AddAddressPresenterImpl(userSessionInterface, addressRepository);
+            AddressRepository addressRepository, AutofillUseCase autofillUseCase) {
+        return new AddAddressPresenterImpl(userSessionInterface, addressRepository, autofillUseCase);
     }
 
     @Provides

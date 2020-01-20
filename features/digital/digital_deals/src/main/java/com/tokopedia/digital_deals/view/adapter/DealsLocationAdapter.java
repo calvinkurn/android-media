@@ -2,29 +2,22 @@ package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.AlignItems;
-import com.google.android.flexbox.AlignSelf;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 
 public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdapter.ViewHolder> {
@@ -54,7 +47,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         this.context = viewGroup.getContext();
         dealsAnalytics = new DealsAnalytics();
         dealsAnalytics=new DealsAnalytics();
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_item, viewGroup, false));
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(com.tokopedia.digital_deals.R.layout.location_item, viewGroup, false));
     }
 
     @Override
@@ -84,9 +77,9 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            mainContent = itemView.findViewById(R.id.mainContent);
-            locationName = itemView.findViewById(R.id.tv_location_name);
-            locImage = itemView.findViewById(R.id.location_img);
+            mainContent = itemView.findViewById(com.tokopedia.digital_deals.R.id.mainContent);
+            locationName = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_location_name);
+            locImage = itemView.findViewById(com.tokopedia.digital_deals.R.id.location_img);
 
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
             if (lp instanceof FlexboxLayoutManager.LayoutParams) {
@@ -106,7 +99,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
         public void bindData(Location location) {
             locationName.setText(location.getName());
-            ImageHandler.loadImage(context, locImage, location.getIcon(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, locImage, location.getIcon(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
 

@@ -28,4 +28,4 @@ data class Cardpost(
         @SerializedName("tracking")
         @Expose
         val tracking: List<Tracking> = ArrayList()
-        )
+)

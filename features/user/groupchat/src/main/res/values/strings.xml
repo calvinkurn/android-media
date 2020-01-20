@@ -132,4 +132,6 @@
     <string name="buffer_text_long">Hiks, lagi ada gangguan. Coba ulangi beberapa saat lagi ya. Coba Lagi</string>
     <string name="buffer_text_retry">Coba Lagi</string>
 
+    <string name="play_atc_success">Produk berhasil ditambah ke keranjang</string>
+
 </resources>

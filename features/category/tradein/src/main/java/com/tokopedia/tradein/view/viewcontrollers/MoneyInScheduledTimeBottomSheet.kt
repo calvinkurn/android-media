@@ -6,9 +6,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.View
 import android.widget.Button
+import com.tokopedia.datepicker.numberpicker.NumberPicker
+import com.tokopedia.datepicker.numberpicker.OnValueChangeListener
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
-import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.OnValueChangeListener
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.adapter.DateAdapter
 import com.tokopedia.tradein.adapter.TimeAdapter
@@ -110,7 +110,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         timeAdapter.notifyDataSetChanged()
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         val myDialog: BottomSheetDialog = dialog as BottomSheetDialog
         val dField = myDialog.javaClass.getDeclaredField("behavior") //This is the correct name of the variable in the BottomSheetDialog class

@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:measureAllChildren="false">
 
-            <ProgressBar
+           <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -109,6 +109,29 @@
                                 android:textSize="@dimen/tp_text_size_xsmall"
                                 android:textStyle="bold"
                                 tools:text="Classic Member" />
+
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                app:typographyType="heading_4"
+                                android:id="@+id/emptyTitle"
+                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:visibility="gone"
+                                android:layout_marginStart="@dimen/dp_12" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                app:typographyType="body_3"
+                                android:id="@+id/emptySubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/emptyTitle"
+                                android:textColor="@color/white"
+                                android:visibility="gone"
+                                android:layout_marginTop="@dimen/dp_14"
+                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_marginStart="@dimen/dp_16" />
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/card_point"

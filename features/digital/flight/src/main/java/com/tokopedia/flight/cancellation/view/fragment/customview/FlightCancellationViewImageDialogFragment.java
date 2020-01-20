@@ -20,7 +20,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.tokopedia.flight.R;
 
 import java.io.File;
 
@@ -52,14 +51,14 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_fragment_flight_cancellation_view_image, container);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.dialog_fragment_flight_cancellation_view_image, container);
         context = view.getContext();
 
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        imageView = view.findViewById(R.id.image_view);
-        ivClose = view.findViewById(R.id.iv_close);
+        imageView = view.findViewById(com.tokopedia.flight.R.id.image_view);
+        ivClose = view.findViewById(com.tokopedia.flight.R.id.iv_close);
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,7 +3,7 @@ query GetExploreData ($limit: Int!, $cursor: String!, $idcategory: Int!, $search
     error
     categories {
       id
-         name
+      name
     }
     postKol {
       isLiked
@@ -31,6 +31,12 @@ query GetExploreData ($limit: Int!, $cursor: String!, $idcategory: Int!, $search
       userPhoto
       userUrl
       userId
+      tracking {
+        clickURL
+        viewURL
+        type
+        source
+      }
     }
     lastCursor
     }

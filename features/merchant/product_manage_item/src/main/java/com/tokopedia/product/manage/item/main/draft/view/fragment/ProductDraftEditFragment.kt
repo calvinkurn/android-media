@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.common.util.ProductStatus
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
@@ -20,9 +22,12 @@ import com.tokopedia.product.manage.item.utils.convertToProductAddViewModel
 
 open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPresenterImpl, ProductDraftView>(), ProductDraftView{
 
+    override var addEditPageType: AddEditPageType = AddEditPageType.DRAFT_EDIT
     override var statusUpload = ProductStatus.EDIT
     private var tkpdProgressDialog: TkpdProgressDialog? = null
     private var draftProductId: Long = 0
+    private var cacheManagerId: String = ""
+
 
     override fun initInjector() {
         DaggerProductDraftComponent
@@ -35,11 +40,7 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
 
     override fun onSuccessLoadProduct(model: ProductViewModel?) {
         hideLoading()
-        if(model?.productCategory != null){
-            presenter.fetchProductVariantByCat(model.productCategory.categoryId)
-        }
-        currentProductAddViewModel = model?.convertToProductAddViewModel(isEditStatus())
-        populateView(currentProductAddViewModel)
+        loadProduct(model)
     }
 
     override fun onErrorLoadProduct(throwable: Throwable?) {
@@ -50,21 +51,34 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
 
     override fun onCreate(savedInstanceState: Bundle?) {
         draftProductId = arguments?.getLong(DRAFT_PRODUCT_ID)?:0L
+        cacheManagerId = arguments?.getString(CACHE_MANAGER_ID, "")?:""
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        if (savedInstanceState == null) {
-            fetchInputData()
-        }
         return view
     }
 
-    fun fetchInputData() {
-        showLoading()
-        presenter.fetchDraftData(draftProductId)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            fetchInputData()
+        }
+    }
+
+    private fun fetchInputData() {
+        if (draftProductId >= 0) {
+            showLoading()
+            presenter.fetchDraftData(draftProductId)
+        } else if (cacheManagerId.isNotEmpty()) {
+            context?.let {
+                val cacheManager = SaveInstanceCacheManager(it, cacheManagerId)
+                val productViewModel = cacheManager.get<ProductViewModel>(PRODUCT_VIEW_MODEL, ProductViewModel::class.java)
+                loadProduct(productViewModel)
+            }
+        }
     }
 
     protected fun showLoading() {
@@ -81,17 +95,27 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
         }
     }
 
+    private fun loadProduct(model: ProductViewModel?){
+        if(model?.productCategory != null){
+            presenter.fetchProductVariantByCat(model.productCategory.categoryId)
+        }
+        currentProductAddViewModel = model?.convertToProductAddViewModel(isEditStatus())
+        populateView(currentProductAddViewModel)
+    }
+
     override fun getProductDraftId(): Long {
         return draftProductId
     }
 
     companion object {
         val DRAFT_PRODUCT_ID = "draft_product_id"
+        val CACHE_MANAGER_ID = "cache_manager_id"
 
-        fun createInstance(draftProductId: Long): Fragment {
+        fun createInstance(draftProductId: Long, cacheManagerId: String): Fragment {
             val fragment = ProductDraftEditFragment()
             val args = Bundle()
             args.putLong(DRAFT_PRODUCT_ID, draftProductId)
+            args.putString(CACHE_MANAGER_ID, cacheManagerId)
             fragment.arguments = args
             return fragment
         }

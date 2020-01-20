@@ -21,7 +21,7 @@ import java.util.Map;
 public class WishlistAnalytics {
 
     private static final String WISHLIST_PAGE = "wishlist page";
-    private static final String CLICK_CART_WISHLIST = "click lihat button on atc success toaster";
+    private static final String CLICK_CART_WISHLIST = "click - cek keranjang on wishlist";
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     private static final String CLICK_WISHLIST = "Click Wishlist";

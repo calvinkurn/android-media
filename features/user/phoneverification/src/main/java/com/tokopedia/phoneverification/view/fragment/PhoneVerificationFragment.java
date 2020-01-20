@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,8 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.phoneverification.view.presenter.VerifyPhoneNumberPresenter;
 import com.tokopedia.user.session.UserSession;
+
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
@@ -71,10 +75,21 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
     protected TextView skipButton;
     protected TextView phoneNumberEditText;
-    protected TextView changePhoneNumberButton;
     protected TextView requestOtpButton;
 
-    protected View progressDialog;
+    private TextWatcher phoneTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count){}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            requestOtpButton.setEnabled(s.length() > 0);
+        }
+    };
+
     PhoneVerificationFragmentListener listener;
     private String phoneNumber;
 
@@ -92,7 +107,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         fragment.setPhoneVerificationListener(listener);
         return fragment;
     }
-
 
     public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener, boolean canSkip) {
         PhoneVerificationFragment fragment = new PhoneVerificationFragment();
@@ -144,98 +158,85 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_phone_verification, container, false);
-        findView(view);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.attachView(this);
-        setViewListener();
         return view;
     }
 
     public void findView(View view) {
-        skipButton = (TextView) view.findViewById(R.id.skip_button);
-        phoneNumberEditText = (TextView) view.findViewById(R.id.phone_number);
-        changePhoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
-        requestOtpButton = (TextView) view.findViewById(R.id.send_otp);
+        skipButton = view.findViewById(R.id.skip_button);
+        phoneNumberEditText = view.findViewById(R.id.phone_number);
+        requestOtpButton = view.findViewById(R.id.send_otp);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        findView(view);
+        setViewListener();
+
+        phoneNumberEditText.addTextChangedListener(phoneTextWatcher);
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(
                 userSession.getPhoneNumber()));
 
         if (phoneNumber != null && "".equalsIgnoreCase(phoneNumber.trim())) {
             phoneNumberEditText.setText(phoneNumber);
         }
+        phoneNumberEditText.setOnClickListener(v -> moveToChangePhoneNumberPage());
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(EXTRA_PARAM_PHONE_NUMBER, phoneNumber);
     }
 
     public void setRequestOtpButtonListener(){
-        requestOtpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isValid()) {
-                    Intent intent = VerificationActivity.getCallingIntent(
-                            getActivity(),
-                            getPhoneNumber(),
-                            RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
-                            true,
-                            RequestOtpUseCase.MODE_SMS
-                    );
-                    startActivityForResult(intent, RESULT_PHONE_VERIFICATION);
-                }
+        requestOtpButton.setOnClickListener(v -> {
+            if (isValid()) {
+                Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                        getActivity(),
+                        RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+                        getPhoneNumber(),
+                        ""
+                );
+                startActivityForResult(intent, RESULT_PHONE_VERIFICATION);
+            } else {
+                showErrorPhoneNumber(getString(R.string
+                        .error_field_required));
             }
         });
     }
 
+    private void moveToChangePhoneNumberPage(){
+        if (getActivity() instanceof PhoneVerificationActivationActivity) {
+            analytics.eventClickChangePhoneRegister();
+        }
+
+        startActivityForResult(
+                ChangePhoneNumberActivity.getChangePhoneNumberIntent(
+                        getActivity(),
+                        phoneNumberEditText.getText().toString()),
+                ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER);
+    }
 
     public void setViewListener() {
-
         setRequestOtpButtonListener();
 
-        changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        skipButton.setOnClickListener(v -> {
+            if (getActivity() instanceof PhoneVerificationActivationActivity) {
+                analytics.eventClickSkipRegister();
+            }
 
-                if (getActivity() instanceof PhoneVerificationActivationActivity) {
-                    analytics.eventClickChangePhoneRegister();
-                }
-
-                startActivityForResult(
-                        ChangePhoneNumberActivity.getChangePhoneNumberIntent(
-                                getActivity(),
-                                phoneNumberEditText.getText().toString()),
-                        ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER);
+            if (listener != null)
+                listener.onSkipVerification();
+            else {
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                getActivity().finish();
             }
         });
 
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (getActivity() instanceof PhoneVerificationActivationActivity) {
-                    analytics.eventClickSkipRegister();
-                }
-
-                if (listener != null)
-                    listener.onSkipVerification();
-                else {
-                    getActivity().setResult(Activity.RESULT_CANCELED);
-                    getActivity().finish();
-                }
-            }
-        });
-
-        if (isMandatory) {
-            skipButton.setVisibility(View.INVISIBLE);
-        } else {
-            skipButton.setVisibility(View.VISIBLE);
-        }
+        skipButton.setVisibility(isMandatory ? View.INVISIBLE : View.VISIBLE);
     }
 
     public String getPhoneNumber() {
@@ -257,7 +258,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
     private void showErrorPhoneNumber(String errorMessage) {
         phoneNumberEditText.setError(errorMessage);
-
     }
 
     @Override
@@ -286,13 +286,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     }
 
     public boolean isValid() {
-        boolean isValid = true;
-        if (getPhoneNumber().length() == 0) {
-            showErrorPhoneNumber(getString(R.string
-                    .error_field_required));
-            isValid = false;
-        }
-        return isValid;
+        return !getPhoneNumber().isEmpty();
     }
 
     @Override

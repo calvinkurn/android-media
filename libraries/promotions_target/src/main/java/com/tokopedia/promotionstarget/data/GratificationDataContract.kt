@@ -1,0 +1,3 @@
+package com.tokopedia.promotionstarget.data
+
+interface GratificationDataContract

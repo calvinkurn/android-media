@@ -38,7 +38,7 @@ dependencies {
 project.ext {
     artifactId = 'broadcast-message-common'
     groupId = 'com.tokopedia.communication'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "broadcast_message_common-release"
 }
 
