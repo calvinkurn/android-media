@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -53,8 +52,8 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSh
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_digital_product.*
-import kotlinx.android.synthetic.main.view_digital_product_input_info_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.fragment_recharge_general_digital_product.*
+import kotlinx.android.synthetic.main.view_recharge_general_product_input_info_bottom_sheet.view.*
 import javax.inject.Inject
 
 class RechargeGeneralFragment: BaseTopupBillsFragment(),
@@ -91,7 +90,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_digital_product, container, false)
+        return inflater.inflate(R.layout.fragment_recharge_general_digital_product, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -464,7 +463,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun showInfoBottomSheets(helpText: String) {
-        val infoTextView = View.inflate(context,R.layout.view_digital_product_input_info_bottom_sheet, null)
+        val infoTextView = View.inflate(context,R.layout.view_recharge_general_product_input_info_bottom_sheet, null)
         with (infoTextView) {
             info_text.text = helpText
         }

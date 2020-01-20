@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.factory
 
-import androidx.fragment.app.FragmentManager
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
@@ -63,10 +63,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
     override fun type(searchPlaceholderViewModel: SearchPlaceholderViewModel): Int {
         return SearchPlaceholderViewModel.SEARCH_PLACE_HOLDER
-    }
-
-    override fun type(digitalsViewModel: DigitalsViewModel): Int {
-        return DigitalsViewHolder.LAYOUT
     }
 
     override fun type(businessUnitViewModel: BusinessUnitViewModel): Int {
@@ -189,7 +185,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            DigitalsViewHolder.LAYOUT -> viewHolder = DigitalsViewHolder(listener, fragmentManager, view)
             BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(fragmentManager, view)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
