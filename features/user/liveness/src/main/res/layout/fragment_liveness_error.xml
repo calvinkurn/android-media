@@ -18,6 +18,7 @@
             android:layout_width="@dimen/liveness_224"
             android:layout_height="@dimen/liveness_179"
             android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toTopOf="@+id/title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

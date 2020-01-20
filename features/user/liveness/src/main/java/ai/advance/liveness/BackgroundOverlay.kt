@@ -40,7 +40,7 @@ class BackgroundOverlay : View {
         mStatusPaint = Paint()
         mStatusPaint?.style = Paint.Style.STROKE
         mStatusPaint?.color = Color.WHITE
-        mStatusPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mStatusPaint?.strokeWidth = CONST_BORDER_STROKE_WIDTH.toFloat()
     }
 
     fun changeColor() {
@@ -77,10 +77,10 @@ class BackgroundOverlay : View {
         val height = height
 
         val radius: Float
-        if (width < height)
-            radius = width / 2.7f
+        radius = if (width < height)
+            width / 2.7f
         else
-            radius = height / 2.7f
+            height / 2.7f
 
         mPath.addCircle((right / 2).toFloat(),
                 (bottom / 3).toFloat(),
@@ -103,5 +103,6 @@ class BackgroundOverlay : View {
     companion object {
 
         private const val CONST_STROKE_WIDTH = 10
+        private const val CONST_BORDER_STROKE_WIDTH = 150
     }
 }
