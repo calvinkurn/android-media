@@ -294,6 +294,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
 
+    // RegisterInitialActivity
+    // tokopedia-android-internal://global/init-register
+    @JvmField
+    val INIT_REGISTER = "$INTERNAL_GLOBAL/init-register"
+
     // RegisterEmailActivity
     // tokopedia-android-internal://global/email-register
     @JvmField
