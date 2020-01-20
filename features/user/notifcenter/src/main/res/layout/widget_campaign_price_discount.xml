@@ -8,7 +8,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <TextView
         android:id="@+id/tv_campaign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         android:padding="@dimen/dp_4"
         app:srcCompat="@drawable/ic_arrow_down_green" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <TextView
         android:id="@+id/tv_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
