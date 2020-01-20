@@ -3,17 +3,16 @@ package com.tokopedia.logisticcart.shipping.usecase;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
-import com.tokopedia.logisticcart.shipping.model.ShippingParam;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
+import com.tokopedia.logisticcart.shipping.model.ShippingParam;
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData;
@@ -117,29 +116,14 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 shippingRecommendationData.setLogisticPromo(
                         convertToPromoModel(ratesData.getRatesDetailData().getPromoStacking()));
 
-                // Check if has info
-                String blackboxInfo = "";
-                if (ratesData.getRatesDetailData().getInfo() != null &&
-                        ratesData.getRatesDetailData().getInfo().getBlackboxInfo() != null &&
-                        !TextUtils.isEmpty(ratesData.getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
-                    blackboxInfo = ratesData.getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
-                }
-
-                String ratesId = ratesData.getRatesDetailData().getRatesId();
                 // Has service / duration list
                 shippingRecommendationData.setShippingDurationViewModels(
                         shippingDurationConverter.convertToViewModel(
-                                ratesData.getRatesDetailData().getServices(),
-                                shopShipments, selectedSpId, ratesId, selectedServiceId,
-                                blackboxInfo, isPromoStackingApplied(ratesData)));
+                                ratesData.getRatesDetailData(), shopShipments, selectedSpId,
+                                selectedServiceId));
             }
         }
         return shippingRecommendationData;
-    }
-
-    private boolean isPromoStackingApplied(RatesData ratesData) {
-        if (ratesData.getRatesDetailData().getPromoStacking() == null) return false;
-        return ratesData.getRatesDetailData().getPromoStacking().getIsApplied() == 1;
     }
 
     private String getQueryWithParams(String query, int codHistory, boolean isCorner,

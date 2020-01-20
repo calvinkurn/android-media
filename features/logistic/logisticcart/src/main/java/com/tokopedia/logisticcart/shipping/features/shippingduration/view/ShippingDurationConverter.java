@@ -2,15 +2,13 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import android.text.TextUtils;
 
-
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesDetailData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
@@ -30,12 +28,21 @@ public class ShippingDurationConverter {
     public ShippingDurationConverter() {
     }
 
-    public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,
+    public List<ShippingDurationViewModel> convertToViewModel(RatesDetailData ratesDetailData,
                                                               List<ShopShipment> shopShipmentList,
                                                               int selectedSpId,
-                                                              String ratesId,
-                                                              int selectedServiceId, String blackboxInfo,
-                                                              boolean isPromoStackingApplied) {
+                                                              int selectedServiceId) {
+        List<ServiceData> serviceDataList = ratesDetailData.getServices();
+        String ratesId = ratesDetailData.getRatesId();
+        boolean isPromoStackingApplied = isPromoStackingApplied(ratesDetailData);
+        // Check if has blackbox info
+        String blackboxInfo = "";
+        if (ratesDetailData.getInfo() != null &&
+                ratesDetailData.getInfo().getBlackboxInfo() != null &&
+                !TextUtils.isEmpty(ratesDetailData.getInfo().getBlackboxInfo().getTextInfo())) {
+            blackboxInfo = ratesDetailData.getInfo().getBlackboxInfo().getTextInfo();
+        }
+
         List<ShippingDurationViewModel> shippingDurationViewModels = new ArrayList<>();
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationViewModel shippingDurationViewModel = new ShippingDurationViewModel();
@@ -54,7 +61,7 @@ public class ShippingDurationConverter {
                     shippingDurationViewModel.setErrorMessage(serviceData.getError().getErrorMessage());
                 }
             }
-            if(serviceData.getCodData() != null) {
+            if (serviceData.getCodData() != null) {
                 shippingDurationViewModel.setCodAvailable(serviceData.getCodData().getIsCod() == COD_TRUE_VAL);
                 shippingDurationViewModel.setCodText(serviceData.getCodData().getCodText());
             }
@@ -129,8 +136,12 @@ public class ShippingDurationConverter {
                 return shopShipment.isDropshipEnabled();
             }
         }
-
         return false;
+    }
+
+    private boolean isPromoStackingApplied(RatesDetailData ratesDetailData) {
+        if (ratesDetailData.getPromoStacking() == null) return false;
+        return ratesDetailData.getPromoStacking().getIsApplied() == 1;
     }
 
 
