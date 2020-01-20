@@ -103,12 +103,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         compositeSubscription.unsubscribe()
         addWishListUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
-        clearCacheAutoApplyStackUseCase?.unsubscribe()
-        checkPromoStackingCodeUseCase?.unsubscribe()
         getRecentViewUseCase?.unsubscribe()
         getWishlistUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
-        addToCartUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
         removeInsuranceProductUsecase?.unsubscribe()
         updateInsuranceProductDataUsecase?.unsubscribe()
@@ -527,8 +524,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     it.showProgressLoading()
                 }
                 clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
-                clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
-                        ?.subscribe(ClearCacheAutoApplySubscriber(view, shopIndex, ignoreAPIResponse))
+                compositeSubscription.add(
+                        clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
+                                ?.subscribe(ClearCacheAutoApplySubscriber(view, shopIndex, ignoreAPIResponse))
+                )
             }
         }
     }
@@ -540,8 +539,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.let {
             it.showProgressLoading()
             clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, oldPromoList)
-            clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
-                    ?.subscribe(ClearCacheAutoApplyAfterClashSubscriber(view, this, promoStackingGlobalData, newPromoList, type))
+            compositeSubscription.add(
+                    clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
+                            ?.subscribe(ClearCacheAutoApplyAfterClashSubscriber(view, this, promoStackingGlobalData, newPromoList, type))
+            )
         }
     }
 
@@ -595,8 +596,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 }
                 view.showProgressLoading()
                 checkPromoStackingCodeUseCase?.setParams(promo)
-                checkPromoStackingCodeUseCase?.createObservable(RequestParams.create())
-                        ?.subscribe(CheckPromoFirstStepAfterClashSubscriber(this.view, type))
+                compositeSubscription.add(
+                        checkPromoStackingCodeUseCase?.createObservable(RequestParams.create())
+                                ?.subscribe(CheckPromoFirstStepAfterClashSubscriber(this.view, type))
+                )
             }
         }
     }
@@ -934,11 +937,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
-        addToCartUseCase?.createObservable(requestParams)
-                ?.subscribeOn(schedulers.io)
-                ?.unsubscribeOn(schedulers.io)
-                ?.observeOn(schedulers.main)
-                ?.subscribe(AddToCartSubscriber(view, this, productModel))
+        compositeSubscription.add(
+                addToCartUseCase?.createObservable(requestParams)
+                        ?.subscribeOn(schedulers.io)
+                        ?.unsubscribeOn(schedulers.io)
+                        ?.observeOn(schedulers.main)
+                        ?.subscribe(AddToCartSubscriber(view, this, productModel))
+        )
     }
 
     override fun generateAddToCartEnhanceEcommerceDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData,

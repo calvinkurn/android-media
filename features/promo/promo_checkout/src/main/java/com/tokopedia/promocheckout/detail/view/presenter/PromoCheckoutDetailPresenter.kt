@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCa
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
 
 class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                    private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
@@ -26,36 +27,39 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
     private val paramGlobal = "global"
     private val statusOK = "OK"
 
+    val compositeSubscription = CompositeSubscription()
+
     override fun cancelPromo(codeCoupon: String) {
         view.showProgressLoading()
         val promoCodes = arrayListOf(codeCoupon)
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodes)
-        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                .subscribe(object : Subscriber<ClearCacheAutoApplyStackResponse>() {
-                    override fun onCompleted() {
+        compositeSubscription.add(
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+                        .subscribe(object : Subscriber<ClearCacheAutoApplyStackResponse>() {
+                            override fun onCompleted() {
 
-                    }
-
-                    override fun onError(e: Throwable) {
-                        if (isViewAttached) {
-                            view.hideProgressLoading()
-                            view.onErrorCancelPromo(e)
-                        }
-                    }
-
-                    override fun onNext(response: ClearCacheAutoApplyStackResponse) {
-                        if (isViewAttached) {
-                            view.hideProgressLoading()
-                            if (response.successData.success) {
-                                view.onSuccessCancelPromo()
-                            } else {
-                                view.onErrorCancelPromo(RuntimeException())
                             }
-                        }
-                    }
 
-                })
+                            override fun onError(e: Throwable) {
+                                if (isViewAttached) {
+                                    view.hideProgressLoading()
+                                    view.onErrorCancelPromo(e)
+                                }
+                            }
 
+                            override fun onNext(response: ClearCacheAutoApplyStackResponse) {
+                                if (isViewAttached) {
+                                    view.hideProgressLoading()
+                                    if (response.successData.success) {
+                                        view.onSuccessCancelPromo()
+                                    } else {
+                                        view.onErrorCancelPromo(RuntimeException())
+                                    }
+                                }
+                            }
+
+                        })
+        )
     }
 
     override fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean) {
@@ -87,48 +91,48 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
 
         view.showProgressLoading()
         checkPromoStackingCodeUseCase.setParams(promo)
-        checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
-                .subscribe(object : Subscriber<ResponseGetPromoStackUiModel>() {
-                    override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
-                        if (isViewAttached) {
-                            view.hideProgressLoading()
-//                    val responseGetPromoStack = checkPromoStackingCodeMapper.map(t)
-                            if (responseGetPromoStack.status.equals(statusOK, true) && responseGetPromoStack.data.success) {
-                                if (!isFromLoadDetail) {
-                                    if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
-                                        view.onClashCheckPromo(responseGetPromoStack.data.clashings)
-                                    } else {
-                                        responseGetPromoStack.data.codes.forEach {
-                                            if (it.equals(promoCode, true)) {
-                                                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                                    view?.hideProgressLoading()
-                                                    view.onErrorCheckPromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
-                                                } else {
-                                                    view.onSuccessCheckPromo(responseGetPromoStack.data)
+        compositeSubscription.add(
+                checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                        .subscribe(object : Subscriber<ResponseGetPromoStackUiModel>() {
+                            override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
+                                if (isViewAttached) {
+                                    view.hideProgressLoading()
+                                    if (responseGetPromoStack.status.equals(statusOK, true) && responseGetPromoStack.data.success) {
+                                        if (!isFromLoadDetail) {
+                                            if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
+                                                view.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                                            } else {
+                                                responseGetPromoStack.data.codes.forEach {
+                                                    if (it.equals(promoCode, true)) {
+                                                        if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                                                            view?.hideProgressLoading()
+                                                            view.onErrorCheckPromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
+                                                        } else {
+                                                            view.onSuccessCheckPromo(responseGetPromoStack.data)
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
+                                    } else {
+                                        val message = responseGetPromoStack.data.message.text
+                                        view.onErrorCheckPromoStacking(MessageErrorException(message))
                                     }
                                 }
-                            } else {
-                                val message = responseGetPromoStack.data.message.text
-                                view.onErrorCheckPromoStacking(MessageErrorException(message))
                             }
-                        }
-                    }
 
-                    override fun onCompleted() {
+                            override fun onCompleted() {
 
-                    }
+                            }
 
-                    override fun onError(e: Throwable) {
-                        if (isViewAttached) {
-                            view.hideProgressLoading()
-                            view.onErrorCheckPromo(e)
-                        }
-                    }
-
-                })
+                            override fun onError(e: Throwable) {
+                                if (isViewAttached) {
+                                    view.hideProgressLoading()
+                                    view.onErrorCheckPromo(e)
+                                }
+                            }
+                        })
+        )
     }
 
     override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?) {
@@ -160,8 +164,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        checkPromoStackingCodeUseCase.unsubscribe()
-        clearCacheAutoApplyStackUseCase.unsubscribe()
+        compositeSubscription.unsubscribe()
         super.detachView()
     }
 }
