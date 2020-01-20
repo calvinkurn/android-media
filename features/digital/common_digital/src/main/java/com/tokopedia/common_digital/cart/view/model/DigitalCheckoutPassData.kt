@@ -1,5 +1,6 @@
 package com.tokopedia.common_digital.cart.view.model
 
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -24,6 +25,7 @@ class DigitalCheckoutPassData() : Parcelable {
     var idemPotencyKey: String? = null
     var voucherCodeCopied: String? = null
     var source: Int = 0
+    var fields: HashMap<String, String>? = null
 
     private constructor(builder: Builder): this() {
         action = builder.action
@@ -41,6 +43,7 @@ class DigitalCheckoutPassData() : Parcelable {
         idemPotencyKey = builder.idemPotencyKey
         voucherCodeCopied = builder.voucherCodeCopied
         source = builder.source
+        fields = builder.fields
     }
 
     protected constructor(`in`: Parcel): this() {
@@ -59,6 +62,11 @@ class DigitalCheckoutPassData() : Parcelable {
         idemPotencyKey = `in`.readString()
         voucherCodeCopied = `in`.readString()
         source = `in`.readInt()
+        val bundle = `in`.readBundle(javaClass.classLoader)
+        bundle?.run {
+            val fieldsParam = this.getSerializable(PARAM_FIELDS)
+            fieldsParam?.run { fields = this as? HashMap<String, String> }
+        }
     }
 
     override fun describeContents(): Int {
@@ -81,6 +89,9 @@ class DigitalCheckoutPassData() : Parcelable {
         parcel.writeString(idemPotencyKey)
         parcel.writeString(voucherCodeCopied)
         parcel.writeInt(source)
+        val bundle = Bundle()
+        bundle.putSerializable(PARAM_FIELDS, fields)
+        parcel.writeBundle(bundle)
     }
 
     class Builder {
@@ -99,6 +110,7 @@ class DigitalCheckoutPassData() : Parcelable {
          var idemPotencyKey: String? = null
          var voucherCodeCopied: String? = null
          var source: Int = 0
+         var fields: HashMap<String, String>? = null
 
         fun action(`val`: String): Builder {
             action = `val`
@@ -175,6 +187,11 @@ class DigitalCheckoutPassData() : Parcelable {
             return this
         }
 
+        fun fields(`val`: HashMap<String, String>): Builder {
+            fields = `val`
+            return this
+        }
+
         fun build(): DigitalCheckoutPassData {
             return DigitalCheckoutPassData(this)
         }
@@ -196,6 +213,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val PARAM_UTM_CAMPAIGN = "utm_campaign"
         val PARAM_UTM_CONTENT = "utm_content"
         val PARAM_IDEM_POTENCY_KEY = "idem_potency_key"
+        val PARAM_FIELDS = "fields"
         val DEFAULT_ACTION = "init_data"
         val UTM_SOURCE_ANDROID = "android"
         val UTM_MEDIUM_WIDGET = "widget"

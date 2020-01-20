@@ -181,6 +181,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     sendCampaignGTM(activity, uriData.toString(), screenName);
                     openHomepageHot(defaultBundle);
                     break;
+                case DeepLinkChecker.FIND:
+                    screenName = AppScreen.SCREEN_FIND;
+                    DeepLinkChecker.openFind(uriData.toString(), context);
+                    context.finish();
+                    break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogDetail(linkSegment);
                     screenName = AppScreen.SCREEN_CATALOG;
@@ -546,7 +551,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String encodedUri = UrlEncoderExtKt.encodeOnce(uri.toString());
         Intent intent = RouteManager.getIntentNoFallback(context, ApplinkConstInternalGlobal.WEBVIEW,
                 encodedUri);
-        if (intent!=null) {
+        if (intent != null) {
             intent.putExtra(KEY_ALLOW_OVERRIDE, allowingOverriding);
             intent.putExtra(KEY_NEED_LOGIN, needLogin);
             intent.putExtra(KEY_TITLEBAR, showTitlebar);
@@ -693,7 +698,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                     }
-                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
                     context.startActivity(intent);
                 }
                 context.finish();
