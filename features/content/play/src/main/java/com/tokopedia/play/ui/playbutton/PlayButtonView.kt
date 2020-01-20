@@ -3,8 +3,12 @@ package com.tokopedia.play.ui.playbutton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
@@ -18,12 +22,14 @@ class PlayButtonView(
 
     private val view: View =
             LayoutInflater.from(container.context).inflate(R.layout.view_play_button, container, true)
-                    .findViewById(R.id.iv_play)
+                    .findViewById(R.id.cl_play_control_round)
+
+    private val ivPlay = view.findViewById<AppCompatImageView>(R.id.iv_play)
+    private val tvWatchAgain = view.findViewById<TextView>(R.id.tv_watch_again)
 
     init {
-        hide()
         view.setOnClickListener {
-            listener.onPlayButtonClicked(this)
+            listener.onButtonClicked(this)
         }
     }
 
@@ -37,8 +43,20 @@ class PlayButtonView(
         view.hide()
     }
 
+    fun showPlayButton() {
+        ivPlay.setImageResource(R.drawable.ic_play_play_round)
+        tvWatchAgain.gone()
+        show()
+    }
+
+    fun showRepeatButton() {
+        ivPlay.setImageResource(R.drawable.ic_play_repeat_round)
+        tvWatchAgain.visible()
+        show()
+    }
+
     interface Listener {
 
-        fun onPlayButtonClicked(view: PlayButtonView)
+        fun onButtonClicked(view: PlayButtonView)
     }
 }

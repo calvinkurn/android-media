@@ -19,6 +19,7 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
+import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
@@ -166,12 +167,14 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         val videoComponent = initVideoComponent(container)
         val videoLoadingComponent = initVideoLoadingComponent(container)
         val oneTapComponent = initOneTapComponent(container)
+        val overlayVideoComponent = initOverlayVideoComponent(container)
 
         layoutView(
                 container = container,
                 videoComponentId = videoComponent.getContainerId(),
                 videoLoadingComponentId = videoLoadingComponent.getContainerId(),
-                oneTapComponentId = oneTapComponent.getContainerId()
+                oneTapComponentId = oneTapComponent.getContainerId(),
+                overlayVideoComponentId = overlayVideoComponent.getContainerId()
         )
     }
 
@@ -187,6 +190,10 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private fun initOneTapComponent(container: ViewGroup): UIComponent<Unit> {
         return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
+
+    private fun initOverlayVideoComponent(container: ViewGroup): UIComponent<Unit> {
+        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    }
     //endregion
 
     //region layouting
@@ -194,7 +201,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             container: ViewGroup,
             @IdRes videoComponentId: Int,
             @IdRes videoLoadingComponentId: Int,
-            @IdRes oneTapComponentId: Int
+            @IdRes oneTapComponentId: Int,
+            @IdRes overlayVideoComponentId: Int
     ) {
 
         fun layoutVideo(container: ViewGroup, @IdRes id: Int) {
@@ -241,9 +249,25 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.applyTo(container)
         }
 
+        fun layoutOverlayVideo(container: ViewGroup, @IdRes id: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         layoutVideo(container, videoComponentId)
         layoutVideoLoading(container, videoLoadingComponentId)
         layoutOneTap(container , oneTapComponentId)
+        layoutOverlayVideo(container, overlayVideoComponentId)
     }
 
     private fun delegateVideoProperty(prop: VideoPropertyUiModel) {

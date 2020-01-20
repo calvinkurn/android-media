@@ -112,12 +112,16 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     //region player control
     fun resumeCurrentVideo() {
-        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) videoPlayer.seekTo(0)
+        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) resetCurrentVideo()
         videoPlayer.playWhenReady = true
     }
 
     fun pauseCurrentVideo() {
         videoPlayer.playWhenReady = false
+    }
+
+    fun resetCurrentVideo() {
+        videoPlayer.seekTo(0)
     }
     //endregion
 
