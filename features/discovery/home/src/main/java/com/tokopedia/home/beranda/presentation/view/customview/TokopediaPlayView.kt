@@ -87,13 +87,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         contentFrame?.setAspectRatio(aspectRatio)
     }
 
-    private fun updateBuffering() {
-//        bufferingView?.let{
-//            val showBufferingSpinner = player != null && player?.playbackState == Player.STATE_BUFFERING && player?.playWhenReady == true
-//            bufferingView?.visibility = if (showBufferingSpinner) View.VISIBLE else View.GONE
-//        }
-    }
-
     private fun setResizeModeRaw(aspectRatioFrame: AspectRatioFrameLayout, resizeMode: Int) {
         aspectRatioFrame.resizeMode = resizeMode
     }
@@ -138,7 +131,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 oldVideoComponent.clearVideoTextureView(surfaceView)
             }
         }
-        updateBuffering()
         this.player = player
         if (player != null) {
             val newVideoComponent = player.videoComponent
@@ -186,7 +178,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         // Player.EventListener implementation
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            updateBuffering()
         }
 
         override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
