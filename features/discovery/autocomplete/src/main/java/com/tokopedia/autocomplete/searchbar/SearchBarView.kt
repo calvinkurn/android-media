@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.view
+package com.tokopedia.autocomplete.searchbar
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -81,15 +81,15 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     private val mOnClickListener = OnClickListener { v ->
         if (v === action_up_btn || v === action_cancel_button) {
-            KeyboardHandler.DropKeyboard(activity, searchTextView)
+            KeyboardHandler.DropKeyboard(activity, search_text_view)
             activity?.finish()
         } else if (v === action_voice_btn) {
             onVoiceClicked()
         } else if (v === action_image_search_btn) {
             onImageSearchClicked()
         } else if (v === action_empty_btn) {
-            searchTextView?.text = null
-        } else if (v === searchTextView) {
+            search_text_view?.text = null
+        } else if (v === search_text_view) {
             showSuggestions()
         }
     }
@@ -148,7 +148,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun setListener(){
-        searchTextView?.setOnClickListener(mOnClickListener)
+        search_text_view?.setOnClickListener(mOnClickListener)
         action_up_btn?.setOnClickListener(mOnClickListener)
         action_voice_btn?.setOnClickListener(mOnClickListener)
         action_empty_btn?.setOnClickListener(mOnClickListener)
@@ -162,7 +162,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         } else {
             action_voice_btn?.visibility = View.GONE
             if (!isVoiceAvailable) {
-                setMargin(searchTextView, convertDpToPx(8), 0, convertDpToPx(12), 0)
+                setMargin(search_text_view, convertDpToPx(8), 0, convertDpToPx(12), 0)
             }
         }
     }
@@ -189,12 +189,12 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun initSearchView() {
-        searchTextView?.setOnEditorActionListener { v, actionId, event ->
+        search_text_view?.setOnEditorActionListener { v, actionId, event ->
             onSubmitQuery()
             true
         }
 
-        searchTextView?.addTextChangedListener(object : TextWatcher {
+        search_text_view?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -222,20 +222,20 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             }
         })
 
-        searchTextView?.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
+        search_text_view?.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
-                showKeyboard(searchTextView)
+                showKeyboard(search_text_view)
                 showSuggestions()
             }
         }
     }
 
     private fun onSubmitQuery() {
-        searchTextView?.text?.let { modifyQueryInSearchParameter(it) }
+        search_text_view?.text?.let { modifyQueryInSearchParameter(it) }
 
         if (TextUtils.getTrimmedLength(searchParameter.getSearchQuery()) > 0) {
             if (!mOnQueryChangeListener.onQueryTextSubmit(searchParameter)) {
-                searchTextView?.text = null
+                search_text_view?.text = null
             }
         }
     }
@@ -247,7 +247,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun setTextViewHint(hint: CharSequence?) {
-        searchTextView?.hint = hint
+        search_text_view?.hint = hint
     }
 
     private fun initCompositeSubscriber() {
@@ -287,7 +287,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun onTextChanged(newText: CharSequence?) {
-        val text = searchTextView?.text
+        val text = search_text_view?.text
         mUserQuery = text
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
@@ -295,13 +295,13 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             action_cancel_button?.visibility = View.VISIBLE
             showVoiceButton(false)
             showImageSearch(false)
-            setConstraint(search_top_bar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.action_cancel_button, ConstraintSet.LEFT, 0)
+            setConstraint(search_top_bar, R.id.search_text_view, ConstraintSet.RIGHT, R.id.action_cancel_button, ConstraintSet.LEFT, 0)
         } else {
             action_empty_btn?.visibility = View.GONE
             action_cancel_button?.visibility = View.GONE
             showVoiceButton(true)
             showImageSearch(true)
-            setConstraint(search_top_bar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.action_voice_btn, ConstraintSet.LEFT, 0)
+            setConstraint(search_top_bar, R.id.search_text_view, ConstraintSet.RIGHT, R.id.action_voice_btn, ConstraintSet.LEFT, 0)
         }
 
         if (!TextUtils.equals(newText, mOldQueryText)) {
@@ -414,7 +414,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
             val f = TextView::class.java.getDeclaredField("mCursorDrawableRes")
             f.isAccessible = true
-            f.set(searchTextView, drawable)
+            f.set(search_text_view, drawable)
         } catch (ignored: Exception) {
             Log.e("SearchBarV2", ignored.toString())
         }
@@ -431,9 +431,9 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     fun setQuery(query: CharSequence?, submit: Boolean) {
-        searchTextView?.setText(query)
+        search_text_view?.setText(query)
         if (query != null) {
-            searchTextView?.setSelection(searchTextView.length())
+            search_text_view?.setSelection(search_text_view.length())
             mUserQuery = query
         }
         if (submit && !TextUtils.isEmpty(query)) {
@@ -475,16 +475,16 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun textViewRequestFocus() {
-        searchTextView?.setText(lastQuery)
+        search_text_view?.setText(lastQuery)
         onTextChanged(lastQuery)
 
         searchTextViewShowKeyboard()
     }
 
     private fun searchTextViewShowKeyboard() {
-        searchTextView?.postDelayed({
-            showKeyboard(searchTextView)
-            searchTextView?.text?.length?.let { searchTextView?.setSelection(it) }
+        search_text_view?.postDelayed({
+            showKeyboard(search_text_view)
+            search_text_view?.text?.length?.let { search_text_view?.setSelection(it) }
         }, 200)
     }
 
@@ -514,14 +514,14 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
         if (mClearingFocus) return false
-        return if (!isFocusable) false else searchTextView.requestFocus(direction, previouslyFocusedRect)
+        return if (!isFocusable) false else search_text_view.requestFocus(direction, previouslyFocusedRect)
     }
 
     override fun clearFocus() {
         mClearingFocus = true
         hideKeyboard(this)
         super.clearFocus()
-        searchTextView.clearFocus()
+        search_text_view.clearFocus()
         mClearingFocus = false
     }
 

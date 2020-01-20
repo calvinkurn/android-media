@@ -25,7 +25,7 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking;
 import com.tokopedia.autocomplete.fragment.SearchMainFragment;
 import com.tokopedia.autocomplete.presentation.AutoCompleteContract;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
-import com.tokopedia.autocomplete.view.SearchBarView;
+import com.tokopedia.autocomplete.searchbar.SearchBarView;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;

@@ -245,7 +245,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
         this.onTabShop = onTabShop;
     }
 
-    public boolean isOnTabShop() {
+    private boolean isOnTabShop() {
         return onTabShop;
     }
 
