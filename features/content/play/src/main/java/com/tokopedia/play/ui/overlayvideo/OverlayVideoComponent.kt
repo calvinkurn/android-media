@@ -1,24 +1,24 @@
-package com.tokopedia.play.ui.playbutton
+package com.tokopedia.play.ui.overlayvideo
 
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 10/12/19
+ * Created by jegul on 20/01/20
  */
-class PlayButtonComponent(
+class OverlayVideoComponent(
         container: ViewGroup,
-        private val bus: EventBusFactory,
+        bus: EventBusFactory,
         coroutineScope: CoroutineScope
-) : UIComponent<PlayButtonInteractionEvent>, CoroutineScope by coroutineScope, PlayButtonView.Listener {
+) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
     private val uiView = initView(container)
 
@@ -30,7 +30,6 @@ class PlayButtonComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.type.isVod, it.videoProp.state)
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }
@@ -40,21 +39,12 @@ class PlayButtonComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): Flow<PlayButtonInteractionEvent> {
-        return bus.getSafeManagedFlow(PlayButtonInteractionEvent::class.java)
-    }
-
-    override fun onButtonClicked(view: PlayButtonView) {
-        launch {
-            bus.emit(
-                    PlayButtonInteractionEvent::class.java,
-                    PlayButtonInteractionEvent.PlayClicked
-            )
-        }
+    override fun getUserInteractionEvents(): Flow<Unit> {
+        return emptyFlow()
     }
 
     private fun initView(container: ViewGroup) =
-            PlayButtonView(container, this)
+            OverlayVideoView(container)
 
     private fun handleVideoStateChanged(isVod: Boolean, state: TokopediaPlayVideoState) {
         if (!isVod) {
@@ -62,8 +52,7 @@ class PlayButtonComponent(
             return
         }
         when (state) {
-            TokopediaPlayVideoState.Pause -> uiView.showPlayButton()
-            TokopediaPlayVideoState.Ended -> uiView.showRepeatButton()
+            TokopediaPlayVideoState.Ended -> uiView.show()
             else -> uiView.hide()
         }
     }

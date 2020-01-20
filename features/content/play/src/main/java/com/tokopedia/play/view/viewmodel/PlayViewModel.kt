@@ -45,7 +45,7 @@ class PlayViewModel @Inject constructor(
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
         private val playSocket: PlaySocket,
-        private val userSessionInterface: UserSessionInterface,
+        private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
 ) : BaseViewModel(dispatchers.main) {
 
@@ -173,8 +173,8 @@ class PlayViewModel @Inject constructor(
             // TODO("remove, for testing")
 //            channel.videoStream = VideoStream(
 //                    "vertical",
-//                    "live",
-//                    true,
+//                    "vod",
+//                    false,
 //                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             setStateLiveOrVod(channel)
@@ -196,7 +196,7 @@ class PlayViewModel @Inject constructor(
             val totalLike = getTotalLikes(channel.contentId, channel.contentType)
             _observableTotalLikes.value = mapTotalLikes(totalLike)
 
-            if (userSessionInterface.isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 val isLiked = getIsLike(channel.contentId, channel.contentType)
                 _observableIsLikeContent.value = isLiked
             }
@@ -211,7 +211,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun sendChat(message: String) {
-        if (!userSessionInterface.isLoggedIn)
+        if (!userSession.isLoggedIn)
             return
 
         val cleanMessage = message.trimMultipleNewlines()
@@ -220,9 +220,9 @@ class PlayViewModel @Inject constructor(
                     PlayChat(
                             message = cleanMessage,
                             user = PlayChat.UserData(
-                                    id = userSessionInterface.userId,
-                                    name = userSessionInterface.name,
-                                    image = userSessionInterface.profilePicture)
+                                    id = userSession.userId,
+                                    name = userSession.name,
+                                    image = userSession.profilePicture)
                     )
             )
         })
@@ -257,7 +257,8 @@ class PlayViewModel @Inject constructor(
                     id = partnerId,
                     name = channel.moderatorName,
                     type = partnerType,
-                    isFollowed = true
+                    isFollowed = true,
+                    isFollowable = false
             )
             return
         } else {
@@ -308,7 +309,7 @@ class PlayViewModel @Inject constructor(
                             _observableEvent.value = _observableEvent.value?.copy(
                                     isFreeze = result.isFreeze,
                                     isBanned = result.isBanned && result.userId.isNotEmpty()
-                                            && result.userId.equals(userSessionInterface.userId, true))
+                                            && result.userId.equals(userSession.userId, true))
                         }
                     }
                 }
@@ -325,9 +326,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun playVideoStream(channel: Channel) {
-        if (channel.isActive) {
-            startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
-        }
+        if (channel.isActive) initiateVideo(channel)
     }
 
     private fun setStateLiveOrVod(channel: Channel) {
@@ -386,14 +385,15 @@ class PlayViewModel @Inject constructor(
             userId = playChat.user.id,
             name = playChat.user.name,
             message = playChat.message,
-            isSelfMessage = playChat.user.id == userSessionInterface.userId
+            isSelfMessage = playChat.user.id == userSession.userId
     )
 
     private fun mapPartnerInfoFromShop(shopInfo: ShopInfo) = PartnerInfoUiModel(
             id = shopInfo.shopCore.shopId.toLong(),
             name = shopInfo.shopCore.name,
             type = PartnerType.SHOP,
-            isFollowed = shopInfo.favoriteData.alreadyFavorited == 1
+            isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
+            isFollowable = userSession.shopId != shopInfo.shopCore.shopId
     )
 
     private fun mapEvent(channel: Channel) = EventUiModel(
@@ -418,6 +418,12 @@ class PlayViewModel @Inject constructor(
 
     private fun stopPlayer() {
         playManager.stopPlayer()
+    }
+
+    private fun initiateVideo(channel: Channel) {
+        startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
+        playManager.muteVideo(false)
+        playManager.setRepeatMode(false)
     }
 
     //region mock

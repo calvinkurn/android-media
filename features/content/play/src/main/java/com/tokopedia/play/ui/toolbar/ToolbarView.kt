@@ -76,7 +76,7 @@ class ToolbarView(
             view.context.getString(R.string.play_following) else
             view.context.getString(R.string.play_follow)
 
-        if (partnerInfo.type == PartnerType.ADMIN) {
+        if (!partnerInfo.isFollowable) {
             tvFollow.setOnClickListener {}
         } else {
             tvFollow.setOnClickListener {
