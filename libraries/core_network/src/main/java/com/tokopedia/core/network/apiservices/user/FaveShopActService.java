@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class FaveShopActService extends AuthService<FaveShopActApi> {
-    private static final String TAG = FaveShopActService.class.getSimpleName();
 
     public FaveShopActService() {
         super();

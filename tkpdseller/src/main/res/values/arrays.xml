@@ -55,4 +55,28 @@
         <item>@string/product_pre_order_value_week</item>
     </string-array>
 
+    <string-array name="alasan_penolakan">
+        <item>Stok produk kosong/rusak</item>
+        <item>Varian tidak tersedia</item>
+        <item>Salah harga/berat</item>
+        <item>Toko sedang tutup</item>
+        <item>Kendala kurir</item>
+        <item>Permintaan Pembeli</item>
+    </string-array>
+    <string-array name="priceList">
+        <item>@string/title_rupiah</item>
+        <item>@string/title_dollar</item>
+    </string-array>
+    <string-array name="priceListNonGm">
+        <item>@string/title_rupiah</item>
+    </string-array>
+    <string-array name="transaction_filter_type_ppl_value">
+        <item></item>
+        <item>9</item>
+        <item>1</item>
+        <item>2</item>
+        <item>7</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 </resources>

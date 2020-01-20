@@ -40,6 +40,8 @@ public class CMInAppManager implements CmInAppListener {
 
     CmInAppListener cmInAppListener;
 
+    final Object lock = new Object();
+
 
     public static CMInAppManager getInstance() {
         return inAppManager;
@@ -76,23 +78,26 @@ public class CMInAppManager implements CmInAppListener {
         DataProvider dataProvider = new DataProvider() {
             @Override
             public void notificationsDataResult(List<CMInApp> inAppDataList) {
-                if (canShowInApp(inAppDataList)) {
-                    final CMInApp cmInApp = ViewEngine.getInstance(application)
-                            .createView(getCurrentActivity(), inAppDataList.get(0));
-                    if (cmInApp == null)
-                        return;
-                    Activity activity = getCurrentActivity();
-                    if (activity == null)
-                        return;
-                    View inAppViewPrev = activity.findViewById(R.id.mainContainer);
-                    if (null != inAppViewPrev)//In-App view already present on Activity
-                        return;
-                    FrameLayout root = (FrameLayout) activity.getWindow()
-                            .getDecorView()
-                            .findViewById(android.R.id.content)
-                            .getRootView();
-                    root.addView(cmInApp.getCmInAppView());
-                    dataConsumed(cmInApp);
+                synchronized (lock) {
+                    if (canShowInApp(inAppDataList)) {
+                        if (getCurrentActivity() == null)
+                            return;
+                        Activity activity = getCurrentActivity();
+                        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
+                        CMInApp cmInApp = inAppDataList.get(0);
+                        final View view = viewEngine.createView(cmInApp);
+                        if (view == null)
+                            return;
+                        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
+                        if (null != inAppViewPrev)//In-App view already present on Activity
+                            return;
+                        FrameLayout root = (FrameLayout) activity.getWindow()
+                                .getDecorView()
+                                .findViewById(android.R.id.content)
+                                .getRootView();
+                        root.addView(view);
+                        dataConsumed(cmInApp);
+                    }
                 }
             }
         };
@@ -211,7 +216,6 @@ public class CMInAppManager implements CmInAppListener {
     @Override
     public void onCMInAppClosed(CMInApp cmInApp) {
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DISMISSED, null);
-
     }
 
     @Override
@@ -220,3 +224,5 @@ public class CMInAppManager implements CmInAppListener {
     }
 }
 
+//create mapping for ViewEngine with ActivityName
+//handle onDestroy of Activity iterate map and clear ViewEngine Instance

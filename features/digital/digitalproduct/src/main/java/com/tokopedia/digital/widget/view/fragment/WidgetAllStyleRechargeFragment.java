@@ -313,6 +313,11 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onButtonCameraPickerClicked() {
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);

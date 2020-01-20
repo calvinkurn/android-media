@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -70,7 +70,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
@@ -156,7 +155,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
     private RecipientAddressModel recipientAddressModel;
-    private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
@@ -272,16 +270,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
         this.shipmentCartItemModelList = recipientCartItemList;
-    }
-
-    @Override
-    public CartPromoSuggestionHolderData getCartPromoSuggestionHolderData() {
-        return cartPromoSuggestionHolderData;
-    }
-
-    @Override
-    public void setCartPromoSuggestionHolderData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData) {
-        this.cartPromoSuggestionHolderData = cartPromoSuggestionHolderData;
     }
 
     @Override
@@ -599,6 +587,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             cartShipmentAddressFormData.getTickerData().getMessage())
             );
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
+        } else {
+            setTickerAnnouncementHolderData(null);
         }
 
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
@@ -616,10 +606,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         getView().setPromoStackingData(cartShipmentAddressFormData);
-
-        if (cartShipmentAddressFormData.getCartPromoSuggestionHolderData() != null) {
-            setCartPromoSuggestionHolderData(cartShipmentAddressFormData.getCartPromoSuggestionHolderData());
-        }
 
         setShipmentCartItemModelList(getView().getShipmentDataConverter().getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
@@ -646,12 +632,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processReloadCheckoutPageFromMultipleAddress(PromoStackingData oldPromoData,
-                                                             CartPromoSuggestionHolderData oldCartPromoSuggestionHolderData,
-                                                             RecipientAddressModel oldRecipientAddressModel,
-                                                             ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels,
-                                                             ShipmentCostModel oldShipmentCostModel,
-                                                             ShipmentDonationModel oldShipmentDonationModel) {
+    public void processReloadCheckoutPageFromMultipleAddress(RecipientAddressModel oldRecipientAddressModel,
+                                                             ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels) {
         getView().showLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -895,8 +877,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())) {
-                            tickerAnnouncementHolderData.setId(String.valueOf(responseGetPromoStack.getData().getTickerInfoUiModel().getStatusCode()));
-                            tickerAnnouncementHolderData.setMessage(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage());
+                            if (tickerAnnouncementHolderData == null) {
+                                setTickerAnnouncementHolderData(
+                                        new TickerAnnouncementHolderData(
+                                                String.valueOf(responseGetPromoStack.getData().getTickerInfoUiModel().getStatusCode()),
+                                                responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())
+                                );
+                            }
                             getView().updateTickerAnnouncementMessage();
                             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
                         }

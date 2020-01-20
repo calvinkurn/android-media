@@ -32,7 +32,8 @@
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
-    <string name="promote_topads">Iklan TopAds</string>
+    <string name="promote_topads">Iklankan</string>
+    <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="action_preorder">PREORDER</string>
     <string name="product_from">Produk</string>

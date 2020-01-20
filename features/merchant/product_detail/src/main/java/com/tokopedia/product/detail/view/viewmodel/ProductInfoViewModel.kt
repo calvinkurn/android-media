@@ -21,7 +21,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -30,10 +30,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_INP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.common.data.model.product.Rating
-import com.tokopedia.product.detail.common.data.model.product.WishlistCount
+import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
@@ -85,6 +82,7 @@ import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -134,7 +132,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val cacheStrategy = GraphqlCacheStrategy
                     .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             val data = withContext(Dispatchers.IO) {
-                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
+                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toIntOrZero(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
                         PARAM_PRODUCT_KEY to productParams.productName)
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO],
@@ -233,7 +231,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             p2Shop
         }
@@ -372,8 +370,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .wishlistCount
 
                 if (gqlResponse.getError(MerchantVoucherQuery::class.java)?.isNotEmpty() != true) {
-                    productInfoP2.vouchers = gqlResponse.getData<MerchantVoucherQuery>(MerchantVoucherQuery::class.java)
-                            .result?.vouchers.orEmpty().map { MerchantVoucherViewModel(it) }
+                    productInfoP2.vouchers = ((gqlResponse.getData<MerchantVoucherQuery>(MerchantVoucherQuery::class.java))
+                            .result?.vouchers?.toList()
+                            ?: listOf()).map { MerchantVoucherViewModel(it) }
                 }
 
                 if (gqlResponse.getError(ShopCommitment.Response::class.java)?.isNotEmpty() != true) {
@@ -428,7 +427,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP2.productSpecificationResponse = productSpesification
                 }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
             productInfoP2
         }
@@ -453,10 +452,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
                     TopAdsPdpAffiliateResponse::class.java, affilateParams)
+
+            val topAdsManageParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_SHOP_ID to shopId)
+            val topAdsManageRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_TOP_ADS_MANAGE_PRODUCT],
+                    TopAdsGetProductManageResponse::class.java, topAdsManageParams)
+
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             try {
                 val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
-                        affiliateRequest), cacheStrategy)
+                        affiliateRequest, topAdsManageRequest), cacheStrategy)
 
                 if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
                     p2Login.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
@@ -476,8 +480,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
                             .getCartType.data.cartType
                 }
+
+                if (response.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
+                    p2Login.topAdsGetProductManage = response
+                            .getData<TopAdsGetProductManageResponse>(TopAdsGetProductManageResponse::class.java).topAdsGetProductManage ?: TopAdsGetProductManage()
+                }
             } catch (t: Throwable) {
-                t.debugTrace()
+                Timber.d(t)
             }
 
             p2Login
@@ -533,11 +542,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         .result.userCodStatus.isCod
             }
 
-        } catch (t: Throwable) {
-            t.debugTrace()
-        }
-        productInfoP3
+    } catch (t: Throwable) {
+        Timber.d(t)
     }
+    productInfoP3
+}
 
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
         launchCatchError(block = {
@@ -603,8 +612,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
 
-    override fun clear() {
-        super.clear()
+    override fun flush() {
+        super.flush()
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
@@ -641,14 +650,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
-        trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
-        trackAffiliateUseCase.execute({
-            //no op
-        }) {
-            it.debugTrace()
-        }
+fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
+    trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
+    trackAffiliateUseCase.execute({
+        //no op
+    }) {
+        Timber.d(it)
     }
+}
 
     fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
         val requestParams = RequestParams.create()

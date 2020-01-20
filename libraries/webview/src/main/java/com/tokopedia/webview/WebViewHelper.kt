@@ -21,7 +21,7 @@ object WebViewHelper {
     private const val JS_DOMAIN_PATTERN: String = "js.tokopedia.com"
     private const val KEY_PARAM_URL: String = "url"
     private const val PARAM_APPCLIENT_ID = "appClientId"
-    private const val HOST_TOKOPEDIA = "tokopedia.com"
+    private const val HOST_TOKOPEDIA = "tokopedia"
 
     @JvmStatic
     fun isUrlValid(url: String): Boolean {
@@ -59,8 +59,10 @@ object WebViewHelper {
      @JvmStatic
     fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
         Log.d("WebviewHelper before URL" , url)
-        var returnURl = "";
+        var returnURl = url
 
+        if (url?.contains("ta.tokopedia.com") == true)
+            return url
 
         if (url != null && isPassingGAClientIdEnable(context)) {
             try {
@@ -89,7 +91,6 @@ object WebViewHelper {
             } catch (ex: Exception) {
                 //do nothing
             }
-
         }
 
         Log.d("WebviewHelper updated URL" , returnURl)

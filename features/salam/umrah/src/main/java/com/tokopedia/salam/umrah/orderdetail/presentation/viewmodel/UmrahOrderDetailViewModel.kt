@@ -11,11 +11,11 @@ import com.tokopedia.salam.umrah.common.data.UmrahValueLabelEntity
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
+import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,8 +24,8 @@ import javax.inject.Inject
  * @author by furqan on 08/10/2019
  */
 class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                    dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                                    dispatcher: UmrahDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
     val myWidgetData = MutableLiveData<Result<UmrahMyUmrahWidgetModel>>()
