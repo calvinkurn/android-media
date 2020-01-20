@@ -111,7 +111,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
 
     private fun getCampaignId(position: Int): Int {
         val parameterList: List<String>? = bannerData.value?.data?.get(position)?.paramsMobile?.split("=")
-        if (parameterList != null && parameterList.size > 2) {
+        if (parameterList != null && parameterList.size >= 2) {
             return parameterList[1].toInt()
         }
         return 0
