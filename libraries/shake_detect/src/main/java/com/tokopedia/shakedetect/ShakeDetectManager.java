@@ -28,16 +28,12 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final String FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY = "audio_campaign_is_audio";
     private SharedPreferences sharedPreferences;
     private String NOTIFICATION_SHAKE_SHAKE = "notification_shake_shake";
-    public static final int MESSAGE_ENABLE_SHAKE = 1;
-    public static final int MESSAGE_DISABLE_SHAKE = 2;
-    public static final int MESSAGE_SHAKE_START = 3;
     public static final int MESSAGE_SHAKE_END = 4;
     public static final int MESSAGE_SHAKE_SHAKE_CONTINUE_LONG = 5;
 
     public static final int SHAKE_SHAKE_END_TIME_MS = 800;
     public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 1000;
     public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 5000;
-    private boolean  isShakeShakeEnable = true;
 
     public static String sTopActivity = "";
     private String mOpenedActivity = "";
@@ -123,7 +119,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             return;
         }
 
-        if (isShakeShakeEnable && isShakeShakeEnable() && isReactNativeOnReleaseMode()) {
+        if (isShakeShakeEnable() && isReactNativeOnReleaseMode()) {
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
         }
@@ -136,12 +132,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     Handler mShakeEnabler = new Handler() {
         public void handleMessage(Message m) {
            switch (m.what) {
-               case MESSAGE_ENABLE_SHAKE:
-                   isShakeShakeEnable = true;
-                   break;
-               case MESSAGE_DISABLE_SHAKE:
-                   isShakeShakeEnable = false;
-                   break;
                case MESSAGE_SHAKE_END:
                    if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG)) {
                        mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
