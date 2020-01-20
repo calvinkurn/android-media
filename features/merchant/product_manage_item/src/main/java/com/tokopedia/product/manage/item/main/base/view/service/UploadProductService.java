@@ -48,6 +48,8 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 import static com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.PRODUCT_VIEW_MODEL;
 
 public class UploadProductService extends BaseService implements AddProductServiceListener {
@@ -184,12 +186,15 @@ public class UploadProductService extends BaseService implements AddProductServi
     private void logException(Throwable t) {
         try {
             if (!BuildConfig.DEBUG) {
-                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s | %s",
+                String errorMessage = String.format(
+                        "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
                         userSession.getUserId(),
                         userSession.getEmail(),
                         getExceptionMessage(t));
                 AddProductException exception = new AddProductException(errorMessage, t);
                 Crashlytics.logException(exception);
+
+                Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage);
             }
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
