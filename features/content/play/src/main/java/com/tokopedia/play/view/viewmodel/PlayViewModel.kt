@@ -173,8 +173,8 @@ class PlayViewModel @Inject constructor(
             // TODO("remove, for testing")
 //            channel.videoStream = VideoStream(
 //                    "vertical",
-//                    "live",
-//                    true,
+//                    "vod",
+//                    false,
 //                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             setStateLiveOrVod(channel)
@@ -393,7 +393,7 @@ class PlayViewModel @Inject constructor(
             name = shopInfo.shopCore.name,
             type = PartnerType.SHOP,
             isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
-            isFollowable = userSession.shopId == shopInfo.shopCore.shopId
+            isFollowable = userSession.shopId != shopInfo.shopCore.shopId
     )
 
     private fun mapEvent(channel: Channel) = EventUiModel(
