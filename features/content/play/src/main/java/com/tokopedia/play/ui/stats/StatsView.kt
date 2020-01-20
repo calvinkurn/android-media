@@ -3,7 +3,8 @@ package com.tokopedia.play.ui.stats
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
@@ -26,7 +27,7 @@ class StatsView(container: ViewGroup) : UIView(container) {
 
     fun setTotalLikes(totalLikes: TotalLikeUiModel) {
         tvTotalLikes.text = view.context.resources.getQuantityString(R.plurals.play_likes,
-                totalLikes.totalLike, convertTotalLikesFormat(totalLikes.totalLike))
+                totalLikes.totalLike, totalLikes.totalLikeFormatted)
     }
 
     fun setTotalViews(totalView: TotalViewUiModel) {
@@ -39,13 +40,5 @@ class StatsView(container: ViewGroup) : UIView(container) {
 
     override fun hide() {
         view.hide()
-    }
-
-    private fun convertTotalLikesFormat(totalLikes: Int): String {
-        return when {
-            totalLikes >=  INTEGER_MILLION -> totalLikes.toCompactAmountStringByDivider(INTEGER_MILLION, "m")
-            totalLikes >= INTEGER_THOUSAND -> totalLikes.toCompactAmountStringByDivider(INTEGER_THOUSAND, "k")
-            else -> totalLikes.toString()
-        }
     }
 }
