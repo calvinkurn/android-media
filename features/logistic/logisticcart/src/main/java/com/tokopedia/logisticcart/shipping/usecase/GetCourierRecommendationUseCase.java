@@ -7,14 +7,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData;
 import com.tokopedia.usecase.RequestParams;
 
@@ -35,12 +33,12 @@ import rx.schedulers.Schedulers;
 
 public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
-    private final ShippingDurationConverter shippingDurationConverter;
+    private final ShippingDurationConverter converter;
     private final Gson gson;
 
     @Inject
-    public GetCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter, Gson gson) {
-        this.shippingDurationConverter = shippingDurationConverter;
+    public GetCourierRecommendationUseCase(ShippingDurationConverter converter, Gson gson) {
+        this.converter = converter;
         this.gson = gson;
     }
 
@@ -99,8 +97,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
             ratesData = ((GetRatesCourierRecommendationTradeInDropOffData) data).getRatesData();
         }
 
-        return shippingDurationConverter.convertModel(
-                ratesData, shopShipments, selectedSpId, selectedServiceId);
+        return converter.convertModel(ratesData, shopShipments, selectedSpId, selectedServiceId);
     }
 
     private String getQueryWithParams(String query, int codHistory, boolean isCorner,
