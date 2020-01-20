@@ -3,9 +3,9 @@ package com.tokopedia.rechargegeneral.util
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.rechargegeneral.util.RechargeGeneralEventTracking.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.rechargegeneral.util.RechargeGeneralEventTracking.*
 
 
 /**
@@ -113,12 +113,12 @@ class RechargeGeneralAnalytics {
         ))
     }
 
-    fun eventClickCopyPromo(categoryId: Int, operatorId: Int) {
+    fun eventClickCopyPromo(promoName: String, position: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_COPY_PROMO,
-                "$categoryId - $operatorId"
+                "$promoName - $position"
         ))
     }
 

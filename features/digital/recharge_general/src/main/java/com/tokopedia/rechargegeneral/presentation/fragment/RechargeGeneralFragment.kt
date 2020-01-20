@@ -63,13 +63,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         RechargeGeneralCheckoutBottomSheet.CheckoutListener {
 
     @Inject
-    lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
-    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var viewModel: RechargeGeneralViewModel
     @Inject
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
+    @Inject
+    lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
     private var saveInstanceManager: SaveInstanceCacheManager? = null
 
     lateinit var adapter: RechargeGeneralAdapter

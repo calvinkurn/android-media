@@ -19,6 +19,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
+import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_promo_list.*
 import javax.inject.Inject
@@ -29,6 +30,8 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var viewModel: SharedRechargeGeneralViewModel
+    @Inject
+    lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
 
     private lateinit var promoList: ArrayList<TopupBillsPromo>
 
@@ -59,7 +62,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
     }
 
     override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
-//        topupAnalytics.eventClickCopyPromoCode(voucherCode, promos.indexOfFirst { it.promoCode == voucherCode })
+        rechargeGeneralAnalytics.eventClickCopyPromo(voucherCode, promoList.indexOfFirst { it.promoCode == voucherCode })
 
         promo_list_widget.notifyPromoItemChanges(promoId)
         activity?.let {
@@ -71,7 +74,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
 
             view?.run {
                 Toaster.make(this,
-                        getString(com.tokopedia.common.topupbills.R.string.digital_voucher_code_already_copied), Snackbar.LENGTH_LONG)
+                        getString(com.tokopedia.common.topupbills.R.string.recharge_voucher_code_already_copied), Snackbar.LENGTH_LONG)
             }
         }
     }

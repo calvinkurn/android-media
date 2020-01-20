@@ -45,7 +45,7 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST) ?: listOf()
         }
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.digital_title_fav_number))
+        updateTitle(getString(R.string.recharge_title_fav_number))
     }
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {

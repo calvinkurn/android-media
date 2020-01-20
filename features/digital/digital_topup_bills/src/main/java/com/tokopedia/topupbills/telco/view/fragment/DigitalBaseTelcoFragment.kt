@@ -279,7 +279,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
                         view?.run {
                             Toaster.make(this,
-                                    getString(com.tokopedia.common.topupbills.R.string.digital_voucher_code_already_copied), Snackbar.LENGTH_LONG)
+                                    getString(com.tokopedia.common.topupbills.R.string.recharge_voucher_code_already_copied), Snackbar.LENGTH_LONG)
                         }
                     }
                 }

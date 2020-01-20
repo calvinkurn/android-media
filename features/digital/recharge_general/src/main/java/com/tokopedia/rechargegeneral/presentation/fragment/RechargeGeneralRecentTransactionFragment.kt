@@ -54,11 +54,10 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
     override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int, position: Int) {
         topupBillsRecommendation.position = position
         viewModel.setRecommendationItem(topupBillsRecommendation)
-        // TODO: Add tracking
     }
 
     override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
-        // TODO: Add tracking
+
     }
 
     fun toggleTitle(value: Boolean) {

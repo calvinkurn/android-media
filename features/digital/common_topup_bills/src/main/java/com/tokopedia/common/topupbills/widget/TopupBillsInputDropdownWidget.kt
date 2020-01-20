@@ -97,7 +97,7 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
             with(itemView) {
                 vg_input_dropdown_label.text = element.label
 
-                if (element.icon != null) {
+                if (element.icon.isNotEmpty()) {
                     ImageHandler.LoadImage(vg_input_dropdown_icon, element.icon)
                     vg_input_dropdown_icon.show()
                 } else {

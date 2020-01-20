@@ -12,7 +12,7 @@ class TopupBillsEnquiry (
     val status: String = "",
     @SerializedName("retrySec")
     @Expose
-    val retryDuration: Int? = null,
+    val retryDuration: Int = 0,
     @SerializedName("attributes")
     @Expose
     val attributes: TopupBillsEnquiryAttribute = TopupBillsEnquiryAttribute()

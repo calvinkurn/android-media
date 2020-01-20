@@ -40,7 +40,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
     }
 
     fun setPromoList(promoList: List<TopupBillsPromo>) {
-        titleWidget.text = context.getString(R.string.title_promo)
+        titleWidget.text = context.getString(R.string.recharge_title_promo)
         topupBillsPromoListAdapter = TopupBillsPromoListAdapter(promoList)
         recyclerView.adapter = topupBillsPromoListAdapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

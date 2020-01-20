@@ -49,11 +49,11 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         View.inflate(context, getLayout(), this)
 
         if (attrs != null) {
-            val ta = context.obtainStyledAttributes(attrs, R.styleable.TopupBillsInputFieldWidget, 0, 0)
+            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopupBillsInputFieldWidget, 0, 0)
             try {
-                isCustomInput = ta.getBoolean(R.styleable.TopupBillsInputFieldWidget_isDropdown, false)
+                isCustomInput = styledAttributes.getBoolean(R.styleable.TopupBillsInputFieldWidget_isDropdown, false)
             } finally {
-                ta.recycle()
+                styledAttributes.recycle()
             }
         }
       

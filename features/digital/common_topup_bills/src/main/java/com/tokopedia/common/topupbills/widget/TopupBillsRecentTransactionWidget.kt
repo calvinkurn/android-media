@@ -44,7 +44,7 @@ class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
     }
 
     fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>) {
-        titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
+        titleWidget.text = context.getString(R.string.recharge_title_recent_transaction_widget)
         topupBillsRecentNumbersAdapter.setListener(object : TopupBillsRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
                 listener.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,

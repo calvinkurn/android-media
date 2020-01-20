@@ -47,7 +47,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 }.getSuccessData()
 
                 // If data is pending delay query call
-                if (data.enquiry.status == STATUS_PENDING) delay((data.enquiry.retryDuration?.toLong() ?: 1) * 1000)
+                with (data.enquiry) {
+                    if (status == STATUS_PENDING && retryDuration > 0) delay((retryDuration.toLong()) * 1000)
+                }
             } while (data.enquiry.status != STATUS_DONE)
             _enquiryData.value = Success(data)
         }) {
@@ -83,10 +85,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun createEnquiryParams(operatorId: String, productId: String, inputData: Map<String, String>): List<TopupBillsEnquiryQuery> {
         val enquiryParams = mutableListOf<TopupBillsEnquiryQuery>()
-        // Hardcode source type field, temporary?
         enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_SOURCE_TYPE, ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE))
         enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_DEVICE_ID, ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE))
-//        enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_OPERATOR_ID, operatorId))
         enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_PRODUCT_ID, productId))
         inputData.forEach { (key, value) ->
             enquiryParams.add(TopupBillsEnquiryQuery(key, value))
