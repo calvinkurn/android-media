@@ -43,7 +43,7 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
                         tv_travel_destination_article_item_title.text = element.items[0].title
                         tv_travel_destination_article_item_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, element.items[0].publishedDate))
                         travel_destination_highlight_article.setOnClickListener {
-                            actionListener.onTrackArticleItemClick(item, adapterPosition)
+                            actionListener.onTrackArticleItemClick(element.items[0], adapterPosition)
                             actionListener.clickAndRedirect(element.items[0].appUrl,
                                     element.items[0].webUrl)
                         }

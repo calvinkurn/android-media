@@ -1,13 +1,9 @@
 package com.tokopedia.travelhomepage.destination.model.mapper
 
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
-import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_RECOMMENDATION_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.ORDER_LIST_ORDER
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionViewModel
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 
 /**
  * @author by jessica on 2019-08-14
@@ -18,8 +14,8 @@ class TravelDestinationMapper {
     fun mapToSectionViewModel(model: TravelHomepageRecommendationModel,
                               type: Int): TravelDestinationSectionViewModel {
         val viewModel = TravelDestinationSectionViewModel()
-        viewModel.title = model.meta.title
-        viewModel.seeAllUrl = model.meta.appUrl
+        viewModel.title = model.travelMeta.title
+        viewModel.seeAllUrl = model.travelMeta.appUrl
         viewModel.list = model.items.map {
             TravelDestinationSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix,
@@ -33,8 +29,8 @@ class TravelDestinationMapper {
 
     fun mapToSectionViewModel(model: TravelHomepageOrderListModel): TravelDestinationSectionViewModel {
         val viewModel = TravelDestinationSectionViewModel()
-        viewModel.title = model.meta.title
-        viewModel.seeAllUrl = model.meta.appUrl
+        viewModel.title = model.travelMeta.title
+        viewModel.seeAllUrl = model.travelMeta.appUrl
         viewModel.list = model.orders.map {
             TravelDestinationSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix, value = it.value,
