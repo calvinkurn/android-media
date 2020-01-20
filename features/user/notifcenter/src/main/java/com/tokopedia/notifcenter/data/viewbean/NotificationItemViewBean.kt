@@ -3,6 +3,7 @@ package com.tokopedia.notifcenter.data.viewbean
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
@@ -23,6 +24,7 @@ open class NotificationItemViewBean(
         var typeLink: Int = 0,
         var totalProduct: Int = 0,
         var btnText: String = "",
+        var dataNotification: DataNotification = DataNotification(),
         var products: List<ProductData> = emptyList()
 ) : Parcelable, Visitable<BaseNotificationTypeFactory> {
 
