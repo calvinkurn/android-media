@@ -11,7 +11,7 @@ import com.tokopedia.core.app.BasePresenterActivity
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
-import com.tokopedia.sellerhomedrawer.view.helper.SellerDrawerHelper
+import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_drawer_activity.*
@@ -20,11 +20,11 @@ open class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
 {
     private val MAX_NOTIF = 999
 
-    private var isLogin: Boolean? = null
     lateinit var sellerDrawerHelper: SellerDrawerHelper
     lateinit var userSession: UserSession
-    protected var drawerDataManager: DrawerDataManager? = null
     lateinit var drawerCache: LocalCacheHandler
+    protected var drawerDataManager: DrawerDataManager? = null
+    private var isLogin: Boolean? = null
     private var drawerActivityBroadcastReceiver: BroadcastReceiver? = null
     private var broadcastReceiverTokoPoint: BroadcastReceiver? = null
     private var broadcastReceiverPendingTokocash: BroadcastReceiver? = null
@@ -44,7 +44,7 @@ open class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
     fun setupDrawer() {
         //TODO : Inject these
         sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache)
-        sellerDrawerHelper?.initDrawer(this)
+        sellerDrawerHelper.initDrawer(this)
     }
 
     fun getDrawerHelper(): SellerHomeDrawerHelper? = null
