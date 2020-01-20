@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
@@ -14,6 +15,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData;
 import com.tokopedia.usecase.RequestParams;
 
@@ -111,6 +113,10 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                     shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
                 }
 
+                // Setting up for Logistic Promo
+                shippingRecommendationData.setLogisticPromo(
+                        convertToPromoModel(ratesData.getRatesDetailData().getPromoStacking()));
+
                 // Check if has info
                 String blackboxInfo = "";
                 if (ratesData.getRatesDetailData().getInfo() != null &&
@@ -126,9 +132,6 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 ratesData.getRatesDetailData().getServices(),
                                 shopShipments, selectedSpId, ratesId, selectedServiceId,
                                 blackboxInfo, isPromoStackingApplied(ratesData)));
-                shippingRecommendationData.setLogisticPromo(
-                        shippingDurationConverter.convertToPromoModel(
-                                ratesData.getRatesDetailData().getPromoStacking()));
             }
         }
         return shippingRecommendationData;
@@ -228,6 +231,17 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         return originalString.replace(originalString.indexOf(paramName),
                 originalString.indexOf(paramName) + paramName.length(),
                 paramValue);
+    }
+
+    private LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {
+        if (promo == null || promo.getIsPromo() != 1) return null;
+        boolean applied = promo.getIsApplied() == 1;
+        return new LogisticPromoViewModel(
+                promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
+                promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
+                promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
+                promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
+                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName());
     }
 
     private static final class Param {
