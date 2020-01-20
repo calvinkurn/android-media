@@ -1,5 +1,8 @@
 package com.tokopedia.sellerhome.view.model
 
+import android.text.Spanned
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+
 /**
  * Created By @ilhamsuaib on 2020-01-15
  */
@@ -18,4 +21,9 @@ data class TickerUiModel(
         val updatedOn: String,
         val updatedBy: String,
         val color: String
-)
+) {
+
+    fun getHtmlMessage(): Spanned {
+        return MethodChecker.fromHtml(message)
+    }
+}

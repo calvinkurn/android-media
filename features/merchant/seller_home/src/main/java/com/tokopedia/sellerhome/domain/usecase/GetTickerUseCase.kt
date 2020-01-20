@@ -14,6 +14,53 @@ class GetTickerUseCase @Inject constructor(
 ) : UseCase<List<TickerUiModel>>() {
 
     override suspend fun executeOnBackground(): List<TickerUiModel> {
-        return tickerRepo.getTicker()
+        return /*tickerRepo.getTicker()*/ getDummyTickerList()
+    }
+
+    private fun getDummyTickerList(): List<TickerUiModel> {
+        return listOf(
+                TickerUiModel(
+                        "https://tokopedia.com/",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "Ini adalah contoh pesan ticker yang pertama",
+                        "",
+                        "",
+                        "",
+                        "", "",
+                        "#dddddd"
+                ),
+                TickerUiModel(
+                        "https://tokopedia.com/",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "Ini adalah contoh pesan ticker yang ke dua",
+                        "",
+                        "",
+                        "",
+                        "", "",
+                        "#ffffff"
+                ),
+                TickerUiModel(
+                        "https://tokopedia.com/",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "Ini adalah contoh pesan ticker yang ke tiga",
+                        "",
+                        "",
+                        "",
+                        "", "",
+                        "#000000"
+                )
+        )
     }
 }

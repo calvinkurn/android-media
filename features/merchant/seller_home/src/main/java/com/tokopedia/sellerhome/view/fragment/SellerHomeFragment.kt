@@ -12,13 +12,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.di.component.SellerHomeComponent
+import com.tokopedia.sellerhome.util.toast
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.model.BaseSellerHomeUiModel
+import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_seller_home.*
+import kotlinx.android.synthetic.main.fragment_seller_home.view.*
 import javax.inject.Inject
 
 /**
@@ -75,12 +77,11 @@ class SellerHomeFragment : BaseListFragment<BaseSellerHomeUiModel, SellerHomeAda
             when (it) {
                 is Success -> {
                     showSwipeProgress(false)
-                    println("getTickerView : success")
+                    onSuccessGetTickers(it.data)
                 }
                 is Fail -> {
                     showSwipeProgress(false)
-                    println("getTickerView : fail -> ${it.throwable.message}")
-                    it.throwable.printStackTrace()
+                    view?.tickerView?.visibility = View.GONE
                 }
             }
         })
@@ -89,6 +90,38 @@ class SellerHomeFragment : BaseListFragment<BaseSellerHomeUiModel, SellerHomeAda
     }
 
     private fun showSwipeProgress(isShown: Boolean) {
-        swipeRefreshLayout.isRefreshing = isShown
+        view?.swipeRefreshLayout?.isRefreshing = isShown
+    }
+
+    private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
+
+        fun getTickerType(hexColor: String): Int = when (hexColor) {
+            "#cde4c3" -> Ticker.TYPE_ANNOUNCEMENT
+            "#ecdb77" -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
+
+        val isTickerVisible = if (tickers.isEmpty()) View.GONE else View.VISIBLE
+
+        view?.tickerView?.run {
+            visibility = isTickerVisible
+
+            val tickersData = tickers.map {
+                TickerData(it.title, it.message, getTickerType(it.color))
+            }
+
+            val adapter = TickerPagerAdapter(activity, tickersData)
+            adapter.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    context?.toast("Click : $linkUrl")
+                }
+
+                override fun onDismiss() {
+
+                }
+            })
+
+            tickerView.addPagerView(adapter, tickersData)
+        }
     }
 }
