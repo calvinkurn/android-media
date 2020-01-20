@@ -57,7 +57,9 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthHelper.getMD5Hash(timeMillis);
         UserSession userSession = new UserSession(context);
-        return userSession.getUserId() + "_" + (token.isEmpty() ? timeMillis : token);
+        String tokenRecharge = String.format(getString(R.string.digital_generate_token_checkout),
+                userSession.getUserId(), (token.isEmpty() ? timeMillis : token))
+        return tokenRecharge;
     }
 
     @Override
@@ -69,11 +71,9 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         if (uriData.getScheme().equals(DeeplinkConstant.SCHEME_INTERNAL)) {
             cartPassData = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
             subParams = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA);
-        } else {
-            if (uriData.getQueryParameterNames().size() > 0) {
+        } else if (uriData.getQueryParameterNames().size() > 0) {
                 cartPassData = processIntentDataCheckoutFromApplink(getApplicationContext(), uriData);
                 subParams = processIntentDataSubscription(uriData);
-            }
         }
         return DigitalCartDefaultFragment.newInstance(cartPassData, subParams);
     }
