@@ -38,8 +38,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.RecommendationTracking;
@@ -65,11 +63,6 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -79,7 +72,6 @@ import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -87,7 +79,6 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -114,41 +105,24 @@ public class ProductListFragment
         BannedProductsRedirectToBrowserListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
-    private static final String SHOP = "shop";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
-    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
-
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
-    private static int PRODUCT_POSITION = 2;
-    protected RecyclerView recyclerView;
 
     @Inject
     ProductListSectionContract.Presenter presenter;
-    @Inject
-    SearchTracking searchTracking;
-    @Inject
-    UserSessionInterface userSession;
-    @Inject
-    RemoteConfig remoteConfig;
 
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
     private SearchPerformanceMonitoringListener searchPerformanceMonitoringListener;
+    private RecyclerView recyclerView;
+    private ProductListAdapter adapter;
+    private TrackingQueue trackingQueue;
+    private PerformanceMonitoring performanceMonitoring;
 
     private Config topAdsConfig;
-    private ProductListAdapter adapter;
-    private ProductListTypeFactory productListTypeFactory;
-    private String additionalParams = "";
-    private boolean isFirstTimeLoad;
-    private boolean tickerHasDismissed = false;
-
-    private PerformanceMonitoring performanceMonitoring;
-    private TrackingQueue trackingQueue;
-    private ShowCaseDialog showCaseDialog;
-
     private FilterController quickFilterController = new FilterController();
 
     public static ProductListFragment newInstance(SearchParameter searchParameter) {
@@ -169,7 +143,6 @@ public class ProductListFragment
         if(getContext() == null) return;
 
         trackingQueue = new TrackingQueue(getContext());
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
     }
 
     private void loadDataFromArguments() {
@@ -241,17 +214,17 @@ public class ProductListFragment
     }
 
     private void initTopAdsConfig() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return;
+        if(getActivity() == null || getActivity().getApplicationContext() == null || presenter == null) return;
 
         topAdsConfig = new Config.Builder()
                 .setSessionId(getRegistrationId())
-                .setUserId(userSession.getUserId())
+                .setUserId(getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
     }
 
     private void setupAdapter() {
-        productListTypeFactory = new ProductListTypeFactoryImpl(
+        ProductListTypeFactory productListTypeFactory = new ProductListTypeFactoryImpl(
                 this,
                 this,
                 this, this,
@@ -294,12 +267,11 @@ public class ProductListFragment
                 && adapter.hasNextPage();
     }
 
-    @Override
-    public void initTopAdsParams() {
+    private void initTopAdsParams() {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, getUserId());
 
         if(getSearchParameter() != null) {
             getSearchParameter().cleanUpNullValuesInMap();
@@ -338,12 +310,6 @@ public class ProductListFragment
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
-
-        // This method is commented, due to "Bebas Ongkir" promo show case shown as pop up dialog.
-        // This start show case will be uncommented again
-        // after "Bebas Ongkir" promo show case is not pop up dialog anymore.
-
-        // startShowCase();
     }
 
     public void addRecommendationList(List<Visitable> list){
@@ -367,7 +333,7 @@ public class ProductListFragment
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
+        String userId = getUserId();
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
         for (Visitable object : list) {
@@ -387,7 +353,7 @@ public class ProductListFragment
     private void loadMoreProduct(final int startRow) {
         generateLoadMoreParameter(startRow);
 
-        presenter.loadMoreData(searchParameter.getSearchParameterMap(), getAdditionalParamsMap());
+        presenter.loadMoreData(searchParameter.getSearchParameterMap());
     }
 
     @Override
@@ -406,17 +372,13 @@ public class ProductListFragment
         if(getSearchParameter() == null) setSearchParameter(new SearchParameter());
 
         getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
-        getSearchParameter().set(SearchApiConst.USER_ID, generateUserId());
+        getSearchParameter().set(SearchApiConst.USER_ID, getUserId());
         getSearchParameter().set(SearchApiConst.START, String.valueOf(startRow));
     }
 
-    private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
-    }
-
     private String generateUniqueId() {
-        return userSession.isLoggedIn() ?
-                AuthHelper.getMD5Hash(userSession.getUserId()) :
+        return presenter.isUserLoggedIn() ?
+                AuthHelper.getMD5Hash(getUserId()) :
                 AuthHelper.getMD5Hash(getRegistrationId());
     }
 
@@ -449,7 +411,10 @@ public class ProductListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        isFirstTimeLoad = true;
+        if (presenter != null) {
+            presenter.setIsFirstTimeLoad(true);
+        }
+
         reloadData();
     }
 
@@ -624,7 +589,7 @@ public class ProductListFragment
 
         if(intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, item.getPosition());
-            if(userSession.isLoggedIn()){
+            if(presenter.isUserLoggedIn()){
                 RecommendationTracking.Companion.eventClickProductRecommendationLogin(item, String.valueOf(item.getPosition()));
             }else {
                 RecommendationTracking.Companion.eventClickProductRecommendationNonLogin(item, String.valueOf(item.getPosition()));
@@ -635,7 +600,7 @@ public class ProductListFragment
 
     @Override
     public void onProductImpression(@NotNull RecommendationItem item) {
-        if(userSession.isLoggedIn()){
+        if(presenter.isUserLoggedIn()){
             RecommendationTracking.Companion.eventImpressionProductRecommendationLogin(trackingQueue, item, String.valueOf(item.getPosition()));
         } else {
             RecommendationTracking.Companion.eventImpressionProductRecommendationNonLogin(trackingQueue, item, String.valueOf(item.getPosition()));
@@ -645,7 +610,7 @@ public class ProductListFragment
     @Override
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
         presenter.handleWishlistButtonClicked(item);
-        if(userSession.isLoggedIn()){
+        if(presenter.isUserLoggedIn()){
             RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(!isAddWishlist);
         } else {
             RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
@@ -709,12 +674,14 @@ public class ProductListFragment
 
     @Override
     public void onTickerDismissed() {
-        tickerHasDismissed = true;
+        if (presenter != null) {
+            presenter.setIsTickerHasDismissed(true);
+        }
     }
 
     @Override
     public boolean isTickerHasDismissed() {
-        return tickerHasDismissed;
+        return presenter != null && presenter.getIsTickerHasDismissed();
     }
 
     @Override
@@ -750,7 +717,7 @@ public class ProductListFragment
         clearDataFilterSort();
         reloadData();
 
-        eventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelectedReversed);
+        trackEventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelectedReversed);
     }
 
     private void setFilterToQuickFilterController(Option option, boolean isQuickFilterSelected) {
@@ -763,13 +730,8 @@ public class ProductListFragment
         }
     }
 
-    public void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
-        searchTracking.sendGeneralEventWithUserId(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.QUICK_FILTER,
-                filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
-        );
+    private void trackEventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
+        SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, getUserId());
     }
 
     @Override
@@ -816,7 +778,7 @@ public class ProductListFragment
         wishlistTrackingModel.setProductId(productId);
         wishlistTrackingModel.setTopAds(isTopAds);
         wishlistTrackingModel.setKeyword(getQueryKey());
-        wishlistTrackingModel.setUserLoggedIn(userSession.isLoggedIn());
+        wishlistTrackingModel.setUserLoggedIn(presenter.isUserLoggedIn());
         wishlistTrackingModel.setAddWishlist(isAddWishlist);
 
         return wishlistTrackingModel;
@@ -877,13 +839,10 @@ public class ProductListFragment
     }
 
     @Override
-    public boolean isUserHasLogin() {
-        return userSession.isLoggedIn();
-    }
-
-    @Override
     public String getUserId() {
-        return userSession.getUserId();
+        if (presenter == null) return "0";
+
+        return presenter.getUserId();
     }
 
     @Override
@@ -946,13 +905,8 @@ public class ProductListFragment
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(getSearchParameter().getSearchParameterMap(), getAdditionalParamsMap(), isFirstTimeLoad);
+        presenter.loadData(getSearchParameter().getSearchParameterMap());
         TopAdsGtmTracker.getInstance().clearDataLayerList();
-    }
-
-    @Override
-    public Map<String, String> getAdditionalParamsMap() {
-        return UrlParamUtils.getParamMap(additionalParams);
     }
 
     @Override
@@ -1040,13 +994,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void setAdditionalParams(String additionalParams) {
-        if (!TextUtils.isEmpty(additionalParams)) {
-            this.additionalParams = additionalParams;
-        }
-    }
-
-    @Override
     public void setAutocompleteApplink(String autocompleteApplink) {
         if (redirectionListener != null) {
             redirectionListener.setAutocompleteApplink(autocompleteApplink);
@@ -1055,7 +1002,7 @@ public class ProductListFragment
 
     @Override
     public void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray) {
-        searchTracking.eventAppsFlyerViewListingSearch(getActivity(), afProdIds, query, prodIdArray);
+        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
     }
 
     @Override
@@ -1066,11 +1013,6 @@ public class ProductListFragment
     @Override
     public void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel) {
         SearchTracking.trackGTMEventSearchAttempt(generalSearchTrackingModel);
-    }
-
-    @Override
-    public void setFirstTimeLoad(boolean isFirstTimeLoad) {
-        this.isFirstTimeLoad = isFirstTimeLoad;
     }
 
     @Override
@@ -1113,84 +1055,6 @@ public class ProductListFragment
     @Override
     public void updateScrollListener() {
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-    }
-
-    /**
-     * This method is left unused for now, due to "Bebas Ongkir" promo show case shown as pop up dialog.
-     * This start show case will be used again after "Bebas Ongkir" promo show case is not pop up dialog anymore.
-     */
-    public void startShowCase() {
-        final String showCaseTag = ProductListFragment.class.getName();
-        if (!isShowCaseAllowed(showCaseTag)) {
-            return;
-        }
-        if (showCaseDialog != null) {
-            return;
-        }
-
-        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-
-        if (recyclerView == null)
-            return;
-
-        recyclerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (getView() == null) {
-                    return;
-                }
-
-                View itemView = scrollToShowCaseItem();
-                if (itemView != null) {
-                    showCaseList.add(
-                            new ShowCaseObject(
-                                    itemView.findViewById(R.id.productCardView),
-                                    getString(R.string.view_similar_item),
-                                    getString(R.string.press_to_see_similar),
-                                    ShowCaseContentPosition.BOTTOM));
-                }
-
-                if (showCaseList.isEmpty())
-                    return;
-
-                showCaseDialog = createShowCaseDialog();
-                showCaseDialog.show(getActivity(), showCaseTag, showCaseList);
-            }
-        }, 300);
-    }
-
-    private boolean isShowCaseAllowed(String tag) {
-        if (getActivity() == null) {
-            return false;
-        }
-        return !ShowCasePreference.hasShown(getActivity(), tag);
-    }
-
-    private ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .textSizeRes(R.dimen.fontvs)
-                .finishStringRes(R.string.megerti)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .useSkipWord(false)
-                .build();
-    }
-
-
-    public View scrollToShowCaseItem() {
-        if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
-            recyclerView.stopScroll();
-            recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
-            return recyclerView.getLayoutManager().findViewByPosition(PRODUCT_POSITION);
-        }
-        return null;
     }
 
     @Override
@@ -1290,5 +1154,10 @@ public class ProductListFragment
         else {
             SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
         }
+    }
+
+    @Override
+    protected boolean isUsingBottomSheetFilter() {
+        return presenter != null && presenter.isUsingBottomSheetFilter();
     }
 }
