@@ -29,7 +29,8 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: MultiReque
         if (response != null &&
                 response.totalLikeContent.error.isEmpty()) {
             response.totalLikeContent.data?.let {
-                return TotalLike(it.like.value, if (it.like.fmt.isEmpty()) "0" else it.like.fmt)
+                return TotalLike(it.like.value, if (it.like.fmt.isEmpty()
+                        || it.like.fmt.equals("Like", false)) "0" else it.like.fmt)
             }
             return TotalLike(0, "0")
         } else {

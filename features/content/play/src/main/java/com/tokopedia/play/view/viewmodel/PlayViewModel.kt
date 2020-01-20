@@ -231,7 +231,8 @@ class PlayViewModel @Inject constructor(
     fun changeLikeCount(shouldLike: Boolean) {
         val currentTotalLike = _observableTotalLikes.value ?: TotalLikeUiModel.empty()
         if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLike.totalLikeFormatted)) {
-            val finalTotalLike = currentTotalLike.totalLike + (if (shouldLike) 1 else -1)
+            var finalTotalLike = currentTotalLike.totalLike + (if (shouldLike) 1 else -1)
+            if (finalTotalLike < 0) finalTotalLike = 0
             _observableTotalLikes.value = TotalLikeUiModel(
                     finalTotalLike,
                     finalTotalLike.toCompactAmountString(amountStringStepArray)
