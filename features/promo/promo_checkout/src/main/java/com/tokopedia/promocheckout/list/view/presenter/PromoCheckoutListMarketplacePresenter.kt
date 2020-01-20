@@ -58,7 +58,6 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
                     override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
                         view.hideProgressLoading()
 
-//                val responseGetPromoStack = checkPromoStackingCodeMapper.map(t)
                         if (responseGetPromoStack.status.equals(statusOK, true)) {
                             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
