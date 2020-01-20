@@ -3,8 +3,9 @@ package com.tokopedia.shop.favourite.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.GetShopFollowerListData
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.ShopFollowerData
 import com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase
@@ -18,6 +19,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 import rx.Subscriber
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.max
 
@@ -26,7 +28,7 @@ import kotlin.math.max
  */
 class ShopFavouriteListPresenter @Inject
 constructor(private val getShopFollowerListUseCase: GetShopFollowerListUseCase,
-            private val getShopInfoUseCase: GetShopInfoUseCase,
+            private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val userSession: UserSessionInterface,
             private val toggleFavouriteShopAndDeleteCacheUseCase: ToggleFavouriteShopAndDeleteCacheUseCase,
             private val dispatchers: CoroutineDispatcherProvider) : BaseDaggerPresenter<ShopFavouriteListView>(), CoroutineScope {
@@ -85,27 +87,21 @@ constructor(private val getShopFollowerListUseCase: GetShopFollowerListUseCase,
     }
 
     fun getShopInfo(shopId: String) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), object : Subscriber<ShopInfo>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.showGetListError(e)
+        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()))
+        gqlGetShopInfoUseCase.execute(
+                {
+                    view?.onSuccessGetShopInfo(it)
+                },
+                {
+                    Timber.d(it)
                 }
-            }
-
-            override fun onNext(shopInfo: ShopInfo) {
-                view.onSuccessGetShopInfo(shopInfo)
-            }
-        })
+        )
     }
 
     override fun detachView() {
         super.detachView()
         toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe()
-        getShopInfoUseCase.unsubscribe()
+        gqlGetShopInfoUseCase.cancelJobs()
         job.cancel()
     }
 

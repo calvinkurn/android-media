@@ -6,13 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.AbstractionRouter
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -22,7 +21,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -34,8 +32,8 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterTypeFactory
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import javax.inject.Inject
 
 
@@ -182,7 +180,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             onRetryListener = ErrorNetworkModel.OnRetryListener {
                 presenter.clearCache()
                 shopInfo?.run {
-                    presenter.getVoucherList(info.shopId)
+                    presenter.getVoucherList(this.shopCore.shopID)
                 }
             }
         }

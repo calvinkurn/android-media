@@ -6,11 +6,12 @@ import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResu
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.UseMerchantVoucherUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ import javax.inject.Inject
  * Created by hendry on 01/10/18.
  */
 class MerchantVoucherListPresenter @Inject
-constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
+constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
             private val useMerchantVoucherUseCase: UseMerchantVoucherUseCase,
             private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
@@ -31,18 +32,15 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
     fun isMyShop(shopId: String) = (userSessionInterface.shopId == shopId)
 
     fun getShopInfo(shopId: String) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), object : Subscriber<ShopInfo>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-                view?.onErrorGetShopInfo(e)
+        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()))
+        gqlGetShopInfoUseCase.execute(
+            {
+                view?.onSuccessGetShopInfo(it)
+            },
+            {
+                Timber.d(it)
             }
-
-            override fun onNext(shopInfo: ShopInfo) {
-                view?.onSuccessGetShopInfo(shopInfo)
-            }
-        })
+        )
     }
 
     fun getVoucherList(shopId: String, numVoucher: Int = 0) {
@@ -96,7 +94,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
 
     override fun detachView() {
         super.detachView()
-        getShopInfoUseCase.unsubscribe()
+        gqlGetShopInfoUseCase.cancelJobs()
         getMerchantVoucherListUseCase.unsubscribe()
         useMerchantVoucherUseCase.unsubscribe()
     }

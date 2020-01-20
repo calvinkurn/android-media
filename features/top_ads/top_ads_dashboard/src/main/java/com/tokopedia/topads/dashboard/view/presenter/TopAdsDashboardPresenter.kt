@@ -8,8 +8,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
@@ -43,7 +44,7 @@ import javax.inject.Inject
 
 class TopAdsDashboardPresenter @Inject
 constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase,
-            private val getShopInfoUseCase: GetShopInfoUseCase,
+            private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val topAdsDatePickerInteractor: TopAdsDatePickerInteractor,
             private val topAdsPopulateTotalAdsUseCase: TopAdsPopulateTotalAdsUseCase,
             private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
@@ -106,18 +107,15 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     }
 
     fun getShopInfo() {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(userSession.shopId), object : Subscriber<ShopInfo>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_SHOP_INFO#%s", e.localizedMessage)
-                view?.onErrorGetShopInfo(e)
-            }
-
-            override fun onNext(shopInfo: ShopInfo) {
-                view?.onSuccessGetShopInfo(shopInfo)
-            }
-        })
+        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(userSession.shopId.toIntOrZero()))
+        gqlGetShopInfoUseCase.execute(
+                {
+                    view?.onSuccessGetShopInfo(it)
+                },
+                {
+                    Timber.d(it)
+                }
+        )
     }
 
     fun saveSourceTagging(@TopAdsSourceOption source: String) {
@@ -134,7 +132,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     override fun detachView() {
         super.detachView()
         topAdsGetShopDepositUseCase.unsubscribe()
-        getShopInfoUseCase.unsubscribe()
+        gqlGetShopInfoUseCase.cancelJobs()
         topAdsPopulateTotalAdsUseCase.unsubscribe()
         topAdsGetStatisticsUseCase.unsubscribe()
         topAdsAddSourceTaggingUseCase.unsubscribe()

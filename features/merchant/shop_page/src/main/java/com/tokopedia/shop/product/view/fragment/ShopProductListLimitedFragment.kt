@@ -1094,7 +1094,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
 
-    override fun onSuccessGetShopInfo(shopInfo: com.tokopedia.shop.common.data.source.cloud.model.ShopInfo) {
+    override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         // NO-Op
     }
 

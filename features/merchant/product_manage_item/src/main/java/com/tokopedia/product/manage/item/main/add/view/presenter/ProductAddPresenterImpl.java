@@ -9,10 +9,11 @@ import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCa
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -24,16 +25,16 @@ import rx.Subscriber;
 public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDaggerPresenter<T> implements ProductAddPresenter<T> {
 
     private final SaveDraftProductUseCase saveDraftProductUseCase;
-    private final GetShopInfoUseCase getShopInfoUseCase;
+    private final GQLGetShopInfoUseCase gqlGetShopInfoUseCase;
     protected final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
     private UserSessionInterface userSession;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
-                                   GetShopInfoUseCase getShopInfoUseCase,
+                                   GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
                                    UserSessionInterface userSession,
                                    FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
-        this.getShopInfoUseCase = getShopInfoUseCase;
+        this.gqlGetShopInfoUseCase = gqlGetShopInfoUseCase;
         this.userSession = userSession;
         this.fetchProductVariantByCatUseCase = fetchProductVariantByCatUseCase;
     }
@@ -46,27 +47,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     @Override
     public void getShopInfo() {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(userSession.getShopId()), new Subscriber<ShopInfo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (!isViewAttached()) {
-                    return;
-                }
-                getView().onErrorLoadShopInfo(ViewUtils.getErrorMessage(e));
-            }
-
-            @Override
-            public void onNext(ShopInfo shopInfo) {
-                getView().onSuccessLoadShopInfo(shopInfo.getOwner().isIsGoldMerchant(),
-                        TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsFreeReturns()),
-                        TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()));
-            }
-        });
+        //TODO
     }
 
     @Override
@@ -141,7 +122,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     public void detachView() {
         super.detachView();
-        getShopInfoUseCase.unsubscribe();
+//        getShopInfoUseCase.unsubscribe();
         saveDraftProductUseCase.unsubscribe();
         fetchProductVariantByCatUseCase.unsubscribe();
     }

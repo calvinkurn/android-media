@@ -5,22 +5,25 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.beranda.di.ShopQualifier;
 import com.tokopedia.home.beranda.di.ShopWSQualifier;
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -95,12 +98,6 @@ public class ShopModule {
 
     @HomeScope
     @Provides
-    public GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
-        return new GetShopInfoUseCase(shopCommonRepository);
-    }
-
-    @HomeScope
-    @Provides
     public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
         return new GetShopInfoByDomainUseCase(shopCommonRepository);
     }
@@ -109,5 +106,13 @@ public class ShopModule {
     @Provides
     public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
         return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
+    }
+
+    @HomeScope
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                              @Named(GQLQueryNamedConstant.SHOP_INFO)
+                                                                      String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
 }

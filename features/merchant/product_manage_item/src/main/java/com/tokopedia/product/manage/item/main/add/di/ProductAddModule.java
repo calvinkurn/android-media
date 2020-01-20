@@ -39,7 +39,7 @@ import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCat
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 import com.tokopedia.shop.common.di.ShopCommonModule;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -57,10 +57,10 @@ public class ProductAddModule {
     @ProductAddScope
     @Provides
     ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                                       GetShopInfoUseCase getShopInfoUseCase,
+                                                                       GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
                                                                        UserSessionInterface userSession,
                                                                        FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
-        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
+        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, gqlGetShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
     }
 
     @ProductAddScope

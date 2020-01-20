@@ -2,15 +2,19 @@ package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi
+import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi
 import com.tokopedia.topads.common.data.repository.TopAdsShopDepositRepositoryImpl
@@ -97,12 +101,6 @@ class TopAdsDashboardModule {
     @TopAdsDashboardScope
     fun provideShopCommonRepository(shopInfoDataSource: ShopCommonDataSource): ShopCommonRepository {
         return ShopCommonRepositoryImpl(shopInfoDataSource)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideGetShopInfoUseCase(shopCommonRepository: ShopCommonRepository): GetShopInfoUseCase {
-        return GetShopInfoUseCase(shopCommonRepository)
     }
 
     @Provides
@@ -196,4 +194,11 @@ class TopAdsDashboardModule {
     @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase,
+                                     @Named(GQLQueryNamedConstant.SHOP_INFO)
+                                     gqlQuery: String): GQLGetShopInfoUseCase {
+        return GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase)
+    }
 }

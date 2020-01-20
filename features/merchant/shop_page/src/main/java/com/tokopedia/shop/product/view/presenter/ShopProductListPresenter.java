@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
@@ -44,7 +44,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
     private final UserSessionInterface userSession;
 
-    private final GetShopInfoUseCase getShopInfoUseCase;
+    private final GQLGetShopInfoUseCase getShopInfoUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
     private WishListActionListener wishListActionListener;
 
@@ -53,14 +53,14 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                                     AddWishListUseCase addWishListUseCase,
                                     RemoveWishListUseCase removeWishListUseCase,
                                     DeleteShopProductUseCase deleteShopProductUseCase,
-                                    GetShopInfoUseCase getShopInfoUseCase,
+                                    GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
                                     GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase,
                                     UserSessionInterface userSession) {
         this.productListWithAttributeNewUseCase = productListWithAttributeNewUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
-        this.getShopInfoUseCase = getShopInfoUseCase;
+        this.getShopInfoUseCase = gqlGetShopInfoUseCase;
         this.getShopEtalaseByShopUseCase = getShopEtalaseByShopUseCase;
         this.userSession = userSession;
     }
@@ -79,25 +79,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     }
 
     public void getShopInfo(final String shopId) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId),
-                new Subscriber<ShopInfo>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().onErrorGetShopInfo(e);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(ShopInfo shopInfo) {
-                        getView().onSuccessGetShopInfo(shopInfo);
-                    }
-                });
+        //TODO
     }
 
     @NonNull
@@ -217,7 +199,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         removeWishListUseCase.unsubscribe();
         productListWithAttributeNewUseCase.unsubscribe();
         getShopEtalaseByShopUseCase.unsubscribe();
-        getShopInfoUseCase.unsubscribe();
+        getShopInfoUseCase.cancelJobs();
         deleteShopProductUseCase.unsubscribe();
     }
 }
