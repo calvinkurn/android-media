@@ -6,8 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.info.data.GQLQueryStringConst
 import com.tokopedia.shop.info.data.model.ProductShopPackSpeed
-import com.tokopedia.shop.info.data.model.ShopRatingStats
-import com.tokopedia.shop.info.data.model.ShopSatisfaction
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopRatingStats
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopSatisfaction
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.usecase.coroutines.UseCase
 

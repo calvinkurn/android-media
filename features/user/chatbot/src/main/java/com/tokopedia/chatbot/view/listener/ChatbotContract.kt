@@ -28,7 +28,7 @@ interface ChatbotContract {
 
         fun openCsat(csatResponse: WebSocketCsatResponse)
 
-        fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel)
+        fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel, quickReplyList: List<QuickReplyViewModel>)
 
         fun isBackAllowed(isBackAllowed: Boolean)
 

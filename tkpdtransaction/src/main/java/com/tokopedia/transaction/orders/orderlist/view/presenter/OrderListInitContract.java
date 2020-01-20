@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.orderlist.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
+import com.tokopedia.transaction.orders.orderlist.data.ticker.TickerResponse;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public class OrderListInitContract {
          void getInitData();
 
          void destroyView();
+
+         void getTickerInfo();
      }
 
     public interface View {
@@ -22,5 +25,7 @@ public class OrderListInitContract {
         void showErrorNetwork(String message);
 
         void renderTabs(List<OrderLabelList> orderLabelList);
+
+        void updateTicker(TickerResponse tickerInfo);
     }
 }

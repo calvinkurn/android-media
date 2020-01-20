@@ -124,6 +124,35 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
 
+    // InboxTalkActivity
+    // tokopedia-android-internal://global/inbox-talk
+    @JvmField
+    val INBOX_TALK = "$INTERNAL_GLOBAL/inbox-talk"
+
+    // TalkProductActivity
+    // tokopedia-android-internal://global/product-talk
+    @JvmField
+    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk"
+    @JvmField
+    val PARAM_SHOP_ID = "shop_id"
+
+    // TalkProductActivity
+    // tokopedia-android-internal://global/product-talk
+    @JvmField
+    val PRODUCT_TALK = "$INTERNAL_GLOBAL/product-talk"
+    @JvmField
+    val PARAM_PRODUCT_ID = "product_id"
+
+    // TalkDetailsActivity
+    // tokopedia-android-internal://global/detail-talk
+    @JvmField
+    val DETAIL_TALK = "$INTERNAL_GLOBAL/detail-talk"
+
+    // AddTalkActivity
+    // tokopedia-android-internal://global/add-talk
+    @JvmField
+    val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
@@ -335,4 +364,15 @@ object ApplinkConstInternalGlobal {
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
+
+    // CrackTokenActivity
+    // tokopedia-android-internal://global/gamification
+    @JvmField
+    val GAMIFICATION = "$INTERNAL_GLOBAL/gamification"
+
+    // TapTapTokenActivity
+    // tokopedia-android-internal://global/gamification2
+    @JvmField
+    val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+
 }

@@ -4,8 +4,8 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.homepage.data.Products
+import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
-import com.tokopedia.salam.umrah.homepage.data.UmrahCategoriesFeatured
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter
@@ -134,6 +134,51 @@ class UmrahTrackingAnalytics {
         )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+
+    fun umrahImpressionBannerTracker(banner: UmrahBanner, position: Int) {
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_PROMO_VIEW
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_IMPRESSION_BANNER
+        map[TrackAppUtils.EVENT_LABEL] = ""
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                UMRAH_EVENT_PROMO_VIEW, DataLayer.mapOf(
+                PROMOTIONS_LABEL, getBannerData(banner, position)
+        )
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun umrahClickBannerTracker(banner: UmrahBanner, position: Int) {
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_PROMO_CLICK
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_BANNER
+        map[TrackAppUtils.EVENT_LABEL] = ""
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                UMRAH_EVENT_PROMO_CLICK, DataLayer.mapOf(
+                PROMOTIONS_LABEL, getBannerData(banner, position)
+        )
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getBannerData(banner: UmrahBanner, position:Int): List<Any>{
+        val list = ArrayList<Map<String, Any>>()
+
+        val map = HashMap<String, Any>()
+        map[ID] = banner.id
+        map[NAME] = "$UMRAH_CATEGORY_HOME_PAGE - $SLIDER_BANNER"
+        map[CREATIVE] = banner.imageUrl
+        map[POSITION] = position+1
+
+        list.add(map)
+
+        return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
     fun umrahImpressionDanaImpianTracker() {
