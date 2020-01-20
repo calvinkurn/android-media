@@ -82,19 +82,18 @@ class TokopediaPlayerHelper(
     }
 
     override fun createPlayer() {
-        if (mPlayer != null) {
-            return
+        if (mPlayer == null) {
+            clear()
+            mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
+            mPlayer?.volume = 0f
+            mPlayer?.repeatMode = Player.REPEAT_MODE_ALL
+            mPlayer?.playWhenReady = false
+            mPlayer?.addListener(this)
+            exoPlayerView.setPlayer(mPlayer)
+            isPlayerPrepared = false
+
+            preparePlayer()
         }
-        mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-        mPlayer?.volume = 0f
-
-        mPlayer?.repeatMode = Player.REPEAT_MODE_ALL
-        mPlayer?.playWhenReady = false
-        mPlayer?.addListener(this)
-        exoPlayerView.setPlayer(mPlayer)
-        isPlayerPrepared = false
-
-        preparePlayer()
     }
 
     override fun preparePlayer() {
@@ -163,7 +162,6 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityResume() {
-        masterJob.cancelChildren()
         launch(coroutineContext){
             updateResumePosition()
             delay(500)
@@ -182,13 +180,18 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityPause() {
-        exoPlayerView.setPlayer(null)
-        mPlayer?.removeListener(this)
-        mPlayer = null
+        clear()
     }
 
     override fun onActivityStop() {
         releasePlayer()
+    }
+
+    private fun clear(){
+        masterJob.cancelChildren()
+        exoPlayerView.setPlayer(null)
+        mPlayer?.removeListener(this)
+        mPlayer = null
     }
 
 }
