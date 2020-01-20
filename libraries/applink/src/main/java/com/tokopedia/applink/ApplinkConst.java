@@ -392,6 +392,11 @@ public interface ApplinkConst {
         String PARAM_OPPONENT_NAME = "opponentName";
     }
 
+    interface AttachVoucher {
+        String PARAM_SHOP_ID = "shop_id";
+        String PARAM_VOUCHER_PREVIEW = "voucher_preview";
+    }
+
     interface Play {
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";

@@ -6,7 +6,6 @@ query SearchProduct(
     searchProduct(params: $params) {
         query
         source
-        shareUrl
         isFilter
         response_code
         keyword_process
