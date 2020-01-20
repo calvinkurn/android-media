@@ -36,9 +36,8 @@ class ProductCheckoutViewHolder(
     }
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
-        val product = element.getAtcProduct() ?: return
         btnCheckout.setOnClickListener {
-            listener.addProductToCheckout(product)
+            listener.addProductToCheckout(element.dataNotification)
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
         }
