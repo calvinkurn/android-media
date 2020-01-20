@@ -166,6 +166,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 this,
                 null,
                 null,
+                null,
                 true,
                 0,
                 ShopTrackProductTypeDef.PRODUCT

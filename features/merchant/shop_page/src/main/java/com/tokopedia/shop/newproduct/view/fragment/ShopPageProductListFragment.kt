@@ -135,12 +135,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    override fun onAddProductClicked() {
-        context?.let {
-            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
-        }
-    }
-
     override fun onEtalaseChipClicked(shopProductEtalaseChipItemViewModel: ShopProductEtalaseChipItemViewModel) {
         if (shopProductAdapter.isLoading) {
             return
@@ -717,7 +711,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.productListData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetProductListData(it.data.first, listOf())
+                    onSuccessGetProductListData(it.data.first, it.data.second)
                 }
                 is Fail -> {
                     showErrorToasterWithRetry(it.throwable)
