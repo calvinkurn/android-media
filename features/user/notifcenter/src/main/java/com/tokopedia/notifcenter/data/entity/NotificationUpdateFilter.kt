@@ -25,8 +25,7 @@ data class NotifCenterFilterPojo(
 data class NotifFilterTypeList(
         @Expose
         @SerializedName("list")
-        v
-        ar list: List<NotifFilterTypeItem> = arrayListOf()
+        var list: List<NotifFilterTypeItem> = arrayListOf()
 )
 
 data class NotifFilterTagList(
