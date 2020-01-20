@@ -194,15 +194,6 @@ class HomeDataMapper(
         return ReviewViewModel()
     }
 
-    private fun mappingDigitalWidget(context: Context, trackingDataForCombination: List<Any>, isCache: Boolean): Visitable<*> {
-        val digitalsViewModel = DigitalsViewModel(context.getString(R.string.digital_widget_title), 0)
-        if (!isCache) {
-            digitalsViewModel.isTrackingCombined = true
-            digitalsViewModel.setTrackingDataForCombination(trackingDataForCombination)
-        }
-        return digitalsViewModel
-    }
-
     private fun mappingDynamicTopAds(channel: DynamicHomeChannel.Channels, isCache: Boolean): Visitable<*> {
         val visitable = TopAdsDynamicChannelModel()
         val items: MutableList<Item<*>> = ArrayList()
