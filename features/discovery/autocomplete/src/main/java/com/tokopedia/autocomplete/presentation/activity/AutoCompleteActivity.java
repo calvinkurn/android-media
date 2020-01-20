@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.transition.Fade;
+import androidx.transition.TransitionManager;
+import androidx.transition.TransitionSet;
+
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.RouteManager;
@@ -20,7 +25,7 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking;
 import com.tokopedia.autocomplete.fragment.SearchMainFragment;
 import com.tokopedia.autocomplete.presentation.AutoCompleteContract;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
-import com.tokopedia.autocomplete.view.DiscoverySearchView;
+import com.tokopedia.autocomplete.view.SearchBarView;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
@@ -28,25 +33,32 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
 public class AutoCompleteActivity extends BaseActivity
-        implements DiscoverySearchView.SearchViewListener,
-        DiscoverySearchView.ImageSearchClickListener,
-        DiscoverySearchView.OnQueryTextListener,
+        implements SearchBarView.ImageSearchClickListener,
+        SearchBarView.OnQueryTextListener,
+        SearchBarView.SuggestionViewUpdateListener,
         AutoCompleteContract.View {
 
     AutocompleteTracking autocompleteTracking;
 
-    protected DiscoverySearchView searchView;
+    protected SearchBarView searchBarView;
 
     protected SearchParameter searchParameter;
 
+    protected ConstraintLayout mSuggestionView;
+
+    protected SearchMainFragment suggestionFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(0,0);
+        overridePendingTransition(0, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto_complete);
 
@@ -71,11 +83,21 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     protected void initView() {
-        searchView = findViewById(R.id.search);
+        searchBarView = findViewById(R.id.search_bar);
+        mSuggestionView = findViewById(R.id.search_suggestion_container);
+        suggestionFragment = (SearchMainFragment) getSupportFragmentManager().findFragmentById(R.id.search_suggestion);
     }
 
     protected void prepareView() {
-        initSearchView();
+        setSuggestionViewAnimation();
+        initSearchBarView();
+    }
+
+    private void setSuggestionViewAnimation() {
+        TransitionSet transitionSet = new TransitionSet();
+        Fade fade = new Fade(Fade.MODE_IN);
+        transitionSet.addTransition(fade);
+        TransitionManager.beginDelayedTransition(mSuggestionView, fade);
     }
 
     private void initActivityOnCreate(Bundle savedInstanceState) {
@@ -104,7 +126,7 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
-        searchView.showSearch(searchParameter);
+        searchBarView.showSearch(searchParameter);
     }
 
     @Override
@@ -114,32 +136,22 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     public void dropKeyboard() {
-        KeyboardHandler.DropKeyboard(this, searchView);
+        KeyboardHandler.DropKeyboard(this, searchBarView);
     }
 
-    private void initSearchView() {
-        searchView.setActivity(this);
-        searchView.setOnQueryTextListener(this);
-        searchView.setOnSearchViewListener(this);
-        searchView.setOnImageSearchClickListener(this);
+    private void initSearchBarView() {
+        searchBarView.setActivity(this);
+        searchBarView.setOnImageSearchClickListener(this);
+        searchBarView.setOnQueryTextListener(this);
+        searchBarView.setOnSuggestionViewUpdateListener(this);
     }
 
     protected void setLastQuerySearchView(String lastQuerySearchView) {
-        searchView.setLastQuery(lastQuerySearchView);
+        searchBarView.setLastQuery(lastQuerySearchView);
     }
 
     @Override
-    public void onSearchViewShown() {
-
-    }
-
-    @Override
-    public void onSearchViewClosed() {
-
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(SearchParameter searchParameter) {
+    public boolean onQueryTextSubmit(@NotNull SearchParameter searchParameter) {
         this.searchParameter = new SearchParameter(searchParameter);
 
         String query = searchParameter.getSearchQuery();
@@ -152,13 +164,13 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void clearFocusSearchView() {
-        if (searchView != null) {
-            searchView.clearFocus();
+        if (searchBarView != null) {
+            searchBarView.clearFocus();
         }
     }
 
     private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
-        switch (searchView.getSuggestionFragment().getCurrentTab()) {
+        switch (suggestionFragment.getCurrentTab()) {
             case SearchMainFragment.PAGER_POSITION_PRODUCT:
                 onProductQuerySubmit();
                 break;
@@ -211,7 +223,7 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     @Override
-    public boolean onQueryTextChange(String searchQuery) {
+    public boolean onQueryTextChange(@NotNull String searchQuery) {
         return false;
     }
 
@@ -221,10 +233,10 @@ public class AutoCompleteActivity extends BaseActivity
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case DiscoverySearchView.REQUEST_VOICE:
+                case SearchBarView.REQUEST_VOICE:
                     List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (results != null && results.size() > 0) {
-                        searchView.setQuery(results.get(0), false);
+                        searchBarView.setQuery(results.get(0), false);
                         sendVoiceSearchGTM(results.get(0));
                     }
                     break;
@@ -240,14 +252,42 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     public void setSearchQuery(String keyword) {
-        searchView.setQuery(keyword, false, true);
+        searchBarView.setQuery(keyword, false, true);
     }
 
     public void deleteAllRecentSearch() {
-        searchView.getSuggestionFragment().deleteAllRecentSearch();
+        suggestionFragment.deleteAllRecentSearch();
     }
 
     public void deleteRecentSearch(String keyword) {
-        searchView.getSuggestionFragment().deleteRecentSearch(keyword);
+        suggestionFragment.deleteRecentSearch(keyword);
+    }
+
+    @Override
+    public void onTextChanged(@Nullable CharSequence newText, @Nullable CharSequence mOldQueryText, @NotNull SearchParameter searchParameter) {
+        if (suggestionFragment != null && !TextUtils.equals(newText, mOldQueryText)) {
+            suggestionFragment.search(searchParameter);
+        }
+    }
+
+    @Override
+    public void showSuggestions() {
+        if (suggestionFragment != null && mSuggestionView.getVisibility() == View.GONE) {
+            mSuggestionView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void dismissSuggestions() {
+        if (mSuggestionView.getVisibility() == View.VISIBLE) {
+            mSuggestionView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setSearchParameter(@NotNull SearchParameter searchParameter) {
+        if (suggestionFragment != null) {
+            suggestionFragment.setSearchParameter(searchParameter);
+        }
     }
 }
