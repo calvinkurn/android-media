@@ -25,7 +25,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
         app:layout_constraintTop_toTopOf="@id/iv_icon"
-        app:typographyType="body_2"
+        app:typographyType="heading_5"
         app:typographyWeight="bold"
         />
 

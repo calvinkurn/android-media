@@ -30,6 +30,12 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
 
+        private const val RETRY_COUNT = 3
+        private const val RETRY_DELAY = 5000L
+
+        private const val VIDEO_MAX_SOUND = 100f
+        private const val VIDEO_MIN_SOUND = 0f
+
         @Volatile
         private var INSTANCE: TokopediaPlayManager? = null
 
@@ -67,14 +73,22 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
         override fun onPlayerError(error: ExoPlaybackException?) {
             //TODO("Maybe return error based on corresponding cause?")
-            if (error != null && isBehindLiveWindow(error)) {
-                val prepareState = currentPrepareState
-                if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
+            if (error != null) {
+                if (isBehindLiveWindow(error)) {
+                    val prepareState = currentPrepareState
+                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
+                } else {
+                    //For now it's the same as BehindLiveWindow
+                    val prepareState = currentPrepareState
+                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
+                }
             } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
+
+
     }
 
-    val videoPlayer: ExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
+    val videoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
         addListener(playerEventListener)
     }
 
@@ -100,12 +114,16 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     //region player control
     fun resumeCurrentVideo() {
-        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) videoPlayer.seekTo(0)
+        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) resetCurrentVideo()
         videoPlayer.playWhenReady = true
     }
 
     fun pauseCurrentVideo() {
         videoPlayer.playWhenReady = false
+    }
+
+    fun resetCurrentVideo() {
+        videoPlayer.seekTo(0)
     }
     //endregion
 
@@ -116,6 +134,22 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     fun getDurationVideo(): Long {
         return videoPlayer.duration
+    }
+
+    fun isVideoMuted(): Boolean {
+        return videoPlayer.volume == VIDEO_MIN_SOUND
+    }
+
+    fun muteVideo(shouldMute: Boolean) {
+        videoPlayer.volume = if (shouldMute) VIDEO_MIN_SOUND else VIDEO_MAX_SOUND
+    }
+
+    fun setRepeatMode(shouldRepeat: Boolean) {
+        videoPlayer.repeatMode = if(shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
+    }
+
+    fun isVideoRepeat(): Boolean {
+        return videoPlayer.repeatMode != Player.REPEAT_MODE_OFF
     }
     //endregion
 
@@ -149,11 +183,11 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         return object : DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
                 return if (exception is ParserException || exception is FileNotFoundException || exception is UnexpectedLoaderException) C.TIME_UNSET
-                else 5000
+                else RETRY_DELAY
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
-                return Integer.MAX_VALUE
+                return RETRY_COUNT
             }
         }
     }

@@ -11,6 +11,7 @@
     <string name="play_watch_mode">Watch Mode</string>
     <string name="play_message_socket_error">Oops, terjadi gangguan saat live streaming.</string>
     <string name="play_message_socket_reconnect">Menghubungkan&#8230;</string>
+    <string name="play_watch_again">Tonton Ulang</string>
 
     <plurals name="play_likes">
         <item quantity="one">%s Like</item>

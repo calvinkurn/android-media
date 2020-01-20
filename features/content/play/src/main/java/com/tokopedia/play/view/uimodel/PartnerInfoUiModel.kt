@@ -9,5 +9,6 @@ data class PartnerInfoUiModel(
         val id: Long,
         val name: String,
         val type: PartnerType,
-        var isFollowed: Boolean
+        var isFollowed: Boolean,
+        val isFollowable: Boolean
 )

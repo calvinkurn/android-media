@@ -33,8 +33,8 @@ class VideoView(container: ViewGroup) : UIView(container) {
     }
 
     fun onDestroy() {
-        pvVideo.release()
         setPlayer(null)
+        pvVideo.release()
     }
 
     fun setPlayer(exoPlayer: ExoPlayer?) {
