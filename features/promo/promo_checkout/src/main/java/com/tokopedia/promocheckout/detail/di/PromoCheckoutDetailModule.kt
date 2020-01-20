@@ -61,9 +61,8 @@ class PromoCheckoutDetailModule {
     @Provides
     fun provideMarketplacePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                          checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                         checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                          clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailPresenter {
-        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, clearCacheAutoApplyStackUseCase)
+        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, clearCacheAutoApplyStackUseCase)
     }
 
     @PromoCheckoutDetailScope

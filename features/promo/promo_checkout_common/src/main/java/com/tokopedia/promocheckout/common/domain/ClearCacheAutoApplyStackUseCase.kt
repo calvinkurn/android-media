@@ -24,9 +24,6 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
     var queryString: String = ""
 
     companion object {
-        val PARAM_SERVICE_ID = "serviceID"
-        val PARAM_PROMO_CODE = "promoCode"
-
         val PARAM_VALUE_MARKETPLACE = "marketplace"
 
         val PARAM_PLACEHOLDER_SERVICE_ID = "#serviceId"

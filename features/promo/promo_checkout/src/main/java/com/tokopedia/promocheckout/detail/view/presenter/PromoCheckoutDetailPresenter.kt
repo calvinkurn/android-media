@@ -20,7 +20,6 @@ import rx.Subscriber
 
 class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                    private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                                   private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
 
@@ -31,31 +30,31 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         view.showProgressLoading()
         val promoCodes = arrayListOf(codeCoupon)
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodes)
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {
+        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+                .subscribe(object : Subscriber<ClearCacheAutoApplyStackResponse>() {
+                    override fun onCompleted() {
 
-            }
-
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.hideProgressLoading()
-                    view.onErrorCancelPromo(e)
-                }
-            }
-
-            override fun onNext(response: GraphqlResponse) {
-                if (isViewAttached) {
-                    view.hideProgressLoading()
-                    val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-                    if (responseData.successData.success) {
-                        view.onSuccessCancelPromo()
-                    } else {
-                        view.onErrorCancelPromo(RuntimeException())
                     }
-                }
-            }
 
-        })
+                    override fun onError(e: Throwable) {
+                        if (isViewAttached) {
+                            view.hideProgressLoading()
+                            view.onErrorCancelPromo(e)
+                        }
+                    }
+
+                    override fun onNext(response: ClearCacheAutoApplyStackResponse) {
+                        if (isViewAttached) {
+                            view.hideProgressLoading()
+                            if (response.successData.success) {
+                                view.onSuccessCancelPromo()
+                            } else {
+                                view.onErrorCancelPromo(RuntimeException())
+                            }
+                        }
+                    }
+
+                })
 
     }
 
