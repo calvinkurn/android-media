@@ -1,12 +1,9 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
-import android.app.AlertDialog
 import android.content.Context
-import androidx.appcompat.view.ContextThemeWrapper
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,10 +14,10 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
@@ -45,7 +42,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         ImageHandler.loadImage(view.context, view.shop_page_main_profile_background, shopInfo.shopAssets.cover, R.drawable.ic_loading_image)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
-                listener.changeShopCover(
+                listener.onShopCoverClicked(
                         TextApiUtils.isValueTrue(shopInfo.goldOS.isOfficial.toString()),
                         shopInfo.goldOS.isGoldBadge == 1
                 )
@@ -166,29 +163,28 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     fun isShopFavourited() = isShopFavourited
 
     fun updateFavoriteButton() {
-        view.shop_page_main_profile_follow_btn.isEnabled = true
-        view.shop_page_main_profile_following_btn.isEnabled = true
+        view.shop_page_follow_unfollow_button.visibility = View.VISIBLE
+        view.shop_page_follow_unfollow_button.isLoading = false
+        view.shop_page_follow_unfollow_button.setOnClickListener {
+            if (!view.shop_page_follow_unfollow_button.isLoading) {
+                view.shop_page_follow_unfollow_button.isLoading = true
+                listener.toggleFavorite(!isShopFavourited)
+            }
+        }
         if (isShopFavourited) {
-            view.shop_page_main_profile_follow_btn.visibility = View.GONE
-            view.shop_page_main_profile_following_btn.visibility = View.VISIBLE
-            view.shop_page_main_profile_following_btn.setOnClickListener {
-                view.shop_page_main_profile_following_btn.isEnabled = false
-                listener.toggleFavorite(false)
-            }
+            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_following)
+            view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.GHOST
+            view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.ALTERNATE
+
         } else {
-            view.shop_page_main_profile_following_btn.visibility = View.GONE
-            view.shop_page_main_profile_follow_btn.visibility = View.VISIBLE
-            view.shop_page_main_profile_follow_btn.text = view.context.getString(R.string.shop_page_label_follow)
-            view.shop_page_main_profile_follow_btn.setOnClickListener {
-                view.shop_page_main_profile_follow_btn.isEnabled = false
-                listener.toggleFavorite(true)
-            }
+            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_follow)
+            view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.FILLED
+            view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.MAIN
         }
     }
 
     private fun displayAsSeller() {
-        view.shop_page_main_profile_following_btn.visibility = View.GONE
-        view.shop_page_main_profile_follow_btn.visibility = View.GONE
+        view.shop_page_follow_unfollow_button.visibility = View.GONE
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
@@ -213,7 +209,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     interface ShopPageFragmentViewHolderListener {
         fun onFollowerTextClicked()
         fun toggleFavorite(isFavourite: Boolean)
-        fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean)
+        fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
     }
 

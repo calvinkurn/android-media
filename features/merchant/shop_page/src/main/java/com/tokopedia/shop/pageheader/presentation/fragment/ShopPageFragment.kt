@@ -772,7 +772,9 @@ class ShopPageFragment :
         }
     }
 
-    override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {}
+    override fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
+    }
 
     private fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
                                           isShopOfficaial: Boolean, isFollowed: Boolean) {

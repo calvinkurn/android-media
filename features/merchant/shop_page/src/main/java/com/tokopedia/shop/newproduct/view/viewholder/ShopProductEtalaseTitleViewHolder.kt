@@ -43,7 +43,7 @@ class ShopProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<Sho
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_product_etalase_title_view
+        val LAYOUT = R.layout.item_new_shop_product_etalase_title_view
     }
 
 }

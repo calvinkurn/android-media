@@ -62,10 +62,12 @@ import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.fragment_shop_page_new_product_list.*
+import kotlinx.android.synthetic.main.partial_shop_page_header.*
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -167,6 +169,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onSuccessAddWishlist(productId: String) {
+        showToastSuccess(getString(R.string.msg_success_add_wishlist))
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
@@ -175,7 +178,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
+        showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         shopProductAdapter.updateWishListStatus(productId, false)
+    }
+
+    private fun showToastSuccess(message: String) {
+        activity?.run {
+            Toaster.make(findViewById(android.R.id.content),
+                    message,
+                    Toaster.LENGTH_LONG)
+        }
     }
 
     private fun loadNewProductData() {
@@ -216,7 +228,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun redirectToAddEtalasePage() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
+            RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD)
         }
     }
 
@@ -458,11 +470,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     viewModel.isMyShop(shopInfo!!.shopCore.shopID),
                     CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
                             shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
-
-            activity?.let {
-                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo!!.shopCore.shopID,
-                        selectedEtalaseId, isShowDefault = true, isShowZeroProduct = false)
-                startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+            if(isOwner){
+                redirectToShopSettingsEtalase()
+            }else{
+                redirectToEtalasePicker()
             }
         }
     }
@@ -527,6 +538,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 startActivityForResult(intent, REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW)
             }
         }
+    }
+
+    private fun redirectToEtalasePicker() {
+        activity?.let {
+            val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo!!.shopCore.shopID,
+                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = false)
+            startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+        }
+    }
+
+    private fun redirectToShopSettingsEtalase() {
+        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
     }
 
     private fun showSnackBarClose(stringToShow: String) {
@@ -923,7 +946,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             listShopEtalaseDataModel.add(0, ShopProductAddEtalaseChipViewModel())
         }
         return ShopProductEtalaseListViewModel(
-                data,
+                listShopEtalaseDataModel,
                 currentEtalaseId,
                 currentEtalaseName,
                 currentEtalaseBadge
