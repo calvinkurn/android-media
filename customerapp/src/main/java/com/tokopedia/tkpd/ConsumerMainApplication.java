@@ -168,15 +168,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TimberWrapper.init(this);
 
         initializeAbTestVariant();
+        initializeSdk();
 
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        initializeSdk();
     }
 
     private boolean isMainProcess() {
@@ -250,7 +245,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void initializeSdk() {
         try {
             FirebaseApp.initializeApp(this);
-            FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -357,28 +351,41 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    private native byte[] bytesFromJNI();
+//    private native byte[] bytesFromJNI();
 
     // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+//    static {
+//        System.loadLibrary("native-lib");
+//    }
 
     public boolean checkAppSignature() {
-        PackageInfo info = null;
-        try {
-            info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (null != info && info.signatures.length > 0) {
-            byte[] rawCertJava = info.signatures[0].toByteArray();
-            byte[] rawCertNative = bytesFromJNI();
-
-            return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-        } else {
-            return false;
-        }
+//        PackageInfo info;
+//        try {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+//                if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
+//                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
+//                    byte[] rawCertNative = bytesFromJNI();
+//                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+//                } else {
+//                    return false;
+//                }
+//            } else {
+//                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+//                if (null != info && info.signatures.length > 0) {
+//                    byte[] rawCertJava = info.signatures[0].toByteArray();
+//                    byte[] rawCertNative = bytesFromJNI();
+//
+//                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+//                } else {
+//                    return false;
+//                }
+//            }
+//        } catch (PackageManager.NameNotFoundException e){
+//            e.printStackTrace();
+//            return false;
+//        }
+        return true;
     }
 
     private String getInfoFromBytes(byte[] bytes) {
