@@ -226,7 +226,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            RouteManager.route(getContext(), ApplinkConst.KYC_FORM, String.valueOf(PROJECT_ID));
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO, String.valueOf(PROJECT_ID));
+            startActivity(intent);
         }
     }
 
