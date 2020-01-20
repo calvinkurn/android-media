@@ -23,18 +23,18 @@ class RechargeGeneralAdapterFactory(val listener: OnInputListener): BaseAdapterT
         val layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         parent.layoutParams = layoutParams
         return when (type) {
-            R.layout.view_digital_product_input_holder -> RechargeGeneralInputViewHolder(parent, listener)
-            R.layout.view_digital_product_select_holder -> RechargeGeneralProductSelectViewHolder(parent, listener)
+            R.layout.view_recharge_general_product_input_holder -> RechargeGeneralInputViewHolder(parent, listener)
+            R.layout.view_recharge_general_product_select_holder -> RechargeGeneralProductSelectViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
 
     fun type(item: RechargeGeneralProductInput): Int {
-        return R.layout.view_digital_product_input_holder
+        return R.layout.view_recharge_general_product_input_holder
     }
 
     fun type(item: RechargeGeneralProductItemData): Int {
-        return R.layout.view_digital_product_select_holder
+        return R.layout.view_recharge_general_product_select_holder
     }
 
 }

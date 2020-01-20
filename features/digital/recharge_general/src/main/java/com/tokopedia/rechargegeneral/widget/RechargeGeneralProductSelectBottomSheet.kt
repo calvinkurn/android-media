@@ -14,8 +14,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.view_widget_product_select_dropdown_bottom_sheet.view.*
-import kotlinx.android.synthetic.main.view_widget_product_select_dropdown_bottom_sheet_item.view.*
+import kotlinx.android.synthetic.main.view_recharge_general_widget_product_select_dropdown_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.view_recharge_general_product_select_dropdown_bottom_sheet_item.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -43,7 +43,7 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(@NotNull
     }
 
     open fun getLayout(): Int {
-        return R.layout.view_widget_product_select_dropdown_bottom_sheet
+        return R.layout.view_recharge_general_widget_product_select_dropdown_bottom_sheet
     }
 
     fun setOnClickListener(listener: OnClickListener) {
@@ -52,7 +52,7 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(@NotNull
 
     inner class DigitalProductSelectDropdownAdapter(var items: List<RechargeGeneralProductSelectData>): RecyclerView.Adapter<DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigitalProductSelectDropdownViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.view_widget_product_select_dropdown_bottom_sheet_item, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.view_recharge_general_product_select_dropdown_bottom_sheet_item, parent, false)
             return DigitalProductSelectDropdownViewHolder(view)
         }
 
