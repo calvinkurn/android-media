@@ -24,6 +24,7 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.twitter_share.TwitterManager
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.data.UploadVideoApi
 import com.tokopedia.videouploader.di.VideoUploaderModule
