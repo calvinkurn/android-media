@@ -13,10 +13,22 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 
+val FPM_HOME_IMAGE_PREFIX = "fpm_home_image"
+val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
+val FPM_PRODUCT_ORGANIC_CHANNEL = "product_organic_channel"
 
-fun ImageView.loadImage(url: String){
+
+fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
+    var performanceMonitoring : PerformanceMonitoring? = null
+
+    if (!fpmItemLabel.isEmpty()) {
+        performanceMonitoring = PerformanceMonitoring.start(FPM_HOME_IMAGE_PREFIX + fpmItemLabel)
+        performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, url)
+    }
+
     Glide.with(context)
             .load(url)
             .skipMemoryCache(true)
@@ -30,6 +42,9 @@ fun ImageView.loadImage(url: String){
                 }
 
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    if (dataSource == DataSource.REMOTE) {
+                        performanceMonitoring?.stopTrace()
+                    }
                     return false
                 }
             })
