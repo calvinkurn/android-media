@@ -58,7 +58,6 @@
                 android:textColorHint="@color/edit_text_color_hint"
                 android:textCursorDrawable="@drawable/autocomplete_cursor_color"
                 android:textSize="@dimen/sp_14"
-                android:lineSpacingExtra="@dimen/sp_6"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/action_up_btn"
