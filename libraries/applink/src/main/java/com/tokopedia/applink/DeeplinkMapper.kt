@@ -12,6 +12,7 @@ import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigati
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
+import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
@@ -76,6 +77,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationSalamUmrah(deeplink, context)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL, true) ->
                         getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
+                    deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
