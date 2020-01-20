@@ -18,6 +18,6 @@ class SharedRechargeGeneralViewModel @Inject constructor(dispatcher: CoroutineDi
         get() = _recommendationItem
 
     fun setRecommendationItem(recommendation: TopupBillsRecommendation) {
-        _recommendationItem.value = recommendation
+        _recommendationItem.postValue(recommendation)
     }
 }

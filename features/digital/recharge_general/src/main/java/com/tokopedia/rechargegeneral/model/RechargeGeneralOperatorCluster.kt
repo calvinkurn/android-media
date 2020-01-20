@@ -7,7 +7,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperator
 /**
  * Created by resakemal on 28/11/19.
  */
-class RechargeGeneralOperatorCluster(
+data class RechargeGeneralOperatorCluster(
 
         @SerializedName("text")
         @Expose

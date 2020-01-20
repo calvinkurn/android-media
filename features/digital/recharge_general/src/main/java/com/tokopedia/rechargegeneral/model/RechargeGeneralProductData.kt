@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by resakemal on 26/11/19.
  */
-class RechargeGeneralProductData(
+data class RechargeGeneralProductData(
 
         @SerializedName("needEnquiry")
         @Expose

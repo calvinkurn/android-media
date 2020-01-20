@@ -130,10 +130,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 is Success -> {
                     loading_view.hide()
                     renderInitialData(it.data)
-//                    trackSearchResultCategories(it.data)
-
-                    // For enquiry testing
-//                    sharedViewModel.recommendationItem.selectedId = TopupBillsRecommendation(operatorId = 18, selectedProduct = 291, clientNumber = "102111106111")
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -380,7 +376,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
 
         if (dataList.isNotEmpty()) adapter.renderList(dataList)
-//        trackSearchResultCategories(it.data)
     }
 
     // Reset product id & input data
@@ -529,19 +524,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     }
                 }
                 tab_layout.show()
-                product_view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                    override fun onPageScrollStateChanged(p0: Int) {
-
-                    }
-
-                    override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-                    }
-
-                    override fun onPageSelected(pos: Int) {
-
-                    }
-                })
 
                 // Hide widget title
                 recentTransactionFragment?.run { toggleTitle(false) }
@@ -660,7 +642,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
-        // Set recommendation data if there is
+        // Set recommendation data if available
         if (data.recommendations.isNotEmpty() && !hasInputData) {
             setupAutoFillData(data.recommendations[0])
         }

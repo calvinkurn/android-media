@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 27/05/19.
  */
-class TopupBillsEnquiryData (
+data class TopupBillsEnquiryData (
     @SerializedName("rechargeInquiry")
     @Expose
     val enquiry: TopupBillsEnquiry

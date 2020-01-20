@@ -80,11 +80,10 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
     }
 
     override fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
-//        topupAnalytics.impressionEnhanceCommercePromoList(topupBillsTrackPromoList)
+
     }
 
     override fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int) {
-//        topupAnalytics.clickEnhanceCommercePromo(topupBillsPromo, position)
         if (!TextUtils.isEmpty(topupBillsPromo.urlBannerPromo)) {
             RouteManager.route(activity, topupBillsPromo.urlBannerPromo)
         }

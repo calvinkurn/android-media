@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class TopupBillsFavNumberItem(
+data class TopupBillsFavNumberItem(
         @SerializedName("client_number")
         @Expose
         var clientNumber: String = "",

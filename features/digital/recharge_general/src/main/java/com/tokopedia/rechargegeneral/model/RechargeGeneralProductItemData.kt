@@ -9,7 +9,7 @@ import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 /**
  * Created by resakemal on 26/11/19.
  */
-class RechargeGeneralProductItemData(
+data class RechargeGeneralProductItemData(
 
         @SerializedName("name")
         @Expose

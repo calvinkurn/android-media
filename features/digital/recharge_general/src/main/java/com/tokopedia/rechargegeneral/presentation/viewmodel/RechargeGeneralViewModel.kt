@@ -44,9 +44,9 @@ class RechargeGeneralViewModel  @Inject constructor(
                     graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
-                _operatorCluster.value = Success(data.response)
+                _operatorCluster.postValue(Success(data.response))
             }) {
-                _operatorCluster.value = Fail(it)
+                _operatorCluster.postValue(Fail(it))
             }
         }
     }
@@ -60,9 +60,9 @@ class RechargeGeneralViewModel  @Inject constructor(
                     graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<RechargeGeneralProductData.Response>()
 
-                _productList.value = Success(data.response)
+                _productList.postValue(Success(data.response))
             }) {
-                _productList.value = Fail(it)
+                _productList.postValue(Fail(it))
             }
         }
     }

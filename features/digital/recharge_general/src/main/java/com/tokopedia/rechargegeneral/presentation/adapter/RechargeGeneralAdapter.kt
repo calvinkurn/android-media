@@ -20,14 +20,6 @@ class RechargeGeneralAdapter(val context: Context,
         super.showLoading()
     }
 
-    fun showEmpty() {
-//        clearAllElements()
-//        val emptyModel = EmptyModel()
-//        emptyModel.title = resources.getString(R.string.vg_empty_state_title)
-//        emptyModel.description = resources.getString(R.string.vg_empty_state_desc)
-//        addElement(emptyModel)
-    }
-
     fun showGetListError(e: Throwable) {
         showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
             showLoading()
