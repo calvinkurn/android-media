@@ -278,7 +278,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun getShopInfo(url: String, shopDomain: String) {
-        getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain), object : Subscriber<ShopInfo>() {
+        getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain, userSession.userId, userSession.deviceId), object : Subscriber<ShopInfo>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
@@ -297,7 +297,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun openProductPageIfValid(url: String, shopDomain: String) {
-        getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain), object : Subscriber<ShopInfo>() {
+        getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain, userSession.userId, userSession.deviceId), object : Subscriber<ShopInfo>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 if (isViewAttached) {

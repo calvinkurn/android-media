@@ -6,4 +6,10 @@ import dagger.Module
 
 @BroadcastMessageCreateScope
 @Module(includes = arrayOf(ShopCommonModule::class))
-class BroadcastMessageCreateModule
+class BroadcastMessageCreateModule {
+    @BroadcastMessageCreateScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+}

@@ -2,9 +2,7 @@ package com.tokopedia.createpost.di
 
 import android.app.NotificationManager
 import android.content.Context
-
 import com.google.gson.Gson
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
@@ -26,7 +24,6 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.twitter_share.TwitterManager
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.data.UploadVideoApi
 import com.tokopedia.videouploader.di.VideoUploaderModule
@@ -34,7 +31,6 @@ import com.tokopedia.videouploader.di.VideoUploaderQualifier
 import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
 import com.tokopedia.videouploader.domain.usecase.GenerateVideoTokenUseCase
 import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
-
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

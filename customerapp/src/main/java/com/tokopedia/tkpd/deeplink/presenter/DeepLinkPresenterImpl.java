@@ -62,6 +62,7 @@ import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
@@ -106,6 +107,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Inject
     GetShopInfoByDomainUseCase getShopInfoUseCase;
+
+    @Inject
+    UserSessionInterface userSession;
 
     @Inject
     @Named("productUseCase")
@@ -564,7 +568,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
         viewListener.showLoading();
-        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0)), new Subscriber<ShopInfo>() {
+        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0), userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -654,7 +658,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openProduct(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
         RequestParams params = RequestParams.create();
         params.putString("shop_domain", linkSegment.get(0));
-        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0)), new Subscriber<ShopInfo>() {
+        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0), userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 

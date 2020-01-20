@@ -31,7 +31,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
     fun isMyShop(shopId: String) = (userSessionInterface.shopId == shopId)
 
     fun getShopInfo(shopId: String) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), object : Subscriber<ShopInfo>() {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId, userSessionInterface.userId, userSessionInterface.deviceId), object : Subscriber<ShopInfo>() {
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
