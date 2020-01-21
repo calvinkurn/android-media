@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
+import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
@@ -41,7 +42,6 @@ import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListAdapterFactory
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListDecorator
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
-import com.tokopedia.vouchergame.list.view.model.VoucherGameOperatorAttributes
 import com.tokopedia.vouchergame.list.view.viewmodel.VoucherGameListViewModel
 import kotlinx.android.synthetic.main.fragment_voucher_game_list.*
 import javax.inject.Inject
@@ -334,7 +334,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         navigateToProductList(operator.attributes)
     }
 
-    private fun navigateToProductList(operatorData: VoucherGameOperatorAttributes) {
+    private fun navigateToProductList(operatorData: CatalogOperatorAttributes) {
         context?.run {
             val intent = VoucherGameDetailActivity.newInstance(this,
                     voucherGameExtraParam, operatorData)

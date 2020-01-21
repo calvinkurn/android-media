@@ -7,7 +7,6 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
-import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -182,7 +181,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
                 DigitalEventTracking.Action.ADD_DEAL_OFFER,
-                String.valueOf(label).toLowerCase()
+                label.toLowerCase()
         ));
     }
 
@@ -193,7 +192,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
                 DigitalEventTracking.Action.REMOVE_DEAL_OFFER,
-                String.valueOf(label).toLowerCase()
+                label.toLowerCase()
         ));
     }
 

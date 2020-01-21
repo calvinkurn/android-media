@@ -509,7 +509,7 @@ public class GTMAnalytics extends ContextAnalytics {
         private static final String KEY_BRAND = "brand";
         private static final String KEY_CAT = "category";
         private static final String KEY_VARIANT = "variant";
-        private static final String KEY_POSITION = "quantity";
+        private static final String KEY_POSITION = "position";
         private static final String KEY_LIST = "list";
     }
 
