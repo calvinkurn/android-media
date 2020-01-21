@@ -29,7 +29,7 @@ public class GetShopInfoUseCase extends UseCase<ShopInfo> {
     public Observable<ShopInfo> createObservable(RequestParams requestParams) {
         String shopId = requestParams.getString(SHOP_ID, "0");
         String userId = requestParams.getString(USER_ID, "0");
-        String deviceId = requestParams.getString(DEVICE_ID, "0");
+        String deviceId = requestParams.getString(DEVICE_ID, "");
         return shopRepository.getShopInfo(shopId, userId, deviceId);
     }
 
