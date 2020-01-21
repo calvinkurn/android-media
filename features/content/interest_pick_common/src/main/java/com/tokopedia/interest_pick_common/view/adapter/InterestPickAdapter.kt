@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_new_interest_pick.view.*
 /**
  * @author by yoasfs on 2019-09-18
  */
-class OnboardingAdapter(private val listener: InterestPickItemListener, val source: String) : RecyclerView.Adapter<OnboardingAdapter.Holder>() {
+class InterestPickAdapter(private val listener: InterestPickItemListener, val source: String) : RecyclerView.Adapter<InterestPickAdapter.Holder>() {
 
     companion object {
         val SOURCE_FEED = "feeds"

@@ -1,6 +1,5 @@
 package com.tokopedia.interestpick.view.fragment
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -8,7 +7,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,24 +15,20 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
-import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter.Companion.SOURCE_ACCOUNTS
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter.Companion.SOURCE_ACCOUNTS
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interestpick.R
-import com.tokopedia.interestpick.R.id.*
 import com.tokopedia.interestpick.di.DaggerInterestPickComponent
-import com.tokopedia.interestpick.view.adapter.InterestPickAdapter
 import com.tokopedia.interestpick.view.listener.InterestPickContract
-import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
 import kotlinx.android.synthetic.main.fragment_interest_pick.*
-import java.lang.reflect.Method
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 03/09/18.
  */
 
-class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, OnboardingAdapter.InterestPickItemListener {
+class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, InterestPickAdapter.InterestPickItemListener {
 
     companion object {
         fun createInstance() = InterestPickFragment()
@@ -42,7 +36,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, On
 
     @Inject
     lateinit var presenter: InterestPickContract.Presenter
-    lateinit var adapter: OnboardingAdapter
+    lateinit var adapter: InterestPickAdapter
     var selectedCount = 0
     var isSaved = false
 
@@ -183,7 +177,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, On
     }
 
     private fun initView() {
-        adapter = OnboardingAdapter(this, SOURCE_ACCOUNTS)
+        adapter = InterestPickAdapter(this, SOURCE_ACCOUNTS)
         interestList.adapter = adapter
         saveInterest.setOnClickListener {
             presenter.updateInterest(adapter.getSelectedItemIdList())
