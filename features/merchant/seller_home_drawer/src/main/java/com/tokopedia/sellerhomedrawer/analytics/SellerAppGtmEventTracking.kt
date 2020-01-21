@@ -33,6 +33,7 @@ object Action {
 }
 
 object EventLabel {
+    const val SETTING = "Setting"
     const val BUY_GM = "Buy GM"
     const val CLICK_GM_PACKAGE_SUBSCRIBE_FEATURED = "produk unggulan"
     const val CLICK_GM_PACKAGE_SUBSCRIBE_HOME = "upgrade to gold merchant"
@@ -50,6 +51,8 @@ object EventLabel {
     const val TOPADS = "TopAds"
     const val FEATURED_PRODUCT = "Featured Product"
     const val SELLER_INFO = "seller info"
+    const val SHOP_EN = "Shop"
+
 }
 
 fun eventSellerInfo(eventAction: String, eventLabel: String) {

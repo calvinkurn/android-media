@@ -4,5 +4,5 @@ import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGr
 
 interface SellerDrawerGroupListener {
 
-    fun onGroupClicked(sellerDrawerGroup: SellerDrawerGroup)
+    fun onGroupClicked(sellerDrawerGroup: SellerDrawerGroup, position: Int)
 }

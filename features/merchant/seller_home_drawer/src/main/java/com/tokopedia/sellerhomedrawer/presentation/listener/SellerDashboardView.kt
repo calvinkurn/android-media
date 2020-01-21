@@ -4,14 +4,12 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.core.common.ticker.model.Ticker
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification
-import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
-import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 
 interface SellerDashboardView: CustomerView {
 
-    fun onSuccessGetShopInfoAndScore(shopInfoDashboardModel: ShopInfoDashboardModel,
-                                     goldGetPmOsStatus: GoldGetPmOsStatus,
-                                     shopScoreResult: ShopScoreResult)
+//    fun onSuccessGetShopInfoAndScore(shopInfoDashboardModel: ShopInfoDashboardModel,
+//                                     goldGetPmOsStatus: GoldGetPmOsStatus,
+//                                     shopScoreResult: ShopScoreResult)
 
     fun onErrorShopInfoAndScore(t: Throwable)
 
@@ -32,6 +30,6 @@ interface SellerDashboardView: CustomerView {
     fun onErrorOpenShop()
 
     fun getContext(): Context
-
-    fun getApprovalStatusListener(): GetApprovalStatusSubscriber.GetApprovalStatusListener
+//
+//    fun getApprovalStatusListener(): GetApprovalStatusSubscriber.GetApprovalStatusListener
 }

@@ -7,11 +7,16 @@ import androidx.core.app.TaskStackBuilder
 import androidx.core.view.GravityCompat
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.core.ManageGeneral
 import com.tokopedia.core.drawer2.view.DrawerAdapter
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.analytics.*
 import com.tokopedia.sellerhomedrawer.constant.SellerBaseUrl
@@ -23,6 +28,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.dashboard.SellerDashboar
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerHomeWebViewActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerSimpleWebViewActivity
 import com.tokopedia.url.TokopediaUrl
@@ -33,7 +39,8 @@ import kotlinx.android.synthetic.main.sh_drawer_shop.*
 
 class SellerDrawerHelper(val context: Activity,
                          val userSession: UserSession,
-                         val drawerCache: LocalCacheHandler) :
+                         val drawerCache: LocalCacheHandler,
+                         val remoteConfig: FirebaseRemoteConfigImpl) :
         SellerDrawerItemListener, SellerDrawerHeaderListener, SellerDrawerGroupListener ,
         DrawerHeaderListener, RetryTokoCashListener {
 
@@ -42,12 +49,14 @@ class SellerDrawerHelper(val context: Activity,
         val DIGITAL_WEBSITE_DOMAIN = TokopediaUrl.getInstance().PULSA
         @JvmStatic
         val DIGITAL_PATH_MITRA = "mitra"
+        @JvmStatic
+        val CONTACT_US = "Contact_Us"
     }
 
     var sellerDrawerAdapter: SellerDrawerAdapter? = null
     var powerMerchantInstance: SellerDrawerItem? = null
 
-    private var selectedPosition = -1
+    var selectedPosition = -1
 
     override fun onItemClicked(drawerItem: SellerDrawerItem) {
         if (drawerItem.id == selectedPosition) closeDrawer()
@@ -132,7 +141,7 @@ class SellerDrawerHelper(val context: Activity,
                     RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
                 }
                 SellerHomeState.DrawerPosition.SELLER_MITRA_TOPPERS -> {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.MITRA_TOPPERS_DASHBOARD)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
                 }
                 SellerHomeState.DrawerPosition.SELLER_TOP_ADS -> {
                     eventDrawerClick(EventLabel.TOPADS)
@@ -156,6 +165,21 @@ class SellerDrawerHelper(val context: Activity,
                     eventDrawerClick(EventLabel.RESOLUTION_CENTER)
                     context.startActivity(SellerHomeWebViewActivity.createIntent(context, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER))
                 }
+                SellerHomeState.DrawerPosition.SETTINGS -> {
+                    val settingsIntent = Intent(context, ManageGeneral::class.java)
+                    val settingsCanonicalName = ManageGeneral::class.java.canonicalName
+                    eventDrawerClick(EventLabel.SETTING)
+                    if (settingsCanonicalName != null)
+                        SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, settingsCanonicalName, EventLabel.SETTING)
+                    context.startActivity(settingsIntent)
+                }
+                SellerHomeState.DrawerPosition.CONTACT_US -> {
+                    val contactUsIntent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE)
+                    val contactUsClassName = contactUsIntent.component?.className
+                    if (contactUsClassName != null)
+                        SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, contactUsClassName, CONTACT_US)
+                    context.startActivity(contactUsIntent)
+                }
                 else -> {
                     //TODO: Extends from DrawerHelper ?
                 }
@@ -173,47 +197,99 @@ class SellerDrawerHelper(val context: Activity,
     fun openDrawer() { context.drawer_layout_nav.openDrawer(GravityCompat.START) }
 
     override fun notifyDataSetChanged() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        sellerDrawerAdapter?.notifyDataSetChanged()
     }
 
     override fun onGoToDeposit() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO: SellerModuleRouter is needed ?
+        startSaldoDepositIntent()
+        eventDrawerClick(EventLabel.SHOP_EN)
     }
 
     override fun onGoToProfile() {
-
+        //TODO: Add internal applink to ProfileActivity
     }
 
     override fun onGoToProfileCompletion() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO: Add internal applink to ProfileCompletionActivity
     }
 
-    override fun onGroupClicked(sellerDrawerGroup: SellerDrawerGroup) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onGroupClicked(sellerDrawerGroup: SellerDrawerGroup, position: Int) {
+
+        val list = sellerDrawerGroup.list
+
+        if (sellerDrawerGroup.isExpanded)
+            sellerDrawerAdapter?.removeAllElements(list)
+        else {
+            sellerDrawerAdapter?.addAllElements(position + 1, list)
+        }
+
+        list.forEach{item ->
+            item.isExpanded = !sellerDrawerGroup.isExpanded
+        }
+        sellerDrawerGroup.isExpanded = sellerDrawerGroup.isExpanded.not()
+
+        setExpandCache(sellerDrawerGroup, sellerDrawerGroup.isExpanded)
+
+        notifyDataSetChanged()
+
     }
+
+    private fun SellerDrawerAdapter.addAllElements(position: Int, elementList: List<SellerDrawerItem>) {
+        var incrementalPosition = position
+        elementList.forEach{
+            this.addElement(position, it)
+            incrementalPosition++
+        }
+    }
+
+    private fun SellerDrawerAdapter.removeAllElements(elementList: List<SellerDrawerItem>) {
+        elementList.forEach{
+            this.removeElement(it)
+        }
+    }
+
+    private fun setExpandCache(group: SellerDrawerGroup, isExpand: Boolean) {
+        when(group.id) {
+            SellerHomeState.DrawerPosition.INBOX ->
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_INBOX_OPENED, isExpand)
+            SellerHomeState.DrawerPosition.PEOPLE ->
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_PEOPLE_OPENED, isExpand)
+            SellerHomeState.DrawerPosition.SHOP ->
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, isExpand)
+            SellerHomeState.DrawerPosition.SELLER_PRODUCT_EXTEND ->
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, isExpand)
+            SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE ->
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_GM_OPENED, isExpand)
+            SellerHomeState.DrawerPosition.RESOLUTION_CENTER ->
+                drawerCache.putBoolean(SellerDrawerAdapter.IS_RESO_OPENED, isExpand)
+        }
+        drawerCache.applyEditor()
+    }
+
 
     override fun onGoToTopPoints(topPointsUrl: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onWalletBalanceClicked(redirectUrlBalance: String?, appLinkBalance: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onWalletActionButtonClicked(redirectUrlActionButton: String?, appLinkActionButton: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onTokoPointActionClicked(mainPageUrl: String?, title: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onGotoTokoCard() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onRetryTokoCash() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO: Looks like this method is not called anymore
     }
 
     fun createDrawerData(): MutableList<SellerDrawerItem> {
@@ -241,7 +317,7 @@ class SellerDrawerHelper(val context: Activity,
                     isExpanded = true
             ))
 
-            if (adapter != null && adapter.isOfficialStore && powerMerchantDrawerItem != null)
+            if (adapter != null && !adapter.isOfficialStore && powerMerchantDrawerItem != null)
                 add(powerMerchantDrawerItem)
             else remove(powerMerchantDrawerItem)
 
@@ -289,17 +365,50 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     fun initDrawer(activity: Activity) {
-//        val drawerVisitables = arrayListOf<Visitable<*>>()
-//        drawerVisitables
-//                .add(SellerDrawerHeader())
-        sellerDrawerAdapter = SellerDrawerAdapter(SellerDrawerAdapterTypeFactory(this, this, this, this, this, context), createDrawerData(), drawerCache)
+        val visitableList = mutableListOf<Visitable<*>>().apply {
+            add(SellerDrawerHeader())
+            addAll(createDrawerData())
+        }
+
+        sellerDrawerAdapter = SellerDrawerAdapter(SellerDrawerAdapterTypeFactory(this, this, this, this, this, context), visitableList, drawerCache)
         sellerDrawerAdapter?.drawerItemData = createDrawerData()
         activity.left_drawer.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = sellerDrawerAdapter
         }
-//        setExpand()
+        setExpand()
         closeDrawer()
+    }
+
+    private fun setExpand() {
+        checkExpand(SellerDrawerAdapter.IS_INBOX_OPENED, SellerHomeState.DrawerPosition.INBOX)
+        checkExpand(SellerDrawerAdapter.IS_PEOPLE_OPENED, SellerHomeState.DrawerPosition.PEOPLE)
+        checkExpand(SellerDrawerAdapter.IS_SHOP_OPENED, SellerHomeState.DrawerPosition.SHOP)
+        checkExpand(SellerDrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, SellerHomeState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND)
+        checkExpand(SellerDrawerAdapter.IS_PRODUCT_OPENED, SellerHomeState.DrawerPosition.SELLER_PRODUCT_EXTEND)
+        checkExpand(SellerDrawerAdapter.IS_GM_OPENED, SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE)
+        notifyDataSetChanged()
+    }
+
+    private fun checkExpand(key: String, idPos: Int) {
+        if (drawerCache.getBoolean(key, false)) {
+            val sellerDrawerGroup = findGroup(idPos)
+            if (sellerDrawerGroup != null) {
+                val drawerPosition = sellerDrawerGroup.position?.plus(1)
+                if (drawerPosition != null)
+                    sellerDrawerAdapter?.addAllElements(drawerPosition, sellerDrawerGroup.list)
+            }
+        }
+    }
+
+    private fun findGroup(id: Int): SellerDrawerGroup? {
+        sellerDrawerAdapter?.list?.forEachIndexed { index, drawerItem ->
+            if (drawerItem is SellerDrawerGroup && drawerItem.id == id) {
+                drawerItem.position = index
+                return drawerItem
+            }
+        }
+        return null
     }
 
     fun isOpened() = context.drawer_layout_nav.isDrawerOpen(GravityCompat.START)
@@ -444,6 +553,12 @@ class SellerDrawerHelper(val context: Activity,
     private fun moveActivityInternalApplink(applink: String, vararg params: String) {
         val intent = RouteManager.getIntent(context, applink, *params)
         context.startActivity(intent)
+    }
+
+    private fun startSaldoDepositIntent() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
+            moveActivityInternalApplink(ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+        else context.startActivity(SellerHomeWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL))
     }
 
 }

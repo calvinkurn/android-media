@@ -3,8 +3,6 @@ package com.tokopedia.sellerhomedrawer.presentation.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup
-import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerSeparator
 
@@ -46,21 +44,4 @@ class SellerDrawerAdapter(adapterTypeFactory: SellerDrawerAdapterTypeFactory,
     private fun isDrawerGroup(position: Int) : Boolean =
             visitables[position - itemCount] is SellerDrawerItem
 
-    private fun setExpandCache(group: DrawerGroup, isExpand: Boolean) {
-        when(group.getId()) {
-            SellerHomeState.DrawerPosition.INBOX ->
-                drawerCache.putBoolean(IS_INBOX_OPENED, isExpand)
-            SellerHomeState.DrawerPosition.PEOPLE ->
-                drawerCache.putBoolean(IS_PEOPLE_OPENED, isExpand)
-            SellerHomeState.DrawerPosition.SHOP ->
-                drawerCache.putBoolean(IS_PRODUCT_OPENED, isExpand)
-            SellerHomeState.DrawerPosition.SELLER_PRODUCT_EXTEND ->
-                drawerCache.putBoolean(IS_PRODUCT_OPENED, isExpand)
-            SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE ->
-                drawerCache.putBoolean(IS_GM_OPENED, isExpand)
-            SellerHomeState.DrawerPosition.RESOLUTION_CENTER ->
-                drawerCache.putBoolean(IS_RESO_OPENED, isExpand)
-        }
-        drawerCache.applyEditor()
-    }
 }

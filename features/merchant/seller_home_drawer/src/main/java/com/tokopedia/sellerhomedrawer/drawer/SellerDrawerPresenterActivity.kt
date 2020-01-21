@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.core.app.BasePresenterActivity
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
@@ -16,13 +17,15 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_drawer_activity.*
 
-open class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
+abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
 {
     private val MAX_NOTIF = 999
 
     lateinit var sellerDrawerHelper: SellerDrawerHelper
     lateinit var userSession: UserSession
     lateinit var drawerCache: LocalCacheHandler
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
     protected var drawerDataManager: DrawerDataManager? = null
     private var isLogin: Boolean? = null
     private var drawerActivityBroadcastReceiver: BroadcastReceiver? = null
@@ -34,6 +37,7 @@ open class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
         //TODO : Is this context true ?
         userSession = UserSession(applicationContext)
         drawerCache = LocalCacheHandler(this, SellerHomeDrawerHelper.DRAWER_CACHE)
+        remoteConfig = FirebaseRemoteConfigImpl(this)
         setupDrawer()
     }
 
@@ -43,9 +47,12 @@ open class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
 
     fun setupDrawer() {
         //TODO : Inject these
-        sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache)
+        sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache, remoteConfig)
         sellerDrawerHelper.initDrawer(this)
+        sellerDrawerHelper.selectedPosition = setDrawerPosition()
     }
+
+    protected abstract fun setDrawerPosition(): Int
 
     fun getDrawerHelper(): SellerHomeDrawerHelper? = null
 
@@ -117,7 +124,7 @@ open class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
 
 
     private fun Toolbar.initNotificationMenu() {
-        val notif = layoutInflater.inflate(R.layout.sh_custom_actionbar_drawer_notification, app_bar, false)
+        val notif = layoutInflater.inflate(R.layout.sh_custom_actionbar_drawer_notification, null)
         val drawerToggle = notif.findViewById<ImageView>(R.id.toggle_but_ab)
         drawerToggle.setOnClickListener {
             if (sellerDrawerHelper.isOpened())
@@ -129,7 +136,7 @@ open class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>()
     }
 
     private fun Toolbar.initTitle() {
-        val title = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, app_bar, false)
+        val title = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
         title.actionbar_title.text = getTitle()
         this.addView(title)
     }

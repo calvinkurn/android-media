@@ -26,12 +26,14 @@ class SellerDrawerGroupViewHolder(itemView: View,
                 label.text = sellerDrawerGroup.label
                 setGroupIcon(sellerDrawerGroup.iconId)
                 drawer_item.setOnClickListener {
-                    listener.onGroupClicked(sellerDrawerGroup)
+                    listener.onGroupClicked(sellerDrawerGroup, adapterPosition)
                 }
 
             }
         }
     }
+
+
 
     private fun setArrowPosition(isExpanded: Boolean) {
         with(itemView) {

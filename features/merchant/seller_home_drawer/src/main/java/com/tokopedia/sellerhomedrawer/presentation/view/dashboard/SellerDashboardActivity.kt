@@ -27,4 +27,8 @@ class SellerDashboardActivity<T>: SellerDrawerPresenterActivity<T>() {
         }
 
     }
+
+    override fun setDrawerPosition(): Int {
+        return 0
+    }
 }
