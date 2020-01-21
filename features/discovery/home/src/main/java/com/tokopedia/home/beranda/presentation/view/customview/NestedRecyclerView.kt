@@ -1,18 +1,18 @@
 package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
-import androidx.core.view.NestedScrollingParent2
-import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.recyclerview.widget.CustomRecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.core.view.NestedScrollingParent3
 
 /**
  * Created by devarafikry on 02/04/19.
  */
 
-open class NestedRecyclerView : RecyclerView, NestedScrollingParent3 {
+open class NestedRecyclerView : CustomRecyclerView, NestedScrollingParent3 {
     private var nestedScrollTarget: View? = null
     private var nestedScrollTargetIsBeingDragged = false
     private var nestedScrollTargetWasUnableToScroll = false
@@ -108,7 +108,6 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent3 {
     fun setNestedCanScroll(canScroll: Boolean) {
         this.nestedCanScroll = canScroll
     }
-
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
     }
