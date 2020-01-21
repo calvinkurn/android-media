@@ -91,48 +91,28 @@ data class RatesParam(
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
 
-        val spids: String
-        val origin: String
-        val destination: String
-        val weight: String
-        val trade_in: Int
-        var is_corner: Int = 0
-        val shop_id: String
-        val token: String
-        val ut: String
-        val insurance: String
-        val product_insurance: String
-        val order_value: String
-        val cat_id: String
+        val spids: String = RatesParamHelper.generateSpIds(shopShipments)
+        val origin: String = RatesParamHelper.generateOrigin(shipping)
+        val destination: String = RatesParamHelper.generateDestination(shipping)
+        val weight: String = shipping.weightInKilograms.toString()
+        val trade_in: Int = RatesParamHelper.determineTradeIn(shipping)
+        var is_corner = 0
+        val shop_id: String = shipping.shopId
+        val token: String = shipping.token
+        val ut: String = shipping.ut
+        val insurance: String = shipping.insurance.toString()
+        val product_insurance: String = shipping.productInsurance.toString()
+        val order_value: String = shipping.orderValue.toString()
+        val cat_id: String = shipping.categoryIds
         var user_history: Int = 0
-        val is_blackbox: Int
-        val address_id: String
-        val preorder: Int
+        val is_blackbox: Int = if (shipping.isBlackbox) 1 else 0
+        val address_id: String = shipping.addressId.toString()
+        val preorder: Int = if (shipping.isPreorder) 1 else 0
         var vehicle_leasing: Int = 0
         var psl_code: String = ""
-        val products: String
-        val unique_id: String
-
-        init {
-            this.spids = RatesParamHelper.generateSpIds(shopShipments)
-            this.origin = RatesParamHelper.generateOrigin(shipping)
-            this.destination = RatesParamHelper.generateDestination(shipping)
-            this.weight = shipping.weightInKilograms.toString()
-            this.trade_in = RatesParamHelper.determineTradeIn(shipping)
-            this.shop_id = shipping.shopId
-            this.token = shipping.token
-            this.ut = shipping.ut
-            this.insurance = shipping.insurance.toString()
-            this.product_insurance = shipping.productInsurance.toString()
-            this.order_value = shipping.orderValue.toString()
-            this.cat_id = shipping.categoryIds
-            this.is_blackbox = if (shipping.isBlackbox) 1 else 0
-            this.address_id = shipping.addressId.toString()
-            this.preorder = if (shipping.isPreorder) 1 else 0
-            // todo: verify this later on
-            this.products = RatesParamHelper.generateProducts(shipping)
-            this.unique_id = shipping.uniqueId
-        }
+        //todo: verify this later on
+        val products: String = RatesParamHelper.generateProducts(shipping)
+        val unique_id: String = shipping.uniqueId
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
