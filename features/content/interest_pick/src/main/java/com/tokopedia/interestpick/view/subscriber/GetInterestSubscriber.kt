@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.data.pojo.GetInterestData
 import com.tokopedia.interestpick.data.pojo.Header
@@ -48,11 +49,11 @@ class GetInterestSubscriber(val view: InterestPickContract.View)
     }
 
     private fun convertToInterestList(list: List<InterestsItem>)
-            : ArrayList<InterestPickItemViewModel> {
-        val interestList: ArrayList<InterestPickItemViewModel> = ArrayList()
+            : ArrayList<InterestPickDataViewModel> {
+        val interestList: ArrayList<InterestPickDataViewModel> = ArrayList()
         for (item in list) {
             interestList.add(
-                    InterestPickItemViewModel(
+                    InterestPickDataViewModel(
                             item.id,
                             item.name,
                             item.imageUrl,

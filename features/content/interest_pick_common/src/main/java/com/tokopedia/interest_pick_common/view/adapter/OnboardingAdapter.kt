@@ -20,6 +20,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
 
     companion object {
         val SOURCE_FEED = "feeds"
+        val SOURCE_ACCOUNTS = "accounts"
         fun getItemDecoration(): RecyclerView.ItemDecoration {
             return object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
@@ -69,6 +70,10 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun getList() :List<InterestPickDataViewModel> {
+        return list
     }
 
     class Holder(v: View, val listener: InterestPickItemListener) : RecyclerView.ViewHolder(v) {

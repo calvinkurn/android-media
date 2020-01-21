@@ -17,6 +17,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter.Companion.SOURCE_ACCOUNTS
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.R.id.*
 import com.tokopedia.interestpick.di.DaggerInterestPickComponent
@@ -31,7 +34,7 @@ import javax.inject.Inject
  * @author by milhamj on 03/09/18.
  */
 
-class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
+class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, OnboardingAdapter.InterestPickItemListener {
 
     companion object {
         fun createInstance() = InterestPickFragment()
@@ -39,7 +42,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
 
     @Inject
     lateinit var presenter: InterestPickContract.Presenter
-    lateinit var adapter: InterestPickAdapter
+    lateinit var adapter: OnboardingAdapter
     var selectedCount = 0
     var isSaved = false
 
@@ -88,7 +91,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         progressBar.visibility = View.GONE
     }
 
-    override fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
+    override fun onSuccessGetInterest(interestList: ArrayList<InterestPickDataViewModel>,
                                       title: String) {
         for (item in interestList) {
             if (item.isSelected) {
@@ -108,7 +111,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     override fun onSuccessUpdateInterest() {
-        val selectedList = ArrayList<InterestPickItemViewModel>()
+        val selectedList = ArrayList<InterestPickDataViewModel>()
         for (item in adapter.getList()) {
             if (item.isSelected) {
                 selectedList.add(item)
@@ -180,21 +183,19 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     private fun initView() {
-        adapter = InterestPickAdapter(this)
+        adapter = OnboardingAdapter(this, SOURCE_ACCOUNTS)
         interestList.adapter = adapter
         saveInterest.setOnClickListener {
-            updateInterest()
+            presenter.updateInterest(adapter.getSelectedItemIdList())
         }
     }
 
-    private fun updateInterest() {
-        val selectedIds = ArrayList<Int>()
-        for (item in adapter.getList()) {
-            adapter.setItemUnClickable(item)
-            if (item.isSelected) {
-                selectedIds.add(item.categoryId)
-            }
-        }
-        presenter.updateInterest(selectedIds.toTypedArray())
+    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
+    }
+
+    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {
+    }
+
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
     }
 }
