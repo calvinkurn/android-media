@@ -27,9 +27,6 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
       status
       read_status
       type_link
-      options {
-        longer_content
-      }
       data_notification {
         app_link
         desktop_link
@@ -80,6 +77,9 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         }
       }
       total_product
+    }
+    options {
+      longer_content
     }
     user_info {
       user_id
