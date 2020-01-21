@@ -90,7 +90,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     }
 
-    var videoPlayer: SimpleExoPlayer by Delegates.observable(initVideoPlayer(null)) { _, _, new ->
+    var videoPlayer: SimpleExoPlayer by Delegates.observable(initVideoPlayer(null)) { _, _, _ ->
         _observableVideoPlayer.value = videoPlayer
     }
 
