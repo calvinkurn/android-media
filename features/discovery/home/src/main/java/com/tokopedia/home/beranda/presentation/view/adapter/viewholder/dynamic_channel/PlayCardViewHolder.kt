@@ -41,15 +41,17 @@ class PlayCardViewHolder(
 
     override fun bind(element: PlayCardViewModel) {
         if (element.getPlayCardHome() == null) {
+            itemView.hide()
             helper = null
             listener.onGetPlayBanner(adapterPosition)
         } else {
+            itemView.show()
             val model = element.getPlayCardHome()
             title.setValue(element.getChannel()?.header?.name ?: "Play Channel")
             description.setValue("")
             mVideoUrl = if(model?.videoStream?.config?.streamUrl?.isEmpty() == true) "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" else model?.videoStream?.config?.streamUrl ?: ""
 //            mThumbUrl = if(model?.coverUrl?.isEmpty() == true) "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQsXmNcM4cLjmjXv-_9QJe5McOfdu6652WGC4LBq8FpirMHT9xl" else model?.coverUrl ?: ""
-            mThumbUrl = model?.coverUrl ?: ""
+            mThumbUrl = ""
             createHelper()
             playCardViewModel = element
 
@@ -85,8 +87,8 @@ class PlayCardViewHolder(
 
         if(helper != null && helper!!.isPlayerNull()){
             helper?.createPlayer()
-            if(mThumbUrl.isEmpty()) helper?.seekToDefaultPosition()
         }
+        if(mThumbUrl.isEmpty()) helper?.seekToDefaultPosition()
     }
 
     fun resume(){

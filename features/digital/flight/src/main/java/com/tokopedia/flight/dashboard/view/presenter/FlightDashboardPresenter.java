@@ -354,7 +354,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             getView().renderSingleTripView();
         }
-        getView().stopTrace();
     }
 
     @Override
@@ -667,6 +666,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             public void onError(Throwable throwable) {
                 if (isViewAttached()) {
                     getView().hideBannerView();
+                    getView().stopTrace();
                 }
             }
 
@@ -679,6 +679,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                     } else {
                         getView().hideBannerView();
                     }
+                    getView().stopTrace();
                 }
             }
         });

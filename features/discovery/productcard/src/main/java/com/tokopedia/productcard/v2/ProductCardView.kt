@@ -30,6 +30,7 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.product_card_layout_v2_skeleton.view.*
 
 /**
  * This abstract class provides a basis for Custom View Product Card.
@@ -336,13 +337,13 @@ abstract class ProductCardView: BaseCustomView {
         realignLayout()
     }
 
-    private fun initProductImage(productImageUrl: String) {
+    internal fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
             ImageHandler.loadImageRounded2(context, it, productImageUrl)
         }
     }
 
-    private fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
+    internal open fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
         buttonWishlist.shouldShowWithAction(isWishlistVisible) {
             if (isWishlisted) {
                 it.setImageResource(R.drawable.product_card_ic_wishlist_red)
@@ -352,23 +353,25 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initShopName(shopName: String) {
+    internal open fun initShopName(shopName: String) {
         textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
     }
 
-    private fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
-        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
+    internal open fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
+        val isLabelPromoVisible = labelPromoModel.title.isNotEmpty()
+
+        labelCredibility.configureVisibilityWithBlankSpaceConfig(isLabelPromoVisible, blankSpaceConfig.labelPromo) {
             it.text = labelPromoModel.title
             it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
         }
     }
 
-    private fun initProductName(productName: String) {
+    internal open fun initProductName(productName: String) {
         if (blankSpaceConfig.twoLinesProductName) textViewProductName?.setLines(2)
         textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
     }
 
-    private fun initLabelDiscount(discountPercentage: String) {
+    internal open fun initLabelDiscount(discountPercentage: String) {
         val isLabelDiscountVisible = getIsLabelDiscountVisible(discountPercentage)
 
         labelDiscount.configureVisibilityWithBlankSpaceConfig(
@@ -377,12 +380,12 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun getIsLabelDiscountVisible(discountPercentage: String): Boolean {
+    internal fun getIsLabelDiscountVisible(discountPercentage: String): Boolean {
         return discountPercentage.isNotEmpty()
                 && discountPercentage.trim() != "0"
     }
 
-    private fun initSlashedPrice(slashedPrice: String) {
+    internal open fun initSlashedPrice(slashedPrice: String) {
         textViewSlashedPrice.configureVisibilityWithBlankSpaceConfig(
                 slashedPrice.isNotEmpty(), blankSpaceConfig.slashedPrice) {
             it.text = slashedPrice
@@ -390,11 +393,11 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initProductPrice(formattedPrice: String) {
+    internal open fun initProductPrice(formattedPrice: String) {
         textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
     }
 
-    private fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
+    internal open fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
         removeAllShopBadges()
 
         linearLayoutShopBadges.configureVisibilityWithBlankSpaceConfig(hasAnyBadgesShown(shopBadgeList), blankSpaceConfig.shopBadge) {
@@ -402,11 +405,11 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun hasAnyBadgesShown(shopBadgeList: List<ProductCardModel.ShopBadge>): Boolean {
+    internal fun hasAnyBadgesShown(shopBadgeList: List<ProductCardModel.ShopBadge>): Boolean {
         return shopBadgeList.any { badge -> badge.isShown }
     }
 
-    private fun loopBadgesListToLoadShopBadgeIcon(shopBadgeList: List<ProductCardModel.ShopBadge>) {
+    internal fun loopBadgesListToLoadShopBadgeIcon(shopBadgeList: List<ProductCardModel.ShopBadge>) {
         for (badgeItem in shopBadgeList) {
             if (badgeItem.isShown) {
                 loadShopBadgesIcon(badgeItem.imageUrl)
@@ -451,25 +454,25 @@ abstract class ProductCardView: BaseCustomView {
         view.visibility = View.GONE
     }
 
-    private fun initShopLocation(shopLocation: String) {
+    internal open fun initShopLocation(shopLocation: String) {
         textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
     }
 
-    private fun initRating(ratingCount: Int) {
+    internal open fun initRating(ratingCount: Int) {
         linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
                 ratingCount > 0, blankSpaceConfig.ratingCount) {
             setRating(ratingCount)
         }
     }
 
-    private fun initReview(reviewCount: Int) {
+    internal open fun initReview(reviewCount: Int) {
         textViewReviewCount.configureVisibilityWithBlankSpaceConfig(
                 reviewCount > 0, blankSpaceConfig.reviewCount) {
             it.text = getReviewCountFormattedAsText(reviewCount)
         }
     }
 
-    private fun initLabelCredibility(ratingCount: Int, reviewCount: Int, labelCredibilityModel: ProductCardModel.Label) {
+    internal open fun initLabelCredibility(ratingCount: Int, reviewCount: Int, labelCredibilityModel: ProductCardModel.Label) {
         val isLabelCredibilityVisible = isLabelCredibilityVisible(ratingCount, reviewCount, labelCredibilityModel)
 
         labelCredibility.configureVisibilityWithBlankSpaceConfig(isLabelCredibilityVisible, blankSpaceConfig.labelCredibility) {
@@ -478,11 +481,11 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun isLabelCredibilityVisible(ratingCount: Int, reviewCount: Int, labelCredibilityModel: ProductCardModel.Label): Boolean {
+    internal fun isLabelCredibilityVisible(ratingCount: Int, reviewCount: Int, labelCredibilityModel: ProductCardModel.Label): Boolean {
         return labelCredibilityModel.title.isNotEmpty() && ratingCount == 0 && reviewCount == 0
     }
 
-    private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
+    internal open fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
         labelOffers.configureVisibilityWithBlankSpaceConfig(
                 labelOffersModel.title.isNotEmpty(), blankSpaceConfig.labelOffers) {
             it.text = labelOffersModel.title
@@ -490,7 +493,7 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initFreeOngkir(freeOngkir: ProductCardModel.FreeOngkir) {
+    internal open fun initFreeOngkir(freeOngkir: ProductCardModel.FreeOngkir) {
         val shouldShowFreeOngkirImage = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
@@ -499,7 +502,7 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initTopAdsIcon(isVisible: Boolean) {
+    internal open fun initTopAdsIcon(isVisible: Boolean) {
         imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 

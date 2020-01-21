@@ -20,29 +20,14 @@ import com.tokopedia.home.R
 class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
     companion object{
         private val playerLayoutId = R.layout.tokopedia_play_view
-
-        /** The buffering view is never shown.  */
-        private const val SHOW_BUFFERING_NEVER = 0
-        /**
-         * The buffering view is shown when the player is in the [buffering][Player.STATE_BUFFERING]
-         * state and [playWhenReady][Player.getPlayWhenReady] is `true`.
-         */
-        private const val SHOW_BUFFERING_WHEN_PLAYING = 1
-        /**
-         * The buffering view is always shown when the player is in the [ buffering][Player.STATE_BUFFERING] state.
-         */
-        private const val SHOW_BUFFERING_ALWAYS = 2
-
         const val ANIMATION_TRANSITION_NAME = "play_video"
 
     }
     private var componentListener: ComponentListener? = null
-    private var bufferingView: View? = null
     private var contentFrame: AspectRatioFrameLayout? = null
     private var player: Player? = null
     private var surfaceView: TextureView? = null
     private var textureViewRotation = 0
-    private var showBuffering = SHOW_BUFFERING_NEVER
     private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
 
     constructor(context: Context) : this(context, null, 0)
@@ -50,15 +35,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     init{
-        showBuffering = SHOW_BUFFERING_NEVER
-        if (attrs != null) {
-            val a = context.theme.obtainStyledAttributes(attrs, R.styleable.PlayerView, 0, 0)
-            try{
-                showBuffering = a.getInteger(R.styleable.PlayerView_show_buffering, showBuffering)
-            } finally {
-                a.recycle()
-            }
-        }
 
         LayoutInflater.from(context).inflate(playerLayoutId, this)
         componentListener = ComponentListener()
@@ -76,9 +52,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         surfaceView?.layoutParams = params
         contentFrame?.addView(surfaceView, 0)
-        // Buffering view.
-        bufferingView = findViewById(R.id.exo_buffering)
-        bufferingView?.visibility = View.GONE
     }
 
     private fun onContentAspectRatioChanged(
@@ -124,7 +97,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
     fun setPlayer(player: Player?){
         if (this.player != null) {
-            this.player?.removeListener(componentListener)
             val oldVideoComponent = this.player?.videoComponent
             if (oldVideoComponent != null) {
                 oldVideoComponent.removeVideoListener(componentListener)
@@ -138,11 +110,10 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
                 newVideoComponent.setVideoTextureView(surfaceView)
                 newVideoComponent.addVideoListener(componentListener)
             }
-            player.addListener(componentListener)
         }
     }
 
-    inner class ComponentListener : Player.EventListener, VideoListener, OnLayoutChangeListener {
+    inner class ComponentListener : VideoListener, OnLayoutChangeListener {
         // VideoListener implementation
         override fun onVideoSizeChanged(
                 width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
@@ -175,13 +146,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         }
 
-        // Player.EventListener implementation
-
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        }
-
         override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
-
         }
     }
 }
