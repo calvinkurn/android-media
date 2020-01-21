@@ -520,7 +520,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val size = adapter.getlist().size
         val lastIndex = size - 1
         if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
-            presenter.fetchNextPage()
+            feedViewModel.getFeedNextPage()
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -897,19 +897,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
         val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
         if (rowNumber != DEFAULT_VALUE
-                && newList.size > rowNumber
-                && newList[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
+                && newList.size > rowNumber) {
+            val (_, _, _, _, footer) = newList[rowNumber]
             val comment = footer.comment
-            if (comment.value == 0) {
-                comment.fmt = totalNewComment.toString()
-            } else {
-                try {
-                    val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
-                    comment.fmt = commentValue.toString()
-                } catch (ignored: NumberFormatException) {
-                }
+            try {
+                val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
+                comment.fmt = commentValue.toString()
+            } catch (ignored: NumberFormatException) {
             }
+
             comment.value = comment.value + totalNewComment
             adapter.updateList(newList)
         }
@@ -1420,8 +1416,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
             swipe_refresh_layout.isEnabled = true
             trackFeedImpression(model.postList)
-            adapter.setList(model.postList)
-            adapter.notifyDataSetChanged()
+            adapter.clearData()
+            adapter.updateList(model.postList)
             triggerClearNewFeedNotification()
             if (model.hasNext) {
                 setEndlessScroll()
@@ -1467,7 +1463,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             adapter.removeEmpty()
             val posStart = adapter.itemCount
             adapter.addList(model.postList)
-            adapter.notifyItemRangeInserted(posStart, model.postList.size)
         }
     }
 
@@ -1493,11 +1488,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
-        }
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        val (_, _, header) = newList[rowNumber]
+        header.followCta.isFollow = !header.followCta.isFollow
+        adapter.updateList(newList)
     }
 
     private fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
@@ -1512,20 +1506,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        if (newList.size > rowNumber) {
+            val (_, _, _, _, footer) = newList[rowNumber]
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
-                if (like.value == 0) {
-                    like.fmt = "1"
-                } else {
-                    try {
-                        val likeValue = Integer.valueOf(like.fmt) + 1
-                        like.fmt = likeValue.toString()
-                    } catch (ignored: NumberFormatException) {
-                    }
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) + 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
                 }
+
                 like.value = like.value + 1
             } else {
                 try {
@@ -1536,7 +1528,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 like.value = like.value - 1
             }
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
+
+            adapter.updateList(newList)
         }
     }
 
@@ -1555,8 +1548,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessDeletePost(rowNumber: Int) {
-        adapter.getlist().removeAt(rowNumber)
-        adapter.notifyItemRemoved(rowNumber)
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        newList.removeAt(rowNumber)
+        adapter.updateList(newList)
         val snackbar = ToasterNormal.make(view,
                 getString(R.string.feed_post_deleted),
                 BaseToaster.LENGTH_LONG
@@ -1578,35 +1572,30 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onSuccessSendVote(rowNumber: Int, optionId: String,
                                    voteStatisticDomainModel: VoteStatisticDomainModel) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, contentList) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            for (basePostViewModel in contentList) {
-                if (basePostViewModel is PollContentViewModel) {
-                    basePostViewModel.voted = true
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        val (_, _, _, _, _, _, contentList) = newList[rowNumber] as DynamicPostViewModel
+        for (basePostViewModel in contentList) {
+            if (basePostViewModel is PollContentViewModel) {
+                basePostViewModel.voted = true
+                var totalVoter: Int
+                try {
+                    totalVoter = Integer.valueOf(voteStatisticDomainModel.totalParticipants)
+                } catch (ignored: NumberFormatException) {
+                    totalVoter = 0
+                }
+                basePostViewModel.totalVoterNumber = totalVoter
+                for (i in 0 until basePostViewModel.optionList.size) {
+                    val optionViewModel = basePostViewModel.optionList[i]
 
-                    var totalVoter: Int
-                    try {
-                        totalVoter = Integer.valueOf(voteStatisticDomainModel.totalParticipants)
-                    } catch (ignored: NumberFormatException) {
-                        totalVoter = 0
-                    }
-
-                    basePostViewModel.totalVoterNumber = totalVoter
-
-                    for (i in 0 until basePostViewModel.optionList.size) {
-                        val optionViewModel = basePostViewModel.optionList[i]
-
-                        optionViewModel.selected = if (optionId == optionViewModel.optionId)
-                            PollContentOptionViewModel.SELECTED
-                        else
-                            PollContentOptionViewModel.UNSELECTED
-                        optionViewModel.percentage = voteStatisticDomainModel.listOptions[i].percentage.toIntOrZero()
-                    }
+                    optionViewModel.selected = if (optionId == optionViewModel.optionId)
+                        PollContentOptionViewModel.SELECTED
+                    else
+                        PollContentOptionViewModel.UNSELECTED
+                    optionViewModel.percentage = voteStatisticDomainModel.listOptions[i].percentage.toIntOrZero()
                 }
             }
-
-            adapter.notifyItemChanged(rowNumber)
         }
+        adapter.updateList(newList)
     }
 
     private fun onErrorSendVote(message: String) {
@@ -1758,7 +1747,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onShowEmpty() {
         adapter.unsetEndlessScrollListener()
         adapter.showEmpty()
-        adapter.notifyDataSetChanged()
     }
 
     private fun clearData() {
