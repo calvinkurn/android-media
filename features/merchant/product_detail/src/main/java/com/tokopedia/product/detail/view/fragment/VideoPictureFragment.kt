@@ -85,12 +85,12 @@ class VideoPictureFragment : BaseDaggerFragment() {
     }
 
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         arguments?.let {
             mediaType = it.getString(ARG_MEDIA_TYPE, TYPE_IMAGE)
             mediaSource = it.getString(ARG_MEDIA_SRC, "")
-            mediaPosition = it.getInt(ARG_MEDIA_POSITION)
+                mediaPosition = it.getInt(ARG_MEDIA_POSITION)
         }
     }
 

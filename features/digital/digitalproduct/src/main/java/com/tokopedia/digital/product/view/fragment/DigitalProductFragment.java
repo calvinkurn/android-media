@@ -47,7 +47,6 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -58,7 +57,6 @@ import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
@@ -83,7 +81,6 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -150,6 +147,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String CLICK_PDP = "clickPDP";
     private static final String DIGITAL_HOMEPAGE = "digital - homepage";
     private static final String CLICK_UPDATE_SALDO = "click update saldo ";
+    private static final String CLICK_HOMEPAGE_OCR = "clickHomepage";
+    private static final String CATEGORY_OCR = "digital - native";
+    private static final String ACTION_OCR = "click camera icon";
+
+    public static final String PATH_TRANSACTION_LIST = "order-list/";
+    public static final String PATH_PRODUCT_LIST = "products/";
+    public static final String PATH_SUBSCRIPTIONS = "subscribe/";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -160,6 +164,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_CONTACT_PICKER = 1005;
     private static final int REQUEST_CODE_CART_DIGITAL = 1006;
     private static final int REQUEST_CODE_CHECK_SALDO_EMONEY = 1007;
+    private static final int REQUEST_CODE_CAMERA_OCR = 1008;
 
     private NestedScrollView mainHolderContainer;
     private ProgressBar pbMainLoading;
@@ -223,8 +228,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Inject
     UserSession userSession;
     @Inject
-    DigitalModuleRouter digitalModuleRouter;
-    @Inject
     RechargeAnalytics rechargeAnalytics;
 
     public static Fragment newInstance(
@@ -259,7 +262,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         digitalAnalytics = new DigitalAnalytics();
-        View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_product, container, false);
         initView(view);
         return view;
     }
@@ -372,14 +375,14 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
-        pbMainLoading = view.findViewById(R.id.pb_main_loading);
-        holderProductDetail = view.findViewById(R.id.holder_product_detail);
-        holderCheckBalance = view.findViewById(R.id.holder_check_balance);
-        checkETollBalanceView = view.findViewById(R.id.holder_check_emoney_balance);
-        promoTabLayout = view.findViewById(R.id.indicator);
-        promoViewPager = view.findViewById(R.id.pager);
-        containerPromo = view.findViewById(R.id.container_promo);
-        mainHolderContainer = view.findViewById(R.id.main_container);
+        pbMainLoading = view.findViewById(com.tokopedia.digital.R.id.pb_main_loading);
+        holderProductDetail = view.findViewById(com.tokopedia.digital.R.id.digital_holder_product_detail);
+        holderCheckBalance = view.findViewById(com.tokopedia.digital.R.id.digital_holder_check_balance);
+        checkETollBalanceView = view.findViewById(com.tokopedia.digital.R.id.digital_holder_check_emoney_balance);
+        promoTabLayout = view.findViewById(com.tokopedia.digital.R.id.indicator);
+        promoViewPager = view.findViewById(com.tokopedia.digital.R.id.pager);
+        containerPromo = view.findViewById(com.tokopedia.digital.R.id.digital_container_promo);
+        mainHolderContainer = view.findViewById(com.tokopedia.digital.R.id.main_container);
 
         mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         mainHolderContainer.setFillViewport(true);
@@ -508,12 +511,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void removeCheckPulsaCards() {
         holderCheckBalance.removeAllViews();
-    }
-
-    @Override
-    public void navigateToWebview() {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
-        startActivity(intent);
     }
 
     @Override
@@ -648,8 +645,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = ((DigitalModuleRouter) getContext().getApplicationContext())
-                .getLoginIntent(getActivity());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
     }
 
@@ -695,14 +691,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 userSession.getUserId());
 
         if (userSession.isLoggedIn()) {
-            if (getActivity().getApplication() instanceof DigitalRouter) {
-                DigitalRouter digitalModuleRouter =
-                        (DigitalRouter) getActivity().getApplication();
-                navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        REQUEST_CODE_CART_DIGITAL
-                );
-            }
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
         } else {
             interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
@@ -724,15 +715,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 userSession.getUserId());
 
         if (userSession.isLoggedIn()) {
-            if (getActivity().getApplication() instanceof DigitalRouter) {
-                DigitalRouter digitalModuleRouter =
-                        (DigitalRouter) getActivity().getApplication();
-                navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        REQUEST_CODE_CART_DIGITAL
-                );
-                getActivity().overridePendingTransition(0, 0);
-            }
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
         } else {
             interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
@@ -819,6 +804,14 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         openContactPicker();
                     }
                 }, "");
+    }
+
+    @Override
+    public void onButtonCameraPickerClicked() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_HOMEPAGE_OCR, CATEGORY_OCR, ACTION_OCR, ""));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CAMERA_OCR);
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_OCR);
     }
 
     @Override
@@ -939,14 +932,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 break;
             case REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
-                    if (getActivity().getApplication() instanceof DigitalRouter) {
-                        DigitalRouter digitalModuleRouter =
-                                (DigitalRouter) getActivity().getApplication();
-                        navigateToActivityRequest(
-                                digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                REQUEST_CODE_CART_DIGITAL
-                        );
-                    }
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+                    intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassDataState);
+                    startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
                 }
                 break;
             case REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
@@ -982,6 +970,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     }
                 }
                 break;
+            case REQUEST_CODE_CAMERA_OCR:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    String clientNumber = data.getStringExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR);
+                    showToastMessage(getString(R.string.digital_success_message_scan_ocr));
+                    digitalProductView.renderClientNumber(clientNumber);
+                }
+                break;
         }
     }
 
@@ -999,36 +994,26 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
-            navigateToActivity(
-                    digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                    + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
-                    )
-            );
+            RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
+                    + PATH_PRODUCT_LIST);
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
-            navigateToActivity(
-                    digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                    + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
-                    )
-            );
+            RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
+                    + PATH_SUBSCRIPTIONS);
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             if (categoryDataState != null) {
                 digitalAnalytics.eventClickDaftarTransaksiEvent(categoryDataState.getName());
             }
             if (GlobalConfig.isSellerApp()) {
-                navigateToActivity(
-                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
-                );
+                RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
+                        + PATH_TRANSACTION_LIST);
             } else {
                 RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
             }
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_digital) {
-            presenter.onHelpMenuClicked();
+            RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -1245,23 +1230,23 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 getString(R.string.title_showcase_ussd),
                 getString(R.string.message_showcase_ussd),
                 ShowCaseContentPosition.UNDEFINED,
-                R.color.tkpd_main_green));
+                com.tokopedia.design.R.color.tkpd_main_green));
         showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
     }
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .customView(R.layout.view_layout_showcase)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .textSizeRes(R.dimen.dp_12)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .customView(R.layout.view_digital_showcase)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
+                .spacingRes(R.dimen.digital_spacing_show_case)
+                .arrowWidth(R.dimen.digital_arrow_width_show_case)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .textSizeRes(com.tokopedia.design.R.dimen.dp_12)
+                .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .prevStringRes(R.string.digital_navigate_back_showcase)
-                .nextStringRes(R.string.next)
+                .nextStringRes(com.tokopedia.showcase.R.string.next)
                 .finishStringRes(R.string.digital_navigate_done_showcase)
                 .useCircleIndicator(true)
                 .clickable(true)
@@ -1379,20 +1364,20 @@ public class DigitalProductFragment extends BaseDaggerFragment
             checkETollBalanceView.setElevation(10);
             containerPromo.setElevation(10);
 
-            holderCheckBalance.setBackgroundResource(R.color.white);
-            holderProductDetail.setBackgroundResource(R.color.white);
-            checkETollBalanceView.setBackgroundResource(R.color.white);
-            containerPromo.setBackgroundResource(R.color.white);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.color.white);
+            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.color.white);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.color.white);
+            containerPromo.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
-            holderCheckBalance.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            holderProductDetail.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            checkETollBalanceView.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            containerPromo.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+            containerPromo.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 
     private View getTickerCouponApplied() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.include_digital_ticker_coupon_applied_view, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.view_digital_ticker_coupon_applied, null);
 
         TickerView tickerView = view.findViewById(R.id.ticker_view);
         setupTickerCouponApplied(tickerView);
@@ -1405,17 +1390,17 @@ public class DigitalProductFragment extends BaseDaggerFragment
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
         tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.green_200));
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_200));
         tickerView.buildView();
 
         tickerView.postDelayed(() -> {
             tickerView.setItemPadding(
-                    getResources().getDimensionPixelSize(R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(R.dimen.dp_15),
-                    getResources().getDimensionPixelSize(R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(R.dimen.dp_15)
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
             );
-            tickerView.setItemTextAppearance(R.style.TextView_Micro);
+            tickerView.setItemTextAppearance(com.tokopedia.design.R.style.TextView_Micro);
         }, DEFAULT_POST_DELAYED_VALUE);
     }
 

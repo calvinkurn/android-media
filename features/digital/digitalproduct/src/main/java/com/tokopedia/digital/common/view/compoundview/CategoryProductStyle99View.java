@@ -86,7 +86,7 @@ public class CategoryProductStyle99View extends
 
     @Override
     protected int getHolderLayoutId() {
-        return R.layout.view_holder_category_product_style_1;
+        return R.layout.view_holder_digital_product_style_1;
     }
 
     @Override
@@ -301,8 +301,13 @@ public class CategoryProductStyle99View extends
     private ClientNumberInputView.ActionListener getActionListenerClientNumberInputView() {
         return new ClientNumberInputView.ActionListener() {
             @Override
-            public void onButtonContactPickerClicked() {
+            public void onButtonCameraPickerClicked() {
 
+            }
+
+            @Override
+            public void onButtonContactPickerClicked() {
+                actionListener.onButtonContactPickerClicked();
             }
 
             @Override

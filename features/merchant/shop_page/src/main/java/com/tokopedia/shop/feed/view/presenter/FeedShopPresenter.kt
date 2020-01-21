@@ -347,6 +347,10 @@ class FeedShopPresenter @Inject constructor(
         }
     }
 
+    override fun clearCache() {
+        getDynamicFeedFirstUseCase.clearFeedFirstCache()
+    }
+
     private fun getUserId(): String {
         var userId = "0"
         if (view.userSession.userId.isNotEmpty()) {
