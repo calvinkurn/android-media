@@ -82,7 +82,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                 } else {
                     //For now it's the same as BehindLiveWindow
                     val prepareState = currentPrepareState
-                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
+                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, false)
                 }
             } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
@@ -204,7 +204,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         return object : DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
                 return if (exception is ParserException || exception is FileNotFoundException || exception is UnexpectedLoaderException) C.TIME_UNSET
-                else RETRY_DELAY
+                else (errorCount * RETRY_DELAY) + RETRY_DELAY
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
