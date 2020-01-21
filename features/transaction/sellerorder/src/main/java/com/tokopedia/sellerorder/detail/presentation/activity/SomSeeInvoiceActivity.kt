@@ -33,7 +33,7 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
     private fun getMenuPrintDrawableText(): Drawable {
         val drawable = TextDrawable(this)
         drawable.text = resources.getString(R.string.cetak)
-        drawable.setTextColor(ContextCompat.getColor(this, R.color.tkpd_main_green))
+        drawable.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.tkpd_main_green))
         return drawable
     }
 
