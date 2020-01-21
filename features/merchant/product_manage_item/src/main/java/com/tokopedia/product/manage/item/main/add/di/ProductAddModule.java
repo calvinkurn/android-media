@@ -17,6 +17,8 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource;
 import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository;
@@ -166,5 +168,11 @@ public class ProductAddModule {
     @Provides
     ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
         return new ProductVariantRepositoryImpl(productVariantDataSource);
+    }
+
+    @ProductAddScope
+    @Provides
+    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository) {
+        return new MultiRequestGraphqlUseCase(graphqlRepository);
     }
 }

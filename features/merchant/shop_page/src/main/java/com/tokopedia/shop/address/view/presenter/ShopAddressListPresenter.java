@@ -3,7 +3,6 @@ package com.tokopedia.shop.address.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.address.view.listener.ShopAddressListView;
 import com.tokopedia.shop.address.view.mapper.ShopAddressViewModelMapper;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import rx.Subscriber;
 import timber.log.Timber;
 
 /**

@@ -5,7 +5,6 @@ import com.tokopedia.broadcast.message.view.listener.BroadcastMessageCreateView
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 import javax.inject.Inject
 
 class BroadcastMessageCreatePresenter @Inject constructor(private val userSession: UserSessionInterface,
