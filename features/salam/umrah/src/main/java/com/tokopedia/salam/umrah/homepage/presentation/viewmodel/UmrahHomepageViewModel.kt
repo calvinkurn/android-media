@@ -177,7 +177,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
     }
 
     fun getPartnerTravelData(rawQuery: String, isLoadFromCloud: Boolean) {
-        val flags = listOf("TRAVEL_AGENT_NORMAL")
+        val flags = listOf(FLAGS_PARTNER)
         launch {
             val result = umrahTravelAgentsUseCase.executeUseCase(rawQuery,
                     isLoadFromCloud, 1,6, flags)
@@ -211,5 +211,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
         const val CATEGORY_ORDER = 3
         const val CATEGORY_FEATURED_ORDER = 4
         const val PARTNER_TRAVEL_ORDER = 5
+
+        const val FLAGS_PARTNER = "TRAVEL_AGENT_FEATURED_ON_HOMEPAGE"
     }
 }
