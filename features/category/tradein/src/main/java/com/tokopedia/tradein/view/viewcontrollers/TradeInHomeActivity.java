@@ -21,10 +21,13 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
@@ -36,6 +39,7 @@ import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein_common.Constants;
 import com.tokopedia.tradein_common.IAccessRequestListener;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -58,6 +62,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private boolean isShowingPermissionPopup;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
     private String errorDialogGTMLabel = "";
+    private LinearLayout imeiView;
+    private EditText editTextImei;
+    private Typography typographyImeiDescription;
+    private boolean inputImei;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -120,6 +128,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         mTvNotUpto = findViewById(R.id.tv_not_upto);
         mTvGoToProductDetails = findViewById(R.id.tv_go_to_product_details);
         tvIndicateive = findViewById(R.id.tv_indicative);
+        imeiView = findViewById(R.id.imei_view);
+        editTextImei = findViewById(R.id.edit_text_imei);
+        typographyImeiDescription = findViewById(R.id.typography_imei_description);
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
@@ -188,13 +199,33 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
                         mTvGoToProductDetails.setOnClickListener(v -> {
-                            laku6TradeIn.startGUITest();
+                            if (imeiView.getVisibility() == View.VISIBLE) {
+                                if (editTextImei.getText().length() == 15) {
+                                    tradeInHomeViewModel.setDeviceId(editTextImei.getText().toString());
+                                    inputImei = true;
+                                    getPriceFromSDK(this);
+                                    typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_black));
+                                } else if (editTextImei.getText().length() == 0){
+                                    typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                } else {
+                                    typographyImeiDescription.setText(getString(R.string.wrong_imei_string));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                }
+                            } else {
+                                laku6TradeIn.startGUITest();
+                            }
                             sendGeneralEvent(clickEvent,
                                     category,
                                     TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
                                     "");
 
                         });
+                        if(inputImei){
+                            laku6TradeIn.startGUITest();
+                            break;
+                        }
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
                     case MONEYIN_ERROR:
@@ -213,6 +244,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 showPermissionDialog();
             }
         }));
+        tradeInHomeViewModel.getImeiStateLiveData().observe(this, showImei -> {
+            if(showImei){
+                imeiView.setVisibility(View.VISIBLE);
+            } else {
+                imeiView.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void sendGoToProductDetailGTM() {

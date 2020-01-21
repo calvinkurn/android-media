@@ -38,10 +38,10 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
             val request = HashMap<String, String>()
 
             val response = repository?.getGQLData(query, MoneyInScheduleOptionResponse.ResponseData::class.java, request) as MoneyInScheduleOptionResponse.ResponseData
-            pickupScheduleOptionLiveData.value = Success(response.getPickupScheduleOption)
+            pickupScheduleOptionLiveData.value = Success(response.getPickupScheduleOption!!)
         }, onError = {
             it.printStackTrace()
-            errorLiveData.value = ScheduleTimeError(it.localizedMessage)
+            errorLiveData.value = ScheduleTimeError(it.localizedMessage ?: "")
         })
     }
 
@@ -61,7 +61,7 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
             courierRatesLiveData.value = Success(response.ratesV4.data)
         }, onError = {
             it.printStackTrace()
-            errorLiveData.value = CourierPriceError(it.localizedMessage)
+            errorLiveData.value = CourierPriceError(it.localizedMessage ?: "")
         })
     }
 
@@ -112,7 +112,7 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
             }
         }, onError = {
             it.printStackTrace()
-            errorLiveData.value = MutationCheckoutError(it.localizedMessage)
+            errorLiveData.value = MutationCheckoutError(it.localizedMessage ?: "")
         })
     }
 

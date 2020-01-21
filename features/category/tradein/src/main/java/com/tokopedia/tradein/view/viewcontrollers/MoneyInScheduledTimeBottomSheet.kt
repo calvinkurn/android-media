@@ -44,8 +44,8 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     override fun getLayoutResourceId(): Int = R.layout.money_in_bottom_sheet_scheduled_time
 
     override fun initView(view: View?) {
-        if (arguments != null) {
-            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)
+        if (arguments != null && arguments?.getParcelableArrayList<ScheduleDate>(KEY_SCHEDULE_DATA) != null) {
+            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)!!
         }
         dateAdapter.date.clear()
         for (date in scheduleDate) {

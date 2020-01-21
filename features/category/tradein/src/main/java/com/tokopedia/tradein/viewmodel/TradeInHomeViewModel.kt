@@ -1,9 +1,10 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.app.Application
+import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
-import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -15,7 +16,10 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
-import com.tokopedia.tradein.model.*
+import com.tokopedia.tradein.model.DeviceAttr
+import com.tokopedia.tradein.model.DeviceDiagInput
+import com.tokopedia.tradein.model.DeviceDiagInputResponse
+import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.tradein_common.Constants
@@ -35,6 +39,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams: TradeInParams
+    var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         tradeInParams = if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
@@ -131,7 +136,8 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
 
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
-        tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationInstance)
+        if (tradeInParams.deviceId == null)
+            tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationInstance)
         tradeInParams.userId = repository.getUserLoginState().userId.toInt()
         tradeInParams.tradeInType = 2
         tradeInParams.modelID = modelId
@@ -176,10 +182,16 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        if (tradeInType == 2) {
-            checkMoneyIn(modelId, jsonObject)
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && tradeInParams.deviceId==null) {
+            imeiStateLiveData.value = true
             setHomeResultData(jsonObject)
+        } else {
+            imeiStateLiveData.value = false
+            if (tradeInType == 2) {
+                checkMoneyIn(modelId, jsonObject)
+            } else {
+                setHomeResultData(jsonObject)
+            }
         }
 
     }
@@ -239,6 +251,10 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         progBarVisibility.value = true
         this.tradeInType = tradeinType
         laku6TradeIn.getMinMaxPrice(this)
+    }
+
+    fun setDeviceId(deviceId: String?) {
+        tradeInParams.deviceId = deviceId
     }
 
     override val coroutineContext: CoroutineContext
