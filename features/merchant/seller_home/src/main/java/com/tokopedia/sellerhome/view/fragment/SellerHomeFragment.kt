@@ -155,7 +155,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel, SellerHomeAdapter
             val adapter = TickerPagerAdapter(activity, tickersData)
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    //todo : implement listener on click
+                    //implement listener on click
                 }
             })
 
