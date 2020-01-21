@@ -156,7 +156,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             switch (type) {
                 case DeepLinkChecker.HOME:
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
-                    sendCampaignGTM(activity, uriData.toString(), screenName);
                     openHomepage(defaultBundle);
                     break;
                 case DeepLinkChecker.CATEGORY:
@@ -169,12 +168,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.HOT:
                     screenName = AppScreen.SCREEN_BROWSE_HOT_LIST;
-                    sendCampaignGTM(activity, uriData.toString(), screenName);
                     openHotProduct(linkSegment, uriData);
                     break;
                 case DeepLinkChecker.HOT_LIST:
                     screenName = AppScreen.SCREEN_HOME_HOTLIST;
-                    sendCampaignGTM(activity, uriData.toString(), screenName);
                     openHomepageHot(defaultBundle);
                     break;
                 case DeepLinkChecker.FIND:
@@ -255,7 +252,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.PELUANG:
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
-                    sendCampaignGTM(activity, uriData.toString(), screenName);
                     openPeluangPage(uriData.getPathSegments(), uriData, defaultBundle);
                     break;
                 case DeepLinkChecker.GROUPCHAT:
