@@ -6,18 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.util.toast
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
-import com.tokopedia.sellerhome.view.model.BaseSellerHomeUiModel
+import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
 import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_seller_home.view.*
@@ -27,7 +31,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseSellerHomeUiModel, SellerHomeAdapterTypeFactory>() {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel, SellerHomeAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
@@ -57,19 +61,53 @@ class SellerHomeFragment : BaseListFragment<BaseSellerHomeUiModel, SellerHomeAda
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
+        getWidgetsLayout()
         getTickerView()
+    }
+
+    private fun setupView() = view?.run {
+        val gridLayoutManager = GridLayoutManager(context, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return try {
+                        val isHeaderSection = adapter.data[position].widgetType != WidgetType.CARD
+                        if (isHeaderSection) spanCount else 1
+                    } catch (e: IndexOutOfBoundsException) {
+                        spanCount
+                    }
+                }
+            }
+        }
+        recyclerView.layoutManager = gridLayoutManager
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
         return SellerHomeAdapterTypeFactory()
     }
 
-    override fun onItemClicked(t: BaseSellerHomeUiModel?) {
+    override fun onItemClicked(t: BaseWidgetUiModel?) {
 
     }
 
     override fun loadData(page: Int) {
 
+    }
+
+    private fun getWidgetsLayout() {
+        mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    showGetWidgetShimmer(false)
+                    renderList(it.data)
+                }
+                is Fail -> {
+                    showGetWidgetShimmer(false)
+                }
+            }
+        })
+        showGetWidgetShimmer(true)
+        mViewModel.getWidgetLayout()
     }
 
     private fun getTickerView() {
@@ -87,6 +125,10 @@ class SellerHomeFragment : BaseListFragment<BaseSellerHomeUiModel, SellerHomeAda
         })
         showSwipeProgress(true)
         mViewModel.getTicker()
+    }
+
+    private fun showGetWidgetShimmer(isShown: Boolean) {
+
     }
 
     private fun showSwipeProgress(isShown: Boolean) {
@@ -111,13 +153,9 @@ class SellerHomeFragment : BaseListFragment<BaseSellerHomeUiModel, SellerHomeAda
             }
 
             val adapter = TickerPagerAdapter(activity, tickersData)
-            adapter.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    context?.toast("Click : $linkUrl")
-                }
-
-                override fun onDismiss() {
-
+            adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    //todo : implement listener on click
                 }
             })
 
