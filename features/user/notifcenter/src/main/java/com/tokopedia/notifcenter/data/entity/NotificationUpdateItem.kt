@@ -31,8 +31,7 @@ data class NotificationUpdateItem(
         @Expose @SerializedName("data_notification") var dataNotification: DataNotification,
         @Expose @SerializedName("product_data") var productData: List<ProductData>,
         @Expose @SerializedName("total_product") var totalProducts: Int = 0,
-        @Expose @SerializedName("is_longer_content") var isLongerContent: Boolean = false,
-        @Expose @SerializedName("options") var options: NotificationOptions
+        @Expose @SerializedName("is_longer_content") var isLongerContent: Boolean = false
 )
 
 data class ProductData(
