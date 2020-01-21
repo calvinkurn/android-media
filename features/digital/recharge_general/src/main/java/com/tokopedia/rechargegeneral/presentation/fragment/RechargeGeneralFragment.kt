@@ -261,8 +261,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             operator_cluster_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     if (operatorCluster != input) {
-                        operatorCluster = input
                         resetInputData()
+                        operatorCluster = input
                         // Remove selected operator
                         operator_select.setInputText("", false)
                         rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryId, operatorCluster)
@@ -303,8 +303,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     operatorGroup.operators.find { it.attributes.name == input }?.let {
                         if (operatorId != it.id) {
                             // Save operator id for enquiry
-                            operatorId = it.id
                             resetInputData()
+                            operatorId = it.id
                             rechargeGeneralAnalytics.eventChooseOperator(categoryId, operatorId)
 
                             adapter.showLoading()
