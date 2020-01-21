@@ -70,7 +70,6 @@
 
         <activity
             android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
-            android:label="@string/title_som_invoice"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
