@@ -37,6 +37,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
@@ -84,7 +85,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var isLoading = false
     private var tabActive = ""
     private var tabStatus = ""
-    private var filterStatusId = -1
+    private var filterStatusId = 0
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private var isFilterApplied = false
@@ -329,19 +330,19 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         quick_filter?.renderFilter(listQuickFilter, currentIndex)
         quick_filter?.setListener { keySelected ->
-            if (keySelected == "0") {
-                paramOrder.statusList = mapOrderStatus[SomConsts.STATUS_ALL_ORDER] ?: emptyList()
-                refreshHandler?.startRefresh()
-            } else {
-                mapOrderStatus.forEach { (key, listOrderStatusId) ->
-                    if (keySelected.equals(key, true)) {
-                        tabActive = keySelected
-                        SomAnalytics.eventClickQuickFilter(tabActive)
-                        if (listOrderStatusId.isNotEmpty()) {
-                            this.paramOrder.statusList = listOrderStatusId
-                            refreshHandler?.startRefresh()
-                        }
+            var tmpKeySelected = keySelected
+            if (tmpKeySelected == "0") {
+                tmpKeySelected = STATUS_ALL_ORDER
+            }
+            mapOrderStatus.forEach { (key, listOrderStatusId) ->
+                if (tmpKeySelected.equals(key, true)) {
+                    tabActive = tmpKeySelected
+                    SomAnalytics.eventClickQuickFilter(tabActive)
+                    if (listOrderStatusId.isNotEmpty()) {
+                        this.paramOrder.statusList = listOrderStatusId
+                        refreshHandler?.startRefresh()
                     }
+                    return@forEach
                 }
             }
         }
