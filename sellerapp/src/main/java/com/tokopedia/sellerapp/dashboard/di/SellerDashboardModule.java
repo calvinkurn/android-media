@@ -321,6 +321,6 @@ public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return UserSession(context);
+        return new UserSession(context);
     }
 }

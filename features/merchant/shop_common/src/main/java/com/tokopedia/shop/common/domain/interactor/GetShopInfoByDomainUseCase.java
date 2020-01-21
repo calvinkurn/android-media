@@ -25,9 +25,9 @@ public class GetShopInfoByDomainUseCase extends UseCase<ShopInfo> {
 
     @Override
     public Observable<ShopInfo> createObservable(RequestParams requestParams) {
-        String shopDomain = requestParams.getString(SHOP_DOMAIN, null);
-        String userId = requestParams.getString(USER_ID, null);
-        String deviceId = requestParams.getString(DEVICE_ID, null);
+        String shopDomain = requestParams.getString(SHOP_DOMAIN, "");
+        String userId = requestParams.getString(USER_ID, "");
+        String deviceId = requestParams.getString(DEVICE_ID, "");
         return shopRepository.getShopInfoByDomain(shopDomain, userId, deviceId);
     }
 
