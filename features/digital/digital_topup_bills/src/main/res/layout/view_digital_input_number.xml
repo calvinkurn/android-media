@@ -117,7 +117,7 @@
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_4"
-        android:text="@string/title_empty_stock"
+        android:text="@string/digital_common_title_empty_stock"
         android:textColor="@color/red_600"
         android:textSize="@dimen/sp_14"
         android:visibility="gone"

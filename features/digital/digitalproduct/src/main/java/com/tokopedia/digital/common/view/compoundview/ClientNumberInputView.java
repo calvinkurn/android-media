@@ -1,7 +1,6 @@
 package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -20,13 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.adapter.DigitalAutoCompleteTVAdapter;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.widget.view.adapter.AutoCompleteTVAdapter;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -46,8 +47,7 @@ public class ClientNumberInputView extends LinearLayout {
     private TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
-    private Context context;
-    private AutoCompleteTVAdapter autoCompleteTVAdapter;
+    private DigitalAutoCompleteTVAdapter digitalAutoCompleteTVAdapter;
     private ClientNumber clientNumber;
 
     public ClientNumberInputView(Context context) {
@@ -66,9 +66,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     private void init(Context context) {
-        this.context = context;
-
-        LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_holder_digital_client_number_input, this, true);
 
         tvLabel = findViewById(R.id.tv_label_client_number);
         autoCompleteTextView = findViewById(R.id.ac_client_number);
@@ -102,8 +100,8 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     public void setAdapterAutoCompleteClientNumber(List<OrderClientNumber> numberList) {
-        autoCompleteTVAdapter = new AutoCompleteTVAdapter(getContext(), R.layout.item_autocomplete, numberList);
-        autoCompleteTextView.setAdapter(autoCompleteTVAdapter);
+        digitalAutoCompleteTVAdapter = new DigitalAutoCompleteTVAdapter(getContext(), R.layout.view_digital_item_autocomplete, numberList);
+        autoCompleteTextView.setAdapter(digitalAutoCompleteTVAdapter);
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setOnItemClickListener(getItemClickListener());
     }
@@ -139,12 +137,12 @@ public class ClientNumberInputView extends LinearLayout {
 
     public void enableImageOperator(String imageUrl) {
         imgOperator.setVisibility(VISIBLE);
-        Glide.with(context).load(imageUrl).dontAnimate().into(this.imgOperator);
+        setImgOperator(imageUrl);
     }
 
     public void disableImageOperator() {
         imgOperator.setVisibility(GONE);
-        Glide.with(context).load("").dontAnimate().into(this.imgOperator);
+        setImgOperator("");
     }
 
     public void setInputTypeNumber() {
@@ -162,7 +160,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     public void setImgOperator(String imgUrl) {
-        Glide.with(getContext()).load(imgUrl).dontAnimate().into(this.imgOperator);
+        ImageHandler.LoadImage(this.imgOperator, imgUrl);
     }
 
     public void setActionListener(ActionListener actionListener) {
@@ -218,7 +216,7 @@ public class ClientNumberInputView extends LinearLayout {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                OrderClientNumber orderClientNumber = autoCompleteTVAdapter.getItem(position);
+                OrderClientNumber orderClientNumber = digitalAutoCompleteTVAdapter.getItem(position);
                 actionListener.onItemAutocompletedSelected(orderClientNumber);
             }
         };
