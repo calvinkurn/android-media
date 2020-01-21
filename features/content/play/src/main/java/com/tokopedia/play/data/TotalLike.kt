@@ -12,5 +12,5 @@ data class TotalLike(
         val totalLike: Int = 0,
 
         @SerializedName("total_like_formatted")
-        val totalLikeFormatted: String = ""
+        var totalLikeFormatted: String = ""
 )
