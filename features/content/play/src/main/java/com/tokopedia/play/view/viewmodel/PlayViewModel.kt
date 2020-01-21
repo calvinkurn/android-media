@@ -49,8 +49,8 @@ class PlayViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider
 ) : BaseViewModel(dispatchers.main) {
 
-    val observableVOD: LiveData<ExoPlayer>
-        get() = _observableVOD
+    val observableVOD: LiveData<out ExoPlayer>
+        get() = playManager.getObservableVideoPlayer()
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
     val observableVideoStream: LiveData<VideoStreamUiModel>
