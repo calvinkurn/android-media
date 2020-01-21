@@ -210,6 +210,7 @@ class ShopNewInfoFragment : BaseDaggerFragment(),
                 shopNewInfoView.hide()
             }
             else -> {
+                displayShareButton()
                 errorView.hide()
                 dashboardView.visible()
                 shopNewInfoView.visible()
