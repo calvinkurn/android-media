@@ -2,14 +2,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.multibannerresponse.PushSubscriptionResponse
 import com.tokopedia.discovery2.usecase.MultiBannerDataUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
