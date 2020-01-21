@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
@@ -108,8 +109,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, SellerRouter.getSellingActivityClass());
-            this.startActivity(intent);
             this.finish();
         }
     }
