@@ -554,6 +554,9 @@ public class FeedAnalytics {
             productItem.put("price", formatStringToInt(product.getProductPrice()));
             productItem.put("list", list);
             productItem.put("position", product.getPosition());
+            productItem.put("brand", "");
+            productItem.put("variant", "");
+            productItem.put("category", "");
             products.add(productItem);
         }
 
