@@ -23,6 +23,7 @@ class ProductCheckoutViewHolder(
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
+        listener.getAnalytic().trackProductListImpression(element)
         onProductCheckoutClick(element)
 
         with(product) {
@@ -37,8 +38,8 @@ class ProductCheckoutViewHolder(
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
         btnCheckout.setOnClickListener {
-            listener.addProductToCheckout(element.dataNotification)
             listener.itemClicked(element, adapterPosition)
+            listener.addProductToCheckout(element)
             element.isRead = true
         }
     }
