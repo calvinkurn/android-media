@@ -44,6 +44,7 @@ class NotificationUpdateTypeFactoryImpl(
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(view, notificationUpdateListener)
             ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(view, notificationUpdateListener)
             WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(view, notificationUpdateListener)
+            ProductCheckoutViewHolder.LAYOUT -> ProductCheckoutViewHolder(view, notificationUpdateListener)
             EmptyDataStateViewHolder.LAYOUT -> EmptyDataStateViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
