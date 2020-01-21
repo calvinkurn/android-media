@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -35,19 +34,17 @@ import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import java.util.*
 import kotlin.collections.HashMap
 
+private const val LANDSCAPE_COLUMN_MAIN = 3
+private const val PORTRAIT_COLUMN_MAIN = 2
+
 abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     private lateinit var categoryNavigationListener: CategoryNavigationListener
-
-
     private var gridLayoutManager: GridLayoutManager? = null
     private var linearLayoutManager: LinearLayoutManager? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var spanCount: Int = 0
-
-    private val LANDSCAPE_COLUMN_MAIN = 3
-    private val PORTRAIT_COLUMN_MAIN = 2
 
     protected val filterController: FilterController? = FilterController()
     protected var searchParameter: SearchParameter = SearchParameter()
@@ -57,9 +54,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     private var selectedSort: HashMap<String, String> = HashMap()
 
-    private var filterTrackingData: FilterTrackingData? = null;
+    private var filterTrackingData: FilterTrackingData? = null
 
-    var totalCount = ""
+    private var totalCount = ""
     var totalCountInt = 0
 
 
@@ -78,7 +75,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     fun hideRefreshLayout() {
-        refreshLayout?.setRefreshing(false)
+        refreshLayout?.isRefreshing = false
     }
 
     protected abstract fun getAdapter(): BaseCategoryAdapter?
@@ -111,7 +108,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     private fun initSwipeToRefresh() {
-        refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+        refreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         refreshLayout?.setOnRefreshListener {
             onSwipeToRefresh()
         }
@@ -223,6 +220,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     protected fun renderDynamicFilter(data: DataValue) {
+        clearDataFilterSort()
         setFilterData(data.filter)
         setSortData(data.sort)
         if (filterController == null || searchParameter == null
@@ -376,8 +374,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
                 selectedSort?.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
                 }
-
-                clearDataFilterSort()
                 reloadData()
                 sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort?.get("ob")?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
@@ -458,7 +454,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         removeFilterFromFilterController(option)
         refreshSearchParameter(filterController.getParameter())
         refreshFilterController(HashMap(filterController.getParameter()))
-        clearDataFilterSort()
         reloadData()
     }
 

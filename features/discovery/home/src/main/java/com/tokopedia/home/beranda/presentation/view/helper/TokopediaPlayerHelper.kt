@@ -3,6 +3,8 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.Observer
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
@@ -22,13 +24,22 @@ class TokopediaPlayerHelper(
         Player.EventListener,
         CoroutineScope {
 
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: ExoPlayer? = null
 
     private var mExoPlayerListener: ExoPlayerListener? = null
 
     private var videosUri: Uri? = null
     private var mResumePosition: Long = 1
     private var isPlayerPrepared = false
+
+    /**
+     * DO NOT CHANGE THIS TO LAMBDA
+     */
+    private val playerObserver = object: Observer<ExoPlayer> {
+        override fun onChanged(t: ExoPlayer?) {
+            mPlayer = t
+        }
+    }
 
     /* Master job */
     private val masterJob = Job()
@@ -85,7 +96,7 @@ class TokopediaPlayerHelper(
         if (mPlayer == null) {
             clear()
             mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-            mPlayer?.volume = 0f
+            muteVideoPlayer()
             mPlayer?.repeatMode = Player.REPEAT_MODE_ALL
             mPlayer?.playWhenReady = false
             mPlayer?.addListener(this)
@@ -97,12 +108,10 @@ class TokopediaPlayerHelper(
     }
 
     override fun preparePlayer() {
-        if (mPlayer == null || isPlayerPrepared) {
-            return
+        if (mPlayer != null) {
+            setDataSource()
+            if(mPlayer?.isPlaying != true) playerPlay()
         }
-        setDataSource()
-        isPlayerPrepared = true
-        playerPlay()
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -165,15 +174,16 @@ class TokopediaPlayerHelper(
         launch(coroutineContext){
             updateResumePosition()
             delay(500)
-            TokopediaPlayManager.getInstance(context).stopPlayer()
+            observeVideoPlayer()
+            stopVideoPlayer()
             mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-            mPlayer?.volume = 0f
-            launch(Dispatchers.Main){
-                mPlayer?.seekTo(mResumePosition)
-            }
+            muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)
             mPlayer?.addListener(this@TokopediaPlayerHelper)
             setDataSource()
+            withContext(Dispatchers.Main) {
+                mPlayer?.seekTo(mResumePosition)
+            }
             delay(2500)
             TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
         }
@@ -192,6 +202,23 @@ class TokopediaPlayerHelper(
         exoPlayerView.setPlayer(null)
         mPlayer?.removeListener(this)
         mPlayer = null
+        removeVideoPlayerObserver()
+    }
+
+    private fun observeVideoPlayer() {
+        TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().observeForever(playerObserver)
+    }
+
+    private fun removeVideoPlayerObserver() {
+        TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().removeObserver(playerObserver)
+    }
+
+    private fun muteVideoPlayer() {
+        TokopediaPlayManager.getInstance(context).muteVideo(true)
+    }
+
+    private fun stopVideoPlayer() {
+        TokopediaPlayManager.getInstance(context).stopPlayer()
     }
 
 }

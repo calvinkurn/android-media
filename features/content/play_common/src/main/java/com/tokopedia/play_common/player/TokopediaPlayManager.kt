@@ -21,6 +21,7 @@ import com.tokopedia.play_common.state.TokopediaPlayPrepareState
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.properties.Delegates
 
 /**
  * Created by jegul on 03/12/19
@@ -59,6 +60,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     private var currentPrepareState: TokopediaPlayPrepareState = TokopediaPlayPrepareState.Unprepared(null)
     private val _observablePlayVideoState = MutableLiveData<TokopediaPlayVideoState>()
+    private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
     private val playerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -88,17 +90,20 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     }
 
-    val videoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
-        addListener(playerEventListener)
+    var videoPlayer: SimpleExoPlayer by Delegates.observable(initVideoPlayer(null)) { _, _, new ->
+        _observableVideoPlayer.value = videoPlayer
     }
 
     //region public method
     fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, forceReset: Boolean = false) {
-        val prepareState = currentPrepareState
-        if (prepareState is TokopediaPlayPrepareState.Unprepared) {
-            playVideoWithUri(uri, autoPlay, prepareState.previousUri != uri || forceReset)
-            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
+        val currentUri: Uri? = when (val prepareState = currentPrepareState) {
+            is TokopediaPlayPrepareState.Unprepared -> prepareState.previousUri
+            is TokopediaPlayPrepareState.Prepared -> prepareState.uri
         }
+        if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
+        playVideoWithUri(uri, autoPlay, currentUri == null || currentUri != uri || forceReset)
+        currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
+
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
@@ -125,10 +130,24 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     fun resetCurrentVideo() {
         videoPlayer.seekTo(0)
     }
+
+    fun releasePlayer() {
+        currentPrepareState = TokopediaPlayPrepareState.Unprepared(null)
+        videoPlayer.release()
+    }
+
+    fun stopPlayer() {
+        val prepareState = currentPrepareState
+        if (prepareState is TokopediaPlayPrepareState.Prepared)
+            currentPrepareState = TokopediaPlayPrepareState.Unprepared(prepareState.uri)
+
+        videoPlayer.stop(false)
+    }
     //endregion
 
     //region video state
     fun getObservablePlayVideoState(): LiveData<TokopediaPlayVideoState> = _observablePlayVideoState
+    fun getObservableVideoPlayer(): LiveData<out ExoPlayer> = _observableVideoPlayer
 
     fun isVideoPlaying(): Boolean = videoPlayer.isPlaying
 
@@ -192,15 +211,10 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
     }
 
-    fun releasePlayer() {
-        videoPlayer.release()
-    }
-
-    fun stopPlayer() {
-        val prepareState = currentPrepareState
-        if (prepareState is TokopediaPlayPrepareState.Prepared)
-            currentPrepareState = TokopediaPlayPrepareState.Unprepared(prepareState.uri)
-
-        videoPlayer.stop(false)
+    private fun initVideoPlayer(videoPlayer: SimpleExoPlayer?): SimpleExoPlayer {
+        videoPlayer?.removeListener(playerEventListener)
+        return ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
+            addListener(playerEventListener)
+        }
     }
 }

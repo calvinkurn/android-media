@@ -1,22 +1,23 @@
 package com.tokopedia.common_tradein.customviews;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Build;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.tokopedia.common_tradein.R;
+import com.tokopedia.common_tradein.viewmodel.CommonTradeInVMFactory;
 import com.tokopedia.common_tradein.viewmodel.ITradeInParamReceiver;
 import com.tokopedia.common_tradein.viewmodel.TradeInResponseObserver;
 import com.tokopedia.common_tradein.viewmodel.TradeInTextViewModel;
-import com.tokopedia.common_tradein.viewmodel.CommonTradeInVMFactory;
 
 public class TradeInTextView extends ConstraintLayout {
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";

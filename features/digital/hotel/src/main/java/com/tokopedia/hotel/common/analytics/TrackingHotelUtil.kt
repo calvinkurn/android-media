@@ -2,11 +2,11 @@ package com.tokopedia.hotel.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelPropertyRoom
 import com.tokopedia.hotel.common.util.HotelUtils
-import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
@@ -299,9 +299,9 @@ class TrackingHotelUtil {
                         QUANTITY_LABEL, ONE_LABEL,
                         VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
-                    )
                 )
-            )
+        )
+        )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -326,19 +326,19 @@ class TrackingHotelUtil {
         map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelRoomListPageModel.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
-                    ACTION_FIELD_LABEL, DataLayer.mapOf( LIST_LABEL, SLASH_HOTEL_SLASH_LABEL ),
-                    PRODUCTS_LABEL, DataLayer.listOf(
-                                    DataLayer.mapOf(
-                                            NAME_LABEL, hotelRoom.roomInfo.name,
-                                            ID_LABEL, hotelRoom.roomId,
-                                            PRICE_LABEL, hotelRoom.roomPrice.priceAmount.roundToLong(),
-                                            LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                                            VARIANT_LABEL, "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}",
-                                            CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                                            POSITION_LABEL, positionTracker(position)
-                                    )
-                            )
+                ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL),
+                PRODUCTS_LABEL, DataLayer.listOf(
+                DataLayer.mapOf(
+                        NAME_LABEL, hotelRoom.roomInfo.name,
+                        ID_LABEL, hotelRoom.roomId,
+                        PRICE_LABEL, hotelRoom.roomPrice.priceAmount.roundToLong(),
+                        LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
+                        VARIANT_LABEL, "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}",
+                        CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
+                        POSITION_LABEL, positionTracker(position)
                 )
+        )
+        )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
 
@@ -374,9 +374,9 @@ class TrackingHotelUtil {
                         VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
                         POSITION_LABEL, "$position"
-                        )
                 )
-            )
+        )
+        )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -393,11 +393,11 @@ class TrackingHotelUtil {
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CHECKOUT, DataLayer.mapOf(
                 ACTION_FIELD_LABEL, DataLayer.mapOf(
-                    STEP_LABEL, ONE_LABEL,
-                    OPTION_LABEL, CLICK_CHECKOUT),
+                STEP_LABEL, ONE_LABEL,
+                OPTION_LABEL, CLICK_CHECKOUT),
                 PRODUCTS_LABEL, getHotelListRoomCart(hotelCart.property.rooms, hotelCart.property.isDirectPayment,
                 hotelCart.cart.totalPriceAmount)
-            )
+        )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -422,6 +422,40 @@ class TrackingHotelUtil {
     fun hotelApplyPromo(promoCode: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, APPLY_PROMO,
                 "$HOTEL_LABEL - $promoCode")
+    }
+
+    fun hotelLastSearchImpression(lastSearchItems: TravelRecentSearchModel.Item, position: Int) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = PROMO_VIEW
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = ACTION_LAST_SEARCH_IMPRESSION
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_VIEW, getECommerceDataLastSearch(lastSearchItems, position))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun hotelLastSearchClick(lastSearchItems: TravelRecentSearchModel.Item, position: Int) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = PROMO_CLICK
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = ACTION_LAST_SEARCH_CLICK
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_CLICK, getECommerceDataLastSearch(lastSearchItems, position))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getECommerceDataLastSearch(lastSearchItems: TravelRecentSearchModel.Item, position: Int): MutableMap<String, Any> {
+        return DataLayer.mapOf(
+                PROMOTIONS_LABEL, DataLayer.listOf(
+                DataLayer.mapOf(
+                        ID_LABEL, position + 1,
+                        NAME_LABEL, lastSearchItems.title,
+                        CREATIVE_LABEL, lastSearchItems.appUrl,
+                        POSITION_LABEL, position + 1,
+                        CATEGORY_LABEL, HOTEL_CONTENT_LABEL
+                )))
     }
 
     private fun convertDate(date: String): String =
