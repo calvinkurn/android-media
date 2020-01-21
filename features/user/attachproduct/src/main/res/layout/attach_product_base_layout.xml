@@ -188,14 +188,14 @@
         android:id="@+id/footer_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_product_attach"
-        android:layout_alignEnd="@id/main_product_attach"
-        android:layout_alignRight="@id/main_product_attach"
+        android:layout_below="@+id/main_product_attach"
+        android:layout_alignEnd="@+id/main_product_attach"
+        android:layout_alignRight="@+id/main_product_attach"
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_12"
+        android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -226,7 +226,35 @@
             app:unifyButtonSize="small"
             app:unifyButtonType="transaction"
             tools:visibility="visible" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/footer_layout"
+        android:layout_alignEnd="@+id/main_product_attach"
+        android:layout_alignRight="@+id/main_product_attach"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/spacing_lvl3">
+
+        <ImageView
+            android:id="@+id/chat_status"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:layout_marginRight="@dimen/spacing_lvl1"
+            tools:srcCompat="@drawable/ic_check" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:textColor="@color/Neutral_N700_44"
+            app:typographyType="body_3"
+            tools:text="11:00" />
     </LinearLayout>
 
 </RelativeLayout>

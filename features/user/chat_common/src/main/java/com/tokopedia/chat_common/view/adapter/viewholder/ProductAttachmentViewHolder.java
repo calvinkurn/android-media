@@ -100,6 +100,11 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         viewListener.trackSeenProduct(element);
     }
 
+    @Override
+    protected boolean alwaysShowTime() {
+        return true;
+    }
+
     private void setupIfEmptyStock(ProductAttachmentViewModel element) {
         if (element.hasEmptyStock()) {
             tvBuy.setEnabled(false);
@@ -225,7 +230,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void setChatReadStatus(ProductAttachmentViewModel element) {
         int imageResource;
-        if (element.isShowTime()) {
+        if (element.isShowTime() || alwaysShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
             if (element.isRead()) {
                 imageResource = R.drawable.ic_chat_read;

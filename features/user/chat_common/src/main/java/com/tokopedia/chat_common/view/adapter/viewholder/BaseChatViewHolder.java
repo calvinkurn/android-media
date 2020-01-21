@@ -63,14 +63,20 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     protected void setBottomHour(BaseChatViewModel element) {
         String hourTime = getHourTime(element.getReplyTime());
 
-        if (hour != null
-                && (TextUtils.isEmpty(hourTime) || !element.isShowTime())) {
+        if (
+                (hour != null && (TextUtils.isEmpty(hourTime) || !element.isShowTime())) &&
+                        !alwaysShowTime()
+        ) {
             hour.setVisibility(View.GONE);
 
         } else if (hour != null) {
             hour.setText(hourTime);
             hour.setVisibility(View.VISIBLE);
         }
+    }
+
+    protected boolean alwaysShowTime() {
+        return false;
     }
 
     protected String getHourTime(String replyTime) {
