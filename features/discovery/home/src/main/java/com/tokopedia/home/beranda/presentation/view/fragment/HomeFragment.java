@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -16,13 +15,10 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -53,9 +49,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
-import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
-import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -83,14 +76,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
@@ -112,6 +103,7 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -132,14 +124,12 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
-import timber.log.Timber;
 
 import static android.view.View.INVISIBLE;
 import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
@@ -1745,132 +1735,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onTokopointCheckNowClicked(@NotNull String applink) {
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
-        }
-    }
-
-    private void onHandlingScrollVideoPlayer(int newState){
-        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            Timber.tag(HomeFragment.class.getName()).d(TAG, "onScrollStateChanged: called.");
-            // There's a special case when the end of the list has been reached.
-            // Need to handle that with this bit of logic
-            if(!homeRecyclerView.canScrollVertically(1)){
-                playVideo(true);
-            }
-            else{
-                playVideo(false);
-            }
-        }
-    }
-
-    private void playVideo(boolean isEndOfList){
-        int targetPosition = -1;
-
-        int startPosition = ((LinearLayoutManager) Objects.requireNonNull(
-                homeRecyclerView.getLayoutManager())).findFirstCompletelyVisibleItemPosition();
-        int endPosition = ((LinearLayoutManager) homeRecyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-        if(!isEndOfList){
-            List<Integer> playPosition = new ArrayList<>();
-            for(int i = startPosition; i <= endPosition; i++){
-                if(adapter.getItemCount() >= endPosition && adapter.getItem(i) instanceof PlayCardViewModel){
-                    playPosition.add(i);
-                }
-            }
-            // doesn't item visible
-            if(!playPosition.isEmpty()) {
-
-                // if there is more than 2 list-items on the screen, set the difference to be 1
-                if (endPosition - startPosition > 1 && playPosition.size() > 1) {
-                    endPosition = startPosition + 1;
-                }
-
-                // something is wrong. return.
-                if (startPosition < 0 || endPosition < 0) {
-                    return;
-                }
-
-                // if there is more than 1 list-item on the screen
-                if (startPosition != endPosition && playPosition.size() > 1) {
-                    int startPositionVideoHeight = getVisibleVideoSurfaceHeight(playPosition.get(0));
-                    int endPositionVideoHeight = getVisibleVideoSurfaceHeight(playPosition.get(playPosition.size() - 1));
-
-                    targetPosition = startPositionVideoHeight > endPositionVideoHeight ? playPosition.get(0) : playPosition.get(playPosition.size() - 1);
-                } else {
-                    targetPosition = playPosition.get(0);
-                }
-            }
-        } else {
-            if(adapter.getItem(adapter.getItemCount() - 1) instanceof PlayCardViewModel) targetPosition = adapter.getItemCount() - 1;
-            else targetPosition = -1;
-        }
-
-        Timber.tag(HomeFragment.class.getName()).d("playVideo: target position: " + targetPosition);
-
-        // remove any old surface views from previously playing videos
-        if(playPosition != -1 && playPosition < startPosition || playPosition > endPosition){
-            playPosition = -1;
-            View child = homeRecyclerView.getChildAt(playPosition);
-            if (child == null) {
-                return;
-            }
-            PlayCardViewHolder holder = (PlayCardViewHolder) child.getTag();
-//            holder.reset();
-//            TokopediaPlayManager.Companion.getInstance(getContext()).stop();
-        }
-
-        // video is already playing so return
-        if (targetPosition == playPosition || targetPosition == -1) {
-            return;
-        }
-
-        if(adapter.getItem(targetPosition) instanceof PlayCardViewModel){
-            PlayCardViewModel model = (PlayCardViewModel) adapter.getItem(targetPosition);
-            // set the position of the list-item that is to be played
-            playPosition = targetPosition;
-
-            int currentPosition = targetPosition - ((LinearLayoutManagerWithSmoothScroller) homeRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-
-            View child = homeRecyclerView.getChildAt(currentPosition);
-            if (child == null) {
-                return;
-            }
-            PlayCardViewHolder holder = (PlayCardViewHolder) child.getTag();
-            if (holder == null) {
-                playPosition = -1;
-                return;
-            }
-//            TokopediaPlayManager.Companion.getInstance(getContext()).playVideoWithString(model.getUrl());
-//            TokopediaPlayManager.Companion.getInstance(getContext()).start();
-        }
-    }
-
-
-    /**
-     * Returns the visible region of the video surface on the screen.
-     * if some is cut off, it will return less than the @videoSurfaceDefaultHeight
-     * @param playPosition
-     * @return
-     */
-    public int getVisibleVideoSurfaceHeight(int playPosition) {
-        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        LinearLayoutManager layoutManager = ((LinearLayoutManager) homeRecyclerView.getLayoutManager());
-        int startPos = Objects.requireNonNull(layoutManager).findFirstCompletelyVisibleItemPosition();
-        int at = playPosition - startPos;
-        Log.d(HomeFragment.class.getName(), "getVisibleVideoSurfaceHeight: at: " + at);
-
-        View child = homeRecyclerView.getChildAt(at);
-        if (child == null) {
-            return 0;
-        }
-
-        int[] location = new int[2];
-        child.getLocationInWindow(location);
-
-        if (location[1] < 0) {
-            return location[1] + point.x;
-        } else {
-            return point.y - location[1];
         }
     }
 

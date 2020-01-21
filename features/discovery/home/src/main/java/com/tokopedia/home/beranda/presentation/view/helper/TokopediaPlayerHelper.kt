@@ -97,12 +97,10 @@ class TokopediaPlayerHelper(
     }
 
     override fun preparePlayer() {
-        if (mPlayer == null || isPlayerPrepared) {
-            return
+        if (mPlayer != null) {
+            setDataSource()
+            if(mPlayer?.isPlaying != true) playerPlay()
         }
-        setDataSource()
-        isPlayerPrepared = true
-        playerPlay()
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {

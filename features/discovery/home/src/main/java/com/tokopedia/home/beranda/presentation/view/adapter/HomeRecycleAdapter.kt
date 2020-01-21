@@ -90,7 +90,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                     // check if the view is completely visible on first item
                     if (firstIndexVisible != -1 &&
                             positions.isNotEmpty() &&
-                            positions.first() != currentSelected &&
+                            (positions.first() != currentSelected || currentSelected == -1) && //check if we missing currentSelected
                             (getViewHolder(positions.first()) as PlayCardViewHolder).wantsToPlay()
                     ) {
                         onSelectedItemChanged(positions.first())
