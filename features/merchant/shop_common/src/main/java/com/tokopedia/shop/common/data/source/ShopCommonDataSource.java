@@ -23,8 +23,8 @@ public class ShopCommonDataSource {
         this.shopInfoCloudDataSource = shopInfoCloudDataSource;
     }
 
-    public Observable<ShopInfo> getShopInfo(String shopId) {
-        return shopInfoCloudDataSource.getShopInfo(shopId).flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
+    public Observable<ShopInfo> getShopInfo(String shopId, String userId, String deviceId) {
+        return shopInfoCloudDataSource.getShopInfo(shopId, userId, deviceId).flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
             @Override
             public Observable<ShopInfo> call(Response<DataResponse<ShopInfo>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());
@@ -32,8 +32,8 @@ public class ShopCommonDataSource {
         });
     }
 
-    public Observable<ShopInfo> getShopInfoByDomain(String shopDomain) {
-        return shopInfoCloudDataSource.getShopInfoByDomain(shopDomain).flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
+    public Observable<ShopInfo> getShopInfoByDomain(String shopDomain, String userId, String deviceId) {
+        return shopInfoCloudDataSource.getShopInfoByDomain(shopDomain, userId, deviceId).flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
             @Override
             public Observable<ShopInfo> call(Response<DataResponse<ShopInfo>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());
