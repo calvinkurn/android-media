@@ -947,6 +947,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventViewPromoLogisticTickerDisable(String promoCode){
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_LOGISTIC_TICKER_DISABLE,
+                promoCode
+        );
+    }
+
     public void eventViewPopupPriceIncrease(String eventLabel) {
         sendEventCategoryActionLabel(EventName.VIEW_COURIER_IRIS,
                 EventCategory.COURIER_SELECTION,

@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 import com.tokopedia.design.viewpager.WrapContentViewPager;
+import com.tokopedia.home.beranda.presentation.view.fragment.TabBusinessFragment;
 
 public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
     private int currentPosition = -1;
@@ -17,6 +18,12 @@ public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.fragmentManager = fm;
         this.digitalFragment = digitalFragment;
+    }
+
+    public void refreshData() {
+        if (digitalFragment instanceof TabBusinessFragment) {
+            ((TabBusinessFragment)digitalFragment).refresh();
+        }
     }
 
     @Override
