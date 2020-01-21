@@ -1,13 +1,14 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.di;
 
-import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
+import android.content.Context;
+
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationContract;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationPresenter;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 
 import dagger.Module;
@@ -19,6 +20,18 @@ import dagger.Provides;
 
 @Module
 public class ShippingDurationModule {
+
+    private final Context context;
+
+    public ShippingDurationModule(Context context) {
+        this.context = context;
+    }
+
+    @Provides
+    @ShippingDurationScope
+    Context provideContext() {
+        return context;
+    }
 
     @Provides
     @ShippingDurationScope
@@ -40,15 +53,10 @@ public class ShippingDurationModule {
 
     @Provides
     @ShippingDurationScope
-    ShippingDurationContract.Presenter provideShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+    ShippingDurationContract.Presenter provideShippingDurationPresenter(GetRatesUseCase ratesUseCase,
+                                                                        GetRatesApiUseCase ratesApiUseCase,
                                                                         ShippingCourierConverter shippingCourierConverter) {
-        return new ShippingDurationPresenter(getCourierRecommendationUseCase, shippingCourierConverter);
-    }
-
-    @Provides
-    @ShippingDurationScope
-    GetCourierRecommendationUseCase getCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
-        return new GetCourierRecommendationUseCase(shippingDurationConverter, new Gson());
+        return new ShippingDurationPresenter(ratesUseCase, ratesApiUseCase, shippingCourierConverter);
     }
 
     @Provides

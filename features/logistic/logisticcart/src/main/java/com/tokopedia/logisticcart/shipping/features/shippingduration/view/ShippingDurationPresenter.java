@@ -5,26 +5,30 @@ import androidx.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticcart.R;
-import com.tokopedia.logisticcart.shipping.model.ShippingParam;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
+import com.tokopedia.logisticcart.shipping.model.Product;
+import com.tokopedia.logisticcart.shipping.model.RatesParam;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -34,14 +38,17 @@ import rx.Subscriber;
 public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurationContract.View>
         implements ShippingDurationContract.Presenter {
 
-    private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
+    private final GetRatesUseCase ratesUseCase;
+    private final GetRatesApiUseCase ratesApiUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private RecipientAddressModel recipientAddressModel;
 
     @Inject
-    public ShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+    public ShippingDurationPresenter(GetRatesUseCase ratesUseCase,
+                                     GetRatesApiUseCase ratesApiUseCase,
                                      ShippingCourierConverter shippingCourierConverter) {
-        this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
+        this.ratesUseCase = ratesUseCase;
+        this.ratesApiUseCase = ratesApiUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
     }
 
@@ -63,15 +70,15 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     @Override
     public void detachView() {
         super.detachView();
-        getCourierRecommendationUseCase.unsubscribe();
+        ratesUseCase.unsubscribe();
+        ratesApiUseCase.unsubscribe();
     }
 
     @Override
     public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing) {
         if (getView() != null) {
             getView().showLoading();
-            String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-            loadDuration(0, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, query, shippingParam, "");
+            loadDuration(0, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, false, shippingParam, "");
         }
     }
 
@@ -86,64 +93,74 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           RecipientAddressModel recipientAddressModel) {
         if (getView() != null) {
             getView().showLoading();
-            String query;
-            if (isTradeInDropOff) {
-                query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_trade_in_query);
-            } else {
-                query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-            }
             ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
             int selectedSpId = 0;
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
-            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, query, shippingParam, pslCode);
+            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, isTradeInDropOff, shippingParam, pslCode);
         }
     }
 
-    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, boolean isCorner, boolean isLeasing, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam, String pslCode) {
-        getCourierRecommendationUseCase.execute(query, codHistory, isCorner, isLeasing, pslCode, selectedSpId, selectedServiceId, shopShipmentList, shippingParam, new Subscriber<ShippingRecommendationData>() {
-            @Override
-            public void onCompleted() {
+    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, boolean isCorner, boolean isLeasing, List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi, ShippingParam shippingParam, String pslCode) {
+        RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
+                .isCorner(isCorner)
+                .codHistory(codHistory)
+                .isLeasing(isLeasing)
+                .promoCode(pslCode)
+                .build();
 
-            }
+        Observable<ShippingRecommendationData> observable;
+        if (isRatesTradeInApi) {
+            observable = ratesApiUseCase.execute(param, selectedSpId, selectedServiceId, shopShipmentList);
+        } else {
+            observable = ratesUseCase.execute(param, selectedSpId, selectedServiceId, shopShipmentList);
+        }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (getView() != null) {
-                    getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
-                    getView().stopTrace();
-                }
-            }
+        observable.subscribe(
+                new Subscriber<ShippingRecommendationData>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onNext(ShippingRecommendationData shippingRecommendationData) {
-                if (getView() != null) {
-                    getView().hideLoading();
-                    if (shippingRecommendationData.getErrorId() != null &&
-                            shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
-                        getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
-                        getView().stopTrace();
-                    } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
-                            shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                        if (getView().isDisableCourierPromo()) {
-                            for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                                shippingDurationViewModel.getServiceData().setIsPromo(0);
-                                for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
-                                    productData.setPromoCode("");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (getView() != null) {
+                            getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
+                            getView().stopTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(ShippingRecommendationData shippingRecommendationData) {
+                        if (getView() != null) {
+                            getView().hideLoading();
+                            if (shippingRecommendationData.getErrorId() != null &&
+                                    shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
+                                getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                getView().stopTrace();
+                            } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
+                                    shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
+                                if (getView().isDisableCourierPromo()) {
+                                    for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                                        shippingDurationViewModel.getServiceData().setIsPromo(0);
+                                        for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
+                                            productData.setPromoCode("");
+                                        }
+                                    }
                                 }
+                                getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
+                                getView().stopTrace();
+                            } else {
+                                getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
+                                getView().stopTrace();
                             }
                         }
-                        getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
-                        getView().stopTrace();
-                    } else {
-                        getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
-                        getView().stopTrace();
                     }
                 }
-            }
-        });
+        );
     }
 
     @NonNull

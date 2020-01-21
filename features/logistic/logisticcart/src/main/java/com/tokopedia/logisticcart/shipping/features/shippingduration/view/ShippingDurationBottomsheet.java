@@ -139,7 +139,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     private void initializeInjector() {
         ShippingDurationComponent component = DaggerShippingDurationComponent.builder()
-                .shippingDurationModule(new ShippingDurationModule())
+                .shippingDurationModule(new ShippingDurationModule(getContext()))
                 .build();
 
         component.inject(this);
