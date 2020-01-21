@@ -39,9 +39,8 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val orderListResult: LiveData<Result<SomListOrder.Data.OrderList>>
         get() = _orderListResult
 
-    fun loadSomListData(tickerQuery: String, filterQuery: String) {
+    fun loadTickerList(tickerQuery: String) {
         launch { getTickerList(tickerQuery) }
-        launch { getFilterList(filterQuery) }
     }
 
     fun loadStatusList(rawQuery: String) {
