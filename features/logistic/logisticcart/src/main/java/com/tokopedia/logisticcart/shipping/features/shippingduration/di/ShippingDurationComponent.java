@@ -10,7 +10,7 @@ import dagger.Component;
  */
 
 @ShippingDurationScope
-@Component(modules = ShippingDurationModule.class)
+@Component(dependencies = BaseAppComponent.class, modules = ShippingDurationModule.class)
 public interface ShippingDurationComponent {
     void inject(ShippingDurationBottomsheet shippingDurationBottomsheet);
 }

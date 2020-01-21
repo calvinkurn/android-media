@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.usecase
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -24,7 +25,7 @@ typealias RatesApiGqlResponse = GetRatesCourierRecommendationTradeInDropOffData
 typealias RatesModel = ShippingRecommendationData
 
 class GetRatesApiUseCase @Inject constructor(
-        val context: Context,
+        @ApplicationContext val context: Context,
         val converter: ShippingDurationConverter,
         val gql: GraphqlUseCase) {
 

@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -138,8 +139,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     private void initializeInjector() {
+        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
         ShippingDurationComponent component = DaggerShippingDurationComponent.builder()
-                .shippingDurationModule(new ShippingDurationModule(getContext()))
+                .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                .shippingDurationModule(new ShippingDurationModule())
                 .build();
 
         component.inject(this);

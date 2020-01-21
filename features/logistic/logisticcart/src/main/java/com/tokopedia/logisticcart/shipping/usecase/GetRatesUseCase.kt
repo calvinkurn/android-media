@@ -16,7 +16,7 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class GetRatesUseCase @Inject constructor(
-        val context: Context,
+        @ApplicationContext val context: Context,
         val converter: ShippingDurationConverter,
         val gql: GraphqlUseCase) {
 

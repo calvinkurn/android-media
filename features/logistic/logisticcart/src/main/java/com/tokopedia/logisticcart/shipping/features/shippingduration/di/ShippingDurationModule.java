@@ -21,18 +21,6 @@ import dagger.Provides;
 @Module
 public class ShippingDurationModule {
 
-    private final Context context;
-
-    public ShippingDurationModule(Context context) {
-        this.context = context;
-    }
-
-    @Provides
-    @ShippingDurationScope
-    Context provideContext() {
-        return context;
-    }
-
     @Provides
     @ShippingDurationScope
     ShippingDurationAdapter provideShippingDurationAdapter() {
