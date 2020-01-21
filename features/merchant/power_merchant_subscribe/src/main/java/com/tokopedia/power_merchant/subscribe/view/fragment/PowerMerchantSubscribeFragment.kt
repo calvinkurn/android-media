@@ -97,6 +97,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         const val TURN_OFF_AUTOEXTEND_INTENT_CODE = 322
         const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
         const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
+
+        const val APPLINK_KYC_POWER_MERCHANT = "${ApplinkConst.KYC_NO_PARAM}?projectId=10"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -220,10 +222,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setCanceledOnTouchOutside(true)
             dialog.setContentView(R.layout.dialog_kyc_verification)
             dialog.btn_submit_kyc.setOnClickListener {
-                val intent = RouteManager.getIntent(activity, ApplinkConst.KYC)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
-                startActivity(intent)
-                activity?.finish()
+                clickSubmitKycBtn()
+                dialog.hide()
             }
             dialog.btn_close_kyc.setOnClickListener {
                 dialog.hide()
@@ -413,6 +413,29 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
+    private fun openKycPage() {
+        val intent = RouteManager.getIntent(activity, APPLINK_KYC_POWER_MERCHANT)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+        startActivity(intent)
+    }
+
+    private fun openTnCPage() {
+        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
+        startActivity(intent)
+    }
+
+    private fun clickSubmitKycBtn() {
+        if (isKycStatusNotVerified()) {
+            openKycPage()
+        } else {
+            openTnCPage()
+        }
+    }
+
+    private fun isKycStatusNotVerified(): Boolean {
+        val kycStatus = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status
+        return kycStatus == KYCConstant.STATUS_NOT_VERIFIED
+    }
 
     override fun showEmptyState(throwable: Throwable) {
         NetworkErrorHelper.showEmptyState(root_view_pm.context, root_view_pm, ErrorHandler.getErrorMessage(context, throwable)) {
