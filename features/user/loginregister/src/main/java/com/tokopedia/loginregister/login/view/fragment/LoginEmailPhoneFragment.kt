@@ -596,20 +596,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
-
-            installDynamicFeatureAtLogin()
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-    }
-
-    private fun installDynamicFeatureAtLogin() {
-        // for POC - start install when login
-        activity?.run {
-            if (userSession.hasShop() && !GlobalConfig.isSellerApp()) {
-                DFInstaller().installOnBackground(this.application, listOf(DFM_MERCHANT_SELLER_CUSTOMERAPP))
-            }
-        }
     }
 
     private fun setFCM() {

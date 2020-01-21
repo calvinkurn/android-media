@@ -21,15 +21,24 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp_140"
             android:adjustViewBounds="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/Neutral_N200" />
+            tools:background="@color/Neutral_N200"
+            android:scaleType="fitXY"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintTop_toTopOf="@id/image"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            android:background="@color/Neutral_N700_32"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
@@ -38,14 +47,12 @@
             android:lines="1"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/subtitle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:typographyType="heading_3"
             tools:text="Hotel di Jakarta Selatan hehe" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
@@ -55,8 +62,6 @@
             android:lines="1"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:typographyType="body_3"
             tools:text="Indonesia Tanah Air Beta Pu" />
 

@@ -3,17 +3,12 @@ package com.tokopedia.digital.product.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment;
 
@@ -47,8 +42,7 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     private String titleToolbar;
 
     public static Intent newInstanceProductChooser(
-            Activity activity, String categoryId, String operatorId, String titleChooser
-    ) {
+            Activity activity, String categoryId, String operatorId, String titleChooser) {
         Intent intent = new Intent(activity, DigitalChooserActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CATEGORY_ID, categoryId);
@@ -70,17 +64,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
         return intent;
     }
 
-    public static int sizeAsParcel(@NonNull Bundle bundle) {
-        Parcel parcel = Parcel.obtain();
-        try {
-            parcel.writeBundle(bundle);
-            return parcel.dataSize();
-        } finally {
-            parcel.recycle();
-        }
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setupBundlePass(getIntent().getExtras());
@@ -88,8 +71,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     }
 
     private void setupBundlePass(Bundle extras) {
-        Log.d("DigitalChooserActivity", String.valueOf(sizeAsParcel(extras)));
-
         this.categoryId = extras.getString(EXTRA_CATEGORY_ID);
         this.operatorId = extras.getString(EXTRA_OPERATOR_ID);
         this.productStyleView = extras.getString(EXTRA_PRODUCT_STYLE_VIEW);
@@ -103,21 +84,18 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     public void onOperatorItemSelected(Operator operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
         finish();
-        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
     }
 
     @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
-        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
-        invalidateHomeUpToolbarIndicator();
     }
 
     @Override
@@ -131,7 +109,6 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         this.titleToolbar = savedInstanceState.getString(EXTRA_STATE_TITLE_TOOLBAR);
         invalidateTitleToolBar();
-        invalidateHomeUpToolbarIndicator();
     }
 
     private void invalidateTitleToolBar() {
@@ -141,15 +118,12 @@ public class DigitalChooserActivity extends BaseSimpleActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
     }
 
-    private void invalidateHomeUpToolbarIndicator() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
-        }
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
     }
-
 
     @Override
     protected Fragment getNewFragment() {

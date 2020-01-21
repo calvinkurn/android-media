@@ -28,8 +28,6 @@ interface HomeCategoryListener {
 
     fun onSectionItemClicked(actionLink: String)
 
-    fun onDigitalMoreClicked(pos: Int)
-
     fun onCloseTicker(pos: Int)
 
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
@@ -65,6 +63,8 @@ interface HomeCategoryListener {
     fun onPromoDragEnd()
 
     fun setActivityStateListener(activityStateListener: ActivityStateListener)
+
+    fun onPageDragStateChanged(isDragged: Boolean)
 
     fun onSpotlightItemClicked(actionLink: String)
 

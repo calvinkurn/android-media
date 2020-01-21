@@ -37,7 +37,9 @@ class ThematicListAdapter(
                                 productImageUrl = item.imageUrl,
                                 productName = item.name,
                                 formattedPrice = item.price,
-                                freeOngkir = freeongkirData
+                                freeOngkir = freeongkirData,
+                                slashedPrice = item.slashedPrice,
+                                discountPercentage = item.discount
                         ),
                         BlankSpaceConfig(
                                 price = true,
