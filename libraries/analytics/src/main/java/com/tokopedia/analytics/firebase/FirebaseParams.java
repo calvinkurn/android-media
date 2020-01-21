@@ -21,4 +21,7 @@ public class FirebaseParams {
           String SUBCATEGORY_NAME="subcategory_name";
           String OPTION_NAME="option_name";
      }
+     public interface Discovery {
+          String LOAD_TIME = "load_time";
+     }
 }

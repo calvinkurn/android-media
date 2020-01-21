@@ -3,7 +3,10 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TickerViewModel implements Parcelable {
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
+
+public class TickerViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
     private String text;
     private String query;
 
@@ -21,6 +24,11 @@ public class TickerViewModel implements Parcelable {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    @Override
+    public int type(ProductListTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     public TickerViewModel() {

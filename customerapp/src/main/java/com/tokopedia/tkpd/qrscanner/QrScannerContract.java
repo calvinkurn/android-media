@@ -3,9 +3,8 @@ package com.tokopedia.tkpd.qrscanner;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.ovo.model.BarcodeResponseData;
-
 /**
  * Created by sandeepgoyal on 18/12/17.
  */
@@ -27,7 +26,7 @@ public interface QrScannerContract {
 
         Activity getActivity();
 
-        void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData);
+        void goToPaymentPage(String imeiNumber, JsonObject barcodeData);
 
         boolean getRemoteConfigForOvoPay();
     }

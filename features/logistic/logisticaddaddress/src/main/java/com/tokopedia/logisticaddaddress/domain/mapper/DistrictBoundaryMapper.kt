@@ -7,6 +7,7 @@ import com.tokopedia.logisticaddaddress.domain.model.district_boundary.Geometry
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
+import com.tokopedia.logisticaddaddress.utils.getLatLng
 import javax.inject.Inject
 
 /**
@@ -31,7 +32,7 @@ class DistrictBoundaryMapper @Inject constructor() {
         geo?.coordinates?.forEach { it ->
             it.forEach {
                 it.forEach {
-                    listCoordinates.add(AddNewAddressUtils.generateLatLng(it[1], it[0]))
+                    listCoordinates.add(getLatLng(it[1], it[0]))
                 }
             }
         }

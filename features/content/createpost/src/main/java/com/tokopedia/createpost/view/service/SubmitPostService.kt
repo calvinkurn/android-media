@@ -76,6 +76,7 @@ class SubmitPostService : JobIntentService() {
         submitPostUseCase.notificationManager = notificationManager
 
         submitPostUseCase.execute(SubmitPostUseCase.createRequestParams(
+                viewModel.postId,
                 viewModel.authorType,
                 viewModel.token,
                 if (isTypeAffiliate(viewModel.authorType)) userSession.userId

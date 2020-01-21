@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.common.analytics
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.util.Patterns
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.analytics.TrackAnalytics
@@ -14,6 +15,7 @@ import com.tokopedia.linker.model.UserData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -86,6 +88,9 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     fun trackScreen(activity: Activity, screenName: String) {
+        Timber.w("P2screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+                + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
+                + " | " + Build.TAGS)
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 

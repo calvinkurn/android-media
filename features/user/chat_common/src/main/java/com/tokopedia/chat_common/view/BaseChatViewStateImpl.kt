@@ -1,11 +1,15 @@
 package com.tokopedia.chat_common.view
 
+import android.content.res.Resources
+import android.graphics.Rect
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.*
 import androidx.annotation.NonNull
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
-import android.view.View
-import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
@@ -15,9 +19,10 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -31,9 +36,10 @@ open class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
         private val typingListener: TypingListener,
-        private val chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener
-) : BaseChatViewState {
+        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener
+) : BaseChatViewState, ViewTreeObserver.OnGlobalLayoutListener {
 
+    protected lateinit var rootView: ViewGroup
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var mainLoading: ProgressBar
     protected lateinit var replyEditText: EditText
@@ -42,12 +48,17 @@ open class BaseChatViewStateImpl(
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
+    protected lateinit var attachmentMenu: AttachmentMenuRecyclerView
+    protected lateinit var attachmentMenuContainer: FrameLayout
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
     var isTyping: Boolean = false
 
+    private val keyboardOffset = 100
+
     override fun initView() {
+        rootView = view.findViewById(getRootViewId())
         recyclerView = view.findViewById(getRecyclerViewId())
         mainLoading = view.findViewById(getProgressId())
         replyEditText = view.findViewById(getNewCommentId())
@@ -56,6 +67,8 @@ open class BaseChatViewStateImpl(
         sendButton = view.findViewById(getSendButtonId())
         notifier = view.findViewById(getNotifierId())
         chatMenuButton = view.findViewById(getChatMenuId())
+        attachmentMenu = view.findViewById(getAttachmentMenuId())
+        attachmentMenuContainer = view.findViewById(getAttachmentMenuContainer())
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -77,7 +90,7 @@ open class BaseChatViewStateImpl(
             }
         }, onError)
 
-        val onChatDeBounceSubscriber = Action1<Boolean>{
+        val onChatDeBounceSubscriber = Action1<Boolean> {
             typingListener.onStopTyping()
             isTyping = false
         }
@@ -85,10 +98,16 @@ open class BaseChatViewStateImpl(
                 .skip(1)
                 .subscribe(onChatDeBounceSubscriber, onError)
 
+        attachmentMenu.setAttachmentMenuListener(attachmentMenuListener)
+
+        rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
+
+        attachmentMenu.container = attachmentMenuContainer
         chatMenuButton.setOnClickListener {
-            chatMenuListener.showChatMenu()
+            attachmentMenu.toggle()
         }
     }
+
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         val title = toolbar.findViewById<TextView>(R.id.title)
@@ -106,8 +125,7 @@ open class BaseChatViewStateImpl(
         if (chatroomViewModel.headerModel.isOnline) {
             onlineStatus.setImageResource(R.drawable.status_indicator_online)
             onlineDesc.text = view.context.getString(R.string.online)
-        }
-        else
+        } else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
 
         title.setOnClickListener { onToolbarClicked() }
@@ -190,7 +208,7 @@ open class BaseChatViewStateImpl(
         val onError = Action1<Throwable> { it.printStackTrace() }
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe (onNext, onError)
+                .subscribe(onNext, onError)
     }
 
     open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
@@ -237,6 +255,53 @@ open class BaseChatViewStateImpl(
         getAdapter().changeReadStatus()
     }
 
+    override fun onGlobalLayout() {
+        val screenHeight = getScreenHeight()
+        val windowRect = Rect().apply {
+            rootView.getWindowVisibleDisplayFrame(this)
+        }
+        val windowHeight = windowRect.bottom - windowRect.top
+        val statusBarHeight = getStatusBarHeight()
+
+        val heightDifference = screenHeight - windowHeight - statusBarHeight
+
+        if (heightDifference > keyboardOffset) {
+            attachmentMenu.isKeyboardOpened = true
+            attachmentMenu.hideMenu()
+        } else {
+            attachmentMenu.isKeyboardOpened = false
+            if (attachmentMenu.showDelayed) {
+                attachmentMenu.showDelayed()
+            }
+        }
+
+    }
+
+    private fun getScreenHeight(): Int {
+        return Resources.getSystem().displayMetrics.heightPixels
+    }
+
+    private fun getStatusBarHeight(): Int {
+        var height = 0
+        val resourceId = view.context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            height = view.context.resources.getDimensionPixelSize(resourceId)
+        }
+        return height
+    }
+
+    override fun clear() {
+        rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+    }
+
+    override fun isAttachmentMenuVisible(): Boolean {
+        return attachmentMenu.isVisible
+    }
+
+    override fun hideAttachmentMenu() {
+        return attachmentMenu.hideMenu()
+    }
+
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment
@@ -245,5 +310,8 @@ open class BaseChatViewStateImpl(
     open fun getSendButtonId() = R.id.send_but
     open fun getNotifierId() = R.id.notifier
     open fun getChatMenuId() = R.id.iv_chat_menu
+    open fun getAttachmentMenuId() = R.id.rv_attachment_menu
+    open fun getRootViewId() = R.id.main
+    open fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
 
 }

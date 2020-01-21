@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.createpost.view.activity.MediaPreviewActivity"
+            android:name="com.tokopedia.createpost.view.activity.CreatePostMediaPreviewActivity"
             android:label="@string/af_title_edit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

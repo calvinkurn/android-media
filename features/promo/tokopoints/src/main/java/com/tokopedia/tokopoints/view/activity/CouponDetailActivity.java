@@ -41,6 +41,7 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(0f);
         }
+        setResult(RESULT_OK,getIntent());
     }
 
     private void forDeeplink() {

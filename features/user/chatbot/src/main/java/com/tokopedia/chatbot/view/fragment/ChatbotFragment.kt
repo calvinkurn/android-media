@@ -28,14 +28,16 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
-import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -52,7 +54,6 @@ import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
-import com.tokopedia.chatbot.view.adapter.viewholder.factory.ChatBotChatMenuFactory
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -72,6 +73,8 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
@@ -82,7 +85,7 @@ import javax.inject.Inject
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener,ChatbotActivity.OnBackPressed {
+        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -96,6 +99,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     val SELECTED_ITEMS = "selected_items"
     val EMOJI_STATE = "emoji_state"
     val CSAT_ATTRIBUTES = "csat_attribute"
+    private val TICKER_TYPE_ANNOUNCEMENT = "announcement"
+    private val TICKER_TYPE_WARNING = "warning"
 
     @Inject
     lateinit var presenter: ChatbotPresenter
@@ -108,6 +113,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var mCsatResponse: WebSocketCsatResponse
     lateinit var attribute: Attributes
     private var isBackAllowed = true
+    private lateinit var ticker:Ticker
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -179,6 +185,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
+        ticker = view.findViewById(R.id.chatbot_ticker)
         return view
     }
 
@@ -221,10 +228,55 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
         viewState.initView()
         loadInitialData()
+        showTicker()
 
         if (savedInstanceState != null)
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
 
+    }
+
+    private fun showTicker() {
+        presenter.showTickerData(onError(),onSuccesGetTickerData())
+    }
+
+    private fun onSuccesGetTickerData(): (TickerData) -> Unit {
+        return {
+            if (!it.items.isNullOrEmpty()) {
+                ticker.show()
+                if (it.items.size > 1) {
+                    showMultiTicker(it)
+                } else {
+                    showSingleTicker(it)
+                }
+            }
+        }
+    }
+
+    private fun showSingleTicker(tickerData: TickerData) {
+        ticker.tickerTitle = tickerData.items?.get(0)?.title
+        ticker.setTextDescription(tickerData.items?.get(0)?.text?:"")
+        ticker.tickerType = getTickerType(tickerData.type ?: "")
+    }
+
+    private fun showMultiTicker(tickerData: TickerData) {
+        val mockData = arrayListOf<com.tokopedia.unifycomponents.ticker.TickerData>()
+
+        tickerData.items?.forEach {
+            mockData.add(com.tokopedia.unifycomponents.ticker.TickerData(it?.title,
+                    it?.text?:"",
+                    getTickerType(tickerData.type ?: "")))
+        }
+
+        val adapter = TickerPagerAdapter(activity, mockData)
+        ticker.addPagerView(adapter, mockData)
+    }
+
+    private fun getTickerType(tickerType: String): Int {
+        return when (tickerType) {
+            TICKER_TYPE_ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
+            TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
     }
 
     override fun getSwipeRefreshLayoutResourceId() = 0
@@ -587,14 +639,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.detachView()
     }
 
-    override fun onClickImagePicker() {
+    override fun createAttachmentMenus(): List<AttachmentMenu> {
+        return listOf(
+                ImageMenu()
+        )
+    }
+
+    override fun onClickAttachImage(menu: AttachmentMenu) {
         onAttachImageClicked()
     }
-
-    override fun createChatMenuFactory(): ChatMenuFactory {
-        return ChatBotChatMenuFactory()
-    }
-
 
     override fun showErrorToast(it: Throwable) {
         view?.let { mView -> Toaster.showErrorWithAction(mView, it.message.toString(), Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { }) }
@@ -618,8 +671,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onBackPressed() {
-        if(!isBackAllowed){
+    override fun onBackPressed(): Boolean {
+        if (!isBackAllowed) {
             val dialog = Dialog(context as Activity, Dialog.Type.PROMINANCE)
             dialog.setTitle(context?.getString(R.string.cb_bot_leave_the_queue))
             dialog.setDesc(context?.getString(R.string.cb_bot_leave_the_queue_desc_one))
@@ -635,8 +688,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
             dialog.setCancelable(true)
             dialog.show()
-        }else{
-            (activity as ChatbotActivity).finish()
+            return true
         }
+        return super.onBackPressed()
     }
 }

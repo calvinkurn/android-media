@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.design.text.SearchInputView
+        android:id="@+id/search_input_autocomplete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:siv_search_hint="@string/searchbar_autocomplete_hint" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_autocomplete"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:itemCount="13"
+        tools:listitem="@layout/item_autocomplete_result" />
+
+</LinearLayout>

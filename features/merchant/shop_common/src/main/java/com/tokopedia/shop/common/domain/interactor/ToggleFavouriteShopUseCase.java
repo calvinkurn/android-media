@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.R;
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop;
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

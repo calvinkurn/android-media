@@ -17,7 +17,7 @@
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+            android:windowSoftInputMode="stateHidden"/>
 
         <activity
             android:name=".registerinitial.view.activity.RegisterInitialActivity"

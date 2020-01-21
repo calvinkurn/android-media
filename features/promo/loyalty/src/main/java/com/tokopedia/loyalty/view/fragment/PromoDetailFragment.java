@@ -308,9 +308,6 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                promoDetailPresenter.cachePromoCodeData(promoData.getPromoCode(), getResources());
-
                 promoDetailAnalytics.userClickCta(
                         promoData.getTitle(),
                         promoData.getId(),

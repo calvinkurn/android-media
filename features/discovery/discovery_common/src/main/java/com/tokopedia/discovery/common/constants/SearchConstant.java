@@ -138,4 +138,11 @@ public interface SearchConstant {
     interface SimilarSearch {
         String QUERY = "SIMILAR_SEARCH_QUERY";
     }
+
+    interface Advertising {
+        String ADVERTISING_ID = "ADVERTISINGID";
+        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
+        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
+        String APP_CLIENT_ID = "appClientId";
+    }
 }

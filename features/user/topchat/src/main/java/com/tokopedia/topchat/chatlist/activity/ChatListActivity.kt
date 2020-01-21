@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
 import androidx.core.graphics.drawable.DrawableCompat
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
@@ -330,7 +332,10 @@ class ChatListActivity : BaseTabActivity()
             }
         }
 
-        tabLayout.setBackgroundResource(R.color.white)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tabLayout.elevation = 0f
+        }
+        tabLayout.background = ContextCompat.getDrawable(this, R.drawable.bg_chat_list_tab_layout)
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

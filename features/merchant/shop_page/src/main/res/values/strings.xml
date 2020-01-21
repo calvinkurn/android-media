@@ -89,8 +89,10 @@
     <string name="shop_product_label_po">PO</string>
     <string name="shop_product_limited_empty_product_title">Toko ini belum memiliki produk</string>
     <string name="shop_product_limited_empty_product_title_owner">Toko Anda belum memiliki produk</string>
+    <string name="shop_product_limited_empty_products_title_owner">Tokomu masih kosong, nih</string>
     <string name="shop_product_limited_empty_product_title_owner_at_etalase">Toko Anda belum memiliki produk di etalase ini</string>
     <string name="shop_product_limited_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
+    <string name="shop_product_limited_empty_products_content_owner">Yuk, isi toko dengan produk-produck terbaikmu dan\n mulai berjualan</string>
     <string name="shop_product_empty_product_content">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
 
     <string name="shop_product_empty_product_title">Oops, Produk Nggak Ditemukan</string>

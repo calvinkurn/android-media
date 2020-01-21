@@ -10,7 +10,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
 import com.tokopedia.tradein_common.IAccessRequestListener
-import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.common_tradein.model.TradeInParams
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

@@ -11,7 +11,7 @@ public class SecondScreenState extends ScreenState {
     }
     @Override
     public int getSecondEmoji() {
-        return R.drawable.rating_active_2;
+        return R.drawable.ic_rating_active_2;
     }
 
     @Override

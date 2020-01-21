@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_8">
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/digital_homepage_search_category_image"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/dp_16" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/digital_homepage_search_category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:typographyType="body_2"
+        tools:text="Digital Home" />
+</LinearLayout>

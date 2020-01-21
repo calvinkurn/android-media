@@ -13,7 +13,6 @@ import com.tokopedia.createpost.view.type.ShareType
 import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase.Companion.SOURCE_DETAIL
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.debugTrace
@@ -165,7 +164,7 @@ class CreatePostPresenter @Inject constructor(
         view?.showLoading()
         getFeedUseCase.execute(GetDynamicFeedUseCase.createRequestParams(
                 userId = if (isAffiliate) userSession.userId else userSession.shopId,
-                source = SOURCE_DETAIL,
+                source = GetDynamicFeedUseCase.FeedV2Source.Detail,
                 sourceId = postId),
                 getFeedDetailSubscriber()
         )

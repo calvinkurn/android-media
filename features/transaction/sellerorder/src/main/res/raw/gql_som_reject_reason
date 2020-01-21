@@ -1,0 +1,10 @@
+query SOMRejectReason($input:SOMRejectReasonRequest!) {
+  som_reject_reason(input:$input) {
+    reason_code
+    reason_text
+    child {
+      reason_code
+      reason_text
+    }
+  }
+}

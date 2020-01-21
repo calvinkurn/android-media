@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
@@ -65,7 +64,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
         activity?.let {
             GraphqlClient.init(it)
             DaggerProfileComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(it.application))
                     .build()
                     .inject(this)
         }

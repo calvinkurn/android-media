@@ -70,11 +70,13 @@
             android:background="@drawable/bg_tp_cr_red"
             android:textColor="@color/white"
             android:textSize="@dimen/tp_text_size_xxsmall"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/iv_tpToolbar_coupon"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/iv_tpToolbar_coupon"
             app:layout_constraintTop_toTopOf="@+id/iv_tpToolbar_coupon"
-            tools:text="999" />
+            tools:text="9" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
