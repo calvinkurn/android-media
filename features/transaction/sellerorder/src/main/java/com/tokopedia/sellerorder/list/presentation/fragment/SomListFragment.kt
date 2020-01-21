@@ -212,6 +212,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (filterStatusId != 0) {
                         loadFilterStatusList()
                     } else {
+                        somListItemAdapter.removeAll()
                         nextOrderId = 0
                         loadOrderList(nextOrderId)
                     }
