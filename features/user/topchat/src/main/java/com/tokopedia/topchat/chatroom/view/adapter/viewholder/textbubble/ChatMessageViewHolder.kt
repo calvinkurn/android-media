@@ -2,6 +2,10 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
 import android.annotation.SuppressLint
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.ROLE_USER
@@ -9,10 +13,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
-import kotlinx.android.synthetic.main.item_topchat_chat_left.view.*
-import kotlinx.android.synthetic.main.item_topchat_header_role_user.view.*
+import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 
 abstract class ChatMessageViewHolder(itemView: View?) : BaseChatViewHolder<MessageViewModel>(itemView) {
+
+    open val tvRole: TextView? = itemView?.findViewById(R.id.tvRole)
+    open val tvName: TextView? = itemView?.findViewById(R.id.tvName)
+    open val llRoleUser: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
+    open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
 
     override fun bind(viewModel: MessageViewModel?) {
         if (viewModel == null) return
@@ -21,6 +29,25 @@ abstract class ChatMessageViewHolder(itemView: View?) : BaseChatViewHolder<Messa
         bindHour(viewModel)
         bindHeaderDate(viewModel)
         bindHeaderRole(viewModel)
+        bindClick()
+    }
+
+    protected fun bindClick() {
+        itemView.setOnClickListener { v -> KeyboardHandler.DropKeyboard(itemView.context, itemView) }
+    }
+
+    override fun getDateId(): Int {
+        return R.id.tvDate
+    }
+
+    protected fun bindChatMessage(chat: MessageViewModel) {
+        val htmlMessage = MethodChecker.fromHtml(chat.message)
+        fxChat?.setMessage(htmlMessage)
+    }
+
+    protected fun bindHour(viewModel: MessageViewModel) {
+        val hourTime = getHourTime(viewModel.replyTime)
+        fxChat?.setHourTime(hourTime)
     }
 
     @SuppressLint("DefaultLocale")
@@ -32,29 +59,16 @@ abstract class ChatMessageViewHolder(itemView: View?) : BaseChatViewHolder<Messa
                 !chat.isDummy &&
                 chat.isShowRole
         ) {
-            itemView.tvRole?.text = chat.from
-            itemView.tvName?.text = chat.fromRole
-            itemView.llRoleUser?.show()
+            tvRole?.text = chat.from
+            tvName?.text = chat.fromRole
+            llRoleUser?.show()
         } else {
-            itemView.llRoleUser?.hide()
+            llRoleUser?.hide()
         }
     }
 
     private fun bindHeaderDate(viewModel: MessageViewModel) {
         setHeaderDate(viewModel)
-    }
-
-    override fun getDateId(): Int {
-        return R.id.tvDate
-    }
-
-    protected fun bindChatMessage(chat: MessageViewModel) {
-        itemView.fxChat?.setMessage(chat.message)
-    }
-
-    protected fun bindHour(viewModel: MessageViewModel) {
-        val hourTime = getHourTime(viewModel.replyTime)
-        itemView.fxChat?.setHourTime(hourTime)
     }
 
     private fun verifyReplyTime(chat: MessageViewModel) {

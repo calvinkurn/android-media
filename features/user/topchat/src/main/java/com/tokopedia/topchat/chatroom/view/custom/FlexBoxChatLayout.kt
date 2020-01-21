@@ -2,10 +2,10 @@ package com.tokopedia.topchat.chatroom.view.custom
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -86,9 +86,9 @@ class FlexBoxChatLayout : FrameLayout {
 
     private fun initCheckMarkVisibility() {
         if (!showCheckMark) {
-            checkMark?.hide()
+            hideReadStatus()
         } else {
-            checkMark?.show()
+            showReadStatus()
         }
     }
 
@@ -145,7 +145,7 @@ class FlexBoxChatLayout : FrameLayout {
         super.onMeasure(widthSpec, heightSpec)
     }
 
-    fun setMessage(msg: String) {
+    fun setMessage(msg: CharSequence?) {
         message?.text = msg
     }
 
@@ -153,7 +153,15 @@ class FlexBoxChatLayout : FrameLayout {
         hourTime?.text = time
     }
 
-    fun removeCheckMark() {
-        checkMark?.visibility = View.GONE
+    private fun showReadStatus() {
+        checkMark?.show()
+    }
+
+    private fun hideReadStatus() {
+        checkMark?.hide()
+    }
+
+    fun changeReadStatus(readStatus: Drawable?) {
+        checkMark?.setImageDrawable(readStatus)
     }
 }

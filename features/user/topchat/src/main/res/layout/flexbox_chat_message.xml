@@ -12,6 +12,7 @@
         android:gravity="left|top"
         android:lineSpacingMultiplier="1.1"
         android:textColor="@color/Neutral_N700_96"
+        android:textIsSelectable="true"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
         tools:text="Mau cari susu yang bisa buat keker dlm satu malam ada gak ya gan?" />
