@@ -13,6 +13,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.logisticcart.shipping.model.RatesParam;
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
@@ -121,6 +125,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -144,7 +149,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final EditAddressUseCase editAddressUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final SaveShipmentStateUseCase saveShipmentStateUseCase;
-    private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
+    private final GetRatesUseCase ratesUseCase;
+    private final GetRatesApiUseCase ratesApiUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private final CodCheckoutUseCase codCheckoutUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
@@ -193,7 +199,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              EditAddressUseCase editAddressUseCase,
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
                              SaveShipmentStateUseCase saveShipmentStateUseCase,
-                             GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+                             GetRatesUseCase ratesUseCase,
+                             GetRatesApiUseCase ratesApiUseCase,
                              CodCheckoutUseCase codCheckoutUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              SubmitHelpTicketUseCase submitHelpTicketUseCase,
@@ -215,6 +222,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.saveShipmentStateUseCase = saveShipmentStateUseCase;
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
+        this.ratesUseCase = ratesUseCase;
+        this.ratesApiUseCase = ratesApiUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
@@ -238,8 +247,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }
-        if (getCourierRecommendationUseCase != null) {
-            getCourierRecommendationUseCase.unsubscribe();
+        if (ratesUseCase != null) {
+            ratesUseCase.unsubscribe();
+        }
+        if (ratesApiUseCase != null) {
+            ratesApiUseCase.unsubscribe();
         }
         if (codCheckoutUseCase != null) {
             codCheckoutUseCase.unsubscribe();
@@ -1751,12 +1763,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 boolean isInitialLoad, ArrayList<Product> products,
                                                 String cartString, boolean isTradeInDropOff,
                                                 RecipientAddressModel recipientAddressModel) {
-        String query = "";
-        if (isTradeInDropOff) {
-            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_trade_in_query);
-        } else {
-            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        }
         ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
@@ -1765,11 +1771,27 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
-        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(),
-                pslCode, spId, 0, shopShipmentList, shippingParam,
-                new GetCourierRecommendationSubscriber(getView(), this, shipperId, spId, itemPosition,
-                        shippingCourierConverter, shipmentCartItemModel, shopShipmentList, isInitialLoad, isTradeInDropOff)
-        );
+        boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
+
+        RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
+                .isCorner(cornerId)
+                .codHistory(counter)
+                .isLeasing(isLeasing)
+                .promoCode(pslCode)
+                .build();
+
+        Observable<ShippingRecommendationData> observable;
+        if (isTradeInDropOff) {
+            observable = ratesApiUseCase.execute(param, spId, 0, shopShipmentList);
+        } else {
+            observable = ratesUseCase.execute(param, spId, 0, shopShipmentList);
+        }
+        observable.subscribe(
+                new GetCourierRecommendationSubscriber(
+                        getView(), this, shipperId, spId, itemPosition,
+                        shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
+                        isInitialLoad, isTradeInDropOff
+                ));
     }
 
     @NonNull

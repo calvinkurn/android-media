@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
@@ -100,7 +102,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  changeShippingAddressUseCase: ChangeShippingAddressUseCase,
                                  saveShipmentStateUseCase: SaveShipmentStateUseCase,
                                  codCheckoutUseCase: CodCheckoutUseCase,
-                                 getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
+                                 ratesUseCase: GetRatesUseCase,
+                                 ratesApiUseCase: GetRatesApiUseCase,
                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                  submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                  shippingCourierConverter: ShippingCourierConverter,
@@ -114,7 +117,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 checkoutUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, changeShippingAddressUseCase,
-                saveShipmentStateUseCase, getCourierRecommendationUseCase,
+                saveShipmentStateUseCase,
+                ratesUseCase, ratesApiUseCase,
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
                 shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase)
