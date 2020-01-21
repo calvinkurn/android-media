@@ -18,7 +18,7 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
+import kotlinx.android.synthetic.main.view_topup_bills_input_field.view.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
 
@@ -135,7 +135,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     open fun getLayout(): Int {
-        return R.layout.view_voucher_game_input_field
+        return R.layout.view_topup_bills_input_field
     }
 
     private fun getTextWatcher(): TextWatcher {

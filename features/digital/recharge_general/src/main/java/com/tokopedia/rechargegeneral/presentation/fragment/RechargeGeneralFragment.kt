@@ -21,6 +21,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -51,6 +53,7 @@ import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_product.*
@@ -238,11 +241,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderInitialData(cluster: RechargeGeneralOperatorCluster) {
         if (operatorId == 0) operatorId = getFirstOperatorId(cluster)
         if (operatorId > 0) {
+            operatorCluster = getClusterOfOperatorId(cluster, operatorId)?.name ?: ""
             renderOperatorCluster(cluster)
 
-            operatorCluster = getClusterOfOperatorId(cluster, operatorId)?.name ?: ""
             val operatorGroup = cluster.operatorGroups.first { it.name == operatorCluster }
             renderOperatorList(operatorGroup, cluster.text)
+
             if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
         }
     }
@@ -259,6 +263,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (operatorCluster != input) {
                         operatorCluster = input
                         resetInputData()
+                        // Remove selected operator
+                        operator_select.setInputText("", false)
                         rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryId, operatorCluster)
 
                         cluster.operatorGroups.find { it.name == input }?.let {
@@ -310,7 +316,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 override fun onCustomInputClick() {
                     rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryId)
 
-                    val dropdownData = operatorGroup.operators.map { TopupBillsInputDropdownData(it.attributes.name) }
+                    val dropdownData = operatorGroup.operators.map {
+                        TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
+                    }
                     showOperatorSelectDropdown(operator_select, dropdownData)
                 }
             }
@@ -380,6 +388,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     // Reset product id & input data
     private fun resetInputData() {
+        operatorId = 0
+        selectedProduct = null
         inputData = hashMapOf()
         toggleEnquiryButton()
     }
@@ -492,6 +502,57 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
 
             renderInitialData(operatorClusters.data)
+        }
+    }
+
+    private fun renderTickers(tickers: List<TopupBillsTicker>) {
+        if (tickers.isNotEmpty()) {
+            val messages = mutableListOf<TickerData>()
+            for (item in tickers) {
+                var description: String = item.content
+                if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
+                    description += " [${item.actionText}]{${item.actionLink}}"
+                }
+                messages.add(TickerData(item.name, description,
+                        when (item.type) {
+                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
+                            else -> Ticker.TYPE_INFORMATION
+                        }))
+            }
+
+            if (messages.size == 1) {
+                with (messages.first()) {
+                    recharge_general_ticker.tickerTitle = title
+                    recharge_general_ticker.setHtmlDescription(description)
+                    recharge_general_ticker.tickerType = type
+                }
+                recharge_general_ticker.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                    }
+
+                    override fun onDismiss() {
+
+                    }
+                })
+            } else {
+                context?.let { context ->
+                    val tickerAdapter = TickerPagerAdapter(context, messages)
+                    tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        }
+                    })
+                    recharge_general_ticker.addPagerView(tickerAdapter, messages)
+                }
+            }
+
+            recharge_general_ticker.visibility = View.VISIBLE
+        } else {
+            recharge_general_ticker.visibility = View.GONE
         }
     }
 
@@ -642,6 +703,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
+        renderTickers(data.tickers)
         // Set recommendation data if available
         if (data.recommendations.isNotEmpty() && !hasInputData) {
             setupAutoFillData(data.recommendations[0])
