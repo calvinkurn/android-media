@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners
 
 import android.content.Context
 import android.widget.ImageView
