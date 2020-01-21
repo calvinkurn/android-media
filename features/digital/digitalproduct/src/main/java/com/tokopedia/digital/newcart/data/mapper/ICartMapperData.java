@@ -1,7 +1,7 @@
 package com.tokopedia.digital.newcart.data.mapper;
 
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
-import com.tokopedia.digital.exception.MapperDataException;
+import com.tokopedia.digital.common.exception.MapperDataException;
 import com.tokopedia.digital.newcart.data.entity.response.voucher.ResponseVoucherData;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;

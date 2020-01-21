@@ -39,7 +39,6 @@ public interface DigitalEventTracking {
         String CLICK_DAFTAR_TX = "Click Daftar Transaksi";
         String CLICK_PANDUAN_SECTION = "click panduan section";
         String CLICK_BELI = "click beli";
-        String CLICK_LIHAT_SEMUA_PRODUK = "click lihat semua produk";
         String VIEW_CHECKOUT = "view checkout";
         String CLICK_PROCEED_PAYMENT = "click proceed to payment";
         String SELECT_DEAL_CATEGORY = "select deals category";
@@ -47,8 +46,6 @@ public interface DigitalEventTracking {
         String REMOVE_DEAL_OFFER = "remove deals offer";
         String CLICK_SKIP = "click skip";
         String ERROR_TO_ADD_DEAL = "error to add deals";
-        String CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk";
-        String CLICK_RECOMMENDATION_WIDGET = "click recommendation widget";
         String CLICK_USSD_BUY_PULSA = "Click Beli from USSD";
         String CLICK_USSD_EDIT_NUMBER = "Click Edit Number from USSD";
         String CLICK_BILL = "Click Tagihan";
@@ -57,7 +54,6 @@ public interface DigitalEventTracking {
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String CLICK_USE_COUPON = "click gunakan kode promo atau kupon";
-        String CLICK_BTN_USE_PROMO_CODE = "click gunakan kode";
         String CLICK_CANCEL_APPLY_COUPON = "click x on ticker";
     }
 
