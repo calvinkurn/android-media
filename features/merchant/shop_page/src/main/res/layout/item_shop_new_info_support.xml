@@ -19,12 +19,12 @@
         android:id="@+id/tv_support"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:lineSpacingExtra="6sp"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_new_info_support"
-        android:textColor="#f531353b"
-        android:textSize="14sp"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toRightOf="@id/iv_support"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,20 +41,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_14"
-            android:lineSpacingExtra="6sp"
+            android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_new_info_support_center"
-            android:textColor="#f531353b"
-            android:textSize="12sp" />
+            android:textColor="@color/clr_f531353b"
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_get_support"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:lineSpacingExtra="6sp"
+            android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_new_info_action_get_support"
-            android:textColor="#ae31353b"
-            android:textSize="12sp" />
+            android:textColor="@color/clr_ae31353b"
+            android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
     <LinearLayout
@@ -70,20 +70,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
-            android:lineSpacingExtra="6sp"
+            android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_new_info_seller_center"
-            android:textColor="#f531353b"
-            android:textSize="12sp" />
+            android:textColor="@color/clr_f531353b"
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_get_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:lineSpacingExtra="6sp"
+            android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_new_info_action_get_tips"
-            android:textColor="#ae31353b"
-            android:textSize="12sp" />
+            android:textColor="@color/clr_ae31353b"
+            android:textSize="@dimen/sp_12" />
 
     </LinearLayout>
 

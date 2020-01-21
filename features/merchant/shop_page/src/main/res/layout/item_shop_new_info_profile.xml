@@ -19,12 +19,12 @@
         android:id="@+id/tv_shop_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:lineSpacingExtra="6sp"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_new_info_profile"
-        android:textColor="#f531353b"
-        android:textSize="14sp"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toRightOf="@id/iv_shop"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,10 +35,10 @@
         android:layout_marginTop="@dimen/dp_14"
         android:clickable="true"
         android:focusable="true"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_new_info_action_change_profile"
-        android:textColor="#f531353b"
-        android:textSize="12sp"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_shop_profile" />
 
@@ -49,10 +49,10 @@
         android:layout_marginTop="@dimen/dp_8"
         android:clickable="true"
         android:focusable="true"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_new_info_action_change_note"
-        android:textColor="#f531353b"
-        android:textSize="12sp"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_change_profile" />
 
@@ -63,10 +63,10 @@
         android:layout_marginTop="@dimen/dp_8"
         android:clickable="true"
         android:focusable="true"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_new_info_action_manage_opening_time"
-        android:textColor="#f531353b"
-        android:textSize="12sp"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_change_note" />
 

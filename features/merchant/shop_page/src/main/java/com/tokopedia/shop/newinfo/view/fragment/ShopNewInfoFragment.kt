@@ -36,7 +36,7 @@ import com.tokopedia.shop.newinfo.view.viewmodel.ShopNewInfoViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.activity_shop_page.*
+import kotlinx.android.synthetic.main.activity_shop_new_info.*
 import javax.inject.Inject
 
 class ShopNewInfoFragment : BaseDaggerFragment(),
@@ -61,6 +61,7 @@ class ShopNewInfoFragment : BaseDaggerFragment(),
 
     var shopId: String? = null
     var shopDomain: String? = null
+    var isShareFunctionReady = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -156,6 +157,11 @@ class ShopNewInfoFragment : BaseDaggerFragment(),
         inflater?.inflate(R.menu.menu_shop_new_info, menu)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        menu?.findItem(R.id.action_share)?.isVisible = isShareFunctionReady
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_share) {
             onShareShop()
@@ -195,23 +201,25 @@ class ShopNewInfoFragment : BaseDaggerFragment(),
         when (viewState) {
             VIEW_LOADING -> {
                 errorView.hide()
-                activity?.toolbar?.hide()
                 dashboardView.visible()
                 shopNewInfoView.visible()
             }
             VIEW_ERROR -> {
                 errorView.visible()
-                activity?.toolbar?.hide()
                 dashboardView.hide()
                 shopNewInfoView.hide()
             }
             else -> {
                 errorView.hide()
-                activity?.toolbar?.visible()
                 dashboardView.visible()
                 shopNewInfoView.visible()
             }
         }
+    }
+
+    private fun displayShareButton() {
+        isShareFunctionReady = true
+        activity?.invalidateOptionsMenu()
     }
 
     private fun onShareShop() {

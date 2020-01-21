@@ -8,9 +8,9 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -18,7 +18,6 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -40,7 +39,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
     private var selectedStartCloseUnixTimeMs: Long = 0
     private var selectedEndCloseUnixTimeMs: Long = 0
 
-    lateinit var shopBasicDataModel: ShopBasicDataModel
+    private lateinit var shopBasicDataModel: ShopBasicDataModel
     private var isClosedNow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,8 +50,6 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
         }
-
-        GraphqlClient.init(this)
 
         DaggerShopSettingsComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
@@ -126,7 +123,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         tvSave.setOnClickListener { onSaveButtonClicked() }
     }
 
-    fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
+    private fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
         val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
@@ -137,7 +134,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         datePicker.show()
     }
 
-    fun showEndDatePickerDialog(selectedDate: Date, minDate: Date) {
+    private fun showEndDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
         val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
@@ -184,21 +181,21 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
                 closeNote)
     }
 
-    fun showSubmitLoading(message: String) {
+    private fun showSubmitLoading(message: String) {
         if (progressDialog == null) {
             progressDialog = ProgressDialog(this)
         }
-        if (progressDialog?.isShowing == true) {
-            progressDialog!!.setMessage(message)
-            progressDialog!!.isIndeterminate = true
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.show()
+        if (progressDialog?.isShowing == false) {
+            progressDialog?.setMessage(message)
+            progressDialog?.isIndeterminate = true
+            progressDialog?.setCancelable(false)
+            progressDialog?.show()
         }
     }
 
-    fun hideSubmitLoading() {
+    private fun hideSubmitLoading() {
         if (progressDialog?.isShowing == true) {
-            progressDialog!!.dismiss()
+            progressDialog?.dismiss()
             progressDialog = null
         }
     }
