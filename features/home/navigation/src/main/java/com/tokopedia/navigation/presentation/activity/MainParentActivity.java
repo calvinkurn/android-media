@@ -231,6 +231,12 @@ public class MainParentActivity extends BaseActivity implements
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
 
         initCategoryConfig();
+
+        if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
+            new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
+        }
     }
 
     private void initCategoryConfig() {
@@ -558,10 +564,7 @@ public class MainParentActivity extends BaseActivity implements
 
         registerNewFeedClickedReceiver();
 
-        // Disable app check signature on OS 10 to avoid close app after download DF
-        // Quick fix to enable DF on demand. Need a better solution
-        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P &&
-                !((BaseMainApplication) getApplication()).checkAppSignature()) {
+        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
     }
