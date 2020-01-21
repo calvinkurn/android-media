@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -12,10 +13,11 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
@@ -40,10 +42,9 @@ import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
+import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogWrapper;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -78,8 +79,7 @@ import kotlin.jvm.functions.Function1;
 
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener,
-        CharacterPerMinuteInterface {
+        InAppManager.InAppMessageListener {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_NAME_BTS_ONE = "Promo BTS 1";
@@ -91,8 +91,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
-    CharacterPerMinuteActivityLifecycleCallbacks callback;
-
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -101,6 +99,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        if (!isMainProcess()) {
+            return;
+        }
         UIBlockDebugger.init(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
@@ -139,6 +140,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         super.onCreate();
 
+        StethoUtil.initStetho(this);
+
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
@@ -160,14 +163,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }).start();
         }
 
-        if (callback == null) {
-            callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
-        }
-        registerActivityLifecycleCallbacks(callback);
-
-        LogWrapper.init(this);
-        if (LogWrapper.instance != null) {
-            LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        LogManager.init(this);
+        if (LogManager.instance != null) {
+            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
 
@@ -177,6 +175,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks(subscriber);
     }
 
+    private boolean isMainProcess() {
+        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
+
+        if (manager == null || manager.getRunningAppProcesses() == null) return false;
+
+        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+            if (processInfo.pid == android.os.Process.myPid()) {
+                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onTerminate() {
         // this function is not reliable and will never be called in production
@@ -184,14 +195,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
         TokopediaUrl.Companion.deleteInstance();
-        unregisterActivityLifecycleCallbacks(callback);
         CoreLegacyDbFlowDatabase.reset();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        unregisterActivityLifecycleCallbacks(callback);
         CoreLegacyDbFlowDatabase.reset();
     }
 
@@ -390,13 +399,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 md = MessageDigest.getInstance("MD5");
                 md.update(bytes);
                 byte[] byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA");
                 md.update(bytes);
                 byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA256");
@@ -433,21 +440,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
-    }
-
-    @Override
-    public void saveCPM(@NonNull String cpm) {
-        PersistentCacheManager.instance.put(CharacterPerMinuteInterface.KEY, cpm, TimeUnit.MINUTES.toMillis(1));
-    }
-
-    @Override
-    public String getCPM() {
-        return PersistentCacheManager.instance.getString(CharacterPerMinuteInterface.KEY);
-    }
-
-    @Override
-    public boolean isEnable() {
-        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
     }
 
 

@@ -30,6 +30,7 @@ object DeepLinkChecker {
     const val HOT_LIST = 6
     const val CATEGORY = 7
     const val HOME = 8
+    const val FIND = 9
     const val ETALASE = 10
     const val APPLINK = 11
     const val INVOICE = 12
@@ -56,6 +57,7 @@ object DeepLinkChecker {
     const val PROMO_DETAIL = 33
     const val PROMO_LIST = 34
     const val PRODUCT_REVIEW = 35
+    const val DEALS = 36
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -149,6 +151,11 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
+    fun openFind(url: String, context: Context): Boolean {
+        return openIfExist(context, getFindIntent(context, url))
+    }
+
+    @JvmStatic
     fun openCatalog(url: String, context: Context): Boolean {
         return openIfExist(context, getCatalogIntent(context, url))
     }
@@ -188,6 +195,12 @@ object DeepLinkChecker {
         val uri = Uri.parse(url)
         uri.pathSegments[1]
         return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""))
+    }
+
+    private fun getFindIntent(context: Context, url: String): Intent {
+        val uri = Uri.parse(url)
+        val segments = uri.pathSegments
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + if (segments.size > 1) segments[segments.lastIndex] else ""))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {

@@ -42,4 +42,7 @@
     <string name="invalid_email_error" >Format email salah</string>
     <string name="phone_field_empty">Nomor ponsel harus diisi</string>
     <string name="email_field_empty">Email harus diisi</string>
+
+    <string name="error_invalid_phone_number">Nomor Telepon tidak valid</string>
+    <string name="error_invalid_email">Email ini tidak valid.</string>
 </resources>

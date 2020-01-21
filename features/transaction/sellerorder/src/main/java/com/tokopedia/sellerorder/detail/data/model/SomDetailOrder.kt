@@ -57,6 +57,10 @@ data class SomDetailOrder(
                 @Expose
                 val customer: Customer = Customer(),
 
+                @SerializedName("dropshipper")
+                @Expose
+                val dropshipper: Dropshipper = Dropshipper(),
+
                 @SerializedName("shipment")
                 @Expose
                 val shipment: Shipment = Shipment(),
@@ -170,6 +174,15 @@ data class SomDetailOrder(
                     @SerializedName("phone")
                     @Expose
                     val phone: String = "")
+
+            data class Dropshipper(
+                    @SerializedName("phone")
+                    @Expose
+                    val phone: String = "",
+
+                    @SerializedName("name")
+                    @Expose
+                    val name: String = "")
 
             data class Shipment(
                     @SerializedName("id")

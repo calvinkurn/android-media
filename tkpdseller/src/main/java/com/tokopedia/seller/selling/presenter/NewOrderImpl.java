@@ -32,8 +32,6 @@ public class NewOrderImpl extends NewOrder {
     private Context context;
 
     private boolean isLoading;
-    private boolean isRefresh;
-
     private Model modelNewOrder = new Model();
     public List<OrderShippingList> listDatas = new ArrayList<>();
 
@@ -45,11 +43,6 @@ public class NewOrderImpl extends NewOrder {
 
     @Override
     public String getMessageTAG() {
-        return null;
-    }
-
-    @Override
-    public String getMessageTAG(Class<?> className) {
         return null;
     }
 
@@ -293,21 +286,7 @@ public class NewOrderImpl extends NewOrder {
 
             @Override
             public void onNetworkTimeOut() {
-//                CommonUtils.dumper("NISIETAGCONNECTION : TIMEOUT EMPTY : " + isDataEmpty() + "IS REFRESH :" + refresh.isRefreshing());
-//                finishTimeout();
-//                if (isDataEmpty()) {
-//                    refresh.setPullEnabled(false);
-//                    viewHolder.list.addRetry();
-//                } else {
-//                    try {
-//                        CommonUtils.UniversalToast(getActivity(), getActivity().getString(R.string.msg_connection_timeout_toast));
-//                    } catch (NullPointerException e) {
-//                    }
-//                    refresh.setPullEnabled(true);
-//                    if (!refresh.isRefreshing()) {
-//                        viewHolder.list.addRetry();
-//                    }
-//                }
+
             }
         };
     }

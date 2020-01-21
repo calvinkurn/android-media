@@ -24,6 +24,7 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,7 +42,7 @@ import javax.inject.Named
 /**
  * @author by milhamj on 9/26/18.
  */
-@Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class])
+@Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class, ShopCommonModule::class])
 class CreatePostModule(private val context: Context) {
 
     @Provides
@@ -72,12 +73,6 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun providePresenter(createPostPresenter: CreatePostPresenter): CreatePostContract.Presenter {
         return createPostPresenter
-    }
-
-    @Provides
-    @CreatePostScope
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
     }
 
     @Provides

@@ -1,0 +1,16 @@
+ query get_approval_status($projectId: Int!) {
+    kycStatus(projectID: $projectId) {
+      Message
+      Detail {
+        IsSuccess
+        UserId
+        ProjectId
+        Status
+        StatusName
+        CreateTime
+        CreateBy
+        UpdateTime
+      }
+    }
+  }
+

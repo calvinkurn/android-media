@@ -259,7 +259,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == maxOtpLength) {
+                if (inputOtp.getText().length() == viewModel.getNumberOtpDigit()) {
                     enableVerifyButton();
                     verifyOtp();
                 } else {
@@ -270,7 +270,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
         inputOtp.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE
-                    && inputOtp.length() == maxOtpLength) {
+                    && inputOtp.length() == viewModel.getNumberOtpDigit()) {
                 verifyOtp();
                 return true;
             }

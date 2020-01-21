@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sellerorder</string>
+    <string name="som_app_name">Seller Order Management</string>
     <string name="title_som_list">Penjualan</string>
     <string name="title_som_filter">Filter</string>
     <string name="title_som_detail">Detail Pesanan</string>
@@ -55,10 +55,14 @@
     <string name="salin_caps">SALIN</string>
     <string name="awb_label">awb</string>
     <string name="resi_tersalin">Nomor resi sudah tersalin</string>
+    <string name="invoice_label">invoice</string>
+    <string name="invoice_tersalin">Invoice sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
     <string name="kode_booking">Kode Booking</string>
     <string name="kurir_pengiriman">Kurir Pengiriman</string>
     <string name="alamat_pengiriman">Alamat Pengiriman</string>
+    <string name="alamat_pengiriman_tersalin">Alamat Pengiriman sudah tersalin</string>
+    <string name="salin_alamat">Salin Alamat</string>
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="informasi_pembayaran">Informasi Pembayaran</string>
@@ -239,5 +243,7 @@
         ]]>
     </string>
     <string name="som_penalty_subtitle">Apakah Anda yakin ingin membatalkan pesanan?</string>
+
+    <string name="som_dropshipper_label">Dropshipper</string>
 
 </resources>

@@ -21,6 +21,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -33,18 +34,19 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.DeviceChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
@@ -73,6 +75,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
         private const val IMAGE_REVIEW_YELLOW_BG = "https://ecs7.tokopedia.net/android/others/4_5reviewbg.png"
         private const val IMAGE_BG_TRANSITION = 250
+        private const val LOTTIE_ANIM_1 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
+        private const val LOTTIE_ANIM_2 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
+        private const val LOTTIE_ANIM_3 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_3.json"
+        private const val LOTTIE_ANIM_4 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
+        private const val LOTTIE_ANIM_5 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
+
 
         private const val IMAGE_PEDIE_1 = "https://ecs7.tokopedia.net/android/pedie/1star.png"
         private const val IMAGE_PEDIE_2 = "https://ecs7.tokopedia.net/android/pedie/2star.png"
@@ -145,6 +153,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
         }
+
+        if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
+            reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING
+        }
+
         createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
     }
 
@@ -177,7 +190,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
-        isLowDevice = DeviceChecker.isLowPerformingDevice(context)
+        isLowDevice = DevicePerformanceInfo.isLow(context)
 
         getReviewData()
         anonymous_text.text = generateAnonymousText()
@@ -413,26 +426,37 @@ class CreateReviewFragment : BaseDaggerFragment() {
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_1)
                 }
                 2 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_2)
                 }
                 3 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_3)
                 }
                 4 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_4)
                 }
                 5 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_5)
                 }
             }
+        }
+    }
+
+    /**
+     * Fetch the animation from http URL and play the animation
+     */
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                imgAnimationView.setComposition(result)
+                imgAnimationView.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { throwable -> }
         }
     }
 
