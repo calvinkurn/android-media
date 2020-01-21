@@ -87,8 +87,10 @@ class AddPhoneFragment : BaseDaggerFragment() {
             } else if (!isValidPhone(phone)) {
                 setErrorText(getString(R.string.wrong_phone_format))
             } else {
-                showLoading()
-                viewModel.userProfileCompletionValidate(context!!, phone)
+                context?.let {
+                    showLoading()
+                    viewModel.userProfileCompletionValidate(it, phone)
+                }
             }
         }
     }
@@ -199,8 +201,10 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        val phone = etPhone.text.toString()
-        viewModel.mutateAddPhone(context!!, phone.trim(), "")
+        context?.let {
+            val phone = etPhone.text.toString()
+            viewModel.mutateAddPhone(it, phone.trim(), "")
+        }
     }
 
 
