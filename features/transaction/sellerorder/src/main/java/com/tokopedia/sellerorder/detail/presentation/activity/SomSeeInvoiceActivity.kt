@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.detail.presentation.activity
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.print.PrintAttributes
 import android.print.PrintDocumentAdapter
@@ -10,8 +9,6 @@ import android.print.PrintManager
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
-import androidx.core.content.ContextCompat
-import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.sellerorder.R
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_URL
