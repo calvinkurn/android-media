@@ -48,13 +48,12 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         launch { getFilterStatusList(rawQuery) }
     }
 
-    fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
-        launch { getOrderList(orderQuery, paramOrder) }
+    fun loadFilterList(filterQuery: String) {
+        launch { getFilterList(filterQuery) }
     }
 
-    fun loadOrderListWithFilter(orderQuery: String, filterQuery: String, paramOrder: SomListOrderParam) {
+    fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
         launch { getOrderList(orderQuery, paramOrder) }
-        launch { getFilterList(filterQuery) }
     }
 
     suspend fun getTickerList(rawQuery: String) {
