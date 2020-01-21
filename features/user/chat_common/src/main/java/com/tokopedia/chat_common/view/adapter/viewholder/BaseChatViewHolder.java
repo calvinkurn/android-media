@@ -4,16 +4,22 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.BaseChatViewModel;
+import com.tokopedia.chat_common.data.SendableViewModel;
 import com.tokopedia.chat_common.util.ChatTimeConverter;
 
 import java.util.Date;
+
+import static com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.ROLE_USER;
 
 /**
  * @author by nisie on 5/9/18.
@@ -25,19 +31,44 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     protected View view;
     protected TextView hour;
     protected TextView date;
+    protected ImageView chatReadStatus;
+    protected LinearLayout roleContainer;
+    protected TextView roleType;
+    protected TextView roleName;
 
     public BaseChatViewHolder(View itemView) {
         super(itemView);
         view = itemView;
         hour = itemView.findViewById(getHourId());
         date = itemView.findViewById(getDateId());
+        chatReadStatus = itemView.findViewById(getChatStatusId());
+        roleContainer = itemView.findViewById(getRoleContainerId());
+        roleType = itemView.findViewById(getRoleId());
+        roleName = itemView.findViewById(getRoleNameId());
+    }
+
+    private int getRoleNameId() {
+        return R.id.tvName;
+    }
+
+    private int getRoleId() {
+        return R.id.tvRole;
     }
 
     protected int getHourId() {
         return R.id.hour;
     }
+
     protected int getDateId() {
         return R.id.date;
+    }
+
+    protected int getChatStatusId() {
+        return R.id.chat_status;
+    }
+
+    protected int getRoleContainerId() {
+        return R.id.llRoleUser;
     }
 
     @Override
@@ -46,18 +77,17 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
             BaseChatViewModel element = (BaseChatViewModel) viewModel;
             try {
-                if(Long.parseLong(element.getReplyTime())/ MILISECONDS < START_YEAR){
+                if (Long.parseLong(element.getReplyTime()) / MILISECONDS < START_YEAR) {
 
-                    element.setReplyTime(String.valueOf((Long.parseLong(element.getReplyTime())*MILISECONDS)));
+                    element.setReplyTime(String.valueOf((Long.parseLong(element.getReplyTime()) * MILISECONDS)));
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             view.setOnClickListener(v -> KeyboardHandler.DropKeyboard(itemView.getContext(), view));
             setHeaderDate(element);
             setBottomHour(element);
         }
-
     }
 
     protected void setBottomHour(BaseChatViewModel element) {
@@ -116,6 +146,49 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         } else if (date != null) {
             date.setVisibility(View.GONE);
         }
+    }
+
+    protected void bindChatReadStatus(SendableViewModel element) {
+        int imageResource;
+        if (element.isShowTime() || alwaysShowTime()) {
+            chatReadStatus.setVisibility(View.VISIBLE);
+            if (element.isRead()) {
+                imageResource = R.drawable.ic_chat_read;
+            } else {
+                imageResource = R.drawable.ic_chat_unread;
+            }
+            if (element.isDummy()) {
+                imageResource = R.drawable.ic_chat_pending;
+            }
+            chatReadStatus.setImageDrawable(MethodChecker.getDrawable(chatReadStatus.getContext(), imageResource));
+        } else {
+            chatReadStatus.setVisibility(View.GONE);
+        }
+    }
+
+    protected void bindRoleHeader(SendableViewModel chat, int gravity) {
+        if (roleContainer == null) {
+            hideHeader();
+            return;
+        }
+        if (
+                !chat.getFromRole().isEmpty() &&
+                        !chat.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase()) &&
+                        chat.isSender() &&
+                        !chat.isDummy() &&
+                        chat.isShowRole()
+        ) {
+            roleType.setText(chat.getFrom());
+            roleName.setText(chat.getFromRole());
+            roleContainer.setVisibility(View.VISIBLE);
+            roleContainer.setGravity(gravity);
+        } else {
+            roleContainer.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideHeader() {
+        roleContainer.setVisibility(View.GONE);
     }
 
     @Override
