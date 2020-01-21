@@ -157,13 +157,13 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     private fun displayAsBuyer() {
+        view.shop_page_follow_unfollow_button.visibility = View.VISIBLE
         updateFavoriteButton()
     }
 
     fun isShopFavourited() = isShopFavourited
 
     fun updateFavoriteButton() {
-        view.shop_page_follow_unfollow_button.visibility = View.VISIBLE
         view.shop_page_follow_unfollow_button.isLoading = false
         view.shop_page_follow_unfollow_button.setOnClickListener {
             if (!view.shop_page_follow_unfollow_button.isLoading) {
