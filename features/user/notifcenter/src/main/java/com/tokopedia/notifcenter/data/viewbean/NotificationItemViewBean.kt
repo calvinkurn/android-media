@@ -16,6 +16,7 @@ open class NotificationItemViewBean(
         var title: String = "",
         var sectionTitle: String = "",
         var body: String = "",
+        var bodyHtml: String = "",
         var templateKey: String = "",
         var appLink: String = "",
         var hasShop: Boolean = false,
@@ -38,6 +39,7 @@ open class NotificationItemViewBean(
         label = `in`.readInt()
         title = `in`.readString()?: ""
         body = `in`.readString()?: ""
+        bodyHtml = `in`.readString()?: ""
         templateKey = `in`.readString()?: ""
         appLink = `in`.readString()?: ""
         hasShop = `in`.readInt() != 0
@@ -54,6 +56,7 @@ open class NotificationItemViewBean(
         parcel.writeInt(label)
         parcel.writeString(title)
         parcel.writeString(body)
+        parcel.writeString(bodyHtml)
         parcel.writeString(templateKey)
         parcel.writeString(appLink)
         parcel.writeInt(if (hasShop) 1 else 0)

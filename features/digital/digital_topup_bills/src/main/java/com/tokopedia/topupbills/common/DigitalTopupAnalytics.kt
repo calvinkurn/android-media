@@ -7,8 +7,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
-import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
-import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -189,10 +189,10 @@ class DigitalTopupAnalytics {
         )
     }
 
-    fun impressionEnhanceCommerceRecentTransaction(digitalTrackRecentTelco: List<DigitalTrackRecentTransactionTelco>) {
+    fun impressionEnhanceCommerceRecentTransaction(topupBillsTrackRecent: List<TopupBillsTrackRecentTransaction>) {
         val recentList = ArrayList<Any>()
-        for (i in 0 until digitalTrackRecentTelco.size) {
-            val recentItem = digitalTrackRecentTelco[i]
+        for (i in 0 until topupBillsTrackRecent.size) {
+            val recentItem = topupBillsTrackRecent[i]
             recentList.add(DataLayer.mapOf(
                     DigitalTopupEventTracking.EnhanceEccomerce.NAME, recentItem.itemRecent.clientNumber,
                     DigitalTopupEventTracking.EnhanceEccomerce.ID, "none",
@@ -252,10 +252,10 @@ class DigitalTopupAnalytics {
         )
     }
 
-    fun impressionEnhanceCommercePromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>) {
+    fun impressionEnhanceCommercePromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
         val promoList = ArrayList<Any>()
-        for (i in 0 until digitalTrackPromoList.size) {
-            val promo = digitalTrackPromoList[i]
+        for (i in 0 until topupBillsTrackPromoList.size) {
+            val promo = topupBillsTrackPromoList[i]
             promoList.add(DataLayer.mapOf(
                     DigitalTopupEventTracking.EnhanceEccomerce.ID, promo.promoItem.id,
                     DigitalTopupEventTracking.EnhanceEccomerce.NAME, "/deals-popular suggestion",

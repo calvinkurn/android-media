@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFactory
 
 /**
- * Created by resakemal on 13/08/19.
+ * Created by resakemal on 26/11/19.
  */
 class VoucherGameProductData(
 

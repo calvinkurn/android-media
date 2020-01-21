@@ -25,9 +25,9 @@ import java.util.List;
 public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HOLDER_BANNER_ITEM =
-            R.layout.view_holder_banner_item_digital_module;
+            R.layout.view_holder_digital_item_banner;
     private static final int TYPE_HOLDER_TITLE =
-            R.layout.view_holder_banner_title_digital_module;
+            R.layout.view_holder_digital_title_banner;
 
     private List<Object> dataList = new ArrayList<>();
     private Context context;
@@ -71,7 +71,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .getColor(R.color.digital_voucher_copied_color));
                 bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
-                        .getColor(android.R.color.white));
+                        .getColor(com.tokopedia.design.R.color.white));
             } else {
                 bannerItemHolder.mainContainer.setBackgroundDrawable(
                         context.getResources().getDrawable(

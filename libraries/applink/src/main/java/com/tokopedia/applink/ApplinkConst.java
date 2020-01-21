@@ -13,6 +13,8 @@ public interface ApplinkConst {
     String HOME_ACCOUNT = "tokopedia://home/account";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
+    String FIND = "tokopedia://find";
+    String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
@@ -292,6 +294,11 @@ public interface ApplinkConst {
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
 
+    interface Gamification{
+        String CRACK = "tokopedia://gamification";
+        String TAP_TAP_MANTAP = "tokopedia://gamification2";
+    }
+
     interface TokoPoints {
         String HOMEPAGE = "tokopedia://tokopoints";
         String HOMEPAGE2 = "tokopedia://tokopoints/";
@@ -395,6 +402,11 @@ public interface ApplinkConst {
         String PARAM_OPPONENT_NAME = "opponentName";
     }
 
+    interface AttachVoucher {
+        String PARAM_SHOP_ID = "shop_id";
+        String PARAM_VOUCHER_PREVIEW = "voucher_preview";
+    }
+
     interface Play {
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";
@@ -433,5 +445,7 @@ public interface ApplinkConst {
         String EXTRA_PRODUCT_PRICE = "product_price";
         String EXTRA_PRODUCT_CONDITION = "product_condition";
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
+
+        String ORDER_LIST = "tokopedia-android-internal://transaction/order-list";
     }
 }

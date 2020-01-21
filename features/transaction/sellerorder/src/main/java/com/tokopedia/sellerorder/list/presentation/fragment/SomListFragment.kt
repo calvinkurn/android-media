@@ -81,7 +81,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var mapOrderStatus = HashMap<String, List<Int>>()
     private var paramOrder = SomListOrderParam()
     private var refreshHandler: RefreshHandler? = null
-    private var isLoading = false
     private var tabActive = ""
     private var tabStatus = ""
     private var filterStatusId = -1
@@ -125,7 +124,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             tabStatus = arguments?.getString(TAB_STATUS).toString()
             filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
         }
-        loadInitial()
+        loadTicker()
+        loadFilterList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -187,11 +187,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         paramOrder.endDate = defaultEndDate
     }
 
-    private fun loadInitial() {
+    private fun loadTicker() {
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
-        somListViewModel.loadSomListData(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
+        somListViewModel.loadTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker))
     }
 
     private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
@@ -214,7 +212,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (filterStatusId != 0) {
                         loadFilterStatusList()
                     } else {
-                        refreshHandler?.startRefresh()
+                        nextOrderId = 0
+                        loadOrderList(nextOrderId)
                     }
                 }
                 is Fail -> {
@@ -233,10 +232,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         return@forEach
                     }
                 }
-                refreshHandler?.startRefresh()
+                loadOrderList(nextOrderId)
             }
             is Fail -> {
-                refreshHandler?.startRefresh()
+                loadOrderList(nextOrderId)
             }
         }
     })
@@ -248,6 +247,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun loadOrderList(nextOrderId: Int) {
         paramOrder.nextOrderId = nextOrderId
         somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
+    }
+
+    private fun loadFilterList() {
+        somListViewModel.loadFilterList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
     }
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
@@ -448,10 +451,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
         onLoadMore = false
-        isLoading = true
         somListItemAdapter.removeAll()
         nextOrderId = 0
         loadOrderList(nextOrderId)
+        loadFilterList()
         if (isFilterApplied) filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
         else filter_action_button?.rightIconDrawable = null
     }
