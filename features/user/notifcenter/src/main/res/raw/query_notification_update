@@ -16,6 +16,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
       title
       short_description
       short_description_html
+      is_longer_content
       button_text
       content
       type_of_user
@@ -26,6 +27,9 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
       status
       read_status
       type_link
+      options {
+        longer_content
+      }
       data_notification {
         app_link
         desktop_link
