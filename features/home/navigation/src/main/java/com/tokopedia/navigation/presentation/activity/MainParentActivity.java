@@ -558,7 +558,10 @@ public class MainParentActivity extends BaseActivity implements
 
         registerNewFeedClickedReceiver();
 
-        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
+        // Disable app check signature on OS 10 to avoid close app after download DF
+        // Quick fix to enable DF on demand. Need a better solution
+        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P &&
+                !((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
     }
