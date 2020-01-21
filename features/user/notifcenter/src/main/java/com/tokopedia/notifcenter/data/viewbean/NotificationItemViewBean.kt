@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.DataNotification
+import com.tokopedia.notifcenter.data.entity.NotificationOptions
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
@@ -25,7 +26,9 @@ open class NotificationItemViewBean(
         var totalProduct: Int = 0,
         var btnText: String = "",
         var dataNotification: DataNotification = DataNotification(),
-        var products: List<ProductData> = emptyList()
+        var products: List<ProductData> = emptyList(),
+        var isLongerContent: Boolean = false,
+        var options: NotificationOptions = NotificationOptions()
 ) : Parcelable, Visitable<BaseNotificationTypeFactory> {
 
     override fun type(typeFactory: BaseNotificationTypeFactory): Int {
