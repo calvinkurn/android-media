@@ -9,7 +9,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
-import com.tokopedia.tkpd.tkpdreputation.di.ReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
@@ -55,7 +53,7 @@ import javax.inject.Inject;
  */
 
 public class InboxReputationFragment extends BaseDaggerFragment
-        implements InboxReputation.View, SearchInputView.Listener {
+        implements InboxReputation.View, SearchInputView.Listener, SearchInputView.FocusChangeListener {
 
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     public final static String PARAM_TAB = "tab";
@@ -64,6 +62,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final String ARGS_TIME_FILTER = "ARGS_TIME_FILTER";
     private static final String ARGS_SCORE_FILTER = "ARGS_SCORE_FILTER";
     private static final String ARGS_QUERY = "ARGS_QUERY";
+    private static final String SEE_ALL_REVIEW = "Lihat Semua";
 
     SearchInputView searchView;
     private RecyclerView mainList;
@@ -146,6 +145,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);
+        searchView.setFocusChangeListener(this);
         filterButton = parentView.findViewById(R.id.filter_button);
         prepareView();
         presenter.attachView(this);
@@ -302,7 +302,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                              ReputationDataViewModel reputationDataViewModel, String textDeadline,
                              int adapterPosition, int role) {
 
-        if(reputationDataViewModel.getActionMessage().equals("Lihat Semua")) {
+        if(reputationDataViewModel.getActionMessage().equals(SEE_ALL_REVIEW)) {
             reputationTracking.seeAllReviewItemOnClickTracker(
                     invoice,
                     (adapterPosition + 1),
@@ -379,12 +379,15 @@ public class InboxReputationFragment extends BaseDaggerFragment
         adapter.removeEmpty();
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        if(!getQuery().isEmpty())
+            reputationTracking.onSuccessFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
     public void onErrorGetFilteredInboxReputation(Throwable throwable) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable),
                 () -> presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab())).showRetrySnackbar();
+        reputationTracking.onErrorFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
@@ -433,6 +436,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     }
                 });
         adapter.notifyDataSetChanged();
+        reputationTracking.onEmptyFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
@@ -501,6 +505,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     timeFilter,
                     scoreFilter,
                     getTab());
+        }
+    }
+
+    @Override
+    public void onFocusChanged(boolean hasFocus) {
+        if(hasFocus) {
+            reputationTracking.onClickSearchViewTracker(getTab());
         }
     }
 }

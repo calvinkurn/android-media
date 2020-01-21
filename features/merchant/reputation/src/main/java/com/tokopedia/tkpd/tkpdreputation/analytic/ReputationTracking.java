@@ -326,6 +326,45 @@ public class ReputationTracking {
         ));
     }
 
+    public void onClickSearchViewTracker(int tab) {
+        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.CLICK_REVIEW_SEARCH+tabSource,
+                ""
+        ));
+    }
+
+    public void onSuccessFilteredReputationTracker(String query, int tab) {
+        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.CLICK_REVIEW_SEARCH+tabSource,
+                "success - "+query
+        ));
+    }
+
+    public void onEmptyFilteredReputationTracker(String query, int tab) {
+        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.CLICK_REVIEW_SEARCH+tabSource,
+                "no result - "+query
+        ));
+    }
+
+    public void onErrorFilteredReputationTracker(String query, int tab) {
+        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.CLICK_REVIEW_SEARCH+tabSource,
+                "abandon - "+query
+        ));
+    }
 
 
 
