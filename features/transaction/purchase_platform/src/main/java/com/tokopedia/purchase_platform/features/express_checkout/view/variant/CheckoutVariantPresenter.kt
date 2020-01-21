@@ -1,15 +1,14 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.network.utils.TKPDMapParam
-import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
@@ -36,7 +35,7 @@ import javax.inject.Inject
 
 class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCase: DoAtcExpressUseCase,
                                                    private val doCheckoutExpressUseCase: DoCheckoutExpressUseCase,
-                                                   private val getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
+                                                   private val ratesUseCase: GetRatesUseCase,
                                                    private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                    private val atcDomainModelMapper: AtcDomainModelMapper,
                                                    private val checkoutDomainModelMapper: CheckoutDomainModelMapper,
@@ -50,7 +49,7 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
     override fun detachView() {
         doAtcExpressUseCase.unsubscribe()
-        getCourierRecommendationUseCase.unsubscribe()
+        ratesUseCase.unsubscribe()
         doCheckoutExpressUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
         super.detachView()
@@ -73,16 +72,18 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
     }
 
     override fun loadShippingRates(price: Long, quantity: Int, selectedServiceId: Int, selectedSpId: Int) {
-        val query = GraphqlHelper.loadRawString(view.getActivityContext()?.resources, R.raw.rates_v3_query)
         val shippingParam = getShippingParam(quantity, price)
 
         val shopShipmentModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
+                ?: arrayListOf()
 
         view?.showLoading()
-        getCourierRecommendationUseCase.execute(
-                query, -1, false, false, "", 0, 0, shopShipmentModels, shippingParam,
-                GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
-        )
+
+        val param = RatesParam.Builder(shopShipmentModels, shippingParam).build()
+        ratesUseCase.execute(param, selectedSpId, selectedServiceId, shopShipmentModels)
+                .subscribe(
+                        GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
+                )
     }
 
     override fun getShippingParam(quantity: Int, price: Long): ShippingParam {
@@ -153,9 +154,11 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
         requestParamsMap.put(EditAddressParam.ADDRESS_NAME, addressModel?.addressName ?: "")
         requestParamsMap.put(EditAddressParam.ADDRESS_STREET, addressModel?.addressStreet ?: "")
         requestParamsMap.put(EditAddressParam.POSTAL_CODE, addressModel?.postalCode ?: "")
-        requestParamsMap.put(EditAddressParam.DISTRICT_ID, addressModel?.districtId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.DISTRICT_ID, addressModel?.districtId?.toString()
+                ?: "")
         requestParamsMap.put(EditAddressParam.CITY_ID, addressModel?.cityId?.toString() ?: "")
-        requestParamsMap.put(EditAddressParam.PROVINCE_ID, addressModel?.provinceId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.PROVINCE_ID, addressModel?.provinceId?.toString()
+                ?: "")
         requestParamsMap.put(EditAddressParam.RECEIVER_NAME, addressModel?.receiverName ?: "")
         requestParamsMap.put(EditAddressParam.RECEIVER_PHONE, addressModel?.phone ?: "")
         requestParamsMap.put(EditAddressParam.LATITUDE, latitude)

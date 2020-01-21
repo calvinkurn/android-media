@@ -21,7 +21,7 @@ data class RatesParam(
         var order_value: String = "",
         var cat_id: String = "",
         val lang: String = VALUE_LANG_ID,
-        var user_history: Int = 0,
+        var user_history: Int = -1,
         var is_corner: Int = 0,
         var is_blackbox: Int = 0,
         var address_id: String = "",
@@ -117,7 +117,7 @@ data class RatesParam(
             private set
         var cat_id: String = shipping.categoryIds
             private set
-        var user_history: Int = 0
+        var user_history: Int = -1
             private set
         var is_blackbox: Int = if (shipping.isBlackbox) 1 else 0
             private set
