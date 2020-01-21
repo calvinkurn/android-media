@@ -20,8 +20,8 @@ import java.util.Date;
  */
 public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
 
-    private static final long MILISECONDS = 1000000;
-    private static final long START_YEAR = 1230768000;
+    public static final long MILISECONDS = 1000000;
+    public static final long START_YEAR = 1230768000;
     protected View view;
     protected TextView hour;
     protected TextView date;
