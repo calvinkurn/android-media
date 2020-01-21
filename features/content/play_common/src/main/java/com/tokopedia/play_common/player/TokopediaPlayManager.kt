@@ -96,14 +96,16 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     //region public method
     fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, forceReset: Boolean = false) {
-        val currentUri: Uri? = when (val prepareState = currentPrepareState) {
+        val prepareState = currentPrepareState
+        val currentUri: Uri? = when (prepareState) {
             is TokopediaPlayPrepareState.Unprepared -> prepareState.previousUri
             is TokopediaPlayPrepareState.Prepared -> prepareState.uri
         }
         if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
-        playVideoWithUri(uri, autoPlay, currentUri == null || currentUri != uri || forceReset)
-        currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
-
+        if (prepareState is TokopediaPlayPrepareState.Unprepared) {
+            playVideoWithUri(uri, autoPlay, currentUri == null || currentUri != uri || forceReset)
+            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
+        }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
