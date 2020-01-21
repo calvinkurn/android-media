@@ -28,7 +28,6 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -61,7 +60,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private final int COUPON_ACTIVE = 1;
     private DigitalAnalytics digitalAnalytics;
     private RechargeAnalytics rechargeAnalytics;
-    private DigitalModuleRouter digitalModuleRouter;
     private ICartDigitalInteractor cartDigitalInteractor;
     private UserSession userSession;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
@@ -74,7 +72,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
                                     RechargeAnalytics rechargeAnalytics,
-                                    DigitalModuleRouter digitalModuleRouter,
                                     ICartDigitalInteractor cartDigitalInteractor,
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
@@ -82,7 +79,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;
-        this.digitalModuleRouter = digitalModuleRouter;
         this.cartDigitalInteractor = cartDigitalInteractor;
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
@@ -118,6 +114,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         List<Field> fieldList = new ArrayList<>();
         String clientNumber = getView().getClientNumber();
         String zoneId = getView().getZoneId();
+        HashMap<String, String> fields = getView().getFields();
         if (clientNumber != null && !clientNumber.isEmpty()) {
             Field field = new Field();
             field.setName("client_number");
@@ -129,6 +126,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             field.setName("zone_id");
             field.setValue(zoneId);
             fieldList.add(field);
+        }
+        if (fields != null) {
+            for (Map.Entry<String, String> fieldItem : fields.entrySet()) {
+                Field field = new Field();
+                field.setName(fieldItem.getKey());
+                field.setValue(fieldItem.getValue());
+                fieldList.add(field);
+            }
         }
         Attributes attributes = new Attributes();
         attributes.setDeviceId(5);
@@ -484,7 +489,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
-        attributes.setClientId(digitalModuleRouter.getTrackingClientId());
+        String getTrackClientId = TrackApp.getInstance().getGTM().getClientIDString();
+        attributes.setClientId(getTrackClientId);
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam(
                 TrackApp.getInstance().getAppsFlyer().getUniqueId(),
                 ""));
@@ -500,7 +506,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     @Override
     public void onPaymentSuccess(String categoryId) {
         if (categoryId != null && categoryId.length() > 0) {
-            PersistentCacheManager.instance.delete(DigitalCache.INSTANCE.getNEW_DIGITAL_CATEGORY_AND_FAV() + "/" + categoryId);
+            PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
         }
     }
 
