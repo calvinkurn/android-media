@@ -24,17 +24,7 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.print_web_view, menu)
-        val menuItem: MenuItem = menu.findItem(R.id.action_print)
-        menuItem.isVisible = true
-        menuItem.icon = getMenuPrintDrawableText()
         return true
-    }
-
-    private fun getMenuPrintDrawableText(): Drawable {
-        val drawable = TextDrawable(this)
-        drawable.text = resources.getString(R.string.cetak)
-        drawable.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.tkpd_main_green))
-        return drawable
     }
 
     private fun doWebViewPrint() {

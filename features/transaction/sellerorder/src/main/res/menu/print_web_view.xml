@@ -6,7 +6,7 @@
         android:id="@+id/action_print"
         android:orderInCategory="100"
         android:title="@string/cetak"
-        android:visible="true"
+        android:icon="@drawable/ic_copy"
         app:showAsAction="always" />
 
 </menu>
