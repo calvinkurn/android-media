@@ -10,8 +10,8 @@ class Weaver{
             }
         }
 
-        fun <KEY_TYPE, ACS_HLPR> executeWeaveRxComputation(weaverInterface: WeaveInterface, weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR>) {
-            val weaveAsyncProvider: WeaveAsyncProvider = RxAsyncWeave()
+        fun <KEY_TYPE, ACS_HLPR> executeWeaveCoRoutine(weaverInterface: WeaveInterface, weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR>) {
+            val weaveAsyncProvider: WeaveAsyncProvider = CoRoutineAsyncWeave()
             executeWeave(weaverInterface, weaverConditionCheckProvider, weaveAsyncProvider)
         }
     }

@@ -115,7 +115,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.weaver.RxAsyncWeave;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
@@ -467,7 +466,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        Weaver.Companion.executeWeaveRxComputation(this::sendScreen,
+        Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
         presenter.onResume();
 
@@ -1290,9 +1289,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            Weaver.Companion.executeWeave(this::sendScreen,
-                    new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig),
-                    new RxAsyncWeave());
+            Weaver.Companion.executeWeaveCoRoutine(this::sendScreen,
+                    new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
         }
     }
 

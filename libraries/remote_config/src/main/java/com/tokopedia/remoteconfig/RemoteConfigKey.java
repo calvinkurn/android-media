@@ -200,6 +200,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
     public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
     public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
+    public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
 
 }

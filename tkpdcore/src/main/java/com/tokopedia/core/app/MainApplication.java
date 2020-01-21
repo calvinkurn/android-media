@@ -106,7 +106,7 @@ public abstract class MainApplication extends MainRouterApplication{
         locationUtils.initLocationBackground();
         NotificationUtils.setNotificationChannel(this);
 
-        Weaver.Companion.executeWeaveRxComputation(this::executeInBackground,
+        Weaver.Companion.executeWeaveCoRoutine(this::executeInBackground,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
     }
 

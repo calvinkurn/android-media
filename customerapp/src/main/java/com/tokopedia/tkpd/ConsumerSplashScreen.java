@@ -46,7 +46,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Weaver.Companion.executeWeaveRxComputation(this::checkApkTempered,
+        Weaver.Companion.executeWeaveCoRoutine(this::checkApkTempered,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
 
         startWarmStart();
@@ -69,7 +69,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             getResources().getDrawable(R.drawable.launch_screen);
         } catch (Exception e) {
             isApkTempered = true;
-            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+            runOnUiThread(() -> setTheme(R.style.Theme_Tokopedia3_PlainGreen));
         }
         checkExecTemperedFlow();
         return true;

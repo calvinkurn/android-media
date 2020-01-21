@@ -78,6 +78,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 import org.jetbrains.annotations.NotNull;
 
+import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -107,7 +109,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-
+        initConfigValues();
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
@@ -119,18 +121,32 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().initializeAllApis();
         initReact();
 
-        Weaver.Companion.executeWeaveRxComputation(this::executePreCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutine(this::executePreCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
 
         super.onCreate();
+        
+        initGqlNWClient();
+        Weaver.Companion.executeWeaveCoRoutine(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutine(this::loadFontsInBg, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+    }
 
-        Weaver.Companion.executeWeaveRxComputation(this::initGqlNWClient, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_NETWORK_CLIENT_INIT_ASYNC, remoteConfig));
-        Weaver.Companion.executeWeaveRxComputation(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+    @NotNull
+    private Boolean loadFontsInBg(){
+        getTypeface(context, "NunitoSansExtraBold.ttf");
+        getTypeface(context, "RobotoRegular.ttf");
+        getTypeface(context, "RobotoBold.ttf");
+        return true;
     }
 
     @NotNull
     private Boolean executePreCreateSequence(){
         UIBlockDebugger.init(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+        PersistentCacheManager.init(this);
+        return true;
+    }
+
+    private void initConfigValues(){
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -148,15 +164,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
         generateConsumerAppNetworkKeys();
-        PersistentCacheManager.init(this);
-        return true;
     }
 
-    @NotNull
-    private Boolean initGqlNWClient(){
+    private void initGqlNWClient(){
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
-        return true;
     }
 
     @NotNull
