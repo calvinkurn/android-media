@@ -236,7 +236,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 refreshHandler?.startRefresh()
             }
             is Fail -> {
-                refreshHandler?.startRefresh()
+                // refreshHandler?.startRefresh()
             }
         }
     })
@@ -246,8 +246,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun loadOrderList(nextOrderId: Int) {
+        println("++ loadOrderList -- nextOrderId = $nextOrderId")
         paramOrder.nextOrderId = nextOrderId
-        somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
+        /*if (nextOrderId == 0) {
+            somListViewModel.loadOrderListWithFilter(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter), paramOrder)
+        } else {*/
+            somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
+        // }
     }
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
@@ -446,6 +452,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onRefresh(view: View?) {
+        println("++ onRefresh!!")
         addEndlessScrollListener()
         onLoadMore = false
         isLoading = true

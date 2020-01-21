@@ -52,6 +52,11 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         launch { getOrderList(orderQuery, paramOrder) }
     }
 
+    fun loadOrderListWithFilter(orderQuery: String, filterQuery: String, paramOrder: SomListOrderParam) {
+        launch { getOrderList(orderQuery, paramOrder) }
+        launch { getFilterList(filterQuery) }
+    }
+
     suspend fun getTickerList(rawQuery: String) {
         val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
         val tickerParams = mapOf(PARAM_INPUT to requestTickerParams)

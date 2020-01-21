@@ -477,7 +477,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 dialogView.label_confirmation_msg_3?.text = msg3
 
                 dialogView.btn_batal?.setOnClickListener { dialogUnify.dismiss() }
-                dialogView.btn_batal?.btn_terima?.setOnClickListener {
+                dialogView.btn_terima?.setOnClickListener {
                     val mapParam = buttonResp.param.convertStrObjToHashMap()
                     if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
                         somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
