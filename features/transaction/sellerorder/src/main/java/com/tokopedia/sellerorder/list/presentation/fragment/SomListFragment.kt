@@ -340,6 +340,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     SomAnalytics.eventClickQuickFilter(tabActive)
                     if (listOrderStatusId.isNotEmpty()) {
                         this.paramOrder.statusList = listOrderStatusId
+                        renderFilter()
                         refreshHandler?.startRefresh()
                     }
                     return@forEach
