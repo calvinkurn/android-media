@@ -35,8 +35,8 @@ abstract class BaseNotificationItemViewHolder(
     protected val container: ConstraintLayout = itemView.findViewById(R.id.container)
     protected val icon: ImageView = itemView.findViewById(R.id.icon)
     protected val type: TextView = itemView.findViewById(R.id.type)
-    protected val time: TextView = itemView.findViewById(R.id.time)
     protected val label: TextView = itemView.findViewById(R.id.label)
+    private val time: TextView = itemView.findViewById(R.id.time)
 
     protected val title: TextView = itemView.findViewById(R.id.title)
     protected val body: TextView = itemView.findViewById(R.id.body)
@@ -79,8 +79,8 @@ abstract class BaseNotificationItemViewHolder(
 
     protected open fun bindNotificationContent(element: NotificationItemViewBean) {
         title.text = element.title
-        if (element.body.length > MAX_CONTENT_LENGTH) {
-            var shorten = element.body.take(MAX_CONTENT_LENGTH)
+        if (element.body.length > element.options.contentMaxLonger) {
+            var shorten = element.body.take(element.options.contentMaxLonger)
             val inFull = getStringResource(R.string.in_full)
             shorten = "$shorten... $inFull"
             val spannable = SpannableString(shorten)
@@ -112,7 +112,7 @@ abstract class BaseNotificationItemViewHolder(
         container.setOnClickListener {
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            if (element.body.length > MAX_CONTENT_LENGTH) {
+            if (element.body.length > element.options.contentMaxLonger) {
                 listener.showTextLonger(element)
             } else {
                 RouteManager.route(itemView.context, element.appLink)
@@ -164,7 +164,6 @@ abstract class BaseNotificationItemViewHolder(
     }
 
     companion object {
-        val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
-        val MAX_CONTENT_LENGTH = 110
+        const val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
     }
 }
