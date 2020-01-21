@@ -24,6 +24,8 @@ public class ReputationTrackingConstant {
     public static final String BOTTOM_NAVIGATION_CLICK = " - bottom navigation - click";
     public static final String TOP_CONTENT_REVIEW_PAGE_CLICK = " - top content - review page - click";
     public static final String BACK_PRESSED_REVIEW = "click - back button ";
+    public static final String CLICK_MY_REVIEW_TAB = "click - ulasan saya tab";
+    public static final String CLICK_WAITING_REVIEW_TAB = "click - menunggu diulas tab";
 
     //Label
     public static final String CLICK_REVIEW = "click review -";

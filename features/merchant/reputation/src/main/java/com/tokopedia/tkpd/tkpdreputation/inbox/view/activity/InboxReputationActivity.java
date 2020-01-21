@@ -92,12 +92,12 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
         userSession = new UserSession(this);
         super.onCreate(savedInstanceState);
         clearCacheIfFromNotification();
-        initInjector();
     }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+        initInjector();
         initView();
     }
 
@@ -127,7 +127,13 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
         }
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-        indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this));
+        indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+            }
+        });
 
         if (!GlobalConfig.isSellerApp()) {
             indicator.addTab(indicator.newTab().setText(getString(R.string

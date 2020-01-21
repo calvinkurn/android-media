@@ -316,6 +316,16 @@ public class ReputationTracking {
         ));
     }
 
+    public void onTabReviewSelectedTracker(int tab) {
+        String tabSource = ((tab+1) == 1) ? ReputationTrackingConstant.CLICK_WAITING_REVIEW_TAB : ReputationTrackingConstant.CLICK_MY_REVIEW_TAB;
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                tabSource,
+                ""
+        ));
+    }
+
 
 
 
