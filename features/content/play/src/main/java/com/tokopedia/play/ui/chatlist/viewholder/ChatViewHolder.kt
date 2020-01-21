@@ -25,16 +25,20 @@ class ChatViewHolder(
     }
 
     fun bind(chat: PlayChatUiModel) {
-        val spannableString = SpannableString("${chat.name} ${chat.message}")
-        spannableString.setSpan(
+        val userName = SpannableString(chat.name)
+        userName.setSpan(
                 ForegroundColorSpan(
                         MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N150)
                 ),
-                spannableString.indexOf(chat.name),
+                0,
                 chat.name.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        tvChat.text = spannableString
+
+        tvChat.text = ""
+        tvChat.append(userName)
+        tvChat.append(" ")
+        tvChat.append(chat.message)
     }
 
     fun bind(quickReplyString: String, onQuickReplyClicked: (String) -> Unit) {

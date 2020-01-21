@@ -42,7 +42,11 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
     }
 
     private fun mapToTotalClick(): TotalLike {
-        return gson.fromJson(webSocketResponse.jsonObject, TotalLike::class.java)
+        val totalLike = gson.fromJson(webSocketResponse.jsonObject, TotalLike::class.java)
+        if (totalLike.totalLikeFormatted.isNullOrEmpty() ||
+                totalLike.totalLikeFormatted.equals("Like", false))
+            totalLike.totalLikeFormatted = totalLike.totalLike.toString()
+        return totalLike
     }
 
     private fun mapToTotalView(): TotalView {
