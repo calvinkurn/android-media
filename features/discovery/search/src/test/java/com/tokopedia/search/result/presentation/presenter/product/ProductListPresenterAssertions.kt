@@ -9,7 +9,6 @@ import io.mockk.MockKVerificationScope
 
 fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
     productListView.showRefreshLayout()
-    productListView.incrementStart()
 }
 
 fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View) {
@@ -26,7 +25,6 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.addLoading()
     productListView.setTotalSearchResultCount(any())
     productListView.stopTracePerformanceMonitoring()
-    productListView.storeTotalData(any())
     productListView.updateScrollListener()
 }
 
