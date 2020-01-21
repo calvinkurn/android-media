@@ -36,4 +36,8 @@ class GetRatesUseCase @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun unsubscribe() {
+        gql.unsubscribe()
+    }
+
 }

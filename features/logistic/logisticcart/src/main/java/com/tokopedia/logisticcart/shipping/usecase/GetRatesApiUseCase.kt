@@ -44,4 +44,8 @@ class GetRatesApiUseCase @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun unsubscribe() {
+        gql.unsubscribe()
+    }
+
 }
