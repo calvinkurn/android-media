@@ -37,8 +37,12 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
+import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DONE
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
@@ -311,6 +315,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 currentIndex = index
                 filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
                 filterItem.isSelected = true
+                if (tabActive.equals(STATUS_ALL_ORDER, true) ||
+                        tabActive.equals(STATUS_DONE, true) ||
+                        tabActive.equals(STATUS_ORDER_CANCELLED, true)) {
+                    paramOrder.sortBy = SORT_DESCENDING
+                } else {
+                    paramOrder.sortBy = SORT_ASCENDING
+                }
                 if (paramOrder.statusList.isEmpty()) {
                     if (tabStatus.equals(STATUS_DELIVERED, true)) {
                         val listPesananTiba = ArrayList<Int>()
