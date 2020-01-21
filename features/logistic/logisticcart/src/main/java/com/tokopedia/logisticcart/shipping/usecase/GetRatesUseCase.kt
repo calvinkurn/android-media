@@ -16,14 +16,16 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class GetRatesUseCase @Inject constructor(
-        @ApplicationContext val context: Context,
+        val context: Context,
         val converter: ShippingDurationConverter,
         val gql: GraphqlUseCase) {
 
     fun execute(param: RatesParam, selectedSpId: Int, selectedServiceId: Int,
                 shopShipments: List<ShopShipment>): Observable<RatesModel> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3)
-        val gqlRequest = GraphqlRequest(query, RatesGqlResponse::class.java, param.toMap())
+        val gqlRequest = GraphqlRequest(query, RatesGqlResponse::class.java, mapOf(
+                "param" to param.toMap())
+        )
 
         gql.clearRequest()
         gql.addRequest(gqlRequest)

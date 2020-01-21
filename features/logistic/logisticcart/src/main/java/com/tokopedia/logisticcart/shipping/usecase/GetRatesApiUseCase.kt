@@ -1,7 +1,6 @@
 package com.tokopedia.logisticcart.shipping.usecase
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -20,18 +19,21 @@ import javax.inject.Inject
 
 // Typealias to make it shorter and have unconfusing meaning
 typealias RatesGqlResponse = GetRatesCourierRecommendationData
+
 typealias RatesApiGqlResponse = GetRatesCourierRecommendationTradeInDropOffData
 typealias RatesModel = ShippingRecommendationData
 
 class GetRatesApiUseCase @Inject constructor(
-        @ApplicationContext val context: Context,
+        val context: Context,
         val converter: ShippingDurationConverter,
         val gql: GraphqlUseCase) {
 
     fun execute(param: RatesParam, selectedSpId: Int, selectedServiceId: Int,
                 shopShipments: List<ShopShipment>): Observable<RatesModel> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3api)
-        val gqlRequest = GraphqlRequest(query, RatesApiGqlResponse::class.java, param.toMap())
+        val gqlRequest = GraphqlRequest(query, RatesApiGqlResponse::class.java, mapOf(
+                "param" to param.toMap())
+        )
 
         gql.clearRequest()
         gql.addRequest(gqlRequest)
