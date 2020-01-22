@@ -8,7 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 
 data class HomeViewModel(
         val homeFlag: HomeFlag = HomeFlag(),
-        val list: List<Visitable<*>> = listOf(),
+        val list: MutableList<Visitable<*>> = mutableListOf(),
         val isCache: Boolean = false
 ) : Visitable<HomeViewType> {
 
@@ -16,8 +16,18 @@ data class HomeViewModel(
         return typeFactory.type(this)
     }
 
-    fun isContainsHomePlay(): Boolean{
-        return list.filterIsInstance<PlayCardViewModel>().isNotEmpty()
+    fun isContainsHomePlay(): Int{
+        return list.withIndex().find { it.value is PlayCardViewModel }?.index ?: -1
+    }
+
+    fun getListWithoutHomePlay(): List<Visitable<*>>{
+        return list.filter{ it !is PlayCardViewModel}
+    }
+
+    fun removeHomePlay(){
+        val temp = list.filter{ it !is PlayCardViewModel}
+        list.clear()
+        list.addAll(temp)
     }
 }
 

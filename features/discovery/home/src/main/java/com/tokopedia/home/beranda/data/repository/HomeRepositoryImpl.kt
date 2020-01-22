@@ -10,8 +10,6 @@ import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Resource
 import kotlinx.coroutines.flow.Flow
-import com.tokopedia.home.beranda.helper.map
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 import rx.Observable

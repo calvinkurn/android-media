@@ -10,7 +10,6 @@
             android:layout_height="0dp"
             android:focusable="true"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
             android:foreground="?attr/selectableItemBackground"
             app:layout_constraintDimensionRatio="H,4:3"
             app:layout_constrainedWidth="true"

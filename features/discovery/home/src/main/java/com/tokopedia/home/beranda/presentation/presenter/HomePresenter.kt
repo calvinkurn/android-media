@@ -10,8 +10,6 @@ import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.model.*
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
@@ -55,10 +53,10 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import rx.subscriptions.Subscriptions
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
 
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val coroutineDispatcher: CoroutineDispatcher,
@@ -105,6 +103,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     get() = _homeLiveData
     val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
 
+
     val trackingLiveData: LiveData<Event<List<Visitable<*>>>>
         get() = _trackingLiveData
     val _trackingLiveData = MutableLiveData<Event<List<Visitable<*>>>>()
@@ -116,7 +115,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     private var currentCursor = ""
     private var fetchFirstData = false
-    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
@@ -525,34 +523,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    @InternalCoroutinesApi
-    override fun getPlayBanner(adapterPosition: Int){
-        masterJob.cancelChildren()
-        launchCatchError(coroutineDispatcher, block = {
-            playCardHomeUseCase.execute().collect{
-                view?.setPlayContentBanner(it.first(), adapterPosition)
-            }
-        })
-    }
-
-    fun onPlayBannerSuccess(playCardHome: PlayCardHome) {
-        val currentData = _homeLiveData.value
-        val visitableMutableList: MutableList<Visitable<*>> = currentData?.list?.toMutableList()?: mutableListOf()
-
-        val findPlayCardModel = _homeLiveData.value?.list?.find { visitable ->
-            visitable is PlayCardViewModel
-        }
-        val indexOfPlayCardModel = visitableMutableList.indexOf(findPlayCardModel)
-
-        if (findPlayCardModel is PlayCardViewModel) {
-            findPlayCardModel.setPlayCardHome(playCardHome)
-            visitableMutableList[indexOfPlayCardModel] = findPlayCardModel
-            val newHomeViewModel = currentData?.copy(
-                    list = visitableMutableList)
-            _homeLiveData.setValue(newHomeViewModel)
-        }
-    }
-
     private fun viewNeedToShowGeolocationComponent(): Boolean {
         if (isViewAttached) {
             return view?.needToShowGeolocationComponent()?:false
@@ -647,14 +617,24 @@ class HomePresenter(private val userSession: UserSessionInterface,
             }
         }
         return homeViewModel
-    @InternalCoroutinesApi
-    override fun getPlayBanner(adapterPosition: Int){
-        masterJob.cancelChildren()
-        launchCatchError(coroutineDispatcher, block = {
-            playCardHomeUseCase.execute().collect{
-                view?.setPlayContentBanner(it.first(), adapterPosition)
-            }
-        })
+    }
+
+    private fun getPlayBanner(homeViewModel: HomeViewModel?){
+        val position = homeViewModel?.isContainsHomePlay() ?: -1
+        if(position != -1) {
+            homeViewModel?.removeHomePlay()
+            masterJob.cancelChildren()
+            launchCatchError(coroutineDispatcher, block = {
+                playCardHomeUseCase.execute().collect {
+                    val newList = mutableListOf<Visitable<*>>()
+                    newList.addAll(_homeLiveData.value?.list ?: listOf())
+                    newList.add(position, PlayCardViewModel().apply { setPlayCardHome(it.first()) })
+                    _homeLiveData.value = _homeLiveData.value?.copy(
+                        list = newList
+                    )
+                }
+            })
+        }
     }
 
     companion object {
@@ -679,19 +659,18 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
+                    getPlayBanner(homeData)
                     _homeLiveData.setValue(homeData)
                     getHeaderData()
-                    getPlayData()
                     getReviewData()
 
-                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf()))
+                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf<Visitable<*>>()))
                 } else {
                     _homeLiveData.setValue(homeData)
                     refreshHomeData()
                 }
             }
         }) {
-            Timber.tag(HomePresenter::class.java.name).e(it)
             _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
     }
@@ -742,15 +721,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
             }
         }
         return homeViewModel
-    }
-
-    private fun getPlayData() {
-        val detectPlayCardModel = _homeLiveData.value?.list?.find {
-            visitable -> visitable is PlayCardViewModel
-        }
-        detectPlayCardModel?.let {
-            getPlayBanner()
-        }
     }
 
     private fun evaluateRecommendationSection(homeViewModel: HomeViewModel?): HomeViewModel? {
