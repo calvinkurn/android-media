@@ -4,8 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
-import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
-
 /**
  * @author by milhamj on 07/09/18.
  */
@@ -27,8 +25,6 @@ interface InterestPickContract {
         fun onSuccessUpdateInterest()
 
         fun onErrorUpdateInterest(message: String)
-
-        fun onItemSelected(isSelected: Boolean)
 
         fun onBackPressed()
     }

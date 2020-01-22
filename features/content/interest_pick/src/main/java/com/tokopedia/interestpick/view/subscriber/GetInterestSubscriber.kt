@@ -10,7 +10,6 @@ import com.tokopedia.interestpick.data.pojo.GetInterestData
 import com.tokopedia.interestpick.data.pojo.Header
 import com.tokopedia.interestpick.data.pojo.InterestsItem
 import com.tokopedia.interestpick.view.listener.InterestPickContract
-import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
 import rx.Subscriber
 
 /**

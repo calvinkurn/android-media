@@ -156,16 +156,6 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
         }
     }
 
-    override fun onItemSelected(isSelected: Boolean) {
-        if (isSelected) {
-            selectedCount++
-        } else {
-            selectedCount--
-        }
-
-        updateSaveButtonState()
-    }
-
     private fun updateSaveButtonState() {
         if (selectedCount >= 1) {
             saveInterest.text = getString(R.string.interest_save)
@@ -185,6 +175,8 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
     }
 
     override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
+        selectedCount = adapter.getSelectedItemIdList().size
+        updateSaveButtonState()
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {
