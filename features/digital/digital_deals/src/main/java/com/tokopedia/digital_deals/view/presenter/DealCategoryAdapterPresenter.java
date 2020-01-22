@@ -2,7 +2,7 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;

@@ -1,6 +1,6 @@
 package com.tokopedia.navigation.domain.subscriber;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;

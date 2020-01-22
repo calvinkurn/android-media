@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteShopResponseValidator;
 import com.tokopedia.core.database.manager.GlobalCacheManager;

@@ -664,13 +664,13 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileInDetail(source)
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }

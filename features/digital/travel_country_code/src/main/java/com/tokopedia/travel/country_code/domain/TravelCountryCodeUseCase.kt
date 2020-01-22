@@ -14,7 +14,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import rx.Observable
-import rx.Subscriber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -33,7 +32,7 @@ class TravelCountryCodeUseCase @Inject constructor(private val useCase: MultiReq
             val countryListModel = countryListData.travelGetAllCountries.countries.map {
                 TravelCountryPhoneCode(it.id, it.attributes.name, it.attributes.phoneCode)
             }
-            Success(countryListModel.sortedBy { it.countryName })
+            Success(countryListModel)
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
@@ -44,13 +43,6 @@ class TravelCountryCodeUseCase @Inject constructor(private val useCase: MultiReq
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-    }
-
-    fun executeRx(query: String, subscriber: Subscriber<GraphqlResponse>?) {
-        val graphqlRequest = GraphqlRequest(query, TravelPhoneCodeEntity.Response::class.java)
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(RequestParams.EMPTY, subscriber)
     }
 
     companion object {

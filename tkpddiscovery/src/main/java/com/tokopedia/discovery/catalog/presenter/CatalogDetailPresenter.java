@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;

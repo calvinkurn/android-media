@@ -6,6 +6,14 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class BannerSlidesModel(
         @SerializedName("id")
         val id: Int = -1,
+        @SerializedName("galaxy_attribution")
+        val galaxyAttribution: String = "",
+        @SerializedName("persona")
+        val persona: String = "",
+        @SerializedName("brand_id")
+        val brandId: String = "",
+        @SerializedName("category_persona")
+        val categoryPersona: String = "",
         @SerializedName("title")
         val title: String = "",
         @SerializedName("message")

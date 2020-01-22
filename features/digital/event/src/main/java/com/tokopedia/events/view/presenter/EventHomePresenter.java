@@ -6,7 +6,6 @@ import android.util.Log;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
@@ -21,12 +20,10 @@ import com.tokopedia.events.domain.model.NsqMessage;
 import com.tokopedia.events.domain.model.NsqServiceModel;
 import com.tokopedia.events.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
-import com.tokopedia.events.domain.scanTicketUsecase.CheckScanOptionUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
-import com.tokopedia.events.view.activity.ScanQRCodeActivity;
 import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsContract.AdapterCallbacks;
@@ -44,13 +41,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.tokopedia.events.view.utils.Utils.Constants.EXTRA_EVENT_CALENDAR;
 import static com.tokopedia.events.view.utils.Utils.Constants.FAQURL;
@@ -328,12 +324,12 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
         }).subscribe(new Subscriber<List<CategoryViewModel>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 mView.hideProgressBar();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(), mView.getRootView(), () -> getEventsList());
@@ -345,7 +341,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
                 getCarousel(categoryViewModels);
                 mView.renderCategoryList(categoryViewModels);
                 mView.showSearchButton();
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
             }
         });
     }
@@ -423,7 +419,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
 
                 @Override
                 public void onError(Throwable e) {
-                    CommonUtils.dumper("enter error");
+                    Timber.d("enter error");
                     e.printStackTrace();
                     mView.hideProgressBar();
                     NetworkErrorHelper.showEmptyState(mView.getActivity(), mView.getRootView(), () -> getFavouriteItemsAndShow());
@@ -467,7 +463,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper(e);
+                Timber.d(e);
             }
 
             @Override
