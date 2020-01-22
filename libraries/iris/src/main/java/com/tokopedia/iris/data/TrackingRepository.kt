@@ -37,8 +37,8 @@ class TrackingRepository(
             trackingDao.insert(Tracking(data, session.getUserId(),
                 session.getDeviceId() ?: ""))
 
-            if (dBSize >= 200F) {
-                // if size already 200KB or more, send it
+            if (dBSize >= 500F) {
+                // if size already 500KB or more, send it
                 sendRemainingEvent(DEFAULT_MAX_ROW)
             }
         } catch (e: Throwable) {
