@@ -1,6 +1,6 @@
 package com.tokopedia.payment.fingerprint.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.payment.fingerprint.data.model.DataResponseSavePublicKey;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 

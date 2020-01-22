@@ -4,15 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.view.MenuItem
 import android.view.Menu
+import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.browse.DigitalBrowseComponentInstance
-import com.tokopedia.browse.common.applink.ApplinkConstant
+import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
 import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
@@ -21,11 +25,6 @@ import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.browse.R
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import javax.inject.Inject
 
@@ -151,7 +150,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         lateinit var intent: Intent
 
         @JvmStatic
-        @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
+        @DeepLink(ApplinkConst.Digital.DIGITAL_BROWSE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             intent = Intent(context, DigitalBrowseHomeActivity::class.java)
