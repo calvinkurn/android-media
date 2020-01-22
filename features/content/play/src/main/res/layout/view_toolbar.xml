@@ -88,8 +88,8 @@
             android:id="@+id/tv_partner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/Neutral_N0"
+            android:paddingTop="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@id/fl_live_badge"
             app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
             app:layout_goneMarginLeft="@dimen/dp_16"
@@ -106,9 +106,10 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:background="@drawable/bg_play_circle_separator"
+            app:layout_constraintVertical_bias="0.75"
             app:layout_constraintBottom_toBottomOf="@id/tv_partner_name"
             app:layout_constraintStart_toEndOf="@id/tv_partner_name"
-            app:layout_constraintTop_toTopOf="@id/tv_partner_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -118,9 +119,9 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:textColor="@color/Neutral_N0"
-            app:layout_constraintBottom_toBottomOf="@id/v_separator"
+            android:paddingTop="@dimen/dp_10"
+            app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
             app:layout_constraintStart_toEndOf="@id/v_separator"
-            app:layout_constraintTop_toTopOf="@id/v_separator"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
             tools:text="@string/play_follow"
