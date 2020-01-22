@@ -41,7 +41,6 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
    private var currentSelected = -1
     private var mLayoutManager: LinearLayoutManager? = null
    private val retryModel: RetryModel = RetryModel()
-   private val listPlay = mutableMapOf<Visitable<*>, Int>()
 
     init{
         Timber.plant(Timber.DebugTree())
@@ -91,6 +90,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                     if (firstIndexVisible != -1 &&
                             positions.isNotEmpty() &&
                             (positions.first() != currentSelected || currentSelected == -1) && //check if we missing currentSelected
+                            getExoPlayerByPosition(positions.first())?.isPlayerPlaying() == false &&
                             (getViewHolder(positions.first()) as PlayCardViewHolder).wantsToPlay()
                     ) {
                         onSelectedItemChanged(positions.first())
@@ -132,7 +132,8 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
 
     //mapping another visitable to visitables from home_query
     fun setItems(visitables: List<Visitable<*>>) {
-        this.visitables = visitables
+        this.visitables.clear()
+        this.visitables.addAll(visitables)
         notifyDataSetChanged()
     }
 
@@ -234,15 +235,20 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
 
     private fun clearExoPlayer(){
         currentSelected = -1
-        listPlay.clear()
     }
 
     fun setPlayData(playContentBanner: PlayChannel?, adapterPosition: Int) {
-        if (visitables[adapterPosition] is PlayCardViewModel) {
-            (visitables[adapterPosition] as PlayCardViewModel).setPlayCardHome(playContentBanner!!)
-            currentSelected = adapterPosition
+        //checking if size list is less than position than do nothing
+        if(visitables.size <= adapterPosition) return
+        playContentBanner?.let { playChannel ->
+            if (visitables[adapterPosition] is PlayCardViewModel) {
+                (visitables[adapterPosition] as PlayCardViewModel).setPlayCardHome(playChannel)
+                notifyItemChanged(adapterPosition, true)
+            }else if(visitables.size > adapterPosition){
+                visitables.add(adapterPosition, PlayCardViewModel().apply { setPlayCardHome(playChannel) })
+                notifyItemChanged(adapterPosition)
+            }
         }
-        notifyItemChanged(adapterPosition)
     }
 
     private fun onSelectedItemChanged(newSelected: Int) {
@@ -257,7 +263,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
 
     private fun prepareAndPlayByPosition(position: Int) {
         val newPlayer: TokopediaPlayerHelper? = getExoPlayerByPosition(position)
-        newPlayer?.preparePlayer()
+        newPlayer?.playerPlay()
     }
 
     private fun pausePlayerByPosition(position: Int) {
@@ -273,10 +279,17 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         }
     }
 
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if(holder is PlayCardViewHolder) {
+            holder.getHelper()?.onViewAttach()
+        }
+    }
+
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
         if(holder is PlayCardViewHolder) {
-            holder.getHelper()?.playerPause()
+            holder.getHelper()?.onViewDetach()
         }
     }
 

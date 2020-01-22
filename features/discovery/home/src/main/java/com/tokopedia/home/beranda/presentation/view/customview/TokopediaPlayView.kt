@@ -3,11 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.customview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Matrix
+import android.graphics.PointF
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.TextureView
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.exoplayer2.Player
@@ -24,10 +24,9 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
     }
     private var componentListener: ComponentListener? = null
-    private var contentFrame: AspectRatioFrameLayout? = null
+    private var contentFrame: FrameLayout? = null
     private var player: Player? = null
     private var surfaceView: TextureView? = null
-    private var textureViewRotation = 0
     private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
 
     constructor(context: Context) : this(context, null, 0)
@@ -42,7 +41,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         // Content frame.
         contentFrame = findViewById(R.id.exo_content_frame)
-        contentFrame?.let { setResizeModeRaw(it, resizeMode) }
+//        contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -54,45 +53,31 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         contentFrame?.addView(surfaceView, 0)
     }
 
-    private fun onContentAspectRatioChanged(
-            aspectRatio: Float,
-            contentFrame: AspectRatioFrameLayout?) {
-        contentFrame?.setAspectRatio(aspectRatio)
-    }
+    private fun applyCrop(textureView: TextureView, width: Float, height: Float){
+        val viewWidth = this.width.toFloat()
+        val viewHeight = this.height.toFloat()
+        val videoWidth = width
+        val videoHeight = height
 
-    private fun setResizeModeRaw(aspectRatioFrame: AspectRatioFrameLayout, resizeMode: Int) {
-        aspectRatioFrame.resizeMode = resizeMode
-    }
-
-    private fun applyCrop(textureView: TextureView, width: Float, height: Float): Float{
-        val viewWidth = contentFrame?.width ?: 0
-        val viewHeight = contentFrame?.height ?: 0
-        var scaleX = 1.0f
-        var scaleY = 1.0f
-
-        if (width > viewWidth && height > viewHeight) {
-            scaleX = width / viewWidth
-            scaleY = height / viewHeight
-        } else if (width < viewWidth && height < viewHeight) {
-            scaleY = viewWidth / width
-            scaleX = viewHeight / height
-        } else if (viewWidth > width) {
-            scaleY = viewWidth / width / (viewHeight / height)
-        } else if (viewHeight > height) {
-            scaleX = viewHeight / height / (viewWidth / width)
+        val scaleFactor = if (videoHeight > videoWidth){
+            // Portrait
+            val previewRatio = videoHeight / videoWidth
+            val viewFinderRatio = viewWidth / viewHeight
+            val scaling = viewFinderRatio * previewRatio
+            PointF(1f, scaling)
+        } else {
+            // Landscape
+            val previewRatio = videoWidth / videoHeight
+            val viewFinderRatio = viewHeight / viewWidth
+            val scaling = viewFinderRatio * previewRatio
+            PointF(scaling, 1f)
         }
 
-        // Calculate pivot points, in our case crop from center
-
-        val pivotPointX: Int = textureView.width / 2
-        val pivotPointY: Int = textureView.height / 3
         val matrix = Matrix()
-        matrix.setScale(scaleX, scaleY, pivotPointX.toFloat(), pivotPointY.toFloat())
-
+        matrix.preScale(scaleFactor.x, scaleFactor.y, 0f, videoHeight / 3f)
         textureView.setTransform(matrix)
-
-        return if (height == 0f || width == 0f) 1f else (contentFrame?.width?.toFloat() ?: 1f) / (contentFrame?.height?.toFloat() ?: 1f)
     }
+
     fun getSurfaceView() = surfaceView
 
     fun setPlayer(player: Player?){
@@ -113,29 +98,13 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         }
     }
 
-    inner class ComponentListener : VideoListener, OnLayoutChangeListener {
+    inner class ComponentListener : VideoListener {
         // VideoListener implementation
         override fun onVideoSizeChanged(
                 width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
-            var videoAspectRatio = 1f
             surfaceView?.let{ surfaceView ->
-                // Try to apply rotation transformation when our surface is a TextureView.
-                if (unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270) { // We will apply a rotation 90/270 degree to the output texture of the TextureView.
-                    // In this case, the output video's width and height will be swapped.
-                    videoAspectRatio = 1 / videoAspectRatio
-                }
-                if (textureViewRotation != 0) {
-                    surfaceView.removeOnLayoutChangeListener(this)
-                }
-                textureViewRotation = unappliedRotationDegrees
-                if (textureViewRotation != 0) { // The texture view's dimensions might be changed after layout step.
-                    // So add an OnLayoutChangeListener to apply rotation after layout step.
-                    surfaceView.addOnLayoutChangeListener(this)
-                }
-//                applyTextureViewRotation(surfaceView, textureViewRotation)
-                videoAspectRatio = applyCrop(surfaceView, width.toFloat(), height.toFloat())
+                applyCrop(surfaceView, width.toFloat(), height.toFloat())
             }
-            onContentAspectRatioChanged(videoAspectRatio, contentFrame)
         }
 
         override fun onRenderedFirstFrame() {
@@ -144,9 +113,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         override fun onSurfaceSizeChanged(width: Int, height: Int) {
 
-        }
-
-        override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
         }
     }
 }

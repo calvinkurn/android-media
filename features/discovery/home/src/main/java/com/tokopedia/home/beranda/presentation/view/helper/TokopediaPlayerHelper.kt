@@ -6,13 +6,11 @@ import android.net.Uri
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.util.ConnectionUtils
 import com.tokopedia.home.util.DimensionUtils
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import kotlinx.coroutines.*
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 @SuppressWarnings("WeakerAccess")
@@ -25,12 +23,10 @@ class TokopediaPlayerHelper(
         CoroutineScope {
 
     private var mPlayer: ExoPlayer? = null
-
     private var mExoPlayerListener: ExoPlayerListener? = null
 
     private var videosUri: Uri? = null
-    private var mResumePosition: Long = 1
-    private var isPlayerPrepared = false
+    private var mResumePosition: Long = 10
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -47,22 +43,6 @@ class TokopediaPlayerHelper(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.Main
 
-    // Player creation and release
-    private fun setVideoUrl(url: String) {
-        videosUri = Uri.parse(url)
-    }
-
-    private fun setDataSource() {
-        videosUri?.let{
-            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(it,false)
-        }
-    }
-
-    private fun updateResumePosition() {
-        val currentPosition = (TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer).currentPosition
-        mResumePosition = if(currentPosition == -1L) 1 else currentPosition
-    }
-
     private fun isDeviceHasRequirementAutoPlay(): Boolean{
         return DimensionUtils.getDensityMatrix(context) >= 1.5f
     }
@@ -71,46 +51,29 @@ class TokopediaPlayerHelper(
     class Builder(context: Context, tokopediaPlayView: TokopediaPlayView) {
         private val mExoPlayerHelper: TokopediaPlayerHelper = TokopediaPlayerHelper(context, tokopediaPlayView)
 
-        fun setVideoUrls(url: String): Builder {
-            mExoPlayerHelper.setVideoUrl(url)
-            return this
-        }
-
         fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {
             mExoPlayerHelper.setExoPlayerEventsListener(exoPlayerListener)
             return this
         }
 
         fun create(): TokopediaPlayerHelper {
-            mExoPlayerHelper.createPlayer()
+            mExoPlayerHelper.init()
             return mExoPlayerHelper
         }
     }
-
 
     override fun isPlayerNull(): Boolean {
         return mPlayer == null
     }
 
-    override fun createPlayer() {
-        if (mPlayer == null) {
-            clear()
-            mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-            muteVideoPlayer()
-            mPlayer?.repeatMode = Player.REPEAT_MODE_ALL
-            mPlayer?.playWhenReady = false
-            mPlayer?.addListener(this)
-            exoPlayerView.setPlayer(mPlayer)
-            isPlayerPrepared = false
-
-            preparePlayer()
-        }
+    override fun init() {
+        observeVideoPlayer()
+        muteVideoPlayer()
     }
 
-    override fun preparePlayer() {
-        if (mPlayer != null) {
-            setDataSource()
-            if(mPlayer?.isPlaying != true) playerPlay()
+    override fun createPlayer() {
+        if (mPlayer == null) {
+            exoPlayerView.setPlayer(mPlayer)
         }
     }
 
@@ -124,65 +87,74 @@ class TokopediaPlayerHelper(
             } else {
                 mExoPlayerListener?.onPlayerPaused(mPlayer?.currentWindowIndex ?: -1)
             }
-            Player.STATE_BUFFERING -> {
-                mExoPlayerListener?.onPlayerBuffering(mPlayer?.currentWindowIndex ?: -1)
-            }
-            else -> Timber.tag(TokopediaPlayerHelper::class.java.name).e("onPlayerStateChanged unknown: $playbackState")
         }
     }
 
     override fun releasePlayer() {
         masterJob.cancelChildren()
-        isPlayerPrepared = false
         exoPlayerView.setPlayer(null)
+
         mExoPlayerListener?.releaseExoPlayerCalled()
-        if (mPlayer != null) {
-            mPlayer?.removeListener(this)
-            mPlayer = null
-        }
+
+        mPlayer = null
+
         TokopediaPlayManager.getInstance(context).releasePlayer()
     }
 
     override fun playerPause() {
         masterJob.cancelChildren()
-        mPlayer?.playWhenReady = false
+        stopVideoPlayer()
     }
 
     override fun playerPlay() {
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && mPlayer?.isPlaying == false){
             masterJob.cancelChildren()
             launch(coroutineContext){
-                delay(3000)
+                delay(500)
                 TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
             }
         }
     }
 
+    fun play(url: String){
+        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+            videosUri = Uri.parse(url)
+            exoPlayerView.setPlayer(mPlayer)
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUriString(url, autoPlay = false)
+            playerPlay()
+        }
+    }
+
+    override fun isPlayerPlaying() = TokopediaPlayManager.getInstance(context).isVideoPlaying()
+
     override fun seekToDefaultPosition() {
         mPlayer?.seekTo(mResumePosition)
+    }
+
+    override fun onViewAttach() {
+        exoPlayerView.setPlayer(mPlayer)
+        playerPlay()
+    }
+
+    override fun onViewDetach() {
+        launch(Dispatchers.Main) {
+            exoPlayerView.setPlayer(null)
+            playerPause()
+        }
     }
 
     override fun setExoPlayerEventsListener(pExoPlayerListenerListener: ExoPlayerListener?) {
         mExoPlayerListener = pExoPlayerListenerListener
     }
 
-    override fun onActivityStart() {
-        createPlayer()
-    }
-
     override fun onActivityResume() {
         launch(coroutineContext){
-            updateResumePosition()
             delay(500)
             observeVideoPlayer()
-            stopVideoPlayer()
-            mPlayer = TokopediaPlayManager.getInstance(context).videoPlayer as SimpleExoPlayer
-            muteVideoPlayer()
-            exoPlayerView.setPlayer(mPlayer)
-            mPlayer?.addListener(this@TokopediaPlayerHelper)
-            setDataSource()
             withContext(Dispatchers.Main) {
-                mPlayer?.seekTo(mResumePosition)
+                muteVideoPlayer()
+                mPlayer?.repeatMode = Player.REPEAT_MODE_ALL
+                exoPlayerView.setPlayer(mPlayer)
             }
             delay(2500)
             TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
@@ -190,17 +162,13 @@ class TokopediaPlayerHelper(
     }
 
     override fun onActivityPause() {
-        clear()
+        exoPlayerView.setPlayer(null)
+        removeVideoPlayerObserver()
     }
 
     override fun onActivityStop() {
-        releasePlayer()
-    }
-
-    private fun clear(){
-        masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
-        mPlayer?.removeListener(this)
+        mPlayer?.release()
         mPlayer = null
         removeVideoPlayerObserver()
     }
@@ -215,6 +183,7 @@ class TokopediaPlayerHelper(
 
     private fun muteVideoPlayer() {
         TokopediaPlayManager.getInstance(context).muteVideo(true)
+        TokopediaPlayManager.getInstance(context).setRepeatMode(true)
     }
 
     private fun stopVideoPlayer() {

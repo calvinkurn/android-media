@@ -6,11 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
-import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.model.*
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
@@ -50,10 +47,10 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import rx.subscriptions.Subscriptions
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
 
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
@@ -97,12 +94,22 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
 
     private var isCache = true
+    private var isContainsPlay = -1
 
     private var homeDataMapper: HomeDataMapper? = null
 
+    @UseExperimental(InternalCoroutinesApi::class)
     val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
+        // it never add play banner first
         val homeViewModelValue = homeDataMapper?.mapToHomeViewModel(it, isCache)
-        if (!fetchFirstData) _trackingLiveData.value = Event(homeViewModelValue?.list?: listOf())
+
+        isContainsPlay = homeViewModelValue?.isContainsHomePlay() ?: -1
+        if(isContainsPlay != -1) {
+            getPlayBanner(isContainsPlay)
+            homeViewModelValue?.removeHomePlay()
+        }
+
+        if (!fetchFirstData) _trackingLiveData.value = Event(homeViewModelValue?.getListWithoutHomePlay() ?: listOf())
         else fetchFirstData = false
 
         homeViewModelValue

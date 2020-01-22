@@ -1626,11 +1626,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onGetPlayBanner(int adapterPosition) {
-        presenter.getPlayBanner(adapterPosition);
-    }
-
-    @Override
     public void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition) {
         adapter.setPlayData(playContentBanner, adapterPosition);
     }

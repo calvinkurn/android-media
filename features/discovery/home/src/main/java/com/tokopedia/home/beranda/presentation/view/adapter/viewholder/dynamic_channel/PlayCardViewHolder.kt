@@ -7,19 +7,22 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
-import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
+import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
+import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
+import com.tokopedia.home.beranda.presentation.view.helper.setValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class PlayCardViewHolder(
         val view: View,
         val listener: HomeCategoryListener
-): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener {
+): AbstractViewHolder<PlayCardViewModel>(view) {
 
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val play = view.findViewById<ImageView>(R.id.play)
@@ -37,58 +40,49 @@ class PlayCardViewHolder(
     private var mVideoUrl: String = ""
 
     private val videoPlayer = view.findViewById<TokopediaPlayView>(R.id.video_player)
-    private var playCardViewModel: PlayCardViewModel ?= null
 
-    override fun bind(element: PlayCardViewModel) {
-        if (element.getPlayCardHome() == null) {
-            itemView.hide()
-            helper = null
-            listener.onGetPlayBanner(adapterPosition)
-        } else {
-            itemView.show()
-            val model = element.getPlayCardHome()
-            title.setValue(element.getChannel()?.header?.name ?: "Play Channel")
-            description.setValue("")
-            mVideoUrl = if(model?.videoStream?.config?.streamUrl?.isEmpty() == true) "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" else model?.videoStream?.config?.streamUrl ?: ""
-//            mThumbUrl = if(model?.coverUrl?.isEmpty() == true) "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQsXmNcM4cLjmjXv-_9QJe5McOfdu6652WGC4LBq8FpirMHT9xl" else model?.coverUrl ?: ""
-            mThumbUrl = ""
-            createHelper()
-            playCardViewModel = element
-
-            thumbnailView.loadImageWithoutPlaceholder(mThumbUrl, 350, 150, true)
-
-            broadcasterName.text = model?.moderatorName ?: ""
-            titlePlay.text = model?.title ?: ""
-            viewer.text = model?.totalView ?: ""
-
-            if(model?.videoStream?.isLive == true) live.show()
-            else live.hide()
-
-            itemView.setSafeOnClickListener {
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId) }
-            }
-
-            play.setOnClickListener { _ ->
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model?.channelId) }
-            }
-        }
-
+    init {
+        helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
+                .create()
     }
 
-    private fun createHelper() {
-        if(!ExoUtil.isDeviceHasRequirementAutoPlay(itemView.context)) return
+    override fun bind(element: PlayCardViewModel) {
+        element.getPlayCardHome()?.let {channel ->
+            initView(element.getChannel()?.header?.name ?: "", channel)
+            playChannel("https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
+//            playChannel(channel.videoStream.config.streamUrl)
+        }
+    }
 
-        if(helper == null) {
-            helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
-                    .setVideoUrls(mVideoUrl)
-                    .setExoPlayerEventsListener(this)
-                    .create()
+    private fun initView(titleChannel: String, playChannel: PlayChannel){
+        title.setValue(titleChannel)
+        description.setValue("")
+
+        mVideoUrl = if(playChannel.videoStream.config.streamUrl.isEmpty()) "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    else playChannel.videoStream.config.streamUrl
+        mThumbUrl = playChannel.coverUrl
+
+        if(mThumbUrl.isEmpty()) thumbnailView.loadImageWithoutPlaceholder(mThumbUrl, 350, 150, true)
+        else helper?.seekToDefaultPosition()
+
+        broadcasterName.text = playChannel.moderatorName
+        titlePlay.text = playChannel.title
+        viewer.text = playChannel.totalView
+
+        if(playChannel.videoStream.isLive) live.show()
+        else live.hide()
+
+        itemView.setSafeOnClickListener {
+            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
         }
 
-        if(helper != null && helper!!.isPlayerNull()){
-            helper?.createPlayer()
+        play.setSafeOnClickListener { _ ->
+            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
         }
-        if(mThumbUrl.isEmpty()) helper?.seekToDefaultPosition()
+    }
+
+    private fun playChannel(url: String){
+        helper?.play(url)
     }
 
     fun resume(){
@@ -100,33 +94,6 @@ class PlayCardViewHolder(
     }
 
     fun getHelper() = helper
-
-    override fun onPlayerPlaying(currentWindowIndex: Int) {
-        thumbnailView.hide()
-    }
-
-    override fun onPlayerPaused(currentWindowIndex: Int) {
-        helper?.seekToDefaultPosition()
-    }
-
-    override fun onPlayerBuffering(currentWindowIndex: Int) {
-    }
-
-    override fun onPlayerError(errorString: String?) {
-        if(mThumbUrl.isEmpty()){
-            helper?.seekToDefaultPosition()
-        } else {
-            thumbnailView.show()
-        }
-    }
-
-    override fun releaseExoPlayerCalled() {
-        if(mThumbUrl.isEmpty()){
-            helper?.seekToDefaultPosition()
-        } else {
-            thumbnailView.show()
-        }
-    }
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
