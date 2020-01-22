@@ -173,11 +173,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @NotNull
     private Boolean executePostCreateSequence(){
-        StethoUtil.initStetho(this);
-        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
-        InAppManager.getInstance().setInAppListener(this);
+        StethoUtil.initStetho(ConsumerMainApplication.this);
+        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(ConsumerMainApplication.this);
+        InAppManager.getInstance().setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+        LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
         PushManager.getInstance().setMessageListener(new CustomPushListener());
@@ -193,11 +193,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }).start();
         }
 
-        LogManager.init(this);
+        LogManager.init(ConsumerMainApplication.this);
         if (LogManager.instance != null) {
             LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
-        TimberWrapper.init(this);
+        TimberWrapper.init(ConsumerMainApplication.this);
         initializeAbTestVariant();
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
