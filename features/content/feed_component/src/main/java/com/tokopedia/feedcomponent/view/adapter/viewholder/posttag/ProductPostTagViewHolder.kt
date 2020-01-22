@@ -104,8 +104,7 @@ class ProductPostTagViewHolder(val mainView: View,
         }
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)
-//            container.viewTreeObserver.addOnGlobalLayoutListener(getGlobalLayoutListener())
-            container.layoutParams.width = screenWidth * 2/3
+            container.layoutParams.width = screenWidth * 3/4
         }
 
         if (item.tags.isNotEmpty()) {
@@ -113,27 +112,6 @@ class ProductPostTagViewHolder(val mainView: View,
             renderTag(productTag, item.tags.first())
         } else {
             productTag.gone()
-        }
-    }
-
-
-    private fun getGlobalLayoutListener(): ViewTreeObserver.OnGlobalLayoutListener {
-        return object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val viewTreeObserver = container.viewTreeObserver
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-                } else {
-                    @Suppress("DEPRECATION")
-                    viewTreeObserver.removeGlobalOnLayoutListener(this)
-                }
-                val displayMetrics = DisplayMetrics()
-                (itemView.context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.let {
-                    it.defaultDisplay.getMetrics(displayMetrics)
-                    container.layoutParams.width = (displayMetrics.widthPixels * VALUE_CARD_SIZE).toInt()
-                    container.requestLayout()
-                }
-            }
         }
     }
 
@@ -203,7 +181,6 @@ class ProductPostTagViewHolder(val mainView: View,
         @LayoutRes
         val LAYOUT = R.layout.item_producttag_list
 
-        private const val VALUE_CARD_SIZE = 0.75
         private const val HEX_BLACK = "#000"
         private const val HEX_WHITE = "#fff"
         private const val OPACITY_70 = "0.7"
