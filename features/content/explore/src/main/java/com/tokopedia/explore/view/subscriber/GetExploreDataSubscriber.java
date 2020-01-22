@@ -203,7 +203,9 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                             tracking.getClickURL(),
                             tracking.getViewURL(),
                             tracking.getType(),
-                            tracking.getSource()
+                            tracking.getSource(),
+                            tracking.getViewType(),
+                            tracking.getRecomID()
                     )
             );
         }

@@ -79,7 +79,13 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
             it?.let {
                 when (it) {
                     is Loading -> mAdapter.startDataLoading()
-                    is ErrorMessage -> onError(it.data)
+                    is ErrorMessage ->{
+                        if (it.data.isEmpty()){
+                            onEmptyList()
+                            return@let
+                        }
+                        onError(it.data)
+                    }
                     is Success -> {
                         mAdapter.showData(it.data)
                     }
@@ -95,10 +101,6 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
                 when (it) {
                     is Loading -> showLoading()
                     is ErrorMessage -> {
-                        if (it.data.isEmpty()){
-                            onEmptyList()
-                            return@let
-                        }
                         onError(it.data)
                     }
                     is Success -> onSuccess(it.data.status?.points)
@@ -110,7 +112,7 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
 
     private fun onEmptyList() {
         view?.apply {
-            container_main.displayedChild = PointHistoryFragment.CONTAINER_ERROR
+            container_main.displayedChild = CONTAINER_ERROR
             img_error.setImageResource(R.drawable.tp_ic_empty_list)
             text_title_error.setText(R.string.tp_history_empty_title)
             text_label_error.setText(R.string.tp_history_empty_desc)

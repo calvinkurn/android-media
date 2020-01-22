@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;

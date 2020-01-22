@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.PointHistoryBase
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity
 import com.tokopedia.tokopoints.view.model.TokoPointEntity
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 import rx.Subscriber
 import javax.inject.Inject
 
+@TokoPointScope
 class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistoryRepository) : BaseViewModel(Dispatchers.Main), AdapterCallback {
 
 
@@ -44,7 +46,7 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
 
     private fun onPointDetailNext(response: GraphqlResponse) {
         val data = response.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java)
-        this@PointHistoryViewModel.data.postValue(Success(data.tokoPoints))
+        this@PointHistoryViewModel.data.setValue(Success(data.tokoPoints))
     }
 
     fun onErrorButtonClicked(toString: String, context: Context) {
@@ -78,7 +80,7 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
     }
 
     override fun onEmptyList(rawObject: Any) {
-
+      listLoading.value = ErrorMessage("")
     }
 
     override fun onStartFirstPageLoad() {

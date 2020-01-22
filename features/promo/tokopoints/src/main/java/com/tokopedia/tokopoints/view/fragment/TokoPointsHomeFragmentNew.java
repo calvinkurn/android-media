@@ -48,7 +48,6 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
@@ -71,6 +70,7 @@ import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -125,7 +125,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private ServerErrorView serverErrorView;
 
     private Boolean userLoggedInStatus;
-    private AppCompatImageView ivLeaderBoard;
     private AppCompatImageView ivUserCoupon;
     private TextView userCouponCount;
     private CardView rewardsPointLayout;
@@ -441,7 +440,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 }
             } else {
                 if (getActivity() != null) {
-                    RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                    RouteManager.route(getActivity(), ApplinkConst.Gamification.CRACK);
                 }
             }
 
@@ -481,7 +480,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         statusBarBgView = view.findViewById(R.id.status_bar_bg);
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint);
         serverErrorView = view.findViewById(R.id.server_error_view);
-        ivLeaderBoard = view.findViewById(R.id.iv_tpToolbar_leaderboard);
         ivUserCoupon = view.findViewById(R.id.iv_tpToolbar_coupon);
         userCouponCount = view.findViewById(R.id.tv_tpToolbar_couponCount);
         rewardsPointLayout = view.findViewById(R.id.card_point);
@@ -874,7 +872,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 emptyTitle.setText(data.getStatus().getEmptyMessage().getTitle());
                 emptySubtitle.setText(data.getStatus().getEmptyMessage().getSubTitle());
 
-                ivLeaderBoard.setVisibility(View.GONE);
                 ivUserCoupon.setVisibility(View.GONE);
                 userCouponCount.setVisibility(View.GONE);
                 ivLoyaltyStack.setVisibility(View.GONE);
@@ -1041,7 +1038,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         btn.setText(data.getButtonText());
         ImageHandler.loadImageFitCenter(getContext(), boxImageView, data.getImageURL());
         AlertDialog alertDialog = adb.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         alertDialog.setCancelable(false);
         alertDialog.setCanceledOnTouchOutside(false);
         btn.setOnClickListener(v -> {
@@ -1049,16 +1046,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             alertDialog.dismiss();
         });
         alertDialog.show();
-    }
-
-    @Override
-    public void onToolbarLeaderboardClick() {
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.LEADERBOARD, getString(R.string.tp_leader));
-        AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_LEADERBOARD,
-                "");
     }
 
     @Override

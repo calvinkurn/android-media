@@ -2,11 +2,12 @@ package com.tokopedia.vouchergame.detail.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 
 /**
- * Created by resakemal on 12/08/19.
+ * Created by resakemal on 26/11/19.
  */
-class VoucherGameDetailData(
+open class VoucherGameDetailData(
 
         @SerializedName("needEnquiry")
         @Expose
@@ -16,10 +17,10 @@ class VoucherGameDetailData(
         val isShowingProduct: Boolean = true,
         @SerializedName("enquiryFields")
         @Expose
-        val enquiryFields: List<VoucherGameEnquiryFields> = listOf(),
+        val enquiryFields: List<CatalogProductInput> = listOf(),
         @SerializedName("product")
         @Expose
-        var product: VoucherGameProductData = VoucherGameProductData()
+        val product: VoucherGameProductData = VoucherGameProductData()
 
 ) {
         class Response(

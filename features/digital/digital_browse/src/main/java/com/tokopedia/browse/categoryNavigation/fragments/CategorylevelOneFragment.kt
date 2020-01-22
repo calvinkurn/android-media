@@ -86,7 +86,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     }
 
     private fun setUpObserver() {
-        categoryBrowseViewModel.getCategoryList().observe(this, Observer {
+        categoryBrowseViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {

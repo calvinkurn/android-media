@@ -9,7 +9,8 @@ import androidx.annotation.NonNull;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.R;
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
+import com.tokopedia.network.constant.ResponseStatus;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 
 import org.json.JSONArray;
 import org.json.JSONException;

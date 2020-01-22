@@ -14,6 +14,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/view_pager_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -40,6 +41,16 @@
                 android:layout_height="match_parent" />
 
         </LinearLayout>
+
+        <include
+            android:id="@+id/layout_no_data"
+            layout="@layout/layout_nav_no_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:visibility="gone" />
 
     </FrameLayout>
 
@@ -149,13 +160,5 @@
         android:background="@color/white"
         app:behavior_hideable="true"
         app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior" />
-
-    <include
-        android:id="@+id/layout_banned_screen"
-        layout="@layout/layout_nav_banned_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

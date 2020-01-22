@@ -26,7 +26,7 @@
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
-    <string name="title_kyc_setting">Dokumen Data Diri</string>
+    <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="title_sampai_project">Tokopedia Corner</string>
@@ -90,6 +90,7 @@
 
     <string name="label_profile_completion">Kelengkapan Profil %1$d%%</string>
     <string name="label_tokopedia_pay_title">Tokopedia Pay</string>
+    <string name="label_tokopedia_pay_title_new">Dana di Tokopedia</string>
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
     <string name="label_tokopedia_pay_deposit">Saldo</string>
     <string name="label_tokopedia_pay_wallet">TokoCash</string>
@@ -132,10 +133,11 @@
     <string name="title_menu_flight">Pesawat</string>
     <string name="title_menu_hotel">Hotel</string>
     <string name="title_menu_reksadana">Reksa Dana</string>
-    <string name="title_menu_event">Event</string>
+    <string name="title_menu_event"><![CDATA[Event & Hiburan]]></string>
     <string name="title_menu_gold">Emas</string>
     <string name="title_menu_gift_card">Gift Card</string>
     <string name="title_menu_insurance">Asuransi</string>
+    <string name="title_menu_localservice">Print</string>
     <string name="title_menu_modal_toko">Modal Toko</string>
     <string name="title_menu_zakat">Zakat</string>
     <string name="title_menu_donation">Donasi</string>
@@ -224,6 +226,7 @@
 
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="label_tokopedia_pay_action">Atur</string>
 
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
     <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>
