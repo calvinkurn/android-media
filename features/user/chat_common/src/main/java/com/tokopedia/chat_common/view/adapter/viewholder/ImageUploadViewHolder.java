@@ -105,17 +105,21 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
     private void setChatLeft(View chatBalloon) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
-        setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, hour);
-        chatStatus.setVisibility(View.GONE);
-        name.setVisibility(View.GONE);
-        label.setVisibility(View.GONE);
-        dot.setVisibility(View.GONE);
+        alignHour(RelativeLayout.ALIGN_PARENT_LEFT, hour);
+        setVisibility(chatStatus, View.GONE);
+        setVisibility(name, View.GONE);
+        setVisibility(label, View.GONE);
+        setVisibility(dot, View.GONE);
     }
 
     private void setChatRight(View chatBalloon) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
-        setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
-        chatStatus.setVisibility(View.VISIBLE);
+        alignHour(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
+        setVisibility(chatStatus, View.VISIBLE);
+    }
+
+    protected void alignHour(int alignment, TextView hour) {
+        setAlignParent(alignment, hour);
     }
 
     private void setAlignParent(int alignment, View view) {
@@ -143,23 +147,23 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
                 && element.isSender()
                 && !element.isDummy()
                 && element.isShowRole()) {
-            name.setText(element.getFrom());
-            label.setText(element.getFromRole());
-            name.setVisibility(View.VISIBLE);
-            dot.setVisibility(View.VISIBLE);
-            label.setVisibility(View.VISIBLE);
-
+            if (name != null) name.setText(element.getFrom());
+            if (label != null ) label.setText(element.getFromRole());
+            setVisibility(name, View.VISIBLE);
+            setVisibility(dot, View.VISIBLE);
+            setVisibility(label, View.VISIBLE);
         } else {
-            name.setVisibility(View.GONE);
-            label.setVisibility(View.GONE);
-            dot.setVisibility(View.GONE);
+            setVisibility(name, View.GONE);
+            setVisibility(dot, View.GONE);
+            setVisibility(label, View.GONE);
         }
     }
 
     public void setReadStatus(ImageUploadViewModel element) {
+        if (chatStatus == null) return;
         int imageResource;
         if (element.isShowTime()) {
-            chatStatus.setVisibility(View.VISIBLE);
+            setVisibility(chatStatus, View.VISIBLE);
             if (element.isRead()) {
                 imageResource = R.drawable.ic_chat_read;
             } else {

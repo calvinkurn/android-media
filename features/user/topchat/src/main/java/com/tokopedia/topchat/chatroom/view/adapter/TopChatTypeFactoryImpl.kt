@@ -8,17 +8,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ImageDualAnnouncementViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.SecurityInfoChatViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopChatVoucherViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.FallbackMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.LeftFallbackMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.RightFallbackMessageViewHolder
@@ -35,7 +33,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
         private val chatLinkHandlerListener: ChatLinkHandlerListener,
-        imageUploadListener: ImageUploadListener,
+        private val imageUploadListener: ImageUploadListener,
         productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
         private val securityInfoListener: SecurityInfoListener,
@@ -79,6 +77,10 @@ open class TopChatTypeFactoryImpl(
         return AttachedInvoiceViewHolder.LAYOUT
     }
 
+    override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
+        return TopchatImageUploadViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(parent: ViewGroup, type: Int): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -94,6 +96,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
             LeftFallbackMessageViewHolder.LAYOUT -> LeftFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener)
