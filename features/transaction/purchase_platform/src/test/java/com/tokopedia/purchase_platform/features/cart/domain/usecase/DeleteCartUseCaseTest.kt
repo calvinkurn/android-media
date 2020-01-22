@@ -31,7 +31,6 @@ class DeleteCartUseCaseTest : Spek({
     Feature("Delete Cart Use Case without promo") {
 
         lateinit var subscriber: AssertableSubscriber<DeleteCartData>
-        val errorMessage = "something went wrong"
 
         Scenario("success") {
 
@@ -50,11 +49,14 @@ class DeleteCartUseCaseTest : Spek({
             }
         }
 
-        Scenario("fail") {
+        Scenario("failure with error messages") {
+
+            val errorMessage = "something went wrong"
+            val errorMessage2 = "something went wrong2"
 
             Given("mock response") {
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
-                        DeleteCartDataResponse(status = "ERROR", errorMessage = arrayListOf(errorMessage), data = Data(0))
+                        DeleteCartDataResponse(status = "ERROR", errorMessage = arrayListOf(errorMessage, errorMessage2), data = Data(0))
                 )), null, false))
             }
 
@@ -62,8 +64,25 @@ class DeleteCartUseCaseTest : Spek({
                 subscriber = useCase.createObservable(params).test()
             }
 
-            Then("value should fail with error message") {
+            Then("value should fail with first error message") {
                 subscriber.assertValue(DeleteCartData(message = errorMessage))
+            }
+        }
+
+        Scenario("failure with no error message") {
+
+            Given("mock response") {
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
+                        DeleteCartDataResponse(status = "ERROR", data = Data(0))
+                )), null, false))
+            }
+
+            When("create observable") {
+                subscriber = useCase.createObservable(params).test()
+            }
+
+            Then("value should fail with empty message") {
+                subscriber.assertValue(DeleteCartData(message = ""))
             }
         }
     }

@@ -28,7 +28,7 @@ class UpdateCartUseCaseTest : Spek({
     Feature("Update Cart Use Case") {
 
         lateinit var subscriber: AssertableSubscriber<UpdateCartData>
-        val errorMessage = "Something went wrong"
+
 
         Scenario("success") {
 
@@ -46,11 +46,30 @@ class UpdateCartUseCaseTest : Spek({
             }
         }
 
-        Scenario("fail") {
+        Scenario("failure with error messages") {
+
+            val errorMessage = "Something went wrong"
+            val errorMessage2 = "Something went wrong2"
 
             Given("mock response") {
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
-                        UpdateCartDataResponse(data = Data(status = false), error = arrayListOf(errorMessage), status = "ERROR"))), null, false))
+                        UpdateCartDataResponse(data = Data(status = false), error = arrayListOf(errorMessage, errorMessage2), status = "ERROR"))), null, false))
+            }
+
+            When("create observable") {
+                subscriber = useCase.createObservable(params).test()
+            }
+
+            Then("value should fail and has first error message") {
+                subscriber.assertValue(UpdateCartData(isSuccess = false, message = errorMessage))
+            }
+        }
+
+        Scenario("failure with no error message") {
+
+            Given("mock response") {
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
+                        UpdateCartDataResponse(data = Data(status = false), status = "ERROR"))), null, false))
             }
 
             When("create observable") {
@@ -58,7 +77,7 @@ class UpdateCartUseCaseTest : Spek({
             }
 
             Then("value should fail and has empty message") {
-                subscriber.assertValue(UpdateCartData(isSuccess = false, message = errorMessage))
+                subscriber.assertValue(UpdateCartData(isSuccess = false, message = ""))
             }
         }
     }
