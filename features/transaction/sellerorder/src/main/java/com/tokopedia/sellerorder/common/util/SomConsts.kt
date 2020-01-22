@@ -36,7 +36,7 @@ object SomConsts {
     const val STATUS_NEW_ORDER = "new_order"
     const val STATUS_IN_SHIPPING = "in_shipping"
     const val STATUS_DONE = "done"
-    const val STATUS_ORDER_CANCELLED = "order_cancelled"
+    const val STATUS_ORDER_CANCELLED = "order_canceled"
     const val STATUS_DELIVERED = "delivered"
 
     const val DETAIL_HEADER_TYPE = "header"
