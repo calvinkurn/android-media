@@ -115,7 +115,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     private var currentCursor = ""
     private var fetchFirstData = false
-    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
@@ -524,16 +523,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    @InternalCoroutinesApi
-    private fun getPlayBanner(adapterPosition: Int){
-        masterJob.cancelChildren()
-        launchCatchError(coroutineDispatcher, block = {
-            playCardHomeUseCase.execute().collect{
-                view?.setPlayContentBanner(it.first(), adapterPosition)
-            }
-        })
-    }
-
     private fun viewNeedToShowGeolocationComponent(): Boolean {
         if (isViewAttached) {
             return view?.needToShowGeolocationComponent()?:false
@@ -630,15 +619,23 @@ class HomePresenter(private val userSession: UserSessionInterface,
         return homeViewModel
     }
 
-//    @InternalCoroutinesApi
-//    override fun getPlayBanner(adapterPosition: Int){
-//        masterJob.cancelChildren()
-//        launchCatchError(coroutineDispatcher, block = {
-//            playCardHomeUseCase.execute().collect{
-//                view?.setPlayContentBanner(it.first(), adapterPosition)
-//            }
-//        })
-//    }
+    private fun getPlayBanner(homeViewModel: HomeViewModel?){
+        val position = homeViewModel?.isContainsHomePlay() ?: -1
+        if(position != -1) {
+            homeViewModel?.removeHomePlay()
+            masterJob.cancelChildren()
+            launchCatchError(coroutineDispatcher, block = {
+                playCardHomeUseCase.execute().collect {
+                    val newList = mutableListOf<Visitable<*>>()
+                    newList.addAll(_homeLiveData.value?.list ?: listOf())
+                    newList.add(position, PlayCardViewModel().apply { setPlayCardHome(it.first()) })
+                    _homeLiveData.value = _homeLiveData.value?.copy(
+                        list = newList
+                    )
+                }
+            })
+        }
+    }
 
     companion object {
         private const val CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED"
@@ -662,6 +659,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
+                    getPlayBanner(homeData)
                     _homeLiveData.setValue(homeData)
                     getHeaderData()
                     getReviewData()
