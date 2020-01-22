@@ -414,6 +414,16 @@ public class ReputationTracking {
         ));
     }
 
+    public void onClickResetButtonFilterTracker(int tab) {
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.FILTER_INVOICE_PAGE,
+                ReputationTrackingConstant.CLICK_RESET_BUTTON_FILTER_REVIEW + tabSource,
+                ""
+        ));
+    }
+
 
 
 

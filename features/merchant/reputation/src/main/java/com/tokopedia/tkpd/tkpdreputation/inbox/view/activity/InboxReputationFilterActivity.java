@@ -85,6 +85,8 @@ public class InboxReputationFilterActivity extends BaseSimpleActivity {
         if (item.getItemId() == R.id.action_reset
                 && listener != null) {
             listener.resetFilter();
+            reputationTracking.onClickResetButtonFilterTracker(getIntent().getIntExtra(InboxReputationFragment
+                    .PARAM_TAB, 1));
             return true;
         }
         else {
