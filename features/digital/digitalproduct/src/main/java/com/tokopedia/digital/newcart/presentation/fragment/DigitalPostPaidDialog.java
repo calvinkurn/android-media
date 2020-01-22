@@ -13,6 +13,6 @@ public class DigitalPostPaidDialog extends Dialog {
 
     @Override
     public int layoutResId() {
-        return R.layout.view_digital_post_paid_dialog;
+        return R.layout.dialog_digital_post_paid;
     }
 }

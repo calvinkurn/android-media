@@ -102,7 +102,7 @@ class FeedAnalyticTracker
         const val PARAM_ACTION_LOGIN = "login"
         const val PARAM_ACTION_NONLOGIN = "nonlogin"
         const val ACTION_FEED_RECOM_USER = "click - %s - recommendation - %s"
-        const val ACTION_CLICK_FEED_AVATAR = "click - %s - %s - %s"
+        const val ACTION_CLICK_FEED_AVATAR = "click avatar - %s - %s - %s"
         const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
         const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
         const val FORMAT_TWO_PARAM = "%s - %s"

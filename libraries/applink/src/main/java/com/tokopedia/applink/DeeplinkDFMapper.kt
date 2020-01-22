@@ -49,6 +49,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
@@ -179,6 +180,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_BASE, R.string.notif_settings_title))
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DFM_BASE, R.string.title_module_attachinvoice))
+            add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DFM_BASE, R.string.title_module_attachvoucher))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DFM_BASE, R.string.talk_title))
