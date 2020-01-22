@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:tickerShapeType="full"/>
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view"
