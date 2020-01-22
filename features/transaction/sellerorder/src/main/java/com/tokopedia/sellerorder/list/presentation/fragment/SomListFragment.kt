@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.list.presentation.fragment
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -11,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -79,6 +82,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val FLAG_DETAIL = 3333
+    private val FLAG_CONFIRM_REQ_PICKUP = 3553
+    private val ANIMATION_DURATION_IN_MILIS = 250L
+    private val ANIMATION_TYPE = "translationY"
+    private val TRANSLATION_LENGTH = 500f
+
     private lateinit var somListItemAdapter: SomListItemAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
@@ -89,13 +98,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var tabActive = ""
     private var tabStatus = ""
     private var filterStatusId = 0
-    private val FLAG_DETAIL = 3333
-    private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private var isFilterApplied = false
     private var defaultStartDate = ""
     private var defaultEndDate = ""
     private var nextOrderId = 0
     private var onLoadMore = false
+    private var isFilterButtonAnimating = false
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -170,6 +178,62 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
             }
             addOnScrollListener(scrollListener)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) {
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    } else if (dy < 0) {
+                        ObjectAnimator.ofFloat(filter_action_button, ANIMATION_TYPE, 0f).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isFilterButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isFilterButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isFilterButtonAnimating = false
+                                }
+                            })
+                            if (!isFilterButtonAnimating) {
+                                start()
+                            }
+                        }
+                    }
+                }
+            })
+
         }
     }
 
