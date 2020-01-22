@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
@@ -163,5 +164,9 @@ class FlexBoxChatLayout : FrameLayout {
 
     fun changeReadStatus(readStatus: Drawable?) {
         checkMark?.setImageDrawable(readStatus)
+    }
+
+    fun setMovementMethod(movementMethod: ChatLinkHandlerMovementMethod) {
+        message?.movementMethod = movementMethod
     }
 }

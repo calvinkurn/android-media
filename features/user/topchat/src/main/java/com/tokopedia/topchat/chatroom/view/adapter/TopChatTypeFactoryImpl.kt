@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -18,6 +19,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ImageDualAnnouncementViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.SecurityInfoChatViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopChatVoucherViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.FallbackMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.LeftFallbackMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.RightFallbackMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
@@ -30,7 +34,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 
 open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
-        chatLinkHandlerListener: ChatLinkHandlerListener,
+        private val chatLinkHandlerListener: ChatLinkHandlerListener,
         imageUploadListener: ImageUploadListener,
         productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
@@ -52,6 +56,8 @@ open class TopChatTypeFactoryImpl(
         val chat = visitables[position]
         return if (chat is MessageViewModel) {
             if (chat.isSender) ChatMessageViewHolder.TYPE_RIGHT else ChatMessageViewHolder.TYPE_LEFT
+        } else if (chat is FallbackAttachmentViewModel) {
+            if (chat.isOpposite) FallbackMessageViewHolder.TYPE_LEFT else FallbackMessageViewHolder.TYPE_RIGHT
         } else {
             default
         }
@@ -78,6 +84,8 @@ open class TopChatTypeFactoryImpl(
         val layoutRes = when (type) {
             ChatMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
             ChatMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
+            FallbackMessageViewHolder.TYPE_LEFT -> LeftFallbackMessageViewHolder.LAYOUT
+            FallbackMessageViewHolder.TYPE_RIGHT -> RightFallbackMessageViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
@@ -86,8 +94,10 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent)
-            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent)
+            LeftFallbackMessageViewHolder.LAYOUT -> LeftFallbackMessageViewHolder(parent, chatLinkHandlerListener)
+            RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)
+            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener)
+            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener)
             SecurityInfoChatViewHolder.LAYOUT -> SecurityInfoChatViewHolder(parent, securityInfoListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
