@@ -261,7 +261,8 @@ public class DynamicHomeChannel {
                                                             getGrids()[position].getPrice()
                                                     )),
                                                     "list", "/ - p1 - lego product - " + getHeader().getName(),
-                                                    "position", String.valueOf(position + 1)
+                                                    "position", String.valueOf(position + 1),
+                                                    "dimension84", id
                                             )
                                     )
                             )
@@ -574,7 +575,7 @@ public class DynamicHomeChannel {
             );
         }
 
-        public Map<String, Object> getEnhanceClickProductChannelMix(int gridPosition, boolean isFreeOngkir) {
+        public Map<String, Object> getEnhanceClickProductChannelMix(int gridPosition, boolean isFreeOngkir, String type) {
             return DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "homepage",
@@ -584,7 +585,7 @@ public class DynamicHomeChannel {
                     "ecommerce", DataLayer.mapOf(
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
-                                    "actionField", DataLayer.mapOf("list", "/ - p1 - dynamic channel mix - product - "+getHeader().name),
+                                    "actionField", DataLayer.mapOf("list", "/ - p1 - dynamic channel mix - product - "+getHeader().name+" - "+type),
                                     "products", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "name", getGrids()[gridPosition].getName(),

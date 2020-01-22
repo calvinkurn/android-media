@@ -6,7 +6,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 
 class ProductBannerMixDataModel(
         val grid: DynamicHomeChannel.Grid,
-        val channel: DynamicHomeChannel.Channels
+        val channel: DynamicHomeChannel.Channels,
+        val layoutType: Int
 ) : Visitable<BannerMixTypeFactory> {
     override fun type(typeFactory: BannerMixTypeFactory): Int {
         return typeFactory.type(this)
