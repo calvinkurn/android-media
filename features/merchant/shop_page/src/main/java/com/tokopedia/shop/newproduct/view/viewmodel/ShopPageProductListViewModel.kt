@@ -26,6 +26,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import java.lang.Exception
 import javax.inject.Inject
+import javax.inject.Provider
 
 class ShopPageProductListViewModel @Inject constructor(
         private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
@@ -35,7 +36,7 @@ class ShopPageProductListViewModel @Inject constructor(
         private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val addWishListUseCase: AddWishListUseCase,
-        private val getShopProductUseCase: GqlGetShopProductUseCase,
+        private val getShopProductUseCase: Provider<GqlGetShopProductUseCase>,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
         dispatcher: CoroutineDispatcher
@@ -66,6 +67,7 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
+    private val listGetShopProductUseCase: MutableList<GqlGetShopProductUseCase> =  mutableListOf()
 
     fun getBuyerShopPageProductTabData(shopId: String, shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel) {
         launchCatchError(coroutineContext, {
@@ -232,7 +234,8 @@ class ShopPageProductListViewModel @Inject constructor(
             shopId: String,
             productFilter: ShopProductFilterInput
     ): Pair<Boolean, List<ShopProductViewModel>> {
-        val getShopProductUseCase = getShopProductUseCase
+        val getShopProductUseCase = getShopProductUseCase.get()
+        listGetShopProductUseCase.add(getShopProductUseCase)
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
         val productListResponse = getShopProductUseCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(productFilter.page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
@@ -326,7 +329,9 @@ class ShopPageProductListViewModel @Inject constructor(
         deleteShopInfoUseCase.executeSync()
         clearMerchantVoucherCache()
         getShopEtalaseByShopUseCase.clearCache()
-        getShopProductUseCase.clearCache()
+        listGetShopProductUseCase.forEach {
+            it.clearCache()
+        }
         getShopFeaturedProductUseCase.clearCache()
     }
 
@@ -335,6 +340,7 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun getEtalaseData(shopId: String) {
+        listGetShopProductUseCase.clear()
         launchCatchError(coroutineContext, block = {
             val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId) }
             etalaseListData.postValue(Success(etalaseListDataResult))

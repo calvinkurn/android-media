@@ -144,7 +144,6 @@ class ShopProductModule {
         return GetShopFeaturedProductUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
-    @ShopProductScope
     @Provides
     fun getShopProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT) gqlQuery: String?,
                               gqlUseCase: MultiRequestGraphqlUseCase?): GqlGetShopProductUseCase {

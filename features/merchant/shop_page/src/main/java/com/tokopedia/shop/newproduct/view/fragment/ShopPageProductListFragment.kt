@@ -184,9 +184,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            Toaster.make(findViewById(android.R.id.content),
-                    message,
-                    Toaster.LENGTH_LONG)
+            Toaster.make(findViewById(android.R.id.content), message)
         }
     }
 
