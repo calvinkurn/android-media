@@ -176,7 +176,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * @param productDataModel is the data model for fill the UI with view model
      */
     private fun initView(productDataModel: ProductInfoDataModel){
-        configureContentView(true)
         recommendationItem = mapToRecommendationItem(productDataModel)
         product_name.text = productDataModel.productDetailData.name
         handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
@@ -191,6 +190,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
         updateWishlist(productDataModel.productDetailData.isWishlist)
         ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
+
+        configureContentView(true)
 
         when(productDataModel.productDetailData.status){
             0 -> {
