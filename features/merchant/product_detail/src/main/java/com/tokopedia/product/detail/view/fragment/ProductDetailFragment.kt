@@ -138,6 +138,7 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1707,6 +1708,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         tradeInParams = TradeInParams()
         tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
         tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
+        if(tradeInParams.deviceId == null){
+            tradeInParams.deviceId = TrackApp.getInstance().gtm.googleAdId
+        }
         tradeInParams.userId = if (productInfoViewModel.userId.isNotEmpty())
             productInfoViewModel.userId.toIntOrZero()
         else

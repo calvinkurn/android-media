@@ -15,6 +15,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.DeviceAttr
 import com.tokopedia.tradein.model.DeviceDiagInput
@@ -182,7 +183,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && tradeInParams.deviceId==null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == TrackApp.getInstance().gtm.googleAdId)) {
             imeiStateLiveData.value = true
             setHomeResultData(jsonObject)
         } else {

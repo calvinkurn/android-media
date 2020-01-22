@@ -44,6 +44,7 @@ import com.tokopedia.unifyprinciples.Typography;
 import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
+import tradein_common.TradeInUtils;
 
 public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessRequestListener {
 
@@ -65,6 +66,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private LinearLayout imeiView;
     private EditText editTextImei;
     private Typography typographyImeiDescription;
+    private Typography typographyImeiHelp;
     private boolean inputImei;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -131,6 +133,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         imeiView = findViewById(R.id.imei_view);
         editTextImei = findViewById(R.id.edit_text_imei);
         typographyImeiDescription = findViewById(R.id.typography_imei_description);
+        typographyImeiHelp = findViewById(R.id.typography_imei_help);
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
@@ -143,6 +146,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             tncStringId = R.string.tradein_tnc;
         }
         mTvGoToProductDetails.setText(closeButtonText);
+        typographyImeiHelp.setOnClickListener(v -> {
+            TradeInImeiHelpBottomSheet tradeInImeiHelpBottomSheet = TradeInImeiHelpBottomSheet.Companion.newInstance();
+            tradeInImeiHelpBottomSheet.show(getSupportFragmentManager(), "");
+        });
     }
 
     @Override
@@ -203,6 +210,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                                 if (editTextImei.getText().length() == 15) {
                                     tradeInHomeViewModel.setDeviceId(editTextImei.getText().toString());
                                     inputImei = true;
+                                    TradeInUtils.setImeiNumber(this, editTextImei.getText().toString());
                                     getPriceFromSDK(this);
                                     typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
                                     typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_black));
