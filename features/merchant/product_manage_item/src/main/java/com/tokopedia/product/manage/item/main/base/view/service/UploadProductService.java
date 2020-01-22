@@ -163,7 +163,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         result.putExtras(bundle);
         sendBroadcast(result);
 
-        logException(t);
+        logException(t, productSubmitNotificationListener.getProductViewModel());
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
@@ -188,7 +188,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 
-    private void logException(Throwable t) {
+    private void logException(Throwable t, ProductViewModel productViewModel) {
         try {
             if (!BuildConfig.DEBUG) {
                 String errorMessage = String.format(
