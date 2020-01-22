@@ -361,18 +361,30 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     public boolean checkAppSignature() {
-        PackageInfo info = null;
         try {
-            info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            PackageInfo info;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+                if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
+                    byte[] rawCertNative = bytesFromJNI();
+                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                } else {
+                    return false;
+                }
+            } else {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+                if (null != info && info.signatures.length > 0) {
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
+                    byte[] rawCertNative = bytesFromJNI();
+
+                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                } else {
+                    return false;
+                }
+            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }
-        if (null != info && info.signatures.length > 0) {
-            byte[] rawCertJava = info.signatures[0].toByteArray();
-            byte[] rawCertNative = bytesFromJNI();
-
-            return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-        } else {
             return false;
         }
     }
