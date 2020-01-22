@@ -179,7 +179,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels): MutableList<Visitable<BannerMixTypeFactory>> {
         val visitables: MutableList<Visitable<BannerMixTypeFactory>> = channel.grids.map {
-            ProductBannerMixDataModel(it, channel)
+            ProductBannerMixDataModel(it, channel, getLayoutType(channel))
         }.toMutableList()
 
         if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
