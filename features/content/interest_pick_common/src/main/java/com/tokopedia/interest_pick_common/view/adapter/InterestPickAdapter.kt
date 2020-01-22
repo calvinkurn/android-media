@@ -100,13 +100,15 @@ class InterestPickAdapter(private val listener: InterestPickItemListener, val so
         }
 
         private fun initViewListener(item: InterestPickDataViewModel, positionInAdapter: Int, list: List<InterestPickDataViewModel>) {
-            itemView.setOnClickListener {
-                if (item.isLihatSemuaItem) {
-                    listener.onLihatSemuaItemClicked(list.filter { it.isSelected })
-                } else {
-                    item.isSelected = !item.isSelected
-                    setBackgroundColor(item)
-                    listener.onInterestPickItemClicked(item)
+            if (item.isClickable) {
+                itemView.setOnClickListener {
+                    if (item.isLihatSemuaItem) {
+                        listener.onLihatSemuaItemClicked(list.filter { it.isSelected })
+                    } else {
+                        item.isSelected = !item.isSelected
+                        setBackgroundColor(item)
+                        listener.onInterestPickItemClicked(item)
+                    }
                 }
             }
         }
