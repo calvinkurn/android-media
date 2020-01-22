@@ -165,9 +165,8 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
-                                                               UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
+    ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi) {
+        return new ShopCommonCloudDataSource(shopCommonApi);
     }
 
     @FeedPlusScope

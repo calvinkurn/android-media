@@ -1,4 +1,3 @@
-include ':top_ads_detail_sheet'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

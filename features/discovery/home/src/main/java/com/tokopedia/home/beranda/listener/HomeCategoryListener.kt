@@ -1,18 +1,23 @@
 package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import kotlinx.coroutines.CoroutineScope
 
 import java.util.HashMap
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by errysuprayogi on 11/29/17.
  */
 
 interface HomeCategoryListener {
+
+    val parentPool: RecyclerView.RecycledViewPool
 
     val isMainViewVisible: Boolean
 
@@ -30,9 +35,7 @@ interface HomeCategoryListener {
 
     fun onSectionItemClicked(actionLink: String)
 
-    fun onDigitalMoreClicked(pos: Int)
-
-    fun onCloseTicker(pos: Int)
+    fun onCloseTicker()
 
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
@@ -79,8 +82,6 @@ interface HomeCategoryListener {
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
-
-    fun onGetPlayBanner(adapterPosition: Int)
 
     fun getWindowWidth(): Int
 }

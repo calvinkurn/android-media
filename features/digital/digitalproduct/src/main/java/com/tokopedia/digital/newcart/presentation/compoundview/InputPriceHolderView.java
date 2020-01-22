@@ -50,7 +50,7 @@ public class InputPriceHolderView extends LinearLayout {
         this.context = context;
 
         View view = LayoutInflater.from(context).inflate(
-                R.layout.view_holder_checkout_input_price_digital_module, this, true
+                R.layout.view_holder_digital_checkout_input_price, this, true
         );
 
         inputPriceInfo = view.findViewById(R.id.input_price_info);
@@ -105,7 +105,7 @@ public class InputPriceHolderView extends LinearLayout {
     }
 
     public void bindView(String minPayment, String maxPayment) {
-        inputPriceInfo.setText(String.format(context.getString(R.string.user_price_info),
+        inputPriceInfo.setText(String.format(context.getString(R.string.digital_user_price_info),
                 minPayment, maxPayment));
     }
 

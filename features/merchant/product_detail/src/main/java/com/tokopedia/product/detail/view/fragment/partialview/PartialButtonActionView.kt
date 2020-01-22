@@ -63,7 +63,7 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderData(isExpressCheckout:Boolean, hasTopAdsActive: Boolean) {
+    fun renderData(isExpressCheckout: Boolean, hasTopAdsActive: Boolean) {
         this.isExpressCheckout = isExpressCheckout
         this.hasTopAdsActive = hasTopAdsActive
         renderButton()
