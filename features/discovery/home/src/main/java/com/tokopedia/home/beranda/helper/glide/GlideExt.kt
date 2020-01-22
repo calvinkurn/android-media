@@ -144,3 +144,25 @@ fun ImageView.loadGif(url: String){
             .transform(RoundedCorners(10))
             .into(this)
 }
+
+fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemory: Boolean = false){
+    Glide.with(context)
+            .load(url)
+            .override(width, height)
+            .skipMemoryCache(skipMemory)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+            .placeholder(R.drawable.loading_page)
+            .into(this)
+}
+fun ImageView.loadImageWithoutPlaceholder(url: String, width: Int, height: Int, skipMemory: Boolean = false){
+    Glide.with(context)
+            .load(url)
+            .override(width, height)
+            .skipMemoryCache(skipMemory)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+            .into(this)
+}

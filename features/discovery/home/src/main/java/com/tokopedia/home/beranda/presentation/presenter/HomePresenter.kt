@@ -10,16 +10,20 @@ import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.data.usecase.PlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
+import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
@@ -31,6 +35,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.subscriber.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.iris.util.launchCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -92,7 +97,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     lateinit var dismissHomeReviewUseCase: DismissHomeReviewUseCase
 
     @Inject
-    lateinit var playCardHomeUseCase: PlayCardHomeUseCase
+    lateinit var playCardHomeUseCase: PlayLiveDynamicUseCase
 
     val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData()
 
@@ -114,6 +119,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
+    private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
+
     override val coroutineContext: CoroutineContext
         get() = coroutineDispatcher + masterJob
 
@@ -133,9 +140,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun onResume() {
-        val needRefresh = lastRequestTimeHomeData + REQUEST_DELAY_HOME_DATA < System.currentTimeMillis()
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
-        if (isViewAttached && !fetchFirstData && needRefresh) {
+        if (isViewAttached && !fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
         }
         if (needSendGeolocationRequest && view?.hasGeolocationPermission() == true) {
@@ -193,12 +199,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun refreshHomeData() {
-        lastRequestTimeHomeData = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
             _updateNetworkLiveData.setValue(resource)
         }){
-            Timber.tag(HomePresenter::class.java.name).e(it)
+            homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
     }
@@ -520,13 +525,14 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    fun getPlayBanner(){
-        playCardHomeUseCase.execute(
-                onSuccess = {
-                    onPlayBannerSuccess(it)
-                },
-                onError = {}
-        )
+    @InternalCoroutinesApi
+    override fun getPlayBanner(adapterPosition: Int){
+        masterJob.cancelChildren()
+        launchCatchError(coroutineDispatcher, block = {
+            playCardHomeUseCase.execute().collect{
+                view?.setPlayContentBanner(it.first(), adapterPosition)
+            }
+        })
     }
 
     fun onPlayBannerSuccess(playCardHome: PlayCardHome) {
@@ -641,6 +647,14 @@ class HomePresenter(private val userSession: UserSessionInterface,
             }
         }
         return homeViewModel
+    @InternalCoroutinesApi
+    override fun getPlayBanner(adapterPosition: Int){
+        masterJob.cancelChildren()
+        launchCatchError(coroutineDispatcher, block = {
+            playCardHomeUseCase.execute().collect{
+                view?.setPlayContentBanner(it.first(), adapterPosition)
+            }
+        })
     }
 
     companion object {
@@ -649,6 +663,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         private var lastRequestTimeSendGeolocation: Long = 0
         const val FLAG_FROM_NETWORK = 99
         const val FLAG_FROM_CACHE = 98
+        private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
     }
 
     init {

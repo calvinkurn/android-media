@@ -38,15 +38,19 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.PlayChannel;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
@@ -91,6 +95,7 @@ import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListene
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -117,6 +122,9 @@ import kotlin.coroutines.CoroutineContext;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
 
+import static android.view.View.INVISIBLE;
+import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
+
 /**
  * @author by errysuprayogi on 11/27/17.
  */
@@ -142,6 +150,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
+    private boolean shouldDisplayReview = true;
+    private int playPosition = -1;
+    private PlayerView playerView;
+    private SimpleExoPlayer videoPlayer;
+    private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
     private ActivityStateListener activityStateListener;
 
@@ -317,6 +330,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+//                onHandlingScrollVideoPlayer(newState);
+            }
+
+            @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 evaluateHomeComponentOnScroll(recyclerView);
@@ -481,6 +500,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPause() {
         super.onPause();
+
         trackingQueue.sendAll();
         if (activityStateListener != null) {
             activityStateListener.onPause();
@@ -1455,12 +1475,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showNotAllowedGeolocationSnackbar() {
         getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG)
-                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        HomePageTracking.eventClickOnAtur(getActivity());
-                        goToApplicationDetailActivity();
-                    }
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), view -> {
+                    HomePageTracking.eventClickOnAtur(getActivity());
+                    goToApplicationDetailActivity();
                 }).show();
     }
 
@@ -1499,6 +1516,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (irisAnalytics!=null) {
             irisAnalytics.saveEvent(data);
         }
+    }
+
+    @Override
+    public void onGetPlayBanner(int adapterPosition) {
+        presenter.getPlayBanner(adapterPosition);
+    }
+
+    @Override
+    public void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition) {
+        adapter.setPlayData(playContentBanner, adapterPosition);
     }
 
     @Override
@@ -1591,6 +1618,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
         }
+    }
+
+    @Override
+    public void onOpenPlayActivity(@NotNull View videoPlayer, String channelId) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), videoPlayer, ANIMATION_TRANSITION_NAME);
+        startActivity(intent, options.toBundle());
     }
 
     private boolean needToPerformanceMonitoring() {

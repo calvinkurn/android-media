@@ -56,6 +56,7 @@ class HomeDataMapper(
                     homeData.homeFlag.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)
             ))
         }
+
         if (homeData.dynamicHomeChannel != null && homeData.dynamicHomeChannel.channels != null && !homeData.dynamicHomeChannel.channels.isEmpty()) {
             var position = 1
             val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
@@ -177,7 +178,7 @@ class HomeDataMapper(
                             if(!isCache) trackingQueue.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                         }
                         DynamicHomeChannel.Channels.LAYOUT_REVIEW -> if (!isCache) {
-                            list.add(mappingToReviewViewModel(channel))
+                            list.add(mappingToReviewViewModel())
                         }
                         DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> if (!isCache) {
                             val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
@@ -186,11 +187,16 @@ class HomeDataMapper(
                     }
                 }
             }
+            if(homeData.dynamicHomeChannel.channels.filter { it.layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER }.isEmpty()){
+                if (position == 2 && !isCache){
+                    list.add(PlayCardViewModel())
+                }
+            }
         }
         return HomeViewModel(homeData.homeFlag, list, isCache)
     }
 
-    private fun mappingToReviewViewModel(channel: DynamicHomeChannel.Channels): Visitable<*> {
+    private fun mappingToReviewViewModel(): Visitable<*> {
         return ReviewViewModel()
     }
 

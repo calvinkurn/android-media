@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.tokopedia.dynamicbanner.entity.PlayCardHome
+import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -22,7 +22,7 @@ class PlayCardViewModel: HomeVisitable {
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()
-    private var playCardHome: PlayCardHome? = null
+    private var playCardHome: PlayChannel? = null
     private var channel: DynamicHomeChannel.Channels? = null
 
     override fun isCache(): Boolean {
@@ -33,7 +33,7 @@ class PlayCardViewModel: HomeVisitable {
         isCache = cache
     }
 
-    fun setPlayCardHome(playCardHome: PlayCardHome) {
+    fun setPlayCardHome(playCardHome: PlayChannel) {
         this.playCardHome = playCardHome
         setBannerImageUrl()
     }
@@ -46,12 +46,12 @@ class PlayCardViewModel: HomeVisitable {
         return channel
     }
 
-    fun getPlayCardHome(): PlayCardHome? {
+    fun getPlayCardHome(): PlayChannel? {
         return playCardHome
     }
 
     private fun setBannerImageUrl() {
-        val bannerUrl = playCardHome?.playGetCardHome?.data?.card?.imageUrl?: ""
+        val bannerUrl = playCardHome?.coverUrl ?: ""
         this.channel?.banner?.imageUrl = bannerUrl
     }
 

@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.data.datasource.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.PlayRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
@@ -79,6 +80,10 @@ class HomeModule {
 
     @HomeScope
     @Provides
+    fun providePlayRemoteDataSource(graphqlRepository: GraphqlRepository, @Named("dispatchersIO") dispatcher: CoroutineDispatcher) = PlayRemoteDataSource(graphqlRepository, dispatcher)
+
+    @HomeScope
+    @Provides
     fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
 
     @HomeScope
@@ -91,8 +96,9 @@ class HomeModule {
     @Provides
     fun homeRepository(homeDataSource: HomeDataSource,
                        homeRemoteDataSource: HomeRemoteDataSource,
-                       homeCachedDataSource: HomeCachedDataSource): HomeRepository {
-        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource)
+                       homeCachedDataSource: HomeCachedDataSource,
+                       playRemoteDataSource: PlayRemoteDataSource): HomeRepository {
+        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource, playRemoteDataSource)
     }
 
     @HomeScope
