@@ -247,7 +247,7 @@
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
             tools:text="Wisma 77 Tower 2"
-            android:lineSpacingMultiplier="0.8"
+            android:lineSpacingMultiplier="1"
             android:scrollHorizontally="false"
             android:textIsSelectable="true"
             android:inputType="none"/>
@@ -262,7 +262,7 @@
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
             tools:text="Slipi, Jakarta Barat 14410"
-            android:lineSpacingMultiplier="0.8"
+            android:lineSpacingMultiplier="1"
             android:scrollHorizontally="false"
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
