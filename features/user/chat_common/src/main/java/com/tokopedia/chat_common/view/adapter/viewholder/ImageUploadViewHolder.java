@@ -30,13 +30,13 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     private static final int BLUR_HEIGHT = 30;
     private final ImageUploadListener listener;
 
-    private View progressBarSendImage;
+    protected View progressBarSendImage;
     private ImageView chatStatus;
     private View chatBalloon;
     private TextView name;
     private TextView label;
     private TextView dot;
-    private ImageView attachment;
+    protected ImageView attachment;
     private ImageView action;
 
     public ImageUploadViewHolder(View itemView, ImageUploadListener listener) {
@@ -67,23 +67,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
                 }
             });
 
-            if (element.isDummy()) {
-                setVisibility(progressBarSendImage, View.VISIBLE);
-                ImageHandler.loadImageBlurredWithListener(
-                        attachment,
-                        element.getImageUrl(),
-                        BLUR_WIDTH,
-                        BLUR_HEIGHT,
-                        new DynamicSizeImageRequestListener()
-                );
-            } else {
-                setVisibility(progressBarSendImage, View.GONE);
-                ImageHandler.loadImageWithListener(
-                        attachment,
-                        element.getImageUrl(),
-                        new DynamicSizeImageRequestListener()
-                );
-            }
+            bindImageAttachment(element);
 
             if (element.isRetry()) {
                 setRetryView(element);
@@ -91,6 +75,26 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
             setVisibility(attachment, View.VISIBLE);
 
+        }
+    }
+
+    protected void bindImageAttachment(final ImageUploadViewModel element) {
+        if (element.isDummy()) {
+            setVisibility(progressBarSendImage, View.VISIBLE);
+            ImageHandler.loadImageBlurredWithListener(
+                    attachment,
+                    element.getImageUrl(),
+                    BLUR_WIDTH,
+                    BLUR_HEIGHT,
+                    new DynamicSizeImageRequestListener()
+            );
+        } else {
+            setVisibility(progressBarSendImage, View.GONE);
+            ImageHandler.loadImageWithListener(
+                    attachment,
+                    element.getImageUrl(),
+                    new DynamicSizeImageRequestListener()
+            );
         }
     }
 
@@ -148,7 +152,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
                 && !element.isDummy()
                 && element.isShowRole()) {
             if (name != null) name.setText(element.getFrom());
-            if (label != null ) label.setText(element.getFromRole());
+            if (label != null) label.setText(element.getFromRole());
             setVisibility(name, View.VISIBLE);
             setVisibility(dot, View.VISIBLE);
             setVisibility(label, View.VISIBLE);
@@ -173,14 +177,14 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
-            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource));
+            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(), imageResource));
         } else {
             chatStatus.setVisibility(View.GONE);
         }
     }
 
 
-    private void setVisibility(View view, int visibility) {
+    protected void setVisibility(View view, int visibility) {
         if (view != null) {
             view.setVisibility(visibility);
         }
