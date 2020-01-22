@@ -1,0 +1,65 @@
+package com.tokopedia.purchase_platform.features.cart.domain.usecase
+
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
+import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
+import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.Data
+import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse
+import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.usecase.RequestParams
+import io.mockk.every
+import io.mockk.mockk
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
+import rx.observers.AssertableSubscriber
+
+class UpdateCartUseCaseTest : Spek({
+
+    val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
+    val useCase by memoized { UpdateCartUseCase(graphqlUseCase, TestSchedulers) }
+
+    val params = RequestParams().apply {
+        putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, arrayListOf(UpdateCartRequest()))
+    }
+
+    Feature("Update Cart Use Case") {
+
+        lateinit var subscriber: AssertableSubscriber<UpdateCartData>
+        val errorMessage = "Something went wrong"
+
+        Scenario("success") {
+
+            Given("mock response") {
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
+                        UpdateCartDataResponse(data = null, status = "OK"))), null, false))
+            }
+
+            When("create observable") {
+                subscriber = useCase.createObservable(params).test()
+            }
+
+            Then("value should success and has empty message") {
+                subscriber.assertValue(UpdateCartData(isSuccess = true, message = ""))
+            }
+        }
+
+        Scenario("fail") {
+
+            Given("mock response") {
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(UpdateCartGqlResponse::class.java to UpdateCartGqlResponse(
+                        UpdateCartDataResponse(data = Data(status = false), error = arrayListOf(errorMessage), status = "ERROR"))), null, false))
+            }
+
+            When("create observable") {
+                subscriber = useCase.createObservable(params).test()
+            }
+
+            Then("value should fail and has empty message") {
+                subscriber.assertValue(UpdateCartData(isSuccess = false, message = errorMessage))
+            }
+        }
+    }
+})
