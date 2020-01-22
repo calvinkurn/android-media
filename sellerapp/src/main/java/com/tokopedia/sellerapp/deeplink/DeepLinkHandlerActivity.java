@@ -44,7 +44,7 @@ import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 //import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
+//import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
@@ -114,7 +114,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
-                new InboxTalkApplinkModuleLoader(),
+//                new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
