@@ -420,7 +420,7 @@ public class FeedAnalytics {
 
     public void eventProductGridImpression(List<ProductEcommerce> productList,
                                            String activityName, int postId, int userId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_VIEW,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
@@ -438,7 +438,7 @@ public class FeedAnalytics {
 
     public void eventProductGridClick(ProductEcommerce product,
                                       String activityName, int postId, int userId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
