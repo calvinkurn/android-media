@@ -1109,7 +1109,6 @@ public class GTMAnalytics extends ContextAnalytics {
     public void logEvent(String eventName, Bundle bundle, Context context) {
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
-            log(context, eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
