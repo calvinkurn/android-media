@@ -121,7 +121,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
     }
 
     private fun sendClickEvent(context: Context, data: CouponValueEntity, position: Int) {
-        val item = HashMap<String, String>()
+        val item = HashMap<String, String?>()
         item["id"] = data.catalogId.toString()
         item["name"] = data.title
         item["position"] = position.toString()
@@ -129,10 +129,10 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
         item["creative_url"] = data.imageUrlMobile
         item["promo_code"] = data.code
 
-        val promotions = HashMap<String, List<Map<String, String>>>()
-        promotions["promotions"] = Arrays.asList<Map<String, String>>(item)
+        val promotions = HashMap<String, List<Map<String, String?>>>()
+        promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
 
-        val promoClick = HashMap<String, Map<String, List<Map<String, String>>>>()
+        val promoClick = HashMap<String, Map<String, List<Map<String, String?>>>>()
         promoClick["promoView"] = promotions
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,

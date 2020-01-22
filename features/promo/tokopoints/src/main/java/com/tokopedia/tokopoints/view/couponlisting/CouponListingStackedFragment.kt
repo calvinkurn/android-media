@@ -142,7 +142,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
                     mAdapter.startDataLoading()
                 }
                 is Success -> mAdapter.onSuccess(it.data)
-                is ErrorMessage -> onError(1)
+                is ErrorMessage -> mAdapter.onError()
             }
         }
     })
