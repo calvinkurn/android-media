@@ -29,6 +29,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
@@ -460,14 +461,8 @@ class ShopPageFragment :
     }
 
     private fun redirectToShopSettingsPage() {
-        view?.run {
-            Toaster.make(
-                    this,
-                    "Open Shop Settings",
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    context.getString(R.string.oke)
-            )
+        context?.let {
+            RouteManager.route(it, SHOP_PAGE_SETTING)
         }
     }
 
