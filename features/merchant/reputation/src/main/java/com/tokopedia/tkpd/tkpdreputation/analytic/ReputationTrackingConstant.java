@@ -31,6 +31,7 @@ public class ReputationTrackingConstant {
     public static final String CLICK_FILTER_REVIEW = "click - filter on ";
     public static final String CLICK_SELECT_FILTER_REVIEW = "click - select filter from ";
     public static final String CLICK_APPLY_FILTER_REVIEW = "click - apply filter from ";
+    public static final String CLICK_BACK_BUTTON_FILTER_REVIEW = "click - back button on filter from ";
     public static final String SCROLL_REVIEW = "scroll - ulasan page on ";
 
     //Label

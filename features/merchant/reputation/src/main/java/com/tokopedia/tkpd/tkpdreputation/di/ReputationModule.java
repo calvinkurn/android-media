@@ -578,11 +578,7 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationTracking reputationTracking(@ApplicationContext Context context){
-        if(context instanceof ReputationRouter){
-            return new ReputationTracking((ReputationRouter) context);
-        }else{
-            return null;
-        }
+    ReputationTracking reputationTracking(){
+        return new ReputationTracking();
     }
 }

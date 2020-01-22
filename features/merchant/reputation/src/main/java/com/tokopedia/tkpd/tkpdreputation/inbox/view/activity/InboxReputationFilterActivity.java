@@ -7,12 +7,14 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFilterFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 
@@ -21,6 +23,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFrag
  */
 
 public class InboxReputationFilterActivity extends BaseSimpleActivity {
+
+    private ReputationTracking reputationTracking;
 
     public interface ResetListener {
         void resetFilter();
@@ -36,6 +40,12 @@ public class InboxReputationFilterActivity extends BaseSimpleActivity {
         intent.putExtra(InboxReputationFilterFragment.SELECTED_SCORE_FILTER, scoreFilter);
         intent.putExtra(InboxReputationFragment.PARAM_TAB, tab);
         return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        reputationTracking = new ReputationTracking();
     }
 
     @Nullable
@@ -76,9 +86,15 @@ public class InboxReputationFilterActivity extends BaseSimpleActivity {
                 && listener != null) {
             listener.resetFilter();
             return true;
-        } else
+        }
+        else {
+            reputationTracking.onClickBackButtonFromFilterTracker(getIntent().getIntExtra(InboxReputationFragment
+                    .PARAM_TAB, 1));
             return super.onOptionsItemSelected(item);
+        }
     }
+
+
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {

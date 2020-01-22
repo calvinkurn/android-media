@@ -14,11 +14,9 @@ import java.util.Map;
 
 public class ReputationTracking {
 
-    private ReputationRouter reputationRouter;
     private ContextAnalytics tracker;
 
-    public ReputationTracking(ReputationRouter reputationRouter) {
-        this.reputationRouter = reputationRouter;
+    public ReputationTracking() {
         this.tracker = TrackApp.getInstance().getGTM();
     }
 
@@ -403,6 +401,16 @@ public class ReputationTracking {
                 ReputationTrackingConstant.FILTER_INVOICE_PAGE,
                 ReputationTrackingConstant.CLICK_APPLY_FILTER_REVIEW + tabSource,
                 timeFilter
+        ));
+    }
+
+    public void onClickBackButtonFromFilterTracker(int tab) {
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.FILTER_INVOICE_PAGE,
+                ReputationTrackingConstant.CLICK_BACK_BUTTON_FILTER_REVIEW + tabSource,
+                ""
         ));
     }
 

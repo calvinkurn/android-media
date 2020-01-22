@@ -37,6 +37,4 @@ public interface ReputationComponent {
 
     void inject(InboxReputationFilterFragment inboxReputationFilterFragment);
 
-    void inject(InboxReputationActivity inboxReputationActivity);
-
 }
