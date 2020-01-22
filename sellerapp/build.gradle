@@ -131,12 +131,6 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             ext.enableHansel=false
-            FirebasePerformance {
-                // Set this flag to 'false' to disable @AddTrace annotation processing and
-                // automatic HTTP/S network request monitoring
-                // for a specific build variant at compile time.
-                instrumentationEnabled false
-            }
         }
         release {
             if (devMode()) {
