@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.beranda.di.HomeScope;
@@ -114,5 +115,11 @@ public class ShopModule {
                                                               @Named(GQLQueryNamedConstant.SHOP_INFO)
                                                                       String gqlQuery) {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @HomeScope
+    @Provides
+    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(){
+        return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
     }
 }

@@ -20,6 +20,7 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.data.repository.GraphqlRepositoryImpl;
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore;
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore;
@@ -188,49 +189,7 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository){
-        return new MultiRequestGraphqlUseCase(graphqlRepository);
-    }
-
-    @ProductAddScope
-    @Provides
-    GraphqlRepository provideGraphqlRepository(GraphqlCloudDataStore graphqlCloudDataStore, GraphqlCacheDataStore graphqlCacheDataStore){
-        return new GraphqlRepositoryImpl(graphqlCloudDataStore, graphqlCacheDataStore);
-    }
-
-    @ProductAddScope
-    @Provides
-    GraphqlCloudDataStore provideGraphqlCloudDataStore(GraphqlApiSuspend graphqlApiSuspend, GraphqlCacheManager graphqlCacheManager, FingerprintManager fingerprintManager){
-        return new GraphqlCloudDataStore(graphqlApiSuspend, graphqlCacheManager, fingerprintManager);
-    }
-
-    @ProductAddScope
-    @Provides
-    GraphqlCacheDataStore provideGraphqlCacheDataStore(GraphqlCacheManager graphqlCacheManager, FingerprintManager fingerprintManager){
-        return new GraphqlCacheDataStore(graphqlCacheManager, fingerprintManager);
-    }
-
-    @ProductAddScope
-    @Provides
-    GraphqlApiSuspend provideGraphApiSuspend(){
-        return (list, continuation) -> null;
-    }
-
-    @ProductAddScope
-    @Provides
-    GraphqlCacheManager provideGraphqlCacheManager(){
-        return new GraphqlCacheManager();
-    }
-
-    @ProductAddScope
-    @Provides
-    FingerprintManager provideFingerPrintManager(UserSession userSession){
-        return new FingerprintManager(userSession);
-    }
-
-    @ProductAddScope
-    @Provides
-    UserSession provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
-        return new UserSession(context);
+    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(){
+        return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
     }
 }
