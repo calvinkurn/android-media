@@ -32,7 +32,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
 
         private const val RETRY_COUNT = 3
-        private const val RETRY_DELAY = 5000L
+        private const val RETRY_DELAY = 1000L
 
         private const val VIDEO_MAX_SOUND = 100f
         private const val VIDEO_MIN_SOUND = 0f
@@ -86,8 +86,6 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                 }
             } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
-
-
     }
 
     var videoPlayer: SimpleExoPlayer by Delegates.observable(initVideoPlayer(null)) { _, _, _ ->
@@ -96,6 +94,11 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     //region public method
     fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, forceReset: Boolean = false) {
+        if (uri.toString().isEmpty()) {
+            releasePlayer()
+            return
+        }
+
         val prepareState = currentPrepareState
         val currentUri: Uri? = when (prepareState) {
             is TokopediaPlayPrepareState.Unprepared -> prepareState.previousUri
@@ -109,7 +112,14 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean = true, forceReset: Boolean = false) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay, forceReset)
+    fun safePlayVideoWithUriString(uriString: String?, autoPlay: Boolean = true, forceReset: Boolean = false) {
+        if (uriString.isNullOrEmpty()) {
+            releasePlayer()
+            return
+        }
+
+        safePlayVideoWithUri(Uri.parse(uriString), autoPlay, forceReset)
+    }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, shouldReset: Boolean) {
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
