@@ -11,6 +11,8 @@ public class AccountConstants {
     public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
+    public static final String ACCOUNT_TAB = "ACCOUNT_TAB";
+    public static final String ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER";
 
     public static class Navigation {
         public static final String SEE_ALL = "lihat_semua";
