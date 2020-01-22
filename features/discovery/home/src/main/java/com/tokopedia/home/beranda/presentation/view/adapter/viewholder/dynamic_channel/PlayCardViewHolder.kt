@@ -75,6 +75,29 @@ class PlayCardViewHolder(
 
     }
 
+    override fun bind(element: PlayCardViewModel, payloads: MutableList<Any>) {
+        element.getPlayCardHome()?.let { viewModel ->
+            this.playCardHome = viewModel //flag to preventing re-hit
+
+            bindCard(viewModel.playGetCardHome.data.card)
+            container.show()
+
+            //impression tracker
+            HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
+
+            itemView.setOnClickListener {
+                val appLink = viewModel.playGetCardHome.data.card.applink
+                with(view.context) {
+                    //event click tracker
+                    HomePageTracking.eventClickPlayBanner(this, element.getChannel())
+
+                    //start applink
+                    startActivity(RouteManager.getIntent(this, appLink))
+                }
+            }
+        }
+    }
+
     private fun createHelper() {
         if(!ExoUtil.isDeviceHasRequirementAutoPlay(itemView.context)) return
 

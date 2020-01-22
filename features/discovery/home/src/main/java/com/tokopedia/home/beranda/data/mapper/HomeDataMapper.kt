@@ -31,8 +31,8 @@ class HomeDataMapper(
         private val homeVisitableFactory: HomeVisitableFactory,
         private val trackingQueue: TrackingQueue
 ) {
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel?{
-        if (homeData == null) return null
+    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel{
+        if (homeData == null) return HomeViewModel(isCache = isCache)
         val list: MutableList<Visitable<*>> = mutableListOf()
         list.add(mappingBanner(homeVisitableFactory, homeData.banner, isCache))
         if (homeData.ticker != null && homeData.ticker.tickers != null && homeData.ticker.tickers.isNotEmpty()
@@ -102,7 +102,8 @@ class HomeDataMapper(
                         DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> list.add(mappingSpotlight(homeData.spotlight, isCache))
                         DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> if (!isCache) {
                             list.add(
-                                    BusinessUnitViewModel(context.getString(R.string.digital_widget_title), position)
+                                    BusinessUnitViewModel(context.getString(R.string.digital_widget_title),
+                                            position, false)
                             )
                         }
                         DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO -> {
@@ -220,13 +221,13 @@ class HomeDataMapper(
         visitable.title = channel.header.name
         visitable.items = items
         if (!isCache) {
-            visitable.trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
+            visitable.setTrackingDataForCombination(channel.convertPromoEnhanceDynamicChannelDataLayerForCombination())
             visitable.isTrackingCombined = true
         }
         return visitable
     }
 
-    private fun mappingTicker(tickers: ArrayList<Ticker.Tickers>): HomeVisitable<*>? {
+    private fun mappingTicker(tickers: ArrayList<Ticker.Tickers>): Visitable<*>? {
         val tmpTickers = ArrayList<Ticker.Tickers>()
         for (tmpTicker in tickers) {
             if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {
@@ -288,7 +289,7 @@ class HomeDataMapper(
         val viewModel = DynamicChannelViewModel()
         viewModel.channel = channel
         if (!isCache) {
-            viewModel.trackingData = trackingData
+            viewModel.setTrackingData(trackingData)
             viewModel.trackingDataForCombination = trackingDataForCombination
             viewModel.isTrackingCombined = isCombined
         }

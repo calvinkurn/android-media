@@ -7,6 +7,7 @@ import com.tokopedia.dynamicbanner.di.PlayCardModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home.beranda.data.datasource.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
@@ -32,7 +33,6 @@ import com.tokopedia.home.common.HomeAceApi
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -84,20 +84,26 @@ class HomeModule {
 
     @HomeScope
     @Provides
+    fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
+
+    @HomeScope
+    @Provides
     fun provideHomeDataSource(homeAceApi: HomeAceApi?): HomeDataSource {
         return HomeDataSource(homeAceApi)
     }
 
     @HomeScope
     @Provides
-    fun homeRepository(homeDataSource: HomeDataSource, homeDao: HomeDao, homeRemoteDataSource: HomeRemoteDataSource, playRemoteDataSource: PlayRemoteDataSource): HomeRepository {
-        return HomeRepositoryImpl(homeDataSource, homeDao, homeRemoteDataSource, playRemoteDataSource)
+    fun homeRepository(homeDataSource: HomeDataSource,
+                       homeRemoteDataSource: HomeRemoteDataSource,
+                       homeCachedDataSource: HomeCachedDataSource,
+                       playRemoteDataSource: PlayRemoteDataSource): HomeRepository {
+        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource, playRemoteDataSource)
     }
 
     @HomeScope
     @Provides
     fun homeUsecase(homeRepository: HomeRepository) = HomeUseCase(homeRepository)
-
 
     @Provides
     fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository?): SendGeolocationInfoUseCase {
@@ -192,10 +198,9 @@ class HomeModule {
     @HomeScope
     @Provides
     fun homePresenter(userSession: UserSessionInterface,
-                      getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                       @Named("Main") coroutineDispatcher: CoroutineDispatcher,
                       homeUseCase: HomeUseCase): HomePresenter {
-        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher, homeUseCase)
+        return HomePresenter(userSession, coroutineDispatcher, homeUseCase)
     }
 
     @Provides
