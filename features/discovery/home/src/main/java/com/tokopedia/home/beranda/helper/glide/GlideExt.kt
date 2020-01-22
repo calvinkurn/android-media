@@ -16,17 +16,20 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 
-val FPM_HOME_IMAGE_PREFIX = "fpm_home_image"
 val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
-val FPM_PRODUCT_ORGANIC_CHANNEL = "product_organic_channel"
+val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
+val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/200-square/"
 
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
     var performanceMonitoring : PerformanceMonitoring? = null
 
+    //FPM only allow max 100 chars, so the url needs to be truncated
+    val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
+
     if (!fpmItemLabel.isEmpty()) {
-        performanceMonitoring = PerformanceMonitoring.start(FPM_HOME_IMAGE_PREFIX + fpmItemLabel)
-        performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, url)
+        performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
+        performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
     }
 
     Glide.with(context)
