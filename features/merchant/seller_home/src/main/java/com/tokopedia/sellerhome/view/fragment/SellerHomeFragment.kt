@@ -24,7 +24,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_seller_home.view.*
+import kotlinx.android.synthetic.main.fragment_sah.view.*
 import javax.inject.Inject
 
 /**
@@ -55,7 +55,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel, SellerHomeAdapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_seller_home, container, false)
+        return inflater.inflate(R.layout.fragment_sah, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

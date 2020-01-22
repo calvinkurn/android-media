@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
-import kotlinx.android.synthetic.main.seller_home_card_widget.view.*
+import kotlinx.android.synthetic.main.sah_card_widget.view.*
 
 /**
  * Created By @ilhamsuaib on 2020-01-15
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.seller_home_card_widget.view.*
 class CardViewHolder(itemView: View?) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
 
     companion object {
-        val RES_LAYOUT = R.layout.seller_home_card_widget
+        val RES_LAYOUT = R.layout.sah_card_widget
     }
 
     override fun bind(element: CardWidgetUiModel) {
