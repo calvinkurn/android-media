@@ -108,6 +108,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, In
         val selectedList = ArrayList<InterestPickDataViewModel>()
         for (item in adapter.getList()) {
             if (item.isSelected) {
+                item.isClickable = false
                 selectedList.add(item)
             }
         }
