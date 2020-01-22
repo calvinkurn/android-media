@@ -65,7 +65,7 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
                 holder.bind(getItem(position), payloads);
             }
         } else {
-            super.onBindViewHolder(holder, position, payloads);
+            onBindViewHolder(holder, position);
         }
     }
 
