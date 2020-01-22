@@ -103,11 +103,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
     get() = _homeLiveData
     val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
 
-//    isContainsPlay = homeViewModelValue?.isContainsHomePlay() ?: -1
-//    if(isContainsPlay != -1) {
-//        getPlayBanner(isContainsPlay)
-//        homeViewModelValue?.removeHomePlay()
-//    }
 
     val trackingLiveData: LiveData<Event<List<Visitable<*>>>>
         get() = _trackingLiveData
@@ -530,31 +525,13 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     @InternalCoroutinesApi
-    override fun getPlayBanner(adapterPosition: Int){
+    private fun getPlayBanner(adapterPosition: Int){
         masterJob.cancelChildren()
         launchCatchError(coroutineDispatcher, block = {
             playCardHomeUseCase.execute().collect{
                 view?.setPlayContentBanner(it.first(), adapterPosition)
             }
         })
-    }
-
-    fun onPlayBannerSuccess(playCardHome: PlayCardHome) {
-        val currentData = _homeLiveData.value
-        val visitableMutableList: MutableList<Visitable<*>> = currentData?.list?.toMutableList()?: mutableListOf()
-
-        val findPlayCardModel = _homeLiveData.value?.list?.find { visitable ->
-            visitable is PlayCardViewModel
-        }
-        val indexOfPlayCardModel = visitableMutableList.indexOf(findPlayCardModel)
-
-        if (findPlayCardModel is PlayCardViewModel) {
-            findPlayCardModel.setPlayCardHome(playCardHome)
-            visitableMutableList[indexOfPlayCardModel] = findPlayCardModel
-            val newHomeViewModel = currentData?.copy(
-                    list = visitableMutableList)
-            _homeLiveData.setValue(newHomeViewModel)
-        }
     }
 
     private fun viewNeedToShowGeolocationComponent(): Boolean {
@@ -651,15 +628,17 @@ class HomePresenter(private val userSession: UserSessionInterface,
             }
         }
         return homeViewModel
-    @InternalCoroutinesApi
-    override fun getPlayBanner(adapterPosition: Int){
-        masterJob.cancelChildren()
-        launchCatchError(coroutineDispatcher, block = {
-            playCardHomeUseCase.execute().collect{
-                view?.setPlayContentBanner(it.first(), adapterPosition)
-            }
-        })
     }
+
+//    @InternalCoroutinesApi
+//    override fun getPlayBanner(adapterPosition: Int){
+//        masterJob.cancelChildren()
+//        launchCatchError(coroutineDispatcher, block = {
+//            playCardHomeUseCase.execute().collect{
+//                view?.setPlayContentBanner(it.first(), adapterPosition)
+//            }
+//        })
+//    }
 
     companion object {
         private const val CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED"
@@ -685,17 +664,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     homeData = evaluateAvailableComponent(homeData)
                     _homeLiveData.setValue(homeData)
                     getHeaderData()
-                    getPlayData()
                     getReviewData()
 
-                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf()))
+                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf<Visitable<*>>()))
                 } else {
                     _homeLiveData.setValue(homeData)
                     refreshHomeData()
                 }
             }
         }) {
-            Timber.tag(HomePresenter::class.java.name).e(it)
             _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))
         }
     }
@@ -746,15 +723,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
             }
         }
         return homeViewModel
-    }
-
-    private fun getPlayData() {
-        val detectPlayCardModel = _homeLiveData.value?.list?.find {
-            visitable -> visitable is PlayCardViewModel
-        }
-        detectPlayCardModel?.let {
-            getPlayBanner()
-        }
     }
 
     private fun evaluateRecommendationSection(homeViewModel: HomeViewModel?): HomeViewModel? {

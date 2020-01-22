@@ -16,8 +16,12 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
+
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.AsyncDifferConfig;
@@ -329,12 +333,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-//                onHandlingScrollVideoPlayer(newState);
-            }
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -689,7 +687,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build();
-        adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<Visitable>());
+        adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<HomeVisitable>());
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -1520,7 +1518,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition) {
-        adapter.setPlayData(playContentBanner, adapterPosition);
+//        adapter.setPlayData(playContentBanner, adapterPosition);
     }
 
     @Override

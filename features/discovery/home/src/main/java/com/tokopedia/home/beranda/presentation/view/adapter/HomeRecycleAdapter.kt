@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -21,11 +21,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
-import timber.log.Timber
 import java.util.*
 
-class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) : BaseAdapter<HomeAdapterFactory>(adapterTypeFactory, visitables), LifecycleObserver{
+class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
+        HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables), LifecycleObserver{
 
    companion object{
        //without ticker
@@ -42,34 +41,14 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     private var mLayoutManager: LinearLayoutManager? = null
    private val retryModel: RetryModel = RetryModel()
 
-    init{
-        Timber.plant(Timber.DebugTree())
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return adapterTypeFactory.createViewHolder(view, viewType)
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
-        holder.bind(visitables[position])
-        //check if visitable is homerecommendation, we will set newData = false after bind
-        //because newData = true will force viewholder to recreate tab and viewpager
-        if (visitables[position] is HomeRecommendationFeedViewModel) {
-            (visitables[position] as HomeRecommendationFeedViewModel).isNewData = false
-        }
-    }
-
-    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int, payloads: List<Any>) {
-        if (payloads.isNotEmpty()) holder.bind(visitables[position], payloads) else super.onBindViewHolder(holder, position, payloads)
-    }
-
     override fun getItemViewType(position: Int): Int {
-        return visitables[position].type(adapterTypeFactory)
-    }
-
-    override fun getItemCount(): Int {
-        return visitables.size
+        return (getItem(position) as Visitable<HomeAdapterFactory>).type(adapterTypeFactory)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -100,14 +79,6 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                 }
             }
         })
-    }
-
-    fun getItem(pos: Int): Visitable<*>? {
-        return visitables[pos]
-    }
-
-    fun getItems(): List<Visitable<*>?> {
-        return visitables
     }
 
     fun clearItems() {
