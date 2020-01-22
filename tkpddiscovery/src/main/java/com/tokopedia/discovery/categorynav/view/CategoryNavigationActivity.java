@@ -4,21 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.applink.DiscoveryAppLink;
 
 
 public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
@@ -38,7 +38,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     ProgressBar progressBar;
 
-    @DeepLink(DiscoveryAppLink.CATEGORY)
+    @DeepLink(ApplinkConst.Discovery.CATEGORY)
     public static Intent getAppLinkIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, CategoryNavigationActivity.class);
         intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, bundle.getString(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID));
