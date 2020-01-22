@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.shake.landing.presenter;
+package com.tokopedia.campaign.shake.landing.view.presenter;
 
 import android.app.Activity;
 import android.content.Intent;

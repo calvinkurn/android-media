@@ -8,11 +8,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.campaign.shake.landing.R;
+import com.tokopedia.campaign.shake.landing.data.entity.CampaignGqlResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.data.entity.CampaignGqlResponse;
 
 import rx.Subscriber;
 

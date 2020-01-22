@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.shake.landing.entity;
+package com.tokopedia.campaign.shake.landing.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 

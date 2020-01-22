@@ -1,38 +1,36 @@
-package com.tokopedia.campaign.shake.landing.presenter;
+package com.tokopedia.campaign.shake.landing.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Vibrator;
 
 import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.campaign.shake.landing.R;
+import com.tokopedia.campaign.shake.landing.analytics.CampaignTracking;
+import com.tokopedia.campaign.shake.landing.data.entity.CampaignGqlResponse;
+import com.tokopedia.campaign.shake.landing.data.entity.CampaignResponseEntity;
+import com.tokopedia.campaign.shake.landing.data.entity.ValidCampaignPojo;
+import com.tokopedia.campaign.shake.landing.data.model.CampaignException;
+import com.tokopedia.campaign.shake.landing.domain.GetCampaignUseCase;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shakedetect.ShakeDetectManager;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
-import com.tokopedia.tkpd.campaign.data.entity.CampaignGqlResponse;
-import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
-import com.tokopedia.tkpd.campaign.data.entity.ValidCampaignPojo;
-import com.tokopedia.tkpd.campaign.data.model.CampaignException;
-import com.tokopedia.tkpd.campaign.domain.shake.GetCampaignUseCase;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -48,8 +46,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.tkpd.ConsumerMainApplication.ACTION_SHAKE_SHAKE_SYNCED;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -68,13 +64,20 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
     Subscription subscription = null;
     private PermissionCheckerHelper permissionCheckerHelper;
+    private UserSessionInterface userSession;
 
     @Inject
     public ShakeDetectPresenter(GetCampaignUseCase getCampaignUseCase,
                                 @ApplicationContext Context context) {
         this.getCampaignUseCase = getCampaignUseCase;
         this.context = context;
+
+        initUserSession();
         initRemoteConfig();
+    }
+
+    private void initUserSession() {
+        userSession = new UserSession(context);
     }
 
     private void initRemoteConfig() {
@@ -297,8 +300,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public void onDisableShakeShake() {
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
-        if (SessionHandler.isV4Login(getView().getCurrentActivity())) {
-            getView().getCurrentActivity().startActivity(GeneralSettingActivity.createIntent(getView().getCurrentActivity()));
+        if (userSession.isLoggedIn()) {
+            RouteManager.route(context, ApplinkConstInternalGlobal.ADVANCED_SETTING);
             getView().finish();
         } else {
             getView().makeInvisibleShakeShakeDisableView();

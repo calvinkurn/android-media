@@ -1,13 +1,10 @@
-package com.tokopedia.campaign.shake.landing.scope;
+package com.tokopedia.campaign.shake.landing.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Scope;
 
-/**
- * Created by alvarisi on 7/25/17.
- */
 @Scope
 @Retention(RetentionPolicy.CLASS)
 public @interface CampaignModuleScope {

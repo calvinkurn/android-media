@@ -3,27 +3,33 @@ package com.tokopedia.campaign.shake.landing.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.campaign.shake.landing.R;
+import com.tokopedia.campaign.shake.landing.di.CampaignComponent;
+import com.tokopedia.campaign.shake.landing.di.DaggerCampaignComponent;
+import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectContract;
+import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectPresenter;
+import com.tokopedia.campaign.shake.landing.widget.TkpdProgressDialog;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.di.CampaignComponent;
-import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
-import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectContract;
-import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectPresenter;
 
 import androidx.annotation.NonNull;
 import android.os.Build;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -214,7 +220,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                startActivity(((TkpdCoreRouter)(getApplication())).getLoginIntent(getCurrentActivity()));
+                                RouteManager.route(ShakeDetectCampaignActivity.this, ApplinkConst.LOGIN);
                                 finish();
                             }
                         })

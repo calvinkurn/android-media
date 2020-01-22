@@ -1,14 +1,10 @@
 package com.tokopedia.campaign.shake.landing.analytics;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-
-import static com.tokopedia.core.analytics.AppEventTracking.Event.USER_INTERACTION_HOMEPAGE;
-
 /**
  * Created by sandeepgoyal on 03/01/18.
  */
 
-public class CampaignAppEventTracking implements AppEventTracking {
+public class CampaignAppEventTracking {
     interface Event {
         String GenericCampaignEvent = "campaignEvent";
 

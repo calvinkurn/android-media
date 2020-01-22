@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.shake.landing.model;
+package com.tokopedia.campaign.shake.landing.data.model;
 
 import java.io.IOException;
 

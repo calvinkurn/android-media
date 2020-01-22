@@ -1,21 +1,19 @@
 package com.tokopedia.campaign.shake.landing.analytics;
 
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by sandeepgoyal on 03/01/18.
  */
 
-public class CampaignTracking extends UnifyTracking {
+public class CampaignTracking {
 
     public static void eventShakeShake(String status,String screenName,String campaignId,String url) {
-        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 CampaignAppEventTracking.Event.GenericCampaignEvent,
                 CampaignAppEventTracking.Category.EventTriggerBasedCampaign,
                 String.format(CampaignAppEventTracking.Action.EventShakeDevice,screenName,status),
                 String.format(CampaignAppEventTracking.Label.LabelShake, campaignId,url)
-        ).getEvent());
+        );
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.campaign.shake.landing.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.tkpd.campaign.di.scope.CampaignModuleScope;
+import com.tokopedia.campaign.shake.landing.di.scope.CampaignModuleScope;
 import com.tokopedia.campaign.shake.landing.view.activity.ShakeDetectCampaignActivity;
 
 import dagger.Component;
