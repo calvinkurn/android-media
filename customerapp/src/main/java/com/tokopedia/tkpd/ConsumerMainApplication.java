@@ -140,9 +140,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @NotNull
     private Boolean executePreCreateSequence(){
-        UIBlockDebugger.init(this);
-        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
-        PersistentCacheManager.init(this);
+        UIBlockDebugger.init(ConsumerMainApplication.this);
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
+        PersistentCacheManager.init(ConsumerMainApplication.this);
         return true;
     }
 
