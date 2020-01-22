@@ -48,6 +48,8 @@
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
     <string name="path_shop_setting_shipping" translatable="false">/shop-setting-shipping</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
+    <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
+    <string name="path_shop_new_info" translatable="false">/shop-new-info</string>
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
     <string name="path_geolocation" translatable="false">/geolocation</string>
