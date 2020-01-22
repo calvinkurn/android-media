@@ -3,8 +3,14 @@ package ai.advance.liveness.lib
 
 import ai.advance.common.utils.LogUtil
 
-object LivenessJNI {
-
+/**
+ * Register the class of the jni method
+ * In order to increase security, the JNI method has obfuscated the name, and the original intention of the method is on the annotation.
+ */
+internal object LivenessJNI {
+    /**
+     * true means so load failed by some reason
+     */
     private var libraryEnable: Boolean = false
 
     init {
@@ -61,6 +67,12 @@ object LivenessJNI {
         } else 0
     }
 
+    /**
+     * nativeInit
+     * init model
+     *
+     * @param modelPath model path
+     */
     private external fun Oo0Oo(modelPath: String): Long
 
     fun nativeRelease(detectorHandle: Long) {

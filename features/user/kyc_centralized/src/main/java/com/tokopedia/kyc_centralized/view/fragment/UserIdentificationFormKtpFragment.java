@@ -58,6 +58,9 @@ public class UserIdentificationFormKtpFragment extends
 
     @Override
     protected void setContentView() {
+        int paddingDp = 16;
+        float scale = getResources().getDisplayMetrics().density;
+        onboardingImage.setPadding(0, (int) (paddingDp * scale + 0.5F), 0, 0);
         title.setText(R.string.ktp_title);
         subtitle.setText(MethodChecker.fromHtml(getString(R.string.ktp_subtitle)));
         subtitle.setGravity(Gravity.LEFT);

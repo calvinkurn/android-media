@@ -10,6 +10,7 @@ import java.io.InputStream
 
 object ModelUtils {
 
+    @JvmStatic
     val MODEL_PATH = GuardianLivenessDetectionSDK.applicationContext.applicationContext.filesDir
             .absolutePath + "/model"
 
@@ -59,8 +60,8 @@ object ModelUtils {
             try {
                 `in` = GuardianLivenessDetectionSDK.applicationContext.assets.open("model/$assetsName")
                 out = FileOutputStream(file)
-                var length = -1
                 val buf = ByteArray(1024)
+                var length = `in`.read(buf)
                 while (length != -1) {
                     out.write(buf, 0, length)
                     length = `in`.read(buf)

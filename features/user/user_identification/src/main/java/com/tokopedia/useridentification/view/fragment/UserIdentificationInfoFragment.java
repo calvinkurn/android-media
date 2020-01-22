@@ -218,7 +218,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         ImageHandler.LoadImage(image, KycUrl.ICON_NOT_VERIFIED);
         title.setText(R.string.kyc_intro_title);
         text.setText(R.string.kyc_intro_text);
-
         button.setEnabled(true);
         button.setText(R.string.kyc_intro_button);
         button.setVisibility(View.VISIBLE);
@@ -240,13 +239,13 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void showStatusPending() {
         ImageHandler.LoadImage(image, KycUrl.ICON_WAITING);
-        button.setVisibility(View.GONE);
+//        button.setVisibility(View.GONE);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
         button.setText(R.string.kyc_pending_button);
         button.setButtonVariant(UnifyButton.Variant.GHOST);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(v -> getActivity().onBackPressed());
+        button.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING));
         analytics.eventViewPendingPage();
     }
 
@@ -266,7 +265,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         text.setText(R.string.kyc_blacklist_text);
         button.setText(R.string.kyc_blacklist_button);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(v -> getActivity().onBackPressed());
+        button.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_BLACKLISTED));
     }
 
     @Override
@@ -305,6 +304,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             case KYCConstant.STATUS_NOT_VERIFIED:
                 analytics.eventClickOnBackOnBoarding();
                 break;
+            case KYCConstant.STATUS_BLACKLISTED:
+                analytics.eventClickBackBlacklistPage();
             default:
                 break;
         }
@@ -323,6 +324,20 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
                     break;
             }
             goToFormActivity();
+        };
+    }
+
+    private View.OnClickListener onGoToAccountSettingButton(int status){
+        return v -> {
+            switch (status) {
+                case KYCConstant.STATUS_PENDING:
+                    analytics.eventClickOnButtonPendingPage();
+                    break;
+                case KYCConstant.STATUS_BLACKLISTED:
+                    analytics.eventClickOnButtonBlacklistPage();
+                    break;
+            }
+            getActivity().finish();
         };
     }
 

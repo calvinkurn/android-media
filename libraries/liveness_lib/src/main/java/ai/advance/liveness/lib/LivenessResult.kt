@@ -6,11 +6,23 @@ import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.util.Base64
 
+/**
+ * createTime:2019/2/1 10:08 AM
+ *
+ * @author fan.zhang@advance.ai
+ */
 object LivenessResult {
-
+    /**
+     * get Base64 format picture
+     *
+     * @return base64 string
+     */
     var livenessBase64Str: String? = null
-    private var mEntity: BaseResultEntity? = null
 
+    private var mEntity: BaseResultEntity? = null
+    /**
+     * error code
+     */
     var errorCode: String? = null
         get() {
             if (isSuccess) {
@@ -25,16 +37,27 @@ object LivenessResult {
                 ErrorCode.UNDEFINED.toString()
             }
         }
-
+    /**
+     * failed detection type
+     */
     var errorDetectionType: Detector.DetectionType? = null
 
-    private val isSuccess: Boolean
+    /**
+     * whether success
+     */
+    val isSuccess: Boolean
         get() = if (mEntity == null) {
             false
         } else {
-            mEntity?.success == true
+            mEntity?.success?: false
         }
 
+    /**
+     * get error message
+     */
+    /**
+     * set error message
+     */
     var errorMsg: String?
         get() = if (mEntity == null) {
             null
@@ -45,39 +68,43 @@ object LivenessResult {
             if (mEntity == null) {
                 mEntity = BaseResultEntity()
             }
-            if (mEntity?.success != true) {
+            if (mEntity?.success == false) {
                 mEntity?.message = errorMsg
             }
         }
 
+    /**
+     * get liveness bitmap(only success)
+     *
+     * @return bitmap
+     */
     //convert base64 string to bitmap
     val livenessBitmap: Bitmap?
         get() {
-            return if (livenessBase64Str != null) {
+            if (livenessBase64Str != null) {
                 val decode = Base64.decode(livenessBase64Str, Base64.NO_WRAP)
-                BitmapFactory.decodeByteArray(decode, 0, decode.size)
+                return BitmapFactory.decodeByteArray(decode, 0, decode.size)
             } else {
-                null
+                return null
             }
         }
 
-    fun setErrorCode(errorCode: ErrorCode) {
+    internal fun setErrorCode(errorCode: ErrorCode) {
         this.errorCode = errorCode.name
     }
 
-    fun setErrorCode(failedType: Detector.DetectionFailedType?) {
+    internal fun setErrorCode(failedType: Detector.DetectionFailedType?) {
         if (failedType != null) {
             when (failedType) {
-                Detector.DetectionFailedType.TIMEOUT -> setErrorCode(ErrorCode.ACTION_TIMEOUT)
-                Detector.DetectionFailedType.MUCHMOTION -> setErrorCode(ErrorCode.MUCH_MOTION)
-                Detector.DetectionFailedType.FACEMISSING -> setErrorCode(ErrorCode.FACE_MISSING)
-                Detector.DetectionFailedType.MULTIPLEFACE -> setErrorCode(ErrorCode.MULTIPLE_FACE)
-                else -> {}
+                Detector.DetectionFailedType.TIMEOUT -> LivenessResult.setErrorCode(ErrorCode.ACTION_TIMEOUT)
+                Detector.DetectionFailedType.MUCHMOTION -> LivenessResult.setErrorCode(ErrorCode.MUCH_MOTION)
+                Detector.DetectionFailedType.FACEMISSING -> LivenessResult.setErrorCode(ErrorCode.FACE_MISSING)
+                Detector.DetectionFailedType.MULTIPLEFACE -> LivenessResult.setErrorCode(ErrorCode.MULTIPLE_FACE)
             }
         }
     }
 
-    fun setLivenessResult(base64Bitmap: String, entity: BaseResultEntity) {
+    internal fun setLivenessResult(base64Bitmap: String, entity: BaseResultEntity) {
         livenessBase64Str = base64Bitmap
         mEntity = entity
     }

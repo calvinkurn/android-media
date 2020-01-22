@@ -5,8 +5,17 @@ import android.app.Activity
 import android.hardware.Camera
 import android.view.Surface
 
-object CameraUtils {
-
+/**
+ * createTime:2019-11-07
+ *
+ * @author fan.zhang@advance.ai
+ */
+internal object CameraUtils {
+    /**
+     * get camera info
+     *
+     * @return null when camera is disable
+     */
     fun getTargetCameraInfo(fromWay: String): Camera.CameraInfo? {
         val cameraId = if (GuardianLivenessDetectionSDK.isEmulator) Camera.CameraInfo.CAMERA_FACING_BACK else Camera.CameraInfo.CAMERA_FACING_FRONT
         try {
@@ -20,6 +29,9 @@ object CameraUtils {
         return null
     }
 
+    /**
+     * Obtain camera rotation Angle
+     */
     fun getCameraAngle(activity: Activity): Int {
         var rotateAngle: Int
         val info = getTargetCameraInfo("getCameraAngle")

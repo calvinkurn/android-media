@@ -41,7 +41,7 @@ class LivenessView constructor(context: Context, attrs: AttributeSet? = null) : 
 
     private var mDetectionSteps: ArrayList<Detector.DetectionType>? = null
 
-    private val isVertical: Boolean
+    val isVertical: Boolean
         get() = true
 
     private var mLatestWarnCode: Detector.WarnCode? = null

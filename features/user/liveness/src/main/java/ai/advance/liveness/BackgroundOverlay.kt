@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 
 class BackgroundOverlay : View {
@@ -29,18 +30,22 @@ class BackgroundOverlay : View {
     }
 
     private fun initPaints() {
+
+        val strokeWidthDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, CONST_STROKE_WIDTH, resources.displayMetrics)
+        val borderStrokeWidthDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, CONST_BORDER_STROKE_WIDTH, resources.displayMetrics)
+
         mTransparentPaint = Paint()
         mTransparentPaint?.color = Color.TRANSPARENT
-        mTransparentPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mTransparentPaint?.strokeWidth = strokeWidthDp
 
         mSemiBlackPaint = Paint()
         mSemiBlackPaint?.color = Color.TRANSPARENT
-        mSemiBlackPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
+        mSemiBlackPaint?.strokeWidth = strokeWidthDp
 
         mStatusPaint = Paint()
         mStatusPaint?.style = Paint.Style.STROKE
         mStatusPaint?.color = Color.WHITE
-        mStatusPaint?.strokeWidth = CONST_BORDER_STROKE_WIDTH.toFloat()
+        mStatusPaint?.strokeWidth = borderStrokeWidthDp
     }
 
     fun changeColor() {
@@ -102,7 +107,7 @@ class BackgroundOverlay : View {
 
     companion object {
 
-        private const val CONST_STROKE_WIDTH = 10
-        private const val CONST_BORDER_STROKE_WIDTH = 150
+        private const val CONST_STROKE_WIDTH = 1F
+        private const val CONST_BORDER_STROKE_WIDTH = 10F
     }
 }
