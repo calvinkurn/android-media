@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
+import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -42,6 +43,9 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private val viewModel by lazy { viewModelProvider.get(AddPhoneViewModel::class.java) }
 
+    private val phoneNumberTracker = AddPhoneNumberTracker()
+    private var isOnclickEventTriggered = false
+
     override fun getScreenName(): String {
         return ""
     }
@@ -52,8 +56,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_add_phone, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_add_phone, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,7 +67,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun setListener() {
-        etPhone.addTextChangedListener(object : TextWatcher {
+        etPhone?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -80,12 +83,22 @@ class AddPhoneFragment : BaseDaggerFragment() {
             }
         })
 
-        buttonSubmit.setOnClickListener {
-            val phone = etPhone.text.toString()
+        etPhone?.setOnFocusChangeListener { view, hasFocus ->
+            if(hasFocus && !isOnclickEventTriggered) {
+                isOnclickEventTriggered = true
+
+                phoneNumberTracker.clickOnInputPhoneNumber()
+            }
+        }
+
+        buttonSubmit?.setOnClickListener {
+            val phone = etPhone?.text.toString()
             if (phone.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
+                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
             } else if (!isValidPhone(phone)) {
                 setErrorText(getString(R.string.wrong_phone_format))
+                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
             } else {
                 context?.let {
                     showLoading()
@@ -96,7 +109,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity() {
-        val phone = etPhone.text.toString().trim()
+        val phone = etPhone?.text.toString().trim()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
@@ -113,16 +126,16 @@ class AddPhoneFragment : BaseDaggerFragment() {
         if (TextUtils.isEmpty(s)) {
             tvMessage.visibility = View.VISIBLE
             tvError.visibility = View.GONE
-            buttonSubmit.isEnabled = true
-            buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY
+            buttonSubmit?.isEnabled = true
+            buttonSubmit?.buttonCompatType = ButtonCompat.PRIMARY
             wrapperPhone.setErrorEnabled(true)
         } else {
             wrapperPhone.setErrorEnabled(false)
             tvError.visibility = View.VISIBLE
             tvError.text = s
             tvMessage.visibility = View.GONE
-            buttonSubmit.isEnabled = false
-            buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
+            buttonSubmit?.isEnabled = false
+            buttonSubmit?.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
         }
     }
 
@@ -167,6 +180,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
         view?.let {
+            phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable))
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
@@ -174,6 +188,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     private fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
         storeLocalSession(result.phoneNumber)
+        phoneNumberTracker.clickOnButtonNext(false, result.addPhonePojo.data.errorMessage)
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
@@ -191,18 +206,18 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        mainView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        mainView?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        mainView?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
         context?.let {
-            val phone = etPhone.text.toString()
+            val phone = etPhone?.text.toString()
             viewModel.mutateAddPhone(it, phone.trim(), "")
         }
     }
@@ -210,8 +225,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_COTP_PHONE_VERIFICATION
-                && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
             onSuccessVerifyPhone(data)
         } else {
             dismissLoading()
