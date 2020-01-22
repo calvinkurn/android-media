@@ -39,7 +39,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked() }
         view.shop_page_main_profile_location.text = shopInfo.location
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
-        ImageHandler.loadImage(view.context, view.shop_page_main_profile_background, shopInfo.shopAssets.cover, R.drawable.ic_loading_image)
+        ImageHandler.loadImage(view.context, view.shop_page_main_profile_background, shopInfo.shopAssets.cover, -1)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
                 listener.onShopCoverClicked(

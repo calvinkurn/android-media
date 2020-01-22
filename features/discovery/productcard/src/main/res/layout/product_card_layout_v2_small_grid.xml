@@ -62,6 +62,20 @@
             tools:visibility="visible"
             tools:text="Promo Label" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/labelEmptyStock"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:visibility="gone"
+            android:text="@string/product_card_module_text_sold_out"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            app:layout_constraintBottom_toTopOf="@id/labelPromo"
+            tools:visibility="visible"
+            tools:text="Stock habis" />
+
         <ImageView
             android:id="@+id/imageShop"
             android:layout_width="@dimen/dp_32"
@@ -321,6 +335,36 @@
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
             tools:visibility="visible"
             tools:text="Offers Label" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_pre_order"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            android:text="@string/product_card_module_text_pre_order"
+            app:labelType="general_light_grey"
+            app:layout_constraintTop_toBottomOf="@id/labelOffers"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            tools:visibility="visible"
+            tools:text="PO" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_wholesale"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            android:text="@string/product_card_module_text_wholesale"
+            app:labelType="general_light_grey"
+            app:layout_constraintTop_toBottomOf="@id/labelOffers"
+            app:layout_constraintLeft_toRightOf="@id/label_pre_order"
+            tools:visibility="visible"
+            tools:text="Grosir" />
 
         <ImageView
             android:id="@+id/imageTopAds"
