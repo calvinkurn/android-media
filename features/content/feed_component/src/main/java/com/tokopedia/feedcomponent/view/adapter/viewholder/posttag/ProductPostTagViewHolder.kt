@@ -36,7 +36,9 @@ import kotlin.math.roundToInt
  * @author by yoasfs on 2019-07-18
  */
 
-class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostViewHolder.DynamicPostListener)
+class ProductPostTagViewHolder(val mainView: View,
+                               val listener: DynamicPostViewHolder.DynamicPostListener,
+                               val screenWidth: Int)
     : AbstractViewHolder<ProductPostTagViewModel>(mainView) {
 
     private lateinit var productLayout: FrameLayout
@@ -102,7 +104,8 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         }
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)
-            container.viewTreeObserver.addOnGlobalLayoutListener(getGlobalLayoutListener())
+//            container.viewTreeObserver.addOnGlobalLayoutListener(getGlobalLayoutListener())
+            container.layoutParams.width = screenWidth * 2/3
         }
 
         if (item.tags.isNotEmpty()) {
