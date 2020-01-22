@@ -18,11 +18,12 @@ data class ProductCardModel (
         val labelCredibility: Label = Label(),
         val labelOffers: Label = Label(),
         val freeOngkir: FreeOngkir = FreeOngkir(),
-        val isTopAds: Boolean = false,
-        val isProductSoldOut: Boolean = false,
-        val isProductPreOrder: Boolean = false,
-        val isProductWholesale: Boolean = false
+        val isTopAds: Boolean = false
 ) {
+    var isProductSoldOut: Boolean = false
+    var isProductPreOrder: Boolean = false
+    var isProductWholesale: Boolean = false
+
     data class Label(
             val title: String = "",
             val type: String = ""
