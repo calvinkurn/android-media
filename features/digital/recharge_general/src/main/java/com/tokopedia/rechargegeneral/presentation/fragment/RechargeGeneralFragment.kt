@@ -160,6 +160,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 selectedProduct = RechargeGeneralProductSelectData(it.productId.toString(), it.title, it.description)
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
                 renderInitialData(operatorClusters.data)
+                // Enquire & navigate to checkout
+                enquire()
             }
         })
     }
@@ -213,10 +215,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_CART_DIGITAL) {
             // Render enquiry data
-            enquiryData?.let{
-                // Skip enquiry bottomsheet & navigate to checkout page; temporary until express checkout is implemented
+            // Skip enquiry bottomsheet & navigate to checkout page; temporary until express checkout is implemented
+//            enquiryData?.let{
 //                renderCheckoutView(it)
-            }
+//            }
         }
     }
 
@@ -750,12 +752,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-        if (::checkoutBottomSheet.isInitialized) checkoutBottomSheet.dismiss()
-        rechargeGeneralAnalytics.eventClickBuy(categoryId, operatorId, false, data)
-        processCheckout()
+        processCheckout(data)
     }
 
-    private fun processCheckout() {
+    private fun processCheckout(data: TopupBillsEnquiry) {
+        if (::checkoutBottomSheet.isInitialized) checkoutBottomSheet.dismiss()
+        rechargeGeneralAnalytics.eventClickBuy(categoryId, operatorId, false, data)
+
         // Setup checkout pass data
         if (validateEnquiry()) {
             selectedProduct?.run {
