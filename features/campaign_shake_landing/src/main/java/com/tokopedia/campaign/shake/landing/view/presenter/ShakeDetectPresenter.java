@@ -324,7 +324,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
         if (userSession.isLoggedIn()) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.ADVANCED_SETTING);
+            RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING);
             getView().finish();
         } else {
             getView().makeInvisibleShakeShakeDisableView();
