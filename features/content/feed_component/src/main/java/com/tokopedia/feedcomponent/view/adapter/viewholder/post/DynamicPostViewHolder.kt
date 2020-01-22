@@ -106,7 +106,7 @@ open class DynamicPostViewHolder(v: View,
         bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
-        bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
+//        bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
         bindTracking(element.impressHolder, element.tracking)
     }
