@@ -211,6 +211,10 @@ internal class HandleViewVisibilityChangedTest: Spek({
 
                 hasNextPage shouldBe true
             }
+
+            Then("assert get dynamic filter API called once") {
+                getDynamicFilterUseCase.isExecuted()
+            }
         }
 
         Scenario("Search Shop First Page Successful Without Next Page") {
@@ -381,6 +385,7 @@ internal class HandleViewVisibilityChangedTest: Spek({
         Scenario("Search Shop First Page Error") {
             val exception = TestException()
             val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -411,58 +416,6 @@ internal class HandleViewVisibilityChangedTest: Spek({
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
                 hasNextPage shouldBe false
-            }
-        }
-    }
-
-    Feature("Get Dynamic Filter After Search Shop First Page Successful") {
-        createTestInstance()
-
-        Scenario("Search Shop First Page Successful") {
-            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
-            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
-
-            lateinit var searchShopViewModel: SearchShopViewModel
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            Given("search shop API will be successful and return search shop data") {
-                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
-                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
-            }
-
-            When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-            }
-
-            Then("assert get dynamic filter API called once") {
-                getDynamicFilterUseCase.isExecuted()
-            }
-        }
-
-        Scenario("Search Shop First Page Error") {
-            val exception = TestException()
-            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
-            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
-
-            lateinit var searchShopViewModel: SearchShopViewModel
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            Given("search shop API will be successful and return search shop data") {
-                searchShopFirstPageUseCase.stubExecute().throws(exception)
-            }
-
-            When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-            }
-
-            Then("assert exception print stack trace is called") {
-                exception.isStackTracePrinted shouldBe true
             }
 
             Then("assert get dynamic filter API never called") {

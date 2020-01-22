@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
@@ -381,7 +382,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
                     ?: TravelCollectiveBannerModel.Banner(), position)
-            RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")
+            if (RouteManager.isSupportApplink(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")
+            else if (!getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "").isEmpty()) RouteManager.route(context, getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl ?: ""))
+            else if ((promoDataList.getOrNull(position)?.attribute?.webUrl ?: "").isNotEmpty()) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.webUrl)
         }
 
         renderBannerView(promoDataList)
