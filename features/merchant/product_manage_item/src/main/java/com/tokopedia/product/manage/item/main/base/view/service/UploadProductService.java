@@ -43,6 +43,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -196,14 +197,14 @@ public class UploadProductService extends BaseService implements AddProductServi
                         userSession.getUserId(),
                         userSession.getEmail(),
                         getExceptionMessage(t),
-                        gson.toJson(productViewModel));
+                        URLEncoder.encode(gson.toJson(productViewModel), "UTF-8"));
                 AddProductException exception = new AddProductException(errorMessage, t);
                 Crashlytics.logException(exception);
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage);
             }
-        } catch (IllegalStateException ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
