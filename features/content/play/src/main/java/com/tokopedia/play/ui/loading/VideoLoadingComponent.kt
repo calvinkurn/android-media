@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.loading
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -14,13 +15,14 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 09/12/19
  */
-class VideoLoadingComponent(
+open class VideoLoadingComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         uiView.hide()
@@ -43,7 +45,7 @@ class VideoLoadingComponent(
         return emptyFlow()
     }
 
-    private fun initView(container: ViewGroup) =
+    protected open fun initView(container: ViewGroup) =
             VideoLoadingView(container)
 
     private fun handleVideoStateChanged(state: TokopediaPlayVideoState) {

@@ -44,6 +44,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
 
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
 }
 
 project.ext {
