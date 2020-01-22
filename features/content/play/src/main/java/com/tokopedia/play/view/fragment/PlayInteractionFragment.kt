@@ -492,7 +492,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
+                            PlayButtonInteractionEvent.PlayClicked -> {
+                                PlayAnalytics.clickPlayVideo(channelId)
+                                playViewModel.startCurrentVideo()
+                            }
                         }
                     }
         }
@@ -862,7 +865,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
-        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), playViewModel.isLive)
+        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), action.value, playViewModel.isLive)
         viewModel.doFollow(partnerId, action)
 
         sendEventFollowPartner(action == PartnerFollowAction.Follow)

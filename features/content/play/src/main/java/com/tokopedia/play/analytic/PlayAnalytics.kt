@@ -45,11 +45,11 @@ object PlayAnalytics {
         )
     }
 
-    fun clickFollowShop(channelId: String, shopId: String, isLive: Boolean) {
+    fun clickFollowShop(channelId: String, shopId: String, action: String, isLive: Boolean) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK follow shop",
+                "$KEY_TRACK_CLICK $action shop",
                 "$channelId - $shopId - ${getLiveOrVod(isLive)}"
         )
     }
@@ -115,6 +115,15 @@ object PlayAnalytics {
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK watch mode option",
                 "$channelId - ${getLiveOrVod(isLive)}"
+        )
+    }
+
+    fun clickPlayVideo(channelId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK on play button video",
+                channelId
         )
     }
 }

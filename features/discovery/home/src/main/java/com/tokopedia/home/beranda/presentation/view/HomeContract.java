@@ -8,7 +8,6 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.PlayChannel;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
@@ -18,8 +17,6 @@ import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -38,25 +35,13 @@ public interface HomeContract {
 
         void onSuccessDismissReview();
 
-        void onSuccessGetReviewData(SuggestedProductReview suggestedProductReview);
-
-        void onErrorGetReviewData();
-
         boolean isLoading();
 
         void showLoading();
 
         void hideLoading();
 
-        void setItems(List<Visitable> items, int repositoryFlag);
-
         void setHint(SearchPlaceholder searchPlaceholder);
-
-        void updateHeaderItem(HeaderViewModel headerViewModel);
-
-        void showNetworkError(String message);
-
-        void showNetworkError();
 
         void removeNetworkError();
 
@@ -66,29 +51,13 @@ public interface HomeContract {
 
         void openWebViewURL(String url, Context context);
 
-        void openWebViewURL(String url);
-
         Activity getActivity();
-
-        void updateListOnResume(List<Visitable> visitables);
 
         void addImpressionToTrackingQueue(List<Visitable> visitables);
 
         void configureHomeFlag(HomeFlag homeFlag);
 
-        Observable<TokopointHomeDrawerData> getTokopoint();
-
-        void startShopInfo(String shopId);
-
-        void startDeeplinkShopInfo(String url);
-
         void showPopupIntroOvo(String applinkActivation);
-
-        void onTabFeedLoadError(Throwable e);
-
-        void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList);
-
-        void onHomeDataLoadSuccess();
 
         void detectAndSendLocation();
 
@@ -97,6 +66,8 @@ public interface HomeContract {
         void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail);
 
         void hideStickyLogin();
+
+        boolean needToShowGeolocationComponent();
 
         void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition);
 
@@ -109,21 +80,15 @@ public interface HomeContract {
 
         void getSuggestedReview();
 
-        void getHomeData();
+        void refreshHomeData();
 
-        void updateHomeData();
-
-        void getHeaderData(boolean initialStart);
+        void getHeaderData();
 
         void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletActionData);
 
         void showPopUpIntroWalletOvo(String applinkActivation);
 
         void updateHeaderTokoCashPendingData(CashBackData cashBackData);
-
-        void getShopInfo(String url, String shopDomain);
-
-        void openProductPageIfValid(String url, String shopDomain);
 
         void onHeaderTokocashError();
 
@@ -149,6 +114,12 @@ public interface HomeContract {
 
         void getStickyContent();
 
-        void getPlayBanner(int adapterPosition);
+        void onCloseGeolocation();
+
+        void onCloseTicker();
+
+        int getRecommendationFeedSectionPosition();
+
+        void onHomeNetworkRetry();
     }
 }
