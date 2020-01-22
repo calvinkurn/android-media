@@ -29,15 +29,16 @@ class TrackingRepository(
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         try {
+            val dBSize = getSizeDBInKB()
+            // if size is over 2MB, flush it
+            if (dBSize >= 2000F) {
+                trackingDao.flush()
+            }
             trackingDao.insert(Tracking(data, session.getUserId(),
                 session.getDeviceId() ?: ""))
 
-            val DBSize = getSizeDBInMB()
-            // if size is over 2MB, flush it
-            if (DBSize >= 2) {
-                trackingDao.flush()
-            } else if (DBSize >= 1) {
-                // if size already 1 MB or over, send it immediately
+            if (dBSize >= 200F) {
+                // if size already 200KB or more, send it
                 sendRemainingEvent(DEFAULT_MAX_ROW)
             }
         } catch (e: Throwable) {
@@ -68,12 +69,12 @@ class TrackingRepository(
         return response.isSuccessful
     }
 
-    private fun getSizeDBInMB(): Long {
+    private fun getSizeDBInKB(): Float {
         val f: File? = context.getDatabasePath(DATABASE_NAME)
         return if (f != null) {
-            (f.length() / 1_000_000)
+            (f.length() / 1_000F)
         } else {
-            0
+            0F
         }
     }
 
@@ -87,7 +88,7 @@ class TrackingRepository(
             return -1
 
         var counterLoop = 0
-        val maxLoop = 50
+        val maxLoop = 10
         var totalSentData = 0
 
         var lastSuccessSent = true
