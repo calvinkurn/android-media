@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,9 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
                                  @NonNull List<Object> payloads) {
         if (!payloads.isEmpty()) {
-            holder.bind(getItem(position), payloads);
+            if (payloads.get(0) instanceof Bundle && !((Bundle) payloads.get(0)).isEmpty()) {
+                holder.bind(getItem(position), payloads);
+            }
         } else {
             super.onBindViewHolder(holder, position, payloads);
         }
