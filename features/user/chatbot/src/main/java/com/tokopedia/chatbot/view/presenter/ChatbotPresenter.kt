@@ -1,8 +1,10 @@
 package com.tokopedia.chatbot.view.presenter
 
 import android.graphics.BitmapFactory
+import android.text.TextUtils
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -35,6 +37,7 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
+import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.subscriber.*
 import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -166,7 +169,7 @@ class ChatbotPresenter @Inject constructor(
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
                     if (attachmentType == CHAT_DIVIDER_DEBUGGING) {
                         val model = ConnectionDividerViewModel(liveChatDividerAttribute?.divider?.label, false, SHOW_TEXT, null)
-                        view.onReceiveConnectionEvent(model)
+                        view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
                     }
                     if(attachmentType == LIVE_CHAT_DIVIDER){
                         mappingQueueDivider(liveChatDividerAttribute)
@@ -207,6 +210,21 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
+    private fun getLiveChatQuickReply(): List<QuickReplyViewModel> {
+        val quickReplyListPojo = GsonBuilder().create()
+                .fromJson<QuickReplyAttachmentAttributes>(chatResponse.attachment?.attributes,
+                        QuickReplyAttachmentAttributes::class.java)
+        val list = ArrayList<QuickReplyViewModel>()
+        if (quickReplyListPojo != null && !quickReplyListPojo.quickReplies.isEmpty()) {
+            for (pojo in quickReplyListPojo.quickReplies) {
+                if (!TextUtils.isEmpty(pojo.text)) {
+                    list.add(QuickReplyViewModel(pojo.text, pojo.value, pojo.action))
+                }
+            }
+        }
+        return list
+    }
+
     private fun mappingQueueDivider(liveChatDividerAttribute: LiveChatDividerAttributes) {
         if (!isErrorOnLeaveQueue) {
             val agentQueue = liveChatDividerAttribute.agentQueue
@@ -217,7 +235,7 @@ class ChatbotPresenter @Inject constructor(
             }
             val model = ConnectionDividerViewModel(agentQueue?.label, true,
                     agentQueue?.type ?: SHOW_TEXT, leaveQueue())
-            view.onReceiveConnectionEvent(model)
+            view.onReceiveConnectionEvent(model,getLiveChatQuickReply())
         }
 
     }
@@ -241,10 +259,10 @@ class ChatbotPresenter @Inject constructor(
                 if(str==ERROR_CODE){
                     isErrorOnLeaveQueue = true
                     val model = ConnectionDividerViewModel("",false, TEXT_HIDE, null)
-                    view.onReceiveConnectionEvent(model)
+                    view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
                 }else{
                     val model = ConnectionDividerViewModel(view.context?.getString(R.string.cb_bot_you_left_the_queue),false, SHOW_TEXT, null)
-                    view.onReceiveConnectionEvent(model)
+                    view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
                 }
             }
         }
@@ -328,10 +346,8 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                if (!pojo.attachment?.fallbackAttachment?.message.equals("")){
                     view.onReceiveMessageEvent(mapToVisitable(pojo))
                     sendReadEventWebSocket(messageId)
-                }
             }
         }
     }

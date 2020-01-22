@@ -321,14 +321,19 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             spannableString.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = null;
-                    try {
-                        intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
-                                getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                    if (!TextUtils.isEmpty(helpLink)) {
+                        RouteManager.route(getContext(), helpLink);
+                    } else {
+
+                        Intent intent = null;
+                        try {
+                            intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
+                                    getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
                     }
-                    startActivity(intent);
                 }
 
                 @Override
@@ -556,7 +561,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+    public void setRecommendation(Object rechargeWidgetResponse) {
 
     }
 

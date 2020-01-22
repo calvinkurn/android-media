@@ -20,10 +20,13 @@ public class TravelDateUtil {
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
     public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";
     public static final String YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String YYYY_MM_DD_T_HH_MM_SS = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String VIEW_FORMAT_WITHOUT_YEAR = "dd MMM";
     public static final String YYYYMMDD = "yyyyMMdd";
     public static final String YYYY = "yyyy";
     public static final String MM = "MM";
+    public static final String HH_MM = "HH:mm";
+    public static final String EEE_DD_MMM_YY = "EEE, dd MMM yy";
 
     public static Date stringToDate(String format, String input) {
         DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);

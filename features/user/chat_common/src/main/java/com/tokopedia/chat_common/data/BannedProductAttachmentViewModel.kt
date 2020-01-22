@@ -4,7 +4,9 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
-class BannedProductAttachmentViewModel: ProductAttachmentViewModel {
+class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
+
+    val liteUrl get() = playStoreData.redirectUrl
 
     /**
      * Constructor for API response.
@@ -33,15 +35,15 @@ class BannedProductAttachmentViewModel: ProductAttachmentViewModel {
             productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
+            variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, minOrder: Int,
+            remainingStock: Int, status: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, isRead,
             productId, productName, productPrice, productUrl, productImage, isSender, message,
             canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
-            shopId, freeShipping, categoryId, playStoreData
+            shopId, freeShipping, categoryId, playStoreData, minOrder, remainingStock, status
     )
-
 
 
     /**
@@ -71,13 +73,14 @@ class BannedProductAttachmentViewModel: ProductAttachmentViewModel {
             productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
+            variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int,
+            status: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, productId,
             productName, productPrice, productUrl, productImage, isSender, message, startTime,
             canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
-            shopId, freeShipping, categoryId, playStoreData
+            shopId, freeShipping, categoryId, playStoreData, remainingStock, status
     )
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {

@@ -3,11 +3,11 @@ package com.tokopedia.flight.dashboard.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
@@ -33,17 +33,18 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     @Override
     protected Fragment getNewFragment() {
         if (getIntent().hasExtra(EXTRA_TRIP) && getIntent().hasExtra(EXTRA_ADULT) && getIntent().hasExtra(EXTRA_CHILD)
-                && getIntent().hasExtra(EXTRA_INFANT) && getIntent().hasExtra(EXTRA_CLASS) && getIntent().hasExtra(EXTRA_AUTO_SEARCH)) {
+                && getIntent().hasExtra(EXTRA_INFANT) && getIntent().hasExtra(EXTRA_CLASS)) {
             return FlightDashboardFragment.getInstance(
                     getIntent().getStringExtra(EXTRA_TRIP),
                     getIntent().getStringExtra(EXTRA_ADULT),
                     getIntent().getStringExtra(EXTRA_CHILD),
                     getIntent().getStringExtra(EXTRA_INFANT),
                     getIntent().getStringExtra(EXTRA_CLASS),
-                    getIntent().getStringExtra(EXTRA_AUTO_SEARCH)
+                    (getIntent().hasExtra(EXTRA_AUTO_SEARCH)) ? getIntent().getStringExtra(EXTRA_AUTO_SEARCH) : "0",
+                    getIntent().getData().toString()
             );
         } else {
-            return FlightDashboardFragment.getInstance();
+            return FlightDashboardFragment.getInstance(getIntent().getData().toString());
         }
     }
 
@@ -51,7 +52,6 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setContentInsetStartWithNavigation(0);
-
     }
 
     @Override
@@ -63,6 +63,6 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     @Override
     public String getScreenName() {
-        return FlightAnalytics.Screen.HOMEPAGE;
+        return null;
     }
 }

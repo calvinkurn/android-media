@@ -12,7 +12,7 @@
         android:layout_marginRight="@dimen/dp_16"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/relatedSearchRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

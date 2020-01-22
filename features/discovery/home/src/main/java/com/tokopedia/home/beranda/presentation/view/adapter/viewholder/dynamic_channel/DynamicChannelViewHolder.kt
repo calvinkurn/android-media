@@ -78,7 +78,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         channel,
                         listener,
                         adapterPosition,
-                        getLayoutType(channel)))
+                        getLayoutType(channel),
+                        element.isCache))
             }
 
             /**
@@ -167,9 +168,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
     class OnItemImpressedListener(val channel: DynamicHomeChannel.Channels,
                                   val listener: HomeCategoryListener,
                                   val position: Int,
-                                  private val layoutType: Int) : ViewHintListener {
+                                  private val layoutType: Int,
+                                  val isCache: Boolean) : ViewHintListener {
         override fun onViewHint() {
-            sendIrisTracker(layoutType)
+            if (!isCache) sendIrisTracker(layoutType)
         }
 
         private fun sendIrisTracker(layoutType: Int) {

@@ -66,6 +66,7 @@
                     android:path="@string/path_telco_cart" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

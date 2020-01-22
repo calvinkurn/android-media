@@ -10,7 +10,7 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.CustomDate;
 import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDate;
-import java.text.ParseException;
+
 import java.util.List;
 
 /**
@@ -33,7 +33,7 @@ public class OrderListContract {
 
         void showErrorNetwork(String errorMessage);
 
-        void renderEmptyList(int typeRequest);
+        void renderEmptyList(int typeRequest, long elapsedDays);
 
         Context getAppContext();
 

@@ -89,7 +89,7 @@ open class FilterController {
         iterateOptionAndCheckForBundledOption(optionsForFilterViewState)
 
         for(option in optionsForFilterViewState) {
-            if(option.value == "") option.value = parameter[option.key]
+            if(option.value == "") option.value = parameter[option.key].toString()
             filterViewState.add(option.uniqueId)
         }
     }
@@ -390,7 +390,7 @@ open class FilterController {
         if(optionList == null || optionList.isEmpty() ) return
 
         for(option in optionList) {
-            val isFilterApplied = option.inputState?.toBoolean() ?: false
+            val isFilterApplied = option.inputState.toBoolean()
             saveFilterViewState(option.uniqueId, isFilterApplied)
         }
     }

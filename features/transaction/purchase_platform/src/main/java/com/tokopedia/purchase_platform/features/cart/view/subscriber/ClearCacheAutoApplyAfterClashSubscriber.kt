@@ -1,10 +1,11 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
-import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
+import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 
 /**
@@ -13,6 +14,7 @@ import rx.Subscriber
 
 class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
                                               val presenter: ICartListPresenter,
+                                              val promoStackingGlobalData: PromoStackingData,
                                               val newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
                                               val type: String) : Subscriber<GraphqlResponse>() {
 
@@ -31,7 +33,7 @@ class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (responseData.successData.success) {
             view?.onSuccessClearPromoStackAfterClash()
-            presenter.processApplyPromoStackAfterClash(newPromoList, type)
+            presenter.processApplyPromoStackAfterClash(promoStackingGlobalData, newPromoList, type)
         } else {
             view?.onFailedClearPromoStack(false)
         }

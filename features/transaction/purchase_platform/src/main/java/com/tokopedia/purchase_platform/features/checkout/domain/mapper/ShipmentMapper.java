@@ -7,20 +7,19 @@ import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -148,16 +147,6 @@ public class ShipmentMapper implements IShipmentMapper {
         if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
             Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
             dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
-        }
-
-        if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
-            CartPromoSuggestionHolderData cartPromoSuggestionHolderData = new CartPromoSuggestionHolderData();
-            cartPromoSuggestionHolderData.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
-            cartPromoSuggestionHolderData.setCtaColor(shipmentAddressFormDataResponse.getPromoSuggestion().getCtaColor());
-            cartPromoSuggestionHolderData.setPromoCode(shipmentAddressFormDataResponse.getPromoSuggestion().getPromoCode());
-            cartPromoSuggestionHolderData.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
-            cartPromoSuggestionHolderData.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
-            dataResult.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
         }
 
         if (!isDisableEgold) {
@@ -351,7 +340,7 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setOfficial(groupShop.getShop().getIsOfficial() == 1);
                             if (groupShop.getShop().getIsOfficial() == 1) {
                                 shopResult.setShopBadge(groupShop.getShop().getOfficialStore().getOsLogoUrl());
-                            } else if (groupShop.getShop().getGoldMerchant().getIsGold() == 1) {
+                            } else if (groupShop.getShop().getGoldMerchant().isGold() == 1) {
                                 shopResult.setShopBadge(groupShop.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
                             }
                             shopResult.setFreeReturns(groupShop.getShop().getIsFreeReturns() == 1);
@@ -571,7 +560,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     productResult.setProductShipment(productShipmentListResult);
                                 }
 
-                                AutoapplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
+                                AutoApplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
                                 if (autoapplyStack != null) {
                                     if (autoapplyStack.getTrackingDetails() != null && autoapplyStack.getTrackingDetails().size() > 0) {
                                         for (TrackingDetail trackingDetail : autoapplyStack.getTrackingDetails()) {

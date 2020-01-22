@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.data.entity.response.Form;
@@ -58,6 +59,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
     private String number;
     private SelectedSeatViewModel mSelectedSeatViewModel;
     private SeatSelectionContract.SeatSelectionView mView;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
 
     public SeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase, PostVerifyCartUseCase postVerifyCartUseCase) {
@@ -82,10 +84,12 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
     public void attachView(EventBaseContract.EventBaseView view) {
         super.attachView(view);
         mView = (SeatSelectionContract.SeatSelectionView) view;
-        eventsDetailsViewModel = mView.getActivity().getIntent().getParcelableExtra("event_detail");
-        selectedpkgViewModel = mView.getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
-        seatLayoutViewModel = mView.getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL);
-        mView.setEventTitle(mView.getActivity().getIntent().getStringExtra("EventTitle"));
+        String id = mView.getActivity().getIntent().getStringExtra(Utils.Constants.SEAT_SELECT_ID);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(mView.getActivity(),id);
+        eventsDetailsViewModel = saveInstanceCacheManager.get("event_detail",EventsDetailsViewModel.class);
+        selectedpkgViewModel = saveInstanceCacheManager.get(Utils.Constants.EXTRA_PACKAGEVIEWMODEL,PackageViewModel.class);
+        seatLayoutViewModel = saveInstanceCacheManager.get(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL,SeatLayoutViewModel.class);
+        mView.setEventTitle(saveInstanceCacheManager.get("EventTitle",String.class));
         getProfile();
     }
 
@@ -178,10 +182,12 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
                             Gson gson = new Gson();
                             cartJsonString = gson.toJson(cart);
                             Intent reviewTicketIntent = new Intent(mView.getActivity(), ReviewTicketActivity.class);
-                            reviewTicketIntent.putExtra("event_detail", eventsDetailsViewModel);
-                            reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
-                            reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
-                            reviewTicketIntent.putExtra(Utils.Constants.EXTRA_VERIFY_RESPONSE, cartJsonString);
+                            saveInstanceCacheManager = new SaveInstanceCacheManager(mView.getActivity(),true);
+                            saveInstanceCacheManager.put(Utils.Constants.EXTRA_PACKAGEVIEWMODEL,selectedpkgViewModel,7);
+                            saveInstanceCacheManager.put(Utils.Constants.EXTRA_SEATSELECTEDMODEL,mSelectedSeatViewModel,7);
+                            saveInstanceCacheManager.put("event_detail",eventsDetailsViewModel,7);
+                            saveInstanceCacheManager.put(Utils.Constants.EXTRA_VERIFY_RESPONSE, cartJsonString,7);
+                            reviewTicketIntent.putExtra("review", saveInstanceCacheManager.getId());
                             mView.navigateToActivityRequest(reviewTicketIntent, 100);
                             mView.hideProgressBar();
                         }
@@ -206,10 +212,12 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
                 public void onNext(VerifyCartResponse verifyCartResponse) {
                     if (!StringUtils.isBlank(verifyCartResponse.getCart().getError())) {
                         Intent reviewTicketIntent = new Intent(mView.getActivity(), ReviewTicketActivity.class);
-                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
-                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
                         Gson gson = new Gson();
-                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_VERIFY_RESPONSE, gson.toJson(verifyCartResponse.getCart()));
+                        saveInstanceCacheManager = new SaveInstanceCacheManager(mView.getActivity(),true);
+                        saveInstanceCacheManager.put(Utils.Constants.EXTRA_PACKAGEVIEWMODEL,selectedpkgViewModel,7);
+                        saveInstanceCacheManager.put(Utils.Constants.EXTRA_SEATSELECTEDMODEL,mSelectedSeatViewModel,7);
+                        saveInstanceCacheManager.put(Utils.Constants.EXTRA_VERIFY_RESPONSE, gson.toJson(verifyCartResponse.getCart()),7);
+                        reviewTicketIntent.putExtra("review", saveInstanceCacheManager.getId());
                         mView.navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     } else {
                         mView.showSnackBar(verifyCartResponse.getCart().getError(), false);
