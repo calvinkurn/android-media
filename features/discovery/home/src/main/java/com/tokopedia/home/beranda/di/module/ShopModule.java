@@ -77,8 +77,8 @@ public class ShopModule {
 
     @HomeScope
     @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi) {
+        return new ShopCommonCloudDataSource(shopCommonApi);
     }
 
     @HomeScope

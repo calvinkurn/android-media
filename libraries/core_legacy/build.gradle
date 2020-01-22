@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
