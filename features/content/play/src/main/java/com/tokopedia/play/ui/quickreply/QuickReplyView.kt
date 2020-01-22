@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.quickreply.adapter.QuickReplyAdapter
-import com.tokopedia.play.ui.quickreply.adapter.SpanningLinearLayoutManager
 import com.tokopedia.play.ui.quickreply.itemdecoration.QuickReplyItemDecoration
 import com.tokopedia.play.view.uimodel.QuickReplyUiModel
 
@@ -32,7 +31,7 @@ class QuickReplyView(
 
     init {
         rvQuickReply.apply {
-            layoutManager = SpanningLinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
             adapter = quickReplyAdapter
             addItemDecoration(QuickReplyItemDecoration(view.context))
         }
