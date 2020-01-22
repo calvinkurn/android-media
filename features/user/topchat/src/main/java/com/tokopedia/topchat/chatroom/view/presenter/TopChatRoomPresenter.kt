@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
@@ -48,6 +49,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -656,6 +658,17 @@ class TopChatRoomPresenter @Inject constructor(
             attachmentsPreview.add(sendAbleProductPreview)
         }
         initAttachmentPreview()
+    }
+
+    override fun initVoucherPreview(extras: Bundle?) {
+        val stringVoucherPreview = view.getStringArgument(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, extras)
+
+        if (stringVoucherPreview.isEmpty()) return
+
+        val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
+        val sendableVoucher = SendableVoucherPreview(voucherPreview)
+        if (attachmentsPreview.isNotEmpty()) attachmentsPreview.clear()
+        attachmentsPreview.add(sendableVoucher)
     }
 
     override fun onClickBannedProduct(liteUrl: String) {

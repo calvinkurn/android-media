@@ -829,6 +829,18 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         SomAnalytics.eventClickViewInvoice()
     }
 
+    override fun onCopiedInvoice(invoice: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(invoice, str)
+        showCommonToaster(getString(R.string.invoice_tersalin))
+    }
+
+    override fun onCopiedAddress(address: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(address, str)
+        showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
+    }
+
     private fun setProductEmpty(rCode: String) {
         // ini penentu previous bottomsheetnya dismissed apa nggak?
         bottomSheetUnify.dismiss()

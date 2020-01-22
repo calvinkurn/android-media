@@ -41,5 +41,7 @@ internal val staging = Url(
         TIKET = "https://tiket-staging.tokopedia.com/",
         IMT = "https://imt-staging.tokopedia.com/",
         LAKU6 = "http://wst.laku6.com",
-        SELLER = "https://seller-staging.tokopedia.com/"
+        SELLER = "https://seller-staging.tokopedia.com/",
+        PLAY = "https://groupchat-staging.tokopedia.com",
+        WS_PLAY = "wss://groupchat-staging.tokopedia.com"
 )
