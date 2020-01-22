@@ -15,12 +15,9 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.developerOptions)
-
-
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

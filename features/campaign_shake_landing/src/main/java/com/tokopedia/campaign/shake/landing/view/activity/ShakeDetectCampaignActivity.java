@@ -22,7 +22,6 @@ import com.tokopedia.campaign.shake.landing.di.CampaignComponent;
 import com.tokopedia.campaign.shake.landing.di.DaggerCampaignComponent;
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectContract;
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectPresenter;
-import com.tokopedia.campaign.shake.landing.widget.TkpdProgressDialog;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
@@ -49,7 +48,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     private View btnShakeClose;
     private TextView shakeShakeErrorMsg;
     private View btnTurnOff;
-    private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
     private PermissionCheckerHelper permissionCheckerHelper;
 
@@ -149,21 +147,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     }
 
     @Override
-    public void showProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        } else {
-            progressDialog = new TkpdProgressDialog(getApplicationContext(), TkpdProgressDialog.NORMAL_PROGRESS);
-        }
-    }
-
-    @Override
-    public void hideProgressDialog() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
-    }
-
-    @Override
     public void showErrorGetInfo() {
         shakeShakeErrorMsg.setText(getString(R.string.shake_default_error));
         layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
@@ -185,12 +168,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void updateTimer(Long l) {
-        shakeShakeMessage.setText(""+l);
-
     }
 
     @Override

@@ -3,12 +3,16 @@ package com.tokopedia.campaign.shake.landing.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.Vibrator;
+import android.text.TextUtils;
 
 import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.campaign.shake.landing.R;
@@ -131,10 +135,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                     @Override
                     public void onError(Throwable e) {
-                        Intent intent = new Intent(ACTION_SHAKE_SHAKE_SYNCED);
                         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-
-                        intent.putExtra("isSuccess", false);
 
                         if (e instanceof UnknownHostException || e instanceof ConnectException) {
                             getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
@@ -142,7 +143,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                             getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                         } else if (e instanceof CampaignException) {
                             if (((CampaignException) e).isMissingAuthorizationCredentials()) {
-                                intent.putExtra("needLogin", true);
+                                redirectToLoginPage();
                             } else {
                                 getView().showErrorGetInfo();
                                 return;
@@ -159,7 +160,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                             return;
                         }
 
-                        getView().sendBroadcast(intent);
                         getView().finish();
                     }
 
@@ -202,14 +202,12 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                                     return;
                                 }
 
-                                Intent intent = new Intent(ACTION_SHAKE_SHAKE_SYNCED);
-                                intent.putExtra("isSuccess", true);
-                                intent.putExtra("data", campaign.getUrl());
-
                                 // Vibrate for 500 milliseconds
                                 if (campaign.getVibrate() == 1)
                                     vibrate();
-                                getView().sendBroadcast(intent);
+
+                                redirectToCampaignUrl(campaign.getUrl());
+
                                 CampaignTracking.eventShakeShake("success",
                                         ShakeDetectManager.sTopActivity, "", campaign.getUrl());
 
@@ -223,6 +221,36 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     }
                 });
 
+    }
+
+    private void redirectToCampaignUrl(String url) {
+
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+
+        final Intent intent = RouteManager.getIntent(context, url);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+
+            }
+        }, 500);
+    }
+
+    private void redirectToLoginPage() {
+        final Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        }, 500);
     }
 
     @Override
@@ -289,11 +317,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     @Override
     public void onDestroyView() {
         if (getCampaignUseCase != null) getCampaignUseCase.unsubscribe();
-    }
-
-    @Override
-    public void onRetryClick() {
-        getView().finish();
     }
 
     @Override

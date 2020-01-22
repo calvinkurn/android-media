@@ -15,22 +15,11 @@ public interface ShakeDetectContract {
     public interface View extends CustomerView{
         void finish();
 
-        void sendBroadcast(Intent intent);
-
-
-        void showProgressDialog();
-
-        void hideProgressDialog();
-
         void showErrorGetInfo();
 
         void showErrorNetwork(String message);
 
         void showMessage(String message);
-
-        void setResult(int resultCode,Intent data);
-
-        void updateTimer(Long l);
 
         boolean isLongShakeTriggered();
         void setInvisibleCounter();
@@ -47,7 +36,6 @@ public interface ShakeDetectContract {
     public interface Presenter extends CustomerPresenter<View>{
         public void onShakeDetect();
         public void onDestroyView();
-        public void onRetryClick();
         public void onDisableShakeShake();
         public void onActivityResult(int requestCode, int resultCode, Intent data);
 

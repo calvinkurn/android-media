@@ -98,8 +98,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
-    public static final String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
-
+    
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -196,49 +195,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
-        getApplicationContext().registerReceiver(receiver, new IntentFilter(ACTION_SHAKE_SHAKE_SYNCED));
     }
-
-    public void deinit() {
-        getApplicationContext().unregisterReceiver(receiver);
-    }
-
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            if(intent.getAction() == ACTION_SHAKE_SHAKE_SYNCED) {
-                if (intent.getBooleanExtra("isSuccess", false)) {
-                    final Intent intent1 = new Intent(context, DeepLinkActivity.class);;
-                    if (intent.getStringExtra("data") != null) {
-
-                        Uri uri = Uri.parse("" + intent.getStringExtra("data"));
-                        intent1.setData(uri);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                if(intent1.resolveActivity(context.getPackageManager()) != null)
-                                    RouteManager.route(context, intent.getStringExtra("data"));
-
-                            }
-                        }, 500);
-                    }
-                } else if (intent.getBooleanExtra("needLogin", false)) {
-                    final Intent intent1 = RouteManager.getIntent(context, ApplinkConst.LOGIN);
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            if(intent1.resolveActivity(context.getPackageManager()) != null)
-                                context.startActivity(intent1);
-                        }
-                    }, 500);
-                }
-            }
-            deinit();
-        }
-    };
 
     private boolean isMainProcess() {
         ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
