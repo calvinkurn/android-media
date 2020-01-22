@@ -56,12 +56,10 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
 
     private fun alignBubbleRight(viewModel: AttachInvoiceSentViewModel) {
         alignBubble(Gravity.END)
-        bindRoleHeader(viewModel, Gravity.END)
     }
 
     private fun alignBubbleLeft(viewModel: AttachInvoiceSentViewModel) {
         alignBubble(Gravity.START)
-        bindRoleHeader(viewModel, Gravity.START)
     }
 
     private fun alignBubble(gravity: Int) {

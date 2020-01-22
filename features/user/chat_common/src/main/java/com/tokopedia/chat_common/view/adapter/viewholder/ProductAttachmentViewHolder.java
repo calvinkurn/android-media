@@ -43,9 +43,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private View progressBarSendImage;
     private ImageView chatStatus;
     private View chatBalloon;
-    private TextView name;
-    private TextView label;
-    private TextView dot;
     private ImageView thumbnailsImage;
     private UnifyButton tvBuy;
     private ImageView ivATC;
@@ -70,9 +67,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         super(itemView);
         this.context = itemView.getContext();
         chatStatus = itemView.findViewById(R.id.chat_status);
-        name = itemView.findViewById(R.id.name);
-        label = itemView.findViewById(R.id.label);
-        dot = itemView.findViewById(R.id.dot);
         progressBarSendImage = itemView.findViewById(R.id.progress_bar);
         chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
         freeShipping = itemView.findViewById(R.id.iv_free_shipping);
@@ -103,6 +97,11 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     @Override
     protected boolean alwaysShowTime() {
         return true;
+    }
+
+    @Override
+    protected int getDateId() {
+        return R.id.tvDate;
     }
 
     private void setupIfEmptyStock(ProductAttachmentViewModel element) {
@@ -192,9 +191,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         );
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, productContainerView);
         chatStatus.setVisibility(View.GONE);
-        name.setVisibility(View.GONE);
-        label.setVisibility(View.GONE);
-        dot.setVisibility(View.GONE);
     }
 
     private void setChatRight(View productContainerView, ProductAttachmentViewModel element) {
@@ -207,25 +203,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     protected void prerequisiteUISetup(final ProductAttachmentViewModel element) {
         progressBarSendImage.setVisibility(View.GONE);
-
         chatBalloon.setOnClickListener(view -> viewListener.onProductClicked(element));
-
-        if (!TextUtils.isEmpty(element.getFromRole())
-                && !element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())
-                && element.isSender()
-                && !element.isDummy()
-                && element.isShowRole()) {
-            name.setText(element.getFrom());
-            label.setText(element.getFromRole());
-            name.setVisibility(View.VISIBLE);
-            dot.setVisibility(View.VISIBLE);
-            label.setVisibility(View.VISIBLE);
-
-        } else {
-            name.setVisibility(View.GONE);
-            label.setVisibility(View.GONE);
-            dot.setVisibility(View.GONE);
-        }
     }
 
     private void setChatReadStatus(ProductAttachmentViewModel element) {

@@ -28,7 +28,6 @@ abstract class ChatMessageViewHolder(itemView: View?) : BaseChatViewHolder<Messa
         bindChatMessage(viewModel)
         bindHour(viewModel)
         bindHeaderDate(viewModel)
-        bindHeaderRole(viewModel)
         bindClick()
     }
 
