@@ -492,7 +492,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
+                            PlayButtonInteractionEvent.PlayClicked -> {
+                                PlayAnalytics.clickPlayVideo(channelId)
+                                playViewModel.startCurrentVideo()
+                            }
                         }
                     }
         }

@@ -117,4 +117,13 @@ object PlayAnalytics {
                 "$channelId - ${getLiveOrVod(isLive)}"
         )
     }
+
+    fun clickPlayVideo(channelId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK on play button video",
+                channelId
+        )
+    }
 }
