@@ -6,15 +6,12 @@ import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import com.tokopedia.iris.util.Cache
-import com.tokopedia.iris.util.DATABASE_NAME
-import com.tokopedia.iris.util.Session
-import com.tokopedia.iris.util.logIris
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import android.net.ConnectivityManager
-import com.tokopedia.iris.data.network.ApiInterface
+import com.tokopedia.iris.util.*
+import timber.log.Timber
 
 
 /**
@@ -32,13 +29,19 @@ class TrackingRepository(
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         try {
-            if (isSizeOver()) { // check if db over 2 MB
-                trackingDao.flush()
-                logIris(cache, "Database Local Over 2mb")
-            }
             trackingDao.insert(Tracking(data, session.getUserId(),
                 session.getDeviceId() ?: ""))
+
+            val DBSize = getSizeDBInMB()
+            // if size is over 2MB, flush it
+            if (DBSize >= 2) {
+                trackingDao.flush()
+            } else if (DBSize >= 1) {
+                // if size already 1 MB or over, send it immediately
+                sendRemainingEvent(DEFAULT_MAX_ROW)
+            }
         } catch (e: Throwable) {
+            Timber.e("P2#IRIS#saveEvent %s", e.toString())
         }
     }
 
@@ -53,8 +56,7 @@ class TrackingRepository(
     fun delete(data: List<Tracking>) {
         try {
             trackingDao.delete(data)
-            logIris(cache, "Discard: $data")
-        } catch (e: Throwable) {
+        } catch (ignored: Throwable) {
         }
     }
 
@@ -66,15 +68,13 @@ class TrackingRepository(
         return response.isSuccessful
     }
 
-    private fun isSizeOver(): Boolean {
+    private fun getSizeDBInMB(): Long {
         val f: File? = context.getDatabasePath(DATABASE_NAME)
-        if (f != null) {
-            val lengthDb = f.length()
-            logIris(cache, "Length Database: $lengthDb")
-            val sizeDbInMb = (lengthDb / 1024) / 1024
-            return sizeDbInMb >= 2
+        return if (f != null) {
+            (f.length() / 1_000_000)
+        } else {
+            0
         }
-        return false
     }
 
     /**
@@ -87,7 +87,7 @@ class TrackingRepository(
             return -1
 
         var counterLoop = 0
-        val maxLoop = 5
+        val maxLoop = 50
         var totalSentData = 0
 
         var lastSuccessSent = true
@@ -116,6 +116,7 @@ class TrackingRepository(
                 }
             } else {
                 lastSuccessSent = false
+                Timber.e("P2#IRIS#failedSendData %s", requestBody.toString())
                 break
             }
             counterLoop++

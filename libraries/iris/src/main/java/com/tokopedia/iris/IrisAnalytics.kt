@@ -18,7 +18,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
@@ -54,10 +53,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 ?: ""
 
             setService(irisConfig, irisEnable)
-
-            val irisLogEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_LOG_ENABLED_TOGGLE, false)
-                ?: false
-            cache.setEnableLogEntries(irisLogEnable)
         }
     }
 
@@ -93,7 +88,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launch(coroutineContext + Dispatchers.IO) {
+            launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
@@ -106,12 +101,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun sendEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launch(coroutineContext + Dispatchers.IO) {
+            launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
-                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
-                if (isSuccess && BuildConfig.DEBUG) {
-                    logIris(cache, "Success Send Single Event")
-                }
+                trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
             }
         }
     }

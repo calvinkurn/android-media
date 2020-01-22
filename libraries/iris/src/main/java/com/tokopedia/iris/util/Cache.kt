@@ -19,15 +19,6 @@ class Cache(context: Context) {
         return sharedPreferences.getBoolean(IRIS_ENABLED, false)
     }
 
-    fun setEnableLogEntries(isEnabled: Boolean) {
-        editor.putBoolean(IRIS_LOG_ENABLED, isEnabled)
-        editor.commit()
-    }
-
-    fun isEnableLogEntries(): Boolean {
-        return sharedPreferences.getBoolean(IRIS_LOG_ENABLED, false)
-    }
-
     fun setEnableAlarm(isAlarmOn: Boolean) {
         editor.putBoolean(IRIS_IS_ALARM_ON, isAlarmOn)
         editor.commit()

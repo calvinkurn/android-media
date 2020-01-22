@@ -39,7 +39,6 @@ const val WORKER_SEND_DATA = "com.tokopedia.iris.WORKER_SEND_DATA"
 const val MAX_ROW = "MAX_ROW"
 
 const val IRIS_ENABLED = "iris_enabled"
-const val IRIS_LOG_ENABLED = "iris_log_enabled"
 const val IRIS_IS_ALARM_ON = "iris_is_alarm_on"
 
 const val KEY_CONTAINER = "gtm"

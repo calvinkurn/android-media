@@ -4,15 +4,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.BaseJobIntentService
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.util.Cache
 import com.tokopedia.iris.util.DEFAULT_MAX_ROW
 import com.tokopedia.iris.util.JOB_IRIS_ID
 import com.tokopedia.iris.util.MAX_ROW
-import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.worker.IrisExecutor.handler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -20,15 +20,8 @@ import kotlin.coroutines.CoroutineContext
  */
 class IrisService : BaseJobIntentService(), CoroutineScope {
 
-    private lateinit var mContext: Context
-
     override val coroutineContext: CoroutineContext by lazy {
         IrisExecutor.executor + handler
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        mContext = this
     }
 
     companion object {
@@ -43,11 +36,12 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
             val maxRow = intent.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
             startService(maxRow)
         } catch (e: java.lang.Exception) {
+            Timber.e("P2#IRIS#onHandleWork %s", e.toString())
         }
     }
 
     private fun startService(maxRow: Int) {
-        launch(coroutineContext + Dispatchers.IO) {
+        launch(coroutineContext) {
             try {
                 if (isRunning) {
                     return@launch
@@ -62,7 +56,8 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
                     }
                 }
                 isRunning = false
-            } catch (ignored: Exception) {
+            } catch (e: Exception) {
+                Timber.e("P2#IRIS#startService %s", e.toString())
             }
         }
     }
