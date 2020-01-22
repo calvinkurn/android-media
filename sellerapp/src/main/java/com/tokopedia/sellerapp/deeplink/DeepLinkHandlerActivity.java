@@ -43,7 +43,7 @@ import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
+//import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
@@ -81,13 +81,13 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         ReputationApplinkModule.class,
         SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        InboxTalkApplinkModule.class,
+//        InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
-        AutoAdsLinkModule.class,
+//        AutoAdsLinkModule.class,
         FlashsaleDeeplinkModule.class,
         RNDevOptionsApplinkModule.class
 })
@@ -120,7 +120,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
-                new AutoAdsLinkModuleLoader(),
+//                new AutoAdsLinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader()
         );
