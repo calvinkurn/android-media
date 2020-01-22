@@ -54,12 +54,18 @@
                 android:layout_height="wrap_content"
                 android:visibility="visible"/>
 
-            <include
-                android:id="@+id/empty_state_order_list"
-                layout="@layout/empty_list"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:layout_height="wrap_content" >
+
+                <include
+                    android:id="@+id/empty_state_order_list"
+                    layout="@layout/empty_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
+            </ScrollView>
 
         </FrameLayout>
 
