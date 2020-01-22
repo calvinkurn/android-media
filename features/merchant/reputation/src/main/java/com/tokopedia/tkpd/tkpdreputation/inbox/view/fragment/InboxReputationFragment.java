@@ -171,6 +171,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 openFilter();
+                reputationTracking.onClickButtonFilterReputationTracker(getTab());
             }
         });
     }
@@ -195,6 +196,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                reputationTracking.onScrollReviewTracker(getTab());
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!adapter.isLoading() && !adapter.isEmpty())
@@ -436,7 +438,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     }
                 });
         adapter.notifyDataSetChanged();
-        reputationTracking.onEmptyFilteredReputationTracker(getQuery(), getTab());
+        if(!getQuery().isEmpty())
+            reputationTracking.onEmptyFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override

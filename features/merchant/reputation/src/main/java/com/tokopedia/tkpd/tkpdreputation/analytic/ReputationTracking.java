@@ -327,7 +327,7 @@ public class ReputationTracking {
     }
 
     public void onClickSearchViewTracker(int tab) {
-        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
         tracker.sendGeneralEvent(createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.REVIEW_PAGE,
@@ -337,7 +337,7 @@ public class ReputationTracking {
     }
 
     public void onSuccessFilteredReputationTracker(String query, int tab) {
-        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
         tracker.sendGeneralEvent(createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.REVIEW_PAGE,
@@ -347,7 +347,7 @@ public class ReputationTracking {
     }
 
     public void onEmptyFilteredReputationTracker(String query, int tab) {
-        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
         tracker.sendGeneralEvent(createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.REVIEW_PAGE,
@@ -357,12 +357,52 @@ public class ReputationTracking {
     }
 
     public void onErrorFilteredReputationTracker(String query, int tab) {
-        String tabSource = ((tab+1) == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
         tracker.sendGeneralEvent(createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
                 ReputationTrackingConstant.REVIEW_PAGE,
                 ReputationTrackingConstant.CLICK_REVIEW_SEARCH+tabSource,
                 "abandon - "+query
+        ));
+    }
+
+    public void onClickButtonFilterReputationTracker(int tab) {
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.CLICK_FILTER_REVIEW+tabSource,
+                ""
+        ));
+    }
+
+    public void onScrollReviewTracker(int tab) {
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                ReputationTrackingConstant.SCROLL_REVIEW+tabSource,
+                ""
+        ));
+    }
+
+    public void onClickFilterItemTracker(String timeFilter, int tab) {
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.FILTER_INVOICE_PAGE,
+                ReputationTrackingConstant.CLICK_SELECT_FILTER_REVIEW + tabSource,
+                timeFilter
+        ));
+    }
+
+    public void onSaveFilterReviewTracker(String timeFilter, int tab) {
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.FILTER_INVOICE_PAGE,
+                ReputationTrackingConstant.CLICK_APPLY_FILTER_REVIEW + tabSource,
+                timeFilter
         ));
     }
 
