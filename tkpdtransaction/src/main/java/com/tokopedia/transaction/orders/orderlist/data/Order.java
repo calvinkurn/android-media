@@ -9,6 +9,9 @@ public class Order {
     @SerializedName("conditionalInfo")
     @Expose
     private ConditionalInfo conditionalInfo;
+    @SerializedName("conditionalInfoBottom")
+    @Expose
+    private ConditionalInfo conditionalInfoBottom;
     @SerializedName("paymentData")
     @Expose
     private PaymentData paymentData;
@@ -74,18 +77,21 @@ public class Order {
     private int orderId;
 
 
-    public Order(ConditionalInfo conditionalInfo, PaymentData paymentData, String paymentID,
-                 String categoryName, String appLink, String upstream, String category, String id,
-                 String createdAt, int status, String statusStr, String statusColor, String invoiceRefNum,
-                 String title, List<MetaData> metaData, List<DotMenuList> dotMenuList, List<DotMenuList> dotMenu,
-                 List<ActionButton> actionButtons, String totalInvoices, String itemCount, List<Item> items, int orderId) {
+    public Order(ConditionalInfo conditionalInfo, ConditionalInfo conditionalInfoBottom,
+                 PaymentData paymentData, String paymentID, String categoryName,
+                 String category, String appLink, String upstream, String id, String createdAt,
+                 int status, String statusStr, String statusColor, String invoiceRefNum,
+                 String title, List<MetaData> metaData, List<DotMenuList> dotMenuList,
+                 List<DotMenuList> dotMenu, List<ActionButton> actionButtons, String totalInvoices,
+                 String itemCount, List<Item> items, int orderId) {
         this.conditionalInfo = conditionalInfo;
+        this.conditionalInfoBottom = conditionalInfoBottom;
         this.paymentData = paymentData;
         this.paymentID = paymentID;
         this.categoryName = categoryName;
+        this.category = category;
         this.appLink = appLink;
         this.upstream = upstream;
-        this.category = category;
         this.id = id;
         this.createdAt = createdAt;
         this.status = status;
@@ -100,11 +106,15 @@ public class Order {
         this.totalInvoices = totalInvoices;
         this.itemCount = itemCount;
         this.items = items;
-        this.orderId= orderId;
+        this.orderId = orderId;
     }
 
     public ConditionalInfo conditionalInfo() {
         return conditionalInfo;
+    }
+
+    public ConditionalInfo conditionalInfoBottom() {
+        return conditionalInfoBottom;
     }
 
     public PaymentData paymentData() {
@@ -197,16 +207,30 @@ public class Order {
 
     @Override
     public String toString() {
-
-        return "[ conditionalInfo : { " + conditionalInfo + " } " +
-                ", paymentData : " + paymentData +
-                ", paymentID : " + paymentID +
-                ", status : " + status +
-                ", statusColor : " + statusColor +
-                ", statusStr : " + statusStr +
-                ", metaData : " + metaData +
-                ", actionButtons : " + actionButtons +
-                "]";
+        return "Order{" +
+                "conditionalInfo=" + conditionalInfo +
+                ", conditionalInfoBottom=" + conditionalInfoBottom +
+                ", paymentData=" + paymentData +
+                ", paymentID='" + paymentID + '\'' +
+                ", categoryName='" + categoryName + '\'' +
+                ", category='" + category + '\'' +
+                ", appLink='" + appLink + '\'' +
+                ", upstream='" + upstream + '\'' +
+                ", id='" + id + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", status=" + status +
+                ", statusStr='" + statusStr + '\'' +
+                ", statusColor='" + statusColor + '\'' +
+                ", invoiceRefNum='" + invoiceRefNum + '\'' +
+                ", title='" + title + '\'' +
+                ", metaData=" + metaData +
+                ", dotMenuList=" + dotMenuList +
+                ", dotMenu=" + dotMenu +
+                ", actionButtons=" + actionButtons +
+                ", totalInvoices='" + totalInvoices + '\'' +
+                ", itemCount='" + itemCount + '\'' +
+                ", items=" + items +
+                ", orderId=" + orderId +
+                '}';
     }
-
 }

@@ -3,9 +3,9 @@ package com.tokopedia.flight.bookingV2.presentation.contract
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import java.util.*
 

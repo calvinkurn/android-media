@@ -18,10 +18,6 @@ abstract class TrackingDataSource<U : TrackingDbModel, T : TrackingDatabaseDao<U
         trackingDatabaseDao.deleteByKey(event.key)
     }
 
-    override fun delete(keyList: List<String>) {
-        trackingDatabaseDao.deleteByKeyList(keyList)
-    }
-
     override fun delete() {
         trackingDatabaseDao.deleteTable()
     }
@@ -32,9 +28,5 @@ abstract class TrackingDataSource<U : TrackingDbModel, T : TrackingDatabaseDao<U
 
     override fun getAll(): Array<U>? {
         return trackingDatabaseDao.getTrackingModelList()
-    }
-
-    override fun get(limit:Int): Array<U>? {
-        return trackingDatabaseDao.getTrackingModelList(limit)
     }
 }

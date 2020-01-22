@@ -17,7 +17,6 @@ import javax.inject.Inject
  */
 class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
 
-
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
             TYPE_VOUCHER -> convertToVoucher(pojo, jsonAttributes)
@@ -26,7 +25,6 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-
         val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(jsonAttributes,
                 TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher

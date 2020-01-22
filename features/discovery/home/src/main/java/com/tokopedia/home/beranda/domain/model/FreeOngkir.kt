@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Lukas on 17/10/19
  */
-class FreeOngkir(
+data class FreeOngkir(
         @SerializedName("isActive")
         @Expose
         val isActive: Boolean = false,

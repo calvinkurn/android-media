@@ -10,7 +10,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
@@ -18,6 +17,7 @@ import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUse
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.model.ShopInfoDashboardModel;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
@@ -62,8 +62,8 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                 GetShopInfoWithScoreUseCase.createRequestParams(userSession.getShopId()), getShopInfoAndScoreSubscriber());
     }
 
-    private Subscriber<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>> getShopInfoAndScoreSubscriber() {
-        return new Subscriber<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>>() {
+    private Subscriber<Triple<ShopInfoDashboardModel, GoldGetPmOsStatus, ShopScoreResult>> getShopInfoAndScoreSubscriber() {
+        return new Subscriber<Triple<ShopInfoDashboardModel, GoldGetPmOsStatus, ShopScoreResult>>() {
             @Override
             public void onCompleted() {
 
@@ -77,7 +77,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             }
 
             @Override
-            public void onNext(Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult> resultTriple) {
+            public void onNext(Triple<ShopInfoDashboardModel, GoldGetPmOsStatus, ShopScoreResult> resultTriple) {
                 getView().onSuccessGetShopInfoAndScore(
                         resultTriple.getFirst(),
                         resultTriple.getSecond(),
@@ -101,7 +101,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             @Override
             public void onNext(Boolean aBoolean) {
                 getShopInfoWithScore();
-                getNotification();
+                getNotification(true);
             }
         });
     }
@@ -115,7 +115,8 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                 new GetApprovalStatusSubscriber(getView().getApprovalStatusListener()));
     }
 
-    public void getNotification() {
+    public void getNotification(boolean isRefresh) {
+        newNotificationUseCase.setRefresh(isRefresh);
         newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true), getNotificationSubscriber());
     }
 

@@ -489,12 +489,15 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventReferralAndShare(Context context, String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+        Map<String,Object> gtmMap=new EventTracking(
                 AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
                 AppEventTracking.Category.REFERRAL,
                 action,
-                label
-        ).getEvent());
+                "Android"
+        ).getEvent();
+        gtmMap.put("channel",label);
+        gtmMap.put("source","referral");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(gtmMap);
     }
 
     public static void eventAppShareWhenReferralOff(Context context, String action, String label) {

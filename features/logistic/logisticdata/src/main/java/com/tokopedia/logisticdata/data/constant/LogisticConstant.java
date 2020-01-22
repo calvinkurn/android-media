@@ -13,6 +13,7 @@ public class LogisticConstant {
 
     public static final int REQUEST_CODE_PARAM_CREATE = 101;
     public static final int REQUEST_CODE_PARAM_EDIT = 102;
+    public static final int REQUEST_CODE_PICK_DROP_OFF_TRADE_IN = 6352;
 
     public static final int ADD_NEW_ADDRESS_CREATED = 3333;
     public static final int ADD_NEW_ADDRESS_CREATED_FROM_EMPTY = 3355;
@@ -27,5 +28,7 @@ public class LogisticConstant {
 
     public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT = "21";
     public static final String INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT = "22";
+
+    public static final String RESULT_DATA_STORE_LOCATION = "RESULT_DATA_STORE_LOCATION";
 
 }

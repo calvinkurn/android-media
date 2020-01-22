@@ -4,7 +4,6 @@ import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.discovery.intermediary.data.source.IntermediaryDataSource;
 import com.tokopedia.discovery.intermediary.domain.IntermediaryRepository;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 
 import retrofit2.Response;
 import rx.Observable;

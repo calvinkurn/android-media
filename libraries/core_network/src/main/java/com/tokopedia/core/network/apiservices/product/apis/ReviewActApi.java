@@ -19,31 +19,10 @@ import rx.Observable;
 public interface ReviewActApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_ADD_COMMENT_REVIEW)
-    Observable<Response<TkpdResponse>> addCommentReview(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_ADD_REVIEW)
-    Observable<Response<TkpdResponse>> addProductReview(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_DELETE_COMMENT_REVIEW)
-    Observable<Response<TkpdResponse>> deleteCommentReview(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_LIKE_DISLIKE_REVIEW)
     Observable<Response<TkpdResponse>> likeDislikeReview(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_REPORT_REVIEW)
     Observable<Response<TkpdResponse>> reportReview(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_SET_READ_REVIEW)
-    Observable<Response<TkpdResponse>> setReadReview(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_SKIP_REVIEW)
-    Observable<Response<TkpdResponse>> skipProductReview(@FieldMap Map<String, String> params);
-
 }

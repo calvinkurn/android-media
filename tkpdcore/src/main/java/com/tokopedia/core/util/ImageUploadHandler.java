@@ -31,21 +31,15 @@ public class ImageUploadHandler {
 
     public static ImageUploadHandler createInstance(Activity activity) {
         ImageUploadHandler uploadimage = new ImageUploadHandler();
-        uploadimage.activity = activity;
-        uploadimage.context = activity;
         return uploadimage;
     }
 
     public static ImageUploadHandler createInstance(Fragment fragment) {
         ImageUploadHandler uploadimage = new ImageUploadHandler();
-        uploadimage.fragment = fragment;
-        uploadimage.context = fragment.getActivity();
         return uploadimage;
     }
     public static ImageUploadHandler createInstance(androidx.fragment.app.Fragment fragment) {
         ImageUploadHandler uploadimage = new ImageUploadHandler();
-        uploadimage.fragmentv4 = fragment;
-        uploadimage.context = fragment.getActivity();
         return uploadimage;
     }
 
@@ -57,62 +51,8 @@ public class ImageUploadHandler {
     }
 
     public static final int REQUEST_CODE = 111;
-    public static final int REQUEST_CODE_GALLERY = 1243;
 
-    private Activity activity;
-    private Fragment fragment;
-
-    private androidx.fragment.app.Fragment fragmentv4;
-    private Context context;
     private Model model = new Model();
-
-    public void actionCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
-        startActivity(intent, REQUEST_CODE);
-    }
-
-    private void startActivity(Intent intent, int code) {
-        if (activity != null)
-            activity.startActivityForResult(intent, code);
-        else if(fragmentv4 != null)
-            fragmentv4.startActivityForResult(intent,code);
-        else
-            fragment.startActivityForResult(intent, code);
-    }
-
-    public Uri getOutputMediaFileUri() {
-        return MethodChecker.getUri(context, getOutputMediaFile());
-    }
-
-    private File getOutputMediaFile() {
-        String imageCode = uniqueCode();
-        File mediaStorageDir = new File(
-                Environment.getExternalStorageDirectory() + File.separator
-                        + "Tokopedia" + File.separator);
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("MyCameraApp", "failed to create directory");
-                return null;
-            }
-        }
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + imageCode + ".jpg");
-        model.cameraFileLoc = Environment.getExternalStorageDirectory() + File.separator
-                + "Tokopedia" + File.separator + "IMG_" + imageCode + ".jpg";
-        return mediaFile;
-    }
-
-    private String uniqueCode() {
-        String IDunique = UUID.randomUUID().toString();
-        String id = IDunique.replaceAll("-", "");
-        String code = id.substring(0, 16);
-        return code;
-    }
-
-    public String getCameraFileloc() {
-        return model.cameraFileLoc;
-    }
 
     public void setImageBitmap(String fileloc) {
         this.model.cameraFileLoc = fileloc;

@@ -52,7 +52,7 @@
         android:layout_height="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
-        app:srcCompat="@drawable/ic_profile_badge"
+        app:srcCompat="@drawable/ic_verified_badge"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/name"
         app:layout_constraintStart_toEndOf="@+id/avatarSeparator"

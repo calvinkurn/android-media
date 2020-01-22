@@ -38,8 +38,12 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
             return;
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent_view, getNewFragment(), getTagFragment())
+                .replace(getParent_view(), getNewFragment(), getTagFragment())
                 .commit();
+    }
+
+    protected int getParent_view() {
+        return R.id.parent_view;
     }
 
     protected Fragment getFragment() {

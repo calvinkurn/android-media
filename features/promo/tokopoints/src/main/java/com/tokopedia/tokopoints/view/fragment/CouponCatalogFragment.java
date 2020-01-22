@@ -240,6 +240,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (getView() == null) {
             return;
         }
+        serverErrorView.setErrorButtonClickListener((view)->{
+            mPresenter.getCatalogDetail(code);
+        });
     }
 
     @Override
@@ -660,7 +663,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             } else {
                 giftSectionMainLayout.setVisibility(View.VISIBLE);
                 bottomSeparator.setVisibility(View.VISIBLE);
-                giftButton.setText(R.string.tp_label_send);
+                giftButton.setText(R.string.tp_label_send_now);
                 giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(), data.getImageUrlMobile()));
             }
         } else {

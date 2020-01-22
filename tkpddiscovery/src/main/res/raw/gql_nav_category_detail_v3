@@ -13,6 +13,7 @@ query CategoryDetailQueryV3($identifier: String!, $intermediary: Boolean!, $safe
       url
       redirectionURL
       appRedirectionURL
+      displayButton
       applinks
       redirectTo
       iconImageURL

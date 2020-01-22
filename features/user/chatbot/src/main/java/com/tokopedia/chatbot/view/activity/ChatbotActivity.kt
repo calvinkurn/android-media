@@ -87,21 +87,8 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         (findViewById<TextView>(R.id.title)).text = profileName
     }
 
-    override fun onBackPressed() {
-        val fragments = supportFragmentManager.fragments
-        for (mFragment in fragments) {
-            if (mFragment != null && mFragment is ChatbotFragment) {
-                mFragment.onBackPressed()
-            }
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
             inflateFragment()
-    }
-
-    interface OnBackPressed {
-        fun onBackPressed()
     }
 }

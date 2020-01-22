@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
+import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -37,11 +39,13 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
 import java.io.File
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -68,6 +72,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
     lateinit var overlayView: View
     lateinit var tickerPhoneVerification: Ticker
 
+    private var chancesChangeName = "0"
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_setting_profile, container, false)
@@ -91,11 +97,24 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun showChangeEmailDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.title_change_email_dialog))
-        dialog.setDescription(getString(R.string.cannot_change_email))
-        dialog.setOk(getString(com.tokopedia.abstraction.R.string.title_ok))
-        dialog.setOkOnClickListner(View.OnClickListener { dialog.dismiss() })
+        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
+        dialog.setTitle(getString(R.string.add_and_verify_phone))
+        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
+        dialog.setOk(getString(R.string.title_add_phone))
+        dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
+        dialog.setSecondary(getString(com.tokopedia.abstraction.R.string.label_cancel))
+        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+    }
+
+    private fun showVerifyEmailDialog() {
+        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
+        dialog.setTitle(getString(R.string.add_and_verify_phone))
+        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
+        dialog.setOk(getString(R.string.title_verify_phone))
+        dialog.setOkOnClickListner(View.OnClickListener { goToVerifyPhone() })
+        dialog.setSecondary(getString(com.tokopedia.abstraction.R.string.label_cancel))
+        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }
 
@@ -300,7 +319,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
-        userSession.phoneNumber = profileCompletionData.phone
+        userSession.phoneNumber = profileCompletionData.msisdn
         userSession.email = profileCompletionData.email
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
@@ -312,7 +331,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 showButton = true,
                 fieldClickListener = View.OnClickListener {
                     ChangeNameTracker().clickOnChangeName()
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName)
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName, chancesChangeName)
                     startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
                 }
         )
@@ -380,12 +399,18 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     true,
                     true,
                     View.OnClickListener {
-                        showChangeEmailDialog()
+                        if(profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified){
+                            goToChangeEmail(profileCompletionData.email)
+                        } else if(profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
+                            showVerifyEmailDialog()
+                        }else{
+                            showChangeEmailDialog()
+                        }
                     }
             )
         }
 
-        if (profileCompletionData.phone.isEmpty()) {
+        if (profileCompletionData.msisdn.isEmpty()) {
             phone.showEmpty(
                     getString(R.string.subtitle_phone_setting_profile),
                     getString(R.string.hint_phone_setting_profile),
@@ -399,19 +424,19 @@ class SettingProfileFragment : BaseDaggerFragment() {
         } else {
             phone.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
-                    PhoneNumberUtils.transform(profileCompletionData.phone),
-                    profileCompletionData.isPhoneVerified,
+                    PhoneNumberUtils.transform(profileCompletionData.msisdn),
+                    profileCompletionData.isMsisdnVerified,
                     true,
                     View.OnClickListener {
-                        if (profileCompletionData.isPhoneVerified) {
-                            goToChangePhone(profileCompletionData.phone, profileCompletionData.email)
+                        if (profileCompletionData.isMsisdnVerified) {
+                            goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
                             goToVerifyPhone()
                         }
                     }
             )
 
-            if (profileCompletionData.isPhoneVerified) {
+            if (profileCompletionData.isMsisdnVerified) {
                 tickerPhoneVerification.visibility = View.GONE
             } else {
                 tickerPhoneVerification.visibility = View.VISIBLE
@@ -448,6 +473,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dismissLoading()
         bod.isEnabled = profileRoleData.isAllowedChangeDob
         name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
+        chancesChangeName = profileRoleData.chancesChangeName
     }
 
     private fun onErrorGetProfileRole(throwable: Throwable) {
@@ -490,10 +516,50 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
+    private fun goToChangeEmail(email: String){
+        val encodedUrlB = URLEncoder.encode(
+                Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
+                    appendPath(UrlSettingProfileConst.USER_PATH_URL)
+                    appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
+                    appendPath(UrlSettingProfileConst.EDIT_PATH_URL)
+                    appendQueryParameter(UrlSettingProfileConst.PARAM_IS_BACK, true.toString())
+                }.build().toString(),
+                "UTF-8"
+        )
+
+        val encodedUrlLd = URLEncoder.encode(
+                Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
+                    appendPath(UrlSettingProfileConst.USER_PATH_URL)
+                    appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
+                    appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
+                    appendQueryParameter(UrlSettingProfileConst.PARAM_V_OEMAIL, email)
+                    appendQueryParameter(UrlSettingProfileConst.PARAM_TYPE, "change")
+                }.build().toString(),
+                "UTF-8"
+        )
+
+        val encodedEmail = URLEncoder.encode(email, "UTF-8")
+
+        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
+            appendPath(UrlSettingProfileConst.OTP_PATH_URL)
+            appendPath(UrlSettingProfileConst.CHECK_PATH_URL)
+            appendPath(UrlSettingProfileConst.PAGE_PATH_URL)
+            appendQueryParameter(UrlSettingProfileConst.PARAM_B, encodedUrlB)
+            appendQueryParameter(UrlSettingProfileConst.PARAM_EMAIL, encodedEmail)
+            appendQueryParameter(UrlSettingProfileConst.PARAM_LD, encodedUrlLd)
+            appendQueryParameter(UrlSettingProfileConst.PARAM_OTP_TYPE, 14.toString())
+        }.build().toString()
+
+        RouteManager.route(
+                context,
+                ApplinkConstInternalGlobal.WEBVIEW.replace("{url}", URLEncoder.encode(url, "UTF-8"))
+        )
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         profileInfoViewModel.userProfileInfo.removeObservers(this)
-        profileInfoViewModel.clear()
+        profileInfoViewModel.flush()
     }
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {

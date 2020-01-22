@@ -169,7 +169,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         mainList = parentView.findViewById(R.id.chat_list);
         mainList.requestFocus();
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
-        refreshHandler = new RefreshHandler(getActivity(), parentView, view -> {
+        refreshHandler = new RefreshHandler(getActivity(), parentView.findViewById(R.id.swipe_refresh_layout), view -> {
             finishContextMode();
             presenter.refreshData();
         });

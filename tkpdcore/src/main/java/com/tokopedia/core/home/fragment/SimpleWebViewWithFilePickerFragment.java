@@ -29,6 +29,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -199,13 +200,21 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             String urlString = url.toString();
             try {
                 //TODO delete this after ws change to new applink
-                if (urlString.contains(String.format("%s=true", TkpdInboxRouter.IS_CHAT_BOT))) {
+                String kuponMemberShipUrl = "/tukar-point/kuponmembership";
+                if (!TextUtils.isEmpty(urlString) && urlString.contains(kuponMemberShipUrl) && getActivity().getApplicationContext() instanceof TkpdInboxRouter && RouteManager.isSupportApplink(getContext(), urlString)) {
+                    RouteManager.route(getContext(), urlString);
+                    return true;
+                }
+                else if (urlString.contains(String.format("%s=true", TkpdInboxRouter.IS_CHAT_BOT))) {
                     String messageId = urlString.toLowerCase().replace("tokopedia://topchat/", "")
                             .replace("?is_chat_bot=true", "");
                     RouteManager.route(getActivity(), ApplinkConst.CHATBOT,messageId);
                     return true;
-                } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter && RouteManager.isSupportApplink(getContext(), urlString)) {
-                    RouteManager.route(getContext(), urlString);
+                } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
+                        && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
+                                    Bundle());
                     return true;
                 } else if (urlString.startsWith("tel:")) {
                     Intent intent = new Intent(Intent.ACTION_DIAL, url);
@@ -301,7 +310,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         else
             webview.setWebViewClient(webViewClient);
         webview.setWebChromeClient(new SimpleWebViewWithFilePickerFragment.MyWebViewClient());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
             CommonUtils.dumper("webviewconf debugging = true");
         }

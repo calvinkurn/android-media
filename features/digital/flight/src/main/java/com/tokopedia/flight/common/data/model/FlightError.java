@@ -18,6 +18,12 @@ public class FlightError {
     @SerializedName("title")
     @Expose
     private String title;
+    @SerializedName("head")
+    @Expose
+    private String head;
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public FlightError(String id) {
         this.id = id;
@@ -38,6 +44,18 @@ public class FlightError {
     public String getTitle() {
         return title;
     }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getHead() { return head; }
+
+    public void setHead(String head) { this.head = head; }
+
+    public void setMessage(String message) { this.message = message; }
+
+    public String getMessage() { return message; }
 
     @Override
     public boolean equals(Object obj) {

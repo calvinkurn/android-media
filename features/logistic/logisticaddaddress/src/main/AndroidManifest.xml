@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.logisticaddaddress">
 
@@ -10,7 +11,7 @@
             android:name=".features.addaddress.AddAddressActivity"
             android:label="@string/title_activity_add_address"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -23,19 +24,17 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".features.manage.ManagePeopleAddressActivity"
             android:label="@string/title_activity_manage_people_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".features.addnewaddress.pinpoint.PinpointMapActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -48,7 +47,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".features.addnewaddress.addedit.AddEditAddressActivity"
             android:exported="true"
@@ -56,7 +54,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".features.district_recommendation.DiscomActivity"
             android:label="@string/title_activity_search_address"
@@ -75,7 +72,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".features.pinpoint.GeolocationActivity"
             android:theme="@style/Theme.White">
@@ -91,11 +87,32 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".features.dropoff_picker.DropoffPickerActivity"
+            android:label="@string/title_dropoff_picker"
+            android:screenOrientation="portrait"
+            android:theme="@style/LogisticTheme">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_logistic"
+                    android:pathPattern="@string/path_dropoff_picker"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".features.autocomplete.AutoCompleteActivity"
+            android:label="@string/title_autocomplete_page"
+            android:theme="@style/LogisticTheme" />
 
         <service
             android:name=".service.ManagePeopleAddressService"
             android:exported="false" />
-
     </application>
 
 </manifest>

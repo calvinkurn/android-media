@@ -165,9 +165,8 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
-                                                               UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
+    ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi) {
+        return new ShopCommonCloudDataSource(shopCommonApi);
     }
 
     @FeedPlusScope
@@ -212,6 +211,12 @@ public class FeedPlusModule {
     @FeedPlusScope
     CoroutineDispatcher provideMainDispatcher() {
         return Dispatchers.getMain();
+    }
+
+    @Provides
+    @FeedPlusScope
+    FeedDispatcherProvider provideFeedDispatcherProvider() {
+        return new FeedProductionDispatcherProvider();
     }
 
     @FeedPlusScope

@@ -45,6 +45,9 @@ interface AccountItemListener {
     fun onTokopediaPayLeftItemClicked(label: String, applink: String, bsData: TokopediaPayBSModel,
                                       isLinked: Boolean, walletType: String)
 
+    fun onTokopediaPayCentreItemClicked(label: String, applink: String, bsData: TokopediaPayBSModel,
+                                      isLinked: Boolean, walletType: String)
+
     fun onTokopediaPayRightItemClicked(isRightSaldo: Boolean, label: String, vccStatus: String, applink: String, bsData: TokopediaPayBSModel)
 
     fun onDepositClicked(element: SellerSaldoViewModel)

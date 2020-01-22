@@ -43,8 +43,6 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         lottieAnimationView = view.findViewById(R.id.lottie_animation_view)
         buttonTryAgain = view.findViewById(R.id.button_try_again)
         imageviewError = view.findViewById(R.id.imageview_error)
-
-        buttonTryAgain.setOnClickListener { showInitialState() }
     }
 
     fun showLoading() {
@@ -87,7 +85,19 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         imageviewError.visibility = View.VISIBLE
         buttonTryAgain.visibility = View.VISIBLE
 
-        listener.tryAgainTopup(issuerId)
+        buttonTryAgain.setOnClickListener {
+            showInitialState()
+            listener.tryAgainTopup(issuerId)
+        }
+    }
+
+    fun showErrorDeviceUnsupportedState(errorMessage: String) {
+        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
+        textTitle.setTextColor(resources.getColor(R.color.red_600))
+        textLabel.text = errorMessage
+        lottieAnimationView.visibility = View.GONE
+        imageviewError.visibility = View.VISIBLE
+        buttonTryAgain.visibility = View.GONE
     }
 
     interface OnTapEtoll {

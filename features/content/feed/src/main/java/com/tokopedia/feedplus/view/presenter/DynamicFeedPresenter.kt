@@ -39,7 +39,8 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 GetDynamicFeedUseCase.createRequestParams(
                         userId = getUserId(),
                         cursor = cursor,
-                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending
+                ),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -67,7 +68,7 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 GetDynamicFeedUseCase.createRequestParams(
                         userId = getUserId(),
                         cursor = cursor,
-                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {

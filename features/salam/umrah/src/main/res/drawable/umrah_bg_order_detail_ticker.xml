@@ -7,8 +7,8 @@
     <padding android:top="@dimen/dp_5"
         android:bottom="@dimen/dp_7"
         />
-    <solid android:color="@color/solid_ticker" />
+    <solid android:color="@color/umrah_solid_ticker" />
     <stroke
         android:width="1dip"
-        android:color="@color/border_ticker" />
+        android:color="@color/umrah_border_ticker" />
 </shape>

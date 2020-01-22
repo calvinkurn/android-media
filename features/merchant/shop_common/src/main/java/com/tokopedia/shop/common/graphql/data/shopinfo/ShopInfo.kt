@@ -25,14 +25,6 @@ data class ShopInfo(
         @Expose
         val isAllowManage: Int = 0,
 
-        @SerializedName("isOpen")
-        @Expose
-        val isOpen: Int = 0,
-
-        @SerializedName("isOwner")
-        @Expose
-        val isOwner: Int = 0,
-
         @SerializedName("location")
         @Expose
         val location: String = "",
@@ -52,10 +44,6 @@ data class ShopInfo(
         @SerializedName("shopLastActive")
         @Expose
         val shopLastActive: String = "",
-
-        @SerializedName("shopTerms")
-        @Expose
-        val shopTerms: Int = 0,
 
         @SerializedName("statusInfo")
         @Expose
@@ -155,20 +143,12 @@ data class ShopInfo(
             @Expose
             val note: String = "",
 
-            @SerializedName("reason")
-            @Expose
-            val reason: String = "",
-
             @SerializedName("until")
             @Expose
             val closeUntil: String = ""
     )
 
     data class CreatedInfo(
-            @SerializedName("shopCreated")
-            @Expose
-            val created: String = "",
-
             @SerializedName("openSince")
             @Expose
             val openSince: String = ""
@@ -177,10 +157,6 @@ data class ShopInfo(
     data class TopContent(
             @SerializedName("topURL")
             @Expose
-            val topUrl: String = "",
-
-            @SerializedName("bottomURL")
-            @Expose
-            val bottomUrl: String = ""
+            val topUrl: String = ""
     )
 }

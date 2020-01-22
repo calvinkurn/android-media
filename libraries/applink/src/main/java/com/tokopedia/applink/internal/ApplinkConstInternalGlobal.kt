@@ -41,6 +41,10 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_SMART_LOGIN = "isSmartLogin"
     @JvmField
     val PARAM_IS_PENDING = "isPending"
+    @JvmField
+    val PARAM_LOGIN_TYPE = "loginType"
+    @JvmField
+    val PARAM_IS_SQ_CHECK = "isSqCheck"
 
     //VerificationActivity Param
     @JvmField
@@ -54,7 +58,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_OTP_CODE = "otp_code"
     @JvmField
-    val PARAM_IS_FROM_LOGIN = "is_from_login"
+    val PARAM_IS_SKIP_OTP = "is_skip_otp"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -120,6 +124,35 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
 
+    // InboxTalkActivity
+    // tokopedia-android-internal://global/inbox-talk
+    @JvmField
+    val INBOX_TALK = "$INTERNAL_GLOBAL/inbox-talk"
+
+    // TalkProductActivity
+    // tokopedia-android-internal://global/product-talk
+    @JvmField
+    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk"
+    @JvmField
+    val PARAM_SHOP_ID = "shop_id"
+
+    // TalkProductActivity
+    // tokopedia-android-internal://global/product-talk
+    @JvmField
+    val PRODUCT_TALK = "$INTERNAL_GLOBAL/product-talk"
+    @JvmField
+    val PARAM_PRODUCT_ID = "product_id"
+
+    // TalkDetailsActivity
+    // tokopedia-android-internal://global/detail-talk
+    @JvmField
+    val DETAIL_TALK = "$INTERNAL_GLOBAL/detail-talk"
+
+    // AddTalkActivity
+    // tokopedia-android-internal://global/add-talk
+    @JvmField
+    val ADD_TALK = "$INTERNAL_GLOBAL/add-talk"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
@@ -128,9 +161,11 @@ object ApplinkConstInternalGlobal {
     // ChangeNameActivity
     // tokopedia-android-internal://global/change-name
     @JvmField
-    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}"
+    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}&chances={chances}"
     @JvmField
     val PARAM_FULL_NAME = "oldName"
+    @JvmField
+    val PARAM_CHANCE_CHANGE_NAME = "chances"
 
     // AddEmailActivity
     // tokopedia-android-internal://global/add-email
@@ -190,7 +225,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}&title={title}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
@@ -329,4 +364,15 @@ object ApplinkConstInternalGlobal {
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
+
+    // CrackTokenActivity
+    // tokopedia-android-internal://global/gamification
+    @JvmField
+    val GAMIFICATION = "$INTERNAL_GLOBAL/gamification"
+
+    // TapTapTokenActivity
+    // tokopedia-android-internal://global/gamification2
+    @JvmField
+    val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.autocomplete.adapter
+package com.tokopedia.autocomplete.adapter
 
 import android.os.Build
 import androidx.annotation.LayoutRes
@@ -8,7 +8,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.ItemClickListener
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.viewmodel.ProfileSearch
 import kotlinx.android.synthetic.main.layout_profile_item_autocomplete.view.*
@@ -25,7 +24,9 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
         val LAYOUT = R.layout.layout_profile_item_autocomplete
     }
 
-    override fun bind(element: ProfileSearch) {
+    override fun bind(element: ProfileSearch?) {
+        if (element == null) return
+
         boundedProfileSearch = element
 
         boundedProfileSearch.keyword = decodeHTML(boundedProfileSearch.keyword)
@@ -40,7 +41,9 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
         setItemViewOnClickListener()
     }
 
-    private fun decodeHTML(encodedHTML : String) : String {
+    private fun decodeHTML(encodedHTML : String?) : String {
+        if (encodedHTML == null) return ""
+
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(encodedHTML, Html.FROM_HTML_MODE_COMPACT).toString()
         } else {
@@ -70,7 +73,7 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
     }
 
     private fun getHighlightedTitle() : SpannableString {
-        val highlightedTitle = SpannableString(boundedProfileSearch.keyword)
+        val highlightedTitle = SpannableString(boundedProfileSearch.keyword ?: "")
 
         highlightTitleBeforeKeyword(highlightedTitle)
 
@@ -87,8 +90,8 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
     }
 
     private fun highlightTitleAfterKeyword(highlightedTitle: SpannableString) {
-        val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + boundedProfileSearch.searchTerm.length
-        val highlightAfterKeywordEndIndex = boundedProfileSearch.keyword.length
+        val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + (boundedProfileSearch.searchTerm?.length ?: 0)
+        val highlightAfterKeywordEndIndex = boundedProfileSearch.keyword?.length ?: 0
 
         highlightedTitle.setSpan(
             TextAppearanceSpan(context, R.style.searchTextHiglight),
@@ -97,7 +100,7 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
     }
 
     private fun loadImageIntoProfileAvatar() {
-        ImageHandler.loadImageCircle2(context, view.profileAvatar, boundedProfileSearch.imageUrl)
+        ImageHandler.loadImageCircle2(context, view.profileAvatar, boundedProfileSearch.imageUrl ?: "")
     }
 
     private fun setBadgesKOLVisibleIfKOL() {
@@ -112,15 +115,15 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
         itemView.setOnClickListener {
             AutocompleteTracking.eventClickProfile(itemView.context, getFormattedStringForAutoCompleteTracking())
 
-            clickListener.onItemClicked(boundedProfileSearch.applink, boundedProfileSearch.url)
+            clickListener.onItemClicked(boundedProfileSearch.applink ?: "", boundedProfileSearch.url ?: "")
         }
     }
 
     private fun getFormattedStringForAutoCompleteTracking() : String {
         return String.format(
             "keyword: %s - profile: %s - profile id: %s - po: %s",
-            boundedProfileSearch.searchTerm,
-            boundedProfileSearch.keyword,
+            boundedProfileSearch.searchTerm ?: "",
+            boundedProfileSearch.keyword ?: "",
             boundedProfileSearch.peopleId,
             boundedProfileSearch.positionOfType.toString()
         )

@@ -1,0 +1,5 @@
+mutation {
+  mpLogisticChangeCourier(input: {order_id: "#orderId", shipping_ref:"#shippingRef", agency_id:#agencyId, sp_id:#spId}) {
+    message
+  }
+}

@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.common.utils.image;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -38,6 +37,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
@@ -58,6 +58,8 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -189,8 +191,6 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-
-
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)
                 .load(url)
@@ -295,12 +295,16 @@ public class ImageHandler {
     }
 
     public static void loadImageWithSignature(ImageView imageview, String url, ObjectKey signature) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .dontAnimate()
-                .signature(signature)
-                .into(imageview);
+        try {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .dontAnimate()
+                    .signature(signature)
+                    .into(imageview);
+        } catch (IllegalArgumentException e){
+            Timber.e("%s%s", url, e.getMessage());
+        }
     }
 
     public static void downloadOriginalSizeImageWithSignature(
@@ -483,18 +487,6 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
-        if (url != null && !url.isEmpty()) {
-            Glide.with(fragment)
-                    .asBitmap()
-                    .load(url)
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, 5.0f));
-        }
-    }
-
     public static void loadImageFit2(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
@@ -528,18 +520,6 @@ public class ImageHandler {
                 .fitCenter()
                 .into(imageView);
     }
-
-//    public static void loadImageFit2(Context context, ImageView imageView, String url, RequestListener<String, GlideDrawable> requestListener) {
-//        Glide.with(context)
-//                .load(url)
-//                .dontAnimate()
-//                .listener(requestListener)
-//                .placeholder(R.drawable.loading_page)
-//                .error(R.drawable.error_drawable)
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .centerCrop()
-//                .into(imageView);
-//    }
 
     public static void loadImageLucky2(Context context, final ImageView imageView, String url) {
         Glide.with(context)
@@ -708,6 +688,28 @@ public class ImageHandler {
                 .load(url)
                 .placeholder(drawable)
                 .into(imageView);
+    }
+
+    public static void loadRoundedImage(
+            ImageView imageView,
+            String imageUrl,
+            float cornerRadius,
+            int imgPlaceHolderRes,
+            int errorImageRes
+    ) {
+        RequestBuilder<Bitmap> glideBuilder = Glide.with(imageView.getContext())
+                .asBitmap()
+                .load(imageUrl)
+                .dontAnimate()
+                .error(errorImageRes < 0 ? R.drawable.error_drawable : errorImageRes)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.DATA);
+
+        if (imgPlaceHolderRes >= 0) {
+            glideBuilder = glideBuilder.placeholder(imgPlaceHolderRes);
+        }
+
+        glideBuilder.into(getRoundedImageViewTarget(imageView, cornerRadius));
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {

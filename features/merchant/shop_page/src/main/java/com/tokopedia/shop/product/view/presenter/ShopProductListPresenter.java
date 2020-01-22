@@ -79,7 +79,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     }
 
     public void getShopInfo(final String shopId) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId),
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId, userSession.getUserId(), userSession.getDeviceId()),
                 new Subscriber<ShopInfo>() {
                     @Override
                     public void onCompleted() {

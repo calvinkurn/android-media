@@ -1,0 +1,6 @@
+query get_notification_update_unread($typeOfNotif: Int){
+  notifcenter_total_unread(type_of_notif: $typeOfNotif) {
+            notif_total_unread
+            notif_total_unread_int
+       }
+}

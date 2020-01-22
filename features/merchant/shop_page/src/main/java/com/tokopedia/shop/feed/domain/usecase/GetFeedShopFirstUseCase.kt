@@ -35,7 +35,7 @@ class GetFeedShopFirstUseCase
                 : RequestParams {
             val requestParams = GetDynamicFeedUseCase.createRequestParams(
                     userId= userId, cursor = "",
-                    source = GetDynamicFeedUseCase.SOURCE_SHOP, sourceId = sourceId
+                    source = GetDynamicFeedUseCase.FeedV2Source.Shop, sourceId = sourceId
             )
             requestParams.putString(GetWhitelistUseCase.WHITELIST_SHOP, sourceId)
             requestParams.putBoolean(IS_PULL_TO_REFRESH, isPullToRefresh)
@@ -106,5 +106,9 @@ class GetFeedShopFirstUseCase
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
                 .setSessionIncluded(true)
                 .build()
+    }
+
+    fun clearFeedFirstCache() {
+        getDynamicFeedUseCase.clearCache()
     }
 }

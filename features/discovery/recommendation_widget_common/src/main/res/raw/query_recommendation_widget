@@ -38,19 +38,8 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
           city
         }
         departmentId
-        labels {
-          title
-          color
-        }
         badges {
-          title
           imageUrl
-        }
-        wholesalePrice {
-          price
-          quantityMax
-          quantityMin
-          priceString
         }
         freeOngkir{
           isActive

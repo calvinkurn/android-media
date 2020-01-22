@@ -27,14 +27,17 @@ import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
-import com.tokopedia.officialstore.common.RecyclerViewScrollListener
+import com.tokopedia.officialstore.common.listener.FeaturedShopListener
+import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
@@ -51,6 +54,7 @@ class OfficialHomeFragment :
         BaseDaggerFragment(),
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
+        FeaturedShopListener,
         DynamicChannelEventHandler
 {
 
@@ -92,7 +96,7 @@ class OfficialHomeFragment :
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    val CATEGORY_CONST: String = category?.title?:""
+                    val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
@@ -108,7 +112,9 @@ class OfficialHomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { category = it.getParcelable(BUNDLE_CATEGORY) }
+        arguments?.let {
+            category = it.getParcelable(BUNDLE_CATEGORY)
+        }
         context?.let { tracking = OfficialStoreTracking(it) }
     }
 
@@ -126,7 +132,7 @@ class OfficialHomeFragment :
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -152,7 +158,7 @@ class OfficialHomeFragment :
 
     private fun resetData() {
         adapter?.clearAllElements()
-        adapter?.resetState()
+        adapter?.resetState(this)
         endlessScrollListener?.resetState()
     }
 
@@ -211,7 +217,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
+                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
                     setLoadMoreListener()
                 }
                 is Fail -> {
@@ -352,7 +358,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.officialStoreProductRecommendationResult.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
@@ -431,7 +437,9 @@ class OfficialHomeFragment :
                 category?.title.toEmptyStringIfNull(),
                 isAddWishlist,
                 viewModel.isLoggedIn(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION)
+                item.productId,
+                item.isTopAds
+        )
     }
 
     override fun onCountDownFinished() {
@@ -486,13 +494,15 @@ class OfficialHomeFragment :
         return View.OnClickListener {
             val gridData = channelData.grids?.get(position)
             val applink = gridData?.applink ?: ""
+            val campaignId = channelData.campaignID
 
             gridData?.let {
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        campaignId
                 )
             }
 
@@ -502,7 +512,8 @@ class OfficialHomeFragment :
 
     override fun flashSaleImpression(channelData: Channel) {
         if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            tracking?.flashSaleImpression(viewModel.currentSlug, channelData)
+            val campaignId = channelData.campaignID
+            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, campaignId)
             sentDynamicChannelTrackers.add(channelData.id)
         }
     }
@@ -575,8 +586,35 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
+        tracking?.eventImpressionFeatureBrand(
+                categoryName,
+                position,
+                shopData.name.orEmpty(),
+                shopData.imageUrl.orEmpty(),
+                shopData.additionalInformation.orEmpty(),
+                shopData.featuredBrandId.orEmpty(),
+                viewModel.isLoggedIn(),
+                shopData.shopId.orEmpty()
+        )
+    }
+
+    override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
+        tracking?.eventClickFeaturedBrand(
+                categoryName,
+                position,
+                shopData.name.orEmpty(),
+                shopData.url.orEmpty(),
+                shopData.additionalInformation.orEmpty(),
+                shopData.featuredBrandId.orEmpty(),
+                viewModel.isLoggedIn(),
+                shopData.shopId.orEmpty()
+        )
+        RouteManager.route(context, shopData.url)
+    }
+
     private fun initFirebasePerformanceMonitoring() {
-        val CATEGORY_CONST: String = category?.title?:""
+        val CATEGORY_CONST: String = category?.slug.orEmpty()
 
         val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
         bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)

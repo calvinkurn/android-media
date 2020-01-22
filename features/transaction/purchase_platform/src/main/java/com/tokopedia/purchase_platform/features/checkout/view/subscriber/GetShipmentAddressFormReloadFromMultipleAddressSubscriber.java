@@ -65,7 +65,7 @@ public class GetShipmentAddressFormReloadFromMultipleAddressSubscriber extends S
                 RecipientAddressModel newRecipientAddressModel =
                         view.getShipmentDataConverter().getRecipientAddressModel(cartShipmentAddressFormData);
                 List<ShipmentCartItemModel> shipmentCartItemModelList =
-                        view.getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData);
+                        view.getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData, false);
                 if (shipmentPresenter.checkAddressHasChanged(oldRecipientAddressModel, newRecipientAddressModel) ||
                         shipmentPresenter.checkShipmentItemHasChanged(oldShipmentCartItemModels, shipmentCartItemModelList)) {
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);

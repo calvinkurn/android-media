@@ -65,4 +65,10 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
     fun getCategoryHotlist(): MutableLiveData<MutableList<ListItem>> {
         return hotlistItem
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        getCategoryListUseCase.unsubscribe()
+        getCategoryHotListUseCase.unsubscribe()
+    }
 }

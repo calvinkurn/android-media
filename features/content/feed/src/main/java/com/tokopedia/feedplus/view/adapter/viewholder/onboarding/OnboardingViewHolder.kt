@@ -6,8 +6,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
+import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_layout_onboarding.view.*
 
@@ -76,7 +77,7 @@ class OnboardingViewHolder(
     }
 
 
-    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
         updateButtonCheckRecommendation()
         listener.onInterestPickItemClicked(item)
     }

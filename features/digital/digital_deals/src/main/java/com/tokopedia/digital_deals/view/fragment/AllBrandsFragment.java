@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,28 +81,9 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
         this.searchText = getArguments().getString(AllBrandsActivity.SEARCH_TEXT);
         permissionCheckerHelper = new PermissionCheckerHelper();
-        checkForCurrentLocation();
         currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
         setHasOptionsMenu(true);
 
-    }
-
-    private void checkForCurrentLocation() {
-        permissionCheckerHelper.checkPermission(AllBrandsFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
-            @Override
-            public void onPermissionDenied(String permissionText) {
-                mPresenter.getAllBrands();
-            }
-
-            @Override
-            public void onNeverAskAgain(String permissionText) {
-            }
-
-            @Override
-            public void onPermissionGranted() {
-                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
-            }
-        }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
     }
 
     @Override
@@ -325,6 +307,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void setCurrentLocation(List<Location> locations) {
         Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        updateLocation.updateLocationName(currentLocation.getName());
         mPresenter.getAllBrands();
     }
 
@@ -354,14 +337,11 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         }
     }
 
-    public void reloadIfLocationUpdated(){
+    public void reloadIfLocationUpdated() {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if(location!=null) {
-            if (!location.equals(currentLocation)){
                 onLocationUpdated();
-            }
         }
-
     }
 
     @Override
@@ -391,5 +371,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     public interface UpdateLocation {
         void startLocationFragment(List<Location> locations);
+        void updateLocationName(String locationName);
     }
 }

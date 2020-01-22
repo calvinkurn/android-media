@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_search"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:theme="?toolbarTheme"
+            app:elevation="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:subtitleTextAppearance="?subtitleTextAppearance"
+            app:titleTextAppearance="?titleTextAppearance"
+            tools:layout_height="wrap_content" />
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/search_input_dropoff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_search"
+            app:siv_search_hint="@string/searchbar_dropoff_hint" />
+
+        <fragment
+            android:id="@+id/map_dropoff"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_input_dropoff"
+            app:uiTiltGestures="false" />
+
+        <ImageView
+            android:id="@+id/iv_pinpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/view2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_pin_map"
+            android:contentDescription="@string/point_center" />
+
+        <Space
+            android:id="@+id/view2"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toBottomOf="@id/map_dropoff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/map_dropoff" />
+
+        <include
+            android:id="@+id/view_no_permissions"
+            layout="@layout/partial_no_permissions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_input_dropoff"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/view_gps_empty"
+            layout="@layout/partial_gps_empty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_input_dropoff"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.logisticaddaddress.features.dropoff_picker.LocationDetailBottomSheet
+        android:id="@+id/bottom_sheet_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_sheet_rounded_top"
+        android:minHeight="200dp"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+
+    <include layout="@layout/bottom_sheet_dropoff" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

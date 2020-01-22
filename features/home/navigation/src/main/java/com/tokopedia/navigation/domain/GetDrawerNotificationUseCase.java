@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
-import com.tokopedia.navigation.data.mapper.NotificationMapper;
+import com.tokopedia.navigation.data.mapper.NotificationRequestMapper;
 import com.tokopedia.navigation.listener.CartListener;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -22,12 +22,12 @@ import rx.functions.Func1;
 public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
 
     private final GraphqlUseCase graphqlUseCase;
-    private final NotificationMapper mapper;
+    private final NotificationRequestMapper mapper;
     private CartListener cartListener;
 
     @Inject
     public GetDrawerNotificationUseCase(GraphqlUseCase graphqlUseCase,
-                                        NotificationMapper mapper,
+                                        NotificationRequestMapper mapper,
                                         CartListener cartListener) {
         this.graphqlUseCase = graphqlUseCase;
         this.mapper = mapper;
