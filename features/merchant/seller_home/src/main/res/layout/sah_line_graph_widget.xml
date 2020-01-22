@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/layout_lvl1"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/layout_lvl2"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLineGraphTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            tools:text="Total Pendapatan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLineGraphValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl4"
+            app:layout_constraintEnd_toStartOf="@+id/tvLineGraphSubValue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphTitle"
+            app:typographyWeight="bold"
+            tools:text="Rp2.000.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLineGraphSubValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphValue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tvLineGraphValue"
+            app:layout_constraintTop_toTopOf="@+id/tvLineGraphValue" />
+
+        <com.db.williamchart.view.LineChartView
+            android:id="@+id/lineGraphView"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLineGraphValue" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnLineGraphMore"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:background="@android:color/transparent"
+            android:text="@string/sah_more"
+            android:textColor="@color/Green_G500"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lineGraphView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
