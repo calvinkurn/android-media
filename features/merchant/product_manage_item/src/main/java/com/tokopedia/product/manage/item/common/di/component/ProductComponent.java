@@ -98,6 +98,4 @@ public interface ProductComponent {
     ShopInfoRepository shopInfoRepository();
 
     BearerInterceptor bearerInterceptor();
-
-    MultiRequestGraphqlUseCase getMultiRequestGraphqlUseCase();
 }
