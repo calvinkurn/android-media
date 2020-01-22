@@ -19,6 +19,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     companion object {
         // Name
         const val EVENT_NAME = "event"
+        const val EVENT_CHECKOUT = "checkout"
         const val EVENT_NAME_CLICK_NOTIF_CENTER = "clickNotifCenter"
         const val NAME_EVENT_PRODUCT_VIEW = "productView"
         const val NAME_EVENT_PRODUCT_CLICK = "productClick"
@@ -34,7 +35,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         const val ACTION_VIEW_PRODUCT_THUMBNAIL = "view on product thumbnail"
         const val ACTION_CLICK_PRODUCT_THUMBNAIL = "click on product thumbnail"
         const val ACTION_CLICK_ATC_BUTTON = "click on atc button"
-        const val ACTION_CLICK_BUY_BUTTON = "click on atc button"
+        const val ACTION_CLICK_BUY_BUTTON = "click on buy button"
         const val ACTION_VIEW_NOTIF_LIST = "view on notif list"
         const val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
         const val ACTION_VIEW_PRODUCT_CARD = "view on product card impression"
@@ -89,7 +90,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     }
 
     // #11C
-    fun trackProductAtcClick(notification: NotificationItemViewBean) {
+    fun trackProductCheckoutBuyClick(notification: NotificationItemViewBean) {
         val eventLabel = notification.getImpressionTrackLabel(LABEL_LOCATION)
         val productTrack = arrayListOf<Map<String, Any>>()
         for ((_, product) in notification.products.withIndex()) {
@@ -104,32 +105,33 @@ class NotificationUpdateAnalytics @Inject constructor() {
                             "quantity", "1",
                             "shop_id", product.shop?.id,
                             "shop_type", "",
-                            "shop_name", product.shop?.name,
-                            "category_id", "",
-                            "dimension45", ""
+                            "shop_name", product.shop?.name
                     )
             )
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT_NAME, NAME_EVENT_ATC,
+                        EVENT_NAME, EVENT_CHECKOUT,
                         EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
                         EVENT_ACTION, ACTION_CLICK_BUY_BUTTON,
                         EVENT_LABEL, eventLabel,
                         ECOMMERCE, DataLayer.mapOf(
-                        "currencyCode", "IDR",
-                        "add", DataLayer.mapOf(
-                            "actionField", DataLayer.mapOf("list", "/notifcenter"),
-                            "products", productTrack
+                            "checkout", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf(
+                                    "step", "1",
+                                    "option", "click checkout"
+                                ),
+                                "products", productTrack
+                            )
                         )
-                ))
+                )
         )
     }
 
     // #11B
-    fun trackProductCheckoutClick(notification: NotificationItemViewBean) {
+    fun trackProductCheckoutCardClick(notification: NotificationItemViewBean) {
         val eventLabel = notification.getImpressionTrackLabel(LABEL_LOCATION)
-        val productListName = notification.products.map { it.name }
+        val productListName = "/notifcenter"
         val productTrack = arrayListOf<Map<String, Any>>()
         for ((index, product) in notification.products.withIndex()) {
             productTrack.add(
@@ -307,7 +309,21 @@ class NotificationUpdateAnalytics @Inject constructor() {
     }
 
     // #NC7
-    fun trackAtcToPdpClick(product: ProductData) {
+    fun trackAtcToPdpClick(notification: NotificationItemViewBean) {
+        val productTrack = arrayListOf<Map<String, Any>>()
+        for ((index, product) in notification.products.withIndex()) {
+            productTrack.add(DataLayer.mapOf(
+                    "name", product.name,
+                    "id", product.productId,
+                    "price", product.price,
+                    "brand", "",
+                    "category", "",
+                    "variant", "",
+                    "list", "/notifcenter",
+                    "position", index,
+                    "attribution", ""
+            ))
+        }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
                 EVENT_NAME, NAME_EVENT_PRODUCT_CLICK,
@@ -317,19 +333,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
                 ECOMMERCE, DataLayer.mapOf(
                     "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf("list", "/notifcenter"),
-                        "products", DataLayer.listOf(
-                            DataLayer.mapOf(
-                                    "name", product.name,
-                                    "id", product.productId,
-                                    "price", product.price,
-                                    "brand", "",
-                                    "category", "",
-                                    "variant", "",
-                                    "list", "",
-                                    "position", "",
-                                    "attribution", ""
-                            )
-                        )
+                        "products", productTrack
                     )
                 )
             )

@@ -276,6 +276,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
+    override fun addProductToCheckout(notification: NotificationItemViewBean) {
+        RouteManager.route(context, notification.dataNotification.checkoutUrl)
+        analytics.trackProductCheckoutBuyClick(notification)
+    }
+
     private fun updateMarkAllReadCounter() {
         markAllReadCounter -= 1
     }
@@ -322,11 +327,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
         presenter.addProductToCart(product, onSuccessAddToCart)
-    }
-
-    override fun addProductToCheckout(notification: NotificationItemViewBean) {
-        RouteManager.route(context, notification.dataNotification.checkoutUrl)
-        analytics.trackProductCheckoutClick(notification)
     }
 
     override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {

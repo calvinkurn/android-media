@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseProductCampaignViewHolder
@@ -33,7 +34,10 @@ class ProductCheckoutViewHolder(
             }
             productCampaign.setCampaign(campaign)
         }
+    }
 
+    override fun bindProductClickTrack(element: NotificationItemViewBean) {
+        listener.getAnalytic().trackProductCheckoutCardClick(element)
     }
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
