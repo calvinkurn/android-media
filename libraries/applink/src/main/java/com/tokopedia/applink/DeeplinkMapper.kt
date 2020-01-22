@@ -22,6 +22,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
+import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
 
 /**
@@ -57,6 +58,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationMarketplace(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.DEALS_HOME) ->
                         getRegisteredNavigationDeals(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.FIND)|| deeplink.startsWith(ApplinkConst.AMP_FIND) ->
+                        getRegisteredFind(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->

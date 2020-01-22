@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight
 
-class SpotlightItemViewModel(val id: Int,
+data class SpotlightItemViewModel(val id: Int,
                              val title: String,
                              val description: String,
                              val backgroundImageUrl: String,

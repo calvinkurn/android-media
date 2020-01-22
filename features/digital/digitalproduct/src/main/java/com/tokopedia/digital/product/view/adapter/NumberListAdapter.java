@@ -33,7 +33,7 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
     @Override
     public NumberListAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_autocomplete, parent, false);
+                .inflate(R.layout.view_digital_item_autocomplete, parent, false);
         return new ItemHolder(view);
     }
 
@@ -63,8 +63,8 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
 
         ItemHolder(View itemView) {
             super(itemView);
-            number = (TextView) itemView.findViewById(R.id.text_name);
-            name = (TextView) itemView.findViewById(R.id.text_number);
+            number = itemView.findViewById(R.id.text_name);
+            name = itemView.findViewById(R.id.text_number);
             itemView.setOnClickListener(this);
         }
 
