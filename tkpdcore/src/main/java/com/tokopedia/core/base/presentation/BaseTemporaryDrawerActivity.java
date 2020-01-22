@@ -1,9 +1,16 @@
 package com.tokopedia.core.base.presentation;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.util.GlobalConfig;
@@ -13,9 +20,55 @@ import com.tokopedia.core.util.GlobalConfig;
  */
 public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
 
+    private BroadcastReceiver drawerGetNotificationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (null == context || null == intent.getAction()) {
+                return;
+            }
+
+            if (intent.getAction().equals(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION)
+                    && intent.getBooleanExtra(DrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false)){
+                updateDrawerData();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (GlobalConfig.isSellerApp()) {
+            registerBroadcastReceiver();
+            startDrawerGetNotificationServiceOnResume();
+        }
+    }
+
+    protected void startDrawerGetNotificationServiceOnResume(){
+        DrawerGetNotificationService.startService(this,true,false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (GlobalConfig.isSellerApp())
+            unregisterBroadcastReceiver();
+    }
+
+    private void registerBroadcastReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(drawerGetNotificationReceiver, intentFilter);
+    }
+
+    private void unregisterBroadcastReceiver() {
+        LocalBroadcastManager
+                .getInstance(this)
+                .unregisterReceiver(drawerGetNotificationReceiver);
     }
 
     @Override

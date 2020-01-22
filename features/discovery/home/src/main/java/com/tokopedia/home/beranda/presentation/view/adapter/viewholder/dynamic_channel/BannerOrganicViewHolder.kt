@@ -50,7 +50,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, channel.id, channel.header.name)
+        HomePageTracking.eventClickSeeAllBannerMixChannel(channel.id, channel.header.name)
     }
 
     val CTA_MODE_MAIN = "main"
@@ -163,7 +163,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         )
 
         itemView.setOnClickListener {
-            HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
+            HomePageTracking.eventClickBannerChannelMix(channel)
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
         }
 

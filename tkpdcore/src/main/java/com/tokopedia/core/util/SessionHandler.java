@@ -440,6 +440,11 @@ public class SessionHandler {
         editor.apply();
     }
 
+    public String getAuthAccessToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
+    }
+
     public String getAuthRefreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
