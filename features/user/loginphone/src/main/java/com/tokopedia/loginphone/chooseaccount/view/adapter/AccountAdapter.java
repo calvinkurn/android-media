@@ -80,11 +80,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
         holder.name.setText(MethodChecker.fromHtml(userDetail.getFullname()));
         holder.email.setText(userDetail.getEmail());
         ShopDetail shopDetail = userDetail.getShopDetail();
-        if(!shopDetail.getName().isEmpty() &&
-                !shopDetail.getId().isEmpty() &&
-                !shopDetail.getDomain().isEmpty()){
-            holder.shopView.setVisibility(View.VISIBLE);
-            holder.shopName.setText(userDetail.getShopDetail().getName());
+        if(shopDetail != null) {
+            if(!shopDetail.getName().isEmpty()){
+                holder.shopView.setVisibility(View.VISIBLE);
+                holder.shopName.setText(userDetail.getShopDetail().getName());
+            }
         }
     }
 

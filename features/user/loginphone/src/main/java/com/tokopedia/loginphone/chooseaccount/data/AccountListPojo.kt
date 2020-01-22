@@ -51,7 +51,7 @@ data class UserDetail(
         var image: String = "",
         @SerializedName("shop_detail")
         @Expose
-        var shopDetail: ShopDetail = ShopDetail()
+        var shopDetail: ShopDetail? = ShopDetail()
 )
 
 data class Error(

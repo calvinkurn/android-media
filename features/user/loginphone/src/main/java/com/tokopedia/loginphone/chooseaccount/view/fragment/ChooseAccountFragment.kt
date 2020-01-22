@@ -251,10 +251,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun loginToken(account: UserDetail?, phone: String) {
         account?.let {
-            val shopDetail = it.shopDetail
-            if (shopDetail.name.isNotEmpty() &&
-                    shopDetail.id.isNotEmpty() &&
-                    shopDetail.domain.isNotEmpty()) isHaveStore = true
+            it.shopDetail?.let { shopDetail ->
+                if (shopDetail.name.isNotEmpty()) isHaveStore = true
+            }
 
             when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {

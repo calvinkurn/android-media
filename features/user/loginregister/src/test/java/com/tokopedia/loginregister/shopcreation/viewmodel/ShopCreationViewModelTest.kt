@@ -4,10 +4,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.loginregister.InstantRunExecutorSpek
 import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.profilecommon.domain.pojo.UserProfileUpdate
-import com.tokopedia.profilecommon.domain.usecase.GetUserProfileCompletionUseCase
-import com.tokopedia.profilecommon.domain.usecase.UpdateUserProfileCompletionUseCase
-import com.tokopedia.profilecommon.domain.usecase.UpdateUserProfileUseCase
-import com.tokopedia.profilecommon.domain.usecase.ValidateUserProfileCompletionUseCase
+import com.tokopedia.profilecommon.domain.usecase.*
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
 import com.tokopedia.usecase.coroutines.Result
@@ -33,8 +30,7 @@ object ShopCreationViewModelTest : Spek({
         val registerUseCase = mockk<RegisterUseCase>(relaxed = true)
         val registerCheckUseCase = mockk<RegisterCheckUseCase>(relaxed = true)
         val getUserProfileCompletionUseCase = mockk<GetUserProfileCompletionUseCase>(relaxed = true)
-        val validateUserProfileCompletionUseCase = mockk<ValidateUserProfileCompletionUseCase>(relaxed = true)
-        val updateUserProfileCompletionUseCase =  mockk<UpdateUserProfileCompletionUseCase>(relaxed = true)
+        val validateUserProfileUseCase = mockk<ValidateUserProfileUseCase>(relaxed = true)
         val updateUserProfileUseCase =  mockk<UpdateUserProfileUseCase>(relaxed = true)
         val getProfileUseCase =  mockk<GetProfileUseCase>(relaxed = true)
         val userSession =  mockk<UserSessionInterface>(relaxed = true)
@@ -44,8 +40,7 @@ object ShopCreationViewModelTest : Spek({
                 registerUseCase,
                 registerCheckUseCase,
                 getUserProfileCompletionUseCase,
-                validateUserProfileCompletionUseCase,
-                updateUserProfileCompletionUseCase,
+                validateUserProfileUseCase,
                 updateUserProfileUseCase,
                 getProfileUseCase,
                 userSession,
