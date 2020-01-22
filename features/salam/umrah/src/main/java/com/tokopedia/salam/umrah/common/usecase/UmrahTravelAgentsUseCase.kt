@@ -21,11 +21,7 @@ class UmrahTravelAgentsUseCase @Inject constructor(graphqlRepository: GraphqlRep
     suspend fun executeUseCase(rawQuery: String, fromCloud: Boolean = false, page: Int = 1,
                                limit: Int = 20, flags: List<String>): Result<UmrahTravelAgentsEntity> {
         try {
-            val umrahTravelAgentsParams = UmrahTravelAgentsInput(
-                    page = page,
-                    limit = limit,
-                    flags = flags
-            )
+            val umrahTravelAgentsParams = UmrahTravelAgentsInput(page, limit, flags)
 
             val params = mapOf(PARAM_UMRAH_TRAVEL_AGENTS to umrahTravelAgentsParams)
 

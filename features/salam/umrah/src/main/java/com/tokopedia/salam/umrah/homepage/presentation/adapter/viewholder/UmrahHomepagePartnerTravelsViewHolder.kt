@@ -17,8 +17,8 @@ import kotlinx.android.synthetic.main.partial_umrah_home_page_partner_travel.vie
  * @author by firman on 20/01/19
  */
 
-class UmrahHomepagePartnerTravelsViewHolder (view: View, private val onItemBindListener: onItemBindListener,
-                                             private val adapterPartnerTravel: UmrahHomepagePartnerTravelAdapter): AbstractViewHolder<UmrahTravelAgentsEntity>(view){
+class UmrahHomepagePartnerTravelsViewHolder(view: View, private val onItemBindListener: onItemBindListener,
+                                            private val adapterPartnerTravel: UmrahHomepagePartnerTravelAdapter) : AbstractViewHolder<UmrahTravelAgentsEntity>(view) {
 
     override fun bind(element: UmrahTravelAgentsEntity) {
         with(itemView) {
@@ -30,7 +30,7 @@ class UmrahHomepagePartnerTravelsViewHolder (view: View, private val onItemBindL
                     adapter = adapterPartnerTravel
                     layoutManager = GridLayoutManager(context, COLUMN_SIZE)
                 }
-            }else{
+            } else {
                 umrah_partner_section_layout.hide()
                 umrah_partner_section_shimmering.show()
                 if (!UmrahHomepageFragment.isRequestedPartner) {
@@ -44,7 +44,7 @@ class UmrahHomepagePartnerTravelsViewHolder (view: View, private val onItemBindL
         }
     }
 
-    companion object{
+    companion object {
         val LAYOUT = R.layout.partial_umrah_home_page_partner_travel
         val COLUMN_SIZE = 3
     }
