@@ -58,23 +58,29 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         val viewHeight = this.height.toFloat()
         val videoWidth = width
         val videoHeight = height
+        val pivotX: Float
+        val pivotY: Float
 
         val scaleFactor = if (videoHeight > videoWidth){
             // Portrait
             val previewRatio = videoHeight / videoWidth
             val viewFinderRatio = viewWidth / viewHeight
             val scaling = viewFinderRatio * previewRatio
+            pivotX = 0f
+            pivotY = viewHeight * 0.3f
             PointF(1f, scaling)
         } else {
             // Landscape
             val previewRatio = videoWidth / videoHeight
             val viewFinderRatio = viewHeight / viewWidth
             val scaling = viewFinderRatio * previewRatio
+            pivotX = viewWidth * 0.5f
+            pivotY = 0f
             PointF(scaling, 1f)
         }
 
         val matrix = Matrix()
-        matrix.preScale(scaleFactor.x, scaleFactor.y, 0f, videoHeight / 3f)
+        matrix.preScale(scaleFactor.x, scaleFactor.y, pivotX, pivotY)
         textureView.setTransform(matrix)
     }
 

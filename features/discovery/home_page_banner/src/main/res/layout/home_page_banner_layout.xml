@@ -11,13 +11,13 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:paddingBottom="8dp"
-        app:layout_constraintDimensionRatio="H,4:3"
+        app:layout_constraintDimensionRatio="1.325"
         app:layout_constrainedWidth="true"
         app:layout_constrainedHeight="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@android:color/holo_red_dark"/>
+        android:background="@android:color/holo_red_dark"/>
 
     <LinearLayout
         android:id="@+id/indicator_banner_container"
