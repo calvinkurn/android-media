@@ -345,6 +345,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         quick_filter?.renderFilter(listQuickFilter, currentIndex)
         quick_filter?.setListener { keySelected ->
+            filterStatusId = 0
             var tmpKeySelected = keySelected
             if (tmpKeySelected == "0") {
                 tmpKeySelected = STATUS_ALL_ORDER
@@ -493,6 +494,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(SomConsts.PARAM_LIST_ORDER)) {
+                    filterStatusId = 0
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
                     isFilterApplied = checkFilterApplied(paramOrder)
                     tabActive = ""
