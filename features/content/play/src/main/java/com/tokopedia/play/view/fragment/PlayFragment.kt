@@ -163,6 +163,9 @@ class PlayFragment : BaseDaggerFragment() {
         ivClose.setOnClickListener {
             hideKeyboard()
         }
+        flVideo.setOnClickListener {
+            hideKeyboard()
+        }
     }
 
     private fun setupScreen(view: View) {

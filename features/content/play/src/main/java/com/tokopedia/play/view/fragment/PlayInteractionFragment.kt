@@ -59,6 +59,7 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -225,6 +226,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            if (it.state == TokopediaPlayVideoState.Ended) showInteractionIfWatchMode()
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -492,7 +494,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
+                            PlayButtonInteractionEvent.PlayClicked -> {
+                                PlayAnalytics.clickPlayVideo(channelId)
+                                playViewModel.startCurrentVideo()
+                            }
                         }
                     }
         }
@@ -862,7 +867,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
-        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), playViewModel.isLive)
+        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), action.value, playViewModel.isLive)
         viewModel.doFollow(partnerId, action)
 
         sendEventFollowPartner(action == PartnerFollowAction.Follow)
@@ -1055,5 +1060,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
         if (bottomSheet.isVisible) bottomSheet.dismiss()
+    }
+
+    private fun showInteractionIfWatchMode() {
+        view?.performClick()
     }
 }

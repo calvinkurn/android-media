@@ -1,11 +1,23 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
+class PlayCardViewModel: HomeVisitable {
+    override fun visitableId(): String {
+        return channel?.id?:""
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is DynamicChannelViewModel) {
+            return channel == b.channel
+        }
+        return false
+    }
+
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
@@ -63,5 +75,9 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
 
     override fun setTrackingCombined(isCombined: Boolean) {
         this.isCombined = isCombined
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
     }
 }

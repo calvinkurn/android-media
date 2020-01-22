@@ -1,14 +1,19 @@
-package com.tokopedia.kotlin.util
+package com.tokopedia.device.info
 
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
 
-object DeviceChecker {
+
+/**
+ * Created by Yehezkiel on 2019-12-10.
+ */
+object DevicePerformanceInfo {
+
     private const val MINIMUM_DEVICE_MEMORY = 256
     private const val MINIMUM_DEVICE_PROCESSORS = 4
 
-    fun isLowPerformingDevice(context: Context?): Boolean {
+    fun isLow(context: Context?): Boolean {
         val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
         val runtime = Runtime.getRuntime()
         if (context == null || activityManager == null) {

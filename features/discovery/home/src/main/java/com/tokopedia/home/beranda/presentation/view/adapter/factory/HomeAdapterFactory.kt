@@ -2,8 +2,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory
 
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.*
@@ -31,7 +33,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val inspirationListener: HomeInspirationListener,
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
-                         private val homeReviewListener: HomeReviewListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val homeReviewListener: HomeReviewListener,
+                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -56,10 +59,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
     override fun type(tickerViewModel: TickerViewModel): Int {
         return TickerViewHolder.LAYOUT
-    }
-
-    override fun type(searchPlaceholderViewModel: SearchPlaceholderViewModel): Int {
-        return SearchPlaceholderViewModel.SEARCH_PLACE_HOLDER
     }
 
     override fun type(businessUnitViewModel: BusinessUnitViewModel): Int {
@@ -101,7 +100,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     }
 
     override fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int {
-        val layout = dynamicChannelViewModel.channel.layout
+        val layout = dynamicChannelViewModel.channel?.layout?:""
         return getDynamicChannelLayoutFromType(layout)
     }
 
@@ -120,6 +119,14 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
     override fun type(playCard: PlayCardViewModel): Int {
         return PlayCardViewHolder.LAYOUT
+    }
+
+    override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int {
+        return HomeLoadingMoreViewHolder.LAYOUT
+    }
+
+    override fun type(homeRetryModel: HomeRetryModel): Int {
+        return RetryViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -177,12 +184,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
-            DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener)
-            ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, countDownListener)
-            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener)
+            DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(fragmentManager, view)
+            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(listener, view)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
@@ -198,10 +205,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
-            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, countDownListener)
+            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener, countDownListener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
+            HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

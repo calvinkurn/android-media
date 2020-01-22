@@ -32,7 +32,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
 
         private const val RETRY_COUNT = 3
-        private const val RETRY_DELAY = 5000L
+        private const val RETRY_DELAY = 1000L
 
         private const val VIDEO_MAX_SOUND = 100f
         private const val VIDEO_MIN_SOUND = 0f
@@ -82,32 +82,44 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                 } else {
                     //For now it's the same as BehindLiveWindow
                     val prepareState = currentPrepareState
-                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
+                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, false)
                 }
             } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
         }
-
-
     }
 
-    var videoPlayer: SimpleExoPlayer by Delegates.observable(initVideoPlayer(null)) { _, _, new ->
+    var videoPlayer: SimpleExoPlayer by Delegates.observable(initVideoPlayer(null)) { _, _, _ ->
         _observableVideoPlayer.value = videoPlayer
     }
 
     //region public method
     fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, forceReset: Boolean = false) {
-        val currentUri: Uri? = when (val prepareState = currentPrepareState) {
+        if (uri.toString().isEmpty()) {
+            releasePlayer()
+            return
+        }
+
+        val prepareState = currentPrepareState
+        val currentUri: Uri? = when (prepareState) {
             is TokopediaPlayPrepareState.Unprepared -> prepareState.previousUri
             is TokopediaPlayPrepareState.Prepared -> prepareState.uri
         }
         if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
-        playVideoWithUri(uri, autoPlay, currentUri == null || currentUri != uri || forceReset)
-        currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
-
+        if (prepareState is TokopediaPlayPrepareState.Unprepared) {
+            playVideoWithUri(uri, autoPlay, currentUri == null || currentUri != uri || forceReset)
+            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
+        }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean = true, forceReset: Boolean = false) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay, forceReset)
+    fun safePlayVideoWithUriString(uriString: String?, autoPlay: Boolean = true, forceReset: Boolean = false) {
+        if (uriString.isNullOrEmpty()) {
+            releasePlayer()
+            return
+        }
+
+        safePlayVideoWithUri(Uri.parse(uriString), autoPlay, forceReset)
+    }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, shouldReset: Boolean) {
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
@@ -202,7 +214,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         return object : DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
                 return if (exception is ParserException || exception is FileNotFoundException || exception is UnexpectedLoaderException) C.TIME_UNSET
-                else RETRY_DELAY
+                else (errorCount * RETRY_DELAY) + RETRY_DELAY
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
