@@ -176,6 +176,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * @param productDataModel is the data model for fill the UI with view model
      */
     private fun initView(productDataModel: ProductInfoDataModel){
+        configureContentView(true)
         recommendationItem = mapToRecommendationItem(productDataModel)
         product_name.text = productDataModel.productDetailData.name
         handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
@@ -190,8 +191,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         updateWishlist(productDataModel.productDetailData.isWishlist)
         ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
-
-        configureContentView(true)
 
         when(productDataModel.productDetailData.status){
             0 -> {
@@ -221,30 +220,30 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun configureContentView(isShow: Boolean){
         val show = if(isShow) View.VISIBLE else View.GONE
-        product_image.startFade(isShow)
-        fab_detail.startFade(isShow)
-        product_name.startFade(isShow)
-        product_discount.startFade(isShow)
-        product_slashed_price.startFade(isShow)
-        product_price.startFade(isShow)
-        badge.startFade(isShow)
-        location.startFade(isShow)
-        rating.startFade(isShow)
-        review_count.startFade(isShow)
-        buy_now.startFade(isShow)
-        add_to_cart.startFade(isShow)
-//        product_image.visibility = show
-//        fab_detail.visibility = show
-//        product_name.visibility = show
-//        product_discount.visibility = show
-//        product_slashed_price.visibility = show
-//        product_price.visibility = show
-//        badge.visibility = show
-//        location.visibility = show
-//        rating.visibility = show
-//        review_count.visibility = show
-//        buy_now.visibility = show
-//        add_to_cart.visibility = show
+//        product_image.startFade(isShow)
+//        fab_detail.startFade(isShow)
+//        product_name.startFade(isShow)
+//        product_discount.startFade(isShow)
+//        product_slashed_price.startFade(isShow)
+//        product_price.startFade(isShow)
+//        badge.startFade(isShow)
+//        location.startFade(isShow)
+//        rating.startFade(isShow)
+//        review_count.startFade(isShow)
+//        buy_now.startFade(isShow)
+//        add_to_cart.startFade(isShow)
+        product_image.visibility = show
+        fab_detail.visibility = show
+        product_name.visibility = show
+        product_discount.visibility = show
+        product_slashed_price.visibility = show
+        product_price.visibility = show
+        badge.visibility = show
+        location.visibility = show
+        rating.visibility = show
+        review_count.visibility = show
+        buy_now.visibility = show
+        add_to_cart.visibility = show
     }
 
     /**
