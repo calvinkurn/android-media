@@ -85,28 +85,6 @@ public class AnalyticsLog {
         );
     }
 
-
-    public static void logGroupChatWebSocketError(Context context, String url, String error) {
-        TkpdCoreRouter coreRouter = RouterUtils.getRouterFromContext(context);
-        SessionHandler sessionHandler = coreRouter.legacySessionHandler();
-        GCMHandler gcmHandler = coreRouter.legacyGCMHandler();
-        AnalyticsLog.log(context, "ErrorType=LogGroupChatWebSocketError!"
-                + " Error=" + error
-                + " UserID=" + (sessionHandler.getLoginID()
-                .equals("") ? "0" : sessionHandler.getLoginID())
-                + " Url=" + "'" + url + "'"
-                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
-                + " AppVersion=" + GlobalConfig.VERSION_NAME
-                + " AppCode=" + GlobalConfig.VERSION_CODE
-                + " OSVersion=" + Build.VERSION.RELEASE
-                + " DeviceModel=" + android.os.Build.MODEL
-                + " DeviceId=" + "'" + gcmHandler.getRegistrationId() + "'"
-                + " "
-
-        );
-    }
-
-
     public static void logNetworkError(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url, int errorCode) {
         String baseUrl = getBaseUrl(url);
 
