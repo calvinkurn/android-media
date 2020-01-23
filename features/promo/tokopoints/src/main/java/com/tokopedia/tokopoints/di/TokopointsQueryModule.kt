@@ -65,4 +65,13 @@ class TokopointsQueryModule {
         return GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.tp_gql_swipe_coupon)
     }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_USER_INFO)
+    fun isPhoneVerified(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_user_info)
+    }
+
 }

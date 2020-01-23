@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -21,6 +22,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.ViewFlipper
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -36,6 +38,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -65,6 +68,7 @@ import rx.schedulers.Schedulers
 
 import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
@@ -77,6 +81,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private var mRefreshRepeatCount = 0
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
+    var phoneVerificationState: Boolean? = null
+    var mCTA: String? = null
+    var mCode: String? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -96,7 +103,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initListener()
-
+        mPresenter.isPhonerVerfied()
     }
 
     private fun initObserver() {
@@ -107,7 +114,14 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         observePinPage()
         observeRefetchCoupon()
         onbserveOnRedeemCoupon()
+        observeUserInfo()
     }
+
+    private fun observeUserInfo() = mPresenter.userInfo.observe(this, Observer {
+        it.let {
+            phoneVerificationState = it.verifiedMsisdn
+        }
+    })
 
     private fun obserserFinish() = mPresenter.finish.observe(this, Observer {
         it?.let {
@@ -229,6 +243,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
+        mCTA = cta
+        mCode = code
         context?.let {
             val adb = AlertDialog.Builder(context!!)
             adb.setTitle(R.string.tp_label_use_coupon)
@@ -243,8 +259,13 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
             adb.setPositiveButton(R.string.tp_label_use) { dialogInterface, i ->
                 //Call api to validate the coupon
-                mPresenter.redeemCoupon(code, cta)
+                val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
 
+                if (phoneVerificationState == false && variant == AB_TESTING_CTA_VARIANT_A) {
+                    openPhoneVerificationBottomSheet()
+                } else {
+                    mPresenter.redeemCoupon(code, cta)
+                }
                 AnalyticsTrackerUtil.sendEvent(context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                         AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
@@ -265,6 +286,33 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     }
 
+    private fun openPhoneVerificationBottomSheet() {
+        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
+        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
+        closeableBottomSheetDialog.setContentView(view)
+        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
+        btnVerifikasi.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+            startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE,
+                    "")
+            closeableBottomSheetDialog.cancel()
+
+        }
+        btnCancel.setOnClickListener {
+            closeableBottomSheetDialog.cancel()
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE_BATAL, "")
+        }
+
+        closeableBottomSheetDialog.show()
+    }
 
     override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
 
@@ -650,8 +698,16 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_VERIFICATION_PHONE && resultCode == Activity.RESULT_OK) {
+            mPresenter.redeemCoupon(mCTA!!, mCode!!)
+        }
+    }
 
     companion object {
+        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
+        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
+        private val REQUEST_CODE_VERIFICATION_PHONE = 301
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2

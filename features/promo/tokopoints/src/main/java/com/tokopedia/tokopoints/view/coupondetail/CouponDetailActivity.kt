@@ -72,13 +72,12 @@ class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleC
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             inflateFragment()
-        } else {
-            finish()
         }
     }
 
     companion object {
         private val REQUEST_CODE_LOGIN = 1
+        private val REQUEST_CODE_VERIFICATION_PHONE=301
 
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, CouponDetailActivity::class.java)
