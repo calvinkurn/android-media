@@ -114,7 +114,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
-//                new InboxTalkApplinkModuleLoader(),
+                new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
