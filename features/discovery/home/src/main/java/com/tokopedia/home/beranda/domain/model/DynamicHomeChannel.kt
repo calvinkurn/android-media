@@ -501,58 +501,6 @@ class DynamicHomeChannel(
                 ) as HashMap<String, Any>
             }
 
-        val enhanceClickPlayBanner: Map<String, Any>
-            get() {
-                val list: List<Any> = convertPromoEnhancePlayBanner()
-                return DataLayer.mapOf(
-                        "event", "promoClick",
-                        "eventCategory", "homepage-cmp",
-                        "eventAction", "click on play dynamic banner",
-                        "eventLabel", "$id - Play-CMP_OTHERS_indonesian-idol",
-                        "ecommerce", DataLayer.mapOf(
-                        "promoClick", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(
-                        *list.toTypedArray()
-                )
-                )
-                )
-                )
-            }
-
-        val enhanceImpressionPlayBanner: Map<String, Any>
-            get() {
-                val list: List<Any> = convertPromoEnhancePlayBanner()
-                return DataLayer.mapOf(
-                        "event", "promoView",
-                        "eventCategory", "homepage-cmp",
-                        "eventAction", "impression on play dynamic banner",
-                        "eventLabel", "Play-CMP_OTHERS_indonesian-idol",
-                        "ecommerce", DataLayer.mapOf(
-                        "promoView", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(
-                        *list.toTypedArray()
-                )
-                )
-                )
-                )
-            }
-
-        private fun convertPromoEnhancePlayBanner(): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-            /**
-             * Banner always in position 1 because only 1 banner shown
-             */
-            list.add(
-                    DataLayer.mapOf(
-                            "id", banner.id,
-                            "name", "/ - p1 - play dynamic banner - " + header.name,
-                            "creative", "Play-CMP_OTHERS_indonesian-idol",
-                            "creative_url", banner.imageUrl,
-                            "position", 1.toString())
-            )
-            return list
-        }
-
         fun getHomeAttribution(position: Int, creativeName: String?): String {
             if(homeAttribution.isEmpty()) return ""
             return homeAttribution.replace("$1", position.toString()).replace("$2", if ((creativeName != null)) creativeName else "")

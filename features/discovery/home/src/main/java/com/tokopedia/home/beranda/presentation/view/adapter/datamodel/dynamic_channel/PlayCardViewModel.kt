@@ -1,11 +1,13 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
+import java.util.*
 
 class PlayCardViewModel: HomeVisitable, ImpressHolder() {
     override fun visitableId(): String {
@@ -74,5 +76,58 @@ class PlayCardViewModel: HomeVisitable, ImpressHolder() {
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         return null
+    }
+
+    val enhanceClickPlayBanner: Map<String, Any>
+        get()  {
+            val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage-cmp",
+                    "eventAction", "click on play dynamic banner",
+                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId}",
+                    "ecommerce", DataLayer.mapOf(
+                    "promoClick", DataLayer.mapOf(
+                    "promotions", DataLayer.listOf(
+                    *list.toTypedArray()
+            )
+            )
+            )
+            )
+
+    }
+
+    val enhanceImpressionPlayBanner: Map<String, Any>
+        get() {
+            val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage-cmp",
+                    "eventAction", "impression on play dynamic banner",
+                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId}",
+                    "ecommerce", DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                    "promotions", DataLayer.listOf(
+                    *list.toTypedArray()
+            )
+            )
+            )
+            )
+    }
+
+    private fun convertPromoEnhancePlayBanner(playChannel: PlayChannel?): List<Any> {
+        val list: MutableList<Any> = ArrayList()
+        /**
+         * Banner always in position 1 because only 1 banner shown
+         */
+        list.add(
+                DataLayer.mapOf(
+                        "id", playChannel?.channelId,
+                        "name", "/ - p1 - play dynamic banner - ${playChannel?.title}",
+                        "creative", "Play-CMP_OTHERS_${playChannel?.slug}",
+                        "creative_url", playChannel?.coverUrl,
+                        "position", 1.toString())
+        )
+        return list
     }
 }

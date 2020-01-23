@@ -12,6 +12,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerFeedViewModel;
@@ -1175,21 +1176,17 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventEnhanceImpressionPlayBanner(DynamicHomeChannel.Channels bannerChannel) {
+    public static void eventEnhanceImpressionPlayBanner(PlayCardViewModel playCardViewModel) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceImpressionPlayBanner()
-            );
+            tracker.sendEnhanceEcommerceEvent(playCardViewModel.getEnhanceImpressionPlayBanner());
         }
     }
 
-    public static void eventClickPlayBanner(DynamicHomeChannel.Channels bannerChannel) {
+    public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickPlayBanner()
-            );
+            tracker.sendEnhanceEcommerceEvent(playCardViewModel.getEnhanceClickPlayBanner());
         }
     }
 

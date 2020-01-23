@@ -70,7 +70,7 @@ class PlayCardViewHolder(
 
             itemView.setSafeOnClickListener {
                 videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
-                HomePageTracking.eventClickPlayBanner(model.getChannel())
+                HomePageTracking.eventClickPlayBanner(model)
             }
 
             play.setSafeOnClickListener { _ ->
@@ -81,7 +81,7 @@ class PlayCardViewHolder(
 
     private fun handlingTracker(model: PlayCardViewModel){
         thumbnailView?.addOnImpressionListener(model){
-            HomePageTracking.eventEnhanceImpressionPlayBanner(model.getChannel())
+            HomePageTracking.eventEnhanceImpressionPlayBanner(model)
         }
     }
 
