@@ -13,6 +13,18 @@ query umrahTravelAgentBySlug($slugName:String!){
     pilgrimsPerYear
     establishedSince
     description
+    products{
+        id
+        title
+        banner
+        slugName
+        originalPrice
+        slashPrice
+        downPaymentPrice
+        durationDays
+        departureDate
+        returningDate
+    }
     ui {
         establishedSince
         pilgrimsPerYear

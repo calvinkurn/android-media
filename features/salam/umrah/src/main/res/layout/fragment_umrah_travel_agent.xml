@@ -27,6 +27,23 @@
         android:text="@string/umrah_travel_contact"
         app:unifyButtonVariant="ghost"
         />
-
-
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_umrah_travel_agent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@+id/btn_umrah_travel_contact"
+        >
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_umrah_travel_agent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabIndicatorColor="@color/Green_G500"
+            app:tabMode="fixed"
+            app:tabPaddingStart="0dp"
+            app:tabTextColor="@color/grey_450"
+            app:tabSelectedTextColor="@color/Green_G500"
+            app:tabTextAppearance="@style/tabUmrahStyle"
+            />
+    </androidx.viewpager.widget.ViewPager>
 </androidx.constraintlayout.widget.ConstraintLayout>

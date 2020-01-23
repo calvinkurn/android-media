@@ -13,6 +13,7 @@ import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity.Companion.EXTRA_SLUG_NAME
+import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelAgentViewPagerAdapter
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +36,9 @@ class UmrahTravelFragment: BaseDaggerFragment(){
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    private lateinit var umrahTravelAgentViewPagerAdapter: UmrahTravelAgentViewPagerAdapter
+
 
     private var slugName : String ? = ""
 
@@ -90,6 +94,13 @@ class UmrahTravelFragment: BaseDaggerFragment(){
 
     private fun setupAll(travelAgent: TravelAgent){
         setupTravelAgent(travelAgent)
+        setupViewPager()
+    }
+
+    private fun setupViewPager(){
+        umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager)
+        vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
+        tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
     }
 
     private fun setupTravelAgent(travelAgent: TravelAgent){

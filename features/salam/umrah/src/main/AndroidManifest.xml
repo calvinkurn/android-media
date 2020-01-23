@@ -116,6 +116,7 @@
 
         <activity
             android:name=".travel.presentation.activity.UmrahTravelActivity"
+            android:label="@string/umrah_travel_agent_title"
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
