@@ -53,7 +53,7 @@ class ProductCardViewSmallGrid: ProductCardView {
     }
 
     private fun initLabelWholesale(productWholesale: Boolean) {
-        labelSoldOut?.visibility = if (productWholesale) View.VISIBLE else View.GONE
+        labelWholesale?.visibility = if (productWholesale) View.VISIBLE else View.GONE
     }
 
     private fun initLabelPreOrder(productPreOrder: Boolean) {
