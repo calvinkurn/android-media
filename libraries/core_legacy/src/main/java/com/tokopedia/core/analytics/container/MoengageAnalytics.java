@@ -1,13 +1,13 @@
 package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
-import androidx.core.util.Preconditions;
 import android.text.TextUtils;
+
+import androidx.core.util.Preconditions;
 
 import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.core.MoEngage;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -22,7 +22,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.moe.pushlibrary.utils.MoEHelperConstants.*;
+import timber.log.Timber;
+
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_UNIQUE_ID;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_BDAY;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_EMAIL;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_FIRST_NAME;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
@@ -134,7 +142,7 @@ public class MoengageAnalytics extends ContextAnalytics {
         final String fullName = customerWrapper[1];
         final String emailAddress = customerWrapper[2];
 
-        com.tkpd.library.utils.legacy.CommonUtils.dumper("MoEngage check user " + customerId);
+        Timber.d("MoEngage check user " + customerId);
 
         MoEHelper helper = MoEHelper.getInstance(getContext());
         helper.setFullName(fullName);
@@ -150,7 +158,7 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     public void sendMoengageRegisterEvent(String fullName, String mobileNo) {
-        CommonUtils.dumper("MoEngage check user " + fullName);
+        Timber.d("MoEngage check user " + fullName);
         Map<String, Object> map = new HashMap<>();
         map.put(AppEventTracking.MOENGAGE.NAME, fullName);
         map.put(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo);

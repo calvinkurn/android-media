@@ -41,30 +41,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
                 throw new ResponseErrorException(digitalErrorResponse.getDigitalErrorMessageFormatted());
             } else if (digitalErrorResponse.getTypeOfError()
                     == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
-                /*if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        ServerErrorHandler.STATUS_UNDER_MAINTENANCE
-                )) {
-                    throw new ServerErrorMaintenanceException(
-                            digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
-                            response.code(), response.request().url().toString()
-                    );
-                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        ServerErrorHandler.STATUS_REQUEST_DENIED
-                )) {
-                    throw new ServerErrorRequestDeniedException(
-                            digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
-                            response.code(), response.request().url().toString()
-                    );
-                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        ServerErrorHandler.STATUS_FORBIDDEN
-                ) && MethodChecker.isTimezoneNotAutomatic()) {
-                    throw new ServerErrorTimeZoneException(
-                            digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
-                            response.code(), response.request().url().toString()
-                    );
-                } else {*/
                     throw new HttpErrorException(response.code());
-//                }
             } else {
                 throw new HttpErrorException(response.code());
             }

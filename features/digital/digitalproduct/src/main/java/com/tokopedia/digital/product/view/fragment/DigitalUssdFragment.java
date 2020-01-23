@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,14 +17,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -37,7 +40,6 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.ProductPriceInfoView;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
@@ -58,6 +60,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
 
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 1001;
     private static final int REQUEST_CODE_LOGIN = 1002;
+    private static final int REQUEST_CODE_CART_DIGITAL = 1003;
     private TextView tvBalance;
     private TextView tvPhoneNumber;
     private TextView tvOperatorName;
@@ -95,7 +98,6 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     private UssdProductDigitalPresenter presenter;
     private UserSession userSession;
     private DigitalAnalytics digitalAnalytics;
-    private DigitalModuleRouter digitalModuleRouter;
 
     public static DigitalUssdFragment newInstance(PulsaBalance pulsaBalance, Operator selectedOperator,
                                                   List<Validation> validationListData, String categoryId,
@@ -150,11 +152,8 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
             digitalAnalytics = new DigitalAnalytics();
         }
-        if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
-            digitalModuleRouter = (DigitalModuleRouter) getActivity().getApplicationContext();
-        }
 
-        if (getArguments() != null){
+        if (getArguments() != null) {
             setupArguments(getArguments());
         }
 
@@ -171,7 +170,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             onRestoreState(savedInstanceState);
         }
         presenter = new UssdProductDigitalPresenter(this);
@@ -339,30 +338,29 @@ public class DigitalUssdFragment extends BaseDaggerFragment
                 }
             case REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
-                     presenter.processAddToCartProduct(digitalCheckoutPassDataState);
+                    presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
                 break;
             case OperatorVerificationDialog.REQUEST_CODE_DIGITAL_USSD_OPERATOR_MATCH:
                 String ussdMobileNumber = data.getStringExtra(OperatorVerificationDialog.ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY);
                 selectedOperator = data.getParcelableExtra(OperatorVerificationDialog.EXTRA_CALLBACK_OPERATOR_DATA);
                 if (ussdMobileNumber != null) {
-                    ussdMobileNumber=DeviceUtil.formatPrefixClientNumber(ussdMobileNumber);
+                    ussdMobileNumber = DeviceUtil.formatPrefixClientNumber(ussdMobileNumber);
                     renderOperatorData();
                     tvPhoneNumber.setText(ussdMobileNumber);
-                    tvPhoneNumber.setTextColor(getResources().getColor(R.color.black));
+                    tvPhoneNumber.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black));
                     presenter.storeUssdPhoneNumber(selectedSimIndex, ussdMobileNumber);
 
                 }
                 break;
-
-        }
-
-        if (DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL() == requestCode)
-        if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-            String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
-            if (!TextUtils.isEmpty(message)) {
-                showToastMessage(message);
-            }
+            case REQUEST_CODE_CART_DIGITAL:
+                if (data != null && data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                    String message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE);
+                    if (!TextUtils.isEmpty(message)) {
+                        showToastMessage(message);
+                    }
+                }
+                break;
         }
     }
 
@@ -394,9 +392,15 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = digitalModuleRouter.getLoginIntent
-                (getActivity());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
+    }
+
+    @Override
+    public void navigateToCart(DigitalCheckoutPassData digitalCheckoutPassData) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CART_DIGITAL);
+        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassDataState);
+        startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
     }
 
     @Override
@@ -485,7 +489,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
 
         if (pulsaBalance.getMobileNumber() == null || "".equalsIgnoreCase(pulsaBalance.getMobileNumber().trim())) {
             tvUnknownNumber.setVisibility(View.VISIBLE);
-            tvPhoneNumber.setTextColor(getResources().getColor(R.color.green_800));
+            tvPhoneNumber.setTextColor(getResources().getColor(com.tokopedia.design.R.color.green_800));
             tvPhoneNumber.setText(getResources().getString(R.string.label_ussd_unknown));
             showVerifyUssdOperatorDialogFragment(false);
         } else if (!DeviceUtil.validateNumberAndMatchOperator(validationList, selectedOperator, pulsaBalance.getMobileNumber())) {
@@ -500,7 +504,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
 
     @Override
     public void onProductLinkClicked(String url) {
-        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), url);
+        RouteManager.route(getActivity(), url);
     }
 
     private void setBottomSheetDialog() {
@@ -510,7 +514,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
                 .BottomSheetFieldBuilder()
                 .setTitle(getString(R.string.title_tooltip_instan_payment))
                 .setBody(getString(R.string.body_tooltip_instan_payment))
-                .setImg(R.drawable.ic_digital_instant_payment)
+                .setImg(R.drawable.digital_ic_digital_instant_payment)
                 .build());
         bottomSheetView.show();
     }

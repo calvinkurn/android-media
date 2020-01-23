@@ -21,7 +21,7 @@ import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_digital_promo_list.*
+import kotlinx.android.synthetic.main.fragment_recharge_general_promo_list.*
 import javax.inject.Inject
 
 class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidget.ActionListener {
@@ -36,7 +36,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
     private lateinit var promoList: ArrayList<TopupBillsPromo>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_digital_promo_list, container, false)
+        return inflater.inflate(R.layout.fragment_recharge_general_promo_list, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

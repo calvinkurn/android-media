@@ -30,6 +30,7 @@ public class ShopPageTrackingConstant {
     public static final String TOP_SECTION = "top section";
     public static final String INFO = "info";
     public static final String MERCHANT_VOUCHER_CODE = "merchant voucher code";
+    public static final String MERCHANT_VOUCHER = "merchant voucher";
     public static final String PROMO_BANNER = "promo banner";
     public static final String MANAGE_SHOP = "manage shop";
     public static final String MANAGE_PRODUCT = "manage product";
@@ -98,6 +99,8 @@ public class ShopPageTrackingConstant {
     public static final String EVENT_CATEGORY = "eventCategory";
     public static final String EVENT_ACTION = "eventAction";
     public static final String EVENT_LABEL = "eventLabel";
+    public static final String EVENT_PROMO_ID = "promoId";
+    public static final String EVENT_PRODUCT_ID = "productId";
     public static final String SHOP_ID = "shop_id";
     public static final String SHOP_NAME = "shop_name";
     public static final String PAGE_TYPE = "page_type";
@@ -109,6 +112,8 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT = "product";
     public static final String PRODUCTS = "products";
     public static final String NAME = "name";
+    public static final String CREATIVE = "creative";
+    public static final String CREATIVE_URL = "creative_url";
     public static final String PROMO_ID = "promo_id";
     public static final String PROMO_CODE = "promo_code";
     public static final String ID = "id";
