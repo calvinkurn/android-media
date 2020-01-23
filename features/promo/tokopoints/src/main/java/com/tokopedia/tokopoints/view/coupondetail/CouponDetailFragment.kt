@@ -76,8 +76,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
     var phoneVerificationState: Boolean? = null
-    var mCTA: String? = null
-    var mCode: String? = null
+    var mCTA: String = ""
+    var mCode: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -694,7 +694,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_VERIFICATION_PHONE && resultCode == Activity.RESULT_OK) {
-            mPresenter.redeemCoupon(mCTA!!, mCode!!)
+            mPresenter.redeemCoupon(mCTA, mCode)
         }
     }
 
