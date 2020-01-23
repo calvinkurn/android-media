@@ -1,7 +1,5 @@
 package com.tokopedia.changepassword.view.fragment
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -10,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -41,7 +38,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
             presenter = ChangePasswordDependencyInjector.Companion.inject(activity!!.applicationContext)
             presenter.attachView(this)
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -133,17 +129,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun onSuccessLogout() {
-        val stickyPref = activity?.getSharedPreferences(STICKY_LOGIN_PREF, Context.MODE_PRIVATE)
-        stickyPref?.edit()?.clear()?.apply()
-
-        sendBroadcast()
-    }
-
-    private fun sendBroadcast() {
-        val intent = Intent(BROADCAST_LOGOUT)
-        context?.let {
-            LocalBroadcastManager.getInstance(it).sendBroadcast(intent)
-        }
+        RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
     }
 
     override fun onErrorOldPass(errorMessage: String?) {
@@ -212,10 +198,5 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 }
             }
         }
-    }
-
-    companion object {
-        private const val BROADCAST_LOGOUT = "BROADCAST_LOGOUT"
-        private const val STICKY_LOGIN_PREF = "sticky_login_widget.pref"
     }
 }

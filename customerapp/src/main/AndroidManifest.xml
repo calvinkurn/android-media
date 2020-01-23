@@ -353,7 +353,26 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
-
+  
+        <!--Logout-->
+        <activity
+          android:name=".logout.LogoutActivity"
+          android:label="@string/title_logout"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.White">
+          <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+            
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            
+            <data
+              android:scheme="@string/internal_scheme"
+              android:host="@string/host_global"
+              android:path="@string/path_logout" />
+          </intent-filter>
+        </activity>
+      
     </application>
 
 </manifest>
