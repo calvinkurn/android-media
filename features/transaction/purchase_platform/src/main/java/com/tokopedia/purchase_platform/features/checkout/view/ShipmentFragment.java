@@ -1529,7 +1529,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
         }
         shipmentDetailData.setTradein(isTradeIn());
-        shipmentDetailData.setTradeInDropOff(isTradeInByDropOff());
 
         return shipmentDetailData;
     }
