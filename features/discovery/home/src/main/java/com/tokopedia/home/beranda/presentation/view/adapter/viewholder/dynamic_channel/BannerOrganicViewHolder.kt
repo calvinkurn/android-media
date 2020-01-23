@@ -190,7 +190,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         val channel = element?.channel
         val blankSpaceConfig = computeBlankSpaceConfig(channel)
