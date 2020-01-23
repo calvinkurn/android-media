@@ -332,6 +332,7 @@ class ShopPageProductListViewModel @Inject constructor(
         listGetShopProductUseCase.forEach {
             it.clearCache()
         }
+        listGetShopProductUseCase.clear()
         getShopFeaturedProductUseCase.clearCache()
     }
 
@@ -340,7 +341,6 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun getEtalaseData(shopId: String) {
-        listGetShopProductUseCase.clear()
         launchCatchError(coroutineContext, block = {
             val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId) }
             etalaseListData.postValue(Success(etalaseListDataResult))
