@@ -46,13 +46,12 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Weaver.Companion.executeWeaveCoRoutine(this::checkApkTempered,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
-
         startWarmStart();
         startSplashTrace();
 
         super.onCreate(savedInstanceState);
+        Weaver.Companion.executeWeaveCoRoutine(this::checkApkTempered,
+                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
 
         finishWarmStart();
 
