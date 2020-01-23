@@ -102,7 +102,7 @@ public class ProductListFragment
         RecommendationListener,
         BannedProductsRedirectToBrowserListener {
 
-    public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
+    private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
@@ -234,7 +234,6 @@ public class ProductListFragment
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(createProductItemDecoration());
-        setHeaderTopAds(true);
     }
 
     @NonNull
@@ -252,7 +251,7 @@ public class ProductListFragment
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
-                    loadMoreProduct(adapter.getStartFrom());
+                    loadMoreProduct(presenter.getStartFrom());
                 } else {
                     adapter.removeLoading();
                 }
@@ -262,7 +261,8 @@ public class ProductListFragment
 
     private boolean isAllowLoadMore() {
         return getUserVisibleHint()
-                && adapter.hasNextPage();
+                && presenter != null
+                && presenter.hasNextPage();
     }
 
     private void initTopAdsParams() {
@@ -280,21 +280,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void storeTotalData(int totalData) {
-        adapter.setTotalData(totalData);
-    }
-
-    @Override
-    public void incrementStart() {
-        adapter.incrementStart();
-    }
-
-    @Override
-    public void setHeaderTopAds(boolean hasHeader) {
-
-    }
-
-    @Override
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
@@ -304,7 +289,7 @@ public class ProductListFragment
     }
 
     public void setProductList(List<Visitable> list) {
-        adapter.clearDataBeforeSet();
+        adapter.clearData();
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
@@ -332,6 +317,7 @@ public class ProductListFragment
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
         String userId = getUserId();
+        String searchRef = getSearchRef();
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
         for (Visitable object : list) {
@@ -340,12 +326,16 @@ public class ProductListFragment
                 if (!item.isTopAds()) {
                     String filterSortParams
                             = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
-                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams));
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
                     productItemViewModels.add(item);
                 }
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey());
+    }
+
+    private String getSearchRef() {
+        return searchParameter.get(SearchApiConst.SEARCH_REF);
     }
 
     private void loadMoreProduct(final int startRow) {
@@ -360,7 +350,7 @@ public class ProductListFragment
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), this::reloadData);
         } else {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
-                adapter.setStartFrom(startRow);
+                presenter.setStartFrom(startRow);
                 loadMoreProduct(startRow);
             }).showRetrySnackbar();
         }
@@ -565,9 +555,10 @@ public class ProductListFragment
         } else {
             String filterSortParams
                     = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+            String searchRef = getSearchRef();
             SearchTracking.trackEventClickSearchResultProduct(
                     item,
-                    item.getProductAsObjectDataLayer(userId, filterSortParams),
+                    item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
                     item.getPageNumber(),
                     getQueryKey(),
                     filterSortParams
@@ -816,12 +807,14 @@ public class ProductListFragment
     public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
         isListEmpty = true;
         adapter.setGlobalNavViewModel(globalNavViewModel);
+        presenter.clearData();
         adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
     }
 
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
+            presenter.clearData();
             adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
         }
     }
@@ -853,6 +846,7 @@ public class ProductListFragment
         }
 
         showRefreshLayout();
+        presenter.clearData();
         adapter.clearData();
         initTopAdsParams();
         generateLoadMoreParameter(0);

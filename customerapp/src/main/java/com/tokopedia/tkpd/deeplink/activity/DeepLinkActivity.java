@@ -18,7 +18,6 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
@@ -36,6 +35,8 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
+
+import timber.log.Timber;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
@@ -291,7 +292,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        CommonUtils.dumper("FCM onNewIntent " + intent.getData());
+        Timber.d("FCM onNewIntent " + intent.getData());
         if (intent.getData() != null) {
             uriData = intent.getData();
         }
