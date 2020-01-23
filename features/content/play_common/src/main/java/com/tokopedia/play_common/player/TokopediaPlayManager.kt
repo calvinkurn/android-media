@@ -13,12 +13,14 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.TokopediaPlayPrepareState
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.types.TokopediaPlayVideoType
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.properties.Delegates
@@ -31,7 +33,8 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
 
-        private const val RETRY_COUNT = 3
+        private const val RETRY_COUNT_LIVE = 2
+        private const val RETRY_COUNT_DEFAULT = 3
         private const val RETRY_DELAY = 1000L
 
         private const val VIDEO_MAX_SOUND = 100f
@@ -58,7 +61,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
     }
 
-    private var currentPrepareState: TokopediaPlayPrepareState = TokopediaPlayPrepareState.Unprepared(null)
+    private var currentPrepareState: TokopediaPlayPrepareState = TokopediaPlayPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null)
     private val _observablePlayVideoState = MutableLiveData<TokopediaPlayVideoState>()
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
@@ -75,16 +78,21 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
         override fun onPlayerError(error: ExoPlaybackException) {
             //TODO("Maybe return error based on corresponding cause?")
-            if (error != null) {
-                if (isBehindLiveWindow(error)) {
-                    val prepareState = currentPrepareState
-                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
-                } else {
-                    //For now it's the same as BehindLiveWindow
-                    val prepareState = currentPrepareState
-                    if (prepareState is TokopediaPlayPrepareState.Prepared) playVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, false)
+            if (isBehindLiveWindow(error) || isInvalidResponseCode(error)) {
+                val prepareState = currentPrepareState
+                if (prepareState is TokopediaPlayPrepareState.Prepared) {
+                    stopPlayer()
+                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
                 }
-            } else _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException())
+            } else {
+                //For now it's the same as BehindLiveWindow
+                val prepareState = currentPrepareState
+                if (prepareState is TokopediaPlayPrepareState.Prepared) {
+                    stopPlayer()
+                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
+                }
+            }
+            _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException(error.cause))
         }
     }
 
@@ -106,7 +114,9 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
         if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
         if (prepareState is TokopediaPlayPrepareState.Unprepared || currentUri != uri) {
-            playVideoWithUri(uri, autoPlay, currentUri == null || currentUri != uri || forceReset)
+            val shouldResetPosition = (currentUri == null || currentUri != uri || forceReset) || (prepareState is TokopediaPlayPrepareState.Unprepared && prepareState.previousType.isLive)
+            val lastPosition = if (prepareState is TokopediaPlayPrepareState.Unprepared && !prepareState.previousType.isLive) prepareState.lastPosition else null
+            playVideoWithUri(uri, autoPlay, shouldResetPosition, lastPosition)
             currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
@@ -121,10 +131,12 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         safePlayVideoWithUri(Uri.parse(uriString), autoPlay, forceReset)
     }
 
-    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, shouldReset: Boolean) {
+    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, shouldReset: Boolean, lastPosition: Long?) {
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
-        videoPlayer.prepare(mediaSource, shouldReset, shouldReset)
+        videoPlayer.prepare(mediaSource, shouldReset, true)
+        if (lastPosition != null) videoPlayer.seekTo(lastPosition)
+        else videoPlayer.seekToDefaultPosition()
     }
 
     //endregion
@@ -144,14 +156,18 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     }
 
     fun releasePlayer() {
-        currentPrepareState = TokopediaPlayPrepareState.Unprepared(null)
+        currentPrepareState = TokopediaPlayPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null)
         videoPlayer.release()
     }
 
     fun stopPlayer() {
         val prepareState = currentPrepareState
         if (prepareState is TokopediaPlayPrepareState.Prepared)
-            currentPrepareState = TokopediaPlayPrepareState.Unprepared(prepareState.uri)
+            currentPrepareState = TokopediaPlayPrepareState.Unprepared(
+                    prepareState.uri,
+                    if (isVideoLive()) TokopediaPlayVideoType.Live else TokopediaPlayVideoType.VOD,
+                    getCurrentPosition()
+            )
 
         videoPlayer.stop(false)
     }
@@ -166,6 +182,8 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     fun getDurationVideo(): Long {
         return videoPlayer.duration
     }
+
+    fun getCurrentPosition(): Long = videoPlayer.currentPosition
 
     fun isVideoMuted(): Boolean {
         return videoPlayer.volume == VIDEO_MIN_SOUND
@@ -182,6 +200,8 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     fun isVideoRepeat(): Boolean {
         return videoPlayer.repeatMode != Player.REPEAT_MODE_OFF
     }
+
+    fun isVideoLive(): Boolean = videoPlayer.isCurrentWindowLive
     //endregion
 
     //region private method
@@ -210,6 +230,17 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         return false
     }
 
+    private fun isInvalidResponseCode(e: ExoPlaybackException): Boolean {
+        if (e.type != ExoPlaybackException.TYPE_SOURCE) return false
+
+        var cause: Throwable? = e.sourceException
+        while (cause != null) {
+            if (cause is HttpDataSource.InvalidResponseCodeException) return true
+            cause = cause.cause
+        }
+        return false
+    }
+
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
         return object : DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
@@ -218,15 +249,19 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
-                return RETRY_COUNT
+                return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) RETRY_COUNT_LIVE else RETRY_COUNT_DEFAULT
+            }
+
+            override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
+                return C.TIME_UNSET
             }
         }
     }
 
     private fun initVideoPlayer(videoPlayer: SimpleExoPlayer?): SimpleExoPlayer {
         videoPlayer?.removeListener(playerEventListener)
-        return ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
-            addListener(playerEventListener)
-        }
+        return SimpleExoPlayer.Builder(applicationContext)
+                .build()
+                .apply { addListener(playerEventListener) }
     }
 }
