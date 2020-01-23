@@ -171,9 +171,13 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
 
     override fun onResetClicked() {
         listSubFilter.forEach {
-            it.isChecked = it.key == STATUS_ALL_ORDER
+            if (it.key == STATUS_ALL_ORDER) {
+                it.isChecked = true
+                listId = it.listValue as ArrayList<Int>
+            } else {
+                it.isChecked = false
+            }
         }
-        listId.clear()
         allCleared = true
         notifyDataSetChanged()
     }
