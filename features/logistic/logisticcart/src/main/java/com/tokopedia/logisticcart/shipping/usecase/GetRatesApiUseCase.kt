@@ -24,9 +24,9 @@ typealias RatesApiGqlResponse = GetRatesCourierRecommendationTradeInDropOffData
 typealias RatesModel = ShippingRecommendationData
 
 class GetRatesApiUseCase @Inject constructor(
-        @ApplicationContext val context: Context,
-        val converter: ShippingDurationConverter,
-        val gql: GraphqlUseCase) {
+        @ApplicationContext private val context: Context,
+        private val converter: ShippingDurationConverter,
+        private val gql: GraphqlUseCase) {
 
     fun execute(param: RatesParam): Observable<RatesModel> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3api)
