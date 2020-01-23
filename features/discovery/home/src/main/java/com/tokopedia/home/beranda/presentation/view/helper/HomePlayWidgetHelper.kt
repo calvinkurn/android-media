@@ -5,21 +5,21 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.Player
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.util.ConnectionUtils
 import com.tokopedia.home.util.DimensionUtils
 import com.tokopedia.play_common.player.TokopediaPlayManager
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
+@SuppressLint("SyntheticAccessor")
 @SuppressWarnings("WeakerAccess")
-class TokopediaPlayerHelper(
+class HomePlayWidgetHelper(
         private val context: Context,
         private val exoPlayerView: TokopediaPlayView
 ) :
         ExoPlayerControl,
-        Player.EventListener,
         CoroutineScope {
 
     private var mPlayer: ExoPlayer? = null
@@ -31,9 +31,20 @@ class TokopediaPlayerHelper(
     /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
-    private val playerObserver = object: Observer<ExoPlayer> {
+    private val playerObserver = object : Observer<ExoPlayer> {
         override fun onChanged(t: ExoPlayer?) {
             mPlayer = t
+        }
+    }
+
+    private val playerStateObserver = object : Observer<TokopediaPlayVideoState>{
+        override fun onChanged(state: TokopediaPlayVideoState) {
+            when(state){
+                is TokopediaPlayVideoState.NoMedia -> mExoPlayerListener?.onPlayerIdle()
+                is TokopediaPlayVideoState.Error -> mExoPlayerListener?.onPlayerError(state.error.message)
+                is TokopediaPlayVideoState.Pause -> mExoPlayerListener?.onPlayerPaused()
+                is TokopediaPlayVideoState.Playing -> mExoPlayerListener?.onPlayerPlaying()
+            }
         }
     }
 
@@ -49,14 +60,14 @@ class TokopediaPlayerHelper(
 
     @SuppressLint("SyntheticAccessor")
     class Builder(context: Context, tokopediaPlayView: TokopediaPlayView) {
-        private val mExoPlayerHelper: TokopediaPlayerHelper = TokopediaPlayerHelper(context, tokopediaPlayView)
+        private val mExoPlayerHelper: HomePlayWidgetHelper = HomePlayWidgetHelper(context, tokopediaPlayView)
 
         fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {
             mExoPlayerHelper.setExoPlayerEventsListener(exoPlayerListener)
             return this
         }
 
-        fun create(): TokopediaPlayerHelper {
+        fun create(): HomePlayWidgetHelper {
             mExoPlayerHelper.init()
             return mExoPlayerHelper
         }
@@ -77,24 +88,9 @@ class TokopediaPlayerHelper(
         }
     }
 
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        if (mPlayer == null) {
-            return
-        }
-        when (playbackState) {
-            Player.STATE_READY -> if (playWhenReady) {
-                mExoPlayerListener?.onPlayerPlaying(mPlayer?.currentWindowIndex ?: -1)
-            } else {
-                mExoPlayerListener?.onPlayerPaused(mPlayer?.currentWindowIndex ?: -1)
-            }
-        }
-    }
-
     override fun releasePlayer() {
         masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
-
-        mExoPlayerListener?.releaseExoPlayerCalled()
 
         mPlayer = null
 
@@ -103,7 +99,7 @@ class TokopediaPlayerHelper(
 
     override fun playerPause() {
         masterJob.cancelChildren()
-        stopVideoPlayer()
+        TokopediaPlayManager.getInstance(context).pauseCurrentVideo()
     }
 
     override fun playerPlay() {
@@ -116,11 +112,27 @@ class TokopediaPlayerHelper(
         }
     }
 
+    fun setUrl(url: String){
+        videosUri = Uri.parse(url)
+    }
+
     fun play(url: String){
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             videosUri = Uri.parse(url)
             exoPlayerView.setPlayer(mPlayer)
             TokopediaPlayManager.getInstance(context).safePlayVideoWithUriString(url, autoPlay = false)
+            muteVideoPlayer()
+            playerPlay()
+        }else{
+            playerPause()
+        }
+    }
+
+    fun preparePlayer(){
+        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+            exoPlayerView.setPlayer(mPlayer)
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videosUri ?: Uri.parse(""), autoPlay = false)
+            muteVideoPlayer()
             playerPlay()
         }
     }
@@ -132,8 +144,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun onViewAttach() {
-        exoPlayerView.setPlayer(mPlayer)
-        playerPlay()
+        preparePlayer()
     }
 
     override fun onViewDetach() {
@@ -151,9 +162,9 @@ class TokopediaPlayerHelper(
         launch(coroutineContext){
             delay(500)
             observeVideoPlayer()
+            muteVideoPlayer()
             withContext(Dispatchers.Main) {
                 muteVideoPlayer()
-                mPlayer?.repeatMode = Player.REPEAT_MODE_ALL
                 exoPlayerView.setPlayer(mPlayer)
             }
             delay(2500)
@@ -175,10 +186,12 @@ class TokopediaPlayerHelper(
 
     private fun observeVideoPlayer() {
         TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().observeForever(playerObserver)
+        TokopediaPlayManager.getInstance(context).getObservablePlayVideoState().observeForever(playerStateObserver)
     }
 
     private fun removeVideoPlayerObserver() {
         TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().removeObserver(playerObserver)
+        TokopediaPlayManager.getInstance(context).getObservablePlayVideoState().removeObserver(playerStateObserver)
     }
 
     private fun muteVideoPlayer() {

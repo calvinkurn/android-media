@@ -2,9 +2,11 @@ package com.tokopedia.home.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -1173,7 +1175,7 @@ public class HomePageTracking {
         tracker.sendEnhanceEcommerceEvent(data);
     }
 
-    public static void eventEnhanceImpressionPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
+    public static void eventEnhanceImpressionPlayBanner(DynamicHomeChannel.Channels bannerChannel) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
@@ -1182,7 +1184,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
+    public static void eventClickPlayBanner(DynamicHomeChannel.Channels bannerChannel) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
