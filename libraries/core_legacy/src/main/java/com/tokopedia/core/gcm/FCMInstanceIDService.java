@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.moengage.push.PushManager;
-import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
@@ -53,7 +51,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        CommonUtils.dumper(TAG + " RefreshedToken: " + refreshedToken);
+        Timber.d(TAG + " RefreshedToken: " + refreshedToken);
         fcmManager.onNewToken(refreshedToken);
         propagateIDtoServer(refreshedToken);
         updateMoEngageToken(refreshedToken);
@@ -79,7 +77,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
 
     @Override
     public void updateMoEngageToken(String token) {
-        CommonUtils.dumper("Moengage RefreshedToken: " + token);
+        Timber.d("Moengage RefreshedToken: " + token);
         PushManager.getInstance().refreshToken(getApplicationContext(), token);
     }
 
@@ -93,7 +91,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     public void propagateIDtoServer(String token) {
         if (!TextUtils.isEmpty(token)) {
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
-            CommonUtils.dumper(TAG + " RefreshedToken: " + token + ", localToken: " + localToken);
+            Timber.d(TAG + " RefreshedToken: " + token + ", localToken: " + localToken);
             if (!localToken.equals(token)) {
                 SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getApplicationContext()).legacySessionHandler();
                 if (sessionHandler.isV4Login()) {
