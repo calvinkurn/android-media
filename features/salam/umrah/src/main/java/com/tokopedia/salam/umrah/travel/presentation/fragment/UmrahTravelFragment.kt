@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
@@ -77,7 +78,9 @@ class UmrahTravelFragment: BaseDaggerFragment(){
                     setupAll(it.data)
                 }
                 is Fail ->{
-
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
+                        requestData()
+                    }
                 }
 
             }

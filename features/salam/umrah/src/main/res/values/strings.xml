@@ -261,6 +261,9 @@
     <string name="umrah_travel_link_share">https://m.tokopedia.com/s/umroh/agen/%s</string>
     <string name="umrah_travel_agent_title">Penyelenggara Umroh</string>
     <string name="umrah_travel_contact">Hubungi Travel</string>
+    <string name="umrah_travel_info_desc_title">Deskripsi</string>
+    <string name="umrah_travel_info_desc_content">PT PATUNA MEKAR JAYA atau lebih dikenal dengan nama PT PATUNA TOUR  TRAVEL adalah salah satu perusahaan yang bergerak dalam bidang jasa ticketing, tour, pengurusan dokumen perjalanan (paspor dan visa) serta Pelayanan Haji dan Umrah atau dikenal dengan PPIH (Penyelenggara Perjalanan Ibadah Haji) khusus</string>
+    <string name="umrah_travel_pilgrims_info">Jamaah %s</string>
 
 
 </resources>
