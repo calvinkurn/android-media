@@ -53,6 +53,8 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private static final String EMPTY_DEFAULT_VALUE = "none / other";
 
+    private static final String KEY_DIMENSION_40 = "dimension40";
+
     private static final String KEY_EVENT = "event";
     private static final String KEY_CATEGORY = "eventCategory";
     private static final String KEY_ACTION = "eventAction";
@@ -558,7 +560,7 @@ public class GTMAnalytics extends ContextAnalytics {
         product1.putString(FirebaseAnalytics.Param.ITEM_BRAND, brand);        // if not applicable pass “none / other”, in the future, need brand name and also ID, optional
         product1.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, category);      // Product category {{level1_name}} / {{level2_name}} / {{level3_name}} / {{childCatID}}
         product1.putString(FirebaseAnalytics.Param.ITEM_VARIANT, variant);              // If not applicable pass “none / other”, optional
-        product1.putString("CustomDimensionXXX", list);              // Using customDimension for substituting list that cannot be sent multiple in v5
+        product1.putString(KEY_DIMENSION_40, list);              // Using customDimension for substituting list that cannot be sent multiple in v5
 
         product1.putDouble(FirebaseAnalytics.Param.PRICE, Double.valueOf(PriceUtil.from(price)));
         if (position != null && !TextUtils.isEmpty(position)) {
