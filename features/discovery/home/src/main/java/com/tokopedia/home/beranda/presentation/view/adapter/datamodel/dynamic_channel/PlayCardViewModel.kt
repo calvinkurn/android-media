@@ -9,14 +9,23 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
 
-class PlayCardViewModel: HomeVisitable, ImpressHolder() {
+data class PlayCardViewModel(
+        val channel: DynamicHomeChannel.Channels,
+        val playCardHome: PlayChannel? = null
+): HomeVisitable, ImpressHolder() {
     override fun visitableId(): String {
         return channel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is DynamicChannelViewModel) {
-            return channel == b.channel
+        if (b is PlayCardViewModel) {
+            return channel.id == b.channel.id && playCardHome?.channelId == b.playCardHome?.channelId
+                    && playCardHome?.videoStream?.config?.streamUrl == b.playCardHome?.videoStream?.config?.streamUrl
+                    && playCardHome?.videoStream?.isLive == b.playCardHome?.videoStream?.isLive
+                    && playCardHome?.description == b.playCardHome?.description
+                    && playCardHome?.moderatorName == b.playCardHome?.moderatorName
+                    && playCardHome?.title == b.playCardHome?.title
+                    && playCardHome?.totalView == b.playCardHome?.totalView
         }
         return false
     }
@@ -25,9 +34,6 @@ class PlayCardViewModel: HomeVisitable, ImpressHolder() {
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()
-    private var playCardHome: PlayChannel? = null
-    private var channel: DynamicHomeChannel.Channels = DynamicHomeChannel.Channels()
-    private var position: Int = -1
 
     override fun isCache(): Boolean {
         return isCache
@@ -36,28 +42,6 @@ class PlayCardViewModel: HomeVisitable, ImpressHolder() {
     fun setCache(cache: Boolean) {
         isCache = cache
     }
-
-    fun setPlayCardHome(playCardHome: PlayChannel) {
-        this.playCardHome = playCardHome
-    }
-
-    fun setChannel(channel: DynamicHomeChannel.Channels) {
-        this.channel = channel
-    }
-
-    fun getChannel(): DynamicHomeChannel.Channels {
-        return channel
-    }
-
-    fun getPlayCardHome(): PlayChannel? {
-        return playCardHome
-    }
-
-    fun setPosition(position: Int){
-        this.position = position
-    }
-
-    fun getPosition() = position
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
@@ -82,7 +66,7 @@ class PlayCardViewModel: HomeVisitable, ImpressHolder() {
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return null
+        return Bundle()
     }
 
     val enhanceClickPlayBanner: Map<String, Any>

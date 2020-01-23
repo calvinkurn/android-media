@@ -12,6 +12,7 @@
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
+/features/discovery/home_wishlist/                     	@tokopedia/minion-dave
 /features/discovery/recentview/                     	@tokopedia/minion-dave
 /features/discovery/wishlist_common/                	@tokopedia/minion-dave
 /features/discovery/productcard/                    	@tokopedia/minion-dave

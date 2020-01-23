@@ -121,8 +121,8 @@ class HomePlayWidgetHelper(
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             videosUri = Uri.parse(url)
             exoPlayerView.setPlayer(mPlayer)
-            TokopediaPlayManager.getInstance(context).safePlayVideoWithUriString(url, autoPlay = false)
             muteVideoPlayer()
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUriString(url, autoPlay = false)
             playerPlay()
         }else{
             playerPause()
@@ -161,16 +161,15 @@ class HomePlayWidgetHelper(
 
     override fun onActivityResume() {
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()) {
+            masterJob.cancelChildren()
             launch(coroutineContext) {
-                delay(500)
+                delay(3000)
                 observeVideoPlayer()
-                muteVideoPlayer()
                 withContext(Dispatchers.Main) {
-                    muteVideoPlayer()
                     exoPlayerView.setPlayer(mPlayer)
+                    muteVideoPlayer()
+                    TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videosUri ?: Uri.parse(""), autoPlay = true)
                 }
-                delay(2500)
-                TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
             }
         } else {
             stopVideoPlayer()
@@ -178,11 +177,13 @@ class HomePlayWidgetHelper(
     }
 
     override fun onActivityPause() {
+        masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
         removeVideoPlayerObserver()
     }
 
     override fun onActivityStop() {
+        masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
         mPlayer?.release()
         mPlayer = null

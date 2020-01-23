@@ -600,7 +600,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         homeViewModel?.let {
             var newHomeViewModel = homeViewModel
             if(viewNeedToShowGeolocationComponent()) newHomeViewModel = removeSuggestedReview(it)
-            newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             return newHomeViewModel
@@ -625,18 +624,14 @@ class HomePresenter(private val userSession: UserSessionInterface,
         return homeViewModel
     }
 
-    private fun getPlayBanner(homeViewModel: HomeViewModel?){
-        val position = homeViewModel?.isContainsHomePlay() ?: -1
-        if(position != -1) {
-            homeViewModel?.removeHomePlay()
+    private fun getPlayBanner(){
+        val findPlayBanner = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardViewModel }
+        if(findPlayBanner != null) {
             launchCatchError(coroutineDispatcher, block = {
                 playCardHomeUseCase.execute().collect {
                     // If no data && no cover url don't show play widget
                     if(it.isEmpty() || it.first().coverUrl.isEmpty()) return@collect
-                    val playCardDataModel = PlayCardViewModel()
-                    playCardDataModel.setPlayCardHome(it.first())
-                    playCardDataModel.setPosition(position)
-                    _requestImageTestLiveData.value = Event(playCardDataModel)
+                    _requestImageTestLiveData.value = Event((findPlayBanner as PlayCardViewModel).copy(playCardHome = it.first()))
                 }
             })
         }
@@ -645,10 +640,10 @@ class HomePresenter(private val userSession: UserSessionInterface,
     fun setPlayBanner(playCardViewModel: PlayCardViewModel){
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(_homeLiveData.value?.list ?: listOf())
-        if(newList[playCardViewModel.getPosition()] is PlayCardViewModel){
-            newList.removeAt(playCardViewModel.getPosition())
+        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+        if(newList[playIndex] is PlayCardViewModel){
+            newList[playIndex] = playCardViewModel
         }
-        newList.add(playCardViewModel.getPosition(), playCardViewModel)
         _homeLiveData.value = _homeLiveData.value?.copy(
                 list = newList
         )
@@ -675,6 +670,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
                     _homeLiveData.value = homeData
+                    getPlayBanner()
                     getHeaderData()
                     getReviewData()
 
@@ -690,8 +686,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     private fun evaluatePlayWidget(homeViewModel: HomeViewModel?): HomeViewModel? {
-        getPlayBanner(homeViewModel)
-        homeViewModel?.removeHomePlay()
         return homeViewModel
     }
 

@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -103,6 +102,8 @@ final class ProductListPresenter
     private String additionalParams = "";
     private boolean isFirstTimeLoad = false;
     private boolean isTickerHasDismissed = false;
+    private int startFrom = 0;
+    private int totalData = 0;
 
     @Override
     public void initInjector(ProductListSectionContract.View view) {
@@ -149,6 +150,31 @@ final class ProductListPresenter
     @Override
     public boolean getIsTickerHasDismissed() {
         return isTickerHasDismissed;
+    }
+
+    private void setTotalData(int totalData) {
+        this.totalData = totalData;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+        return startFrom < totalData;
+    }
+
+    @Override
+    public void clearData() {
+        startFrom = 0;
+        totalData = 0;
+    }
+
+    @Override
+    public void setStartFrom(int startFrom) {
+        this.startFrom = startFrom;
+    }
+
+    @Override
+    public int getStartFrom() {
+        return this.startFrom;
     }
 
     @Override
@@ -505,8 +531,12 @@ final class ProductListPresenter
 
     private void loadMoreDataSubscriberOnStartIfViewAttached() {
         if (isViewAttached()) {
-            getView().incrementStart();
+            incrementStart();
         }
+    }
+
+    private void incrementStart() {
+        startFrom = startFrom + Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS);
     }
 
     private void loadMoreDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel) {
@@ -523,7 +553,7 @@ final class ProductListPresenter
                 getViewToShowMoreData(productViewModel);
             }
 
-            getView().storeTotalData(productViewModel.getTotalData());
+            setTotalData(productViewModel.getTotalData());
         }
     }
 
@@ -700,7 +730,7 @@ final class ProductListPresenter
     private void loadDataSubscriberOnStartIfViewAttached() {
         if (isViewAttached()) {
             getView().showRefreshLayout();
-            getView().incrementStart();
+            incrementStart();
         }
     }
 
@@ -758,7 +788,8 @@ final class ProductListPresenter
             getViewToShowProductList(searchProductModel, productViewModel);
         }
 
-        getView().storeTotalData(productViewModel.getTotalData());
+        setTotalData(productViewModel.getTotalData());
+
         getView().updateScrollListener();
 
         if (isFirstTimeLoad) {
@@ -871,12 +902,12 @@ final class ProductListPresenter
         }
 
         if (!isTickerHasDismissed
-                && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
+                && !textIsEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
             getView().trackEventImpressionSortPriceMinTicker();
         }
 
-        if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
+        if (!textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
             list.add(productViewModel.getSuggestionModel());
         }
 
@@ -944,8 +975,8 @@ final class ProductListPresenter
 
     private boolean isViewWillRenderCpmShop(Cpm cpm) {
         return cpm.getCpmShop() != null
-                && !TextUtils.isEmpty(cpm.getCta())
-                && !TextUtils.isEmpty(cpm.getPromotedText());
+                && !textIsEmpty(cpm.getCta())
+                && !textIsEmpty(cpm.getPromotedText());
     }
 
     private boolean isViewWillRenderCpmDigital(Cpm cpm) {

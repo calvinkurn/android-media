@@ -64,6 +64,7 @@ public interface ApplinkConst {
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
+    String HOME_EXPLORE = "tokopedia://jump/{section}";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
@@ -288,9 +289,21 @@ public interface ApplinkConst {
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
 
-    interface Gamification{
+    interface Discovery {
+        String CATEGORY = "tokopedia://category";
+    }
+
+    interface Gamification {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
+    }
+
+    interface Digital {
+        String DIGITAL_BROWSE = "tokopedia://category-explore";
+        String DIGITAL_PRODUCT = "tokopedia://digital/form";
+        String DIGITAL = "tokopedia://digital";
+        String DIGITAL_CATEGORY = "tokopedia://digital/category";
+        String DIGITAL_CART = "tokopedia://digital/cart";
     }
 
     interface TokoPoints {
@@ -412,7 +425,18 @@ public interface ApplinkConst {
         String PARAM_USER_ID = "{user_id}";
     }
 
+    interface DigitalInstantDebit {
+        String INSTANT_DEBIT_BCA_APPLINK = "tokopedia://instantdebitbca";
+        String INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK = "tokopedia://editbcaoneklik";
+    }
+
     interface Transaction {
+        String ORDER_HISTORY = "tokopedia://orderlist/digital";
+        String ORDER_DETAIL = "tokopedia://digital/order/{order_id}";
+        String ORDER_OMS_DETAIL = "tokopedia://order/{order_id}";
+        String ORDER_MARKETPLACE_DETAIL = "tokopedia://marketplace/order/{order_id}";
+        String ORDER_OMS_DETAIL_UPSTREAM = "tokopedia://order/{order_id}?upstream={upstream}";
+
         String EXTRA_SHOP_ID = "shop_id";
         String EXTRA_PRODUCT_ID = "product_id";
         String EXTRA_NOTES = "notes";

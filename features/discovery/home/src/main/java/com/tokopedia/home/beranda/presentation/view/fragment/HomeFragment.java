@@ -711,6 +711,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build();
         adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<HomeVisitable>());
+        getLifecycle().addObserver(adapter);
         homeRecyclerView.setAdapter(adapter);
     }
 

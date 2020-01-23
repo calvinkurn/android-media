@@ -8,7 +8,6 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon.DynamicIcon
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
@@ -187,12 +186,8 @@ class HomeDataMapper(
                     }
                 }
             }
-            if(homeData.dynamicHomeChannel.channels.filter { it.layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER }.isEmpty()){
-                if (position == 2 && !isCache){
-                    list.add(PlayCardViewModel())
-                }
-            }
         }
+//        list.add(4, PlayCardViewModel(DynamicHomeChannel.Channels(id = "123")))
         return HomeViewModel(homeData.homeFlag, list, isCache)
     }
 
@@ -333,9 +328,8 @@ class HomeDataMapper(
     private fun mappingPlayChannel(channel: DynamicHomeChannel.Channels,
                                    trackingData: MutableMap<String, Any>,
                                    isCache: Boolean): Visitable<*> {
-        val playCardViewModel = PlayCardViewModel()
+        val playCardViewModel = PlayCardViewModel(channel, null)
         if (!isCache) {
-            playCardViewModel.setChannel(channel)
             playCardViewModel.setTrackingData(trackingData)
         }
         return playCardViewModel
