@@ -17,7 +17,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 
 
-class ProductRecommendationViewHolder(
+class OfficialProductRecommendationViewHolder(
         view: View,
         val recommendationListener: RecommendationListener
 ): AbstractViewHolder<ProductRecommendationViewModel>(view) {
