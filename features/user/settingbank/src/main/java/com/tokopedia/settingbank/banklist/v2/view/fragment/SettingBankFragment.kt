@@ -352,7 +352,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         progress_bar.gone()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             R.id.menu_info -> {
                 bankSettingAnalytics.eventOnToolbarTNCClick()
@@ -362,7 +362,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.let { it.inflate(getMenuRes(), menu) }
         super.onCreateOptionsMenu(menu, inflater)
     }
