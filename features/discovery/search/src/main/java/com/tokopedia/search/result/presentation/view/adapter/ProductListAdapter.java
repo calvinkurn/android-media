@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
@@ -34,15 +33,12 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     private List<Visitable> list = new ArrayList<>();
     private ProductListTypeFactory typeFactory;
-    private int startFrom;
-    private int totalData;
-    private LoadingMoreModel loadingMoreModel;
+    private LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     private GlobalNavViewModel globalNavViewModel;
 
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
         this.typeFactory = typeFactory;
-        loadingMoreModel = new LoadingMoreModel();
     }
 
     @NonNull
@@ -83,30 +79,10 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
-    public void clearDataBeforeSet() {
-        super.clearData();
-    }
-
     public void appendItems(List<Visitable> list) {
         int start = getItemCount();
         this.list.addAll(list);
         notifyItemRangeInserted(start, list.size());
-    }
-
-    public void incrementStart() {
-        setStartFrom(getStartFrom() + Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS));
-    }
-
-    public boolean isEvenPage() {
-        return getStartFrom() / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS) % 2 == 0;
-    }
-
-    public int getStartFrom() {
-        return startFrom;
-    }
-
-    public void setStartFrom(int start) {
-        this.startFrom = start;
     }
 
     public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
@@ -186,25 +162,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     @Override
     public boolean isEmptyItem(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchViewModel;
-    }
-
-    public void setTotalData(int totalData) {
-        this.totalData = totalData;
-    }
-
-    public int getTotalData() {
-        return totalData;
-    }
-
-    public boolean hasNextPage() {
-        return getStartFrom() < getTotalData();
-    }
-
-    @Override
-    public void clearData() {
-        super.clearData();
-        setStartFrom(0);
-        setTotalData(0);
     }
 
     public void addLoading() {

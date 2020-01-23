@@ -9,7 +9,6 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +37,6 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_READ_NO
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REQUEST_OPEN_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REVIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_BUTTON;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MANAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY;
@@ -53,19 +51,16 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OP
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.INFO;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER_CODE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_BANNER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_INFO;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
@@ -75,11 +70,12 @@ import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
 public class ShopPageTrackingUser {
     public static final String SHOPPAGE = "/shoppage";
+    public static final String SHOP_PAGE = "Shop page";
 
     protected final TrackingQueue trackingQueue;
 
     public ShopPageTrackingUser(
-                                TrackingQueue trackingQueue) {
+            TrackingQueue trackingQueue) {
         this.trackingQueue = trackingQueue;
     }
 
@@ -106,48 +102,27 @@ public class ShopPageTrackingUser {
         trackingQueue.sendAll();
     }
 
-    private HashMap<String, Object> createMvcImpressionMap(String event, String category, String action, String label,
-                                                           List<MerchantVoucherViewModel> viewModelList) {
-        List<Object> mvcListMap = createMvcListMap(viewModelList, 0);
-        if (mvcListMap.size() > 0) {
-            HashMap<String, Object> eventMap = createMap(event, category, action, label, null);
-            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                    ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
-                            ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, 0))));
-            return eventMap;
-        } else {
-            return null;
-        }
-    }
-
-    private HashMap<String, Object> createMvcClickMap(String event, String category, String action,
-                                                      MerchantVoucherViewModel viewModel, int positionIndex) {
-        ArrayList<MerchantVoucherViewModel> viewModelList = new ArrayList<>();
-        viewModelList.add(viewModel);
-        HashMap<String, Object> eventMap = createMap(event, category, action, viewModel.getVoucherName(),
-                null);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                ShopPageTrackingConstant.PROMO_CLICK, DataLayer.mapOf(
-                        ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, positionIndex))));
-        return eventMap;
-    }
-
-    private List<Object> createMvcListMap(List<MerchantVoucherViewModel> viewModelList, int startIndex) {
+    private List<Object> createMvcListMap(List<MerchantVoucherViewModel> viewModelList, String shopId, int startIndex) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < viewModelList.size(); i++) {
+
+            int position = startIndex + i + 1;
             MerchantVoucherViewModel viewModel = viewModelList.get(i);
+
             if (viewModel.isAvailable()) {
                 list.add(
                         DataLayer.mapOf(
-                                ShopPageTrackingConstant.ID, viewModel.getVoucherId(),
-                                ShopPageTrackingConstant.NAME, joinDash(SHOPPAGE, viewModel.getVoucherName()),
-                                ShopPageTrackingConstant.POSITION, String.valueOf(startIndex + i + 1),
-                                ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(),
-                                ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherCode()
+                                ShopPageTrackingConstant.ID, shopId,
+                                ShopPageTrackingConstant.NAME, joinDash(SHOP_PAGE, String.valueOf(position), viewModel.getVoucherName()),
+                                ShopPageTrackingConstant.POSITION, position,
+                                ShopPageTrackingConstant.CREATIVE, "",
+                                ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(), //optional
+                                ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherCode() //optional
                         )
                 );
             }
         }
+
         if (list.size() == 0) {
             return new ArrayList<>();
         }
@@ -434,48 +409,71 @@ public class ShopPageTrackingUser {
     }
 
     public void clickSeeAllMerchantVoucher(boolean isOwner) {
-        sendEvent(CLICK_SHOP_PAGE,
-                shopPageBuyerOrSeller(isOwner),
-                joinDash(MERCHANT_VOUCHER_CODE, CLICK),
-                SEE_ALL,
-                null);
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(ShopPageTrackingConstant.EVENT, CLICK_SHOP_PAGE);
+        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, shopPageBuyerOrSeller(isOwner));
+        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, SEE_ALL));
+        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
-    public void clickDetailMerchantVoucher(boolean isOwner) {
-        sendEvent(CLICK_SHOP_PAGE,
-                shopPageBuyerOrSeller(isOwner),
-                joinDash(MERCHANT_VOUCHER_CODE, CLICK),
-                MVC_DETAIL,
-                null);
+    public void clickDetailMerchantVoucher(boolean isOwner, String voucherId) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(ShopPageTrackingConstant.EVENT, CLICK_SHOP_PAGE);
+        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, shopPageBuyerOrSeller(isOwner));
+        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, MVC_DETAIL));
+        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
+        eventMap.put(ShopPageTrackingConstant.EVENT_PROMO_ID, voucherId);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
-    public void clickUseMerchantVoucher(boolean isOwner, MerchantVoucherViewModel viewModel, int positionIndex) {
-        if (!isOwner) {
-            sendDataLayerEvent(
-                    createMvcClickMap(PROMO_CLICK,
-                            SHOP_PAGE_BUYER,
-                            joinSpace(PROMO_BANNER, CLICK),
-                            viewModel,
-                            positionIndex));
-        }
+    public void clickUseMerchantVoucher(boolean isOwner, MerchantVoucherViewModel viewModel, String shopId, int positionIndex) {
+        if (isOwner) return;
+
+        ArrayList<MerchantVoucherViewModel> viewModelList = new ArrayList<>();
+        viewModelList.add(viewModel);
+
+        if (viewModelList.isEmpty()) return;
+
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put(ShopPageTrackingConstant.EVENT, PROMO_CLICK);
+        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
+        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(CLICK, MERCHANT_VOUCHER, USE_VOUCHER));
+        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
+        eventMap.put(ShopPageTrackingConstant.EVENT_PROMO_ID, String.valueOf(viewModel.getVoucherId()));
+        eventMap.put(
+                ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                        ShopPageTrackingConstant.PROMO_CLICK, DataLayer.mapOf(
+                                ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, shopId, positionIndex)
+                        )
+                )
+        );
+
+        sendDataLayerEvent(eventMap);
     }
 
-    public void impressionUseMerchantVoucher(boolean isOwner, List<MerchantVoucherViewModel> merchantVoucherViewModelList) {
-        if (!isOwner) {
-            HashMap<String, Object> map = createMvcImpressionMap(PROMO_VIEW,
-                    SHOP_PAGE_BUYER,
-                    joinSpace(PROMO_BANNER, IMPRESSION),
-                    USE_VOUCHER,
-                    merchantVoucherViewModelList);
-            if (map != null) {
-                sendDataLayerEvent(map);
-            }
-        }
-    }
+    public void impressionUseMerchantVoucher(boolean isOwner, List<MerchantVoucherViewModel> merchantVoucherViewModelList, String shopId) {
+        if (isOwner || merchantVoucherViewModelList.isEmpty()) return;
 
-    public void sendGeneralManageShop() {
-        TrackApp.getInstance().getGTM()
-                .sendGeneralEvent(CLICK_SHOP_MANAGE, "Manage Shop", CLICK, SHOP_INFO);
+        int index = 0;
+        String voucherId = String.valueOf(merchantVoucherViewModelList.get(index).getVoucherId());
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put(ShopPageTrackingConstant.EVENT, PROMO_VIEW);
+        eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, SHOP_PAGE_BUYER);
+        eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, joinDash(IMPRESSION, MERCHANT_VOUCHER, USE_VOUCHER));
+        eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, "");
+        eventMap.put(ShopPageTrackingConstant.EVENT_PROMO_ID, voucherId);
+        eventMap.put(
+                ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                        ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
+                                ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(merchantVoucherViewModelList, shopId, index)
+                        )
+                )
+        );
+
+        sendDataLayerEvent(eventMap);
     }
 
     public void clickReviewMore(@NotNull String shopId, boolean myShop) {
@@ -489,9 +487,9 @@ public class ShopPageTrackingUser {
     }
 
     private String getEventReputationCategory(boolean myShop) {
-        if(myShop){
+        if (myShop) {
             return "official store shop page - buyer";
-        }else{
+        } else {
             return "official store shop page - brand";
         }
     }

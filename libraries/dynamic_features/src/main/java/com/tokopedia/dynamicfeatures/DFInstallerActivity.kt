@@ -70,7 +70,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         private const val ONE_KB = 1024
-        const val TAG_LOG= "DFM"
+        const val TAG_LOG= "Page"
         const val PLAY_SRV_OOD= "play_ood" //tag for play service ouf of date
     }
 

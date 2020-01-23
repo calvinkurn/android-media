@@ -1,7 +1,6 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
@@ -24,6 +23,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProduc
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.ArrayList;
 import java.util.List;

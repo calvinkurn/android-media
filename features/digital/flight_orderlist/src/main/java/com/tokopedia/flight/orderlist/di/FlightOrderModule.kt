@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.flight.orderlist.data.FlightOrderApi
@@ -18,6 +17,7 @@ import com.tokopedia.flight.orderlist.domain.*
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper
 import com.tokopedia.flight.orderlist.network.FlightOrderAuthInterceptor
 import com.tokopedia.flight.orderlist.network.model.FlightOrderErrorResponse
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.data.model.request;
+package com.tokopedia.kol.common.data.model.request;
 
 import com.google.gson.annotations.SerializedName;
 

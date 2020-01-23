@@ -1,17 +1,17 @@
 package com.tokopedia.profilecompletion.view.subscriber;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.network.ErrorMessageException;
-import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.network.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.profilecompletion.domain.model.EditUserInfoDomainModel;
-import com.tokopedia.profilecompletion.view.listener.EditProfileListener;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+
+import timber.log.Timber;
 
 /**
  * @author by nisie on 7/3/17.
@@ -35,7 +35,7 @@ public class EditUserInfoSubscriber extends rx.Subscriber<EditUserInfoDomainMode
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper("NISNIS error" + e.toString());
+        Timber.d("NISNIS error" + e.toString());
         if (e instanceof UnknownHostException) {
             listener.onFailedEditProfile(listener.getString(R.string.msg_no_connection));
         } else if (e instanceof SocketTimeoutException) {
@@ -82,12 +82,12 @@ public class EditUserInfoSubscriber extends rx.Subscriber<EditUserInfoDomainMode
         } else {
             listener.onFailedEditProfile(listener.getString(R.string.default_request_error_unknown));
         }
-        CommonUtils.dumper("NISNIS error" + e.toString());
+        Timber.d("NISNIS error" + e.toString());
     }
 
     @Override
     public void onNext(EditUserInfoDomainModel editUserInfoDomainModel) {
-        CommonUtils.dumper("NISNIS sukses");
+        Timber.d("NISNIS sukses");
         if(editUserInfoDomainModel.isSuccess()) {
             listener.onSuccessEditProfile(edit);
         }else {
