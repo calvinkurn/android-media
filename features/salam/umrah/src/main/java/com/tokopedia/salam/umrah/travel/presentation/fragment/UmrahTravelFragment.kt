@@ -1,5 +1,8 @@
 package com.tokopedia.salam.umrah.travel.presentation.fragment
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +11,14 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
+import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity.Companion.EXTRA_SLUG_NAME
@@ -95,11 +101,20 @@ class UmrahTravelFragment: BaseDaggerFragment(){
                         putString(EXTRA_SLUG_NAME, slugName)
                     }
                 }
+
+        const val REQUEST_CODE_LOGIN = 400
     }
 
     private fun setupAll(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
         setupTravelAgent(travelAgentBySlugName.umrahTravelAgentBySlug)
         setupViewPager(travelAgentBySlugName)
+        setupFAB()
+    }
+
+    private fun setupFAB(){
+        btn_umrah_travel_contact.setOnClickListener {
+            checkChatSession()
+        }
     }
 
     private fun setupViewPager(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
@@ -120,6 +135,40 @@ class UmrahTravelFragment: BaseDaggerFragment(){
             buildView()
             setPermissionPdp()
             setVerifiedTravel()
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn){
+            context?.let {
+                startChatUmrah(it)
+            }
+        }else{
+            goToLoginPage()
+        }
+    }
+
+    private fun startChatUmrah(context: Context){
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                resources.getString(R.string.umrah_shop_id), "",
+                resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
+        startActivity(intent)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                UmrahHomepageFragment.REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
+            }
+        }
+    }
+
+    private fun goToLoginPage() {
+        if (activity != null) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN)
         }
     }
 }
