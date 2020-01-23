@@ -16,7 +16,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_discovery.view.*
 
 class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener {
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
@@ -38,7 +37,6 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_discovery, container, false)
-
         initView(view)
         mDiscoveryViewModel = (activity as DiscoveryActivity).getViewModel()
         mDiscoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
@@ -47,9 +45,16 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
     private fun initView(view: View) {
         mRecyclerView = view.findViewById(R.id.discovery_recyclerView)
-        view.discovery_recyclerView.layoutManager = LinearLayoutManager(activity)
+        mRecyclerView.layoutManager = LinearLayoutManager(activity)
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
-        view.discovery_recyclerView.adapter = mDiscoveryRecycleAdapter
+        mRecyclerView.adapter = mDiscoveryRecycleAdapter
+
+        mRecyclerView.addOnChildAttachStateChangeListener(this)
+    }
+
+    override fun onDetach() {
+        mRecyclerView.removeOnChildAttachStateChangeListener(this)
+        super.onDetach()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,6 +75,26 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
 
 //        RouteManager.route(this, "tokopedia://discovery/test-disco")
+                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(5)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(3)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(10)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }
+                    it.data.components?.get(4)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(10)?.let { it1 -> list.add(it1) }
 
                     mDiscoveryRecycleAdapter.setDataList(list)
