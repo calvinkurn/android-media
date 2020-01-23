@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +23,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -42,6 +43,8 @@ import com.tokopedia.user.session.UserSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -148,7 +151,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
+            Timber.d("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
         }
@@ -309,9 +312,9 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         else
             webview.setWebViewClient(webViewClient);
         webview.setWebChromeClient(new SimpleWebViewWithFilePickerFragment.MyWebViewClient());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
-            CommonUtils.dumper("webviewconf debugging = true");
+            Timber.d("webviewconf debugging = true");
         }
         getActivity().setProgressBarIndeterminateVisibility(true);
         WebSettings webSettings = webview.getSettings();

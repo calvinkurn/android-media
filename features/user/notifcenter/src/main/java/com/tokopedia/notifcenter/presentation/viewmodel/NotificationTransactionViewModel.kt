@@ -4,20 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.notifcenter.data.entity.NotificationEntity
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
-import com.tokopedia.notifcenter.domain.MarkReadNotificationUpdateItemUseCase
-import com.tokopedia.notifcenter.domain.NotificationFilterUseCase
-import com.tokopedia.notifcenter.domain.NotificationInfoTransactionUseCase
-import com.tokopedia.notifcenter.domain.NotificationTransactionUseCase
 import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
 import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -25,10 +23,12 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 interface NotificationTransactionContract {
-    fun getNotificationViewBean(lastNotificationId: String)
+    fun getNotification(lastNotificationId: String)
     fun updateNotificationFilter(filter: HashMap<String, Int>)
     fun markReadNotification(notificationId: String)
+    fun markAllReadNotification()
     fun onErrorMessage(throwable: Throwable)
+    fun getTotalUnreadNotification()
     fun getInfoStatusNotification()
     fun resetNotificationFilter()
     fun getNotificationFilter()
@@ -38,10 +38,12 @@ typealias FilterWrapper = NotificationFilterSectionViewBean
 
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
+        private var markAllReadNotificationUseCase: MarkAllReadNotificationUpdateUseCase,
+        private var getNotificationTotalUnreadUseCase: GetNotificationTotalUnreadUseCase,
         private var notificationTransactionUseCase: NotificationTransactionUseCase,
         private var markNotificationUseCase: MarkReadNotificationUpdateItemUseCase,
+        private var notificationFilterMapper: GetNotificationUpdateFilterMapper,
         private var notificationFilterUseCase: NotificationFilterUseCase,
-        private var notificationFilterMapper : GetNotificationUpdateFilterMapper,
         private var notificationMapper: GetNotificationUpdateMapper,
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
@@ -54,6 +56,12 @@ class NotificationTransactionViewModel @Inject constructor(
 
     private val _filterNotification = MediatorLiveData<NotificationFilterSectionViewBean>()
     val filterNotification: LiveData<NotificationFilterSectionViewBean> get() = _filterNotification
+
+    private val _markAllNotification = MutableLiveData<Boolean>()
+    val markAllNotification: LiveData<Boolean> get() = _markAllNotification
+
+    private val _totalUnreadNotification = MutableLiveData<Long>()
+    val totalUnreadNotification: LiveData<Long> get() = _totalUnreadNotification
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -75,7 +83,8 @@ class NotificationTransactionViewModel @Inject constructor(
         }
 
         _notification.addSource(_filterNotification) {
-            getNotificationViewBean(_lastNotificationId.value?: "")
+            getTotalUnreadNotification()
+            getNotification(_lastNotificationId.value?: "")
         }
     }
 
@@ -91,7 +100,7 @@ class NotificationTransactionViewModel @Inject constructor(
         })
     }
 
-    override fun getNotificationViewBean(lastNotificationId: String) {
+    override fun getNotification(lastNotificationId: String) {
         val params = NotificationTransactionUseCase.params(
                 FIRST_INITIAL_PAGE,
                 variables,
@@ -106,12 +115,30 @@ class NotificationTransactionViewModel @Inject constructor(
         })
     }
 
+    override fun getTotalUnreadNotification() {
+        getNotificationTotalUnreadUseCase.execute(
+                GetNotificationTotalUnreadUseCase.getRequestParams(TYPE_OF_NOTIF_TRANSACTION),
+                GetNotificationTotalUnreadSubscriber({
+                    _totalUnreadNotification.value = it.pojo.notifUnreadInt
+                })
+        )
+    }
+
     override fun markReadNotification(notificationId: String) {
         markNotificationUseCase.execute(
                 MarkReadNotificationUpdateItemUseCase.getRequestParams(
                         notificationId,
                         TYPE_OF_NOTIF_TRANSACTION),
                 NotificationUpdateActionSubscriber())
+    }
+
+    override fun markAllReadNotification() {
+        markAllReadNotificationUseCase.execute(
+                MarkAllReadNotificationUpdateUseCase.params(TYPE_OF_NOTIF_TRANSACTION),
+                NotificationUpdateActionSubscriber({
+                    _markAllNotification.postValue(true)
+                })
+        )
     }
 
     override fun getNotificationFilter() {

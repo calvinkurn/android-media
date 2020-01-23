@@ -3,9 +3,9 @@ package com.tokopedia.salam.umrah.checkout.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.domain.GetContactListUseCase
 import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
+import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

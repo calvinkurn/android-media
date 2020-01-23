@@ -6,7 +6,6 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
-    <string name="title_digital_topup">Digital Topup</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
     <string name="title_flight_travel">Tiket Pesawat</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
@@ -67,11 +66,11 @@
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
     <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
 
-    <!-- Dynamic feature for Digital Subhomepage -->
-    <string name="digital_subhomepage_app_name"><![CDATA[Top-up & Tagihan]]></string>
-
-    <!-- Dynamic feature for Voucher Game -->
-    <string name="voucher_game_app_name">Cari Voucher</string>
+    <!-- Dynamic feature for Digital Recharge -->
+    <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="digital_cart_toolbar_title">Checkout></string>
+    <string name="digital_title_fav_number">Nomor Favorit</string>
+    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
@@ -207,6 +206,13 @@
     <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
 
 
+    <!-- Dynamic feature for user identification commmon-->
+    <string name="title_upload_user_identification_common">Upload Foto</string>
+
+    <!-- Dynamic feature for user talk-->
+    <string name="write_new_talk">Tulis Diskusi Baru</string>
+    <string name="title_product_discussion">Diskusi Produk</string>
+    <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
     <string name="sbank_confirm_bank_account">Konfirmasi rekening bank</string>

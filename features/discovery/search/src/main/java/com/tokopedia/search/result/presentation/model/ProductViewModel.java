@@ -14,12 +14,11 @@ import java.util.List;
 public class ProductViewModel implements Parcelable {
 
     private List<ProductItemViewModel> productList = new ArrayList<>();
-    private boolean hasCatalog;
     private String query;
-    private String shareUrl;
     private String additionalParams;
     private String autocompleteApplink;
     private String responseCode;
+    private String keywordProcess;
     private String errorMessage;
     private TickerViewModel tickerModel;
     private SuggestionViewModel suggestionModel;
@@ -102,28 +101,12 @@ public class ProductViewModel implements Parcelable {
         this.productList = productList;
     }
 
-    public boolean isHasCatalog() {
-        return hasCatalog;
-    }
-
-    public void setHasCatalog(boolean hasCatalog) {
-        this.hasCatalog = hasCatalog;
-    }
-
     public String getQuery() {
         return query;
     }
 
     public void setQuery(String query) {
         this.query = query;
-    }
-
-    public String getShareUrl() {
-        return shareUrl;
-    }
-
-    public void setShareUrl(String shareUrl) {
-        this.shareUrl = shareUrl;
     }
 
     public String getAdditionalParams() {
@@ -148,6 +131,14 @@ public class ProductViewModel implements Parcelable {
 
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
+    }
+
+    public String getKeywordProcess() {
+        return keywordProcess;
+    }
+
+    public void setKeywordProcess(String keywordProcess) {
+        this.keywordProcess = keywordProcess;
     }
 
     public String getErrorMessage() {
@@ -210,12 +201,11 @@ public class ProductViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.productList);
-        dest.writeByte(this.hasCatalog ? (byte) 1 : (byte) 0);
         dest.writeString(this.query);
-        dest.writeString(this.shareUrl);
         dest.writeString(this.additionalParams);
         dest.writeString(this.autocompleteApplink);
         dest.writeString(this.responseCode);
+        dest.writeString(this.keywordProcess);
         dest.writeParcelable(this.tickerModel, flags);
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
@@ -232,12 +222,11 @@ public class ProductViewModel implements Parcelable {
 
     protected ProductViewModel(Parcel in) {
         this.productList = in.createTypedArrayList(ProductItemViewModel.CREATOR);
-        this.hasCatalog = in.readByte() != 0;
         this.query = in.readString();
-        this.shareUrl = in.readString();
         this.additionalParams = in.readString();
         this.autocompleteApplink = in.readString();
         this.responseCode = in.readString();
+        this.keywordProcess = in.readString();
         this.tickerModel = in.readParcelable(TickerViewModel.class.getClassLoader());
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();

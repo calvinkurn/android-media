@@ -13,6 +13,8 @@ public interface ApplinkConst {
     String HOME_ACCOUNT = "tokopedia://home/account";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
+    String FIND = "tokopedia://find";
+    String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
@@ -62,6 +64,7 @@ public interface ApplinkConst {
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
+    String HOME_EXPLORE = "tokopedia://jump/{section}";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
@@ -141,7 +144,7 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
-    String DIGITAL_SUBHOMEPAGE = "tokopedia://recharge";
+    String DIGITAL_RECHARGE = "tokopedia://recharge";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
@@ -282,6 +285,24 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PACKET = "tokopedia://s/umroh/paket/{category_id}";
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
+    String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+
+    interface Discovery {
+        String CATEGORY = "tokopedia://category";
+    }
+
+    interface Gamification {
+        String CRACK = "tokopedia://gamification";
+        String TAP_TAP_MANTAP = "tokopedia://gamification2";
+    }
+
+    interface Digital {
+        String DIGITAL_BROWSE = "tokopedia://category-explore";
+        String DIGITAL_PRODUCT = "tokopedia://digital/form";
+        String DIGITAL = "tokopedia://digital";
+        String DIGITAL_CATEGORY = "tokopedia://digital/category";
+        String DIGITAL_CART = "tokopedia://digital/cart";
+    }
 
     interface TokoPoints {
         String HOMEPAGE = "tokopedia://tokopoints";
@@ -386,6 +407,11 @@ public interface ApplinkConst {
         String PARAM_OPPONENT_NAME = "opponentName";
     }
 
+    interface AttachVoucher {
+        String PARAM_SHOP_ID = "shop_id";
+        String PARAM_VOUCHER_PREVIEW = "voucher_preview";
+    }
+
     interface Play {
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";
@@ -397,7 +423,18 @@ public interface ApplinkConst {
         String PARAM_USER_ID = "{user_id}";
     }
 
+    interface DigitalInstantDebit {
+        String INSTANT_DEBIT_BCA_APPLINK = "tokopedia://instantdebitbca";
+        String INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK = "tokopedia://editbcaoneklik";
+    }
+
     interface Transaction {
+        String ORDER_HISTORY = "tokopedia://orderlist/digital";
+        String ORDER_DETAIL = "tokopedia://digital/order/{order_id}";
+        String ORDER_OMS_DETAIL = "tokopedia://order/{order_id}";
+        String ORDER_MARKETPLACE_DETAIL = "tokopedia://marketplace/order/{order_id}";
+        String ORDER_OMS_DETAIL_UPSTREAM = "tokopedia://order/{order_id}?upstream={upstream}";
+
         String EXTRA_SHOP_ID = "shop_id";
         String EXTRA_PRODUCT_ID = "product_id";
         String EXTRA_NOTES = "notes";
@@ -424,5 +461,7 @@ public interface ApplinkConst {
         String EXTRA_PRODUCT_PRICE = "product_price";
         String EXTRA_PRODUCT_CONDITION = "product_condition";
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
+
+        String ORDER_LIST = "tokopedia-android-internal://transaction/order-list";
     }
 }

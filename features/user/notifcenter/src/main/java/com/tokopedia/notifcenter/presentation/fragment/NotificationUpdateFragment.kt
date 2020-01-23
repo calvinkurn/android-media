@@ -19,12 +19,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
@@ -61,6 +63,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     private var cursor = ""
     private var lastItem = 0
     private var markAllReadCounter = 0L
+    private var _isFirstLoaded = true
 
     private lateinit var bottomActionView: BottomActionView
 
@@ -216,6 +219,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             hideLoading()
             _adapter.removeEmptyState()
 
+            if (_isFirstLoaded && it.list.isEmpty()) {
+                filterRecyclerView.hide()
+            }
+
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 _adapter.addElement(EmptyDataStateProvider.emptyData())
@@ -227,6 +234,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                 if (swipeToRefresh.isRefreshing) {
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
+
+                _isFirstLoaded = false
+                filterRecyclerView.show()
 
                 _adapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)
@@ -320,18 +330,19 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun showMessageAtcError(e: Throwable?) {
         view?.let {
-            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(it.context, e)
+            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
             Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
     override fun showMessageAtcSuccess(message: String) {
         view?.let {
-            Toaster.showNormalWithAction(
+            Toaster.make(
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
-                    getString(R.string.wishlist_check_cart),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.notifcenter_title_view),
                     onClickSeeButtonOnAtcSuccessToaster()
             )
         }
@@ -349,7 +360,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
         bundle.putString(PARAM_CTA_APPLINK, element.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TEXT, element.bodyHtml)
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)

@@ -30,4 +30,6 @@
     <dimen name="max_width_template">132dp</dimen>
     <dimen name="min_width_template">52dp</dimen>
     <dimen name="min_height_template">32dp</dimen>
+
+    <dimen name="dp_topchat_270">270dp</dimen>
 </resources>

@@ -11,6 +11,7 @@ class NotificationTransactionAnalytics @Inject constructor() {
 
     companion object {
         private const val EVENT = "clickNotifCenter"
+        private const val EVENT_CATEGORY_NOTIF_CENTER = "notif center"
         private const val EVENT_IMPRESSION_IRIS = "viewNotifCenterIris"
 
         private const val EVENT_CATEGORY = "transaction tab"
@@ -20,8 +21,19 @@ class NotificationTransactionAnalytics @Inject constructor() {
         private const val EVENT_TRANSACTION_SCROLL_ACTION = "scroll on transaction notif"
         private const val EVENT_TRANSACTION_TAB_ACTION = "click on transaction process"
         private const val EVENT_TRANSACTION_FILTER_ACTION = "click on transaction filter"
+        private const val EVENT_ACTION_MARK_ALL_AS_READ = "mark all as read"
 
         private const val LABEL_LOCATION = "lonceng"
+    }
+
+    // #NC5
+    fun trackMarkAllAsRead(markAllReadCounter: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT,
+                EVENT_CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION_MARK_ALL_AS_READ,
+                markAllReadCounter
+        ))
     }
 
     //10A
