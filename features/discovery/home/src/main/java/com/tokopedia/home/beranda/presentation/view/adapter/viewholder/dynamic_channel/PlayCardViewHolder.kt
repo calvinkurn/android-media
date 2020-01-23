@@ -110,6 +110,10 @@ class PlayCardViewHolder(
         thumbnailView.hide()
     }
 
+    override fun onPlayerBuffering() {
+        thumbnailView.show()
+    }
+
     override fun onPlayerPaused() {
         thumbnailView.show()
     }
