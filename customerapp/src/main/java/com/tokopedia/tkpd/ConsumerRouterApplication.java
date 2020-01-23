@@ -1555,12 +1555,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getActivitySellingTransactionNewOrder(Context context) {
-        return null;
+        return TkpdSeller.getActivitySellingTransactionNewOrder(context);
     }
 
     @Override
     public Intent getActivitySellingTransactionConfirmShipping(Context context) {
-        return null;
+        return TkpdSeller.getActivitySellingTransactionConfirmShipping(context);
     }
 
     @Override

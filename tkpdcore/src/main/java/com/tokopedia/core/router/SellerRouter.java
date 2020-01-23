@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.util.RouterUtils;
 
 /**
