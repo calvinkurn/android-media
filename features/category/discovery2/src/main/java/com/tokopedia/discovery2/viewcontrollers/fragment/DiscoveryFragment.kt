@@ -48,7 +48,6 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mRecyclerView.layoutManager = LinearLayoutManager(activity)
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
         mRecyclerView.adapter = mDiscoveryRecycleAdapter
-
         mRecyclerView.addOnChildAttachStateChangeListener(this)
     }
 

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -37,7 +36,6 @@ class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHold
         const val HOURS = 1
         const val MINUTES = 2
         const val SECONDS = 3
-
     }
 
     init {
