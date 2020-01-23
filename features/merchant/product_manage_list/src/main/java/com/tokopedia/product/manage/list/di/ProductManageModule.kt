@@ -163,7 +163,7 @@ class ProductManageModule {
     @Named(GQL_UPDATE_PRODUCT)
     fun provideUpdateProduct(): String {
         return """
-            mutation productUpdateV3(${'$'}: ProductInputV3!){
+            mutation productUpdateV3(${'$'}input: ProductInputV3!){
               ProductUpdateV3(input:${'$'}input) {
                 header {
                   messages
