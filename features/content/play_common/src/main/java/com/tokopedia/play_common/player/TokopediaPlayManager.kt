@@ -73,7 +73,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             }
         }
 
-        override fun onPlayerError(error: ExoPlaybackException?) {
+        override fun onPlayerError(error: ExoPlaybackException) {
             //TODO("Maybe return error based on corresponding cause?")
             if (error != null) {
                 if (isBehindLiveWindow(error)) {
@@ -185,7 +185,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     //endregion
 
     //region private method
-    private fun getMediaSourceBySource(context: Context, uri: Uri?): MediaSource {
+    private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "home"))
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
