@@ -91,6 +91,15 @@ class TopChatViewStateImpl(
         templateRecyclerView.hide()
 
         initProductPreviewLayout()
+        initHeaderLayout()
+    }
+
+    private fun initHeaderLayout() {
+        setupHeaderHamburgerBtn()
+    }
+
+    private fun setupHeaderHamburgerBtn() {
+        headerMenuButton.setImageResource(R.drawable.ic_topchat_hamburger_menu_grey)
     }
 
     private fun initProductPreviewLayout() {
