@@ -4,9 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.R;
 
@@ -17,12 +18,6 @@ import java.util.List;
  * Created by Nisie on 8/5/16.
  */
 public class RequestPermissionUtil {
-
-    public interface PermissionRequestListener {
-        void onProceed();
-
-        void onCancel();
-    }
 
     public static void onPermissionDenied(Context context, List<String> listPermission) {
         String allPermission = "";
@@ -141,62 +136,6 @@ public class RequestPermissionUtil {
     public static void onNeverAskAgain(Context context) {
         Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
 
-    }
-
-    public static void onShowRationale(Context context, final PermissionRequestListener listener,
-                                       String permission) {
-        new androidx.appcompat.app.AlertDialog.Builder(context)
-                .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.title_ok, (dialog, which) -> listener.onProceed())
-                .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> listener.onCancel())
-                .show();
-    }
-
-    public static void onShowRationale(Context context, final PermissionRequestListener listener,
-                                       List<String> permission) {
-        new androidx.appcompat.app.AlertDialog.Builder(context)
-                .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.title_ok, (dialog, which) -> listener.onProceed())
-                .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> listener.onCancel())
-                .show();
-    }
-
-    public static int getNeedPermissionMessage(List<String> permission) {
-        return R.string.need_permission_multi;
-    }
-
-    public static int getNeedPermissionMessage(String permission) {
-        switch (permission) {
-            case Manifest.permission.CAMERA:
-                return R.string.need_permission_camera;
-            case Manifest.permission.READ_EXTERNAL_STORAGE:
-                return R.string.need_permission_storage;
-            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                return R.string.need_permission_storage;
-            case Manifest.permission.READ_CONTACTS:
-                return R.string.need_permission_contacts;
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                return R.string.need_permission_location;
-            case Manifest.permission.GET_ACCOUNTS:
-                return R.string.need_permission_get_accounts;
-            case Manifest.permission.READ_SMS:
-            case Manifest.permission.RECEIVE_SMS:
-                return R.string.need_permission_SMS;
-            case Manifest.permission.SEND_SMS:
-                return R.string.need_permission_send_SMS;
-            case Manifest.permission.CALL_PHONE:
-                return R.string.need_permission_SMS;
-            default:
-                return R.string.need_permission_multi;
-        }
-    }
-
-    public static void onFinishActivityIfNeverAskAgain(Activity activity, String permission) {
-        if (ContextCompat.checkSelfPermission(activity, permission)
-                == PackageManager.PERMISSION_DENIED) {
-            RequestPermissionUtil.onNeverAskAgain(activity, permission);
-            activity.finish();
-        }
     }
 
     public static boolean checkHasPermission(Activity activity, String permission) {

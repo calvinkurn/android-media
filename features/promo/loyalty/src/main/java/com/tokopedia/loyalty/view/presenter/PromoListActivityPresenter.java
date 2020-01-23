@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
