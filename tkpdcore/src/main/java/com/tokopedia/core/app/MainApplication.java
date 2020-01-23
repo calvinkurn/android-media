@@ -95,6 +95,7 @@ public abstract class MainApplication extends MainRouterApplication{
         instance = this;
         userSession = new UserSession(this);
         initCrashlytics();
+        initBranch();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -112,7 +113,6 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean executeInBackground(){
-        initBranch();
         TooLargeTool.startLogging(MainApplication.this);
         init();
         upgradeSecurityProvider();
