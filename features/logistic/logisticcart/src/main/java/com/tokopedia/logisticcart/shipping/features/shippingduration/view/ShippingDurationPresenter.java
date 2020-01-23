@@ -110,56 +110,57 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
 
         Observable<ShippingRecommendationData> observable;
         if (isRatesTradeInApi) {
-            observable = ratesApiUseCase.execute(param, selectedSpId, selectedServiceId, shopShipmentList);
+            observable = ratesApiUseCase.execute(param);
         } else {
-            observable = ratesUseCase.execute(param, selectedSpId, selectedServiceId, shopShipmentList);
+            observable = ratesUseCase.execute(param);
         }
 
-        observable.map(new RatesResponseStateTransformer(shopShipmentList, selectedSpId, selectedServiceId))
+        observable
+                .map(new RatesResponseStateTransformer(shopShipmentList, selectedSpId, selectedServiceId))
                 .subscribe(
-                new Subscriber<ShippingRecommendationData>() {
-                    @Override
-                    public void onCompleted() {
+                        new Subscriber<ShippingRecommendationData>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (getView() != null) {
-                            getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
-                            getView().stopTrace();
-                        }
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (getView() != null) {
+                                    getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
+                                    getView().stopTrace();
+                                }
+                            }
 
-                    @Override
-                    public void onNext(ShippingRecommendationData shippingRecommendationData) {
-                        if (getView() != null) {
-                            getView().hideLoading();
-                            if (shippingRecommendationData.getErrorId() != null &&
-                                    shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
-                                getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
-                                getView().stopTrace();
-                            } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
-                                    shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                                if (getView().isDisableCourierPromo()) {
-                                    for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                                        shippingDurationViewModel.getServiceData().setIsPromo(0);
-                                        for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
-                                            productData.setPromoCode("");
+                            @Override
+                            public void onNext(ShippingRecommendationData shippingRecommendationData) {
+                                if (getView() != null) {
+                                    getView().hideLoading();
+                                    if (shippingRecommendationData.getErrorId() != null &&
+                                            shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
+                                        getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                        getView().stopTrace();
+                                    } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
+                                            shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
+                                        if (getView().isDisableCourierPromo()) {
+                                            for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                                                shippingDurationViewModel.getServiceData().setIsPromo(0);
+                                                for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
+                                                    productData.setPromoCode("");
+                                                }
+                                            }
                                         }
+                                        getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
+                                        getView().stopTrace();
+                                    } else {
+                                        getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
+                                        getView().stopTrace();
                                     }
                                 }
-                                getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
-                                getView().stopTrace();
-                            } else {
-                                getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
-                                getView().stopTrace();
                             }
                         }
-                    }
-                }
-        );
+                );
     }
 
     @NonNull

@@ -9,7 +9,6 @@ import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData
 import com.tokopedia.remoteconfig.GraphqlHelper
@@ -29,8 +28,7 @@ class GetRatesApiUseCase @Inject constructor(
         val converter: ShippingDurationConverter,
         val gql: GraphqlUseCase) {
 
-    fun execute(param: RatesParam, selectedSpId: Int, selectedServiceId: Int,
-                shopShipments: List<ShopShipment>): Observable<RatesModel> {
+    fun execute(param: RatesParam): Observable<RatesModel> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3api)
         val gqlRequest = GraphqlRequest(query, RatesApiGqlResponse::class.java, mapOf(
                 "param" to param.toMap())
@@ -41,7 +39,7 @@ class GetRatesApiUseCase @Inject constructor(
         return gql.getExecuteObservable(null)
                 .map { graphqlResponse: GraphqlResponse ->
                     val response = graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
-                    converter.convertModel(response.ratesData, shopShipments, selectedSpId, selectedServiceId)
+                    converter.convertModel(response.ratesData)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

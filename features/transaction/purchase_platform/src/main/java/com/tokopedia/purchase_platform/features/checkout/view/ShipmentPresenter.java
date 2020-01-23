@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateTransformer;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -28,7 +29,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateTransformer;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -1780,9 +1780,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
-            observable = ratesApiUseCase.execute(param, spId, 0, shopShipmentList);
+            observable = ratesApiUseCase.execute(param);
         } else {
-            observable = ratesUseCase.execute(param, spId, 0, shopShipmentList);
+            observable = ratesUseCase.execute(param);
         }
         observable
                 .map(new RatesResponseStateTransformer(shopShipmentList, 0, spId))

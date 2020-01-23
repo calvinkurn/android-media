@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
