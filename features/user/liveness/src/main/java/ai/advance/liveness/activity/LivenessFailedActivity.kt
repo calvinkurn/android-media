@@ -1,5 +1,6 @@
 package ai.advance.liveness.activity
 
+import ai.advance.liveness.OnBackListener
 import ai.advance.liveness.fragment.LivenessErrorFragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -48,15 +49,15 @@ class LivenessFailedActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         setResult(0)
         super.onBackPressed()
+        if (fragment != null && fragment is OnBackListener) {
+            (fragment as OnBackListener).trackOnBackPressed()
+        }
     }
 
     override fun getNewFragment(): Fragment? {
         val intent = intent
-
         val bundle = Bundle()
-        bundle.putString("failed_reason_title", intent.getStringExtra("failed_reason_title"))
-        bundle.putString("failed_reason", intent.getStringExtra("failed_reason"))
-        bundle.putString("failed_image", intent.getStringExtra("failed_image"))
+        bundle.putInt("failed_type", intent.getIntExtra("failed_type", -1))
         val fragment = LivenessErrorFragment.newInstance()
         fragment.arguments = bundle
 

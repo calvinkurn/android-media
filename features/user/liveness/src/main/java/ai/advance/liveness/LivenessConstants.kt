@@ -6,4 +6,7 @@ object LivenessConstants {
     @JvmStatic
     val SCAN_FACE_FAIL_NETWORK = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_badnetwork.png"
 //    val SCAN_FACE_FAIL_NETWORK = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_bad_network.png"
+
+    const val FAILED_BADNETWORK = 1
+    const val FAILED_TIMEOUT = 2
 }

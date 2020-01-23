@@ -1,6 +1,7 @@
 package ai.advance.liveness.activity
 
 import ai.advance.common.utils.ScreenUtil
+import ai.advance.liveness.OnBackListener
 import ai.advance.liveness.R
 import ai.advance.liveness.fragment.LivenessFragment
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK
@@ -140,6 +141,13 @@ class LivenessActivity : AppCompatActivity() {
             if (!allGranted(grantResults)) {
                 onPermissionRefused()
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (mLivenessFragment != null && mLivenessFragment is OnBackListener) {
+            (mLivenessFragment as OnBackListener).trackOnBackPressed()
         }
     }
 

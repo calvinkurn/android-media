@@ -3,7 +3,9 @@ package ai.advance.liveness.analytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
-class LivenessDetectionAnalytics(private var projectID: Int) {
+class LivenessDetectionAnalytics {
+
+    private var projectID = 0
 
     private object Event {
         const val CLICK_ACCOUNT = "clickAccount"
@@ -13,7 +15,7 @@ class LivenessDetectionAnalytics(private var projectID: Int) {
         const val CLICK_ON_BUTTON_BACK = "click on button back"
 
         const val VIEW_FACE_CENTER = "wajah tepat di tengah"
-        const val VIEW_FACE_CLOSER_SCREEN = "wajah tepat di tengah"
+        const val VIEW_FACE_CLOSER_SCREEN = "wajah dekat ke layar"
         const val VIEW_FACE_MULTIPLE = "wajah lebih dari satu"
 
         const val VIEW_BLINK_DETECTION = "blinking detection"
@@ -35,11 +37,10 @@ class LivenessDetectionAnalytics(private var projectID: Int) {
     }
 
     private object Label {
-        const val labelOne = "1"
         const val labelTwo = "2"
         const val labelThree = "3"
         const val labelFour = "4"
-        const val labelFive = "4"
+        const val labelFive = "5"
         const val labelSix= "6"
         const val labelSeven= "7"
         const val labelTimeout= "timeout"
@@ -49,7 +50,9 @@ class LivenessDetectionAnalytics(private var projectID: Int) {
     }
 
     fun createInstance(projectID: Int): LivenessDetectionAnalytics {
-        return LivenessDetectionAnalytics(projectID)
+        val livenessDetectionAnalytics = LivenessDetectionAnalytics()
+        livenessDetectionAnalytics.projectID = projectID
+        return livenessDetectionAnalytics
     }
 
     fun eventViewFaceInCenter() {
