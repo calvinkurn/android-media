@@ -24,6 +24,25 @@ query umrahTravelAgentBySlug($slugName:String!){
         durationDays
         departureDate
         returningDate
+        ui{
+              travelDates
+              travelDurations
+              hotelStars
+              variant
+              transitCity
+              availableSeat
+            }
+        airlines{
+              name
+              date
+              departureCity{
+                name
+              }
+              arrivalCity{
+                name
+              }
+              logoUrl
+            }
     }
     ui {
         establishedSince

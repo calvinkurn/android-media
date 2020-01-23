@@ -11,6 +11,8 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
+import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity.Companion.EXTRA_SLUG_NAME
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelAgentViewPagerAdapter
@@ -72,7 +74,7 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         umrahTravelViewModel.travelAgentData.observe(this, Observer{
             when (it) {
                 is Success ->{
-                    setupAll(it.data.umrahTravelAgentBySlug)
+                    setupAll(it.data)
                 }
                 is Fail ->{
 
@@ -92,13 +94,13 @@ class UmrahTravelFragment: BaseDaggerFragment(){
                 }
     }
 
-    private fun setupAll(travelAgent: TravelAgent){
-        setupTravelAgent(travelAgent)
-        setupViewPager()
+    private fun setupAll(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
+        setupTravelAgent(travelAgentBySlugName.umrahTravelAgentBySlug)
+        setupViewPager(travelAgentBySlugName)
     }
 
-    private fun setupViewPager(){
-        umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager)
+    private fun setupViewPager(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
+        umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager,travelAgentBySlugName)
         vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
         tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
     }

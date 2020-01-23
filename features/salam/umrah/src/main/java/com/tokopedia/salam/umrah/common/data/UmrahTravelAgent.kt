@@ -32,6 +32,9 @@ data class TravelAgent(
         @SerializedName("description")
         @Expose
         val description: String = "",
+        @SerializedName("products")
+        @Expose
+        val products : List<UmrahProductModel.UmrahProduct> = emptyList(),
         @SerializedName("ui")
         @Expose
         val ui: UmrahTravelAgentUI = UmrahTravelAgentUI()
