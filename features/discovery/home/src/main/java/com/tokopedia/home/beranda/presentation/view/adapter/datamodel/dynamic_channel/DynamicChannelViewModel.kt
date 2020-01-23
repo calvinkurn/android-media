@@ -29,8 +29,8 @@ class DynamicChannelViewModel : HomeVisitable {
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        val bundle = Bundle()
         if (b is DynamicChannelViewModel) {
+            val bundle = Bundle()
             if (channel?.banner?.imageUrl != b.channel?.banner?.imageUrl?:"") {
                 bundle.putString(HOME_RV_BANNER_IMAGE_URL, b.channel?.banner?.imageUrl)
             }
@@ -38,8 +38,9 @@ class DynamicChannelViewModel : HomeVisitable {
             if (channel?.header?.backImage != b.channel?.header?.backImage?:"") {
                 bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
             }
+            return bundle
         }
-        return bundle
+        return null
     }
 
     override fun isCache(): Boolean {

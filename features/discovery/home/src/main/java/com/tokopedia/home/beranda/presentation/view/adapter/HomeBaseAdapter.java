@@ -61,9 +61,7 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
                                  @NonNull List<Object> payloads) {
         if (!payloads.isEmpty()) {
-            if (payloads.get(0) instanceof Bundle && !((Bundle) payloads.get(0)).isEmpty()) {
-                holder.bind(getItem(position), payloads);
-            }
+            holder.bind(getItem(position), payloads);
         } else {
             onBindViewHolder(holder, position);
         }
