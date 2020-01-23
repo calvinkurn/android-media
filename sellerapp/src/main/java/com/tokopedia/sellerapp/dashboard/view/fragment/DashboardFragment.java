@@ -596,7 +596,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private void showShopModerated(ShopInfo shopInfo) {
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
-//        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopInfo.getClosedInfo().getReason()));
+        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopInfo.getClosedInfo().getReason()));
         shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
