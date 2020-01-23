@@ -15,7 +15,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.DeviceAttr
 import com.tokopedia.tradein.model.DeviceDiagInput
@@ -25,6 +24,7 @@ import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MO
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.tradein_common.Constants
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -51,6 +51,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
     }
 
     var tradeInType: Int = TRADEIN_OFFLINE
+    val fcmDeviceId = UserSession(applicationInstance).deviceId
 
     override fun doOnCreate() {
         super.doOnCreate()
@@ -137,7 +138,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
 
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
-        if (tradeInParams.deviceId == null)
+        if (tradeInParams.deviceId == null || tradeInParams.deviceId == fcmDeviceId)
             tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationInstance)
         tradeInParams.userId = repository.getUserLoginState().userId.toInt()
         tradeInParams.tradeInType = 2
@@ -183,7 +184,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == TrackApp.getInstance().gtm.googleAdId)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == fcmDeviceId)) {
             imeiStateLiveData.value = true
             setHomeResultData(jsonObject)
         } else {
