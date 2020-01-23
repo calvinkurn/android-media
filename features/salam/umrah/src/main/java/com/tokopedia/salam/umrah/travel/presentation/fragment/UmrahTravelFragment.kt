@@ -160,7 +160,7 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                UmrahHomepageFragment.REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
+               REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
             }
         }
     }
