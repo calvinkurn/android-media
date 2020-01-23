@@ -2,10 +2,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 
 import com.crashlytics.android.Crashlytics
@@ -19,13 +21,14 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class DynamicChannelViewHolder(itemView: View,
                                         private val listener: HomeCategoryListener,
                                         private val countDownListener: CountDownView.CountDownListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
+    private var scrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private val context: Context = itemView.context
 
     lateinit var countDownView: CountDownView
@@ -97,7 +100,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
                  * Only hit impression tracker when get data from cloud
                  */
                 if (!element.isCache) {
-                    itemView.addOnImpressionListener(channel, OnItemImpressedListener(
+                    itemView.viewTreeObserver.removeOnScrollChangedListener {
+
+                    }
+                    itemView.addDynamicChannelOnImpressionListener(channel, OnItemImpressedListener(
                             channel,
                             listener,
                             adapterPosition,
@@ -251,5 +257,40 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 }
             }
         }
+    }
+
+    fun View.addDynamicChannelOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
+        if (!holder.isInvoke) {
+            scrollChangedListener?.let {
+                viewTreeObserver.removeOnScrollChangedListener(it)
+            }
+            scrollChangedListener = object : ViewTreeObserver.OnScrollChangedListener {
+                override fun onScrollChanged() {
+                    if (!holder.isInvoke && viewIsVisible(this@addDynamicChannelOnImpressionListener)) {
+                        listener.onViewHint()
+                        holder.invoke()
+                        viewTreeObserver.removeOnScrollChangedListener(this)
+                    }
+                }
+            }
+            viewTreeObserver.addOnScrollChangedListener(scrollChangedListener)
+        }
+    }
+
+    private fun viewIsVisible(view: View?): Boolean {
+        if (view == null) {
+            return false
+        }
+        if (!view.isShown) {
+            return false
+        }
+        val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+        val offset = 100
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val X = location[0] + offset
+        val Y = location[1] + offset
+        return screen.top <= Y && screen.bottom >= Y &&
+                screen.left <= X && screen.right >= X
     }
 }
