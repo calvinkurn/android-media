@@ -14,6 +14,9 @@ import javax.inject.Named
 class SellerHomeDashboardUseCaseModule {
 
     @Provides
+    fun provideGraphQlUseCase(): GraphqlUseCase = GraphqlUseCase()
+
+    @Provides
     fun provideFlashSaleGetSellerStatusUseCase(graphqlUseCase: GraphqlUseCase): FlashSaleGetSellerStatusUseCase =
         FlashSaleGetSellerStatusUseCase(graphqlUseCase)
 

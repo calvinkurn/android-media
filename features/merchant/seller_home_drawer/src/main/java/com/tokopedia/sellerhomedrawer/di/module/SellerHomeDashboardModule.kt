@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomedrawer.di.module
 
 import android.content.Context
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.sellerhomedrawer.di.SellerHomeDashboardScope
 import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetShopStatusUseCase
@@ -12,7 +11,7 @@ import dagger.Module
 import dagger.Provides
 
 @SellerHomeDashboardScope
-@Module(includes = [SellerHomeDashboardQueryModule::class])
+@Module(includes = [SellerHomeDashboardQueryModule::class, SellerHomeDashboardUseCaseModule::class])
 class SellerHomeDashboardModule(val context: Context) {
 
     @Provides
@@ -20,9 +19,6 @@ class SellerHomeDashboardModule(val context: Context) {
                          flashSaleGetSellerStatusUseCase: FlashSaleGetSellerStatusUseCase,
                          userSession: UserSessionInterface): SellerHomeDashboardDrawerPresenter =
             SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession)
-
-    @Provides
-    fun provideGraphQlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
     @Provides
     fun provideUserSession(): UserSessionInterface = UserSession(context)
