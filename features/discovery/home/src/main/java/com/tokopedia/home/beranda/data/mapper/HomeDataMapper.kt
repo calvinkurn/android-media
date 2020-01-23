@@ -31,8 +31,8 @@ class HomeDataMapper(
         private val homeVisitableFactory: HomeVisitableFactory,
         private val trackingQueue: TrackingQueue
 ) {
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel?{
-        if (homeData == null) return null
+    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel{
+        if (homeData == null) return HomeViewModel(isCache = isCache)
         val list: MutableList<Visitable<*>> = mutableListOf()
         list.add(mappingBanner(homeVisitableFactory, homeData.banner, isCache))
         if (homeData.ticker != null && homeData.ticker.tickers != null && homeData.ticker.tickers.isNotEmpty()
@@ -83,7 +83,7 @@ class HomeDataMapper(
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT) {
                                 homeData.spotlight.promoName = String.format(PROMO_NAME_SPOTLIGHT_BANNER, position.toString())
                                 homeData.spotlight.channelId = channel.id
-                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET || channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
+                            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_HERO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_TOPADS || channel.layout == DynamicHomeChannel.Channels.LAYOUT_3_IMAGE) {
                                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
                             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC || channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL) {
                                 channel.promoName = String.format(PROMO_NAME_DC_MIX_BANNER, position.toString(), channel.getHeader().getName())
@@ -97,16 +97,12 @@ class HomeDataMapper(
                         }
                     }
                     when (channel.layout) {
-                        DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET -> list.add(mappingDigitalWidget(
-                                context,
-                                channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-                                isCache
-                        ))
                         DynamicHomeChannel.Channels.LAYOUT_TOPADS -> list.add(mappingDynamicTopAds(channel, isCache))
                         DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> list.add(mappingSpotlight(homeData.spotlight, isCache))
                         DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> if (!isCache) {
                             list.add(
-                                    BusinessUnitViewModel(context.getString(R.string.digital_widget_title), position)
+                                    BusinessUnitViewModel(context.getString(R.string.digital_widget_title),
+                                            position, false)
                             )
                         }
                         DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO -> {
@@ -198,15 +194,6 @@ class HomeDataMapper(
         return ReviewViewModel()
     }
 
-    private fun mappingDigitalWidget(context: Context, trackingDataForCombination: List<Any>, isCache: Boolean): Visitable<*> {
-        val digitalsViewModel = DigitalsViewModel(context.getString(R.string.digital_widget_title), 0)
-        if (!isCache) {
-            digitalsViewModel.isTrackingCombined = true
-            digitalsViewModel.trackingDataForCombination = trackingDataForCombination
-        }
-        return digitalsViewModel
-    }
-
     private fun mappingDynamicTopAds(channel: DynamicHomeChannel.Channels, isCache: Boolean): Visitable<*> {
         val visitable = TopAdsDynamicChannelModel()
         val items: MutableList<Item<*>> = ArrayList()
@@ -228,13 +215,13 @@ class HomeDataMapper(
         visitable.title = channel.header.name
         visitable.items = items
         if (!isCache) {
-            visitable.trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
+            visitable.setTrackingDataForCombination(channel.convertPromoEnhanceDynamicChannelDataLayerForCombination())
             visitable.isTrackingCombined = true
         }
         return visitable
     }
 
-    private fun mappingTicker(tickers: ArrayList<Ticker.Tickers>): HomeVisitable<*>? {
+    private fun mappingTicker(tickers: ArrayList<Ticker.Tickers>): Visitable<*>? {
         val tmpTickers = ArrayList<Ticker.Tickers>()
         for (tmpTicker in tickers) {
             if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {
@@ -264,9 +251,21 @@ class HomeDataMapper(
                                    dynamicIconWrap: Boolean): Visitable<*> {
         val viewModelDynamicIcon = DynamicIconSectionViewModel()
         viewModelDynamicIcon.dynamicIconWrap = dynamicIconWrap
-        for ((id, applinks, imageUrl, name, url, bu_identifier) in iconList) {
-            viewModelDynamicIcon.addItem(HomeIconItem(id, name, imageUrl, applinks, url, bu_identifier))
+        for (icon in iconList) {
+            viewModelDynamicIcon.addItem(HomeIconItem(
+                    icon.id,
+                    icon.name,
+                    icon.imageUrl,
+                    icon.applinks,
+                    icon.url,
+                    icon.bu_identifier,
+                    icon.galaxyAttribution,
+                    icon.persona,
+                    icon.brandId,
+                    icon.categoryPersona
+                    ))
         }
+
         if (!isCache) {
             viewModelDynamicIcon.setTrackingData(
                     HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.itemList)
@@ -284,7 +283,7 @@ class HomeDataMapper(
         val viewModel = DynamicChannelViewModel()
         viewModel.channel = channel
         if (!isCache) {
-            viewModel.trackingData = trackingData
+            viewModel.setTrackingData(trackingData)
             viewModel.trackingDataForCombination = trackingDataForCombination
             viewModel.isTrackingCombined = isCombined
         }
@@ -310,7 +309,11 @@ class HomeDataMapper(
                     spotlightItem.url,
                     spotlightItem.applink,
                     spotlight.promoName,
-                    spotlight.channelId
+                    spotlight.channelId,
+                    spotlightItem.galaxyAttribution,
+                    spotlightItem.persona,
+                    spotlightItem.brandId,
+                    spotlightItem.categoryPersona
             ))
         }
         val viewModel = SpotlightViewModel(spotlightItems, spotlight.channelId)

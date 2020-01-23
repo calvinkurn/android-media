@@ -3,7 +3,6 @@ package com.tokopedia.core.fragment;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,13 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core2.R;
+
+import timber.log.Timber;
 
 /**
  * Created by hangnadi on 6/5/15.
@@ -85,10 +87,10 @@ public class FragmentTermPrivacy extends TkpdFragment {
 
     private void setDefaultURL() {
         if(MODE == TERM_MODE) {
-            CommonUtils.dumper("dumper masuk term");
+            Timber.d("dumper masuk term");
             URL = getActivity().getString(R.string.term_pl);
         } else if(MODE == PRIVACY_MODE) {
-            CommonUtils.dumper("dumper masuk privacy");
+            Timber.d("dumper masuk privacy");
             URL = getActivity().getString(R.string.privacy_pl);
         } else {
             getActivity().finish();

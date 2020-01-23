@@ -81,6 +81,17 @@ class MerchantVoucherView : CustomVoucherView {
         }
     }
 
+    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?, hasActionButton: Boolean = true) {
+        setData(merchantVoucherViewModel)
+        if (!hasActionButton) {
+            btnUseVoucher.visibility = View.GONE
+            btnUseVoucher.isEnabled = false
+        } else {
+            btnUseVoucher.visibility = View.VISIBLE
+            btnUseVoucher.isEnabled = true
+        }
+    }
+
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
         this.merchantVoucherViewModel = merchantVoucherViewModel
         merchantVoucherViewModel?.run {

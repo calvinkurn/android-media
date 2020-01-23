@@ -13,7 +13,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,11 +21,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieCompositionFactory
-import com.airbnb.lottie.LottieListener
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieTask
+import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
@@ -38,18 +34,19 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.DeviceChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
@@ -156,6 +153,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
         }
+
+        if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
+            reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING
+        }
+
         createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
     }
 
@@ -188,7 +190,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
-        isLowDevice = DeviceChecker.isLowPerformingDevice(context)
+        isLowDevice = DevicePerformanceInfo.isLow(context)
 
         getReviewData()
         anonymous_text.text = generateAnonymousText()

@@ -31,7 +31,9 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onShowBookingCode(bookingCode: String, bookingType: String)
         fun onShowBuyerRequestCancelReasonBottomSheet()
         fun onSeeInvoice(invoiceUrl: String)
+        fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(productId: Int)
+        fun onCopiedAddress(address: String, str: String)
     }
 
     companion object {

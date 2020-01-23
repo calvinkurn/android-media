@@ -46,7 +46,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     @Override
     public void getShopInfo() {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(userSession.getShopId()), new Subscriber<ShopInfo>() {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(userSession.getShopId(), userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 

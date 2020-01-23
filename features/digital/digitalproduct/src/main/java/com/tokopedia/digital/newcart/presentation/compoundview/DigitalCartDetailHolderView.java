@@ -46,7 +46,7 @@ public class DigitalCartDetailHolderView extends LinearLayout {
 
     private void initView(Context context) {
         View view = LayoutInflater.from(context).inflate(
-                R.layout.view_digital_cart_detail_holder, this, true
+                R.layout.view_holder_digital_cart_detail, this, true
         );
         mainInfoRecyclerView = view.findViewById(R.id.rv_details);
         detailToggleAppCompatTextView = view.findViewById(R.id.tv_see_detail_toggle);

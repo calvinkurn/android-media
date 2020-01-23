@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.data.api.combined;
 
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.search.data.api.combined.request.AttributesRequestData;
 import com.tokopedia.flight.search.data.api.combined.request.FlightSearchCombinedRequestData;

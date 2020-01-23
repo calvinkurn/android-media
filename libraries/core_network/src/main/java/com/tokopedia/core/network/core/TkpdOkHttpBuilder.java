@@ -2,12 +2,12 @@ package com.tokopedia.core.network.core;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.network.interceptor.DebugInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import java.util.ArrayList;
 import java.util.Collections;

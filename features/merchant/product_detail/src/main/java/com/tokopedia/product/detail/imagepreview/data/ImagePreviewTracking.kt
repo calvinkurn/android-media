@@ -19,12 +19,12 @@ class ImagePreviewTracking {
         tracker.sendGeneralEvent(EVENT.CLICK_PDP, CATEGORY.PDP, ACTION.ADD_WISLIST_NON_LOGIN, LABEL.EMPTY)
     }
 
-    fun onImageSwipe(productId: String, swipeDirection: String) {
+    fun onImageSwipe(productId: String, swipeDirection: String, position: Int) {
         val mapData = TrackAppUtils.gtmData(
                 EVENT.CLICK_PDP,
                 CATEGORY.PDP,
                 ACTION.SWIPE_PICTURE,
-                "$swipeDirection - "+LABEL.OVERLAY
+                "$swipeDirection - " + LABEL.OVERLAY + " - $position"
         )
         mapData[KEY.KEY_PRODUCT_ID] = productId
         tracker.sendGeneralEvent(mapData)

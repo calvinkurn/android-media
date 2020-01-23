@@ -43,7 +43,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
-
         var temp = item.attachment?.attributes
 
         val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(MethodChecker.fromHtml(temp).toString(),

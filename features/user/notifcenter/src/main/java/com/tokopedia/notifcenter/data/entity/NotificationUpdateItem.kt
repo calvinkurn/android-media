@@ -38,6 +38,9 @@ data class NotificationUpdateItem(
         @SerializedName("short_description")
         @Expose
         var shortDescription: String = "",
+        @SerializedName("short_description_html")
+        @Expose
+        var shortDescriptionHtml: String = "",
         @SerializedName("content")
         @Expose
         var content: String = "",

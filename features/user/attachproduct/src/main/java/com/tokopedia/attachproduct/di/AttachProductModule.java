@@ -6,7 +6,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.attachproduct.data.model.mapper.TkpdResponseToAttachProductDomainModelMapper;
@@ -21,6 +20,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
