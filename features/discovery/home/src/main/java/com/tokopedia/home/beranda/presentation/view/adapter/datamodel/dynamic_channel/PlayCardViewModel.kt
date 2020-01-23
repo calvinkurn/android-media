@@ -25,6 +25,7 @@ class PlayCardViewModel: HomeVisitable, ImpressHolder() {
     private var trackingDataForCombination: List<Any> = emptyList()
     private var playCardHome: PlayChannel? = null
     private var channel: DynamicHomeChannel.Channels = DynamicHomeChannel.Channels()
+    private var position: Int = -1
 
     override fun isCache(): Boolean {
         return isCache
@@ -49,6 +50,12 @@ class PlayCardViewModel: HomeVisitable, ImpressHolder() {
     fun getPlayCardHome(): PlayChannel? {
         return playCardHome
     }
+
+    fun setPosition(position: Int){
+        this.position = position
+    }
+
+    fun getPosition() = position
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
