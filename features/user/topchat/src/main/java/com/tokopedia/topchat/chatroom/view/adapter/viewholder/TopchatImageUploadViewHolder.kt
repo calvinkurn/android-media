@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -18,16 +19,17 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     }
 
     override fun bindImageAttachment(element: ImageUploadViewModel) {
+        changeHourColor(Color.WHITE)
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)
-            ImageHandler.loadImageBlur(
+            ImageHandler.loadImageRounded2(
                     itemView.context,
                     attachment,
                     element.imageUrl
             )
         } else {
             setVisibility(progressBarSendImage, View.GONE)
-            ImageHandler.loadImageBlur(
+            ImageHandler.loadImageRounded2(
                     itemView.context,
                     attachment,
                     element.imageUrl
@@ -38,6 +40,10 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun alignHour(alignment: Int, hour: TextView?) {}
 
     override fun alwaysShowTime(): Boolean {
+        return true
+    }
+
+    override fun useWhiteReadStatus(): Boolean {
         return true
     }
 

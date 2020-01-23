@@ -1,5 +1,8 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
@@ -7,6 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -47,11 +52,17 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         roleName = itemView.findViewById(getRoleNameId());
     }
 
-    private int getRoleNameId() {
+    protected void changeHourColor(@ColorInt int color) {
+        if (hour != null) {
+            hour.setTextColor(color);
+        }
+    }
+
+    protected int getRoleNameId() {
         return R.id.tvName;
     }
 
-    private int getRoleId() {
+    protected int getRoleId() {
         return R.id.tvRole;
     }
 
@@ -160,7 +171,14 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
-            chatReadStatus.setImageDrawable(MethodChecker.getDrawable(chatReadStatus.getContext(), imageResource));
+            Drawable drawable = MethodChecker.getDrawable(chatReadStatus.getContext(), imageResource);
+            if (useWhiteReadStatus()) {
+                drawable.mutate();
+                drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+            } else {
+                drawable.clearColorFilter();
+            }
+            chatReadStatus.setImageDrawable(drawable);
         } else {
             chatReadStatus.setVisibility(View.GONE);
         }
@@ -185,6 +203,10 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         } else {
             roleContainer.setVisibility(View.GONE);
         }
+    }
+
+    protected Boolean useWhiteReadStatus() {
+        return false;
     }
 
     private void hideHeader() {

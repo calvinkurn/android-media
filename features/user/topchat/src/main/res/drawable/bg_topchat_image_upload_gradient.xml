@@ -5,10 +5,11 @@
     <gradient
         android:angle="135"
         android:centerColor="#00eeeeee"
+        android:centerX="20%"
         android:endColor="#00eeeeee"
-        android:startColor="#33000000"
+        android:startColor="#50000000"
         android:type="linear" />
 
-    <corners android:radius="0dp" />
+    <corners android:radius="@dimen/dimen_topchat_20dp" />
 
 </shape>

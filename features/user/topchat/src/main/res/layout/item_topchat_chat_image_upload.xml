@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     android:paddingLeft="@dimen/dp_15"
-    android:paddingTop="3dp"
-    android:paddingRight="@dimen/dp_15"
-    android:paddingBottom="3dp">
+    android:paddingRight="@dimen/dp_15">
 
     <LinearLayout
         android:id="@+id/llChatHeaderContainer"
@@ -27,8 +26,7 @@
         android:layout_alignParentRight="true"
         app:cardCornerRadius="@dimen/dp_20"
         app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true">
+        app:cardPreventCornerOverlap="false">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -39,12 +37,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                tools:srcCompat="@tools:sample/avatars"/>
+                tools:srcCompat="@tools:sample/avatars" />
 
             <LinearLayout
                 android:id="@+id/llReadStatusContainer"
                 android:layout_width="match_parent"
-                android:layout_height="68dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
                 android:background="@drawable/bg_topchat_image_upload_gradient"
                 android:gravity="end|bottom"
@@ -84,31 +82,4 @@
         android:visibility="visible"
         tools:visibility="gone" />
 
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/chat_status"-->
-    <!--        android:layout_width="11dp"-->
-    <!--        android:layout_height="6dp"-->
-    <!--        android:layout_below="@+id/card_group_chat_message"-->
-    <!--        android:layout_alignTop="@+id/hour"-->
-    <!--        android:layout_alignBottom="@+id/hour"-->
-    <!--        android:layout_marginEnd="5dp"-->
-    <!--        android:layout_marginRight="5dp"-->
-    <!--        android:layout_toStartOf="@+id/hour"-->
-    <!--        android:layout_toLeftOf="@+id/hour"-->
-    <!--        android:adjustViewBounds="true"-->
-    <!--        tools:src="@drawable/ic_read_thin" />-->
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/hour"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_below="@id/card_group_chat_message"-->
-    <!--        android:layout_alignEnd="@id/card_group_chat_message"-->
-    <!--        android:layout_alignRight="@id/card_group_chat_message"-->
-    <!--        android:layout_marginTop="@dimen/dp_3"-->
-    <!--        android:textColor="@color/time_color"-->
-    <!--        android:textSize="@dimen/sp_10"-->
-    <!--        tools:text="10:13 pm"-->
-    <!--        tools:visibility="visible" />-->
 </RelativeLayout>
