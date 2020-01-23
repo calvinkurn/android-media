@@ -40,7 +40,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
-import kotlinx.android.synthetic.main.phoneverification_bottomsheet.*
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
@@ -245,7 +244,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
 
             if (variant.isNotEmpty() && variant == AB_TESTING_CTA_VARIANT_A) {
-                buttonUse.setOnClickListener{
+                buttonUse.setOnClickListener {
                     openPhoneVerificationBottomSheet()
                 }
             }
@@ -256,11 +255,11 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun openPhoneVerificationBottomSheet() {
-        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
+        val view = LayoutInflater.from(context).inflate(com.tokopedia.design.R.layout.promo_phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-        closeableBottomSheetDialog.setContentView(view)
-        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
-        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
+        closeableBottomSheetDialog.setCustomContentView(view, "", false)
+        val btnVerifikasi = view.findViewById<UnifyButton>(com.tokopedia.design.R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(com.tokopedia.design.R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
@@ -376,9 +375,9 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode){
+        when (requestCode) {
             REQUEST_CODE_VERIFICATION_PHONE -> {
-                when(resultCode) {
+                when (resultCode) {
                     Activity.RESULT_OK -> {
                         onClickUse()
                     }

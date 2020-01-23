@@ -253,13 +253,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
             adb.setPositiveButton(R.string.tp_label_use) { dialogInterface, i ->
                 //Call api to validate the coupon
-                val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
-
-                if (phoneVerificationState == false && variant == AB_TESTING_CTA_VARIANT_A) {
-                    openPhoneVerificationBottomSheet()
-                } else {
-                    mPresenter.redeemCoupon(code, cta)
-                }
+                mPresenter.redeemCoupon(code, cta)
                 AnalyticsTrackerUtil.sendEvent(context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                         AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
@@ -281,11 +275,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun openPhoneVerificationBottomSheet() {
-        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
+        val view = LayoutInflater.from(context).inflate(com.tokopedia.design.R.layout.promo_phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-        closeableBottomSheetDialog.setContentView(view)
-        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
-        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
+        closeableBottomSheetDialog.setCustomContentView(view, "", false)
+        val btnVerifikasi = view.findViewById<UnifyButton>(com.tokopedia.design.R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(com.tokopedia.design.R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
@@ -440,21 +434,27 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
         this.mRealCode = data.realCode
         btnAction2.setOnClickListener { v ->
-            val code = mRealCode as String
-            if (!TextUtils.isEmpty(code)) {
-                showRedeemCouponDialog(data.cta, code, data.title)
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                        mCouponName)
+
+            val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
+            if (phoneVerificationState == false && variant == AB_TESTING_CTA_VARIANT_A) {
+                openPhoneVerificationBottomSheet()
             } else {
-                if (arguments != null && arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
-                    btnAction2.isEnabled = false
-                    btnAction2.setTextColor(resources.getColor(com.tokopedia.abstraction.R.color.black_12))
-                    progressBar.visibility = View.VISIBLE
-                    btnAction2.text = ""
-                    mPresenter.reFetchRealCode()
+                val code = mRealCode as String
+                if (!TextUtils.isEmpty(code)) {
+                    showRedeemCouponDialog(data.cta, code, data.title)
+                    AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                            mCouponName)
+                } else {
+                    if (arguments != null && arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
+                        btnAction2.isEnabled = false
+                        btnAction2.setTextColor(resources.getColor(com.tokopedia.abstraction.R.color.black_12))
+                        progressBar.visibility = View.VISIBLE
+                        btnAction2.text = ""
+                        mPresenter.reFetchRealCode()
+                    }
                 }
             }
         }
@@ -693,8 +693,17 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_VERIFICATION_PHONE && resultCode == Activity.RESULT_OK) {
-            mPresenter.redeemCoupon(mCTA, mCode)
+        when (requestCode) {
+            REQUEST_CODE_VERIFICATION_PHONE -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        mPresenter.redeemCoupon(mCode, mCTA)
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        super.onActivityResult(requestCode, resultCode, data)
+                    }
+                }
+            }
         }
     }
 
