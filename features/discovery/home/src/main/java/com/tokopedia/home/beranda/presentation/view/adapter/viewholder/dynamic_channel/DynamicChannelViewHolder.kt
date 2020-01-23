@@ -67,16 +67,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             payloads.forEach { payload->
                 if (payload is Bundle && !payload.getBoolean(DynamicChannelViewModel.HOME_RV_DC_IMPRESSED)) {
                     channel?.let {
-                        if (!element.isCache && !isImpressionListenerAdded) {
-                            itemView.addOnImpressionListener(channel, OnItemImpressedListener(
-                                    channel,
-                                    listener,
-                                    adapterPosition,
-                                    getLayoutType(channel),
-                                    element.isCache) {
-                                isImpressionListenerAdded = false
-                            })
-                        }
+                        setViewPortImpression(element, channel)
                     }
                 }
             }
@@ -94,20 +85,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             val channelHeaderName = element.channel?.header?.name
 
             channel?.let { channel->
-                /**
-                 * Requirement:
-                 * Only hit impression tracker when get data from cloud
-                 */
-                if (!element.isCache && !isImpressionListenerAdded) {
-                    itemView.addOnImpressionListener(channel, OnItemImpressedListener(
-                            channel,
-                            listener,
-                            adapterPosition,
-                            getLayoutType(channel),
-                            element.isCache) {
-                        isImpressionListenerAdded = false
-                    })
-                }
+                setViewPortImpression(element, channel)
 
                 /**
                  * Requirement:
@@ -165,6 +143,26 @@ abstract class DynamicChannelViewHolder(itemView: View,
             }
         } catch (e: Exception) {
             Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
+        }
+    }
+
+    private fun setViewPortImpression(element: DynamicChannelViewModel, channel: DynamicHomeChannel.Channels) {
+        /**
+         * Requirement:
+         * Only hit impression tracker when get data from cloud
+         */
+        if (!element.isCache && !isImpressionListenerAdded) {
+            itemView.addOnImpressionListener(channel, OnItemImpressedListener(
+                    channel,
+                    listener,
+                    adapterPosition,
+                    getLayoutType(channel),
+                    element.isCache) {
+                isImpressionListenerAdded = false
+            })
+
+            isImpressionListenerAdded = true
+
         }
     }
 
