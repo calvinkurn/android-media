@@ -23,6 +23,7 @@ import com.tokopedia.sellerapp.fcm.notification.TopAdsTopupSuccessNotification;
 import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 
 import java.util.Map;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -125,7 +126,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 && SessionHandler.getLoginID(mContext).equals(data.getString("to_user_id"))) {
 
             resetNotificationStatus(data);
-            CommonUtils.dumper("resetNotificationStatus");
+            Timber.d("resetNotificationStatus");
             prepareAndExecuteDedicatedNotification(data);
             refreshUI(data);
             mFCMCacheManager.resetCache(data);

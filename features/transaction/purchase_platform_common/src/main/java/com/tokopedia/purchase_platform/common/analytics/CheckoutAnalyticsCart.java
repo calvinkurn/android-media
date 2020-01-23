@@ -1,8 +1,10 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension;
@@ -595,49 +597,69 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickPakaiMerchantVoucherManualInputSuccess(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
+    //impression on user merchant voucher list
+    public void eventImpressionUseMerchantVoucher(String voucherId, Map<String, Object> ecommerceMap) {
+        Map<String, Object> eventMap = createEventMap(
+                EventName.PROMO_VIEW,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                "success - " + promoCode
+                EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
+                ""
         );
+        eventMap.put(Key.PROMO_ID, voucherId);
+        eventMap.put(Key.E_COMMERCE, ecommerceMap);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherManualInputFailed(String errorMessage) {
-        sendEventCategoryActionLabel(
+    //on success use merchant voucher from list
+    public void eventClickUseMerchantVoucherSuccess(String promoCode, String promoId, Boolean isFromList) {
+        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
+        Map<String, Object> eventMap = createEventMap(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                "error - " + errorMessage
+                eventAction,
+                EventLabel.SUCCESS + " - " + promoCode
         );
+        eventMap.put(Key.PROMO_ID, promoId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherSuccess(String promoCode) {
-        sendEventCategoryActionLabel(
+    //on error use merchant voucher
+    public void eventClickUseMerchantVoucherFailed(String errorMessage, String promoId, Boolean isFromList) {
+        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
+        Map<String, Object> eventMap = createEventMap(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
-                "success - " + promoCode
+                eventAction,
+                EventLabel.ERROR + " - " + errorMessage
         );
+        eventMap.put(Key.PROMO_ID, promoId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherFailed(String errorMessage) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
+    //on merchant voucher click detail
+    public void eventClickDetailMerchantVoucher(Map<String, Object> ecommerceMap, String voucherId, String promoCode) {
+        Map<String, Object> eventMap = createEventMap(
+                EventName.PROMO_CLICK,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
-                "failed - " + errorMessage
-        );
-    }
-
-    public void eventClickDetailMerchantVoucher(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_DETAIL_MERCHANT_VOUCHER,
+                EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
                 promoCode
         );
+        eventMap.put(Key.PROMO_ID, voucherId);
+        eventMap.put(Key.E_COMMERCE, ecommerceMap);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
+    }
+
+    private Map<String, Object> createEventMap(String event, String category, String action, String label) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(Key.EVENT, event);
+        eventMap.put(Key.EVENT_CATEGORY, category);
+        eventMap.put(Key.EVENT_ACTION, action);
+        eventMap.put(Key.EVENT_LABEL, label);
+        return eventMap;
     }
 
     public void eventClickTickerMerchantVoucher(String promoCode) {

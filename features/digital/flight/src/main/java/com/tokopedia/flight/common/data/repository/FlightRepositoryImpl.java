@@ -1,6 +1,6 @@
 package com.tokopedia.flight.common.data.repository;
 
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;

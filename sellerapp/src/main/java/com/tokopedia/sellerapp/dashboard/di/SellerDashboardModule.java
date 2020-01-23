@@ -59,6 +59,7 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.di.ShopCommonModule;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
@@ -315,5 +316,11 @@ public class SellerDashboardModule {
     SellerDashboardDrawerPresenter provideSellerDashboardDrawerPresenter(GetShopStatusUseCase getShopStatusUseCase,
                                                                          UserSessionInterface userSessionInterface) {
         return new SellerDashboardDrawerPresenter(getShopStatusUseCase, userSessionInterface);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

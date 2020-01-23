@@ -44,7 +44,7 @@ class PhoneCodePickerViewModel @Inject constructor(
         }
     }
 
-    fun convertKeywordToInt(keyword: String): Int = try {
+    private fun convertKeywordToInt(keyword: String): Int = try {
         keyword.toInt()
     } catch (e: NumberFormatException) {
         0

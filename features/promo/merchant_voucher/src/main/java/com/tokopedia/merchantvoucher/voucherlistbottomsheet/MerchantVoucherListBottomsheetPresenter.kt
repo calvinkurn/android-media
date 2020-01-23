@@ -52,11 +52,11 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                 })
     }
 
-    override fun checkPromoFirstStep(promoMerchantCode: String, currentCartString: String,
+    override fun checkPromoFirstStep(voucherId: String, promoMerchantCode: String, currentCartString: String,
                                      promo: Promo?, isFromList: Boolean) {
         if (promo != null) {
             promo.codes = ArrayList()
-            val orders = promo.orders;
+            val orders = promo.orders
             if (orders != null) {
                 for (order in orders) {
                     val codes = ArrayList<String>()
@@ -88,7 +88,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         override fun onError(e: Throwable) {
                             if (isViewAttached) {
                                 view.hideLoadingDialog()
-                                view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
+                                view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e), "", false)
                             }
                         }
 
@@ -101,18 +101,19 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                                     } else {
                                         responseGetPromoStack.data.voucherOrders.forEach {
                                             if (it.code.equals(promoMerchantCode, true)) {
+                                                val promoId = if (isFromList) voucherId else responseGetPromoStack.data.promoCodeId.toString()
                                                 if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                                                     view?.hideProgressLoading()
-                                                    view.onErrorCheckPromoFirstStep(it.message.text)
+                                                    view.onErrorCheckPromoFirstStep(it.message.text, promoId, isFromList)
                                                 } else {
-                                                    view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
+                                                    view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList, promoId)
                                                 }
                                             }
                                         }
                                     }
                                 } else {
                                     view?.hideProgressLoading()
-                                    view.onErrorCheckPromoFirstStep(responseGetPromoStack.data.message.text)
+                                    view.onErrorCheckPromoFirstStep(responseGetPromoStack.data.message.text, "", isFromList)
                                 }
                             }
                         }

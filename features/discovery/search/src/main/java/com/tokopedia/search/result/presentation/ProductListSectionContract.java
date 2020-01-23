@@ -21,12 +21,6 @@ public interface ProductListSectionContract {
     interface View extends SearchSectionContract.View {
         String getUserId();
 
-        void incrementStart();
-
-        void storeTotalData(int totalData);
-
-        void setHeaderTopAds(boolean hasHeader);
-
         void addProductList(List<Visitable> list);
 
         void setProductList(List<Visitable> list);
@@ -135,5 +129,13 @@ public interface ProductListSectionContract {
         void setIsTickerHasDismissed(boolean isTickerHasDismissed);
 
         boolean getIsTickerHasDismissed();
+
+        boolean hasNextPage();
+
+        void clearData();
+
+        void setStartFrom(int startFrom);
+
+        int getStartFrom();
     }
 }

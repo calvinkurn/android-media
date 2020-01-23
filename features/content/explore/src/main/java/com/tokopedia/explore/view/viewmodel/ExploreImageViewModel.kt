@@ -10,13 +10,13 @@ import com.tokopedia.kotlin.model.ImpressHolder
  * @author by milhamj on 24/07/18.
  */
 
-class ExploreImageViewModel(
-        val postId: Int,
-        val userName: String,
-        val imageUrl: String?,
-        val itemPos: Int,
+data class ExploreImageViewModel(
+        val postId: Int = 0,
+        val userName: String = "",
+        val imageUrl: String = "",
+        val itemPos: Int = 0,
         val cardType: ExploreCardType,
-        val trackingViewModelList: List<TrackingViewModel>
+        val trackingViewModelList: List<TrackingViewModel> = mutableListOf()
 ) : Visitable<ExploreImageTypeFactory> {
 
     val impressHolder = ImpressHolder()
