@@ -10,7 +10,6 @@ import android.util.Log;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -78,6 +77,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
@@ -156,7 +156,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             List<String> linkSegment = uriData.getPathSegments();
             String screenName;
             int type = DeepLinkChecker.getDeepLinkType(context, uriData.toString());
-            CommonUtils.dumper("FCM wvlogin deeplink type " + type);
+            Timber.d("FCM wvlogin deeplink type " + type);
             switch (type) {
                 case DeepLinkChecker.HOME:
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
