@@ -31,14 +31,20 @@ class HomePlayWidgetHelper(
     /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
-    private val playerObserver = Observer<ExoPlayer> { t -> mPlayer = t }
+    private val playerObserver = object : Observer<ExoPlayer> {
+        override fun onChanged(t: ExoPlayer?) {
+            mPlayer = t
+        }
+    }
 
-    private val playerStateObserver = Observer<TokopediaPlayVideoState> { state ->
-        when(state){
-            is TokopediaPlayVideoState.NoMedia -> mExoPlayerListener?.onPlayerIdle()
-            is TokopediaPlayVideoState.Error -> mExoPlayerListener?.onPlayerError(state.error.message)
-            is TokopediaPlayVideoState.Pause -> mExoPlayerListener?.onPlayerPaused()
-            is TokopediaPlayVideoState.Playing -> mExoPlayerListener?.onPlayerPlaying()
+    private val playerStateObserver = object : Observer<TokopediaPlayVideoState>{
+        override fun onChanged(state: TokopediaPlayVideoState) {
+            when(state){
+                is TokopediaPlayVideoState.NoMedia -> mExoPlayerListener?.onPlayerIdle()
+                is TokopediaPlayVideoState.Error -> mExoPlayerListener?.onPlayerError(state.error.message)
+                is TokopediaPlayVideoState.Pause -> mExoPlayerListener?.onPlayerPaused()
+                is TokopediaPlayVideoState.Playing -> mExoPlayerListener?.onPlayerPlaying()
+            }
         }
     }
 
