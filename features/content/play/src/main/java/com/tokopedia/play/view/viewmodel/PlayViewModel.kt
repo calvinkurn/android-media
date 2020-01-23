@@ -171,11 +171,11 @@ class PlayViewModel @Inject constructor(
              */
             getPartnerInfo(channel)
             // TODO("remove, for testing")
-//            channel.videoStream = VideoStream(
-//                    "vertical",
-//                    "vod",
-//                    false,
-//                    VideoStream.Config(streamUrl = "https://tokopedia-video.oss-ap-southeast-1.aliyuncs.com/liveRecord/add4fb0c02a63644b1b88a0e133fe9f4/play/02672df4-3d90-11ea-8a1e-ae7b0dc63a31/2020-01-23-12-04-25_2020-01-23-12-21-47.m3u8"))
+            channel.videoStream = VideoStream(
+                    "vertical",
+                    "vod",
+                    false,
+                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             setStateLiveOrVod(channel)
             setContentIdAndType(channel)
