@@ -67,7 +67,6 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
     fun onSuccess(data: TokoPointPromosEntity) {
         loadCompleted(data.coupon.coupons, data)
         isLastPage = !data.coupon.paging.isHasNext
-        loadCompletedWithError()
     }
 
     fun onError(){
