@@ -119,7 +119,7 @@ class CartListPresenterUpdateAndReloadCartTest : Spek({
 
             Then("should render success") {
                 verify {
-                    view.renderInitialGetCartListDataSuccess(cartListData.cartListData)
+                    view.renderInitialGetCartListDataSuccess(any())
                 }
             }
         }
