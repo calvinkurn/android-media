@@ -39,6 +39,8 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation "org.robolectric:robolectric:4.1"
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
 }
 
 project.ext {

@@ -281,7 +281,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun openPhoneVerificationBottomSheet() {
-        val view = LayoutInflater.from(context).inflate(R.layout.tp_phoneverification_bottomsheet, null, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeableBottomSheetDialog.setContentView(view)
         val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
