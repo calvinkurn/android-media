@@ -80,9 +80,10 @@ object DFInstallerLogUtil {
 
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }) {
             val messageStringBuilder = StringBuilder()
-            messageStringBuilder.append("$tag{$modulesName};")
-            messageStringBuilder.append("times_dl:{$downloadTimes};")
-
+            messageStringBuilder.append("$tag {$modulesName};")
+            if (downloadTimes > 0) {
+                messageStringBuilder.append("times_dl:{$downloadTimes};")
+            }
             if (errorCode?.isNotEmpty() == true) {
                 messageStringBuilder.append("err:{${errorCode.joinToString("|")}};")
             }

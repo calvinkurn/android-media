@@ -17,6 +17,7 @@
     <string name="umrah_home_page_search_spinner_price_label">Semua Harga</string>
     <string name="umrah_home_page_search_spinner_city_label">Mana Saja</string>
     <string name="umrah_home_page_choose_packet_label">Paket Pilihan</string>
+    <string name="umrah_home_page_partner_label">Partner Perjalanan</string>
     <string name="umrah_home_page_best_deals_label">Deals Terbaik Bulan Ini</string>
     <string name="umrah_home_page_depart_next_month_label">Berangkat Bulan Depan</string>
     <string name="umrah_home_page_hotel_stars">Hotel Bintang %s</string>

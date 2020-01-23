@@ -2,7 +2,7 @@ package com.tokopedia.flight.bookingV2.data.cloud;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;

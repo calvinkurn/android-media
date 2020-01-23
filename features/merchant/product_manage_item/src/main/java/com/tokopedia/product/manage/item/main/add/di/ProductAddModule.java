@@ -40,6 +40,7 @@ import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -166,5 +167,11 @@ public class ProductAddModule {
     @Provides
     ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
         return new ProductVariantRepositoryImpl(productVariantDataSource);
+    }
+
+    @ProductAddScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
