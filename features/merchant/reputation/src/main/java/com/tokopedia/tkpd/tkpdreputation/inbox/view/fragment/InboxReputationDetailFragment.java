@@ -39,6 +39,7 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -96,7 +97,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Inject
     UserSessionInterface userSession;
 
+    @Inject
+    ReputationTracking reputationTracking;
+
     private String reputationId = "0";
+    private String orderId = "0";
     private int role = 0;
 
     public static InboxReputationDetailFragment createInstance(int tab,
@@ -240,6 +245,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     public void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
                                         List<Visitable> list) {
         role = inboxReputationItemViewModel.getRole();
+        orderId = ((InboxReputationDetailItemViewModel) list.get(0)).getOrderId();
         setToolbar(inboxReputationItemViewModel.getInvoice(), inboxReputationItemViewModel.getCreateTime());
 
         adapter.clearList();
@@ -317,6 +323,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
                                                List<Visitable> list) {
+        orderId = ((InboxReputationDetailItemViewModel) list.get(0)).getOrderId();
         adapter.clearList();
         adapter.addHeader(createHeaderModel(inboxReputationViewModel));
         adapter.addList(list);
@@ -515,6 +522,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             Dialog dialog = builder.create();
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.show();
+            reputationTracking.onClickSmileyShopReviewTracker(name, orderId);
         }
     }
 

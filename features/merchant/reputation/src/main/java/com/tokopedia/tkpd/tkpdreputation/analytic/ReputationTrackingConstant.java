@@ -15,6 +15,7 @@ public class ReputationTrackingConstant {
     public static final String OFFICIAL_STORE_SHOP_PAGE_BRAND = "official store shop page - brand";
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
     public static final String REVIEW_PAGE = "ulasan page";
+    public static final String SELLER_FEEDBACK_PAGE = "seller feedback page";
     public static final String FILTER_INVOICE_PAGE = "filter invoice review";
 
     //Action
@@ -34,6 +35,7 @@ public class ReputationTrackingConstant {
     public static final String CLICK_BACK_BUTTON_FILTER_REVIEW = "click - back button on filter from ";
     public static final String CLICK_RESET_BUTTON_FILTER_REVIEW = "click - reset button on filter from ";
     public static final String SCROLL_REVIEW = "scroll - ulasan page on ";
+    public static final String CLICK_SMILEY = "click - smiley ";
 
     //Label
     public static final String CLICK_REVIEW = "click review -";

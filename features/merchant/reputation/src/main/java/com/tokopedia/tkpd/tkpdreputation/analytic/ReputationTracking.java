@@ -424,6 +424,15 @@ public class ReputationTracking {
         ));
     }
 
+    public void onClickSmileyShopReviewTracker(String smileyName, String orderId) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_SMILEY + smileyName,
+                orderId
+        ));
+    }
+
 
 
 
