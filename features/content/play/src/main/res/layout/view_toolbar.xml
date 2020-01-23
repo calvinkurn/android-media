@@ -84,56 +84,66 @@
             app:srcCompat="@drawable/ic_play_more_white"
             />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_partner_name"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_partner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N0"
-            android:paddingTop="@dimen/dp_10"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/fl_live_badge"
             app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
             app:layout_goneMarginLeft="@dimen/dp_16"
             app:layout_goneMarginStart="@dimen/dp_16"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="@string/play_mock_shop_name"
-            />
+            >
 
-        <View
-            android:id="@+id/v_separator"
-            android:layout_width="@dimen/dp_4"
-            android:layout_height="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:background="@drawable/bg_play_circle_separator"
-            app:layout_constraintVertical_bias="0.75"
-            app:layout_constraintBottom_toBottomOf="@id/tv_partner_name"
-            app:layout_constraintStart_toEndOf="@id/tv_partner_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
-            />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_partner_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_10"
+                android:textColor="@color/Neutral_N0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="@string/play_mock_shop_name"
+                />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_follow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:textColor="@color/Neutral_N0"
-            android:paddingTop="@dimen/dp_10"
-            app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
-            app:layout_constraintStart_toEndOf="@id/v_separator"
-            app:typographyType="heading_6"
-            app:typographyWeight="bold"
-            tools:text="@string/play_follow"
-            />
+            <View
+                android:id="@+id/v_separator"
+                android:layout_width="@dimen/dp_4"
+                android:layout_height="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:background="@drawable/bg_play_circle_separator"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_partner_name"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.75"
+                />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/group_partner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:constraint_referenced_ids="tv_follow, v_separator, tv_partner_name"
-            />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_10"
+                android:textColor="@color/Neutral_N0"
+                app:layout_constraintStart_toEndOf="@id/v_separator"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold"
+                tools:text="@string/play_follow"
+                />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_followable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="v_separator, tv_follow"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

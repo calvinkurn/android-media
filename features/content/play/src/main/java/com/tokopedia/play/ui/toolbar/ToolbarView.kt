@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,7 +34,8 @@ class ToolbarView(
     private val tvChannelName = view.findViewById<Typography>(R.id.tv_stream_name)
     private val tvPartnerName = view.findViewById<Typography>(R.id.tv_partner_name)
     private val tvFollow = view.findViewById<Typography>(R.id.tv_follow)
-    private val groupPartner = view.findViewById<Group>(R.id.group_partner)
+    private val clPartner = view.findViewById<ConstraintLayout>(R.id.cl_partner)
+    private val groupFollowable = view.findViewById<Group>(R.id.group_followable)
     private val ivMore = view.findViewById<ImageView>(R.id.iv_more)
 
     init {
@@ -72,9 +74,7 @@ class ToolbarView(
 
     internal fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
         tvPartnerName.text = partnerInfo.name
-        tvFollow.text = if (partnerInfo.isFollowed)
-            view.context.getString(R.string.play_following) else
-            view.context.getString(R.string.play_follow)
+        setFollowStatus(partnerInfo.isFollowed)
 
         if (!partnerInfo.isFollowable) {
             tvFollow.setOnClickListener {}
@@ -89,9 +89,11 @@ class ToolbarView(
             }
         }
 
-        if (partnerInfo.type == PartnerType.ADMIN || partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) groupPartner.gone()
+        if (partnerInfo.type == PartnerType.ADMIN || partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.gone()
         else {
-            groupPartner.visible()
+            clPartner.visible()
+            if (!partnerInfo.isFollowable) groupFollowable.gone()
+            else groupFollowable.visible()
 
             tvPartnerName.setOnClickListener {
                 listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)

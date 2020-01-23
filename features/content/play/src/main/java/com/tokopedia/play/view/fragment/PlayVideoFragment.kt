@@ -243,7 +243,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.apply {
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.TOP, R.id.gl_quarter, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.TOP, R.id.gl_one_tap_post, ConstraintSet.BOTTOM)
             }
 
             constraintSet.applyTo(container)
