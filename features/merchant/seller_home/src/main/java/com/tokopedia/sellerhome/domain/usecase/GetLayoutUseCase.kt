@@ -38,7 +38,7 @@ class GetLayoutUseCase(
                 ),
                 LineGraphWidgetUiModel(
                         WidgetType.LINE_GRAPH,
-                        "Line Graph",
+                        "Total Pendapatan",
                         "",
                         ""
                 )
