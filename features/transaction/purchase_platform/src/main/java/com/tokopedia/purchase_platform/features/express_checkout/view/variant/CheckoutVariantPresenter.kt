@@ -7,6 +7,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.logisticcart.utils.RatesResponseStateTransformer
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
@@ -81,6 +82,7 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
         val param = RatesParam.Builder(shopShipmentModels, shippingParam).build()
         ratesUseCase.execute(param, selectedSpId, selectedServiceId, shopShipmentModels)
+                .map(RatesResponseStateTransformer(shopShipmentModels, selectedSpId, selectedServiceId))
                 .subscribe(
                         GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
                 )

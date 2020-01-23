@@ -28,6 +28,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
+import com.tokopedia.logisticcart.utils.RatesResponseStateTransformer;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -1783,12 +1784,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             observable = ratesUseCase.execute(param, spId, 0, shopShipmentList);
         }
-        observable.subscribe(
-                new GetCourierRecommendationSubscriber(
-                        getView(), this, shipperId, spId, itemPosition,
-                        shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
-                        isInitialLoad, isTradeInDropOff
-                ));
+        observable
+                .map(new RatesResponseStateTransformer(shopShipmentList, 0, spId))
+                .subscribe(
+                        new GetCourierRecommendationSubscriber(
+                                getView(), this, shipperId, spId, itemPosition,
+                                shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
+                                isInitialLoad, isTradeInDropOff
+                        ));
     }
 
     @NonNull
