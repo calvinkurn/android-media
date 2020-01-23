@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -78,6 +79,10 @@ class BannerTimerViewHolder(private val customItemView: View) : AbstractViewHold
         constraintLayout.setOnClickListener {
             bannerTimerViewModel.onBannerClicked()
         }
+    }
+
+    override fun onViewDetachedToWindow() {
+        bannerTimerViewModel.stopTimer()
     }
 
     private fun setTimerUI(componentItem: ComponentsItem?, timeType: Int) {
