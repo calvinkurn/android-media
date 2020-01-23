@@ -43,21 +43,21 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     //find first index visible on screen
-                    val firstIndexVisible = mLayoutManager?.findFirstVisibleItemPosition() ?: -1
-                    val lastIndexVisible = mLayoutManager?.findLastVisibleItemPosition() ?: -1
-                    val positions = getPositionPlay().filter { it in firstIndexVisible..lastIndexVisible }
+//                    val firstIndexVisible = mLayoutManager?.findFirstVisibleItemPosition() ?: -1
+//                    val lastIndexVisible = mLayoutManager?.findLastVisibleItemPosition() ?: -1
+//                    val positions = getPositionPlay().filter { it in firstIndexVisible..lastIndexVisible }
 
                     // check if the view is completely visible on first item
-                    if (firstIndexVisible != -1 &&
-                            positions.isNotEmpty() &&
-                            (positions.first() != currentSelected || currentSelected == -1) && //check if we missing currentSelected
-                            getExoPlayerByPosition(positions.first())?.isPlayerPlaying() == false &&
-                            (getViewHolder(positions.first()) as PlayCardViewHolder).wantsToPlay()
-                    ) {
-                        onSelectedItemChanged(positions.first())
-                    }
+//                    if (firstIndexVisible != -1 &&
+//                            positions.isNotEmpty() &&
+//                            (positions.first() != currentSelected || currentSelected == -1) && //check if we missing currentSelected
+//                            getExoPlayerByPosition(positions.first())?.isPlayerPlaying() == false &&
+//                            (getViewHolder(positions.first()) as PlayCardViewHolder).wantsToPlay()
+//                    ) {
+//                        onSelectedItemChanged(positions.first())
+//                    }
 
-                    if(positions.isEmpty()) onSelectedItemChanged(-1)
+//                    if(positions.isEmpty()) onSelectedItemChanged(-1)
                 }
             }
         })
