@@ -120,6 +120,14 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
             onRedeemCoupon.value = ErrorMessage(cta)
         }
     }
+
+    fun isPhonerVerfied() {
+        launchCatchError(block = {
+            val data = repository.getUserPhoneVerificationInfo().getSuccessData<PhoneVerificationResponse>()
+            userInfo.value = data.mfGetUserInfo
+        }) {
+        }
+    }
 }
 
 data class PinPageData(val code: String, val pinText: String)
