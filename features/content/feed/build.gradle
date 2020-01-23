@@ -123,7 +123,11 @@ project.ext {
     groupId = 'com.tokopedia.content'
     versionName = "0.0.1"
     artifactName = "feed-release"
+    unitTestKotlinIncludes = [
+            '**/FeedViewModel.*'
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
 
