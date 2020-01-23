@@ -11,7 +11,7 @@ class SettingBankRemoteConfig private constructor(val remoteConfig: FirebaseRemo
     }
 
     companion object {
-        private const val IS_OLD_FLOW_ENABLE = "bank_is_old_flow_enable"
+        private const val IS_OLD_FLOW_ENABLE = "app_add_account_old_flow_enable"
 
         private var firebaseRemoteConfigImpl: SettingBankRemoteConfig? = null
         fun instance(context: Context): SettingBankRemoteConfig {
