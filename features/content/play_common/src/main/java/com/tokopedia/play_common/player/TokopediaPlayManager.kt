@@ -105,7 +105,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             is TokopediaPlayPrepareState.Prepared -> prepareState.uri
         }
         if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
-        if (prepareState is TokopediaPlayPrepareState.Unprepared) {
+        if (prepareState is TokopediaPlayPrepareState.Unprepared || currentUri != uri) {
             playVideoWithUri(uri, autoPlay, currentUri == null || currentUri != uri || forceReset)
             currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
         }
