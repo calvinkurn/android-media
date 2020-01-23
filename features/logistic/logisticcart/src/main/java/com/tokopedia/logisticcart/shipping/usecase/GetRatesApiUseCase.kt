@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -26,7 +27,8 @@ typealias RatesModel = ShippingRecommendationData
 class GetRatesApiUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
         private val converter: ShippingDurationConverter,
-        private val gql: GraphqlUseCase) {
+        private val gql: GraphqlUseCase,
+        private val scheduler: SchedulerProvider) {
 
     fun execute(param: RatesParam): Observable<RatesModel> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3api)
@@ -41,8 +43,8 @@ class GetRatesApiUseCase @Inject constructor(
                     val response = graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
                     converter.convertModel(response.ratesData)
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
     }
 
     fun unsubscribe() {

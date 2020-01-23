@@ -2,6 +2,8 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.di;
 
 import android.content.Context;
 
+import com.tokopedia.logisticcart.domain.executor.MainScheduler;
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationContract;
@@ -51,6 +53,12 @@ public class ShippingDurationModule {
     @ShippingDurationScope
     CheckoutAnalyticsCourierSelection getAnalytics() {
         return new CheckoutAnalyticsCourierSelection();
+    }
+
+    @Provides
+    @ShippingDurationScope
+    SchedulerProvider provideScheduler() {
+        return new MainScheduler();
     }
 
 }

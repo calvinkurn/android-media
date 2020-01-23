@@ -3,6 +3,8 @@ package com.tokopedia.purchase_platform.features.express_checkout.view.variant.d
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.logisticcart.domain.executor.MainScheduler
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.purchase_platform.R
@@ -42,6 +44,12 @@ class CheckoutVariantModule {
     @Provides
     fun provideCompositeSubscription(): CompositeSubscription {
         return CompositeSubscription()
+    }
+
+    @CheckoutVariantScope
+    @Provides
+    fun prorvideScheduler(): SchedulerProvider {
+        return MainScheduler()
     }
 
     @CheckoutVariantScope

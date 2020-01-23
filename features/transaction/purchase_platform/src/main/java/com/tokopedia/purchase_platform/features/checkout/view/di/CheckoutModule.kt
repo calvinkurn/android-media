@@ -3,6 +3,8 @@ package com.tokopedia.purchase_platform.features.checkout.view.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.logisticcart.domain.executor.MainScheduler
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -85,6 +87,12 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
     fun provideSubmitHelpTicketUseCaseQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
+    }
+
+    @Provides
+    @CheckoutScope
+    fun provideScheduler(): SchedulerProvider {
+        return MainScheduler()
     }
 
 
