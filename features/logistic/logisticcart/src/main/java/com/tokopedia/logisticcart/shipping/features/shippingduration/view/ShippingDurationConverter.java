@@ -132,46 +132,7 @@ public class ShippingDurationConverter {
         shippingCourierViewModel.setBlackboxInfo(blackboxInfo);
         shippingCourierViewModel.setServiceData(shippingDurationViewModel.getServiceData());
         shippingCourierViewModel.setRatesId(ratesId);
-        if (selectedSpId != 0 && !isPromoStackingApplied) {
-            if (selectedSpId == productData.getShipperProductId()) {
-                shippingCourierViewModel.setSelected(true);
-                shippingDurationViewModel.setSelected(true);
-            }
-        } else if (selectedServiceId != 0 && !isPromoStackingApplied) {
-            if (!(shippingDurationViewModel.getServiceData().getError() != null &&
-                    !TextUtils.isEmpty(shippingDurationViewModel.getServiceData().getError().getErrorId())) &&
-                    selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
-                shippingDurationViewModel.setSelected(true);
-            }
-        } else {
-            shippingCourierViewModel.setSelected(productData.isRecommend());
-            shippingDurationViewModel.setSelected(false);
-        }
-        shippingCourierViewModel.setAdditionalFee(getAdditionalFee(productData, shopShipmentList));
-        shippingCourierViewModel.setAllowDropshipper(isAllowDropshipper(productData, shopShipmentList));
         shippingCourierViewModels.add(shippingCourierViewModel);
-    }
-
-    private int getAdditionalFee(ProductData productData, List<ShopShipment> shopShipmentList) {
-        for (ShopShipment shopShipment : shopShipmentList) {
-            if (shopShipment.getShipProds() != null) {
-                for (ShipProd shipProd : shopShipment.getShipProds()) {
-                    if (shipProd.getShipProdId() == productData.getShipperProductId()) {
-                        return shipProd.getAdditionalFee();
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    private boolean isAllowDropshipper(ProductData productData, List<ShopShipment> shopShipmentList) {
-        for (ShopShipment shopShipment : shopShipmentList) {
-            if (shopShipment.getShipId() == productData.getShipperId()) {
-                return shopShipment.isDropshipEnabled();
-            }
-        }
-        return false;
     }
 
     private LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {
