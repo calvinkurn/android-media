@@ -290,7 +290,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
         view.getLocationOnScreen(location)
         val X = location[0] + offset
         val Y = location[1] + offset
-        return screen.top <= Y && screen.bottom >= Y &&
-                screen.left <= X && screen.right >= X
+        return if (screen.top <= Y && screen.bottom >= Y &&
+                screen.left <= X && screen.right >= X) {
+            true
+        } else {
+            false
+        }
     }
 }
