@@ -29,6 +29,9 @@ data class TravelAgent(
         @SerializedName("slugName")
         @Expose
         val slugName: String = "",
+        @SerializedName("description")
+        @Expose
+        val description: String = "",
         @SerializedName("ui")
         @Expose
         val ui: UmrahTravelAgentUI = UmrahTravelAgentUI()

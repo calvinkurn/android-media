@@ -259,6 +259,8 @@
 
 
     <string name="umrah_travel_link_share">https://m.tokopedia.com/s/umroh/agen/%s</string>
+    <string name="umrah_travel_agent_title">Penyelenggara Umroh</string>
+    <string name="umrah_travel_contact">Hubungi Travel</string>
 
 
 </resources>
