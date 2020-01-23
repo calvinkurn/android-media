@@ -1785,7 +1785,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             observable = ratesUseCase.execute(param);
         }
         observable
-                .map(new RatesResponseStateTransformer(shopShipmentList, 0, spId))
+                .map(new RatesResponseStateTransformer(shopShipmentList, spId, 0))
                 .subscribe(
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,
