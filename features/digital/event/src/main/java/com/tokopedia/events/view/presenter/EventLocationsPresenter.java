@@ -1,7 +1,6 @@
 package com.tokopedia.events.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.view.contractor.EventBaseContract;
@@ -12,9 +11,8 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * Created by ashwanityagi on 06/11/17.
@@ -63,18 +61,18 @@ public class EventLocationsPresenter extends BaseDaggerPresenter<EventBaseContra
         getEventsLocationListRequestUseCase.execute(RequestParams.EMPTY, new Subscriber<List<EventLocationDomain>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
             }
 
             @Override
             public void onNext(List<EventLocationDomain> eventLocationDomains) {
                 mView.renderLocationList(convertIntoVeiwModel(eventLocationDomains));
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
             }
         });
     }

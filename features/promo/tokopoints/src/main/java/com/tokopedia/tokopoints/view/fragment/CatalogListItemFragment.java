@@ -30,7 +30,7 @@ import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
+import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
@@ -51,7 +51,6 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import static com.tokopedia.tokopoints.view.util.CommonConstant.ARGS_CATEGORY_ID;
-import static com.tokopedia.tokopoints.view.util.CommonConstant.ARGS_SORT_TYPE;
 
 public class CatalogListItemFragment extends BaseDaggerFragment implements CatalogListItemContract.View, View.OnClickListener, AdapterCallback {
 
@@ -266,7 +265,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
+            startActivity(CouponListingStackedActivity.Companion.getCallingIntent(getActivityContext()));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,

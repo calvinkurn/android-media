@@ -5,6 +5,7 @@ import com.tokopedia.shop.address.view.listener.ShopAddressListView;
 import com.tokopedia.shop.address.view.mapper.ShopAddressViewModelMapper;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -18,15 +19,17 @@ public class ShopAddressListPresenter extends BaseDaggerPresenter<ShopAddressLis
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final ShopAddressViewModelMapper shopAddressViewModelMapper;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ShopAddressListPresenter(GetShopInfoUseCase getShopInfoUseCase, ShopAddressViewModelMapper shopAddressViewModelMapper) {
+    public ShopAddressListPresenter(GetShopInfoUseCase getShopInfoUseCase, ShopAddressViewModelMapper shopAddressViewModelMapper, UserSessionInterface userSession) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.shopAddressViewModelMapper = shopAddressViewModelMapper;
+        this.userSession = userSession;
     }
 
     public void getshopAddressList(String shopId) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopInfo>() {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId, userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 

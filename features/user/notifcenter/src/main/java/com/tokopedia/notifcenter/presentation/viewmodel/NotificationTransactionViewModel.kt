@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException

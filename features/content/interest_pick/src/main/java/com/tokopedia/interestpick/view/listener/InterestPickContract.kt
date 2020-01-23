@@ -3,8 +3,7 @@ package com.tokopedia.interestpick.view.listener
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
-
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 /**
  * @author by milhamj on 07/09/18.
  */
@@ -18,7 +17,7 @@ interface InterestPickContract {
 
         fun hideLoading()
 
-        fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
+        fun onSuccessGetInterest(interestList: ArrayList<InterestPickDataViewModel>,
                                  title: String)
 
         fun onErrorGetInterest(message: String)
@@ -27,15 +26,13 @@ interface InterestPickContract {
 
         fun onErrorUpdateInterest(message: String)
 
-        fun onItemSelected(isSelected: Boolean)
-
         fun onBackPressed()
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun fetchData()
 
-        fun updateInterest(interestIds: Array<Int>)
+        fun updateInterest(interestIds: List<Int>)
 
         fun onBackPressed()
     }
