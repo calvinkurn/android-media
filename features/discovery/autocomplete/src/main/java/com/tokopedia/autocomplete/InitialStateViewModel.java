@@ -1,18 +1,17 @@
 package com.tokopedia.autocomplete;
 
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.autocomplete.domain.model.SearchData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabAutoCompleteViewModel implements Visitable<HostAutoCompleteTypeFactory> {
+public class InitialStateViewModel implements Visitable<HostAutoCompleteTypeFactory> {
 
     private List<SearchData> list;
     private String searchTerm;
 
-    public TabAutoCompleteViewModel() {
+    public InitialStateViewModel() {
         this.list = new ArrayList<>();
     }
 

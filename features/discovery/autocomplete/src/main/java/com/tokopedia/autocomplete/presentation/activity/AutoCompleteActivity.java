@@ -22,10 +22,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.autocomplete.R;
 import com.tokopedia.autocomplete.analytics.AutocompleteEventTracking;
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking;
-import com.tokopedia.autocomplete.fragment.SearchMainFragment;
-import com.tokopedia.autocomplete.presentation.AutoCompleteContract;
-import com.tokopedia.autocomplete.util.UrlParamHelper;
+import com.tokopedia.autocomplete.initialstate.view.fragment.InitialStateFragment;
 import com.tokopedia.autocomplete.searchbar.SearchBarView;
+import com.tokopedia.autocomplete.suggestion.view.fragment.SuggestionFragment;
+import com.tokopedia.autocomplete.util.UrlParamHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
@@ -34,7 +34,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -42,19 +41,22 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_S
 
 public class AutoCompleteActivity extends BaseActivity
         implements SearchBarView.ImageSearchClickListener,
-        SearchBarView.OnQueryTextListener,
-        SearchBarView.SuggestionViewUpdateListener,
-        AutoCompleteContract.View {
+        SearchBarView.OnQueryTextListener {
+
+    public static final int PAGER_POSITION_PRODUCT = 0;
+    public static final int PAGER_POSITION_SHOP = 1;
 
     AutocompleteTracking autocompleteTracking;
 
-    protected SearchBarView searchBarView;
-
     protected SearchParameter searchParameter;
 
-    protected ConstraintLayout mSuggestionView;
+    protected SearchBarView searchBarView;
 
-    protected SearchMainFragment suggestionFragment;
+    protected ConstraintLayout mSuggestionView;
+    protected ConstraintLayout mInitialStateView;
+
+    protected SuggestionFragment suggestionFragment;
+    protected InitialStateFragment initialStateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class AutoCompleteActivity extends BaseActivity
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            window.setStatusBarColor(getResources().getColor(R.color.white));
+            window.setStatusBarColor(getResources().getColor(R.color.white,null));
         }
     }
 
@@ -85,19 +87,22 @@ public class AutoCompleteActivity extends BaseActivity
     protected void initView() {
         searchBarView = findViewById(R.id.search_bar);
         mSuggestionView = findViewById(R.id.search_suggestion_container);
-        suggestionFragment = (SearchMainFragment) getSupportFragmentManager().findFragmentById(R.id.search_suggestion);
+        mInitialStateView = findViewById(R.id.search_initial_state_container);
+        suggestionFragment = (SuggestionFragment) getSupportFragmentManager().findFragmentById(R.id.search_suggestion);
+        initialStateFragment = (InitialStateFragment) getSupportFragmentManager().findFragmentById(R.id.search_initial_state);
     }
 
     protected void prepareView() {
-        setSuggestionViewAnimation();
+        setContainerAnimation();
         initSearchBarView();
     }
 
-    private void setSuggestionViewAnimation() {
+    private void setContainerAnimation() {
         TransitionSet transitionSet = new TransitionSet();
         Fade fade = new Fade(Fade.MODE_IN);
         transitionSet.addTransition(fade);
         TransitionManager.beginDelayedTransition(mSuggestionView, fade);
+        TransitionManager.beginDelayedTransition(mInitialStateView, fade);
     }
 
     private void initActivityOnCreate(Bundle savedInstanceState) {
@@ -126,7 +131,13 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
-        searchBarView.showSearch(searchParameter);
+        SearchParameter param = searchBarView.showSearch(searchParameter);
+        if (suggestionFragment != null) {
+            suggestionFragment.setSearchParameter(param);
+        }
+        if(initialStateFragment != null) {
+            initialStateFragment.setSearchParameter(param);
+        }
     }
 
     @Override
@@ -143,7 +154,6 @@ public class AutoCompleteActivity extends BaseActivity
         searchBarView.setActivity(this);
         searchBarView.setOnImageSearchClickListener(this);
         searchBarView.setOnQueryTextListener(this);
-        searchBarView.setOnSuggestionViewUpdateListener(this);
     }
 
     @Override
@@ -155,7 +165,6 @@ public class AutoCompleteActivity extends BaseActivity
 
         clearFocusSearchView();
         handleQueryTextSubmitBasedOnCurrentTab();
-
         return true;
     }
 
@@ -167,10 +176,10 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
         switch (suggestionFragment.getCurrentTab()) {
-            case SearchMainFragment.PAGER_POSITION_PRODUCT:
+            case PAGER_POSITION_PRODUCT:
                 onProductQuerySubmit();
                 break;
-            case SearchMainFragment.PAGER_POSITION_SHOP:
+            case PAGER_POSITION_SHOP:
                 onShopQuerySubmit();
                 break;
             default:
@@ -219,8 +228,25 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     @Override
-    public boolean onQueryTextChange(@NotNull String searchQuery) {
-        return false;
+    public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
+        if(searchParameter.getSearchQuery().isEmpty()){
+            suggestionFragment.clearData();
+            if (initialStateFragment != null ) {
+                initialStateFragment.search(searchParameter);
+                if(mInitialStateView.getVisibility() == View.GONE && mSuggestionView.getVisibility() == View.VISIBLE){
+                    mSuggestionView.setVisibility(View.GONE);
+                    mInitialStateView.setVisibility(View.VISIBLE);
+                }
+            }
+        }else{
+            if (suggestionFragment != null ) {
+                suggestionFragment.search(searchParameter);
+                if(mSuggestionView.getVisibility() == View.GONE && mInitialStateView.getVisibility() == View.VISIBLE){
+                    mInitialStateView.setVisibility(View.GONE);
+                    mSuggestionView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
     }
 
     @Override
@@ -234,7 +260,7 @@ public class AutoCompleteActivity extends BaseActivity
         }
     }
 
-    public void onVoiceSearchClicked(Intent data){
+    public void onVoiceSearchClicked(Intent data) {
         List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
         if (results != null && results.size() > 0) {
             searchBarView.setQuery(results.get(0), false);
@@ -252,38 +278,10 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     public void deleteAllRecentSearch() {
-        suggestionFragment.deleteAllRecentSearch();
+        initialStateFragment.deleteAllRecentSearch();
     }
 
     public void deleteRecentSearch(String keyword) {
-        suggestionFragment.deleteRecentSearch(keyword);
-    }
-
-    @Override
-    public void onTextChanged(@Nullable CharSequence newText, @Nullable CharSequence mOldQueryText, @NotNull SearchParameter searchParameter) {
-        if (suggestionFragment != null && !TextUtils.equals(newText, mOldQueryText)) {
-            suggestionFragment.search(searchParameter);
-        }
-    }
-
-    @Override
-    public void showSuggestions() {
-        if (suggestionFragment != null && mSuggestionView.getVisibility() == View.GONE) {
-            mSuggestionView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void dismissSuggestions() {
-        if (mSuggestionView.getVisibility() == View.VISIBLE) {
-            mSuggestionView.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void setSearchParameter(@NotNull SearchParameter searchParameter) {
-        if (suggestionFragment != null) {
-            suggestionFragment.setSearchParameter(searchParameter);
-        }
+        initialStateFragment.deleteRecentSearch(keyword);
     }
 }

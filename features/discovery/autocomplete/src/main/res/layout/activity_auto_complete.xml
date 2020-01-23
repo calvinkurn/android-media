@@ -19,7 +19,22 @@
 
         <fragment
             android:id="@+id/search_suggestion"
-            android:name="com.tokopedia.autocomplete.fragment.SearchMainFragment"
+            android:name="com.tokopedia.autocomplete.suggestion.view.fragment.SuggestionFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_initial_state_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <fragment
+            android:id="@+id/search_initial_state"
+            android:name="com.tokopedia.autocomplete.initialstate.view.fragment.InitialStateFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>

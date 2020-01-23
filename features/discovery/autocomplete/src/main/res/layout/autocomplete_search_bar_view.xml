@@ -22,7 +22,7 @@
             app:layout_constraintLeft_toLeftOf="parent"/>
 
         <com.tokopedia.design.component.EditTextCompat
-            android:id="@+id/search_text_view"
+            android:id="@+id/searchTextView"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -54,9 +54,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_4"
             app:srcCompat="@drawable/autocomplete_ic_search"
-            app:layout_constraintTop_toTopOf="@id/search_text_view"
-            app:layout_constraintBottom_toBottomOf="@id/search_text_view"
-            app:layout_constraintLeft_toLeftOf="@id/search_text_view"/>
+            app:layout_constraintTop_toTopOf="@id/searchTextView"
+            app:layout_constraintBottom_toBottomOf="@id/searchTextView"
+            app:layout_constraintLeft_toLeftOf="@id/searchTextView"/>
 
         <ImageView
             android:id="@+id/action_image_search_btn"
@@ -66,9 +66,9 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp_4"
             app:srcCompat="@drawable/ic_product_action_camera_grayscale_24"
-            app:layout_constraintTop_toTopOf="@id/search_text_view"
-            app:layout_constraintBottom_toBottomOf="@id/search_text_view"
-            app:layout_constraintRight_toRightOf="@id/search_text_view"/>
+            app:layout_constraintTop_toTopOf="@id/searchTextView"
+            app:layout_constraintBottom_toBottomOf="@id/searchTextView"
+            app:layout_constraintRight_toRightOf="@id/searchTextView"/>
 
         <ImageView
             android:id="@+id/action_empty_btn"
@@ -79,9 +79,9 @@
             android:layout_marginRight="@dimen/dp_4"
             android:visibility="gone"
             app:srcCompat="@drawable/autocomplete_ic_clear"
-            app:layout_constraintTop_toTopOf="@id/search_text_view"
-            app:layout_constraintBottom_toBottomOf="@id/search_text_view"
-            app:layout_constraintRight_toRightOf="@id/search_text_view"/>
+            app:layout_constraintTop_toTopOf="@id/searchTextView"
+            app:layout_constraintBottom_toBottomOf="@id/searchTextView"
+            app:layout_constraintRight_toRightOf="@id/searchTextView"/>
 
         <ImageView
             android:id="@+id/action_voice_btn"
@@ -93,7 +93,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/search_text_view"/>
+            app:layout_constraintLeft_toRightOf="@id/searchTextView"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/action_cancel_button"
@@ -109,6 +109,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/search_text_view"/>
+            app:layout_constraintLeft_toRightOf="@id/searchTextView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

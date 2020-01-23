@@ -1,29 +1,32 @@
-package com.tokopedia.autocomplete;
+package com.tokopedia.autocomplete.initialstate.view.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.autocomplete.adapter.SearchTypeFactory;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HostAutoCompleteAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private final HostAutoCompleteTypeFactory typeFactory;
     private List<Visitable> list;
+    private final SearchTypeFactory typeFactory;
 
-    public HostAutoCompleteAdapter(HostAutoCompleteTypeFactory typeFactory) {
+    public InitialStateAdapter(SearchTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
         this.list = new ArrayList<>();
-        this.list.add(new DefaultAutoCompleteViewModel());
-        this.list.add(new TabAutoCompleteViewModel());
     }
 
+    @NotNull
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -36,16 +39,6 @@ public class HostAutoCompleteAdapter extends RecyclerView.Adapter<AbstractViewHo
         holder.bind(list.get(position));
     }
 
-    public void setDefaultViewModel(DefaultAutoCompleteViewModel model) {
-        this.list.set(0, model);
-        notifyDataSetChanged();
-    }
-
-    public void setSuggestionViewModel(TabAutoCompleteViewModel model) {
-        this.list.set(1, model);
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
@@ -54,5 +47,16 @@ public class HostAutoCompleteAdapter extends RecyclerView.Adapter<AbstractViewHo
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public void addAll(List<Visitable> list) {
+        this.list.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void clearData() {
+        int size = this.list.size();
+        this.list.clear();
+        notifyItemRangeRemoved(0, size);
     }
 }
