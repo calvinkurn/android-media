@@ -32,7 +32,7 @@ class ChatListComponent(
                         when (it) {
                             is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
