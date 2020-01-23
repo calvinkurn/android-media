@@ -287,7 +287,8 @@
             android:layout_marginEnd="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             android:textIsSelectable="true"
-            android:inputType="none"/>
+            android:inputType="none"
+            android:focusable="false"/>
 
         <RelativeLayout
             android:id="@+id/rl_som_dropshipper"
