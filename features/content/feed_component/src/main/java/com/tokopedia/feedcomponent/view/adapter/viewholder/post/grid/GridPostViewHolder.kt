@@ -40,8 +40,8 @@ class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemL
         }
         itemView.gridList.layoutManager = layoutManager
 
-//        val adapter = GridPostAdapter(pagerPosition, element, gridItemListener)
-//        itemView.gridList.adapter = adapter
+        val adapter = GridPostAdapter(pagerPosition, element, gridItemListener)
+        itemView.gridList.adapter = adapter
 
         setGridListPadding(element.itemList.size)
     }
