@@ -5,10 +5,11 @@ import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
-class PlayCardViewModel: HomeVisitable {
+class PlayCardViewModel: HomeVisitable, ImpressHolder() {
     override fun visitableId(): String {
-        return channel?.id?:""
+        return channel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -23,7 +24,7 @@ class PlayCardViewModel: HomeVisitable {
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()
     private var playCardHome: PlayChannel? = null
-    private var channel: DynamicHomeChannel.Channels? = null
+    private var channel: DynamicHomeChannel.Channels = DynamicHomeChannel.Channels()
 
     override fun isCache(): Boolean {
         return isCache
@@ -35,24 +36,18 @@ class PlayCardViewModel: HomeVisitable {
 
     fun setPlayCardHome(playCardHome: PlayChannel) {
         this.playCardHome = playCardHome
-        setBannerImageUrl()
     }
 
     fun setChannel(channel: DynamicHomeChannel.Channels) {
         this.channel = channel
     }
 
-    fun getChannel(): DynamicHomeChannel.Channels? {
+    fun getChannel(): DynamicHomeChannel.Channels {
         return channel
     }
 
     fun getPlayCardHome(): PlayChannel? {
         return playCardHome
-    }
-
-    private fun setBannerImageUrl() {
-        val bannerUrl = playCardHome?.coverUrl ?: ""
-        this.channel?.banner?.imageUrl = bannerUrl
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int {

@@ -2,12 +2,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-
+import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
@@ -111,7 +109,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                         HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                                 DynamicLinkHelper.getActionLink(channel.header))
-                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.getHeader()))
+                        onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
                     }
                 } else {
                     seeAllButton.visibility = View.GONE

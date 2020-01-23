@@ -11,16 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.beranda.data.model.PlayChannel
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
-import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
+import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import java.util.*
 
 class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
@@ -38,8 +34,7 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
    }
    private var mRecyclerView: RecyclerView? = null
    private var currentSelected = -1
-    private var mLayoutManager: LinearLayoutManager? = null
-   private val retryModel: RetryModel = RetryModel()
+   private var mLayoutManager: LinearLayoutManager? = null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
@@ -86,28 +81,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         visitables.clear()
     }
 
-    fun showRetry() {
-        if (visitables.contains(retryModel)) {
-            return
-        }
-        val positionStart = itemCount
-        visitables.add(retryModel)
-        notifyItemRangeInserted(positionStart, 1)
-    }
-
-    fun removeRetry() {
-        val index = visitables.indexOf(retryModel)
-        visitables.remove(retryModel)
-        notifyItemRemoved(index)
-    }
-
-    //mapping another visitable to visitables from home_query
-    fun setItems(visitables: List<Visitable<*>>) {
-        this.visitables.clear()
-        this.visitables.addAll(visitables)
-        notifyDataSetChanged()
-    }
-
     fun hasReview(): Int {
         for (i in visitables.indices) {
             if (visitables[i] is ReviewViewModel) {
@@ -115,40 +88,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
             }
         }
         return -1
-    }
-
-    fun updateReviewItem(suggestedProductReview: SuggestedProductReview?) {
-        if (visitables[hasReview()] is ReviewViewModel && hasReview() != -1) {
-            (visitables[hasReview()] as ReviewViewModel).suggestedProductReview = suggestedProductReview!!
-            notifyItemChanged(hasReview())
-        }
-    }
-
-    fun updateHomeQueryItems(newVisitable: List<Visitable<*>?>?) {
-        clearItems()
-        visitables = newVisitable
-        notifyDataSetChanged()
-    }
-
-    fun removeGeolocationViewModel() {
-        val removedPosition = removeGeolocation()
-        if (removedPosition != -1) {
-            notifyItemRemoved(removedPosition)
-        }
-    }
-
-    fun removeReviewViewModel() {
-        val reviewPosition = removeReview()
-        if (reviewPosition != -1) {
-            notifyItemRemoved(reviewPosition)
-        }
-    }
-
-    fun setHomeHeaderViewModel(homeHeaderViewModel: HeaderViewModel) {
-        val changedPosition = setHomeHeader(homeHeaderViewModel)
-        if (changedPosition != POSITION_UNDEFINED) {
-            notifyItemChanged(changedPosition)
-        }
     }
 
     private fun hasHomeHeaderViewModel(): Int {
@@ -165,61 +104,8 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         } else POSITION_UNDEFINED
     }
 
-    private fun removeGeolocation(): Int {
-        for (i in visitables.indices) {
-            if (visitables[i] is GeolocationPromptViewModel) {
-                visitables.removeAt(i)
-                return i
-            }
-        }
-        return POSITION_UNDEFINED
-    }
-
-    private fun removeReview(): Int {
-        for (i in visitables.indices) {
-            if (visitables[i] is ReviewViewModel) {
-                visitables.removeAt(i)
-                return i
-            }
-        }
-        return POSITION_UNDEFINED
-    }
-
-    //update and return updated position
-    private fun setHomeHeader(homeHeaderViewModel: HeaderViewModel): Int {
-        when (hasHomeHeaderViewModel()) {
-            POSITION_HEADER_WITH_TICKER -> {
-                visitables[POSITION_HEADER_WITH_TICKER] = homeHeaderViewModel
-                return POSITION_HEADER_WITH_TICKER
-            }
-            POSITION_HEADER_WITHOUT_TICKER -> {
-                visitables[POSITION_HEADER_WITHOUT_TICKER] = homeHeaderViewModel
-                return POSITION_HEADER_WITHOUT_TICKER
-            }
-        }
-        return POSITION_UNDEFINED
-    }
-
-    fun getRecommendationFeedSectionPosition(): Int {
-        return visitables.size - 1
-    }
-
     private fun clearExoPlayer(){
         currentSelected = -1
-    }
-
-    fun setPlayData(playContentBanner: PlayChannel?, adapterPosition: Int) {
-        //checking if size list is less than position than do nothing
-        if(visitables.size <= adapterPosition) return
-        playContentBanner?.let { playChannel ->
-            if (visitables[adapterPosition] is PlayCardViewModel) {
-                (visitables[adapterPosition] as PlayCardViewModel).setPlayCardHome(playChannel)
-                notifyItemChanged(adapterPosition, true)
-            }else if(visitables.size > adapterPosition){
-                visitables.add(adapterPosition, PlayCardViewModel().apply { setPlayCardHome(playChannel) })
-                notifyItemChanged(adapterPosition)
-            }
-        }
     }
 
     private fun onSelectedItemChanged(newSelected: Int) {
@@ -233,15 +119,15 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
     }
 
     private fun prepareAndPlayByPosition(position: Int) {
-        val newPlayer: TokopediaPlayerHelper? = getExoPlayerByPosition(position)
-        newPlayer?.playerPlay()
+        val newPlayer: HomePlayWidgetHelper? = getExoPlayerByPosition(position)
+        newPlayer?.preparePlayer()
     }
 
     private fun pausePlayerByPosition(position: Int) {
         getExoPlayerByPosition(position)?.playerPause()
     }
 
-    private fun getExoPlayerByPosition(firstVisible: Int): TokopediaPlayerHelper? {
+    private fun getExoPlayerByPosition(firstVisible: Int): HomePlayWidgetHelper? {
         val holder: AbstractViewHolder<out Visitable<*>>? = getViewHolder(firstVisible)
         return if (holder != null && holder is PlayCardViewHolder) {
             holder.getHelper()
@@ -270,16 +156,16 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
 
     private fun getPositionPlay(): List<Int>{
         val list = mutableListOf<Int>()
-        for (i in visitables.indices) {
-            if(visitables[i] is PlayCardViewModel) list.add(i)
+        for (i in currentList.indices) {
+            if(getItem(i) is PlayCardViewModel) list.add(i)
         }
         return list
     }
 
-    private fun getAllExoPlayers(): ArrayList<TokopediaPlayerHelper> {
-        val list: ArrayList<TokopediaPlayerHelper> = ArrayList()
-        for (i in visitables.indices) {
-            val exoPlayerHelper: TokopediaPlayerHelper? = getExoPlayerByPosition(i)
+    private fun getAllExoPlayers(): ArrayList<HomePlayWidgetHelper> {
+        val list: ArrayList<HomePlayWidgetHelper> = ArrayList()
+        for (i in currentList.indices) {
+            val exoPlayerHelper: HomePlayWidgetHelper? = getExoPlayerByPosition(i)
             if (exoPlayerHelper != null) {
                 list.add(exoPlayerHelper)
             }
