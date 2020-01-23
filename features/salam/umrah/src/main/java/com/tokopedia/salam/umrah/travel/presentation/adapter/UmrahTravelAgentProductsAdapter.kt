@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
@@ -26,6 +28,10 @@ class UmrahTravelAgentProductsAdapter : RecyclerView.Adapter<UmrahTravelAgentPro
                 tg_umrah_hotel.text = element.ui.hotelStars
                 tg_umrah_plane.text = element.airlines.first().name
                 tg_umrah_start_from_label.text = UmrahPriceUtil.getSlashedPrice(resources, element.slashPrice)
+
+                setOnClickListener {
+                    RouteManager.route(context, ApplinkConst.SALAM_UMRAH_PDP, element.slugName)
+                }
             }
         }
     }
