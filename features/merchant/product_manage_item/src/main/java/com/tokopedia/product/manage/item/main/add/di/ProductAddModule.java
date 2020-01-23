@@ -189,9 +189,10 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(){
+    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase() {
         return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
-  
+    }
+
     @ProductAddScope
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
