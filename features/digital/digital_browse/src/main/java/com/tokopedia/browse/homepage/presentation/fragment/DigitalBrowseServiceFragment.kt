@@ -325,6 +325,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
                     this.viewModel.titleMap!!,
                     position)
             analyticsModel.iconName = item.name ?: ""
+            analyticsModel.buIdentifier = item.buIdentifier?:""
             dataObjects.add(analyticsModel)
             position++
         }
