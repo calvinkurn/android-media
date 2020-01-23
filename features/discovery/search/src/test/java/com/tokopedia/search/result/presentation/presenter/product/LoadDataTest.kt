@@ -10,11 +10,10 @@ import com.tokopedia.search.result.error
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelRedirection
+import com.tokopedia.search.shouldBe
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import io.mockk.confirmVerified
-import io.mockk.every
-import io.mockk.verify
-import io.mockk.verifyOrder
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
@@ -25,11 +24,12 @@ internal class LoadDataTest: Spek({
         createTestInstance()
 
         Scenario("Load Data Success") {
+            val requestParamsSlot = slot<RequestParams>()
             lateinit var productListPresenter: ProductListPresenter
 
             Given("Search Product API will return SearchProductModel") {
                 val searchProductFirstPageUseCase by memoized<UseCase<SearchProductModel>>()
-                every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+                every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
                     secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelCommon)
                 }
             }
@@ -41,9 +41,18 @@ internal class LoadDataTest: Spek({
             When("Load Data") {
                 val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
                     it[SearchApiConst.Q] = "samsung"
+                    it[SearchApiConst.START] = "0"
+                    it[SearchApiConst.UNIQUE_ID] = "unique_id"
+                    it[SearchApiConst.USER_ID] = productListPresenter.userId
                 }
 
                 productListPresenter.loadData(searchParameter)
+            }
+
+            Then("verify use case request params") {
+                val requestParams = requestParamsSlot.captured
+
+                requestParams.getString(SearchApiConst.START, null) shouldBe "0"
             }
 
             Then("verify view interaction when load data success") {
@@ -66,6 +75,12 @@ internal class LoadDataTest: Spek({
                 val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
                 verify(exactly = 1) { getDynamicFilterUseCase.execute(any(), any()) }
+            }
+
+            Then("verify start from is incremented") {
+                val startFrom = productListPresenter.startFrom
+
+                startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
             }
         }
 
@@ -109,14 +124,21 @@ internal class LoadDataTest: Spek({
 
                 verify(exactly = 0) { getDynamicFilterUseCase.execute(any(), any()) }
             }
+
+            Then("verify start from is incremented") {
+                val startFrom = productListPresenter.startFrom
+
+                startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+            }
         }
 
         Scenario("Load Data Success Is First Time Load") {
+            val requestParamsSlot = slot<RequestParams>()
             lateinit var productListPresenter: ProductListPresenter
 
             Given("Search Product API will return SearchProductModel") {
                 val searchProductFirstPageUseCase by memoized<UseCase<SearchProductModel>>()
-                every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+                every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
                     secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelCommon)
                 }
             }
@@ -132,9 +154,18 @@ internal class LoadDataTest: Spek({
             When("Load Data") {
                 val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
                     it[SearchApiConst.Q] = "samsung"
+                    it[SearchApiConst.START] = "0"
+                    it[SearchApiConst.UNIQUE_ID] = "unique_id"
+                    it[SearchApiConst.USER_ID] = productListPresenter.userId
                 }
 
                 productListPresenter.loadData(searchParameter)
+            }
+
+            Then("verify use case request params", timeout = 100000) {
+                val requestParams = requestParamsSlot.captured
+
+                requestParams.getString(SearchApiConst.START, null) shouldBe "0"
             }
 
             Then("verify view interaction when load data success") {
@@ -168,14 +199,21 @@ internal class LoadDataTest: Spek({
 
                 verify(exactly = 1) { getDynamicFilterUseCase.execute(any(), any()) }
             }
+
+            Then("verify start from is incremented") {
+                val startFrom = productListPresenter.startFrom
+
+                startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+            }
         }
 
         Scenario("Load Data Success With Redirection") {
+            val requestParamsSlot = slot<RequestParams>()
             lateinit var productListPresenter: ProductListPresenter
 
             Given("Search Product API will return SearchProductModel") {
                 val searchProductFirstPageUseCase by memoized<UseCase<SearchProductModel>>()
-                every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+                every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
                     secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelRedirection)
                 }
             }
@@ -191,9 +229,18 @@ internal class LoadDataTest: Spek({
             When("Load Data") {
                 val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
                     it[SearchApiConst.Q] = "produk wardyah"
+                    it[SearchApiConst.START] = "0"
+                    it[SearchApiConst.UNIQUE_ID] = "unique_id"
+                    it[SearchApiConst.USER_ID] = productListPresenter.userId
                 }
 
                 productListPresenter.loadData(searchParameter)
+            }
+
+            Then("verify use case request params", timeout = 100000) {
+                val requestParams = requestParamsSlot.captured
+
+                requestParams.getString(SearchApiConst.START, null) shouldBe "0"
             }
 
             Then("verify view interaction") {
@@ -216,6 +263,12 @@ internal class LoadDataTest: Spek({
                 val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
                 verify(exactly = 1) { getDynamicFilterUseCase.execute(any(), any()) }
+            }
+
+            Then("verify start from is incremented") {
+                val startFrom = productListPresenter.startFrom
+
+                startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
             }
         }
     }

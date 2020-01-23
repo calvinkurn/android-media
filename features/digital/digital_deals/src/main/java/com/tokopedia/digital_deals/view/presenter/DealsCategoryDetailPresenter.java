@@ -1,14 +1,13 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
@@ -27,6 +26,7 @@ import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -41,6 +41,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 ;
 
@@ -143,12 +144,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -170,7 +171,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                 brands = dealEntity.getBrands();
                 getView().renderBrandList(brands);
                 showHideViews();
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
             }
         });
     }
@@ -184,12 +185,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             @Override
             public void onCompleted() {
 
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -329,12 +330,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         getLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -373,7 +374,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper(e);
+                Timber.d(e);
             }
 
             @Override

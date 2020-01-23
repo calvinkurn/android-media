@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.domain.model
 import com.google.android.gms.tagmanager.DataLayer
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tkpd.library.utils.CurrencyFormatHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
 
@@ -550,20 +550,19 @@ class DynamicHomeChannel(
             val url: String = "",
             @Expose
             @SerializedName("price")
-            val price: String = "",
+            val price: String = "0",
             @Expose
             @SerializedName("attribution")
             val attribution: String = ""
     )
 
     inner class Grid(
-
             @Expose
             @SerializedName("id")
             val id: String = "",
             @Expose
             @SerializedName("price")
-            val price: String = "",
+            val price: String = "0",
             @Expose
             @SerializedName("imageUrl")
             val imageUrl: String = "",

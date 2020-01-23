@@ -29,6 +29,8 @@ data class HomeViewModel(
         list.clear()
         list.addAll(temp)
     }
+
+    fun getHomePlay() = list.find{ it is PlayCardViewModel }
 }
 
 class HomeViewType{

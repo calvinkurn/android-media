@@ -14,7 +14,6 @@ import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -26,13 +25,12 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
 import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
@@ -63,7 +61,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         final String userID = sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000";
 
 
-        CommonUtils.dumper("Appsflyer login userid " + userID);
+        Timber.d("Appsflyer login userid " + userID);
 
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
             @Override
@@ -114,7 +112,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            CommonUtils.dumper("Error key Appsflyer");
+            Timber.d("Error key Appsflyer");
             initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID, conversionListener);
         }
     }
@@ -296,7 +294,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 getContext().getPackageName()));
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
         AppsFlyerLib.getInstance().setAdditionalData(addData);
-        CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
+        Timber.d(TAG + " appsflyer initiated with UID " + userID);
     }
 
     @Override
