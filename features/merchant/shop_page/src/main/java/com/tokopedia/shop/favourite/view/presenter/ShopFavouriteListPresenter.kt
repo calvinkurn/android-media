@@ -90,7 +90,9 @@ constructor(private val getShopFollowerListUseCase: GetShopFollowerListUseCase,
         gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()))
         gqlGetShopInfoUseCase.execute(
                 {
-                    view?.onSuccessGetShopInfo(it)
+                    if(isViewAttached) {
+                        view?.onSuccessGetShopInfo(it)
+                    }
                 },
                 {
                     if(isViewAttached) {

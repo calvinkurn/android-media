@@ -15,10 +15,14 @@ class BroadcastMessageCreatePresenter @Inject constructor(private val userSessio
         gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(userSession.shopId.toIntOrZero()))
         gqlGetShopInfoUseCase.execute(
                 {
-                    view?.onSuccessGetShopInfo(it)
+                    if (isViewAttached) {
+                        view?.onSuccessGetShopInfo(it)
+                    }
                 },
                 {
-                    view?.onErrorGetShopInfo(it)
+                    if (isViewAttached) {
+                        view?.onErrorGetShopInfo(it)
+                    }
                 }
         )
     }

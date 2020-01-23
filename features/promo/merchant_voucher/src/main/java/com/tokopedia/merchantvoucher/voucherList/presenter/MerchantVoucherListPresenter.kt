@@ -35,11 +35,15 @@ constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
         gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()))
         gqlGetShopInfoUseCase.execute(
             {
-                view?.onSuccessGetShopInfo(it)
+                if (isViewAttached) {
+                    view?.onSuccessGetShopInfo(it)
+                }
             },
             {
                 it.printStackTrace()
-                view?.onErrorGetShopInfo(it)
+                if (isViewAttached) {
+                    view?.onErrorGetShopInfo(it)
+                }
             }
         )
     }

@@ -91,7 +91,9 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
         gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields()));
         gqlGetShopInfoUseCase.execute(
                 shopInfo -> {
-                    getView().onSuccessGetShopInfo(shopInfo);
+                    if (isViewAttached()) {
+                        getView().onSuccessGetShopInfo(shopInfo);
+                    }
                     return Unit.INSTANCE;
                 },
                 throwable -> {

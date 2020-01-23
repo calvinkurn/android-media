@@ -106,11 +106,15 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(userSession.shopId.toIntOrZero()))
         gqlGetShopInfoUseCase.execute(
                 {
-                    view?.onSuccessGetShopInfo(it)
+                    if (isViewAttached) {
+                        view?.onSuccessGetShopInfo(it)
+                    }
                 },
                 {
                     Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_SHOP_INFO#%s", it.localizedMessage)
-                    view?.onErrorGetShopInfo(it)
+                    if (isViewAttached) {
+                        view?.onErrorGetShopInfo(it)
+                    }
                 }
         )
     }

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.address.view.listener.ShopAddressListView;
 import com.tokopedia.shop.address.view.mapper.ShopAddressViewModelMapper;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,7 @@ public class ShopAddressListPresenter extends BaseDaggerPresenter<ShopAddressLis
     private final UserSessionInterface userSession;
 
     @Inject
-    public ShopAddressListPresenter(GQLGetShopInfoUseCase getShopInfoUseCase, ShopAddressViewModelMapper shopAddressViewModelMapper) {
+    public ShopAddressListPresenter(GQLGetShopInfoUseCase getShopInfoUseCase, ShopAddressViewModelMapper shopAddressViewModelMapper, UserSessionInterface userSession) {
         this.gqlGetShopInfoUseCase = getShopInfoUseCase;
         this.shopAddressViewModelMapper = shopAddressViewModelMapper;
         this.userSession = userSession;
@@ -40,11 +41,13 @@ public class ShopAddressListPresenter extends BaseDaggerPresenter<ShopAddressLis
         gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields()));
         gqlGetShopInfoUseCase.execute(
                 shopInfo -> {
-                    getView().renderList(shopAddressViewModelMapper.transform(shopInfo), false);
+                    if (isViewAttached()) {
+                        getView().renderList(shopAddressViewModelMapper.transform(shopInfo), false);
+                    }
                     return Unit.INSTANCE;
                 },
                 throwable -> {
-                    if(isViewAttached()) {
+                    if (isViewAttached()) {
                         getView().showGetListError(throwable);
                     }
                     return Unit.INSTANCE;

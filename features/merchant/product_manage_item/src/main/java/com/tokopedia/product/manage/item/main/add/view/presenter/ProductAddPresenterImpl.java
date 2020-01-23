@@ -59,15 +59,19 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
         gqlGetShopInfoUseCase.setParams(GQLGetShopInfoUseCase.createParams(shopIds, null , GQLGetShopInfoUseCase.getDefaultShopFields()));
         gqlGetShopInfoUseCase.execute(
                 shopInfo -> {
-                    getView().onSuccessLoadShopInfo(
-                            shopInfo.getGoldOS().isGold() == 1,
-                            false,
-                            shopInfo.getGoldOS().isOfficial() == 1
-                    );
+                    if (isViewAttached()) {
+                        getView().onSuccessLoadShopInfo(
+                                shopInfo.getGoldOS().isGold() == 1,
+                                false,
+                                shopInfo.getGoldOS().isOfficial() == 1
+                        );
+                    }
                     return Unit.INSTANCE;
                 },
                 throwable -> {
-                    getView().onErrorLoadShopInfo(ViewUtils.getErrorMessage(throwable));
+                    if (isViewAttached()) {
+                        getView().onErrorLoadShopInfo(ViewUtils.getErrorMessage(throwable));
+                    }
                     return Unit.INSTANCE;
                 }
         );
