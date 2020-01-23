@@ -385,9 +385,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 currentIndex = index
                 filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
                 filterItem.isSelected = true
-                if (tabActive.equals(STATUS_ALL_ORDER, true) ||
-                        tabActive.equals(STATUS_DONE, true) ||
-                        tabActive.equals(STATUS_ORDER_CANCELLED, true)) {
+                if (it.key.equals(STATUS_ALL_ORDER, true) ||
+                        it.key.equals(STATUS_DONE, true) ||
+                        it.key.equals(STATUS_ORDER_CANCELLED, true)) {
                     paramOrder.sortBy = SORT_DESCENDING
                 } else {
                     paramOrder.sortBy = SORT_ASCENDING
