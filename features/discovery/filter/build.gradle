@@ -48,6 +48,11 @@ project.ext {
     groupId = 'com.tokopedia.discovery'
     versionName = "0.0.1"
     artifactName ="filter-release"
+    unitTestJavaIncludes = ['']
+    unitTestKotlinIncludes = [
+            '**/FilterController.*'
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

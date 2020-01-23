@@ -1,12 +1,10 @@
 package com.tokopedia.profilecompletion.view.subscriber;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.network.ErrorMessageException;
-import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.profilecompletion.view.listener.GetProfileListener;
+import com.tokopedia.network.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
@@ -16,6 +14,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author by nisie on 6/19/17.
@@ -37,7 +36,7 @@ public class GetUserInfoSubscriber extends Subscriber<GetUserInfoDomainModel> {
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper("NISNIS error" + e.toString());
+        Timber.d("NISNIS error" + e.toString());
         if (e instanceof UnknownHostException) {
             listener.onErrorGetUserInfo(listener.getString(R.string.msg_no_connection));
         } else if (e instanceof SocketTimeoutException) {
@@ -89,7 +88,7 @@ public class GetUserInfoSubscriber extends Subscriber<GetUserInfoDomainModel> {
 
     @Override
     public void onNext(GetUserInfoDomainModel getUserInfoDomainModel) {
-        CommonUtils.dumper("NISNIS sukses");
+        Timber.d("NISNIS sukses");
         listener.onGetUserInfo(mappingToViewModel(getUserInfoDomainModel.getGetUserInfoDomainData()));
     }
 

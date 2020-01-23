@@ -2,10 +2,7 @@ package com.tokopedia.events.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -38,15 +38,13 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.unifycomponents.Toaster;
 
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
 
+    public static int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
     public static final String SCREEN_NAME = "digital/events/summary";
     ImageView eventImageSmall;
     TextView eventNameTv;
@@ -384,7 +382,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
                 default:
                     break;
             }
-        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+        } else if (requestCode == LOYALTY_ACTIVITY_REQUEST_CODE) {
             hideProgressBar();
             long discount = 0;
             switch (resultCode) {

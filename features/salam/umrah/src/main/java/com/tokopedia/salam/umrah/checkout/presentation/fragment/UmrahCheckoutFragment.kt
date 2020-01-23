@@ -51,7 +51,6 @@ import com.tokopedia.salam.umrah.checkout.presentation.adapter.viewholder.UmrahP
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.*
-import com.tokopedia.salam.umrah.common.data.UmrahProductModel.UmrahProduct.TravelAgent
 import com.tokopedia.salam.umrah.common.util.CommonParam
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
@@ -62,10 +61,10 @@ import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_contact.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_error.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_error.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_term_condition.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_umrah_mandatory_document.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_mandatory_document.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_checkout.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_content_order.*

@@ -87,6 +87,7 @@ public interface SearchConstant {
         String ADS_SOURCE = "search";
         String SEARCH_SHOP_VIEW_MODEL_FACTORY = "search_shop_view_model_factory";
         int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
+        int HEADLINE_PRODUCT_COUNT = 3;
     }
 
     interface ShopStatus {

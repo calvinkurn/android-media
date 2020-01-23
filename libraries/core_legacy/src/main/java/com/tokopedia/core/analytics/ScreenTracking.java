@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -15,6 +14,8 @@ import com.tokopedia.track.interfaces.AFAdsIDCallback;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 //import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
 //import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -94,13 +95,13 @@ public class ScreenTracking extends TrackingUtils {
                     }
                 }
 
-                CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
+                Timber.d(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
                 TrackApp.getInstance().getAppsFlyer().sendTrackEvent(eventName, values);
             }
 
             @Override
             public void onErrorAFAdsID() {
-                CommonUtils.dumper(TAG + "Appsflyer error cant get advertisment ID");
+                Timber.d(TAG + "Appsflyer error cant get advertisment ID");
             }
         });
     }

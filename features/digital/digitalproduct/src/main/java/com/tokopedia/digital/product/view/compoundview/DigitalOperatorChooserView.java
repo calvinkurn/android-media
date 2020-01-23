@@ -48,7 +48,7 @@ public class DigitalOperatorChooserView extends BaseDigitalChooserView<Operator>
 
     @Override
     protected int getHolderLayoutId() {
-        return R.layout.view_holder_chooser_digital_module;
+        return R.layout.view_holder_digital_product_chooser;
     }
 
     @Override

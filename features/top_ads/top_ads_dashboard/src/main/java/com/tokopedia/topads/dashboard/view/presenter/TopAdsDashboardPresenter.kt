@@ -106,7 +106,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     }
 
     fun getShopInfo() {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(userSession.shopId), object : Subscriber<ShopInfo>() {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(userSession.shopId, userSession.userId, userSession.deviceId), object : Subscriber<ShopInfo>() {
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
