@@ -22,7 +22,7 @@ class DynamicChannelViewModel : HomeVisitable {
     companion object {
         val HOME_RV_BANNER_IMAGE_URL = "home_rv_banner_image_url"
         val HOME_RV_SPRINT_BG_IMAGE_URL = "home_rv_sprint_bg_image_url"
-        val HOME_RV_DC_IMPRESSION = "home_rv_dc_impressed"
+        val HOME_RV_DC_IMPRESSED = "home_rv_dc_impressed"
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -40,7 +40,7 @@ class DynamicChannelViewModel : HomeVisitable {
                 bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
             }
 
-            bundle.putBoolean(HOME_RV_DC_IMPRESSION, false)
+            bundle.putBoolean(HOME_RV_DC_IMPRESSED, false)
         }
         return bundle
     }

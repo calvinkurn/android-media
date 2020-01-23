@@ -2,11 +2,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
 import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -65,7 +65,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
-                if (payload == DynamicChannelViewModel.HOME_RV_DC_IMPRESSION) {
+                if (payload is Bundle && !payload.getBoolean(DynamicChannelViewModel.HOME_RV_DC_IMPRESSED)) {
                     channel?.let {
                         if (!element.isCache) {
                             itemView.addOnImpressionListener(channel, OnItemImpressedListener(
