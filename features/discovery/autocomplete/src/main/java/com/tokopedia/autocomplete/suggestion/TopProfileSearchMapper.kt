@@ -1,16 +1,17 @@
-package com.tokopedia.autocomplete.suggestion.utils
+package com.tokopedia.autocomplete.suggestion
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.domain.model.SearchData
-import com.tokopedia.autocomplete.viewmodel.ProfileSearch
+import com.tokopedia.autocomplete.viewmodel.TopProfileSearch
 import java.util.ArrayList
 
-fun SearchData.convertProfileSearchToVisitableList(searchTerm: String): MutableList<Visitable<*>> {
+fun SearchData.convertTopProfileSearchToVisitableList(searchTerm: String): MutableList<Visitable<*>> {
     val list = ArrayList<Visitable<*>>()
-    var positionOfProfileSearch = 1
+    var positionOfTopProfileSearch = 1
+
     for (item in this.items) {
-        val model = ProfileSearch()
+        val model = TopProfileSearch()
         model.keyword = item.keyword
         model.url = item.url
         model.applink = item.applink
@@ -20,10 +21,10 @@ fun SearchData.convertProfileSearchToVisitableList(searchTerm: String): MutableL
         model.isKOL = item.isKOL
         model.postCount = item.postCount
         model.searchTerm = searchTerm
-        model.positionOfType = positionOfProfileSearch
+        model.positionOfType = positionOfTopProfileSearch
         list.add(model)
 
-        positionOfProfileSearch += 1
+        positionOfTopProfileSearch += 1
     }
     return list
 }

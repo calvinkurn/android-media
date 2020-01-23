@@ -1,14 +1,9 @@
-package com.tokopedia.autocomplete.initialstate.view.presenter
+package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.autocomplete.InitialStateViewModel
 import com.tokopedia.autocomplete.domain.model.SearchData
-import com.tokopedia.autocomplete.initialstate.utils.convertPopularSearchToVisitableList
-import com.tokopedia.autocomplete.initialstate.utils.convertRecentSearchToVisitableList
-import com.tokopedia.autocomplete.initialstate.utils.convertRecentViewSearchToVisitableList
-import com.tokopedia.autocomplete.initialstate.view.InitialStateContract
-import com.tokopedia.autocomplete.initialstate.view.subscriber.InitialStateSubscriber
 import com.tokopedia.autocomplete.usecase.AutoCompleteUseCase
 import com.tokopedia.autocomplete.usecase.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.viewmodel.TitleSearch

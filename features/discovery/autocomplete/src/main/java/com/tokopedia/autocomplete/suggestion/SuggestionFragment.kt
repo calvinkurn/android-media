@@ -1,35 +1,37 @@
-package com.tokopedia.autocomplete.initialstate.view.fragment
+package com.tokopedia.autocomplete.suggestion
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocomplete.*
+
 import com.tokopedia.autocomplete.adapter.ItemClickListener
-import com.tokopedia.autocomplete.adapter.SearchAdapterTypeFactory
+import com.tokopedia.autocomplete.adapter.SearchPageAdapter
 import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.di.AutoCompleteComponent
 import com.tokopedia.autocomplete.di.DaggerAutoCompleteComponent
-import com.tokopedia.autocomplete.initialstate.view.InitialStateContract
-import com.tokopedia.autocomplete.initialstate.view.presenter.InitialStatePresenter
-import com.tokopedia.autocomplete.initialstate.view.adapter.InitialStateAdapter
 import com.tokopedia.autocomplete.presentation.activity.AutoCompleteActivity
 import com.tokopedia.discovery.common.model.SearchParameter
-import kotlinx.android.synthetic.main.fragment_initial_state.*
+import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
 
-class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, ItemClickListener {
+class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemClickListener {
+
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
+    private val PAGER_POSITION_PRODUCT = 0
+    private val PAGER_POSITION_SHOP = 1
 
     @Inject
-    lateinit var presenter: InitialStatePresenter
+    lateinit var presenter: SuggestionPresenter
 
     private lateinit var networkErrorMessage: String
 
@@ -37,7 +39,11 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
 
     private var searchParameter: SearchParameter? = null
 
-    private lateinit var adapter: InitialStateAdapter
+    private var onTabShop: Boolean = false
+
+    private lateinit var pageAdapter: SearchPageAdapter
+
+    private var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
                 .build()
         component.inject(this)
         component.inject(presenter)
+
     }
 
     private fun getBaseAppComponent(): BaseAppComponent? {
@@ -65,25 +72,32 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_initial_state, container, false)
+        return inflater.inflate(R.layout.fragment_suggestion, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        prepareView(view)
+        prepareView()
         presenter.attachView(this)
     }
 
-    private fun prepareView(view: View) {
-        val typeFactory = SearchAdapterTypeFactory(this)
-        val layoutManager = LinearLayoutManager(view.context,
-                LinearLayoutManager.VERTICAL, false)
-        adapter = InitialStateAdapter(typeFactory)
-        recyclerViewInitialState?.adapter = adapter
-        recyclerViewInitialState?.layoutManager = layoutManager
-        recyclerViewInitialState?.addOnScrollListener(OnScrollListenerAutocomplete(view.context, view))
+    private fun prepareView() {
+        pageAdapter = SearchPageAdapter(fragmentManager, context, this)
+        suggestionViewPager?.offscreenPageLimit = 3
+        suggestionViewPager?.adapter = pageAdapter
+        suggestionTabLayout.setupWithViewPager(suggestionViewPager)
     }
 
-    override fun setOnTabShop(onTabShop: Boolean) { }
+    fun getCurrentTab(): Int {
+        return if (isOnTabShop()) PAGER_POSITION_SHOP else PAGER_POSITION_PRODUCT
+    }
+
+    private fun isOnTabShop(): Boolean {
+        return onTabShop
+    }
+
+    override fun setOnTabShop(onTabShop: Boolean) {
+        this.onTabShop = onTabShop
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -94,15 +108,40 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         return AppScreen.SCREEN_UNIVERSEARCH
     }
 
-    override fun showInitialStateResult(initialStateViewModel: InitialStateViewModel) {
+    override fun showSuggestionResult(allFragmentList: MutableList<Visitable<*>>, productFragmentList: MutableList<Visitable<*>>, shopFragmentList: MutableList<Visitable<*>>) {
         stopTracePerformanceMonitoring()
-        adapter.clearData()
-        val data = presenter.getInitialStateResult(initialStateViewModel.list, initialStateViewModel.searchTerm)
-        adapter.addAll(data)
+        setSuggestionViewPagerOnPageChangeListener()
+        clearData()
+        addBulkSearchResult(allFragmentList, productFragmentList, shopFragmentList)
+        suggestionViewUpdateListener?.showSuggestionView()
     }
 
     private fun stopTracePerformanceMonitoring() {
         performanceMonitoring?.stopTrace()
+    }
+
+    private fun setSuggestionViewPagerOnPageChangeListener() {
+        suggestionViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                setOnTabShop(position == 2)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+    }
+
+    fun clearData() {
+        pageAdapter.getRegisteredFragment(0).clearData()
+        pageAdapter.getRegisteredFragment(1).clearData()
+        pageAdapter.getRegisteredFragment(2).clearData()
+    }
+
+    private fun addBulkSearchResult(allFragmentList: MutableList<Visitable<*>>, productFragmentList: MutableList<Visitable<*>>, shopFragmentList: MutableList<Visitable<*>>) {
+        pageAdapter.getRegisteredFragment(0).addBulkSearchResult(allFragmentList)
+        pageAdapter.getRegisteredFragment(1).addBulkSearchResult(productFragmentList)
+        pageAdapter.getRegisteredFragment(2).addBulkSearchResult(shopFragmentList)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -122,14 +161,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
     fun search(searchParameter: SearchParameter) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
         presenter.search(searchParameter)
-    }
-
-    fun deleteAllRecentSearch() {
-        presenter.deleteAllRecentSearch()
-    }
-
-    fun deleteRecentSearch(keyword: String) {
-        presenter.deleteRecentSearchItem(keyword)
     }
 
     override fun onItemClicked(applink: String, webUrl: String?) {
@@ -154,15 +185,15 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, It
         (activity as AutoCompleteActivity).setSearchQuery("$text ")
     }
 
-    override fun onDeleteRecentSearchItem(keyword: String?) {
-        (activity as AutoCompleteActivity).deleteRecentSearch(keyword)
-    }
+    override fun onDeleteRecentSearchItem(keyword: String?) {}
 
-    override fun onDeleteAllRecentSearch() {
-        (activity as AutoCompleteActivity).deleteAllRecentSearch()
-    }
+    override fun onDeleteAllRecentSearch() {}
 
     fun setSearchParameter(searchParameter: SearchParameter) {
         this.searchParameter = searchParameter
+    }
+
+    fun setSuggestionViewUpdateListener(suggestionViewUpdateListener: SuggestionViewUpdateListener){
+        this.suggestionViewUpdateListener = suggestionViewUpdateListener
     }
 }

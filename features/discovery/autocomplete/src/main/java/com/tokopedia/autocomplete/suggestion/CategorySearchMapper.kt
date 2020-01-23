@@ -1,13 +1,14 @@
-package com.tokopedia.autocomplete.initialstate.utils
+package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.domain.model.SearchData
-import com.tokopedia.autocomplete.viewmodel.*
+import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch
+import com.tokopedia.autocomplete.viewmodel.CategorySearch
 import java.util.ArrayList
 
-fun SearchData.convertRecentViewSearchToVisitableList(searchTerm: String): MutableList<Visitable<*>> {
+fun SearchData.convertCategorySearchToVisitableList(searchTerm: String): MutableList<Visitable<*>> {
     val list = ArrayList<Visitable<*>>()
-    val recentViewSearch = RecentViewSearch()
+    val categorySearch = CategorySearch()
     val childList = ArrayList<BaseItemAutoCompleteSearch>()
     for (item in this.items) {
         val model = BaseItemAutoCompleteSearch()
@@ -16,15 +17,14 @@ fun SearchData.convertRecentViewSearchToVisitableList(searchTerm: String): Mutab
         model.applink = item.applink
         model.recom = item.recom
         model.url = item.url
-        model.keyword = item.keyword
-        model.searchTerm = searchTerm
         model.imageUrl = item.imageURI
-        model.productId = item.itemId
-        model.productPrice = item.price
+        model.keyword = item.keyword
+        model.categoryId = item.sc
+        model.searchTerm = searchTerm
         model.isOfficial = item.isOfficial
         childList.add(model)
     }
-    recentViewSearch.list = childList
-    list.add(recentViewSearch)
+    categorySearch.list = childList
+    list.add(categorySearch)
     return list
 }

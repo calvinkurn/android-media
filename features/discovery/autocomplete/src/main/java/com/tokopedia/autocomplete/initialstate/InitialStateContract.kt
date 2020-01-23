@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate.view
+package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView

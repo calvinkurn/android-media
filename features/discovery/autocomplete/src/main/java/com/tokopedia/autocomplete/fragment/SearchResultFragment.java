@@ -16,7 +16,7 @@ import com.tokopedia.autocomplete.R;
 import com.tokopedia.autocomplete.adapter.ItemClickListener;
 import com.tokopedia.autocomplete.adapter.SearchAdapterTypeFactory;
 import com.tokopedia.autocomplete.analytics.AppScreen;
-import com.tokopedia.autocomplete.suggestion.view.adapter.SuggestionAdapter;
+import com.tokopedia.autocomplete.suggestion.SuggestionAdapter;
 
 import java.util.List;
 

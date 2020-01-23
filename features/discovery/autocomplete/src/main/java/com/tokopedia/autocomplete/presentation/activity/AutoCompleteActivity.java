@@ -22,9 +22,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.autocomplete.R;
 import com.tokopedia.autocomplete.analytics.AutocompleteEventTracking;
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking;
-import com.tokopedia.autocomplete.initialstate.view.fragment.InitialStateFragment;
+import com.tokopedia.autocomplete.initialstate.InitialStateFragment;
+import com.tokopedia.autocomplete.initialstate.InitialStateViewUpdateListener;
 import com.tokopedia.autocomplete.searchbar.SearchBarView;
-import com.tokopedia.autocomplete.suggestion.view.fragment.SuggestionFragment;
+import com.tokopedia.autocomplete.suggestion.SuggestionFragment;
+import com.tokopedia.autocomplete.suggestion.SuggestionViewUpdateListener;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -41,7 +43,9 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_S
 
 public class AutoCompleteActivity extends BaseActivity
         implements SearchBarView.ImageSearchClickListener,
-        SearchBarView.OnQueryTextListener {
+        SearchBarView.OnQueryTextListener,
+        SuggestionViewUpdateListener,
+        InitialStateViewUpdateListener {
 
     public static final int PAGER_POSITION_PRODUCT = 0;
     public static final int PAGER_POSITION_SHOP = 1;
@@ -134,9 +138,11 @@ public class AutoCompleteActivity extends BaseActivity
         SearchParameter param = searchBarView.showSearch(searchParameter);
         if (suggestionFragment != null) {
             suggestionFragment.setSearchParameter(param);
+            suggestionFragment.setSuggestionViewUpdateListener(this);
         }
         if(initialStateFragment != null) {
             initialStateFragment.setSearchParameter(param);
+            initialStateFragment.setInitialStateViewUpdateListener(this);
         }
     }
 
@@ -233,20 +239,44 @@ public class AutoCompleteActivity extends BaseActivity
             suggestionFragment.clearData();
             if (initialStateFragment != null ) {
                 initialStateFragment.search(searchParameter);
-                if(mInitialStateView.getVisibility() == View.GONE && mSuggestionView.getVisibility() == View.VISIBLE){
-                    mSuggestionView.setVisibility(View.GONE);
-                    mInitialStateView.setVisibility(View.VISIBLE);
-                }
             }
         }else{
             if (suggestionFragment != null ) {
                 suggestionFragment.search(searchParameter);
-                if(mSuggestionView.getVisibility() == View.GONE && mInitialStateView.getVisibility() == View.VISIBLE){
-                    mInitialStateView.setVisibility(View.GONE);
-                    mSuggestionView.setVisibility(View.VISIBLE);
-                }
             }
         }
+    }
+
+    @Override
+    public void showInitialStateView(){
+        if(mInitialStateView.getVisibility() == View.GONE && mSuggestionView.getVisibility() == View.VISIBLE){
+            mSuggestionView.setVisibility(View.GONE);
+            mInitialStateView.setVisibility(View.VISIBLE);
+            animateInitialView();
+        }
+    }
+
+    private void animateInitialView(){
+        TransitionSet transitionSet = new TransitionSet();
+        Fade fade = new Fade(Fade.MODE_IN);
+        transitionSet.addTransition(fade);
+        TransitionManager.beginDelayedTransition(mInitialStateView, fade);
+    }
+
+    @Override
+    public void showSuggestionView() {
+        if(mSuggestionView.getVisibility() == View.GONE && mInitialStateView.getVisibility() == View.VISIBLE){
+            mInitialStateView.setVisibility(View.GONE);
+            mSuggestionView.setVisibility(View.VISIBLE);
+            animateSuggestionView();
+        }
+    }
+
+    private void animateSuggestionView(){
+        TransitionSet transitionSet = new TransitionSet();
+        Fade fade = new Fade(Fade.MODE_IN);
+        transitionSet.addTransition(fade);
+        TransitionManager.beginDelayedTransition(mSuggestionView, fade);
     }
 
     @Override

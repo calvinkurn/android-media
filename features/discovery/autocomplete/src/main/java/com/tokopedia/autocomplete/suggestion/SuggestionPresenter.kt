@@ -1,11 +1,9 @@
-package com.tokopedia.autocomplete.suggestion.view.presenter
+package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.autocomplete.TabSuggestionViewModel
 import com.tokopedia.autocomplete.domain.model.SearchData
-import com.tokopedia.autocomplete.suggestion.utils.*
-import com.tokopedia.autocomplete.suggestion.view.SuggestionContract
 import com.tokopedia.autocomplete.usecase.AutoCompleteUseCase
 import com.tokopedia.autocomplete.viewmodel.TitleSearch
 import com.tokopedia.discovery.common.model.SearchParameter

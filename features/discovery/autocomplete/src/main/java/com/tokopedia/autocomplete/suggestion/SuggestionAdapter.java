@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate.view.adapter;
+package com.tokopedia.autocomplete.suggestion;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,12 +16,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class SuggestionAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
     private final SearchTypeFactory typeFactory;
 
-    public InitialStateAdapter(SearchTypeFactory typeFactory) {
+    public SuggestionAdapter(SearchTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
         this.list = new ArrayList<>();
     }
@@ -43,6 +43,7 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
     }
+
 
     @Override
     public int getItemCount() {

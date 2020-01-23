@@ -19,7 +19,7 @@
 
         <fragment
             android:id="@+id/search_suggestion"
-            android:name="com.tokopedia.autocomplete.suggestion.view.fragment.SuggestionFragment"
+            android:name="com.tokopedia.autocomplete.suggestion.SuggestionFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1" />
@@ -34,7 +34,7 @@
 
         <fragment
             android:id="@+id/search_initial_state"
-            android:name="com.tokopedia.autocomplete.initialstate.view.fragment.InitialStateFragment"
+            android:name="com.tokopedia.autocomplete.initialstate.InitialStateFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>

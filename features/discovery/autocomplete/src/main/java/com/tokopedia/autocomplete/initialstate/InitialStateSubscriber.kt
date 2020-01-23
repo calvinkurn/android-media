@@ -1,8 +1,7 @@
-package com.tokopedia.autocomplete.initialstate.view.subscriber
+package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.InitialStateViewModel
 import com.tokopedia.autocomplete.domain.model.SearchData
-import com.tokopedia.autocomplete.initialstate.view.InitialStateContract
 import rx.Subscriber
 
 class InitialStateSubscriber(

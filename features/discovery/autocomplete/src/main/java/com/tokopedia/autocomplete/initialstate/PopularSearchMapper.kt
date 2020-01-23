@@ -1,13 +1,13 @@
-package com.tokopedia.autocomplete.initialstate.utils
+package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.domain.model.SearchData
 import com.tokopedia.autocomplete.viewmodel.*
 import java.util.ArrayList
 
-fun SearchData.convertRecentSearchToVisitableList(searchTerm: String): MutableList<Visitable<*>> {
+fun SearchData.convertPopularSearchToVisitableList(searchTerm: String): MutableList<Visitable<*>> {
     val list = ArrayList<Visitable<*>>()
-    val recentSearch = RecentSearch()
+    val popularSearch = PopularSearch()
     val childList = ArrayList<BaseItemAutoCompleteSearch>()
     for (item in this.items) {
         val model = BaseItemAutoCompleteSearch()
@@ -21,7 +21,7 @@ fun SearchData.convertRecentSearchToVisitableList(searchTerm: String): MutableLi
         model.isOfficial = item.isOfficial
         childList.add(model)
     }
-    recentSearch.list = childList
-    list.add(recentSearch)
+    popularSearch.list = childList
+    list.add(popularSearch)
     return list
 }

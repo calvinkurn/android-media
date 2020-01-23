@@ -1,39 +1,32 @@
-package com.tokopedia.autocomplete.suggestion.view.fragment
+package com.tokopedia.autocomplete.initialstate
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocomplete.*
-
 import com.tokopedia.autocomplete.adapter.ItemClickListener
-import com.tokopedia.autocomplete.adapter.SearchPageAdapter
+import com.tokopedia.autocomplete.adapter.SearchAdapterTypeFactory
 import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.di.AutoCompleteComponent
 import com.tokopedia.autocomplete.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocomplete.presentation.activity.AutoCompleteActivity
-import com.tokopedia.autocomplete.suggestion.view.SuggestionContract
-import com.tokopedia.autocomplete.suggestion.view.presenter.SuggestionPresenter
 import com.tokopedia.discovery.common.model.SearchParameter
-import kotlinx.android.synthetic.main.fragment_suggestion.*
+import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
 
-class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemClickListener {
-
+class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, ItemClickListener {
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
-    private val PAGER_POSITION_PRODUCT = 0
-    private val PAGER_POSITION_SHOP = 1
 
     @Inject
-    lateinit var presenter: SuggestionPresenter
+    lateinit var presenter: InitialStatePresenter
 
     private lateinit var networkErrorMessage: String
 
@@ -41,9 +34,9 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
 
     private var searchParameter: SearchParameter? = null
 
-    private var onTabShop: Boolean = false
+    private lateinit var adapter: InitialStateAdapter
 
-    private lateinit var pageAdapter: SearchPageAdapter
+    private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +54,6 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
                 .build()
         component.inject(this)
         component.inject(presenter)
-
     }
 
     private fun getBaseAppComponent(): BaseAppComponent? {
@@ -72,32 +64,25 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_suggestion, container, false)
+        return inflater.inflate(R.layout.fragment_initial_state, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        prepareView()
+        prepareView(view)
         presenter.attachView(this)
     }
 
-    private fun prepareView() {
-        pageAdapter = SearchPageAdapter(fragmentManager, context, this)
-        suggestionViewPager?.offscreenPageLimit = 3
-        suggestionViewPager?.adapter = pageAdapter
-        suggestionTabLayout.setupWithViewPager(suggestionViewPager)
+    private fun prepareView(view: View) {
+        val typeFactory = SearchAdapterTypeFactory(this)
+        val layoutManager = LinearLayoutManager(view.context,
+                LinearLayoutManager.VERTICAL, false)
+        adapter = InitialStateAdapter(typeFactory)
+        recyclerViewInitialState?.adapter = adapter
+        recyclerViewInitialState?.layoutManager = layoutManager
+        recyclerViewInitialState?.addOnScrollListener(OnScrollListenerAutocomplete(view.context, view))
     }
 
-    fun getCurrentTab(): Int {
-        return if (isOnTabShop()) PAGER_POSITION_SHOP else PAGER_POSITION_PRODUCT
-    }
-
-    private fun isOnTabShop(): Boolean {
-        return onTabShop
-    }
-
-    override fun setOnTabShop(onTabShop: Boolean) {
-        this.onTabShop = onTabShop
-    }
+    override fun setOnTabShop(onTabShop: Boolean) { }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -108,35 +93,11 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
         return AppScreen.SCREEN_UNIVERSEARCH
     }
 
-    override fun showSuggestionResult(allFragmentList: MutableList<Visitable<*>>, productFragmentList: MutableList<Visitable<*>>, shopFragmentList: MutableList<Visitable<*>>) {
+    override fun showInitialStateResult(initialStateViewModel: InitialStateViewModel) {
         stopTracePerformanceMonitoring()
-        setSuggestionViewPagerOnPageChangeListener()
-        clearData()
-        addBulkSearchResult(allFragmentList, productFragmentList, shopFragmentList)
-    }
-
-    private fun setSuggestionViewPagerOnPageChangeListener() {
-        suggestionViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                setOnTabShop(position == 2)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
-    }
-
-    fun clearData() {
-        pageAdapter.getRegisteredFragment(0).clearData()
-        pageAdapter.getRegisteredFragment(1).clearData()
-        pageAdapter.getRegisteredFragment(2).clearData()
-    }
-
-    private fun addBulkSearchResult(allFragmentList: MutableList<Visitable<*>>, productFragmentList: MutableList<Visitable<*>>, shopFragmentList: MutableList<Visitable<*>>) {
-        pageAdapter.getRegisteredFragment(0).addBulkSearchResult(allFragmentList)
-        pageAdapter.getRegisteredFragment(1).addBulkSearchResult(productFragmentList)
-        pageAdapter.getRegisteredFragment(2).addBulkSearchResult(shopFragmentList)
+        adapter.clearData()
+        val data = presenter.getInitialStateResult(initialStateViewModel.list, initialStateViewModel.searchTerm)
+        adapter.addAll(data)
     }
 
     private fun stopTracePerformanceMonitoring() {
@@ -160,6 +121,15 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
     fun search(searchParameter: SearchParameter) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
         presenter.search(searchParameter)
+        initialStateViewUpdateListener?.showInitialStateView()
+    }
+
+    fun deleteAllRecentSearch() {
+        presenter.deleteAllRecentSearch()
+    }
+
+    fun deleteRecentSearch(keyword: String) {
+        presenter.deleteRecentSearchItem(keyword)
     }
 
     override fun onItemClicked(applink: String, webUrl: String?) {
@@ -184,11 +154,19 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
         (activity as AutoCompleteActivity).setSearchQuery("$text ")
     }
 
-    override fun onDeleteRecentSearchItem(keyword: String?) {}
+    override fun onDeleteRecentSearchItem(keyword: String?) {
+        (activity as AutoCompleteActivity).deleteRecentSearch(keyword)
+    }
 
-    override fun onDeleteAllRecentSearch() {}
+    override fun onDeleteAllRecentSearch() {
+        (activity as AutoCompleteActivity).deleteAllRecentSearch()
+    }
 
     fun setSearchParameter(searchParameter: SearchParameter) {
         this.searchParameter = searchParameter
+    }
+
+    fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener){
+        this.initialStateViewUpdateListener = initialStateViewUpdateListener
     }
 }

@@ -2,10 +2,10 @@ package com.tokopedia.autocomplete.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.autocomplete.di.net.AutoCompleteNetModule;
-import com.tokopedia.autocomplete.initialstate.view.fragment.InitialStateFragment;
-import com.tokopedia.autocomplete.initialstate.view.presenter.InitialStatePresenter;
-import com.tokopedia.autocomplete.suggestion.view.fragment.SuggestionFragment;
-import com.tokopedia.autocomplete.suggestion.view.presenter.SuggestionPresenter;
+import com.tokopedia.autocomplete.initialstate.InitialStateFragment;
+import com.tokopedia.autocomplete.initialstate.InitialStatePresenter;
+import com.tokopedia.autocomplete.suggestion.SuggestionFragment;
+import com.tokopedia.autocomplete.suggestion.SuggestionPresenter;
 
 import dagger.Component;
 
