@@ -117,7 +117,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
+        voucherShopId = arguments?.getString(MerchantVoucherListActivity.SHOP_ID).orEmpty()
         activity?.run {
             merchantVoucherTracking = MerchantVoucherTracking()
         }
@@ -198,7 +198,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         if (context == null) {
             return
         }
-        merchantVoucherTracking?.clickUseVoucherFromList()
+        merchantVoucherTracking?.clickUseVoucherFromList(merchantVoucherViewModel.voucherId.toString())
         //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
         /*if (presenter.isLogin() == false) {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
@@ -208,10 +208,10 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
         }*/
         //TOGGLE_MVC_OFF
-        activity?.run{
+        activity?.run {
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
+            snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
             snackbar.setActionTextColor(Color.WHITE)
             snackbar.show()
         }
@@ -259,9 +259,9 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     }
 
     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel?) {
-        merchantVoucherTracking?.clickMvcDetailFromList()
         context?.let {
             merchantVoucherViewModel?.run {
+                merchantVoucherTracking?.clickMvcDetailFromList(voucherId.toString())
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         this, voucherShopId)
                 startActivityForResult(intent, REQUEST_CODE_MERCHANT_DETAIL)

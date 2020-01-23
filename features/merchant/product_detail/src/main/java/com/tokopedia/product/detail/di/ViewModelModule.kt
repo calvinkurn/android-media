@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
+import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
 import com.tokopedia.product.report.view.viewmodel.ProductReportViewModel
@@ -40,6 +41,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProductInstallmentViewModel::class)
     internal abstract fun productInstallmentViewModel(viewModel: ProductInstallmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DynamicProductDetailViewModel::class)
+    internal abstract fun provideDynamicPdpViewModel(viewModel: DynamicProductDetailViewModel): ViewModel
 
     @Binds
     @IntoMap

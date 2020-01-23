@@ -19,17 +19,7 @@ import java.util.Map;
 public interface ProductListSectionContract {
 
     interface View extends SearchSectionContract.View {
-        boolean isUserHasLogin();
-
         String getUserId();
-
-        void initTopAdsParams();
-
-        void incrementStart();
-
-        void storeTotalData(int totalData);
-
-        void setHeaderTopAds(boolean hasHeader);
 
         void addProductList(List<Visitable> list);
 
@@ -73,8 +63,6 @@ public interface ProductListSectionContract {
 
         void initQuickFilter(List<Filter> quickFilterList);
 
-        void setAdditionalParams(String additionalParams);
-
         void setAutocompleteApplink(String autocompleteApplink);
 
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
@@ -82,8 +70,6 @@ public interface ProductListSectionContract {
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
         void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
-
-        void setFirstTimeLoad(boolean isFirstTimeLoad);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
@@ -96,8 +82,6 @@ public interface ProductListSectionContract {
         void updateScrollListener();
 
         boolean isAnyFilterActive();
-
-        Map<String, String> getAdditionalParamsMap();
 
         void launchLoginActivity(String productId);
 
@@ -119,21 +103,39 @@ public interface ProductListSectionContract {
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
-        boolean isTickerHasDismissed();
-
         void redirectToBrowser(String url);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
 
-        void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
+        void loadMoreData(Map<String, Object> searchParameter);
 
-        void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);
+        void loadData(Map<String, Object> searchParameter);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 
         void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
 
         void onBannedProductsGoToBrowserClick(String url);
+
+        boolean isUsingBottomSheetFilter();
+
+        String getUserId();
+
+        boolean isUserLoggedIn();
+
+        void setIsFirstTimeLoad(boolean isFirstTimeLoad);
+
+        void setIsTickerHasDismissed(boolean isTickerHasDismissed);
+
+        boolean getIsTickerHasDismissed();
+
+        boolean hasNextPage();
+
+        void clearData();
+
+        void setStartFrom(int startFrom);
+
+        int getStartFrom();
     }
 }

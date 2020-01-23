@@ -1,9 +1,7 @@
 package com.tokopedia.common_digital.common.di
 
 import android.content.Context
-
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
@@ -13,7 +11,6 @@ import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.user.session.UserSession
-
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -40,8 +37,6 @@ interface DigitalCommonComponent {
     fun digitalInstantCheckoutUseCase(): DigitalInstantCheckoutUseCase
 
     fun digitalRouter(): DigitalRouter
-
-    fun globalCacheManager(): CacheManager
 
     fun inject(instantCheckoutActivity: InstantCheckoutActivity)
 

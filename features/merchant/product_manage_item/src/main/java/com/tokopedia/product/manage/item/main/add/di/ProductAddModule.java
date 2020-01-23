@@ -191,5 +191,10 @@ public class ProductAddModule {
     @Provides
     MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(){
         return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
+  
+    @ProductAddScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

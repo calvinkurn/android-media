@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -33,4 +35,9 @@ class MerchantVoucherModule {
     fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase =
             GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
+    @MerchantVoucherScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 }

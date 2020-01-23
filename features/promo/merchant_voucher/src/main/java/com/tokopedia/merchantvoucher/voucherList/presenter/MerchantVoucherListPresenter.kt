@@ -24,9 +24,9 @@ constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val useMerchantVoucherUseCase: UseMerchantVoucherUseCase,
             private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
             private val userSessionInterface: UserSessionInterface)
-    : BaseDaggerPresenter<MerchantVoucherListView>(){
+    : BaseDaggerPresenter<MerchantVoucherListView>() {
 
-    var voucherCodeInProgress:String = ""
+    var voucherCodeInProgress: String = ""
 
     fun isLogin() = (userSessionInterface.isLoggedIn)
     fun isMyShop(shopId: String) = (userSessionInterface.shopId == shopId)
@@ -47,26 +47,24 @@ constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
     fun getVoucherList(shopId: String, numVoucher: Int = 0) {
         getMerchantVoucherListUseCase.execute(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher),
                 object : Subscriber<ArrayList<MerchantVoucherModel>>() {
-            override fun onCompleted() {}
+                    override fun onCompleted() {}
 
-            override fun onError(e: Throwable) {
-                view?.onErrorGetMerchantVoucherList(e)
-            }
+                    override fun onError(e: Throwable) {
+                        view?.onErrorGetMerchantVoucherList(e)
+                    }
 
-            override fun onNext(merchantVoucherModelList: ArrayList<MerchantVoucherModel>) {
-                val merchantViewModelList: ArrayList<MerchantVoucherViewModel> = ArrayList()
-                for (merchantVoucherModel in merchantVoucherModelList) {
-                    merchantViewModelList.add(MerchantVoucherViewModel(merchantVoucherModel))
-                }
-                view?.onSuccessGetMerchantVoucherList(merchantViewModelList)
-            }
-        })
+                    override fun onNext(merchantVoucherModelList: ArrayList<MerchantVoucherModel>) {
+                        val merchantViewModelList: ArrayList<MerchantVoucherViewModel> = ArrayList()
+                        for (merchantVoucherModel in merchantVoucherModelList) {
+                            merchantViewModelList.add(MerchantVoucherViewModel(merchantVoucherModel))
+                        }
+                        view?.onSuccessGetMerchantVoucherList(merchantViewModelList)
+                    }
+                })
     }
 
-    fun useMerchantVoucher(voucherCode: String, voucherId:Int) {
-        if (voucherCodeInProgress.equals(voucherCode)) {
-            return;
-        }
+    fun useMerchantVoucher(voucherCode: String, voucherId: Int) {
+        if (voucherCodeInProgress == voucherCode) return
         voucherCodeInProgress = voucherCode
         useMerchantVoucherUseCase.unsubscribe()
         useMerchantVoucherUseCase.execute(UseMerchantVoucherUseCase.createRequestParams(voucherCode, voucherId),

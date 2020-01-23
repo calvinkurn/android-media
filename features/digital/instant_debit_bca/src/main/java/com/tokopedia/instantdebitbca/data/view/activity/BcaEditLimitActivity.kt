@@ -5,10 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.instantdebitbca.data.view.fragment.EditLimitFragment
-import com.tokopedia.instantdebitbca.data.view.utils.ApplinkConstant
 
 class BcaEditLimitActivity : InstantDebitBcaActivity() {
 
@@ -30,7 +29,7 @@ class BcaEditLimitActivity : InstantDebitBcaActivity() {
 
     object DeepLinkIntent {
 
-        @DeepLink(ApplinkConstant.INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK)
+        @DeepLink(ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK)
         @JvmStatic
         fun intentForTaskStackEditLimit(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()

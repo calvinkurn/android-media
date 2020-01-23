@@ -98,7 +98,7 @@ import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewMod
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -151,7 +151,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
-        OnboardingAdapter.InterestPickItemListener,
+        InterestPickAdapter.InterestPickItemListener,
         EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener{
@@ -818,6 +818,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
             feedViewModel.doFollowKol(id, rowNumber)
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.FOLLOW)
         } else {
             onGoToLogin()
         }
@@ -826,6 +827,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
             feedViewModel.doUnfollowKol(id, rowNumber)
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNFOLLOW)
         } else {
             onGoToLogin()
         }
@@ -898,12 +900,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             val comment = footer.comment
-            try {
-                val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
-                comment.fmt = commentValue.toString()
-            } catch (ignored: NumberFormatException) {
+            if (comment.value == 0) {
+                comment.fmt = totalNewComment.toString()
+            } else {
+                try {
+                    val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
+                    comment.fmt = commentValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
             }
-
             comment.value = comment.value + totalNewComment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
         }
@@ -1293,7 +1298,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, contentList, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
             if (redirectLink.contains(FEED_DETAIL)) {
-                analytics.eventGoToFeedDetail(trackingPostModel.postId)
+                analytics.eventGoToFeedDetail(trackingPostModel.postId, trackingPostModel.recomId)
             } else if (contentList[contentPosition] is GridPostViewModel) {
                 val (itemList) = contentList[contentPosition] as GridPostViewModel
                 val (id, text, price) = itemList[productPosition]
@@ -1304,7 +1309,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 productPosition),
                         trackingPostModel.activityName,
                         trackingPostModel.postId,
-                        userIdInt
+                        userIdInt,
+                        trackingPostModel.recomId
                 )
             }
         }
@@ -1511,12 +1517,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) + 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
+                if (like.value == 0) {
+                    like.fmt = "1"
+                } else {
+                    try {
+                        val likeValue = Integer.valueOf(like.fmt) + 1
+                        like.fmt = likeValue.toString()
+                    } catch (ignored: NumberFormatException) {
+                    }
                 }
-
                 like.value = like.value + 1
             } else {
                 try {
@@ -1889,7 +1898,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     productList,
                     trackingPostModel.activityName,
                     trackingPostModel.postId,
-                    userIdInt
+                    userIdInt,
+                    trackingPostModel.recomId
             )
         } else if (postViewModel.contentList[0] is PollContentViewModel) {
             val (pollId) = postViewModel.contentList[0] as PollContentViewModel
@@ -1911,7 +1921,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     trackingPostModel.totalContent,
                     trackingPostModel.postId,
                     userId,
-                    feedPosition
+                    feedPosition,
+                    trackingPostModel.recomId
             )
         }
     }
@@ -1927,7 +1938,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 trackingPostModel.totalContent,
                 trackingPostModel.postId,
                 userIdInt,
-                positionInFeed
+                positionInFeed,
+                trackingPostModel.recomId
         )
     }
 
@@ -1963,7 +1975,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     element,
                     trackingPostModel.activityName,
                     trackingPostModel.mediaType,
-                    trackingPostModel.postId.toString()
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.recomId
             )
         }
     }

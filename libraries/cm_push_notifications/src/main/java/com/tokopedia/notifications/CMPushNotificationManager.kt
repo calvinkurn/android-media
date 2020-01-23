@@ -5,7 +5,6 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.PayloadConverter
@@ -13,6 +12,7 @@ import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -68,7 +68,7 @@ class CMPushNotificationManager : CoroutineScope {
         try {
 
             if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled) {
-                CommonUtils.dumper("token: $token")
+                Timber.d("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
@@ -92,7 +92,7 @@ class CMPushNotificationManager : CoroutineScope {
     fun refreshTokenFromBackground(token: String?, isForce: Boolean?) {
         try {
             if (::applicationContext.isInitialized && token != null && isBackgroundTokenUpdateEnabled) {
-                CommonUtils.dumper("token: $token")
+                Timber.d("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }

@@ -20,11 +20,13 @@ public class ShopAddressListPresenter extends BaseDaggerPresenter<ShopAddressLis
 
     private final GQLGetShopInfoUseCase gqlGetShopInfoUseCase;
     private final ShopAddressViewModelMapper shopAddressViewModelMapper;
+    private final UserSessionInterface userSession;
 
     @Inject
     public ShopAddressListPresenter(GQLGetShopInfoUseCase getShopInfoUseCase, ShopAddressViewModelMapper shopAddressViewModelMapper) {
         this.gqlGetShopInfoUseCase = getShopInfoUseCase;
         this.shopAddressViewModelMapper = shopAddressViewModelMapper;
+        this.userSession = userSession;
     }
 
     public void getShopAddressList(String shopId) {

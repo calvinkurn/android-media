@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
@@ -51,14 +50,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
     @Override
     public void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData) {
         if (view.isUserLoggedIn()) {
-            if (view.getMainApplication() instanceof DigitalRouter) {
-                DigitalRouter digitalModuleRouter =
-                        (DigitalRouter) view.getMainApplication();
-                view.navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
-                );
-            }
+            view.navigateToCart(digitalCheckoutPassData);
         } else {
             view.interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
@@ -74,7 +66,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
 
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
-        number= DeviceUtil.formatPrefixClientNumber(number);
+        number = DeviceUtil.formatPrefixClientNumber(number);
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             localCacheHandler.putString(KEY_USSD_SIM1, number);
@@ -85,12 +77,12 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
     }
 
     @Override
-    public  String getUssdPhoneNumberFromCache(int selectedSim) {
+    public String getUssdPhoneNumberFromCache(int selectedSim) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
-            return localCacheHandler.getString(KEY_USSD_SIM1,null);
+            return localCacheHandler.getString(KEY_USSD_SIM1, null);
         } else if (selectedSim == 1) {
-            return localCacheHandler.getString(KEY_USSD_SIM2,null);
+            return localCacheHandler.getString(KEY_USSD_SIM2, null);
         }
         return null;
     }
