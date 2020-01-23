@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.utils
 
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateTransformer
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData

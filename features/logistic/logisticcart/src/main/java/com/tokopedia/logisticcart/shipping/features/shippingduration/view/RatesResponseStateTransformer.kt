@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.utils
+package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import android.text.TextUtils
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
