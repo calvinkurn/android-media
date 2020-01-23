@@ -117,8 +117,6 @@ public interface TkpdCoreRouter {
 
     Class<?> getInboxResCenterActivityClassReal();
 
-    Intent getActivitySellingTransactionNewOrderReal(Context mContext);
-
     Intent getActivitySellingTransactionShippingStatusReal(Context mContext);
 
     Class getSellingActivityClassReal();
