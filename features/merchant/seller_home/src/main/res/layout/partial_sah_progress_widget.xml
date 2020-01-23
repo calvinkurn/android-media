@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sah_progress_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_progress_title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Power Merchant (Aktif)" />
+
+    <com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
+        android:id="@+id/shop_score_widget"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_progress_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:maxLines="2"
+        android:textColor="@color/sah_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shop_score_widget"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_14"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/sah_more"
+        android:textColor="@color/Green_G500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_description"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        app:layout_constraintBottom_toBottomOf="@id/tv_details"
+        app:layout_constraintStart_toEndOf="@id/tv_details"
+        app:layout_constraintTop_toTopOf="@id/tv_details"
+        app:srcCompat="@drawable/ic_icon_arrow" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

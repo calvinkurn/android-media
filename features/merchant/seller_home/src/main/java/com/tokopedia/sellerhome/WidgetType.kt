@@ -7,4 +7,5 @@ object WidgetType {
 
     const val CARD = "card"
     const val LINE_GRAPH = "line_graph"
+    const val PROGRESS = "progress"
 }
