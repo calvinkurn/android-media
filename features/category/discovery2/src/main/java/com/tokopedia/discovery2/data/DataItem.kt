@@ -39,7 +39,7 @@ data class DataItem(
         val applinks: String? = "",
 
         @SerializedName("name")
-        val name: String? = "",
+        var name: String? = "",
 
         @SerializedName("action")
         val action: String? = "",

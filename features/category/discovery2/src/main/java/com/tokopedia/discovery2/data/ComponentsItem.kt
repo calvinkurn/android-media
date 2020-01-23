@@ -8,13 +8,13 @@ data class ComponentsItem (
         val renderByDefault: Boolean = false,
 
         @SerializedName("data")
-        val data: List<DataItem>? = null,
+        var data: List<DataItem>? = null,
 
         @SerializedName("ab_modulo")
         val abModulo: String? = "",
 
         @SerializedName("name")
-        val name: String? = "",
+        var name: String? = "",
 
         @SerializedName("ab_default")
         val abDefault: Boolean = false,

@@ -1,8 +1,6 @@
 package com.tokopedia.discovery2.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -45,7 +43,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getDiscoveryResponse(): MutableLiveData<Result<DiscoveryResponse>> = discoveryResponse
-
 
 
 }

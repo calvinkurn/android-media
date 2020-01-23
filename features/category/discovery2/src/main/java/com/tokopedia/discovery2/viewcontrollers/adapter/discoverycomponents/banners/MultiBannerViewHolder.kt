@@ -15,7 +15,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import kotlinx.android.synthetic.main.multi_banner_layout.view.*
 
-class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
+class MultiBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private var constraintLayout: ConstraintLayout
     private var context: Context
 
@@ -27,14 +27,14 @@ class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
         context = constraintLayout.context
     }
 
-    override fun bindView(fragment: Fragment, viewModel: DiscoveryBaseViewModel) {
+    override fun bindView(viewModel: DiscoveryBaseViewModel) {
         multiBannerViewModel = viewModel as MultiBannerViewModel
         multiBannerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
 
-            if (item.data != null && item.data.isNotEmpty()) {
+            if (!item.data.isNullOrEmpty()) {
                 constraintLayout.removeAllViews()
                 bannersItemList = ArrayList()
-                addBanners(item.data)
+                item.data?.let { addBanners(it) }
             }
         })
 
