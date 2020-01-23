@@ -76,38 +76,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         })
     }
 
-    fun clearItems() {
-        clearExoPlayer()
-        visitables.clear()
-    }
-
-    fun hasReview(): Int {
-        for (i in visitables.indices) {
-            if (visitables[i] is ReviewViewModel) {
-                return i
-            }
-        }
-        return -1
-    }
-
-    private fun hasHomeHeaderViewModel(): Int {
-        return if (visitables != null && visitables.size > 0) {
-            if (visitables.size > POSITION_HEADER_WITHOUT_TICKER &&
-                    visitables[POSITION_HEADER_WITHOUT_TICKER] is HeaderViewModel) {
-                POSITION_HEADER_WITHOUT_TICKER
-            } else if (visitables.size > POSITION_HEADER_WITH_TICKER &&
-                    visitables[POSITION_HEADER_WITH_TICKER] is HeaderViewModel) {
-                POSITION_HEADER_WITH_TICKER
-            } else {
-                POSITION_UNDEFINED
-            }
-        } else POSITION_UNDEFINED
-    }
-
-    private fun clearExoPlayer(){
-        currentSelected = -1
-    }
-
     private fun onSelectedItemChanged(newSelected: Int) {
         if(currentSelected != -1) {
             pausePlayerByPosition(currentSelected)

@@ -38,9 +38,6 @@ class PlayCardViewHolder(
 
     private var helper: HomePlayWidgetHelper? = null
 
-    private var mThumbUrl: String = ""
-    private var mVideoUrl: String = ""
-
     private val videoPlayer = view.findViewById<TokopediaPlayView>(R.id.video_player)
 
     init {
@@ -62,11 +59,7 @@ class PlayCardViewHolder(
             title.setValue(model.getChannel().header.name)
             description.setValue("")
 
-            mVideoUrl = if(playChannel.videoStream.config.streamUrl.isEmpty()) "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                        else playChannel.videoStream.config.streamUrl
-            mThumbUrl = playChannel.coverUrl
-
-            thumbnailView.loadImageWithoutPlaceholder(mThumbUrl, 350, 150, true)
+            thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
 
 
             broadcasterName.text = playChannel.moderatorName
