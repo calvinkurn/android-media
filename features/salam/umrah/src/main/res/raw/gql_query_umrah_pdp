@@ -22,6 +22,7 @@ query UmrahProduct($slugName: String!){
       permissionOfUmrah
       establishedSince
       pilgrimsPerYear
+      slugName
       ui{
           establishedSince
           pilgrimsPerYear

@@ -114,6 +114,7 @@
 
                         <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
                             android:id="@+id/iw_umrah_pdp_travel_agent"
+                            android:clickable="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_4"

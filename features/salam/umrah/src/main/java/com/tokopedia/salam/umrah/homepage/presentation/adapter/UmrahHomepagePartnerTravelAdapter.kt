@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.TravelAgent
@@ -21,6 +23,9 @@ class UmrahHomepagePartnerTravelAdapter : RecyclerView.Adapter<UmrahHomepagePart
         fun bind(travel: TravelAgent) {
             with(itemView) {
                 iv_umrah_partner_travel.loadImage(travel.imageUrl)
+                setOnClickListener {
+                    RouteManager.route(context, ApplinkConst.SALAM_UMRAH_AGEN, travel.slugName)
+                }
             }
         }
     }
