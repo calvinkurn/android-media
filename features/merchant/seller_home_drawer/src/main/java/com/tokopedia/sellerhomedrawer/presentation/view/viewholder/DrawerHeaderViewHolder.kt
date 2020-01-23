@@ -9,16 +9,17 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.analytics.SellerAnalyticsEventTrackingHelper
+import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
 import com.tokopedia.sellerhomedrawer.presentation.listener.DrawerHeaderListener
 import com.tokopedia.sellerhomedrawer.presentation.listener.RetryTokoCashListener
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.DrawerHeader
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerTokoCash
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerWalletAction
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sh_drawer_header.view.*
 import kotlinx.android.synthetic.main.sh_drawer_header.view.complete_profile
+import kotlinx.android.synthetic.main.sh_drawer_saldo.view.*
 import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.ProgressBar
 import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.cover_img
 import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.drawer_header
@@ -29,7 +30,6 @@ import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.percent_text
 import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.user_avatar
 import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.verified
 import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.verified_icon
-import kotlinx.android.synthetic.main.sh_drawer_saldo.view.*
 
 class DrawerHeaderViewHolder(itemView: View,
                              private val drawerHeaderListener: DrawerHeaderListener,
@@ -169,19 +169,19 @@ class DrawerHeaderViewHolder(itemView: View,
                     drawerHeaderListener.onGoToTopPoints(drawerHeader.sellerDrawerTopPoints?.topPointsUrl)
             }
             drawer_top_cash.setOnClickListener {
-                if (drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction != null) {
+                if (drawerHeader.sellerDrawerTokoCash?.drawerWalletAction != null) {
                     if (isRegistered(drawerHeader.sellerDrawerTokoCash)) {
                         drawerHeaderListener.onWalletBalanceClicked(
-                                drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.redirectUrlBalance,
-                                drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.appLinkBalance
+                                drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.redirectUrlBalance,
+                                drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.appLinkBalance
                         )
-                        val redirectUrlBalance = drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.redirectUrlBalance
+                        val redirectUrlBalance = drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.redirectUrlBalance
                         if (redirectUrlBalance != null)
                             SellerAnalyticsEventTrackingHelper.homepageTokocashClick(it.context, redirectUrlBalance)
                     } else {
                         drawerHeaderListener.onWalletActionButtonClicked(
-                                drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.redirectUrlActionButton,
-                                drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.appLinkActionButton
+                                drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.redirectUrlActionButton,
+                                drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.appLinkActionButton
                         )
                         SellerAnalyticsEventTrackingHelper.hamburgerTokocashActivateClick(it.context)
                     }
@@ -197,10 +197,10 @@ class DrawerHeaderViewHolder(itemView: View,
 
     private fun setTopCash(drawerHeader: DrawerHeader) {
         val isTokoCashDisabled: (SellerDrawerTokoCash?) -> Boolean = { sellerDrawerTokoCash ->
-            sellerDrawerTokoCash?.sellerDrawerWalletAction?.labelTitle.isNullOrEmpty()
+            sellerDrawerTokoCash?.drawerWalletAction?.labelTitle.isNullOrEmpty()
         }
         val isActionTypeBalance by lazy {
-            drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.typeAction == SellerDrawerWalletAction.TYPE_ACTION_BALANCE
+            drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.typeAction == SellerDrawerWalletAction.TYPE_ACTION_BALANCE
         }
         with(itemView) {
             loading_top_cash.visibility = View.VISIBLE
@@ -210,11 +210,11 @@ class DrawerHeaderViewHolder(itemView: View,
             } else {
                 if (isActionTypeBalance) {
                     showTokoCashBalanceView()
-                    top_cash_value.text = drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.balance
-                    toko_cash_label.text = drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.labelTitle
+                    top_cash_value.text = drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.balance
+                    toko_cash_label.text = drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.labelTitle
                 } else {
                     showTokoCashActivateView()
-                    toko_cash_activation_button.text = drawerHeader.sellerDrawerTokoCash?.sellerDrawerWalletAction?.labelActionButton
+                    toko_cash_activation_button.text = drawerHeader.sellerDrawerTokoCash?.drawerWalletAction?.labelActionButton
                 }
                 loading_top_cash.visibility = View.GONE
                 retry_top_cash.visibility = View.GONE
@@ -239,7 +239,7 @@ class DrawerHeaderViewHolder(itemView: View,
     }
 
     private fun isRegistered(sellerDrawerTokoCash: SellerDrawerTokoCash?): Boolean {
-        return sellerDrawerTokoCash?.sellerDrawerWalletAction?.typeAction == SellerDrawerWalletAction.TYPE_ACTION_BALANCE
+        return sellerDrawerTokoCash?.drawerWalletAction?.typeAction == SellerDrawerWalletAction.TYPE_ACTION_BALANCE
     }
 
     private fun setTopPoints(drawerHeader: DrawerHeader) {

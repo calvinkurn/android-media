@@ -1,7 +1,11 @@
 package com.tokopedia.sellerhomedrawer.presentation.view.viewmodel
 
 import com.tokopedia.loyalty.common.TokoPointDrawerData
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.*
+import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
+import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerDeposit
+import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerProfile
+import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerTopPoints
 
 open class BaseDrawerHeader {
 

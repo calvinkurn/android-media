@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="18dp"
-        android:background="@drawable/green_circle"
+        android:background="@drawable/sh_green_circle"
         android:gravity="center"
         android:textColor="#FFFFFF"
         android:textSize="10sp"

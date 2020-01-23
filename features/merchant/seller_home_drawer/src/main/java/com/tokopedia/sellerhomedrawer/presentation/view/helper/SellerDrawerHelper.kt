@@ -9,6 +9,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -28,6 +29,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.dashboard.SellerDashboar
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerHomeWebViewActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerSimpleWebViewActivity
@@ -51,6 +53,10 @@ class SellerDrawerHelper(val context: Activity,
         val DIGITAL_PATH_MITRA = "mitra"
         @JvmStatic
         val CONTACT_US = "Contact_Us"
+        @JvmStatic
+        val DRAWER_CACHE = "DRAWER_CACHE"
+        @JvmStatic
+        val REQUEST_LOGIN = 345
     }
 
     var sellerDrawerAdapter: SellerDrawerAdapter? = null
@@ -378,6 +384,20 @@ class SellerDrawerHelper(val context: Activity,
         }
         setExpand()
         closeDrawer()
+    }
+
+    fun setFooterData(profile: SellerDrawerProfile) {
+        context.label.text = profile.shopName
+        context.icon.visibility = View.VISIBLE
+        context.sublabel.visibility = View.VISIBLE
+        ImageHandler.LoadImage(context.icon, profile.shopAvatar)
+        context.drawer_shop.setOnClickListener {
+            onGoToShop()
+        }
+    }
+
+    private fun onGoToShop() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_DOMAIN, userSession.shopId)
     }
 
     private fun setExpand() {
