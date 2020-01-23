@@ -1814,10 +1814,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
-        shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
+        shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
-        shippingParam.setTradeInDropOff(shipmentDetailData.isTradeInDropOff());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
         shippingParam.setTradeInDropOff(isTradeInDropOff);
@@ -1833,7 +1832,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
             shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
         }
-
         return shippingParam;
     }
 
