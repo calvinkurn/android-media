@@ -60,6 +60,27 @@ abstract class DynamicChannelViewHolder(itemView: View,
         return TYPE_CURATED
     }
 
+    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
+        val channel = element.channel
+
+        if (payloads.isNotEmpty()) {
+            payloads.forEach { payload->
+                if (payload == DynamicChannelViewModel.HOME_RV_DC_IMPRESSION) {
+                    channel?.let {
+                        if (!element.isCache) {
+                            itemView.addOnImpressionListener(channel, OnItemImpressedListener(
+                                    channel,
+                                    listener,
+                                    adapterPosition,
+                                    getLayoutType(channel),
+                                    element.isCache))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun bind(element: DynamicChannelViewModel) {
         try {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)

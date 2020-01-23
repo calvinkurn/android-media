@@ -22,6 +22,7 @@ class DynamicChannelViewModel : HomeVisitable {
     companion object {
         val HOME_RV_BANNER_IMAGE_URL = "home_rv_banner_image_url"
         val HOME_RV_SPRINT_BG_IMAGE_URL = "home_rv_sprint_bg_image_url"
+        val HOME_RV_DC_IMPRESSION = "home_rv_dc_impressed"
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -29,8 +30,8 @@ class DynamicChannelViewModel : HomeVisitable {
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
+        val bundle = Bundle()
         if (b is DynamicChannelViewModel) {
-            val bundle = Bundle()
             if (channel?.banner?.imageUrl != b.channel?.banner?.imageUrl?:"") {
                 bundle.putString(HOME_RV_BANNER_IMAGE_URL, b.channel?.banner?.imageUrl)
             }
@@ -38,9 +39,10 @@ class DynamicChannelViewModel : HomeVisitable {
             if (channel?.header?.backImage != b.channel?.header?.backImage?:"") {
                 bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
             }
-            return bundle
+
+            bundle.putBoolean(HOME_RV_DC_IMPRESSION, false)
         }
-        return null
+        return bundle
     }
 
     override fun isCache(): Boolean {
