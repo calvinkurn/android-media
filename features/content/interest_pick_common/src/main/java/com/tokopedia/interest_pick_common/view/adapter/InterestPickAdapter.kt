@@ -16,10 +16,11 @@ import kotlinx.android.synthetic.main.item_new_interest_pick.view.*
 /**
  * @author by yoasfs on 2019-09-18
  */
-class OnboardingAdapter(private val listener: InterestPickItemListener, val source: String) : RecyclerView.Adapter<OnboardingAdapter.Holder>() {
+class InterestPickAdapter(private val listener: InterestPickItemListener, val source: String) : RecyclerView.Adapter<InterestPickAdapter.Holder>() {
 
     companion object {
         val SOURCE_FEED = "feeds"
+        val SOURCE_ACCOUNTS = "accounts"
         fun getItemDecoration(): RecyclerView.ItemDecoration {
             return object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
@@ -71,6 +72,10 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
         notifyDataSetChanged()
     }
 
+    fun getList() :List<InterestPickDataViewModel> {
+        return list
+    }
+
     class Holder(v: View, val listener: InterestPickItemListener) : RecyclerView.ViewHolder(v) {
 
         private val VAL_ICON_SIZE = 20
@@ -99,11 +104,14 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
                 if (item.isLihatSemuaItem) {
                     listener.onLihatSemuaItemClicked(list.filter { it.isSelected })
                 } else {
-                    item.isSelected = !item.isSelected
-                    setBackgroundColor(item)
-                    listener.onInterestPickItemClicked(item)
+                    if (item.isClickable) {
+                        item.isSelected = !item.isSelected
+                        setBackgroundColor(item)
+                        listener.onInterestPickItemClicked(item)
+                    }
                 }
             }
+
         }
 
         private fun setBackgroundColor(item: InterestPickDataViewModel) {
