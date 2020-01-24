@@ -1240,7 +1240,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onSuccessCheckStatusPin(): (StatusPinData) -> Unit {
         return {
             dismissLoadingLogin()
-            if (!it.isRegistered && isFromAccountPage()) {
+            if (!it.isRegistered &&
+                    isFromAccountPage() &&
+                    userSession.phoneNumber.isNotEmpty() &&
+                    userSession.isMsisdnVerified) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN)
@@ -1253,7 +1256,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onSuccessCheckStatusPinAfterSQ(): (StatusPinData) -> Unit {
         return {
             dismissLoadingLogin()
-            if (!it.isRegistered && isFromAccountPage()) {
+            if (!it.isRegistered &&
+                    isFromAccountPage() &&
+                    userSession.phoneNumber.isNotEmpty() &&
+                    userSession.isMsisdnVerified) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
