@@ -3,7 +3,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+
 import androidx.annotation.LayoutRes
+
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeLoadingMoreModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder

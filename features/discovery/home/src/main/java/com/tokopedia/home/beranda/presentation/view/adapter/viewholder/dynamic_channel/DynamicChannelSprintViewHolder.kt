@@ -10,15 +10,22 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
+import com.tokopedia.home.beranda.helper.glide.CrossFadeFactory
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,7 +42,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                                      private val homeCategoryListener: HomeCategoryListener,
                                      countDownListener: CountDownView.CountDownListener,
                                      private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
-        DynamicChannelViewHolder(
+        HomeAbstractViewHolder(
                 sprintView, homeCategoryListener, countDownListener
         ) {
 
