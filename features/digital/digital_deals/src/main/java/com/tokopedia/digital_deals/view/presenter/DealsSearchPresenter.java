@@ -1,14 +1,13 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
@@ -20,6 +19,7 @@ import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 
 public class DealsSearchPresenter
@@ -64,12 +65,12 @@ public class DealsSearchPresenter
         getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
             }
 
@@ -86,7 +87,7 @@ public class DealsSearchPresenter
                 getView().setSuggestedBrands(searchResponse.getBrandList(), searchResponse.getBrandCount());
                 getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
-                CommonUtils.dumper("enter onNext");
+                Timber.d("enter onNext");
             }
         });
     }
@@ -206,12 +207,12 @@ public class DealsSearchPresenter
         getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override

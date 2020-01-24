@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError

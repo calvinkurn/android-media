@@ -32,6 +32,8 @@ data class PlayChannel(
         val moderatorId: String = "",
         @SerializedName("moderator_name")
         val moderatorName: String = "",
+        @SerializedName("slug")
+        val slug: String = "",
         @SerializedName("video_stream")
         val videoStream: VideoStream = VideoStream()
 )

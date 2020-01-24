@@ -43,6 +43,7 @@ class HomePlayWidgetHelper(
                 is TokopediaPlayVideoState.NoMedia -> mExoPlayerListener?.onPlayerIdle()
                 is TokopediaPlayVideoState.Error -> mExoPlayerListener?.onPlayerError(state.error.message)
                 is TokopediaPlayVideoState.Pause -> mExoPlayerListener?.onPlayerPaused()
+                is TokopediaPlayVideoState.Buffering -> mExoPlayerListener?.onPlayerBuffering()
                 is TokopediaPlayVideoState.Playing -> mExoPlayerListener?.onPlayerPlaying()
             }
         }
@@ -99,14 +100,14 @@ class HomePlayWidgetHelper(
 
     override fun playerPause() {
         masterJob.cancelChildren()
-        TokopediaPlayManager.getInstance(context).pauseCurrentVideo()
+        TokopediaPlayManager.getInstance(context).stopPlayer()
     }
 
     override fun playerPlay() {
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && mPlayer?.isPlaying == false){
             masterJob.cancelChildren()
             launch(coroutineContext){
-                delay(500)
+                delay(1000)
                 TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
             }
         }
@@ -120,8 +121,8 @@ class HomePlayWidgetHelper(
         if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             videosUri = Uri.parse(url)
             exoPlayerView.setPlayer(mPlayer)
-            TokopediaPlayManager.getInstance(context).safePlayVideoWithUriString(url, autoPlay = false)
             muteVideoPlayer()
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUriString(url, autoPlay = false)
             playerPlay()
         }else{
             playerPause()
@@ -159,25 +160,30 @@ class HomePlayWidgetHelper(
     }
 
     override fun onActivityResume() {
-        launch(coroutineContext){
-            delay(500)
-            observeVideoPlayer()
-            muteVideoPlayer()
-            withContext(Dispatchers.Main) {
-                muteVideoPlayer()
-                exoPlayerView.setPlayer(mPlayer)
+        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()) {
+            masterJob.cancelChildren()
+            launch(coroutineContext) {
+                delay(3000)
+                observeVideoPlayer()
+                withContext(Dispatchers.Main) {
+                    exoPlayerView.setPlayer(mPlayer)
+                    muteVideoPlayer()
+                    TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videosUri ?: Uri.parse(""), autoPlay = true)
+                }
             }
-            delay(2500)
-            TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
+        } else {
+            stopVideoPlayer()
         }
     }
 
     override fun onActivityPause() {
+        masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
         removeVideoPlayerObserver()
     }
 
     override fun onActivityStop() {
+        masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
         mPlayer?.release()
         mPlayer = null

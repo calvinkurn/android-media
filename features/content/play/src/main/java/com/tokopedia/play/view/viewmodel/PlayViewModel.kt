@@ -22,7 +22,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.toCompactAmountString
 import com.tokopedia.play.view.type.KeyboardState
-import com.tokopedia.play.view.type.PlayVideoType
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
@@ -94,11 +94,11 @@ class PlayViewModel @Inject constructor(
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
-            _observableVideoProperty.value = VideoPropertyUiModel(it.videoType, _observableVideoProperty.value?.state
+            _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
                     ?: TokopediaPlayVideoState.NotConfigured)
         }
         addSource(playManager.getObservablePlayVideoState()) {
-            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayVideoType.Unknown, it)
+            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayChannelType.Unknown, it)
         }
         addSource(observablePartnerInfo) {
             val currentValue = _observablePinnedMessage.value
@@ -152,7 +152,7 @@ class PlayViewModel @Inject constructor(
 
     fun showKeyboard(estimatedKeyboardHeight: Int) {
         _observableKeyboardState.value =
-                if (_observableVideoStream.value?.videoType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight)
+                if (_observableVideoStream.value?.channelType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight)
                 else KeyboardState.Hidden
     }
 
@@ -180,7 +180,7 @@ class PlayViewModel @Inject constructor(
             setStateLiveOrVod(channel)
             setContentIdAndType(channel)
             if (channel.videoStream.isLive
-                    && channel.videoStream.type.equals(PlayVideoType.Live.value, true))
+                    && channel.videoStream.type.equals(PlayChannelType.Live.value, true))
                 startWebSocket(channelId, channel.gcToken, channel.settings)
             playVideoStream(channel)
 
@@ -366,9 +366,9 @@ class PlayViewModel @Inject constructor(
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            videoType = if (videoStream.isLive
-                    && videoStream.type.equals(PlayVideoType.Live.value, true))
-                PlayVideoType.Live else PlayVideoType.VOD,
+            channelType = if (videoStream.isLive
+                    && videoStream.type.equals(PlayChannelType.Live.value, true))
+                PlayChannelType.Live else PlayChannelType.VOD,
             isActive = isActive
     )
 

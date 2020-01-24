@@ -1,6 +1,6 @@
 package com.tokopedia.play.data.network
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.play.PLAY_GET_CHANNEL_INFO_V5
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.data.Channel

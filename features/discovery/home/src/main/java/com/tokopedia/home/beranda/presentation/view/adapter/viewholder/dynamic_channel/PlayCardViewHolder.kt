@@ -20,11 +20,13 @@ import com.tokopedia.home.beranda.presentation.view.helper.setValue
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 class PlayCardViewHolder(
         val view: View,
         val listener: HomeCategoryListener
-): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener {
+): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener, CoroutineScope {
 
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val play = view.findViewById<ImageView>(R.id.play)
@@ -35,6 +37,13 @@ class PlayCardViewHolder(
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
     private val description = view.findViewById<TextView>(R.id.description)
+    private var isClickable = false
+    private val masterJob = Job()
+
+    companion object {
+        @LayoutRes val LAYOUT = R.layout.play_banner
+        private const val DELAY_CLICKABLE = 1000
+    }
 
     private var helper: HomePlayWidgetHelper? = null
 
@@ -46,21 +55,29 @@ class PlayCardViewHolder(
                 .create()
     }
 
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.IO
+
     override fun bind(element: PlayCardViewModel) {
         element.let { element ->
             initView(element)
             handlingTracker(element)
-            playChannel(element.getPlayCardHome()?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
+            playChannel(element.playCardHome?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
         }
     }
 
+    override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
+        if(container.visibility == View.GONE) container.show()
+        element?.let { initView(it) }
+        playChannel(element?.playCardHome?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
+    }
+
     private fun initView(model: PlayCardViewModel){
-        model.getPlayCardHome()?.let{ playChannel ->
-            title.setValue(model.getChannel().header.name)
+        model.playCardHome?.let{ playChannel ->
+            title.setValue(model.channel.header.name)
             description.setValue("")
 
             thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
-
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
@@ -69,25 +86,28 @@ class PlayCardViewHolder(
             else live.hide()
 
             itemView.setSafeOnClickListener {
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
-                HomePageTracking.eventClickPlayBanner(model.getChannel())
+                if(isClickable){
+                    videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
+                    HomePageTracking.eventClickPlayBanner(model)
+                }
             }
 
             play.setSafeOnClickListener { _ ->
-                videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
+                if(isClickable) {
+                    videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
+                }
             }
         }
     }
 
     private fun handlingTracker(model: PlayCardViewModel){
         thumbnailView?.addOnImpressionListener(model){
-            HomePageTracking.eventEnhanceImpressionPlayBanner(model.getChannel())
+            HomePageTracking.eventEnhanceImpressionPlayBanner(model)
         }
     }
 
     private fun playChannel(url: String){
-        if(wantsToPlay()) helper?.play(url)
-        else helper?.setUrl(url)
+        helper?.play(url)
     }
 
     fun resume(){
@@ -100,14 +120,29 @@ class PlayCardViewHolder(
 
     fun getHelper() = helper
 
-    companion object {
-        @LayoutRes val LAYOUT = R.layout.play_banner
+    fun wantsToPlay() = visibleAreaOffset(videoPlayer, itemView.parent) >= 0.65
+
+    fun onViewAttach(){
+        masterJob.cancelChildren()
+        launch{
+            delay(1000)
+            isClickable = true
+        }
+
+        helper?.onViewAttach()
     }
 
-    fun wantsToPlay() = visibleAreaOffset(videoPlayer, itemView.parent) >= 0.65
+    fun onViewDetach(){
+        isClickable = false
+        helper?.onViewDetach()
+    }
 
     override fun onPlayerPlaying() {
         thumbnailView.hide()
+    }
+
+    override fun onPlayerBuffering() {
+        thumbnailView.show()
     }
 
     override fun onPlayerPaused() {

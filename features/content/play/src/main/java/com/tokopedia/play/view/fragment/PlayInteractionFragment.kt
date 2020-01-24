@@ -989,7 +989,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         val quickReplyView = view?.findViewById<View>(quickReplyComponent.getContainerId())
         val quickReplyViewTotalHeight = if (quickReplyView != null && !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
-            val height = if (quickReplyView.height <= 0) view?.findViewById<View>(statsComponent.getContainerId())?.height.orZero() else quickReplyView.height
+            val height = if (quickReplyView.height <= 0) 2 * view?.findViewById<View>(statsComponent.getContainerId())?.height.orZero() else quickReplyView.height
             val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         } else 0
