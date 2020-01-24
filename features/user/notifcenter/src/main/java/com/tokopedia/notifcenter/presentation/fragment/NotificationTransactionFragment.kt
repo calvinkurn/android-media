@@ -300,7 +300,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        if (adapterTypeFactory !is NotificationTransactionFactory) throw IllegalStateException()
+        check(adapterTypeFactory is NotificationTransactionFactory)
         val typeFactory = adapterTypeFactory as NotificationTransactionFactoryImpl
         return NotificationTransactionAdapter(typeFactory)
     }
@@ -336,7 +336,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
-    override fun addProductToCheckout(notification: DataNotification) {}
+    override fun addProductToCheckout(notification: NotificationItemViewBean) {}
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME
