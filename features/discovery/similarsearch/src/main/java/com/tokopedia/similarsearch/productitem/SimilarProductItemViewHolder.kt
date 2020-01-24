@@ -2,10 +2,9 @@ package com.tokopedia.similarsearch.productitem
 
 import android.view.View
 import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardView
-import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.abstraction.BaseViewHolder
+import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import kotlinx.android.synthetic.main.similar_search_product_card_layout.view.*
 
 internal class SimilarProductItemViewHolder(
