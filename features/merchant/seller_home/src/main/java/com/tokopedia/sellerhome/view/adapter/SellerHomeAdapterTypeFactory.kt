@@ -7,8 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhome.view.model.SectionWidgetUiModel
 import com.tokopedia.sellerhome.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhome.view.viewholder.LineGraphViewHolder
+import com.tokopedia.sellerhome.view.viewholder.SectionViewHolder
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -24,8 +26,13 @@ class SellerHomeAdapterTypeFactory : BaseAdapterTypeFactory() {
         return LineGraphViewHolder.RES_LAYOUT
     }
 
+    fun type(sectionWdget: SectionWidgetUiModel): Int {
+        return SectionViewHolder.RES_LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent)
             CardViewHolder.RES_LAYOUT -> CardViewHolder(parent)
             LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent)
             else -> super.createViewHolder(parent, type)
