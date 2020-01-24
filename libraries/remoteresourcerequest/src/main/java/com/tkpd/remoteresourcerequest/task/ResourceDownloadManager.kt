@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
-import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RawRes
 import com.tkpd.remoteresourcerequest.database.ResourceDB
@@ -14,6 +13,7 @@ import com.tkpd.remoteresourcerequest.utils.DensityFinder
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import okhttp3.OkHttpClient
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.lang.ref.WeakReference
@@ -124,8 +124,7 @@ class ResourceDownloadManager private constructor() {
             mDownloadTaskThreadPool.execute(task.getDownloadRunnable())
         } else {
             task.removeDownloadRunnable()
-            Log.d("ResourceDownloadManager",
-                    "DOWNLOAD_ALREADY_IN_PROGRESS url = ${task.getDownloadUrl()}")
+            Timber.d("ResourceDownloadManager: DOWNLOAD_ALREADY_IN_PROGRESS url = ${task.getDownloadUrl()}")
         }
         map[customUrl]!!.add(task) // Added !! since null case handled in if case above
 
@@ -162,28 +161,24 @@ class ResourceDownloadManager private constructor() {
         when (message.what) {
 
             DOWNLOAD_STARTED -> {
-                Log.d("ResourceDownloadManager",
-                        "DOWNLOAD_STARTED url = ${task.getDownloadUrl()}")
+                Timber.d("ResourceDownloadManager: DOWNLOAD_STARTED url = ${task.getDownloadUrl()}")
                 return true
             }
             DOWNLOAD_SKIPPED -> {
-                Log.d("ResourceDownloadManager",
-                        "DOWNLOAD_SKIPPED url = ${task.getDownloadUrl()}")
+                Timber.d("ResourceDownloadManager: DOWNLOAD_SKIPPED url = ${task.getDownloadUrl()}")
                 onDownloadCompleted(task)
                 return true
             }
             DOWNLOAD_COMPLETED -> {
-                Log.d(
-                        "ResourceDownloadManager",
-                        "DOWNLOAD_COMPLETED url = ${task.getDownloadUrl()}"
+                Timber.d(
+                        "ResourceDownloadManager: DOWNLOAD_COMPLETED url = ${task.getDownloadUrl()}"
                 )
                 onDownloadCompleted(task)
                 return true
             }
 
             DOWNLOAD_FAILED -> {
-                Log.d("ResourceDownloadManager",
-                        "DOWNLOAD_FAILED url = ${task.getDownloadUrl()}")
+                Timber.d("ResourceDownloadManager: DOWNLOAD_FAILED url = ${task.getDownloadUrl()}")
                 map[task.getDownloadUrl()]?.clear()
                 map[task.getDownloadUrl()] = null
                 resourceDownloadTaskQueue.offer(task)
@@ -191,27 +186,23 @@ class ResourceDownloadManager private constructor() {
             }
 
             DECODE_STARTED -> {
-                Log.d("ResourceDownloadManager",
-                        "DECODE_STARTED url = ${task.getDownloadUrl()}")
+                Timber.d("ResourceDownloadManager: DECODE_STARTED url = ${task.getDownloadUrl()}")
                 return true
             }
 
             DECODE_COMPLETED -> {
-                Log.d("ResourceDownloadManager",
-                        "DECODE_COMPLETED url = ${task.getDownloadUrl()}")
+                Timber.d("ResourceDownloadManager: DECODE_COMPLETED url = ${task.getDownloadUrl()}")
                 onDecodeCompleted(task)
                 return true
             }
 
             DECODE_FAILED -> {
-                Log.d("ResourceDownloadManager",
-                        "DECODE_FAILED url = ${task.getDownloadUrl()}")
+                Timber.d("ResourceDownloadManager: DECODE_FAILED url = ${task.getDownloadUrl()}")
                 return true
             }
 
             TASK_COMPLETED -> {
-                Log.d("ResourceDownloadManager",
-                        "TASK_COMPLETED url = ${task.getDownloadUrl()}")
+                Timber.d("ResourceDownloadManager: TASK_COMPLETED url = ${task.getDownloadUrl()}")
 
                 map[task.getDownloadUrl()]?.clear()
                 map[task.getDownloadUrl()] = null

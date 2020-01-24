@@ -2,7 +2,7 @@ package com.tkpd.remoteresourcerequest.utils
 
 import android.content.Context
 import android.util.DisplayMetrics
-import android.util.Log
+import timber.log.Timber
 
 
 class DensityFinder {
@@ -12,29 +12,29 @@ class DensityFinder {
 
             when (context.resources.displayMetrics.densityDpi) {
                 DisplayMetrics.DENSITY_LOW -> {
-                    Log.d("DensityFinder", "LDPI")
+                    Timber.d("ResourceDownloadManager: LDPI")
                     return "ldpi"
                 }
                 DisplayMetrics.DENSITY_MEDIUM -> {
-                    Log.d("DensityFinder", "MDPI")
+                    Timber.d("ResourceDownloadManager: MDPI")
                     return "mdpi"
 
                 }
                 DisplayMetrics.DENSITY_TV, DisplayMetrics.DENSITY_HIGH -> {
-                    Log.d("DensityFinder", "HDPI")
+                    Timber.d("ResourceDownloadManager: HDPI")
                     return "hdpi"
 
                 }
                 DisplayMetrics.DENSITY_XHIGH, DisplayMetrics.DENSITY_280 -> {
-                    Log.d("DensityFinder", "XHDPI")
+                    Timber.d("ResourceDownloadManager: XHDPI")
                     return "xhdpi"
                 }
                 DisplayMetrics.DENSITY_XXHIGH, DisplayMetrics.DENSITY_360, DisplayMetrics.DENSITY_400, DisplayMetrics.DENSITY_420 -> {
-                    Log.d("DensityFinder", "XXHDPI")
+                    Timber.d("ResourceDownloadManager: XXHDPI")
                     return "xxhdpi"
                 }
                 DisplayMetrics.DENSITY_XXXHIGH, DisplayMetrics.DENSITY_560 -> {
-                    Log.d("DensityFinder", "XXXHDPI")
+                    Timber.d("ResourceDownloadManager: XXXHDPI")
                     return "xxxhdpi"
                 }
             }

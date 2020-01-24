@@ -1,9 +1,7 @@
 package com.tkpd.remoteresourcerequest.view
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.AttributeSet
-import android.webkit.URLUtil
 import android.widget.ImageView
 import com.tkpd.remoteresourcerequest.R
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
