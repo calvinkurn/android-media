@@ -433,8 +433,68 @@ public class ReputationTracking {
         ));
     }
 
+    public void onClickFollowShopButton(int shopId, String orderId) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_FOLLOW_BUTTON + shopId,
+                orderId
+        ));
+    }
 
+    public void onClickGiveReviewTracker(String productId, String orderId, int adapterPosition) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_GIVE_REVIEW,
+                orderId+" - "+productId+" - "+adapterPosition
+        ));
+    }
 
+    public void onClickBackButtonReputationDetailTracker(String orderId) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_BACK_BUTTON_SELLER_FEEDBACK,
+                orderId
+        ));
+    }
+
+    public void onClickReviewOverflowMenuTracker(String orderId, String productId, int adapterPosition) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_OVERFLOW_MENU,
+                orderId+" - "+productId+" - "+adapterPosition
+        ));
+    }
+
+    public void onClickEditReviewMenuTracker(String orderId, String productId, int adapterPosition) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_OVERFLOW_MENU_EDIT,
+                orderId+" - "+productId+" - "+adapterPosition
+        ));
+    }
+
+    public void onClickShareMenuReviewTracker(String orderId, String productId, int adapterPosition) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_OVERFLOW_MENU_SHARE,
+                orderId+" - "+productId+" - "+adapterPosition
+        ));
+    }
+
+    public void onClickToggleReplyReviewTracker(String orderId, String productId, int adapterPosition) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.CLICK_SEE_REPLY_TEXT,
+                orderId+" - "+productId+" - "+adapterPosition
+        ));
+    }
 
     private String getEditMarker(boolean isEditReview) {
         return isEditReview ? " - edit" : "";

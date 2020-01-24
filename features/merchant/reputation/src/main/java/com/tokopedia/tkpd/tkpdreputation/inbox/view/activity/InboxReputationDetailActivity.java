@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,7 +15,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
+
+import java.util.Objects;
 
 
 /**
@@ -28,6 +32,14 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
     public static final String ARGS_IS_FROM_APPLINK = "ARGS_IS_FROM_APPLINK";
     public static final String REPUTATION_ID = "reputation_id";
     public static final String CACHE_PASS_DATA = InboxReputationDetailActivity.class.getName() + "-passData";
+
+    private ReputationTracking reputationTracking;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        reputationTracking = new ReputationTracking();
+    }
 
     @Nullable
     @Override
@@ -71,4 +83,10 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
                 .putExtras(extras);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        InboxReputationDetailFragment fragment = (InboxReputationDetailFragment) getFragment();
+        reputationTracking.onClickBackButtonReputationDetailTracker(Objects.requireNonNull(fragment).getOrderId());
+        return super.onOptionsItemSelected(item);
+    }
 }

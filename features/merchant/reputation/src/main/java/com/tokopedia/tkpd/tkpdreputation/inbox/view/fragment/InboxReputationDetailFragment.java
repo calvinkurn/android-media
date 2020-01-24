@@ -9,11 +9,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -255,7 +258,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onEditReview(InboxReputationDetailItemViewModel element) {
+    public void onEditReview(InboxReputationDetailItemViewModel element, int adapterPosition) {
+        reputationTracking.onClickEditReviewMenuTracker(
+                element.getOrderId(),
+                element.getProductId(),
+                adapterPosition
+        );
         startActivityForResult(
                 InboxReputationFormActivity.getEditReviewIntent(getActivity(),
                         element.getReviewId(),
@@ -277,8 +285,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToGiveReview(String productId, int shopId, String orderId) {
+    public void onGoToGiveReview(String productId, int shopId, String orderId, int adapterPosition) {
         if (getContext() != null) {
+            reputationTracking.onClickGiveReviewTracker(productId, orderId, adapterPosition);
             startActivityForResult(
                     CreateReviewActivity.Companion.newInstance(getContext())
                         .putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
@@ -454,7 +463,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareReview(String productName, String productAvatar, String productUrl, String review) {
+    public void onShareReview(InboxReputationDetailItemViewModel element, int adapterPosition) {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         if (shareReviewDialog == null && callbackManager != null) {
             shareReviewDialog = new ShareReviewDialog(getActivity(), callbackManager,
@@ -463,13 +472,19 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
         if (shareReviewDialog != null) {
             shareReviewDialog.setModel(new ShareModel(
-                    productName,
-                    review,
-                    productUrl,
-                    productAvatar
+                    element.getProductName(),
+                    element.getReview(),
+                    element.getProductUrl(),
+                    element.getProductAvatar()
             ));
             shareReviewDialog.show();
         }
+
+        reputationTracking.onClickShareMenuReviewTracker(
+                element.getOrderId(),
+                element.getProductId(),
+                adapterPosition
+        );
     }
 
     @Override
@@ -529,6 +544,16 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onFavoriteShopClicked(int shopId) {
         presenter.onFavoriteShopClicked(shopId);
+        reputationTracking.onClickFollowShopButton(shopId, orderId);
+    }
+
+    @Override
+    public void onClickToggleReply(InboxReputationDetailItemViewModel element, int adapterPosition) {
+        reputationTracking.onClickToggleReplyReviewTracker(
+                element.getOrderId(),
+                element.getProductId(),
+                adapterPosition
+        );
     }
 
     @Override
@@ -546,6 +571,15 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onClickReviewOverflowMenu(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel, int adapterPosition) {
+        reputationTracking.onClickReviewOverflowMenuTracker(
+                inboxReputationDetailItemViewModel.getOrderId(),
+                inboxReputationDetailItemViewModel.getProductId(),
+                adapterPosition
+        );
+    }
+
+    @Override
     public UserSessionInterface getUserSession() {
         return userSession;
     }
@@ -557,6 +591,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     private String getSmileySuffixMessage() {
         return getString(R.string.smiley_prompt_suffix_shop);
+    }
+
+    public String getOrderId() {
+        return orderId;
     }
 
     @Override

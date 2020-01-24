@@ -274,7 +274,8 @@ public class InboxReputationDetailItemViewHolder extends
         giveReview.setOnClickListener( view -> viewListener.onGoToGiveReview(
                 element.getProductId(),
                 element.getShopId(),
-                ""
+                element.getOrderId(),
+                getAdapterPosition()
         ));
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
@@ -311,6 +312,7 @@ public class InboxReputationDetailItemViewHolder extends
             @Override
             public void onClick(View v) {
                 toggleReply();
+                viewListener.onClickToggleReply(element, getAdapterPosition());
             }
         });
         replyArrow.setOnClickListener(new View.OnClickListener() {
@@ -441,6 +443,9 @@ public class InboxReputationDetailItemViewHolder extends
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                viewListener.onClickReviewOverflowMenu(element, getAdapterPosition());
+
                 PopupMenu popup = new PopupMenu(context, v);
                 if (element.isReviewIsEditable())
                     popup.getMenu().add(1, MENU_EDIT, 1, context
@@ -459,7 +464,7 @@ public class InboxReputationDetailItemViewHolder extends
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == MENU_EDIT) {
-                            viewListener.onEditReview(element);
+                            viewListener.onEditReview(element, getAdapterPosition());
                             return true;
                         } else if (item.getItemId() == MENU_REPORT) {
                             viewListener.onGoToReportReview(
@@ -468,12 +473,7 @@ public class InboxReputationDetailItemViewHolder extends
                             );
                             return true;
                         } else if (item.getItemId() == MENU_SHARE) {
-                            viewListener.onShareReview(
-                                    element.getProductName(),
-                                    element.getProductAvatar(),
-                                    element.getProductUrl(),
-                                    element.getReview()
-                            );
+                            viewListener.onShareReview(element, getAdapterPosition());
                             return true;
                         } else {
                             return false;

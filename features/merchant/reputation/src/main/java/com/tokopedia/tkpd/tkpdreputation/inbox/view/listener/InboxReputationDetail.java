@@ -30,9 +30,9 @@ public interface InboxReputationDetail {
 
         void finishLoading();
 
-        void onEditReview(InboxReputationDetailItemViewModel element);
+        void onEditReview(InboxReputationDetailItemViewModel element, int adapterPosition);
 
-        void onGoToGiveReview(String productId, int shopId, String orderId);
+        void onGoToGiveReview(String productId, int shopId, String orderId, int adapterPosition);
 
         void onErrorSendSmiley(String errorMessage);
 
@@ -75,7 +75,7 @@ public interface InboxReputationDetail {
 
         void onSuccessReplyReview();
 
-        void onShareReview(String productName, String productAvatar, String productUrl, String review);
+        void onShareReview(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel, int adapterPosition);
 
         void onGoToProductDetail(String productId, String productAvatar, String productName);
 
@@ -86,6 +86,12 @@ public interface InboxReputationDetail {
         void onGoToShopInfo(int shopId);
 
         UserSessionInterface getUserSession();
+
+        void onClickReviewOverflowMenu(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel,
+                                       int adapterPosition);
+
+        void onClickToggleReply(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel,
+                                       int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
