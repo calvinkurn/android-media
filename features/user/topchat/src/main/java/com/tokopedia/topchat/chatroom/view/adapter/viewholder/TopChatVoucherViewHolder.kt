@@ -12,7 +12,6 @@ import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
-import kotlinx.android.synthetic.main.voucher_item_topchat.view.*
 
 /**
  * Created by Steven on 18/03/19.
@@ -65,14 +64,14 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
     private fun setChatLeft() {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.START
         chatStatus.visibility = View.GONE
-        itemView.llReadStatusContainer?.setBackgroundResource(R.drawable.bg_topchat_chat_left_voucher)
+//        itemView.llReadStatusContainer?.setBackgroundResource(R.drawable.bg_topchat_chat_left_voucher)
     }
 
     private fun setChatRight(element: TopChatVoucherViewModel) {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
         chatStatus.visibility = View.VISIBLE
         bindChatReadStatus(element)
-        itemView.llReadStatusContainer?.setBackgroundResource(R.drawable.bg_topchat_chat_right_voucher)
+//        itemView.llReadStatusContainer?.setBackgroundResource(R.drawable.bg_topchat_chat_right_voucher)
     }
 
     override fun isOwner(): Boolean {
