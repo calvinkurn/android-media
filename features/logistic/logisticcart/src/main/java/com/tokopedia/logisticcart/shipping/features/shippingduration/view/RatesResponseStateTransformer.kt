@@ -12,9 +12,9 @@ class RatesResponseStateTransformer(private val shopShipments: List<ShopShipment
                                     private val selectedServiceId: Int)
     : Func1<ShippingRecommendationData, ShippingRecommendationData> {
 
-    override fun call(response: ShippingRecommendationData?): ShippingRecommendationData {
-        val isPromoApplied = isPromoStackingApplied(response?.logisticPromo)
-        response?.shippingDurationViewModels?.forEach { duration ->
+    override fun call(response: ShippingRecommendationData): ShippingRecommendationData {
+        val isPromoApplied = isPromoStackingApplied(response.logisticPromo)
+        response.shippingDurationViewModels?.forEach { duration ->
             duration.shippingCourierViewModelList?.forEach { courier ->
                 if (selectedSpId != 0 && !isPromoApplied) {
                     if (selectedSpId == courier.productData.shipperProductId) {
@@ -35,7 +35,7 @@ class RatesResponseStateTransformer(private val shopShipments: List<ShopShipment
                 courier.isAllowDropshipper = isAllowDropshipper(courier.productData, shopShipments)
             }
         }
-        return response!!
+        return response
     }
 
     private fun getAdditionalFee(productData: ProductData, shopShipmentList: List<ShopShipment>)
