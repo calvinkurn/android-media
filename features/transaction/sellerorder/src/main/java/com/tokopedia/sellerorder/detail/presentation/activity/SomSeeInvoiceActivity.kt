@@ -32,8 +32,8 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
         webView.settings.displayZoomControls
         val data = intent.extras?.getString(KEY_URL, "defaultKey")
         webView.loadUrl(data)
-        mWebView = webView
-        onPrintClicked(mWebView!!)
+
+        onPrintClicked(webView)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
