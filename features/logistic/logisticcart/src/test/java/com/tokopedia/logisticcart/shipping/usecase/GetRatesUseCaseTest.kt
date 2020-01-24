@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.usecase
 
 import android.content.Context
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.domain.executor.TestSceduler
@@ -9,6 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -61,13 +63,13 @@ object GetRatesUseCaseTest : Spek({
     Feature("Get Rates") {
         val useCase by memoized { GetRatesUseCase(context, converter, gql, scheduler) }
         val param by memoized { RatesParam("", "", "", "", "") }
-        val tSubscriber = TestSubscriber<ShippingRecommendationData>()
+        val tSubscriber by memoized { TestSubscriber<ShippingRecommendationData>() }
 
         Scenario("success response") {
             val success = GetRatesCourierRecommendationData().apply { ratesData = RatesData() }
             val mockViewModel = ShippingRecommendationData().apply { blackboxInfo = "test info" }
             Given("gql return success data") {
-                every { gql.getExecuteObservable(null) } answers {
+                every { gql.getExecuteObservable(any()) } answers {
                     Observable.just(GraphqlResponse(mapOf(
                             GetRatesCourierRecommendationData::class.java to success
                     ), mapOf(), false))
@@ -90,6 +92,29 @@ object GetRatesUseCaseTest : Spek({
 
             Then("emit correct instance") {
                 assertEquals(mockViewModel, tSubscriber.onNextEvents[0])
+            }
+        }
+
+        Scenario("error response") {
+
+            val errorGql = GraphqlError().apply { message = "Error Graphql" }
+
+            Given("gql return error") {
+                every { gql.getExecuteObservable(any()) } answers {
+                    Observable.just(GraphqlResponse(mapOf(), mapOf(
+                            GetRatesCourierRecommendationData::class.java to listOf(
+                                    errorGql
+                            )
+                    ), false))
+                }
+            }
+
+            When("execute") {
+                useCase.execute(param).subscribe(tSubscriber)
+            }
+
+            Then("error with message error exception occured") {
+                tSubscriber.assertError(MessageErrorException::class.java)
             }
         }
 

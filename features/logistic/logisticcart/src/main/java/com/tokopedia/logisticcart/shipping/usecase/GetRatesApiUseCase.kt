@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.usecase
 
+import android.accounts.NetworkErrorException
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -12,6 +13,8 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.data.model.response.cod.Message
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -40,8 +43,13 @@ class GetRatesApiUseCase @Inject constructor(
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
                 .map { graphqlResponse: GraphqlResponse ->
-                    val response = graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
-                    converter.convertModel(response.ratesData)
+                    val response: RatesApiGqlResponse? =
+                            graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
+                    response?.let {
+                        converter.convertModel(it.ratesData)
+                    } ?: throw MessageErrorException(
+                            graphqlResponse.getError(RatesApiGqlResponse::class.java)[0].message
+                    )
                 }
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())

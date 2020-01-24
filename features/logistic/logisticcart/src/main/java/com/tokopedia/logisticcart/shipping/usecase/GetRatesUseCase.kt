@@ -9,10 +9,9 @@ import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class GetRatesUseCase @Inject constructor(
@@ -31,7 +30,9 @@ class GetRatesUseCase @Inject constructor(
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
                 .map { graphqlResponse: GraphqlResponse ->
-                    val response = graphqlResponse.getData<RatesGqlResponse>(RatesGqlResponse::class.java)
+                    val response: RatesGqlResponse =
+                            graphqlResponse.getData<RatesGqlResponse>(RatesGqlResponse::class.java)
+                                    ?: throw MessageErrorException(graphqlResponse.getError(RatesGqlResponse::class.java)[0].message)
                     converter.convertModel(response.ratesData)
                 }
                 .subscribeOn(scheduler.io())
