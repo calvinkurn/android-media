@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tv_chat"
-    android:gravity="center"
+    android:gravity="start"
     android:background="@drawable/bg_play_chat"
     android:lineHeight="@dimen/fontSize_lvl5"
     android:paddingStart="@dimen/spacing_lvl3"
