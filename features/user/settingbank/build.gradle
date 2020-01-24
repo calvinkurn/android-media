@@ -74,6 +74,18 @@ dependencies {
     androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.firebase.core
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
+    // For espresso test cases
+    androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+// For recycler view actions
+    androidTestImplementation ('com.android.support.test.espresso:espresso-contrib:2.0') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
 }
 
 project.ext {

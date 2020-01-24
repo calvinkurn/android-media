@@ -27,11 +27,11 @@ import retrofit2.Retrofit
 
 @SettingBankScope
 @Module
-class SettingBankModule{
+open class SettingBankModule{
 
     @SettingBankScope
     @Provides
-    fun provideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
+    open fun provideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
                                    okHttpClient: OkHttpClient): Retrofit{
         return retrofitBuilder.baseUrl(SettingBankUrl.BASE_URL).client(okHttpClient).build()
     }
