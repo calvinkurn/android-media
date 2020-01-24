@@ -108,6 +108,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
@@ -190,7 +191,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
-    private ArrayList<RecyclerView.OnScrollListener> impressionScrollListeners = new ArrayList<>();
+    private Map<Integer,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -1598,14 +1599,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         };
-        impressionScrollListeners.add(impressionScrollListener);
-        if (homeRecyclerView != null) homeRecyclerView.addOnScrollListener(impressionScrollListener);
+
+        if (impressionScrollListeners.containsKey(adapterPosition)) {
+            RecyclerView.OnScrollListener currentScrollListener = impressionScrollListeners.get(adapterPosition);
+            if (currentScrollListener != null) {
+                homeRecyclerView.removeOnScrollListener(currentScrollListener);
+            }
+        }
+        impressionScrollListeners.put(adapterPosition, impressionScrollListener);
+        homeRecyclerView.addOnScrollListener(impressionScrollListener);
     }
 
     private void resetImpressionListener() {
-        for (RecyclerView.OnScrollListener listener: impressionScrollListeners) {
+        for (Map.Entry<Integer, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
             if (homeRecyclerView != null) {
-                homeRecyclerView.removeOnScrollListener(listener);
+                homeRecyclerView.removeOnScrollListener(entry.getValue());
             }
         }
         impressionScrollListeners.clear();
