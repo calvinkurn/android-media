@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
+import android.content.Context
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -27,6 +29,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -56,6 +59,8 @@ object CartListPresenterAddToCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
+    val context = mockk<Context>(relaxed = true)
 
     Feature("add to cart") {
 
@@ -71,27 +76,27 @@ object CartListPresenterAddToCartTest : Spek({
             )
         }
 
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
         Scenario("success add to cart wishlist item") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val addToCartDataModel = AddToCartDataModel()
             val productModel = CartWishlistItemHolderData(id = "0", shopId = "0")
             val successMessage = "Success message add to cart"
-
-            Given("add to cart data") {
-                val dataModel = DataModel()
-                val messages = arrayListOf<String>()
-                messages.add(successMessage)
-                dataModel.message = messages
-                dataModel.success = 1
-                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
-                addToCartDataModel.data = dataModel
-                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
+            val addToCartDataModel = AddToCartDataModel().apply {
+                status = AddToCartDataModel.STATUS_OK
+                data = DataModel().apply {
+                    message = arrayListOf<String>().apply {
+                        add(successMessage)
+                    }
+                    success = 1
+                }
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("add to cart data") {
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
             When("process to update cart data") {
@@ -99,34 +104,27 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should render success add to cart wishlist item") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), productModel)
-                    view.showToastMessageGreen(successMessage)
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
+                    view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
             }
         }
 
         Scenario("failed add to cart wishlist item") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            lateinit var addToCartDataModel: AddToCartDataModel
             val errorMessage = "Add to cart error"
-
-            Given("add to cart data") {
-                addToCartDataModel = AddToCartDataModel().apply {
-                    this.status = AddToCartDataModel.STATUS_ERROR
-                    this.data = DataModel()
-                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
-                        errorMessages.add(errorMessage)
-                        errorMessages
-                    }
+            val addToCartDataModel = AddToCartDataModel().apply {
+                this.status = AddToCartDataModel.STATUS_ERROR
+                this.data = DataModel()
+                this.errorMessage = arrayListOf<String>().apply {
+                    add(errorMessage)
                 }
-                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("add to cart data") {
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
             When("process to update cart data") {
@@ -134,7 +132,7 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(errorMessage)
                 }
@@ -143,15 +141,10 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart wishlist item with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Add to cart error with exception"
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process to update cart data") {
@@ -159,7 +152,7 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(errorMessage)
                 }
@@ -168,32 +161,30 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("success add to cart recent view item") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val addToCartDataModel = AddToCartDataModel()
-
-            Given("add to cart data") {
-                val dataModel = DataModel()
-                val messages = arrayListOf<String>()
-                messages.add("Success message")
-                dataModel.message = messages
-                dataModel.success = 1
-                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
-                addToCartDataModel.data = dataModel
-                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            val productModel = CartRecentViewItemHolderData(id = "0", shopId = "0")
+            val addToCartDataModel = AddToCartDataModel().apply {
+                status = AddToCartDataModel.STATUS_OK
+                data = DataModel().apply {
+                    success = 1
+                    message = arrayListOf<String>().apply {
+                        add("Success message")
+                    }
+                }
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("add to cart data") {
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
             When("process to update cart data") {
-                cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+                cartListPresenter.processAddToCart(productModel)
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
             }
@@ -201,24 +192,16 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recent view item") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            lateinit var addToCartDataModel: AddToCartDataModel
-            val errorMessage = "Add to cart error"
-
-            Given("add to cart data") {
-                addToCartDataModel = AddToCartDataModel().apply {
-                    this.status = AddToCartDataModel.STATUS_ERROR
-                    this.data = DataModel()
-                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
-                        errorMessages.add(errorMessage)
-                        errorMessages
-                    }
+            val addToCartDataModel = AddToCartDataModel().apply {
+                this.status = AddToCartDataModel.STATUS_ERROR
+                this.data = DataModel()
+                this.errorMessage = arrayListOf<String>().apply {
+                    add("Add to cart error")
                 }
-                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("add to cart data") {
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
             When("process to update cart data") {
@@ -226,23 +209,20 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(addToCartDataModel.data.message[0])
                 }
             }
         }
 
         Scenario("failed add to cart recent view item with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val errorMessage = "Add to cart error with exception"
+            val exception = IllegalStateException(errorMessage)
 
             Given("add to cart data") {
-                every { addToCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+                every { addToCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             When("process to update cart data") {
@@ -250,41 +230,39 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed(errorMessage)
                 }
             }
         }
 
         Scenario("success add to cart recommendation item") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val addToCartDataModel = AddToCartDataModel()
-
-            Given("add to cart data") {
-                val dataModel = DataModel()
-                val messages = arrayListOf<String>()
-                messages.add("Success message")
-                dataModel.message = messages
-                dataModel.success = 1
-                addToCartDataModel.status = AddToCartDataModel.STATUS_OK
-                addToCartDataModel.data = dataModel
-                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            val productModel = CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0))
+            val addToCartDataModel = AddToCartDataModel().apply {
+                status = AddToCartDataModel.STATUS_OK
+                data = DataModel().apply {
+                    success = 1
+                    message = arrayListOf<String>().apply {
+                        add("ATC Success message")
+                    }
+                }
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("add to cart data") {
+                every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
             When("process to update cart data") {
-                cartListPresenter.processAddToCart(CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0)))
+                cartListPresenter.processAddToCart(productModel)
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.triggerSendEnhancedEcommerceAddToCartSuccess(any(), any())
+                    view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
             }
@@ -292,52 +270,39 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recommendation item") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            lateinit var addToCartDataModel: AddToCartDataModel
-            val errorMessage = "Add to cart error"
+            val productModel = CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0))
+            val addToCartDataModel = AddToCartDataModel().apply {
+                status = AddToCartDataModel.STATUS_ERROR
+                data = DataModel().apply {
+                    success = 1
+                }
+                errorMessage = arrayListOf<String>().apply {
+                    add("Add to cart error")
+                }
+            }
 
             Given("add to cart data") {
-                addToCartDataModel = AddToCartDataModel().apply {
-                    this.status = AddToCartDataModel.STATUS_ERROR
-                    this.data = DataModel().let { dataModel ->
-                        dataModel.success = 1
-                        dataModel
-                    }
-                    this.errorMessage = arrayListOf<String>().let { errorMessages ->
-                        errorMessages.add(errorMessage)
-                        errorMessages
-                    }
-                }
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
-                cartListPresenter.processAddToCart(CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0)))
+                cartListPresenter.processAddToCart(productModel)
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(addToCartDataModel.errorMessage[0])
                 }
             }
         }
 
         Scenario("failed add to cart wishlist item with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Add to cart error with exception"
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process to update cart data") {
@@ -345,7 +310,7 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(errorMessage)
                 }
