@@ -177,6 +177,7 @@ android {
 
     buildTypes {
         debug {
+            defaultConfig.minSdkVersion project.property("minSdkVersionDebug")
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
@@ -187,6 +188,12 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
             ext.enableHansel = false
+            FirebasePerformance {
+                // Set this flag to 'false' to disable @AddTrace annotation processing and
+                // automatic HTTP/S network request monitoring
+                // for a specific build variant at compile time.
+                instrumentationEnabled project.property("firebasePerformanceDebug").toBoolean()
+            }
         }
         release {
             if (devMode()) {
@@ -344,7 +351,6 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.digitalBrowse)
-    implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)

@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.deeplink.source;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.tkpd.deeplink.source.api.BranchIOAPI;
 import com.tokopedia.tkpd.deeplink.source.api.BranchIOURL;
 import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;

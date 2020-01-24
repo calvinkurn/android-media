@@ -31,6 +31,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         desktop_link
         info_thumbnail_url
         mobile_link
+        checkout_url
       }
       product_data {
         product_id
@@ -67,6 +68,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
             id
             name
             location
+            free_shipping_icon
             badges {
                 title
                 image_url

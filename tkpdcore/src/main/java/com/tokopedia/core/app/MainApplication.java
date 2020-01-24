@@ -178,11 +178,6 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     @Override
-    public Intent getActivitySellingTransactionNewOrderReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionNewOrder(mContext);
-    }
-
-    @Override
     public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
         return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
     }

@@ -11,8 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core2.R;
+
+import timber.log.Timber;
 
 /**
  * Extends TkpdBaseV4Fragment from tkpd abstraction
@@ -26,7 +27,7 @@ public abstract class TkpdFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		context = activity;
-        CommonUtils.dumper(getClass().toString());
+        Timber.d(getClass().toString());
 	}
 
 	protected abstract String getScreenName();
