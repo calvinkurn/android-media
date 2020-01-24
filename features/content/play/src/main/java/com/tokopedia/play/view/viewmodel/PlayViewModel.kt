@@ -193,13 +193,13 @@ class PlayViewModel @Inject constructor(
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = mapEvent(channel)
 
-            val totalLike = getTotalLikes(channel.contentId, channel.contentType)
-            _observableTotalLikes.value = mapTotalLikes(totalLike)
-
             if (userSession.isLoggedIn) {
                 val isLiked = getIsLike(channel.contentId, channel.contentType)
                 _observableIsLikeContent.value = isLiked
             }
+
+            val totalLike = getTotalLikes(channel.contentId, channel.contentType)
+            _observableTotalLikes.value = mapTotalLikes(totalLike)
 
         }) {
             if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
