@@ -38,6 +38,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
+import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_LOCATION_PLACEHOLDER
@@ -228,9 +229,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         activity?.finish()
     }
 
-    // todo need to change
-    private fun isNewShopPageEnabled() = true
-//            remoteConfig.getBoolean(ENABLE_NEW_SHOP_PAGE, true)
+    private fun isNewShopPageEnabled(): Boolean{
+        val shopPageConfig = ShopPageConfig(context)
+        return shopPageConfig.isNewShopPageEnabled()
+    }
 
     override fun getScreenName(): String {
         return ShopSearchProductFragment::class.java.simpleName

@@ -59,7 +59,7 @@ class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_product_etalase_highlight
+        val LAYOUT = R.layout.item_new_shop_product_etalase_highlight
     }
 
 }

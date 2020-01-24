@@ -66,8 +66,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import kotlinx.android.synthetic.main.fragment_shop_page_new_product_list.*
-import kotlinx.android.synthetic.main.partial_shop_page_header.*
+import kotlinx.android.synthetic.main.fragment_new_shop_page_product_list.*
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -628,7 +627,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_page_new_product_list, container, false)
+        return inflater.inflate(R.layout.fragment_new_shop_page_product_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

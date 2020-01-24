@@ -30,7 +30,7 @@ class ShopProductEtalaseListViewHolder(
     companion object {
         @JvmStatic
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_new_product_etalase_chip_list
+        val LAYOUT = R.layout.item_new_shop_product_etalase_chip_list
     }
 
     private lateinit var recyclerView: RecyclerView

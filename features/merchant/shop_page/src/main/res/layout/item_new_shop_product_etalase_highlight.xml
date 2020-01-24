@@ -7,14 +7,12 @@
     android:clipToPadding="false"
     android:clipChildren="false">
 
-    <include layout="@layout/partial_item_new_shop_carousel_title" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCarousel"
+        android:id="@+id/recyclerViewEtalaseHighLight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:layout_marginBottom="@dimen/dp_8"/>
+        />
 
 </LinearLayout>

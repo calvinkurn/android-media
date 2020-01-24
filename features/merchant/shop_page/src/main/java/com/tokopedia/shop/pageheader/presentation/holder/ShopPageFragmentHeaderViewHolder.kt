@@ -172,14 +172,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             }
         }
         if (isShopFavourited) {
-            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_following)
             view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.GHOST
             view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.ALTERNATE
+            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_following)
 
         } else {
-            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_follow)
             view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.FILLED
             view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.MAIN
+            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_follow)
         }
     }
 

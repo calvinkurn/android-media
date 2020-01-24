@@ -23,6 +23,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.common.config.ShopPageConfig;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
@@ -282,10 +283,9 @@ public class ShopProductListActivity extends BaseSimpleActivity
         this.shopInfo = shopInfo;
     }
 
-    //todo need to  change
     private boolean isNewShopPageEnabled() {
-        return true;
-//                    return remoteConfig.getBoolean(ENABLE_NEW_SHOP_PAGE, true)
+        ShopPageConfig shopPageConfig = new ShopPageConfig(this);
+        return shopPageConfig.isNewShopPageEnabled();
     }
 
     @Override
