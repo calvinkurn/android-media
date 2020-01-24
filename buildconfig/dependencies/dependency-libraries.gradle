@@ -55,6 +55,7 @@ ext {
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
+            shakeDetect             : ":libraries:shake_detect",
             sharedata               : ":libraries:sharedata",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",

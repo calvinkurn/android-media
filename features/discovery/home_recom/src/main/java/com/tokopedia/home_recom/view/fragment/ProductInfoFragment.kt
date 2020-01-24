@@ -220,30 +220,30 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun configureContentView(isShow: Boolean){
         val show = if(isShow) View.VISIBLE else View.GONE
-        product_image.startFade(isShow)
-        fab_detail.startFade(isShow)
-        product_name.startFade(isShow)
-        product_discount.startFade(isShow)
-        product_slashed_price.startFade(isShow)
-        product_price.startFade(isShow)
-        badge.startFade(isShow)
-        location.startFade(isShow)
-        rating.startFade(isShow)
-        review_count.startFade(isShow)
-        buy_now.startFade(isShow)
-        add_to_cart.startFade(isShow)
-//        product_image.visibility = show
-//        fab_detail.visibility = show
-//        product_name.visibility = show
-//        product_discount.visibility = show
-//        product_slashed_price.visibility = show
-//        product_price.visibility = show
-//        badge.visibility = show
-//        location.visibility = show
-//        rating.visibility = show
-//        review_count.visibility = show
-//        buy_now.visibility = show
-//        add_to_cart.visibility = show
+//        product_image.startFade(isShow)
+//        fab_detail.startFade(isShow)
+//        product_name.startFade(isShow)
+//        product_discount.startFade(isShow)
+//        product_slashed_price.startFade(isShow)
+//        product_price.startFade(isShow)
+//        badge.startFade(isShow)
+//        location.startFade(isShow)
+//        rating.startFade(isShow)
+//        review_count.startFade(isShow)
+//        buy_now.startFade(isShow)
+//        add_to_cart.startFade(isShow)
+        product_image.visibility = show
+        fab_detail.visibility = show
+        product_name.visibility = show
+        product_discount.visibility = show
+        product_slashed_price.visibility = show
+        product_price.visibility = show
+        badge.visibility = show
+        location.visibility = show
+        rating.visibility = show
+        review_count.visibility = show
+        buy_now.visibility = show
+        add_to_cart.visibility = show
     }
 
     /**

@@ -19,11 +19,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
-import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
-import com.tokopedia.tkpd.campaign.data.model.CampaignException;
-import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
-import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
 import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
 import com.tokopedia.usecase.RequestParams;
@@ -43,7 +38,6 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_BRANCHIO;
-import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
 
 
 /**
@@ -175,17 +169,17 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                    CampaignTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
+                    QRTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
                 } else {
                     getView().showErrorNetwork(e);
-                    CampaignTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
+                    QRTracking.eventScanQRCode("fail", context.getString(R.string.msg_dialog_wrong_scan), "");
                 }
             }
 
             @Override
             public void onNext(BranchIOAndroidDeepLink branchIOAndroidDeepLink) {
                 openActivity(Constants.Schemes.APPLINKS + "://" + branchIOAndroidDeepLink.getAndroidDeeplinkPath());
-                CampaignTracking.eventScanQRCode("success", "", branchIOAndroidDeepLink.getAndroidDeeplinkPath());
+                QRTracking.eventScanQRCode("success", "", branchIOAndroidDeepLink.getAndroidDeeplinkPath());
             }
         });
     }
@@ -199,18 +193,18 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                 if (!verificationResponse.getData().getUrl().isEmpty()) {
                     openActivity(verificationResponse.getData().getUrl());
-                    CampaignTracking.eventScanQRCode("success", idCampaign, verificationResponse.getData().getUrl());
+                    QRTracking.eventScanQRCode("success", idCampaign, verificationResponse.getData().getUrl());
                     getView().finish();
                     return Unit.INSTANCE;
                 } else {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                    CampaignTracking.eventScanQRCode("fail", idCampaign, "");
+                    QRTracking.eventScanQRCode("fail", idCampaign, "");
                     return Unit.INSTANCE;
                 }
             },
             throwable -> {
                 getView().showErrorNetwork(throwable);
-                CampaignTracking.eventScanQRCode("fail", idCampaign, "");
+                QRTracking.eventScanQRCode("fail", idCampaign, "");
                 getView().hideProgressDialog();
                 return Unit.INSTANCE;
             }

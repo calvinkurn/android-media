@@ -1,6 +1,5 @@
 package com.tokopedia.seller.fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,10 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +23,11 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
@@ -70,6 +70,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
@@ -703,7 +704,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void onResume() {
         super.onResume();
-        CommonUtils.dumper("NISTAG : ONRESUME");
+        Timber.d("NISTAG : ONRESUME");
         getEditShippingForm();
     }
 
