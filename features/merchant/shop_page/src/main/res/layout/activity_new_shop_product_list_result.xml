@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:text="@string/cancel"
+                android:text="@string/button_cancel"
                 android:textColor="@color/clr_ae31353b"
                 app:typographyType="body_2" />
         </LinearLayout>
