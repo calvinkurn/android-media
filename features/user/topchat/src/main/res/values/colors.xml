@@ -21,5 +21,6 @@
     <color name="clicked_green">#8ad4efd5</color>
     <color name="topchat_chat_hour_time">#51000000</color>
     <color name="topchat_grey_68">#ae31353b</color>
+    <color name="bg_topchat_right_message">#EAECEE</color>
 
 </resources>
