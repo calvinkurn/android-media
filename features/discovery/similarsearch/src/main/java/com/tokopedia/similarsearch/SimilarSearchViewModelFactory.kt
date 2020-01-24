@@ -5,13 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.usecase.UseCase as RxUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import rx.Observable
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class SimilarSearchViewModelFactory(
         private val dispatcherProvider: DispatcherProvider,
