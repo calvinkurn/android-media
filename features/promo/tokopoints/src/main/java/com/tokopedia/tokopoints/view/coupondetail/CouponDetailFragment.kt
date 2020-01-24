@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.coupondetail
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 
@@ -276,11 +277,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun openPhoneVerificationBottomSheet() {
-        val view = LayoutInflater.from(context).inflate(com.tokopedia.design.R.layout.promo_phoneverification_bottomsheet, null, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeableBottomSheetDialog.setCustomContentView(view, "", false)
-        val btnVerifikasi = view.findViewById<UnifyButton>(com.tokopedia.design.R.id.btn_verifikasi)
-        val btnCancel = view.findViewById<AppCompatImageView>(com.tokopedia.design.R.id.cancel_verifikasi)
+        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
