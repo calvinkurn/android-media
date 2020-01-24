@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
@@ -31,6 +32,7 @@ import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.CheckoutPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostInitCouponUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.utils.EventsAnalytics;
@@ -43,7 +45,6 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartRespons
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
-import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -216,7 +217,7 @@ public class EventReviewTicketPresenter
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID,
                 checkoutData.getDigitalCategoryID());
         mView.navigateToActivityRequest(loyaltyIntent,
-                IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                ReviewTicketActivity.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     @Override

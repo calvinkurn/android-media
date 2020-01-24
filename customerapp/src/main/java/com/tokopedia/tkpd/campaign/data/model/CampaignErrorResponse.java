@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.campaign.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 
 import java.io.IOException;
