@@ -81,5 +81,10 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
         super.onViewRecycled(holder);
         holder.onViewRecycled();
     }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull AbstractViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+    }
 }
 
