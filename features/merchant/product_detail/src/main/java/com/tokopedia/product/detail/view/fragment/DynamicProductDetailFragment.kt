@@ -766,7 +766,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
         activity?.let {
             //TOGGLE_MVC_OFF
-            productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
+            val shopId = viewModel.getDynamicProductInfoP1?.basic?.getShopId().orZero().toString()
+            val productId = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+            productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, shopId, productId,  position)
             showSnackbarClose(getString(R.string.title_voucher_code_copied))
         }
     }
@@ -774,8 +776,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onItemMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.run {
-                productDetailTracking.eventClickMerchantVoucherSeeDetail(basic.getProductId())
-                val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
+                val voucherId = merchantVoucherViewModel.voucherId
+                productDetailTracking.eventClickMerchantVoucherSeeDetail(voucherId, basic.getProductId().toString())
+                val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         merchantVoucherViewModel, basic.shopID)
                 startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
             }
@@ -785,7 +788,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onSeeAllMerchantVoucherClick() {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.run {
-                productDetailTracking.eventClickMerchantVoucherSeeAll(basic.getProductId())
+                productDetailTracking.eventClickMerchantVoucherSeeAll(basic.getProductId().toString())
                 val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID,
                         viewModel.shopInfo?.shopCore?.name)
                 startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER)
