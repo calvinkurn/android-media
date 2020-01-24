@@ -193,6 +193,7 @@
     <string name="wrong_email_format">Format email salah</string>
     <string name="send_verif_to_email">Kami akan mengirimkan kode aktivasi melalui email</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
+    <string name="error_maximal_name">Nama terlalu panjang</string>
     <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 6 karakter</string>
     <string name="minimal_6_character">Minimum 6 karakter</string>

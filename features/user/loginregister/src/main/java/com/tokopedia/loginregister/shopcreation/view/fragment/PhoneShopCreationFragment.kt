@@ -1,29 +1,29 @@
 package com.tokopedia.loginregister.shopcreation.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_REGISTRATION_SHOP_CREATION
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.shopcreation.view.util.PhoneNumberTextWatcher
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
-import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionUpdate
-import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionValidate
 import com.tokopedia.profilecommon.domain.pojo.UserProfileUpdate
 import com.tokopedia.profilecommon.domain.pojo.UserProfileValidate
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -42,6 +42,7 @@ import javax.inject.Inject
 class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     lateinit var toolbarShopCreation: Toolbar
+    lateinit var container: View
     lateinit var buttonContinue: UnifyButton
     lateinit var textFieldPhone: TextFieldUnify
     lateinit var phone: String
@@ -64,6 +65,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
         buttonContinue = view.findViewById(R.id.btn_continue)
         textFieldPhone = view.findViewById(R.id.text_field_phone)
+        this.container = view.findViewById(R.id.container)
         return view
     }
 
@@ -81,15 +83,26 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initView() {
-        textFieldPhone.textFieldInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        textFieldPhone.textFieldInput.addTextChangedListener(object : PhoneNumberTextWatcher(textFieldPhone.textFieldInput) {
+            override fun onTextChanged(s: CharSequence, cursorPosition: Int, before: Int, count: Int) {
+                super.onTextChanged(s, cursorPosition, before, count)
                 buttonContinue.isEnabled = isValidPhone(s.toString())
             }
         })
+
+        textFieldPhone.textFieldInput.setOnClickListener {
+            it.isFocusableInTouchMode = true
+            it.isFocusable = true
+        }
+
+        textFieldPhone.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) {
+                LetUtil.ifLet(context, v) {  (context, view) ->
+                    showKeyboardFrom(context as Context, view as View)
+                }
+            }
+        }
 
         buttonContinue.setOnClickListener {
             shopCreationAnalytics.eventClickContinuePhoneShopCreation()
@@ -104,6 +117,17 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             } else {
                 emptyStatePhoneField()
+            }
+        }
+
+        container.setOnClickListener {
+            textFieldPhone.textFieldInput.let {
+                it.isFocusableInTouchMode = false
+                it.isFocusable = false
+            }
+
+            LetUtil.ifLet(context, view?.parent) {  (context, view) ->
+                hideKeyboardFrom(context as Context, view as View)
             }
         }
     }
@@ -139,6 +163,16 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
+    }
+
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun showKeyboardFrom(context: Context, view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_FORCED)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

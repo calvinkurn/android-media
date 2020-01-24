@@ -238,7 +238,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
-        private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/open_shop_intro/drawable-xxxhdpi//illustration_1.png"
+        private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
 
         fun createInstance(bundle: Bundle): LandingShopCreationFragment {
             val fragment = LandingShopCreationFragment()

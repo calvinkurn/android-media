@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -48,56 +49,51 @@
             android:textAlignment="viewStart"
             android:textColor="#ae31353b"
             android:lineSpacingExtra="@dimen/sp_6"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             app:typographyWeight="reguler"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_welcome" />
 
-        <LinearLayout
-            android:id="@+id/linear_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/image_view_flag"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_15"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            app:srcCompat="@drawable/ic_indo_flag"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_desc"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_view_country_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:lineSpacingExtra="4sp"
+            android:text="@string/phone_id_idn"
+            android:textColor="#ae31353b"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toEndOf="@id/image_view_flag"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_desc" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/text_field_phone"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:weightSum="1"
-            android:orientation="horizontal"
+            app:text_field_input_type="phone"
+            app:layout_constraintStart_toEndOf="@id/text_view_country_number"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_desc">
-
-            <ImageView
-                android:id="@+id/image_view_flag"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_15"
-                app:srcCompat="@drawable/ic_indo_flag"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_view_country_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/phone_id_idn"
-                android:textColor="#ae31353b"
-                app:typographyType="body_1"
-                app:typographyWeight="bold"/>
-
-            <com.tokopedia.unifycomponents.TextFieldUnify
-                android:id="@+id/text_field_phone"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_weight="1"
-                app:text_field_input_type="phone" />
-
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/text_view_desc" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
@@ -106,17 +102,17 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="-30dp"
+            android:layout_marginTop="@dimen/dp_8"
             android:gravity="start"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/desc_phone_shop_creation"
             android:textAlignment="viewStart"
             android:textColor="#ae31353b"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             app:typographyWeight="reguler"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linear_phone"
+            app:layout_constraintTop_toBottomOf="@id/image_view_flag"
              />
 
         <com.tokopedia.unifycomponents.UnifyButton

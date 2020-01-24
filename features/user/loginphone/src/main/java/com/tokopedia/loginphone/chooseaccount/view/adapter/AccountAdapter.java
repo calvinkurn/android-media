@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.tokopedia.loginphone.R;
 import com.tokopedia.loginphone.chooseaccount.data.ShopDetail;
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail;
 import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.List;
 
@@ -33,9 +35,9 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView avatar;
-        TextView name;
-        TextView email;
-        TextView shopName;
+        Typography name;
+        Typography email;
+        Typography shopName;
         View shopView;
         View mainView;
 
@@ -78,7 +80,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
         UserDetail userDetail = list.get(position);
         ImageHandler.loadImageCircle2(context, holder.avatar, userDetail.getImage());
         holder.name.setText(MethodChecker.fromHtml(userDetail.getFullname()));
-        holder.email.setText(userDetail.getEmail());
+        String email = userDetail.getEmail();
+        if(Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            email = hideEmail(email);
+        }
+        holder.email.setText(email);
         ShopDetail shopDetail = userDetail.getShopDetail();
         if(shopDetail != null) {
             if(!shopDetail.getName().isEmpty()){
@@ -98,5 +104,9 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
         this.list.clear();
         this.list.addAll(list);
         this.notifyDataSetChanged();
+    }
+
+    private String hideEmail(String email) {
+        return email.replaceAll("(?<=.{3}).(?=[^@]*?.@)", "*");
     }
 }

@@ -1,18 +1,22 @@
 package com.tokopedia.loginregister.shopcreation.view.fragment
 
 import android.app.Activity
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_OPEN_SHOP_CREATION
@@ -37,6 +41,7 @@ import javax.inject.Inject
 class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     lateinit var toolbarShopCreation: Toolbar
+    lateinit var container: View
     lateinit var phone: String
     lateinit var buttonContinue: UnifyButton
     lateinit var textFieldName: TextFieldUnify
@@ -57,6 +62,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_name_shop_creation, container, false)
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
+        this.container = view.findViewById(R.id.container)
         buttonContinue = view.findViewById(R.id.btn_continue)
         textFieldName = view.findViewById(R.id.text_field_name)
         return view
@@ -89,11 +95,54 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                s?.let {
-                    buttonContinue.isEnabled = it.length in MINIMUM_LENGTH..MAXIMUM_LENGTH
+                context?.let { context ->
+                    s?.let {
+                        when {
+                            it.length < MINIMUM_LENGTH -> {
+                                textFieldName.setMessage(getString(R.string.error_minimal_name))
+                                textFieldName.setError(true)
+                                buttonContinue.isEnabled = false
+                            }
+                            it.length > MAXIMUM_LENGTH -> {
+                                textFieldName.setMessage(getString(R.string.error_maximal_name))
+                                textFieldName.setError(true)
+                                buttonContinue.isEnabled = false
+                            }
+                            else -> {
+                                textFieldName.setMessage(getString(R.string.desc_name_shop_creation))
+                                textFieldName.setError(false)
+                                textFieldName.textFieldInput.requestFocus()
+                                buttonContinue.isEnabled = true
+                            }
+                        }
+                    }
                 }
             }
         })
+
+        textFieldName.textFieldInput.setOnClickListener {
+            it.isFocusableInTouchMode = true
+            it.isFocusable = true
+        }
+
+        textFieldName.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) {
+                LetUtil.ifLet(context, v) { (context, view) ->
+                    showKeyboardFrom(context as Context, view as View)
+                }
+            }
+        }
+
+        container.setOnClickListener {
+            textFieldName.textFieldInput.let {
+                it.isFocusableInTouchMode = false
+                it.isFocusable = false
+            }
+
+            LetUtil.ifLet(context, view?.parent) {  (context, view) ->
+                hideKeyboardFrom(context as Context, view as View)
+            }
+        }
 
         if(phone.isEmpty()) {
             buttonContinue.setOnClickListener {
@@ -139,6 +188,16 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
+    }
+
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun showKeyboardFrom(context: Context, view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_FORCED)
     }
 
     private fun onSuccessAddName(userProfileUpdate: UserProfileUpdate) {
