@@ -280,11 +280,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                     override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
+                        analytics.eventClickCloseTicker()
                     }
                 })
                 tickerAnnouncement.setOnClickListener {
-                    registerAnalytics.trackClickTicker()
+                    analytics.eventClickTicker()
                 }
             } else {
                 presenter.getTickerInfo()
