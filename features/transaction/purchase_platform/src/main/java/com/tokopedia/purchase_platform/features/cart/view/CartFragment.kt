@@ -37,8 +37,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -72,6 +70,8 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
@@ -1203,11 +1203,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 llCartContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
             }
 
-            if (FLAG_IS_CART_EMPTY) {
-                it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
-            } else {
-                it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
-            }
+            it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
         }
     }
 
@@ -1263,9 +1259,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cbSelectAll.isChecked = cartListData.isAllSelected
 
         cartAdapter.checkForShipmentForm()
-        if (cartRecyclerView.itemDecorationCount == 1) {
-            cartRecyclerView.addItemDecoration(cartItemDecoration)
-        }
 
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
@@ -1275,6 +1268,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         setToolbarShadowVisibility(cartListData.shopGroupAvailableDataList.isEmpty())
         cartAdapter.notifyDataSetChanged()
+
+        setActivityBackgroundColor()
     }
 
     private fun renderCartEmpty(cartListData: CartListData) {
@@ -1291,12 +1286,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showEmptyCartContainer()
         notifyBottomCartParent()
 
-        if (cartRecyclerView.itemDecorationCount > 0) {
-            cartRecyclerView.removeItemDecoration(cartItemDecoration)
-        }
-
         setToolbarShadowVisibility(true)
         cartAdapter.notifyDataSetChanged()
+
+        setActivityBackgroundColor()
     }
 
     private fun renderTickerAnnouncement(cartListData: CartListData) {
