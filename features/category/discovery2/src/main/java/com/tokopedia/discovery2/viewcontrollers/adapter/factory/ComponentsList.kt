@@ -11,5 +11,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     QuadrupleBanner(R.layout.multi_banner_layout, "banner_image_quadruple"),
     Share(R.layout.multi_banner_layout, "share"),
     BrandRecommendation(R.layout.brand_recommendation_layout, "brand_recommendation"),
-    BrandRecommendationItem(R.layout.brand_recommendation_layout_item, "brand_recommendation_item")
+    BrandRecommendationItem(R.layout.brand_recommendation_layout_item, "brand_recommendation_item"),
+    CarouselBanner(R.layout.carousel_banner_layout, "carousel_banner"),
+    CarouselBannerItemView(R.layout.carousel_banner_item_layout, "carousel_banner_item")
 }

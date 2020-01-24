@@ -202,6 +202,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cpm)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation (project(rootProject.ext.features.discovery2))
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icon
