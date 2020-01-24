@@ -33,5 +33,6 @@
 
     <dimen name="dp_topchat_270">270dp</dimen>
     <dimen name="dimen_topchat_1dp">1dp</dimen>
+    <dimen name="dimen_topchat_2dp">2dp</dimen>
     <dimen name="dimen_topchat_20dp">20dp</dimen>
 </resources>
