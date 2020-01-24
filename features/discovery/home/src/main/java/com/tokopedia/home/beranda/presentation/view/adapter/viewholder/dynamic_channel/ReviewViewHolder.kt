@@ -9,7 +9,6 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -20,7 +19,7 @@ class ReviewViewHolder(
         itemView: View,
         private val reviewListener: HomeReviewListener,
         private val categoryListener: HomeCategoryListener
-) : HomeAbstractViewHolder<ReviewViewModel>(itemView) {
+) : AbstractViewHolder<ReviewViewModel>(itemView) {
 
     var isPressed = false
 

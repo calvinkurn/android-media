@@ -9,9 +9,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeLoadingMoreModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 
-class HomeLoadingMoreViewHolder(itemView: View) : HomeAbstractViewHolder<HomeLoadingMoreModel>(itemView) {
+class HomeLoadingMoreViewHolder(itemView: View) : AbstractViewHolder<HomeLoadingMoreModel>(itemView) {
 
     override fun bind(element: HomeLoadingMoreModel) {
         itemView.layoutParams = AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)

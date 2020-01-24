@@ -9,7 +9,6 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home_page_banner.presenter.handler.HomePageBannerListener
 import com.tokopedia.home_page_banner.presenter.model.BannerModel
@@ -21,7 +20,7 @@ import java.util.*
  */
 
 class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener)
-    : HomeAbstractViewHolder<BannerViewModel>(itemView),
+    : AbstractViewHolder<BannerViewModel>(itemView),
         HomePageBannerListener{
     private val context: Context = itemView.context
     private var slidesList: List<BannerSlidesModel>? = null

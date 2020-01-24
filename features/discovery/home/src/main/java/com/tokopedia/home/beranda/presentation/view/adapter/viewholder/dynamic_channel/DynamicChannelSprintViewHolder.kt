@@ -25,7 +25,6 @@ import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -42,7 +41,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                                      private val homeCategoryListener: HomeCategoryListener,
                                      countDownListener: CountDownView.CountDownListener,
                                      private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
-        HomeAbstractViewHolder(
+        DynamicChannelViewHolder(
                 sprintView, homeCategoryListener, countDownListener
         ) {
 

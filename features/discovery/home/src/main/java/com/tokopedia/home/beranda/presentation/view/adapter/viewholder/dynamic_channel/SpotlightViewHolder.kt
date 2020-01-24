@@ -28,14 +28,13 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
 import java.util.ArrayList
 
-class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : HomeAbstractViewHolder<SpotlightViewModel>(itemView) {
+class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<SpotlightViewModel>(itemView) {
     private val recyclerView: RecyclerView
     private val adapter: SpotlightAdapter
 

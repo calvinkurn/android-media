@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
  * Created by henrypriyono on 1/12/18.
  */
 
-public class RetryViewHolder extends HomeAbstractViewHolder<HomeRetryModel> {
+public class RetryViewHolder extends AbstractViewHolder<HomeRetryModel> {
     @LayoutRes
     public final static int LAYOUT = R.layout.home_feeds_retry_layout;
     private final View button;

@@ -19,7 +19,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -29,7 +28,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
  */
 
 class DynamicIconSectionViewHolder(val view: View,
-                                   val listener: HomeCategoryListener) : HomeAbstractViewHolder<DynamicIconSectionViewModel>(view) {
+                                   val listener: HomeCategoryListener) : AbstractViewHolder<DynamicIconSectionViewModel>(view) {
 
     private var adapter: DynamicIconAdapter? = null
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START, true) }

@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,12 +80,6 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     public void onViewRecycled(@NonNull AbstractViewHolder holder) {
         super.onViewRecycled(holder);
         holder.onViewRecycled();
-    }
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull AbstractViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        Log.d("DevaraFikry", "view attached: "+holder.getAdapterPosition());
     }
 }
 

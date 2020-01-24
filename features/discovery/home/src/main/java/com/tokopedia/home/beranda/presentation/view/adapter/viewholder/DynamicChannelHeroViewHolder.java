@@ -28,7 +28,7 @@ import com.tokopedia.unifyprinciples.Typography;
  * Created by henrypriyono on 31/01/18.
  */
 
-public class DynamicChannelHeroViewHolder extends HomeAbstractViewHolder<DynamicChannelViewModel> {
+public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChannelViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_hero_4_image;
     private static final String TAG = DynamicChannelHeroViewHolder.class.getSimpleName();

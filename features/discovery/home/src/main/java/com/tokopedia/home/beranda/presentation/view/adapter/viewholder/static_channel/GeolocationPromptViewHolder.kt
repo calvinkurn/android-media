@@ -10,12 +10,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.StripedUnderlineUtil
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: HomeCategoryListener) :
-        HomeAbstractViewHolder<GeolocationPromptViewModel>(itemView) {
+        AbstractViewHolder<GeolocationPromptViewModel>(itemView) {
 
     val remoteConfig = FirebaseRemoteConfigImpl(itemView.context)
 
