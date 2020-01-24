@@ -10,10 +10,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.analytics.SellerAnalyticsEventTrackingHelper
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
-import com.tokopedia.sellerhomedrawer.presentation.listener.DrawerHeaderListener
-import com.tokopedia.sellerhomedrawer.presentation.listener.RetryTokoCashListener
 import com.tokopedia.sellerhomedrawer.data.header.DrawerHeader
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerWalletAction
+import com.tokopedia.sellerhomedrawer.presentation.listener.DrawerHeaderListener
+import com.tokopedia.sellerhomedrawer.presentation.listener.RetryTokoCashListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,7 +64,7 @@ class DrawerHeaderViewHolder(itemView: View,
         }
     }
 
-    protected fun bindDrawerHeader(drawerHeader: com.tokopedia.sellerhomedrawer.data.header.DrawerHeader) {
+    protected fun bindDrawerHeader(drawerHeader: DrawerHeader) {
         with(itemView) {
 
             drawer_header.visibility = View.VISIBLE
@@ -76,9 +76,7 @@ class DrawerHeaderViewHolder(itemView: View,
 
             val sellerUserAvatar = drawerHeader.sellerDrawerProfile.userAvatar
 
-            val isAvatarExistAndNotOld = oldUserAvatar != sellerUserAvatar
-
-            if (isAvatarExistAndNotOld) {
+            if (sellerUserAvatar != null && oldUserAvatar != sellerUserAvatar) {
                 loadAvatarImage(sellerUserAvatar)
             }
 

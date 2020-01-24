@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomedrawer.domain.datamanager
 
+import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -13,7 +14,6 @@ import com.tokopedia.sellerhomedrawer.data.userdata.notifications.Inbox
 import com.tokopedia.sellerhomedrawer.data.userdata.notifications.Purchase
 import com.tokopedia.sellerhomedrawer.data.userdata.notifications.Sales
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase
-import com.tokopedia.sellerhomedrawer.domain.usecase.SellerGetUserAttributesUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
 import com.tokopedia.sellerhomedrawer.presentation.view.subscriber.SellerTokoCashSubscriber
@@ -21,10 +21,10 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 
-class SellerDrawerDataManagerImpl(val viewListener: SellerDrawerDataListener,
-                                  val sellerTokoCashUseCase: SellerTokoCashUseCase,
-                                  val uaUseCase: SellerGetUserAttributesUseCase,
-                                  val getSellerHomeUserAttrUseCase: GetSellerHomeUserAttributesUseCase): SellerDrawerDataManager {
+class SellerDrawerDataManagerImpl(private val context: Context,
+                                  private val viewListener: SellerDrawerDataListener,
+                                  private val sellerTokoCashUseCase: SellerTokoCashUseCase,
+                                  private val getSellerHomeUserAttrUseCase: GetSellerHomeUserAttributesUseCase): SellerDrawerDataManager {
 
     companion object {
         @JvmStatic
@@ -32,7 +32,7 @@ class SellerDrawerDataManagerImpl(val viewListener: SellerDrawerDataListener,
     }
 
     override fun getTokoCash() {
-        sellerTokoCashUseCase.execute(RequestParams.EMPTY, SellerTokoCashSubscriber(viewListener))
+        sellerTokoCashUseCase.execute(RequestParams.EMPTY, SellerTokoCashSubscriber(context, viewListener))
     }
 
     override fun unsubscribe() {

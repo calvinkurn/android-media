@@ -11,21 +11,25 @@ import androidx.appcompat.widget.Toolbar
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.app.BasePresenterActivity
-import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.constant.SellerDrawerActivityBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.constant.SellerHomeFragmentBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
 import com.tokopedia.sellerhomedrawer.data.SellerTokoCashData
-import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
-import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
-import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
-import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerTopPoints
+import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManager
+import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManagerImpl
+import com.tokopedia.sellerhomedrawer.domain.repository.SellerUserAttributesRepository
+import com.tokopedia.sellerhomedrawer.domain.repository.SellerUserAttributesRepositoryImpl
+import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase
+import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
+import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
+import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
+import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
@@ -43,7 +47,7 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
     lateinit var drawerCache: LocalCacheHandler
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
-    protected var drawerDataManager: DrawerDataManager? = null
+    protected var drawerDataManager: SellerDrawerDataManager? = null
     private var isLogin: Boolean? = null
     private var drawerActivityBroadcastReceiver: BroadcastReceiver? = null
     private var broadcastReceiverTokoPoint: BroadcastReceiver? = null
@@ -67,13 +71,16 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
         val sellerTokoCashObservable = Observable.just(SellerTokoCashData())
         val sellerTokoCashUseCase = SellerTokoCashUseCase(sellerTokoCashObservable)
 
+        val sellerUserAttributesRepository: SellerUserAttributesRepository = SellerUserAttributesRepositoryImpl()
+        val getSellerHomeUserAttributesUseCase = GetSellerHomeUserAttributesUseCase(sellerUserAttributesRepository)
+
 //        val userAttributesRepository = SellerGetUser
 //        val sellerGetUserAttributesUseCase = SellerGetUserAttributesUseCase()
 
         sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache, remoteConfig)
         sellerDrawerHelper.initDrawer(this)
         sellerDrawerHelper.selectedPosition = setDrawerPosition()
-//        drawerDataManager = SellerDrawerDataManagerImpl(this)
+        drawerDataManager = SellerDrawerDataManagerImpl(this, this, sellerTokoCashUseCase, getSellerHomeUserAttributesUseCase)
     }
 
     protected abstract fun setDrawerPosition(): Int
@@ -83,7 +90,7 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
     protected open fun updateDrawerData() {
         if (userSession.isLoggedIn) {
             setDataDrawer()
-//            getDrawerSellerAttrUseCase(userSession)
+            drawerDataManager?.getSellerUserAttributes(userSession)
         }
     }
 
@@ -264,6 +271,17 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SellerDrawerHelper.REQUEST_LOGIN && requestCode == Activity.RESULT_OK)
             setDataDrawer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateDrawerData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (drawerDataManager != null)
+            drawerDataManager?.unsubscribe()
     }
 
     private fun Toolbar.initNotificationMenu() {

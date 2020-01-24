@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
 import com.tokopedia.core.ManageGeneral
 import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
-import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
@@ -19,6 +18,7 @@ import com.tokopedia.sellerhomedrawer.drawer.BaseSellerReceiverDrawerActivity
 import com.tokopedia.sellerhomedrawer.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
 import javax.inject.Inject
 
@@ -117,15 +117,15 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity<SellerHomeDashbo
     override fun updateDrawerData() {
         if (userSession.isLoggedIn) {
             setDataDrawer()
-            getDrawerSellerAttrUseCase(sessionHandler)
+            getDrawerSellerAttrUseCase(userSession)
             sellerHomeDashboardDrawerPresenter.getFlashSaleSellerStatus()
             sellerHomeDashboardDrawerPresenter.isGoldMerchantAsync()
         }
 
     }
 
-    private fun getDrawerSellerAttrUseCase(sessionHandler: SessionHandler?) {
-        drawerDataManager?.getSellerUserAttributes(sessionHandler)
+    private fun getDrawerSellerAttrUseCase(userSession: UserSession) {
+        drawerDataManager?.getSellerUserAttributes(userSession)
     }
 
     private fun initInjector() {

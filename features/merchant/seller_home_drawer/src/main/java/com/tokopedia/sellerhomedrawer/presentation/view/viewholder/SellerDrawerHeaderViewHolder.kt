@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerHeaderListener
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
-import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.*
 import kotlinx.android.synthetic.main.sh_drawer_saldo.view.*
+import kotlinx.android.synthetic.main.sh_seller_drawer_header.view.*
 
 class SellerDrawerHeaderViewHolder(itemView: View,
                                    private val sellerDrawerHeaderListener: SellerDrawerHeaderListener,
@@ -29,10 +29,9 @@ class SellerDrawerHeaderViewHolder(itemView: View,
                 user_avatar.visibility = View.VISIBLE
 
                 val sellerUserAvatar = sellerDrawerHeader.sellerDrawerProfile.userAvatar
-                val isAvatarExistAndNotOld = oldUserAvatar != sellerUserAvatar
-                if (isAvatarExistAndNotOld) {
+                if (sellerUserAvatar != null && oldUserAvatar != sellerUserAvatar) {
                     loadAvatarImage(sellerUserAvatar)
-                    oldUserAvatar = sellerDrawerHeader.sellerDrawerProfile.userAvatar
+                    oldUserAvatar = sellerUserAvatar
                 }
                 name_text.text = sellerDrawerHeader.sellerDrawerProfile.userName
                 setDeposit(sellerDrawerHeader)
