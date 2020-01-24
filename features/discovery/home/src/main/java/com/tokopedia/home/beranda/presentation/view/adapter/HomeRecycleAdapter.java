@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
     }
 
     @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HomeAbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         return typeFactory.createViewHolder(view, viewType);
     }

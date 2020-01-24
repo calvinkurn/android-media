@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
 import com.tokopedia.home.beranda.domain.model.HomeData;
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,8 @@ import java.util.List;
  * @author by erry on 02/02/17.
  */
 
-public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
-        ListAdapter<HomeVisitable, AbstractViewHolder> {
+public class HomeBaseAdapter<F extends HomeTypeFactory> extends
+        ListAdapter<HomeVisitable, HomeAbstractViewHolder> {
 
     protected List<Visitable> visitables;
     private F adapterTypeFactory;
@@ -42,7 +44,7 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     }
 
     @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HomeAbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = onCreateViewItem(parent, viewType);
         return adapterTypeFactory.createViewHolder(view, viewType);
     }
@@ -53,13 +55,13 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+    public void onBindViewHolder(HomeAbstractViewHolder holder, int position) {
         holder.bind(getItem(position));
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
+    public void onBindViewHolder(@NonNull HomeAbstractViewHolder holder, int position,
                                  @NonNull List<Object> payloads) {
         if (!payloads.isEmpty()) {
             holder.bind(getItem(position), payloads);
@@ -78,15 +80,15 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
     }
 
     @Override
-    public void onViewRecycled(@NonNull AbstractViewHolder holder) {
+    public void onViewRecycled(@NonNull HomeAbstractViewHolder holder) {
         super.onViewRecycled(holder);
         holder.onViewRecycled();
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull AbstractViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull HomeAbstractViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        Log.d("DevaraFikry", "view attached: "+holder.getAdapterPosition());
+        holder.onViewAttachedToWindow();
     }
 }
 

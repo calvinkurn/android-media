@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 
 /**
@@ -34,7 +35,7 @@ interface HomeTypeFactory {
 
     fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int
 
-    fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
+    fun createViewHolder(view: View, viewType: Int): HomeAbstractViewHolder<*>
 
     fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int
 

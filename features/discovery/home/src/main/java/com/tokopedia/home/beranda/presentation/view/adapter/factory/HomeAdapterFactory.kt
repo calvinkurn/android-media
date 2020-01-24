@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
@@ -37,7 +38,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
-                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool) : HomeTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -184,8 +185,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         }
     }
 
-    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        val viewHolder: AbstractViewHolder<*>
+    override fun createViewHolder(view: View, type: Int): HomeAbstractViewHolder<*> {
+        val viewHolder: HomeAbstractViewHolder<*>
         when (type) {
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, countDownListener, parentRecycledViewPool)
@@ -213,7 +214,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
-            else -> viewHolder = super.createViewHolder(view, type)
+            else -> throw TypeNotSupportedException.create("Layout not supported")
         }
 
         return viewHolder
