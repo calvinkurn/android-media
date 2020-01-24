@@ -142,8 +142,9 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true);
             startActivityForResult(intent, REQUEST_CODE_PIN);
         } else {
-            if(getActivity() != null)
+            if(getActivity() != null){
                 getActivity().finish();
+            }
         }
     }
 
