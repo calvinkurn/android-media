@@ -164,12 +164,12 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         if (element.isShowTime() || alwaysShowTime()) {
             chatReadStatus.setVisibility(View.VISIBLE);
             if (element.isRead()) {
-                imageResource = R.drawable.ic_chat_read;
+                imageResource = R.drawable.ic_chatcommon_check_read_rounded_green;
             } else {
-                imageResource = R.drawable.ic_chat_unread;
+                imageResource = R.drawable.ic_chatcommon_check_sent_rounded_grey;
             }
             if (element.isDummy()) {
-                imageResource = R.drawable.ic_chat_pending;
+                imageResource = R.drawable.ic_chatcommon_check_rounded_grey;
             }
             Drawable drawable = MethodChecker.getDrawable(chatReadStatus.getContext(), imageResource);
             if (useWhiteReadStatus()) {
