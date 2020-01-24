@@ -61,6 +61,10 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
 
+            if (key.equalsIgnoreCase(RemoteConfigKey.RC_ENABLE_REVAMP_SOM)) {
+                return true;
+            }
+
             if (isCacheValueValid(cacheValue, String.valueOf(defaultValue))) {
                 return cacheValue.equalsIgnoreCase("true");
             }
