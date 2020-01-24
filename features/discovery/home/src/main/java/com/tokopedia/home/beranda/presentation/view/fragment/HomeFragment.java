@@ -367,7 +367,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void evaluateFloatingTextButtonOnStateChanged() {
-        int position = layoutManager.findLastVisibleItemPosition();
+        int position = layoutManager.findMaxVisibleItemPosition();
         if (position == presenter.getRecommendationFeedSectionPosition()) {
             floatingTextButton.hide();
         } else {
