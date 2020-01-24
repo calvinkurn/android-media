@@ -42,7 +42,7 @@ class PlayCardViewHolder(
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
-        private const val DELAY_CLICKABLE = 1000
+        private const val DELAY_CLICKABLE = 1000L
     }
 
     private var helper: HomePlayWidgetHelper? = null
@@ -61,14 +61,14 @@ class PlayCardViewHolder(
     override fun bind(element: PlayCardViewModel) {
         element.let { element ->
             initView(element)
-            playChannel(element.playCardHome?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
+            playChannel(element.playCardHome?.videoStream?.config?.streamUrl ?: "")
         }
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
         if(container.visibility == View.GONE) container.show()
         element?.let { initView(it) }
-        playChannel(element?.playCardHome?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
+        playChannel(element?.playCardHome?.videoStream?.config?.streamUrl ?: "")
     }
 
     private fun initView(model: PlayCardViewModel){
@@ -101,7 +101,7 @@ class PlayCardViewHolder(
     }
 
     private fun handlingTracker(model: PlayCardViewModel){
-        thumbnailView?.addOnImpressionListener(model){
+        itemView.addOnImpressionListener(model){
             HomePageTracking.eventEnhanceImpressionPlayBanner(model)
         }
     }
@@ -125,7 +125,7 @@ class PlayCardViewHolder(
     fun onViewAttach(){
         masterJob.cancelChildren()
         launch{
-            delay(1000)
+            delay(DELAY_CLICKABLE)
             isClickable = true
         }
 

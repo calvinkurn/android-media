@@ -113,10 +113,6 @@ class HomePlayWidgetHelper(
         }
     }
 
-    fun setUrl(url: String){
-        videosUri = Uri.parse(url)
-    }
-
     fun play(url: String){
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             videosUri = Uri.parse(url)
