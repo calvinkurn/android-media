@@ -16,6 +16,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
       title
       short_description
       short_description_html
+      is_longer_content
       button_text
       content
       type_of_user
@@ -76,6 +77,9 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         }
       }
       total_product
+    }
+    options {
+      longer_content
     }
     user_info {
       user_id
