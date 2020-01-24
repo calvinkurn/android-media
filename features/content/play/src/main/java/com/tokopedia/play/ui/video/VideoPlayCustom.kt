@@ -22,7 +22,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         private val playerLayoutId = R.layout.video_play_custom
         const val ANIMATION_TRANSITION_NAME = "play_video"
     }
-    private var componentListener: ComponentListener? = null
+    private val componentListener: ComponentListener
     private var overlayFrameLayout: FrameLayout? = null
     private var bufferingView: View? = null
     private var contentFrame: AspectRatioFrameLayout? = null

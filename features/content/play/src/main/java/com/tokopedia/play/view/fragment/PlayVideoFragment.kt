@@ -121,22 +121,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            if (it.state is TokopediaPlayVideoState.Error)
-                view?.let { fragmentView ->
-                    PlayAnalytics.errorState(channelId, it.state.error.localizedMessage, playViewModel.isLive)
-                    Toaster.make(
-                            fragmentView,
-                            it.state.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
-                            actionText = getString(R.string.play_try_again),
-                            clickListener = View.OnClickListener {
-                                //TODO("Maybe retry video")
-                            }
-                    )
-                }
-            else delegateVideoProperty(it)
-        })
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer(::delegateVideoProperty))
     }
 
     private fun observeOneTapOnboarding() {

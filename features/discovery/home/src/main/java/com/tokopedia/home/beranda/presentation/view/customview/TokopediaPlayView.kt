@@ -23,7 +23,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         const val ANIMATION_TRANSITION_NAME = "play_video"
 
     }
-    private var componentListener: ComponentListener? = null
+    private val componentListener: ComponentListener
     private var contentFrame: FrameLayout? = null
     private var player: Player? = null
     private var surfaceView: TextureView? = null
