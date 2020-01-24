@@ -3,6 +3,8 @@ package com.tokopedia.notifcenter.data.viewbean
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.notifcenter.data.entity.DataNotification
+import com.tokopedia.notifcenter.data.entity.NotificationOptions
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
@@ -23,7 +25,10 @@ open class NotificationItemViewBean(
         var typeLink: Int = 0,
         var totalProduct: Int = 0,
         var btnText: String = "",
-        var products: List<ProductData> = emptyList()
+        var dataNotification: DataNotification = DataNotification(),
+        var products: List<ProductData> = emptyList(),
+        var isLongerContent: Boolean = false,
+        var options: NotificationOptions = NotificationOptions()
 ) : Parcelable, Visitable<BaseNotificationTypeFactory> {
 
     override fun type(typeFactory: BaseNotificationTypeFactory): Int {
@@ -97,14 +102,15 @@ open class NotificationItemViewBean(
 
     companion object {
 
-        var BUYER_TYPE = 1
-        var SELLER_TYPE = 2
+        const val BUYER_TYPE = 1
+        const val SELLER_TYPE = 2
 
-        var TYPE_BANNER_1X1 = 0
-        var TYPE_INTERNAL_LINK = 1
-        var TYPE_RECOMMENDATION = 2
-        var TYPE_WISHLIST = 3
-        var TYPE_BANNER_2X1 = 4
+        const val TYPE_BANNER_1X1 = 0
+        const val TYPE_INTERNAL_LINK = 1
+        const val TYPE_RECOMMENDATION = 2
+        const val TYPE_WISHLIST = 3
+        const val TYPE_BANNER_2X1 = 4
+        const val TYPE_PRODUCT_CHECKOUT = 5
 
         const val SOURCE = "notifcenter"
 

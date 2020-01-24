@@ -31,6 +31,7 @@ include "features:digital:digitalproduct"
 include "features:digital:common_topup_bills"
 include "features:digital:digital_topup_bills"
 include "features:digital:voucher_game"
+include "features:digital:recharge_general"
 include "features:digital:event"
 include "features:digital:flight"
 include "features:digital:flight_orderlist"
@@ -55,6 +56,7 @@ include 'features:discovery:similarsearch'
 include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
+include "features:discovery:home_page_banner"
 //include "features:discovery:home_no_op"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"
@@ -131,6 +133,7 @@ include "features:promo:tokopoints"
 include "features:promo:tokopoints_notification"
 include "features:promo:promo_checkout"
 include "features:promo:promo_checkout_common"
+include "features:promo:promo_gamification_common"
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
 
@@ -189,6 +192,7 @@ include "features:discovery:smart_recycler_diffutil_helper"
 include "features:user:seamless_login"
 
 include 'features:fcm_common'
+include 'features:user:campaign_shake_landing'
 
 include 'tkpdcore'
 include 'tkpdinbox'

@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.core.network.R;
-import com.tokopedia.core.util.GeneralUtils;
 
 import timber.log.Timber;
 
@@ -50,9 +49,9 @@ public class SnackbarManager {
         tv.setMaxLines(5);
 
         if (snack.isShownOrQueued())
-            GeneralUtils.dumper("Shown " + text);
+            Timber.d("Shown " + text);
         else
-            GeneralUtils.dumper("Queue " + text);
+            Timber.d("Queue " + text);
 
         Button snackBarAction = (Button) snack.getView().findViewById(com.google.android.material.R.id.snackbar_action);
         snackBarAction.setTextColor(ContextCompat.getColor(coordinatorLayout.getContext(), actionColorRes));
