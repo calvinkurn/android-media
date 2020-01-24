@@ -37,7 +37,7 @@ import java.lang.IllegalStateException
  * Created by Irfan Khoirul on 2020-01-17.
  */
 
-class CartListPresenterClearPromoTest : Spek({
+object CartListPresenterClearPromoTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()

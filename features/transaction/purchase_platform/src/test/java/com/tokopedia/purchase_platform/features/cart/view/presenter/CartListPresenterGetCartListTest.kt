@@ -36,7 +36,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 2020-01-07.
  */
 
-class CartListPresenterGetCartListTest : Spek({
+object CartListPresenterGetCartListTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()

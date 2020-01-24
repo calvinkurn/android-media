@@ -32,7 +32,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 2020-01-08.
  */
 
-class CartListPresenterUpdateAndReloadCartTest : Spek({
+object CartListPresenterUpdateAndReloadCartTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()

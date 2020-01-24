@@ -16,7 +16,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
 
-class UpdateCartUseCaseTest : Spek({
+object UpdateCartUseCaseTest : Spek({
 
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val useCase by memoized { UpdateCartUseCase(graphqlUseCase, TestSchedulers) }

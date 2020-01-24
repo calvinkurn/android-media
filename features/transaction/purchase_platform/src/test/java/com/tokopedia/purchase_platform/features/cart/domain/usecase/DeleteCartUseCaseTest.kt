@@ -17,7 +17,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
 
-class DeleteCartUseCaseTest : Spek({
+object DeleteCartUseCaseTest : Spek({
 
     val clearCacheAutoApplyStackUseCase = mockk<ClearCacheAutoApplyStackUseCase>()
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
