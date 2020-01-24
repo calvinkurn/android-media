@@ -216,9 +216,10 @@ object CartListPresenterDeleteCartTest : Spek({
         Scenario("fail remove cart data with other exception") {
 
             val view: ICartListView = mockk(relaxed = true)
+            val exception = IllegalStateException()
 
             Given("fail delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             Given("attach view") {
@@ -233,7 +234,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should show error message") {
                 verify {
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed(exception)
                 }
             }
         }

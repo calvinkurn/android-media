@@ -159,9 +159,10 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
         Scenario("failed update and reload cart with other exception") {
 
             val view: ICartListView = mockk(relaxed = true)
+            val exception = IllegalStateException()
 
             Given("cart data") {
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             Given("attach view") {
@@ -182,7 +183,7 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             Then("should render success") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed(exception)
                 }
             }
         }

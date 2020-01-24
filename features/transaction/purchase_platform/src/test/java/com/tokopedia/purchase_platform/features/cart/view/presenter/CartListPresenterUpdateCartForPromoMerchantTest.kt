@@ -114,7 +114,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed("Message")
                 }
             }
         }
@@ -147,9 +147,10 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
         Scenario("failed update cart with other exception") {
 
             val view: ICartListView = mockk(relaxed = true)
+            val exception = RuntimeException()
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(RuntimeException())
+                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             Given("attach view") {
@@ -163,7 +164,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed(exception)
                 }
             }
         }

@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment
 import com.tokopedia.navigation_common.listener.CartNotifyListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.*
@@ -63,6 +64,8 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
+import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
@@ -1623,7 +1626,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun showToastMessageRed(message: String) {
         var tmpMessage = message
         if (TextUtils.isEmpty(tmpMessage)) {
-            tmpMessage = getString(R.string.default_request_error_unknown)
+            tmpMessage = CartApiInterceptor.CART_ERROR_GLOBAL
         }
 
         if (view != null) {
@@ -1631,6 +1634,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else if (activity != null) {
             Toast.makeText(activity, tmpMessage, Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun showToastMessageRed(throwable: Throwable) {
+        var errorMessage = throwable.message ?: ""
+        if (throwable !is CartResponseErrorException) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+        showToastMessageRed(errorMessage)
     }
 
     override fun showToastMessageGreen(message: String) {

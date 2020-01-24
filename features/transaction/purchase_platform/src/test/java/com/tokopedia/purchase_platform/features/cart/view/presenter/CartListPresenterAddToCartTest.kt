@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -28,7 +27,6 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -218,8 +216,7 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recent view item with exception") {
 
-            val errorMessage = "Add to cart error with exception"
-            val exception = IllegalStateException(errorMessage)
+            val exception = IllegalStateException("Add to cart error with exception")
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.error(exception)
@@ -232,7 +229,7 @@ object CartListPresenterAddToCartTest : Spek({
             Then("should show error") {
                 verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(exception)
                 }
             }
         }

@@ -185,10 +185,10 @@ object CartListPresenterPromoTest : Spek({
                 cartListPresenter.processApplyPromoStackAfterClash(PromoStackingData(), promoList, "")
             }
 
-            Then("should render success") {
+            Then("should render error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed("message")
                 }
             }
         }
@@ -329,7 +329,7 @@ object CartListPresenterPromoTest : Spek({
             Then("should render success") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed("message")
                 }
             }
         }
@@ -423,7 +423,7 @@ object CartListPresenterPromoTest : Spek({
             Then("should render error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed("message")
                 }
             }
         }
@@ -431,9 +431,10 @@ object CartListPresenterPromoTest : Spek({
         Scenario("apply promo global after clash error with exception") {
 
             val view: ICartListView = mockk(relaxed = true)
+            val exception = IllegalStateException()
 
             Given("success check first step") {
-                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+                every { checkPromoStackingCodeUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             Given("data promo stack") {
@@ -454,7 +455,7 @@ object CartListPresenterPromoTest : Spek({
             Then("should render error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed(exception)
                 }
             }
         }

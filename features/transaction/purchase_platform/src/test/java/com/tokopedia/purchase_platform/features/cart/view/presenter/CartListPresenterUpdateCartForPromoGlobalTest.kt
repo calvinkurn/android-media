@@ -140,7 +140,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed("message")
                 }
             }
         }
@@ -149,9 +149,10 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
             val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "Error"
+            val exception = IllegalStateException(errorMessage)
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException(errorMessage))
+                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             Given("attach view") {
@@ -165,7 +166,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             Then("should show error") {
                 verify {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(any())
+                    view.showToastMessageRed(exception)
                 }
             }
         }
