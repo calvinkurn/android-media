@@ -252,7 +252,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     protected int getLayoutRes() {
         if (isNewShopPageEnabled())
-            return R.layout.activity_shop_product_list_result;
+            return R.layout.activity_new_shop_product_list_result;
         else
             return R.layout.activity_shop_product_list;
     }

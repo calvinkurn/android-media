@@ -78,10 +78,10 @@
                 android:id="@+id/text_view_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:text="@string/shop_newproduct_result_cancel"
-                android:textColor="@color/clr_f531353b"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:text="@string/cancel"
+                android:textColor="@color/clr_ae31353b"
                 app:typographyType="body_2" />
         </LinearLayout>
 
