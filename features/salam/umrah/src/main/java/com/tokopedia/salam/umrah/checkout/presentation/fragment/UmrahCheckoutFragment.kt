@@ -24,10 +24,13 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.*
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
@@ -72,6 +75,7 @@ import kotlinx.android.synthetic.main.partial_umrah_checkout_content_summary.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_footer.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_header.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_installment_list.*
+import kotlinx.android.synthetic.main.partial_umrah_checkout_promo.*
 import javax.inject.Inject
 
 /**
@@ -91,6 +95,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     var slugName: String = ""
     var variantId: String = ""
     var departDate: String = ""
+    var promoCode : String = ""
 
     private val umrahCheckoutPilgrimsListAdapter by lazy { UmrahCheckoutPilgrimsListAdapter(this, this) }
     private val umrahCheckoutSummaryAdapter by lazy { UmrahCheckoutSummaryListAdapter() }
@@ -234,6 +239,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             renderContentOrder()
             renderFooter(totalPrice)
             renderButtonCheckout()
+            renderPromo()
         }
 
         context?.let {
@@ -327,6 +333,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                 product_id = productModel.id.toInt(),
                 price = totalPrice,
                 product_variant_id = variantId.toInt(),
+                promo_code = promoCode,
                 contact = contact,
                 pilgrims = listPilgrims,
                 payment_terms = listPaymentTerms
@@ -732,6 +739,44 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         return listPaymentOptions.paymentOptions.size > 1
     }
 
+    private fun renderPromo(){
+        ticker_promo_umrah.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
+            override fun onClickDetailPromo() {
+
+            }
+
+            override fun onClickUsePromo() {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_UMROH)
+                intent.putExtra(EXTRA_TOTAL_PRICE,totalPrice)
+                intent.putExtra(EXTRA_PROMO_CODE,promoCode)
+                startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
+            }
+
+            override fun onDisablePromoDiscount() {
+
+            }
+
+            override fun onResetPromoDiscount() {
+                setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                promoCode = ""
+            }
+        }
+        setupPromoTicker(TickerCheckoutView.State.EMPTY,"","")
+    }
+
+    private fun setupPromoTicker(state: TickerCheckoutView.State,
+                                 title: String,
+                                 description: String) {
+        if (state == TickerCheckoutView.State.EMPTY) {
+            ticker_promo_umrah.title = title
+            ticker_promo_umrah.state = TickerPromoStackingCheckoutView.State.EMPTY
+        } else if (state == TickerCheckoutView.State.ACTIVE) {
+            ticker_promo_umrah.title = title
+            ticker_promo_umrah.desc = description
+            ticker_promo_umrah.state = TickerPromoStackingCheckoutView.State.ACTIVE
+        }
+    }
+
     companion object {
 
         private var pilgrimCount = 0
@@ -758,6 +803,12 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         const val CHECKOUT_FULL_PAID = "Bayar Penuh"
         const val CHECKOUT_INSTALLMENT = "Uang Muka"
+
+        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"
+
+
+        const val PROMO_EXTRA_LIST_ACTIVITY_RESULT = 123
 
         const val DEFAULT_OPTION_CHECKOUT_STEP = 1
 

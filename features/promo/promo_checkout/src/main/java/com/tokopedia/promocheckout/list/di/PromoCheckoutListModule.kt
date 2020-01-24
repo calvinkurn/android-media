@@ -13,6 +13,8 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.common.domain.mapper.UmrahCheckPromoMapper
+import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
 import com.tokopedia.promocheckout.list.view.presenter.*
 import dagger.Module
 import dagger.Provides
@@ -52,6 +54,12 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
+    fun provideUmrahCheckPromoUseCase(@ApplicationContext context: Context): UmrahCheckPromoUseCase {
+        return UmrahCheckPromoUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutListScope
+    @Provides
     fun provideMarketplacePresenter(checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper, getCatalogHighlightUseCase: GraphqlUseCase): PromoCheckoutListMarketplacePresenter {
         return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, getCatalogHighlightUseCase)
     }
@@ -74,6 +82,13 @@ class PromoCheckoutListModule {
     fun provideHotelPresenter(hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
                               hotelCheckVoucherMapper: HotelCheckVoucherMapper) : PromoCheckoutListHotelPresenter {
         return PromoCheckoutListHotelPresenter(hotelCheckVoucherUseCase, hotelCheckVoucherMapper)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun provideUmrahPresenter(umrahCheckPromoUseCase: UmrahCheckPromoUseCase,
+                              umrahCheckPromoMapper: UmrahCheckPromoMapper) : PromoCheckoutListUmrahPresenter {
+        return PromoCheckoutListUmrahPresenter(umrahCheckPromoUseCase, umrahCheckPromoMapper)
     }
 
     @PromoCheckoutListScope
