@@ -47,7 +47,7 @@ public class PerformanceMonitoring {
 
     public void putCustomAttribute(String attribute, String value) {
         if (trace != null) {
-            trace.putAttribute(attribute, value);
+            trace.putAttribute("experiment", "A");
         }
     }
 }
