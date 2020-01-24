@@ -3,6 +3,7 @@ package com.tokopedia.digital.newcart.presentation.activity;
 import android.content.Context;
 import android.net.Uri;
 
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;

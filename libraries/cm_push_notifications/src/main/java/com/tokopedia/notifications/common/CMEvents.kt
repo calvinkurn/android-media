@@ -1,12 +1,12 @@
 package com.tokopedia.notifications.common
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import timber.log.Timber
 
 /**
  * @author lalit.singh
@@ -143,7 +143,7 @@ object CMEvents {
 
     @JvmStatic
     fun postGAEvent(event: String, category: String, action: String, label: String) {
-        CommonUtils.dumper("$TAG-$event&$category&$action&$label")
+        Timber.d("$TAG-$event&$category&$action&$label")
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 event, category, action, label))
     }
