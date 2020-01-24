@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -109,6 +111,14 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         prepareView();
         return parentView;
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(getArguments() != null) {
+            reputationTracking.onSeeFilterPageTracker(getArguments().getInt(InboxReputationFragment.PARAM_TAB));
+        }
     }
 
     private void prepareView() {

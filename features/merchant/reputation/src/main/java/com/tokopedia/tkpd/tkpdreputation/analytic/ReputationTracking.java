@@ -322,6 +322,13 @@ public class ReputationTracking {
                 tabSource,
                 ""
         ));
+        String tabSourceView = ((tab+1) == 1) ? ReputationTrackingConstant.VIEW_WAITING_REVIEW_TAB : ReputationTrackingConstant.VIEW_MY_REVIEW_TAB;
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.VIEW_REVIEW,
+                ReputationTrackingConstant.REVIEW_PAGE,
+                tabSourceView,
+                ""
+        ));
     }
 
     public void onClickSearchViewTracker(int tab) {
@@ -424,6 +431,25 @@ public class ReputationTracking {
         ));
     }
 
+    public void onSeeFilterPageTracker(int tab) {
+        String tabSource = (tab == 1) ? "menunggu diulas tab" : "ulasan saya tab";
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.VIEW_REVIEW,
+                ReputationTrackingConstant.FILTER_INVOICE_PAGE,
+                ReputationTrackingConstant.VIEW_FILTER_PAGE+tabSource,
+                ""
+        ));
+    }
+
+    public void onSeeSellerFeedbackPage(String orderId) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReputationTrackingConstant.VIEW_REVIEW,
+                ReputationTrackingConstant.SELLER_FEEDBACK_PAGE,
+                ReputationTrackingConstant.VIEW_SELLER_FEEDBACK,
+                orderId
+        ));
+    }
+
     public void onClickSmileyShopReviewTracker(String smileyName, String orderId) {
         tracker.sendGeneralEvent(createEventMap(
                 ReputationTrackingConstant.CLICK_REVIEW_OLD,
@@ -495,6 +521,8 @@ public class ReputationTracking {
                 orderId+" - "+productId+" - "+adapterPosition
         ));
     }
+
+
 
     private String getEditMarker(boolean isEditReview) {
         return isEditReview ? " - edit" : "";

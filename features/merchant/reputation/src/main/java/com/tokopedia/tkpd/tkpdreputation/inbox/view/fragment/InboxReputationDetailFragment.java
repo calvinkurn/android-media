@@ -255,6 +255,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         adapter.addHeader(createHeaderModel(inboxReputationItemViewModel));
         adapter.addList(list);
         adapter.notifyDataSetChanged();
+
+        reputationTracking.onSeeSellerFeedbackPage(orderId);
     }
 
     @Override
