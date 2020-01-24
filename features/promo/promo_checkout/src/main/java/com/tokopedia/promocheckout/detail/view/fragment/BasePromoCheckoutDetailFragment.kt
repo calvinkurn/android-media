@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -257,11 +256,11 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun openPhoneVerificationBottomSheet() {
-        val view = LayoutInflater.from(context).inflate(com.tokopedia.design.R.layout.promo_phoneverification_bottomsheet, null, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeableBottomSheetDialog.setCustomContentView(view, "", false)
-        val btnVerifikasi = view.findViewById<UnifyButton>(com.tokopedia.design.R.id.btn_verifikasi)
-        val btnCancel = view.findViewById<AppCompatImageView>(com.tokopedia.design.R.id.cancel_verifikasi)
+        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
