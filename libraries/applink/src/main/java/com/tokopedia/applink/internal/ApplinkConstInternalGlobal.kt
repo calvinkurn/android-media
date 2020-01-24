@@ -353,6 +353,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
 
+    // GeneralSettingActivity
+    // tokopedia-android-internal://global/general-setting
+    @JvmField
+    val GENERAL_SETTING = "$INTERNAL_GLOBAL/general-setting"
+
     // PushNotificationCheckerActivity
     // tokopedia-android-internal://global/push-notification-troubleshooter
     @JvmField

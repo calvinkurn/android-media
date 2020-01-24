@@ -338,8 +338,5 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(registerShake)
      * @method(unregisterShake)
      */
-    override fun initShake() {}
-    override fun registerShake() {}
-    override fun unregisterShake() {}
 
 }
