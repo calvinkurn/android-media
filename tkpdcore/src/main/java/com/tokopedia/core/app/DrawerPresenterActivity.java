@@ -210,8 +210,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             if (GlobalConfig.isCustomerApp()) {
                 getTokoPointData();
                 getDrawerUserAttrUseCase(sessionHandler);
-            } else if(GlobalConfig.isPosApp()) {
-                getDrawerUserAttrUseCase(sessionHandler);
             } else {
                 getDrawerSellerAttrUseCase(sessionHandler);
             }

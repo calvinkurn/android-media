@@ -11,6 +11,14 @@ class CacheManager @Inject constructor(val context: Context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
+    private val privatePref: SharedPreferences by lazy {
+        context.getSharedPreferences(NOTIFICATION_PREFERENCE, Context.MODE_PRIVATE)
+    }
+
+    var isDisplayedGimmick: Boolean
+        get() = privatePref.getBoolean(KEY_IS_DISPLAYED_GIMMICK, false)
+        set(value) = privatePref.edit().putBoolean(KEY_IS_DISPLAYED_GIMMICK, value).apply()
+
     fun entry(key: String, value: Int) {
         pref().edit().putInt(key, value).apply()
     }
@@ -21,6 +29,11 @@ class CacheManager @Inject constructor(val context: Context) {
 
     fun isExist(key: String): Boolean {
         return pref().contains(key)
+    }
+
+    companion object {
+        private const val NOTIFICATION_PREFERENCE = "notif_preference"
+        private const val KEY_IS_DISPLAYED_GIMMICK = "key_is_displayed_gimmick_notif"
     }
 
 }

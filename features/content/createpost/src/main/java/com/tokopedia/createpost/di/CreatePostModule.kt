@@ -2,9 +2,7 @@ package com.tokopedia.createpost.di
 
 import android.app.NotificationManager
 import android.content.Context
-
 import com.google.gson.Gson
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
@@ -34,7 +32,6 @@ import com.tokopedia.videouploader.di.VideoUploaderQualifier
 import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
 import com.tokopedia.videouploader.domain.usecase.GenerateVideoTokenUseCase
 import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
-
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -129,5 +126,11 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun provideTwitterManager(userSession: UserSessionInterface): TwitterManager {
         return TwitterManager(userSession)
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 }

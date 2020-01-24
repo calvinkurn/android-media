@@ -20,7 +20,7 @@ class WishListNotificationViewHolder(
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart)
+        val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart)
 
         with(product) {
             btnCart.setImageDrawable(atcDrawable)
@@ -41,7 +41,7 @@ class WishListNotificationViewHolder(
 
     private fun onSuccessAddToCart(): () -> Unit {
         return {
-            val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart_check_grey)
+            val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart_check_grey)
             btnCart.setImageDrawable(checkDrawable)
         }
     }

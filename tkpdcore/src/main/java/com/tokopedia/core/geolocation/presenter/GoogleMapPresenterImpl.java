@@ -25,9 +25,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
@@ -40,6 +38,9 @@ import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewM
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core2.R;
+
+import timber.log.Timber;
 
 
 /**
@@ -185,10 +186,10 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         int resultCode = availability.isGooglePlayServicesAvailable(context);
 
         if (ConnectionResult.SUCCESS == resultCode) {
-            CommonUtils.dumper("Google play services available");
+            Timber.d("Google play services available");
             return true;
         } else {
-            CommonUtils.dumper("Google play services unavailable");
+            Timber.d("Google play services unavailable");
             return false;
         }
     }

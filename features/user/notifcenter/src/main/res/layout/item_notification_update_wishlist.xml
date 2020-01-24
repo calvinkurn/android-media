@@ -146,11 +146,11 @@
                 android:id="@+id/iv_cart"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_32"
-                android:background="@drawable/bg_rounded_stroke_grey"
+                android:background="@drawable/notifcenter_bg_rounded_stroke_grey"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_add_to_cart" />
+                app:srcCompat="@drawable/notifcenter_ic_add_to_cart" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

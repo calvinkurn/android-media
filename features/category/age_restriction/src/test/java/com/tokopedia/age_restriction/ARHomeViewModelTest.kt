@@ -3,7 +3,7 @@ package com.tokopedia.age_restriction
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.common.network.data.model.RequestType

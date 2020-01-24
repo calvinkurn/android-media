@@ -18,7 +18,7 @@ class SmallBannerNotificationViewHolder(
 
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val imageUrl = element.contentUrl
-        ImageHandler.loadImage2(contentImage, imageUrl, R.drawable.ic_loading_toped_new)
+        ImageHandler.loadImage2(contentImage, imageUrl, R.drawable.ic_notifcenter_loading_toped)
     }
 
     companion object {

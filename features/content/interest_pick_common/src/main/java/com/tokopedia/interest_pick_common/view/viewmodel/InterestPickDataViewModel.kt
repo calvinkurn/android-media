@@ -8,7 +8,8 @@ data class InterestPickDataViewModel (
          val name: String = "",
          val image: String = "",
          var isSelected: Boolean = false,
-         val isLihatSemuaItem: Boolean = false
+         val isLihatSemuaItem: Boolean = false,
+         var isClickable: Boolean = true
 ) {
     companion object {
         val defaultLihatSemuaText: String = "Lihat Semua"
