@@ -44,15 +44,14 @@ class SaldoHoldInfoFragment :Fragment() {
         if (sellerAmount == 0.0) {
             if (buyerAmount != null) {
                 resultAmount = buyerAmount
-                title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
+                title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
             }
         } else if (buyerAmount == 0.0) {
             if (sellerAmount != null) {
                 resultAmount = sellerAmount
-                title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
+                title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
             }
         }
-
 
         title_saldo_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(resultAmount, false)
         rv_container.layoutManager = LinearLayoutManager(context)
