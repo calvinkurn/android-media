@@ -40,4 +40,4 @@ project.ext {
     artifactName = "campaign_shake_landing-release"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../../../publish_local.gradle'
