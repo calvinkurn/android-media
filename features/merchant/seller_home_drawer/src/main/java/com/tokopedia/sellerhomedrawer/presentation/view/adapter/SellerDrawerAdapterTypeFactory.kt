@@ -10,7 +10,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.viewholder.*
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerSeparator
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.DrawerHeader
+import com.tokopedia.sellerhomedrawer.data.header.DrawerHeader
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 
 class SellerDrawerAdapterTypeFactory(val sellerDrawerItemListener: SellerDrawerItemListener,

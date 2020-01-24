@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header
+package com.tokopedia.sellerhomedrawer.data.header
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomedrawer.presentation.view.adapter.SellerDrawerAdapterTypeFactory

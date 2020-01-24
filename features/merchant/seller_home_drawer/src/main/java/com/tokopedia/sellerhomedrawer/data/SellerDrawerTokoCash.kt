@@ -5,8 +5,8 @@ import android.os.Parcelable
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerTokoCashAction
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerWalletAction
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerTokoCashAction
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerWalletAction
 
 class SellerDrawerTokoCash(): Parcelable {
     

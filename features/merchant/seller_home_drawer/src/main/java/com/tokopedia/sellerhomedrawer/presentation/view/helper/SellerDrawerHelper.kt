@@ -28,8 +28,8 @@ import com.tokopedia.sellerhomedrawer.presentation.view.adapter.SellerDrawerAdap
 import com.tokopedia.sellerhomedrawer.presentation.view.dashboard.SellerDashboardActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerNotification
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerProfile
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerHomeWebViewActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerSimpleWebViewActivity

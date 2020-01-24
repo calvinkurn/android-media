@@ -12,8 +12,8 @@ import com.tokopedia.sellerhomedrawer.analytics.SellerAnalyticsEventTrackingHelp
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
 import com.tokopedia.sellerhomedrawer.presentation.listener.DrawerHeaderListener
 import com.tokopedia.sellerhomedrawer.presentation.listener.RetryTokoCashListener
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.DrawerHeader
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerWalletAction
+import com.tokopedia.sellerhomedrawer.data.header.DrawerHeader
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerWalletAction
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,7 +64,7 @@ class DrawerHeaderViewHolder(itemView: View,
         }
     }
 
-    protected fun bindDrawerHeader(drawerHeader: com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.DrawerHeader) {
+    protected fun bindDrawerHeader(drawerHeader: com.tokopedia.sellerhomedrawer.data.header.DrawerHeader) {
         with(itemView) {
 
             drawer_header.visibility = View.VISIBLE

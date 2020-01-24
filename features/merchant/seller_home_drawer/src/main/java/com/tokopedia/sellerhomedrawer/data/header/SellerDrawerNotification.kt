@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header
+package com.tokopedia.sellerhomedrawer.data.header
 
 
 import com.tokopedia.core.util.GlobalConfig

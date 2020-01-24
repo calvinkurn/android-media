@@ -2,10 +2,10 @@ package com.tokopedia.sellerhomedrawer.presentation.listener
 
 import android.app.Activity
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerDeposit
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerNotification
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerProfile
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerTopPoints
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerTopPoints
 
 interface SellerDrawerDataListener {
     fun onGetDeposit(drawerDeposit: SellerDrawerDeposit)

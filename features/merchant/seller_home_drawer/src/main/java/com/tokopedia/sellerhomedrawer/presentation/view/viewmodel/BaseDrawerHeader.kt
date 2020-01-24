@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomedrawer.presentation.view.viewmodel
 
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.*
+import com.tokopedia.sellerhomedrawer.data.header.*
 
 open class BaseDrawerHeader {
 

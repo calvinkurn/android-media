@@ -2,7 +2,8 @@ package com.tokopedia.sellerhomedrawer.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.core.drawer2.data.pojo.*
+
+import com.tokopedia.sellerhomedrawer.data.userdata.*
 
 class SellerUserData {
 

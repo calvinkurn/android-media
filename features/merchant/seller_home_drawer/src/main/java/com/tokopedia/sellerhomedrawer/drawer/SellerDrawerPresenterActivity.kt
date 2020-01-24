@@ -22,10 +22,10 @@ import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
 import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerDeposit
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerNotification
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerProfile
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.header.SellerDrawerTopPoints
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerTopPoints
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
