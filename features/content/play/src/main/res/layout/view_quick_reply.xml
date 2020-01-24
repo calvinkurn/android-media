@@ -3,7 +3,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
 </merge>
