@@ -284,7 +284,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
-            startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
+            activity?.startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
                     AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,

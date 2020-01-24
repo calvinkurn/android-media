@@ -77,7 +77,6 @@ class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleC
 
     companion object {
         private val REQUEST_CODE_LOGIN = 1
-        private val REQUEST_CODE_VERIFICATION_PHONE=301
 
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, CouponDetailActivity::class.java)
