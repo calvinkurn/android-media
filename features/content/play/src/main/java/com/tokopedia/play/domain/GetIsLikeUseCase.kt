@@ -26,13 +26,16 @@ class GetIsLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestG
         val gqlResponse = gqlUseCase.executeOnBackground()
         val response = gqlResponse.getData<IsLikedContent.Response>(IsLikedContent.Response::class.java)
 
+        if (response == null)
+            return false
+
         if (response.isLikedContent.error.isEmpty()) {
             response.isLikedContent.data?.let {
                 return it.isLike
             }
             return false
         } else {
-            throw MessageErrorException(response.isLikedContent.error)
+            return false
         }
     }
 
