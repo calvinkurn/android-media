@@ -44,7 +44,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     }
 
     override fun useWhiteReadStatus(): Boolean {
-        return false
+        return true
     }
 
     override fun getDateId(): Int {
