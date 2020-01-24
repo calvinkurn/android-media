@@ -30,13 +30,14 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.util.ViewUtils
 import kotlin.math.roundToInt
 
 /**
  * Created by Lukas on 2019-08-20
  */
-class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<HeaderViewModel>(itemView) {
+class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : HomeAbstractViewHolder<HeaderViewModel>(itemView) {
     private val context = itemView.context
 
     companion object {

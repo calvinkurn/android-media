@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 
 import java.util.ArrayList
 
@@ -24,7 +25,7 @@ import java.util.ArrayList
  */
 
 class HomeRecommendationFeedViewHolder(itemView: View,
-                                       private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedViewModel>(itemView), HomeTabFeedListener {
+                                       private val listener: HomeCategoryListener) : HomeAbstractViewHolder<HomeRecommendationFeedViewModel>(itemView), HomeTabFeedListener {
     private val homeFeedsViewPager: ViewPager = itemView.findViewById(R.id.view_pager_home_feeds)
     private val homeFeedsTabLayout: CollapsingTabLayout = itemView.findViewById(R.id.tab_layout_home_feeds)
     private val homeFeedsTabShadow: View = itemView.findViewById(R.id.view_feed_shadow)

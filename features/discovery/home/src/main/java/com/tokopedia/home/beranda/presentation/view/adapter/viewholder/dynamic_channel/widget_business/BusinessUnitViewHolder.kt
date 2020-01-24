@@ -6,6 +6,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsHomePagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.fragment.TabBusinessFragment
 import kotlinx.android.synthetic.main.layout_bu_widget.view.*
 
@@ -13,7 +14,7 @@ class BusinessUnitViewHolder(
         private val listener: HomeCategoryListener,
         view: View
 ) :
-        AbstractViewHolder<BusinessUnitViewModel>(view)
+        HomeAbstractViewHolder<BusinessUnitViewModel>(view)
 {
 
     private var adapter: DigitalsHomePagerAdapter? = null

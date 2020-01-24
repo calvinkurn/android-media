@@ -15,13 +15,14 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class PlayCardViewHolder(
         val view: View,
         val listener: HomeCategoryListener
-): AbstractViewHolder<PlayCardViewModel>(view) {
+): HomeAbstractViewHolder<PlayCardViewModel>(view) {
 
     private val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val imgBanner = view.findViewById<ImageView>(R.id.imgBanner)

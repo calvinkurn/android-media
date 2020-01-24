@@ -57,7 +57,7 @@ import java.util.Map;
  */
 
 @Deprecated
-public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChannelViewModel>
+public class SprintSaleCarouselViewHolder extends HomeAbstractViewHolder<DynamicChannelViewModel>
         implements GridItemClickListener {
 
     @LayoutRes

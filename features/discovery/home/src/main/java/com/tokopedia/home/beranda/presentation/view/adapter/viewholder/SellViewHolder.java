@@ -14,7 +14,7 @@ import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
  * Created by errysuprayogi on 12/5/17.
  */
 
-public class SellViewHolder extends AbstractViewHolder<SellViewModel> {
+public class SellViewHolder extends HomeAbstractViewHolder<SellViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_sell;

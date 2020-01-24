@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.InspirationHeaderViewModel;
 
-public class InspirationHeaderViewHolder extends AbstractViewHolder<InspirationHeaderViewModel> {
+public class InspirationHeaderViewHolder extends HomeAbstractViewHolder<InspirationHeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inspiration_header;

@@ -29,7 +29,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
  */
 
 @Deprecated
-public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIconSectionViewModel> {
+public class UseCaseIconSectionViewHolder extends HomeAbstractViewHolder<UseCaseIconSectionViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_use_case_icon_section;

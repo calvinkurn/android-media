@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeAbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -27,7 +28,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
  */
 
 class DynamicIconTwoRowsSectionViewHolder(val view: View,
-                                          val listener: HomeCategoryListener) : AbstractViewHolder<DynamicIconSectionViewModel>(view) {
+                                          val listener: HomeCategoryListener) : HomeAbstractViewHolder<DynamicIconSectionViewModel>(view) {
 
     private var adapter: DynamicIconAdapter? = null
 

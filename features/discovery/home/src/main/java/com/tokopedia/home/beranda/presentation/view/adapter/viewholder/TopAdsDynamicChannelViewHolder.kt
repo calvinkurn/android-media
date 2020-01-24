@@ -15,7 +15,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsDynamicChannelView
 
-class TopAdsDynamicChannelViewHolder(itemView: View, private val listener: HomeInspirationListener) : AbstractViewHolder<TopAdsDynamicChannelModel>(itemView), TopAdsItemClickListener {
+class TopAdsDynamicChannelViewHolder(itemView: View, private val listener: HomeInspirationListener) : HomeAbstractViewHolder<TopAdsDynamicChannelModel>(itemView), TopAdsItemClickListener {
     private val topAdsDynamicChannelView: TopAdsDynamicChannelView
     private val context: Context
 
