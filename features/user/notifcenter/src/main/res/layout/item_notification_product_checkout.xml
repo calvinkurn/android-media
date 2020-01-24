@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -73,7 +74,6 @@
                 android:layout_height="@dimen/dp_72"
                 android:scaleType="fitCenter"
                 app:borderRadius="@dimen/dp_8"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,7 +91,7 @@
 
             <TextView
                 android:id="@+id/tv_product_name"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
@@ -101,14 +101,14 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/Neutral_N700_96"
-                android:textSize="@dimen/sp_12"
-                app:layout_constraintEnd_toStartOf="@+id/iv_cart"
-                app:layout_constraintLeft_toLeftOf="parent"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
                 app:layout_constraintTop_toBottomOf="@+id/pvl_variant"
+                app:layout_constraintEnd_toEndOf="parent"
                 tools:text="This is really long product name that appear on the screen" />
 
-            <com.tokopedia.notifcenter.widget.CampaignGreenView
+            <com.tokopedia.notifcenter.widget.CampaignRedView
                 android:id="@+id/cl_campaign"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toStartOf="@+id/iv_cart"
+                app:layout_constraintEnd_toStartOf="@+id/btn_checkout"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
                 app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
@@ -134,23 +134,40 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/orange_red"
-                android:textSize="@dimen/sp_12"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/iv_cart"
+                app:layout_constraintEnd_toStartOf="@+id/btn_checkout"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
                 app:layout_constraintTop_toBottomOf="@+id/cl_campaign"
                 tools:text="Rp 500.000" />
 
             <ImageView
-                android:id="@+id/iv_cart"
-                android:layout_width="@dimen/dp_50"
+                android:id="@+id/img_campaign"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="@dimen/dp_1"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:scaleType="fitStart"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:src="@mipmap/ic_launcher"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+                app:layout_constraintTop_toBottomOf="@+id/tv_product_price"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_checkout"
+                android:layout_width="@dimen/dp_80"
                 android:layout_height="@dimen/dp_32"
-                android:background="@drawable/notifcenter_bg_rounded_stroke_grey"
-                android:padding="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/notifcenter_ic_add_to_cart" />
+                android:text="@string/notifcenter_btn_buy"
+                android:textSize="@dimen/sp_12"
+                app:unifyButtonType="transaction"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

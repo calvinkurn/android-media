@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
+package com.tokopedia.notifcenter.presentation.adapter.viewholder.base
 
 import android.graphics.Typeface.BOLD
 import android.graphics.drawable.GradientDrawable
