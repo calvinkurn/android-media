@@ -71,26 +71,8 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
     private fun setChatRight(element: TopChatVoucherViewModel) {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
         chatStatus.visibility = View.VISIBLE
-        setReadStatus(element)
+        bindChatReadStatus(element)
         itemView.llReadStatusContainer?.setBackgroundResource(R.drawable.bg_topchat_chat_right_voucher)
-    }
-
-    private fun setReadStatus(element: TopChatVoucherViewModel) {
-        var imageResource: Int
-        if (element.isShowTime) {
-            chatStatus.visibility = View.VISIBLE
-            when {
-                element.isRead -> imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_read
-                else -> imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_unread
-            }
-
-            if (element.isDummy) {
-                imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_pending
-            }
-            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(), imageResource))
-        } else {
-            chatStatus.visibility = View.GONE
-        }
     }
 
     override fun isOwner(): Boolean {

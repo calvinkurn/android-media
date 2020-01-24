@@ -198,30 +198,12 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 MethodChecker.getDrawable(productContainerView.getContext(), R.drawable.bg_shadow_attach_product)
         );
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, productContainerView);
-        setChatReadStatus(element);
+        bindChatReadStatus(element);
     }
 
     protected void prerequisiteUISetup(final ProductAttachmentViewModel element) {
         progressBarSendImage.setVisibility(View.GONE);
         chatBalloon.setOnClickListener(view -> viewListener.onProductClicked(element));
-    }
-
-    private void setChatReadStatus(ProductAttachmentViewModel element) {
-        int imageResource;
-        if (element.isShowTime() || alwaysShowTime()) {
-            chatStatus.setVisibility(View.VISIBLE);
-            if (element.isRead()) {
-                imageResource = R.drawable.ic_chat_read;
-            } else {
-                imageResource = R.drawable.ic_chat_unread;
-            }
-            if (element.isDummy()) {
-                imageResource = R.drawable.ic_chat_pending;
-            }
-            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(), imageResource));
-        } else {
-            chatStatus.setVisibility(View.GONE);
-        }
     }
 
     private void setAlignParent(int alignment, View view) {

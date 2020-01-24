@@ -10,7 +10,6 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ImageUploadViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener;
@@ -101,7 +100,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     private void setupChatBubbleAlignment(View chatBalloon, ImageUploadViewModel element) {
         if (element.isSender()) {
             setChatRight(chatBalloon);
-            setReadStatus(element);
+            bindChatReadStatus(element);
         } else {
             setChatLeft(chatBalloon);
         }
@@ -162,27 +161,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
             setVisibility(label, View.GONE);
         }
     }
-
-    public void setReadStatus(ImageUploadViewModel element) {
-        if (chatStatus == null) return;
-        int imageResource;
-        if (element.isShowTime()) {
-            setVisibility(chatStatus, View.VISIBLE);
-            if (element.isRead()) {
-                imageResource = R.drawable.ic_chat_read;
-            } else {
-                imageResource = R.drawable.ic_chat_unread;
-            }
-
-            if (element.isDummy()) {
-                imageResource = R.drawable.ic_chat_pending;
-            }
-            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(), imageResource));
-        } else {
-            chatStatus.setVisibility(View.GONE);
-        }
-    }
-
 
     protected void setVisibility(View view, int visibility) {
         if (view != null) {

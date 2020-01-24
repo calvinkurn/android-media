@@ -12,18 +12,15 @@ class RightChatMessageViewHolder(itemView: View?, private val listener: ChatLink
     override fun bind(viewModel: MessageViewModel?) {
         if (viewModel == null) return
         super.bind(viewModel)
-        bindReadStatus(viewModel)
+        bindChatReadStatus(viewModel)
     }
 
-    private fun bindReadStatus(chat: MessageViewModel) {
-        val imageResource: Int = when {
-            chat.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chat_pending
-            chat.isRead -> com.tokopedia.chat_common.R.drawable.ic_chat_read
-            else -> com.tokopedia.chat_common.R.drawable.ic_chat_unread
-        }
+    override fun getChatStatusId(): Int {
+        return R.id.ivCheckMark
+    }
 
-        val readStatus = MethodChecker.getDrawable(itemView.context, imageResource)
-        fxChat?.changeReadStatus(readStatus)
+    override fun alwaysShowTime(): Boolean {
+        return true
     }
 
     companion object {
