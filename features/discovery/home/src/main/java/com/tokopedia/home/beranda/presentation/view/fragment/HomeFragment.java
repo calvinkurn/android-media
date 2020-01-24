@@ -576,7 +576,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
                         @Override
                         public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
 
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            presenter.clearPlayBanner();
                         }
                     });
         });

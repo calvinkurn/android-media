@@ -600,6 +600,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         homeViewModel?.let {
             var newHomeViewModel = homeViewModel
             if(viewNeedToShowGeolocationComponent()) newHomeViewModel = removeSuggestedReview(it)
+            newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             return newHomeViewModel
@@ -624,19 +625,34 @@ class HomePresenter(private val userSession: UserSessionInterface,
         return homeViewModel
     }
 
-    private fun getPlayBanner(){
-        val findPlayBanner = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardViewModel }
-        if(findPlayBanner != null) {
-            launchCatchError(coroutineDispatcher, block = {
-                playCardHomeUseCase.execute().collect {
-                    // If no data && no cover url don't show play widget
-                    if(it.isEmpty() || it.first().coverUrl.isEmpty()) return@collect
-                    _requestImageTestLiveData.value = Event((findPlayBanner as PlayCardViewModel).copy(playCardHome = it.first()))
+    // Logic detect play banner should load data from API
+    private fun getPlayBanner(index: Int){
+        // Check the current index is play card view model
+        val playBanner = _homeLiveData.value?.list?.get(index)
+        if(playBanner != null && playBanner is PlayCardViewModel) {
+            loadPlayBannerFromNetwork(playBanner)
+        } else {
+            val findIndex = _homeLiveData.value?.list?.indexOfFirst { it is PlayCardViewModel } ?: -1
+            if(findIndex != -1){
+                _homeLiveData.value?.list?.get(index)?.let {
+                    loadPlayBannerFromNetwork(it as PlayCardViewModel)
                 }
-            })
+            }
         }
     }
 
+    // Load data play from API
+    private fun loadPlayBannerFromNetwork(playBanner: PlayCardViewModel){
+        launchCatchError(coroutineDispatcher, block = {
+            playCardHomeUseCase.execute().collect {
+                // If no data && no cover url don't show play widget
+                if (it.isEmpty() || it.first().coverUrl.isEmpty()) return@collect
+                _requestImageTestLiveData.value = Event(playBanner.copy(playCardHome = it.first()))
+            }
+        })
+    }
+
+    // If the image is valid it will be set play banner to UI
     fun setPlayBanner(playCardViewModel: PlayCardViewModel){
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(_homeLiveData.value?.list ?: listOf())
@@ -644,6 +660,19 @@ class HomePresenter(private val userSession: UserSessionInterface,
         if(newList[playIndex] is PlayCardViewModel){
             newList[playIndex] = playCardViewModel
         }
+        _homeLiveData.value = _homeLiveData.value?.copy(
+                list = newList
+        )
+    }
+
+    // play widget it will be removed when load image is failed (deal from PO)
+    // because don't ever let the banner blank
+    fun clearPlayBanner(){
+        val newList = mutableListOf<Visitable<*>>()
+        newList.addAll(_homeLiveData.value?.list ?: listOf())
+
+        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+        newList.removeAt(playIndex)
         _homeLiveData.value = _homeLiveData.value?.copy(
                 list = newList
         )
@@ -670,7 +699,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
                     _homeLiveData.value = homeData
-                    getPlayBanner()
                     getHeaderData()
                     getReviewData()
 
@@ -686,6 +714,24 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     private fun evaluatePlayWidget(homeViewModel: HomeViewModel?): HomeViewModel? {
+        homeViewModel?.let { homeViewModel ->
+            // Find the new play widget is still available or not
+            val list = homeViewModel.list.toMutableList()
+            val playIndex = list.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+
+            // if on new home available the data, it will be load new data
+            if(playIndex != -1){
+                getPlayBanner(playIndex)
+            }
+
+            // find the old data from current list
+            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardViewModel}
+            if(playWidget != null) {
+                list[playIndex] = playWidget
+                return homeViewModel.copy(list = list)
+            }
+        }
+
         return homeViewModel
     }
 
