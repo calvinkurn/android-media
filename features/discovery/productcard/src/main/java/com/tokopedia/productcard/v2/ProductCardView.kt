@@ -360,7 +360,7 @@ abstract class ProductCardView: BaseCustomView {
     internal open fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
         val isLabelPromoVisible = labelPromoModel.title.isNotEmpty()
 
-        labelCredibility.configureVisibilityWithBlankSpaceConfig(isLabelPromoVisible, blankSpaceConfig.labelPromo) {
+        labelPromo.configureVisibilityWithBlankSpaceConfig(isLabelPromoVisible, blankSpaceConfig.labelPromo) {
             it.text = labelPromoModel.title
             it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
         }
