@@ -22,6 +22,9 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
@@ -82,6 +85,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkSearch: CoachMarkItem by lazy {
+        CoachMarkItem(rl_search_filter, getString(R.string.coachmark_search), getString(R.string.coachmark_search_info))
+    }
+
+    private val coachMarkProduct: CoachMarkItem by lazy {
+        CoachMarkItem(order_list_rv, getString(R.string.coachmark_product), getString(R.string.coachmark_product_info))
+    }
+
+    private val coachMarkFilter: CoachMarkItem by lazy {
+        CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
+    }
 
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
@@ -476,6 +495,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             scrollListener.updateStateAfterGetData()
         }
         somListItemAdapter.notifyDataSetChanged()
+
+        coachMark.show(activity, "FirstTimeUser", arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
     }
 
     private fun renderFilterEmpty(title: String, desc: String) {
