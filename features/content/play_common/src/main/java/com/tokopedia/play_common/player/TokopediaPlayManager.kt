@@ -37,7 +37,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         private const val RETRY_COUNT_DEFAULT = 3
         private const val RETRY_DELAY = 1000L
 
-        private const val VIDEO_MAX_SOUND = 100f
+        private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
 
         @Volatile
