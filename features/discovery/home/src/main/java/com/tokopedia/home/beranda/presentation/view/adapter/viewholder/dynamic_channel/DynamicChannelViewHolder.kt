@@ -28,7 +28,6 @@ abstract class DynamicChannelViewHolder(itemView: View,
     private val context: Context = itemView.context
 
     lateinit var countDownView: CountDownView
-    var isImpressionListenerAdded = false
 
     /**
      * List of possible layout from backend
@@ -151,18 +150,13 @@ abstract class DynamicChannelViewHolder(itemView: View,
          * Requirement:
          * Only hit impression tracker when get data from cloud
          */
-        if (!element.isCache && !isImpressionListenerAdded) {
+        if (!element.isCache) {
             itemView.addOnImpressionListener(channel, OnItemImpressedListener(
                     channel,
                     listener,
                     adapterPosition,
                     getLayoutType(channel),
-                    element.isCache) {
-                isImpressionListenerAdded = false
-            })
-
-            isImpressionListenerAdded = true
-
+                    element.isCache))
         }
     }
 
@@ -195,12 +189,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
                                   val listener: HomeCategoryListener,
                                   val position: Int,
                                   private val layoutType: Int,
-                                  val isCache: Boolean,
-                                  val onViewHint: () -> Unit) : ViewHintListener {
+                                  val isCache: Boolean) : ViewHintListener {
         override fun onViewHint() {
             if (!isCache) {
                 sendIrisTracker(layoutType)
-                onViewHint.invoke()
             }
         }
 
