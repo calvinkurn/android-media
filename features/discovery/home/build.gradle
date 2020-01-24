@@ -73,6 +73,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.traceroute)
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
