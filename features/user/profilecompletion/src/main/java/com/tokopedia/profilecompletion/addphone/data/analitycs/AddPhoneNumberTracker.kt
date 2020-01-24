@@ -20,7 +20,11 @@ class AddPhoneNumberTracker {
                 Event.CLICK_PROFILE,
                 Category.ADD_PHONE_NUMBER_PAGE,
                 Action.CLICK_ON_BUTTON_NEXT,
-                if (isSuccess) "${Label.SUCCESS } - $message" else "${Label.FAILED} - $message"
+                if (isSuccess) {
+                    "${Label.SUCCESS} - $message"
+                } else {
+                    "${Label.FAILED} - $message"
+                }
         )
     }
 

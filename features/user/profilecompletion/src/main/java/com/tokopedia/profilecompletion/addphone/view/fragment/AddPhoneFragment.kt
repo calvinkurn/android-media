@@ -168,11 +168,13 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onErrorUserValidate(throwable: Throwable) {
         dismissLoading()
+        phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable))
         setErrorText(ErrorHandler.getErrorMessage(context, throwable))
     }
 
     private fun onSuccessUserValidate(pojo: UserValidatePojo) {
         if (pojo.userProfileCompletionValidate.isValid) {
+            phoneNumberTracker.clickOnButtonNext(true, pojo.userProfileCompletionValidate.msisdnMessage)
             goToVerificationActivity()
         }
     }
@@ -188,7 +190,6 @@ class AddPhoneFragment : BaseDaggerFragment() {
     private fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
         storeLocalSession(result.phoneNumber)
-        phoneNumberTracker.clickOnButtonNext(false, result.addPhonePojo.data.errorMessage)
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
