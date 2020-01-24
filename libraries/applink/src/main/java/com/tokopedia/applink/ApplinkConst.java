@@ -206,7 +206,15 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
-    String SELLER_ORDER_DETAIL = "tokopedia://seller/order/{order_id}";
+
+    String SELLER_PURCHASE_CANCELED = "tokopedia://seller/cancelled";
+    String SELLER_PURCHASE_WAITING_PICKUP = "tokopedia://seller/waitingpickup";
+    String SELLER_PURCHASE_WAITING_AWB = "tokopedia://seller/waitingawb";
+    String SELLER_PURCHASE_AWB_INVALID = "tokopedia://seller/awbinvalid";
+    String SELLER_PURCHASE_AWB_CHANGE = "tokopedia://seller/awbchange";
+    String SELLER_PURCHASE_RETUR = "tokopedia://seller/retur";
+    String SELLER_PURCHASE_COMPLAINT = "tokopedia://seller/complaint";
+    String SELLER_PURCHASE_FINISHED = "tokopedia://seller/finished";
 
     String SALDO = "tokopedia://saldo";
     String SALDO_INTRO = "tokopedia://saldo-intro";
