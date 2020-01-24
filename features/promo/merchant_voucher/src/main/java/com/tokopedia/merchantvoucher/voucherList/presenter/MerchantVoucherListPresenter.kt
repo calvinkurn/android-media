@@ -11,7 +11,6 @@ import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
