@@ -389,6 +389,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         analytics.trackOnClickLongerContentBtn(templateKey)
     }
 
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
+
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"
         const val PARAM_CONTENT_TEXT = "content text"

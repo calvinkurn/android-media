@@ -28,7 +28,8 @@ class ProductCheckoutViewHolder(
         onProductCheckoutClick(element)
 
         with(product) {
-            if (product.shop?.freeShippingIcon != null) {
+            if (product.shop?.freeShippingIcon != null &&
+                product.shop.freeShippingIcon.isNotEmpty()) {
                 campaignTag.loadImage(product.shop.freeShippingIcon)
                 campaignTag.show()
             }

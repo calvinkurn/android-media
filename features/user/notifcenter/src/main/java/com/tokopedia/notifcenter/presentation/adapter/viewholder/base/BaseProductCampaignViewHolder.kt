@@ -37,7 +37,7 @@ abstract class BaseProductCampaignViewHolder(
             productName.text = name
             productPrice.text = priceFormat
             productVariant.setupVariant(variant)
-            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
+            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_notifcenter_loading_toped)
         }
     }
 

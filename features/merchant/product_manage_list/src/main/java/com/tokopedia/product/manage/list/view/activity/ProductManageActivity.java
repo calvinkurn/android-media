@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
@@ -25,6 +24,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
+
+    private static final int MANAGE_PRODUCT = 8;
+
     public UserSessionInterface userSession;
 
     @Override
@@ -97,7 +99,7 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
 
     @Override
     protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
+        return MANAGE_PRODUCT;
     }
 
     @Override

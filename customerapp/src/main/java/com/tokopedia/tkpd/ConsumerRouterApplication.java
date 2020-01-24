@@ -24,7 +24,6 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
-import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -68,7 +67,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.CustomerRouter;
@@ -98,7 +96,6 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
@@ -168,6 +165,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.features.cart.view.CartActivity;
 import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
@@ -1355,8 +1353,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent;
         if (GlobalConfig.isSellerApp()) {
             intent = getHomeIntent(activity);
-        } else if (GlobalConfig.isPosApp()) {
-            intent = getLoginIntent(activity);
         } else {
             intent = HomeRouter.getHomeActivity(activity);
         }

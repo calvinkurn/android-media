@@ -18,6 +18,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
+import com.tokopedia.notifcenter.data.consts.Resources.Green_G100
+import com.tokopedia.notifcenter.data.consts.Resources.Green_G200
+import com.tokopedia.notifcenter.data.consts.Resources.Green_G500
+import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
+import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N50
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.BUYER_TYPE
@@ -35,8 +40,8 @@ abstract class BaseNotificationItemViewHolder(
     protected val container: ConstraintLayout = itemView.findViewById(R.id.container)
     protected val icon: ImageView = itemView.findViewById(R.id.icon)
     protected val type: TextView = itemView.findViewById(R.id.type)
-    protected val time: TextView = itemView.findViewById(R.id.time)
     protected val label: TextView = itemView.findViewById(R.id.label)
+    private val time: TextView = itemView.findViewById(R.id.time)
 
     protected val title: TextView = itemView.findViewById(R.id.title)
     protected val body: TextView = itemView.findViewById(R.id.body)
@@ -65,7 +70,7 @@ abstract class BaseNotificationItemViewHolder(
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, R.color.white)
         } else {
-            MethodChecker.getColor(container.context, R.color.Green_G100)
+            MethodChecker.getColor(container.context, Green_G100)
         }
         container.setBackgroundColor(color)
     }
@@ -74,18 +79,18 @@ abstract class BaseNotificationItemViewHolder(
         time.text = element.time
         type.text = element.sectionTitle
         convertTypeUser(element)
-        ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
+        ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_notifcenter_loading_toped)
     }
 
     protected open fun bindNotificationContent(element: NotificationItemViewBean) {
         title.text = element.title
-        if (element.body.length > MAX_CONTENT_LENGTH) {
-            var shorten = element.body.take(MAX_CONTENT_LENGTH)
+        if (element.body.length > element.options.contentMaxLonger) {
+            var shorten = element.body.take(element.options.contentMaxLonger)
             val inFull = getStringResource(R.string.in_full)
             shorten = "$shorten... $inFull"
             val spannable = SpannableString(shorten)
 
-            val color = getColorResource(R.color.Green_G500)
+            val color = getColorResource(Green_G500)
             spannable.setSpan(
                     ForegroundColorSpan(color),
                     shorten.indexOf(inFull),
@@ -112,7 +117,7 @@ abstract class BaseNotificationItemViewHolder(
         container.setOnClickListener {
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            if (element.body.length > MAX_CONTENT_LENGTH) {
+            if (element.body.length > element.options.contentMaxLonger) {
                 listener.showTextLonger(element)
             } else {
                 RouteManager.route(itemView.context, element.appLink)
@@ -127,25 +132,25 @@ abstract class BaseNotificationItemViewHolder(
         if (labelIndex == BUYER_TYPE && element.hasShop) {
             getStringResource(R.string.buyer_label).apply {
                 label.text = this
-                label.setTextColor(getColorResource(R.color.Neutral_N200))
+                label.setTextColor(getColorResource(Neutral_N200))
                 label.visibility = View.VISIBLE
             }
 
             label.background.let {
                 if (it is GradientDrawable) {
-                    it.setColor(getColorResource(R.color.Neutral_N50))
+                    it.setColor(getColorResource(Neutral_N50))
                 }
             }
         } else if (labelIndex == SELLER_TYPE) {
             getStringResource(R.string.seller_label).apply {
                 label.text = this
-                label.setTextColor(getColorResource(R.color.Green_G500))
+                label.setTextColor(getColorResource(Green_G500))
                 label.visibility = View.VISIBLE
             }
 
             label.background.let {
                 if (it is GradientDrawable) {
-                    it.setColor(getColorResource(R.color.Green_G200))
+                    it.setColor(getColorResource(Green_G200))
                 }
             }
         }
@@ -164,7 +169,6 @@ abstract class BaseNotificationItemViewHolder(
     }
 
     companion object {
-        val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
-        val MAX_CONTENT_LENGTH = 110
+        const val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
     }
 }

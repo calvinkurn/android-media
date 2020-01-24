@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.campaign.source.api;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 
 import java.util.Map;
@@ -8,8 +8,6 @@ import java.util.Map;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;

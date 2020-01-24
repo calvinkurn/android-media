@@ -26,6 +26,7 @@ object SomConsts {
 
     const val TAB_ACTIVE = "tab_active"
     const val TAB_STATUS = "tab_status"
+    const val FILTER_STATUS_ID = "filter_status_id"
     const val FILTER_TYPE_CHECKBOX = "checkbox"
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
@@ -126,8 +127,8 @@ object SomConsts {
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
-    const val STATUS_ORDER_600 = 600
-    const val STATUS_ORDER_699 = 699
+    const val STATUS_ORDER_DELIVERED = 600
+    const val STATUS_ORDER_DELIVERED_DUE_LIMIT = 699
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"

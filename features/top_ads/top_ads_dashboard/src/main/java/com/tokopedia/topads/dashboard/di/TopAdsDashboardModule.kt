@@ -82,9 +82,8 @@ class TopAdsDashboardModule {
 
     @Provides
     @TopAdsDashboardScope
-    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi,
-                                         userSession: UserSessionInterface): ShopCommonCloudDataSource {
-        return ShopCommonCloudDataSource(shopCommonApi, userSession)
+    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi): ShopCommonCloudDataSource {
+        return ShopCommonCloudDataSource(shopCommonApi)
     }
 
     @Provides
