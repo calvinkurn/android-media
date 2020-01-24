@@ -19,9 +19,9 @@ class DeferredImageView : ImageView {
     /**
      * While creating object of this class use this constructor to initialize the url.
      */
-    constructor(context: Context, url: String) : super(context) {
+    constructor(context: Context, fileName: String) : super(context) {
         mContext = context
-        mRemoteFileName = url
+        mRemoteFileName = fileName
         init(null, 0)
     }
 
@@ -55,10 +55,6 @@ class DeferredImageView : ImageView {
     }
 
     private fun downloadAndSetResource() {
-        if (TextUtils.isEmpty(mRemoteFileName) || !URLUtil.isValidUrl(mRemoteFileName))
-            throw IllegalArgumentException("Please use valid url in url field " +
-                    "if used in xml or use DeferredImageView(context, url) " +
-                    "constructor to initialize the correct object!!")
         ResourceDownloadManager.getManager().startDownload(mRemoteFileName, this)
     }
 

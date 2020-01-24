@@ -255,10 +255,11 @@ class ResourceDownloadManager private constructor() {
     }
 
     fun stopPendingDownload(
-            mImageURL: String,
+            fileName: String,
             deferredImageView: DeferredImageView
     ) {
-        val taskList = map[mImageURL]
+        val url = mBaseUrl + mRelativeUrl + fileName
+        val taskList = map[url]
         taskList?.forEach { task ->
             if (task.deferredImageView?.get() == deferredImageView)
                 mDownloadTaskThreadPool.remove(task.getDownloadRunnable())
