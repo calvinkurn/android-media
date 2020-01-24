@@ -8,5 +8,5 @@ import dagger.Component
 @Component(modules = [SellerHomeDashboardModule::class])
 interface SellerHomeDashboardComponent {
 
-    fun<T> inject(sellerDashboardActivity: SellerDashboardActivity<T>)
+    fun inject(sellerDashboardActivity: SellerDashboardActivity)
 }

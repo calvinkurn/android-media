@@ -67,7 +67,6 @@ class SellerDrawerHelper(val context: Activity,
     override fun onItemClicked(drawerItem: SellerDrawerItem) {
         if (drawerItem.id == selectedPosition) closeDrawer()
         else {
-            var intent: Intent? = null
             var isNeedToCloseActivity = true
             when(drawerItem.id) {
                 SellerHomeState.DrawerPosition.INDEX_HOME -> {

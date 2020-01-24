@@ -17,6 +17,8 @@ import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.constant.SellerDrawerActivityBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.constant.SellerHomeFragmentBroadcastReceiverConstant
 import com.tokopedia.sellerhomedrawer.data.SellerDrawerTokoCash
+import com.tokopedia.sellerhomedrawer.data.SellerTokoCashData
+import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
 import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
@@ -29,6 +31,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
 import kotlinx.android.synthetic.main.sh_drawer_activity.*
+import rx.Observable
 
 abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
         SellerDrawerDataListener
@@ -60,10 +63,17 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
 //    }
 
     fun setupDrawer() {
-        //TODO : Inject these
+
+        val sellerTokoCashObservable = Observable.just(SellerTokoCashData())
+        val sellerTokoCashUseCase = SellerTokoCashUseCase(sellerTokoCashObservable)
+
+//        val userAttributesRepository = SellerGetUser
+//        val sellerGetUserAttributesUseCase = SellerGetUserAttributesUseCase()
+
         sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache, remoteConfig)
         sellerDrawerHelper.initDrawer(this)
         sellerDrawerHelper.selectedPosition = setDrawerPosition()
+//        drawerDataManager = SellerDrawerDataManagerImpl(this)
     }
 
     protected abstract fun setDrawerPosition(): Int
@@ -273,4 +283,69 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
         title.actionbar_title.text = getTitle()
         this.addView(title)
     }
+//
+//    inner class DrawerActivityBroadcastReceiver : BroadcastReceiver() {
+//
+//        override fun onReceive(context: Context, intent: Intent) {
+//            try {
+//                if (!DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equals(intent.action!!, ignoreCase = true))
+//                    return
+//                when (intent.getIntExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER, 0)) {
+//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA -> drawerDataManager?.getTokoCash()
+//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_PENDING_DATA -> sendBroadcast(Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP))
+//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOPOINT_DATA -> getTokoPointData()
+//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA -> {
+//                        val drawerTokoCash: SellerDrawerTokoCash? = intent.getParcelableExtra(
+//                                DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA)
+//
+//                        if (drawerTokoCash != null) {
+//                            (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerTokoCash = drawerTokoCash
+//
+//                        }
+//                        sellerDrawerHelper.notifyDataSetChanged()
+//                    }
+//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA -> {
+//                    }
+//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA -> {
+//                        var tokoPointDrawerData: SellerTokoPointDrawerData? = null
+//                        tokoPointDrawerData = intent.getParcelableExtra(
+//                                DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA
+//                        )
+//                        if (tokoPointDrawerData == null) return
+//                        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).tokoPointDrawerData = tokoPointDrawerData
+//                        sellerDrawerHelper.notifyDataSetChanged()
+//
+//                        if (tokoPointDrawerData.hasNotif == 1 && tokoPointDrawerData.popUpNotif != null) {
+//                            if (application is ILoyaltyRouter) {
+//
+//                                val ft = fragmentManager.beginTransaction()
+//                                ft.add((application as ILoyaltyRouter)
+//                                        .getLoyaltyTokoPointNotificationDialogFragment(
+//                                                tokoPointDrawerData.popUpNotif
+//                                        ), ILoyaltyRouter.LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG)
+//                                ft.commitAllowingStateLoss()
+//                            }
+//                        }
+//                    }
+//                    else -> {
+//                    }
+//                }// no
+//            } catch (e: Exception) {
+//                // no-op
+//            }
+//
+//        }
+//    }
+//
+//    private fun getTokoPointData() {
+//        sendBroadcast(Intent(SellerTokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP))
+//    }
+//
+//    protected fun registerBroadcastReceiverHeaderTokoCash() {
+//        drawerActivityBroadcastReceiver = DrawerActivityBroadcastReceiver()
+//        registerReceiver(
+//                drawerActivityBroadcastReceiver,
+//                IntentFilter(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
+//        )
+//    }
 }

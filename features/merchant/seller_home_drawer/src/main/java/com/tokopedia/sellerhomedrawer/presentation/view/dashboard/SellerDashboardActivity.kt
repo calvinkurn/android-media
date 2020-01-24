@@ -13,6 +13,8 @@ import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
+import com.tokopedia.sellerhomedrawer.di.DaggerSellerHomeDashboardComponent
+import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
 import com.tokopedia.sellerhomedrawer.drawer.BaseSellerReceiverDrawerActivity
 import com.tokopedia.sellerhomedrawer.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
@@ -20,7 +22,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDash
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
 import javax.inject.Inject
 
-class SellerDashboardActivity<T>: BaseSellerReceiverDrawerActivity<T>(), SellerHomeDashboardContract.View{
+class SellerDashboardActivity: BaseSellerReceiverDrawerActivity<SellerHomeDashboardDrawerPresenter>(), SellerHomeDashboardContract.View{
 
     companion object {
         @JvmStatic
@@ -37,6 +39,7 @@ class SellerDashboardActivity<T>: BaseSellerReceiverDrawerActivity<T>(), SellerH
         super.onCreate(savedInstanceState)
 
         initInjector()
+        sellerHomeDashboardDrawerPresenter.attachView(this)
 
         inflateView(R.layout.sh_activity_simple_fragment)
         if (savedInstanceState != null) {
@@ -65,6 +68,11 @@ class SellerDashboardActivity<T>: BaseSellerReceiverDrawerActivity<T>(), SellerH
 
     override fun onSuccessGetFlashSaleSellerStatus(isVisible: Boolean) {
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sellerHomeDashboardDrawerPresenter.unsubscribe()
     }
 
     private fun checkAppUpdate() {
@@ -107,12 +115,26 @@ class SellerDashboardActivity<T>: BaseSellerReceiverDrawerActivity<T>(), SellerH
     override fun getLayoutId(): Int = 0
 
     override fun updateDrawerData() {
-        if (userSession.isLoggedIn)
+        if (userSession.isLoggedIn) {
             setDataDrawer()
+            getDrawerSellerAttrUseCase(sessionHandler)
+            sellerHomeDashboardDrawerPresenter.getFlashSaleSellerStatus()
+            sellerHomeDashboardDrawerPresenter.isGoldMerchantAsync()
+        }
+
+    }
+
+    private fun getDrawerSellerAttrUseCase(sessionHandler: SessionHandler?) {
+        drawerDataManager?.getSellerUserAttributes(sessionHandler)
     }
 
     private fun initInjector() {
+
         //TODO: Inject
+        val component = DaggerSellerHomeDashboardComponent.builder()
+                .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
+                .build()
+        component.inject(this)
 
         sellerHomeDashboardDrawerPresenter.attachView(this)
     }
