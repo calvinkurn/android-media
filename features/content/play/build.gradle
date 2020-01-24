@@ -13,6 +13,8 @@ buildscript {
 }
 
 dependencies {
+    def newExoPlayerVersion = '2.11.1'
+
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.websocket)
@@ -32,8 +34,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation rootProject.ext.miscDependencies.exoPlayerCore
-    implementation rootProject.ext.miscDependencies.exoPlayerUi
+//    implementation rootProject.ext.miscDependencies.exoPlayerCore
+//    implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.networkDependencies.glide
@@ -44,6 +46,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
 
     testImplementation rootProject.ext.testDependencies.mockk
+
+    implementation "com.google.android.exoplayer:exoplayer-core:$newExoPlayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$newExoPlayerVersion"
 }
 
 project.ext {

@@ -5,8 +5,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
-import com.tokopedia.home.util.ConnectionUtils
 import com.tokopedia.home.util.DimensionUtils
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
@@ -104,7 +104,7 @@ class HomePlayWidgetHelper(
     }
 
     override fun playerPlay() {
-        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && mPlayer?.isPlaying == false){
+        if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && mPlayer?.isPlaying == false){
             masterJob.cancelChildren()
             launch(coroutineContext){
                 delay(1000)
@@ -118,7 +118,7 @@ class HomePlayWidgetHelper(
     }
 
     fun play(url: String){
-        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             videosUri = Uri.parse(url)
             exoPlayerView.setPlayer(mPlayer)
             muteVideoPlayer()
@@ -130,7 +130,7 @@ class HomePlayWidgetHelper(
     }
 
     fun preparePlayer(){
-        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             exoPlayerView.setPlayer(mPlayer)
             TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videosUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
@@ -160,7 +160,7 @@ class HomePlayWidgetHelper(
     }
 
     override fun onActivityResume() {
-        if(ConnectionUtils.isWifiConnected(context) && isDeviceHasRequirementAutoPlay()) {
+        if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay()) {
             masterJob.cancelChildren()
             launch(coroutineContext) {
                 delay(3000)

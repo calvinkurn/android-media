@@ -61,7 +61,6 @@ class PlayCardViewHolder(
     override fun bind(element: PlayCardViewModel) {
         element.let { element ->
             initView(element)
-            handlingTracker(element)
             playChannel(element.playCardHome?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
         }
     }
@@ -74,6 +73,7 @@ class PlayCardViewHolder(
 
     private fun initView(model: PlayCardViewModel){
         model.playCardHome?.let{ playChannel ->
+            handlingTracker(model)
             title.setValue(model.channel.header.name)
             description.setValue("")
 

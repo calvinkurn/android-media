@@ -150,6 +150,11 @@ class PlayFragment : BaseDaggerFragment() {
         observeEventUserInfo()
     }
 
+    override fun onResume() {
+        super.onResume()
+        hideKeyboard()
+    }
+
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)

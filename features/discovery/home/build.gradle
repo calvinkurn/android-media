@@ -26,6 +26,8 @@ android {
 }
 
 dependencies {
+    def newExoPlayerVersion = '2.11.1'
+
     // Feature
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.commonDigital)
@@ -71,6 +73,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.traceroute)
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -107,7 +110,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.miscDependencies.exoPlayer
+//    implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
@@ -121,6 +124,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
+
+    implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
 
     // Test
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting

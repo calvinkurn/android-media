@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
@@ -29,9 +28,10 @@ import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
-import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -121,22 +121,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            if (it.state is TokopediaPlayVideoState.Error)
-                view?.let { fragmentView ->
-                    PlayAnalytics.errorState(channelId, it.state.error.localizedMessage, playViewModel.isLive)
-                    Toaster.make(
-                            fragmentView,
-                            it.state.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
-                            actionText = getString(R.string.play_try_again),
-                            clickListener = View.OnClickListener {
-                                //TODO("Maybe retry video")
-                            }
-                    )
-                }
-            else delegateVideoProperty(it)
-        })
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer(::delegateVideoProperty))
     }
 
     private fun observeOneTapOnboarding() {
