@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.LayoutRes;
 import android.view.View;
-
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -18,8 +16,6 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
-
-
 
 /**
  * Created by errysuprayogi on 2/20/18.

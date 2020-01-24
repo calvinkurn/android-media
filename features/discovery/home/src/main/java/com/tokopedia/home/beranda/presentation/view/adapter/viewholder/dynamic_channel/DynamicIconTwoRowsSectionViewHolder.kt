@@ -3,14 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
-
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.TypedValue
@@ -19,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking

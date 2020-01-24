@@ -6,8 +6,6 @@ import com.google.android.material.tabs.TabLayout
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import androidx.viewpager.widget.ViewPager
-
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking

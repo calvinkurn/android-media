@@ -35,14 +35,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.ProductItemViewHolder
-import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener,
                               countDownListener: CountDownView.CountDownListener,
