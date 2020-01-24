@@ -35,7 +35,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
+import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
@@ -228,7 +228,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void onClick(View source) {
         if (source.getId() == R.id.text_my_coupon) {
-            startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
+            startActivity(CouponListingStackedActivity.Companion.getCallingIntent(getActivityContext()));
         }
     }
 
@@ -300,7 +300,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-                    startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
+                    startActivity(CouponListingStackedActivity.Companion.getCallingIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -665,7 +665,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             } else {
                 giftSectionMainLayout.setVisibility(View.VISIBLE);
                 bottomSeparator.setVisibility(View.VISIBLE);
-                giftButton.setText(R.string.tp_label_send);
+                giftButton.setText(R.string.tp_label_send_now);
                 giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(), data.getImageUrlMobile()));
             }
         } else {

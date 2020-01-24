@@ -6,12 +6,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
-
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.instantdebitbca.data.view.fragment.InstantDebitBcaFragment
-import com.tokopedia.instantdebitbca.data.view.utils.ApplinkConstant
 
 /**
  * Created by nabillasabbaha on 25/03/19.
@@ -49,7 +48,7 @@ open class InstantDebitBcaActivity : BaseSimpleActivity(), InstantDebitBcaFragme
 
     object DeepLinkIntent{
 
-        @DeepLink(ApplinkConstant.INSTANT_DEBIT_BCA_APPLINK)
+        @DeepLink(ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_APPLINK)
         @JvmStatic fun intentForTaskStackBuilderMethods(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             val callbackUrl = if (extras.containsKey(CALLBACK_URL)) extras.getString(CALLBACK_URL) else ""

@@ -14,6 +14,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -40,6 +41,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
@@ -336,7 +338,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         try {
             progressDialog?.show()
         } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
+            Timber.d(exception)
         }
     }
 

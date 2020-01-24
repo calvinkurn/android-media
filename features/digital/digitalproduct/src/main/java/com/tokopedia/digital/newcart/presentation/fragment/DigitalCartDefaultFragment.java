@@ -60,7 +60,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_digital_cart_default, container, false);
+        return inflater.inflate(R.layout.fragment_digital_default_cart, container, false);
     }
 
     @Override

@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
@@ -26,6 +25,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import timber.log.Timber;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -91,8 +91,8 @@ public class FCMCacheManager {
     public Boolean isAllowBell() {
         long prevTime = cache.getLong(TkpdCache.Key.PREV_TIME);
         long currTIme = System.currentTimeMillis();
-        CommonUtils.dumper("prev time: " + prevTime);
-        CommonUtils.dumper("curr time: " + currTIme);
+        Timber.d("prev time: " + prevTime);
+        Timber.d("curr time: " + currTIme);
         if (currTIme - prevTime > 15000) {
             cache.putLong(TkpdCache.Key.PREV_TIME, currTIme);
             cache.applyEditor();
