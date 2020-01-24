@@ -33,13 +33,13 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
     var isTickerShow: Boolean? = false
     var tickerMessage: String? = null
-    var sellerListSize:Int? = 0
-    var buyerListSize :Int?= 0
+    var sellerListSize: Int? = 0
+    var buyerListSize: Int? = 0
     var viewPager: ViewPager? = null
-    var resultList: ArrayList<Any>? = null
+    var arrayListSeller: ArrayList<SellerDataItem>? = null
+    var arrayListBuyer: ArrayList<BuyerDataItem>? = null
     var sellerAmount: Double? = 0.0
     var buyerAmount: Double? = 0.0
-    lateinit var allTransactionList: ArrayList<Any>
     var item: ArrayList<SaldoHistoryTabItem>? = null
     lateinit var tabLayout: Tabs
     lateinit var helpdialog: CloseableBottomSheetDialog
@@ -75,25 +75,24 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     override fun getNewFragment(): Fragment? = null
 
     override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
-        resultList = ArrayList()
-
         saldoHoldDepositHistory?.let {
 
             tv_valueTotalSaldoHold.text = it.totalFmt
             sellerListSize = it.sellerData?.size
             buyerListSize = it.buyerData?.size
-            val arrayListSeller = it.sellerData as ArrayList<SellerDataItem>
-            val arrayListBuyer = it.buyerData as ArrayList<BuyerDataItem>
+            arrayListSeller = it.sellerData as ArrayList<SellerDataItem>
+            arrayListBuyer = it.buyerData as ArrayList<BuyerDataItem>
 
-            for (i in 0 until arrayListSeller.size) {
-                sellerAmount = arrayListSeller[i].amountFmt?.removeRP()?.let { it1 -> sellerAmount?.plus(it1) }
+            sellerListSize?.let {
+                for (i in 0 until it) {
+                    sellerAmount = arrayListSeller?.get(i)?.amountFmt?.removeRP()?.let { it1 -> sellerAmount?.plus(it1) }
+                }
             }
-
-            for (i in 0 until arrayListBuyer.size) {
-                buyerAmount = arrayListBuyer[i].amountFmt?.removeRP()?.let { it1 -> buyerAmount?.plus(it1) }
+            buyerListSize?.let {
+                for (i in 0 until it) {
+                    buyerAmount = arrayListBuyer?.get(i)?.amountFmt?.removeRP()?.let { it1 -> buyerAmount?.plus(it1) }
+                }
             }
-
-            resultList = combinedTransactionList(it.sellerData, it.buyerData)
             isTickerShow = it.tickerMessageIsshow
             tickerMessage = it.tickerMessageId
         }
@@ -104,48 +103,60 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
     }
 
-    fun combinedTransactionList(arrayList: ArrayList<SellerDataItem>, arrayList1: ArrayList<BuyerDataItem>): ArrayList<Any> {
-        allTransactionList = ArrayList()
-        allTransactionList.clear()
-        allTransactionList.addAll(arrayList)
-        allTransactionList.addAll(arrayList1)
-
-        return allTransactionList
-    }
-
     private fun setUpViewPager(sellerListSize: Int?, buyerListSize: Int?) {
         item = ArrayList()
-        val bundle = Bundle()
-        bundle.putParcelableArrayList(RESULT_LIST, resultList as ArrayList<out Parcelable>)
-        buyerAmount?.let { bundle.putDouble(SALDO_BUYER_AMOUNT, buyerAmount!!) }
-        sellerAmount?.let { bundle.putDouble(SALDO_SELLER_AMOUNT, sellerAmount!!) }
-
-
         if (sellerListSize == 0 && buyerListSize != 0) {
+
+            val bundleBuyer = Bundle()
+
+            bundleBuyer.putParcelableArrayList(RESULT_LIST, arrayListBuyer as ArrayList<out Parcelable>)
+            buyerAmount?.let { bundleBuyer.putDouble(SALDO_BUYER_AMOUNT, it) }
+            sellerAmount?.let { bundleBuyer.putDouble(SALDO_SELLER_AMOUNT, it) }
+
             val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
-            saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundleBuyer)
             saldoHistoryTabItemBuyer.title = resources.getString(R.string.saldo_total_balance_buyer) + "(" + buyerListSize + ")"
             item?.add(saldoHistoryTabItemBuyer)
 
         } else if (buyerListSize == 0 && sellerListSize != 0) {
+
+            val bundleSeller = Bundle()
+
+            bundleSeller.putParcelableArrayList(RESULT_LIST, arrayListSeller as ArrayList<out Parcelable>)
+            buyerAmount?.let { bundleSeller.putDouble(SALDO_BUYER_AMOUNT, it) }
+            sellerAmount?.let { bundleSeller.putDouble(SALDO_SELLER_AMOUNT, it) }
+
             val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
-            saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundleSeller)
             saldoHistoryTabItemSeller.title = resources.getString(R.string.saldo_total_balance_seller) + "(" + sellerListSize + ")"
             item?.add(saldoHistoryTabItemSeller)
 
         } else if (buyerListSize != 0 && sellerListSize != 0) {
+
+            val bundlBuyer = Bundle()
+
+            bundlBuyer.putParcelableArrayList(RESULT_LIST, arrayListBuyer as ArrayList<out Parcelable>)
+            buyerAmount?.let { bundlBuyer.putDouble(SALDO_BUYER_AMOUNT, it) }
+            sellerAmount?.let { bundlBuyer.putDouble(SALDO_SELLER_AMOUNT, it) }
+
             val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
-            saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundlBuyer)
             saldoHistoryTabItemBuyer.title = resources.getString(R.string.saldo_total_balance_buyer) + "(" + buyerListSize + ")"
 
+            val bundleSeller = Bundle()
+
+            bundleSeller.putParcelableArrayList(RESULT_LIST, arrayListSeller as ArrayList<out Parcelable>)
+            buyerAmount?.let { bundleSeller.putDouble(SALDO_BUYER_AMOUNT, it) }
+            sellerAmount?.let { bundleSeller.putDouble(SALDO_SELLER_AMOUNT, it) }
+
             val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
-            saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundle)
+            saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundlBuyer)
             saldoHistoryTabItemSeller.title = resources.getString(R.string.saldo_total_balance_seller) + "(" + sellerListSize + ")"
 
-            item?.add(0, saldoHistoryTabItemBuyer)
-            item?.add(1, saldoHistoryTabItemSeller)
-        }
+            item?.add(0, saldoHistoryTabItemSeller)
+            item?.add(1, saldoHistoryTabItemBuyer)
 
+        }
         if (buyerListSize == 0 || sellerListSize == 0) {
             tabLayout.visibility = View.GONE
         }
@@ -188,6 +199,9 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     private fun showLayout() {
         container_cl.visibility = View.VISIBLE
         viewflipper_container.displayedChild = 0
+        top_bar_close_button.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     override fun onDestroy() {
