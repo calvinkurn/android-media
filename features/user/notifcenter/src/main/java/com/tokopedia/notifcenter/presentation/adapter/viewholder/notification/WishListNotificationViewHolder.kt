@@ -31,7 +31,7 @@ class WishListNotificationViewHolder(
 
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart)
+        val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart)
 
         with(product) {
             productName.text = name
@@ -39,7 +39,7 @@ class WishListNotificationViewHolder(
             btnCart.setImageDrawable(atcDrawable)
             productCampaign.setupCampaign(campaign)
             productVariant.setupVariant(variant)
-            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
+            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_notifcenter_loading_toped)
         }
 
         assignClickListenerAtc(element)
@@ -58,7 +58,7 @@ class WishListNotificationViewHolder(
 
     private fun onSuccessAddToCart(): () -> Unit {
         return {
-            val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart_check_grey)
+            val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.notifcenter_ic_add_to_cart_check_grey)
             btnCart.setImageDrawable(checkDrawable)
         }
     }
