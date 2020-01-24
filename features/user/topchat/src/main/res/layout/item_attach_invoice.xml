@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
             android:background="@drawable/bg_shadow_attach_product"
             android:minWidth="@dimen/chat_width"
             android:paddingStart="@dimen/dp_12"
