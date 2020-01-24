@@ -40,18 +40,6 @@ public class PerformanceMonitoring {
         }
     }
 
-    public void incrementCounter(String counterName) {
-        if(trace != null){
-            incrementCounter(counterName,1L);
-        }
-    }
-
-    public void incrementCounter(String counterName, Long l) {
-        if(trace != null){
-            trace.incrementCounter(counterName, l);
-        }
-    }
-
     public void putMetric(String parameter, long value) {
         if (trace != null) {
             trace.putMetric(parameter, value);
