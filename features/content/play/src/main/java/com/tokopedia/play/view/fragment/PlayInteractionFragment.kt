@@ -742,7 +742,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
+                connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START, offset24)
                 connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
                 connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.TOP, offset8)
             }
