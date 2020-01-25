@@ -130,7 +130,6 @@ class HotlistParamBuilder {
         cpmParams.putString(KEY_PAGE, CPM_ADS_PER_PAGE.toString())
         cpmParams.putString(KEY_QUERY, queryItem)
         cpmParams.putString(KEY_HEADLINE_PRODUCT_COUNT,CPM_HEADLINE_PRODUCT_COUNT_VALUE)
-
         param.putString(KEY_PARAMS, createParametersForQuery(cpmParams.parameters))
         return param
     }
