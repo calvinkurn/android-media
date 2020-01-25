@@ -238,8 +238,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-        mCTA = cta
-        mCode = code
         context?.let {
             val adb = AlertDialog.Builder(context!!)
             adb.setTitle(R.string.tp_label_use_coupon)
@@ -285,6 +283,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         btnVerifikasi.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             activity?.startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
+
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
                     AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
@@ -378,6 +377,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
         hideLoader()
         mCouponName = data.title
+        mCTA = data.cta
+        mCode = data.realCode as String
         val description = view!!.findViewById<TextView>(R.id.tv_title)
         val label = view!!.findViewById<TextView>(R.id.text_time_label)
         val value = view!!.findViewById<Typography>(R.id.text_time_value)
@@ -699,6 +700,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             REQUEST_CODE_VERIFICATION_PHONE -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
+                        phoneVerificationState=true
                         mPresenter.redeemCoupon(mCode, mCTA)
                     }
                     Activity.RESULT_CANCELED -> {
@@ -709,22 +711,22 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-    companion object {
-        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
-        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
-        private val REQUEST_CODE_VERIFICATION_PHONE = 301
-        private val CONTAINER_LOADER = 0
-        private val CONTAINER_DATA = 1
-        private val CONTAINER_ERROR = 2
-        private val CONTAINER_SWIPE = 1
+        companion object {
+            val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
+            val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
+            private val REQUEST_CODE_VERIFICATION_PHONE = 301
+            private val CONTAINER_LOADER = 0
+            private val CONTAINER_DATA = 1
+            private val CONTAINER_ERROR = 2
+            private val CONTAINER_SWIPE = 1
 
 
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = CouponDetailFragment()
-            fragment.arguments = extras
-            return fragment
+            fun newInstance(extras: Bundle): Fragment {
+                val fragment = CouponDetailFragment()
+                fragment.arguments = extras
+                return fragment
+            }
         }
-    }
 
-}
+    }
 

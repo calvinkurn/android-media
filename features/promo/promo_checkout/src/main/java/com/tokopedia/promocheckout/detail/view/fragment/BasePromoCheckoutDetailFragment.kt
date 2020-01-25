@@ -14,7 +14,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -241,7 +240,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         if (e is CheckPromoCodeException || e is MessageErrorException) {
             message = e.message
         }
-        if (message.equals(resources.getString(R.string.promo_phone_verification_message))) {
+        if (message.equals(resources.getString(R.string.promo_phone_verification_message)) || message.equals(R.string.promo_phone_verification_message_v2)) {
             val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
 
             if (variant.isNotEmpty() && variant == AB_TESTING_CTA_VARIANT_A) {
@@ -256,7 +255,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun openPhoneVerificationBottomSheet() {
-        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.promo_phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeableBottomSheetDialog.setCustomContentView(view, "", false)
         val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
