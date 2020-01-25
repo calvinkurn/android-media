@@ -62,10 +62,13 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     @Override
-    public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing) {
+    public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId,
+                                          List<ShopShipment> shopShipmentList, int codHistory,
+                                          boolean isCorner, boolean isLeasing) {
         if (getView() != null) {
             getView().showLoading();
-            loadDuration(0, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, false, shippingParam, "");
+            loadDuration(0, selectedServiceId, codHistory, isCorner, isLeasing,
+                    shopShipmentList, false, shippingParam, "");
         }
     }
 
@@ -80,16 +83,21 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           RecipientAddressModel recipientAddressModel) {
         if (getView() != null) {
             getView().showLoading();
-            ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
+            ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString,
+                    isTradeInDropOff, recipientAddressModel);
             int selectedSpId = 0;
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
-            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, isTradeInDropOff, shippingParam, pslCode);
+            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode);
         }
     }
 
-    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, boolean isCorner, boolean isLeasing, List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi, ShippingParam shippingParam, String pslCode) {
+    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory,
+                              boolean isCorner, boolean isLeasing,
+                              List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi,
+                              ShippingParam shippingParam, String pslCode) {
         RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
