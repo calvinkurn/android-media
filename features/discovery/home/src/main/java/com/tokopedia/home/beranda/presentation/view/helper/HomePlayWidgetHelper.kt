@@ -25,7 +25,7 @@ class HomePlayWidgetHelper(
     private var mPlayer: ExoPlayer? = null
     private var mExoPlayerListener: ExoPlayerListener? = null
 
-    private var videosUri: Uri? = null
+    private var videoUri: Uri? = null
     private var mResumePosition: Long = 10
 
     /**
@@ -115,7 +115,7 @@ class HomePlayWidgetHelper(
 
     fun play(url: String){
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
-            videosUri = Uri.parse(url)
+            videoUri = Uri.parse(url)
             exoPlayerView.setPlayer(mPlayer)
             muteVideoPlayer()
             TokopediaPlayManager.getInstance(context).safePlayVideoWithUriString(url, autoPlay = false)
@@ -126,9 +126,9 @@ class HomePlayWidgetHelper(
     }
 
     fun preparePlayer(){
-        if(videosUri.toString().isNotEmpty() && DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if(videoUri != null && videoUri.toString().isNotEmpty() && DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             exoPlayerView.setPlayer(mPlayer)
-            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videosUri ?: Uri.parse(""), autoPlay = false)
+            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             playerPlay()
         }
@@ -164,7 +164,7 @@ class HomePlayWidgetHelper(
                 withContext(Dispatchers.Main) {
                     exoPlayerView.setPlayer(mPlayer)
                     muteVideoPlayer()
-                    TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videosUri ?: Uri.parse(""), autoPlay = true)
+                    TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = true)
                 }
             }
         } else {

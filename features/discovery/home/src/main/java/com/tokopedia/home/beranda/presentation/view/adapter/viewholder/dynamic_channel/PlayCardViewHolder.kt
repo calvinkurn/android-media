@@ -39,6 +39,7 @@ class PlayCardViewHolder(
     private val description = view.findViewById<TextView>(R.id.description)
     private var isClickable = false
     private val masterJob = Job()
+    private var playCardViewModel: PlayCardViewModel? = null
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
@@ -62,9 +63,12 @@ class PlayCardViewHolder(
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
-        if(container.visibility == View.GONE) container.show()
-        element?.let { initView(it) }
-        element?.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+        playCardViewModel = element
+        if(playCardViewModel != null) {
+            if (container.visibility == View.GONE) container.show()
+            initView(playCardViewModel!!)
+            playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+        }
     }
 
     private fun initView(model: PlayCardViewModel){
@@ -119,13 +123,15 @@ class PlayCardViewHolder(
     fun wantsToPlay() = visibleAreaOffset(videoPlayer, itemView.parent) >= 0.65
 
     fun onViewAttach(){
-        masterJob.cancelChildren()
-        launch{
-            delay(DELAY_CLICKABLE)
-            isClickable = true
-        }
+        if(playCardViewModel != null) {
+            masterJob.cancelChildren()
+            launch {
+                delay(DELAY_CLICKABLE)
+                isClickable = true
+            }
 
-        helper?.onViewAttach()
+            helper?.onViewAttach()
+        }
     }
 
     fun onViewDetach(){

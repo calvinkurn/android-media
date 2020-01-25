@@ -213,6 +213,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     _homeLiveData.value = homeData
                     getHeaderData()
                     getReviewData()
+                    getPlayBanner()
 
                     _trackingLiveData.setValue(Event(_homeLiveData.value?.list
                             ?: listOf<Visitable<*>>()))
@@ -641,18 +642,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     // Logic detect play banner should load data from API
-    private fun getPlayBanner(index: Int){
+    private fun getPlayBanner(){
         // Check the current index is play card view model
-        val playBanner = _homeLiveData.value?.list?.get(index)
+        val playBanner = _homeLiveData.value?.list?.find { it is PlayCardViewModel }
         if(playBanner != null && playBanner is PlayCardViewModel) {
             loadPlayBannerFromNetwork(playBanner)
-        } else {
-            val findIndex = _homeLiveData.value?.list?.indexOfFirst { it is PlayCardViewModel } ?: -1
-            if(findIndex != -1){
-                _homeLiveData.value?.list?.get(index)?.let {
-                    loadPlayBannerFromNetwork(it as PlayCardViewModel)
-                }
-            }
         }
     }
 
@@ -672,7 +666,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(_homeLiveData.value?.list ?: listOf())
         val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
-        if(newList[playIndex] is PlayCardViewModel){
+        if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
             newList[playIndex] = playCardViewModel
         }
         _homeLiveData.value = _homeLiveData.value?.copy(
@@ -730,20 +724,18 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     private fun evaluatePlayWidget(homeViewModel: HomeViewModel?): HomeViewModel? {
         homeViewModel?.let { homeViewModel ->
-            // Find the new play widget is still available or not
-            val list = homeViewModel.list.toMutableList()
-            val playIndex = list.indexOfFirst { visitable -> visitable is PlayCardViewModel }
-
-            // if on new home available the data, it will be load new data
-            if(playIndex != -1){
-                getPlayBanner(playIndex)
-            }
-
             // find the old data from current list
             val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardViewModel}
             if(playWidget != null) {
-                list[playIndex] = playWidget
-                return homeViewModel.copy(list = list)
+                // Find the new play widget is still available or not
+                val list = homeViewModel.list.toMutableList()
+                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+
+                // if on new home available the data, it will be load new data
+                if(playIndex != -1){
+                    list[playIndex] = playWidget
+                    return homeViewModel.copy(list = list)
+                }
             }
         }
 
@@ -770,9 +762,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
                 currentList.let {list ->
                     val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
-                    list[buwidgetIndex] = findBu
-                    val newHomeViewModel = homeViewModel.copy(list = list)
-                    return newHomeViewModel
+                    if(buwidgetIndex != -1) {
+                        list[buwidgetIndex] = findBu
+                        val newHomeViewModel = homeViewModel.copy(list = list)
+                        return newHomeViewModel
+                    }
                 }
             }
 
@@ -788,9 +782,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
                     currentList.let {list ->
                         val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
-                        list[buwidgetIndex] = findCurrentBuWidgetViewModel
-                        val newHomeViewModel = homeViewModel.copy(list = list)
-                        return newHomeViewModel
+                        if(buwidgetIndex != -1) {
+                            list[buwidgetIndex] = findCurrentBuWidgetViewModel
+                            val newHomeViewModel = homeViewModel.copy(list = list)
+                            return newHomeViewModel
+                        }
                     }
                 }
             }
