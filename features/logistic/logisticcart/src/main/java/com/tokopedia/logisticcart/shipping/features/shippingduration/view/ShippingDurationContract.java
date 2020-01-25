@@ -53,10 +53,6 @@ public interface ShippingDurationContract {
 
         CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels);
 
-        void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
-
-        RecipientAddressModel getRecipientAddressModel();
-
         CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel);
 
     }

@@ -78,6 +78,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private boolean isDisableOrderPrioritas;
     private int mCartPosition = -1;
 
+    private RecipientAddressModel mRecipientAddress;
+
     @Inject
     ShippingDurationContract.Presenter presenter;
     @Inject
@@ -174,13 +176,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
         initializeInjector();
         presenter.attachView(this);
         if (getArguments() != null) {
-            RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
-            presenter.setRecipientAddressModel(recipientAddressModel);
+            mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             mCartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
-            if (recipientAddressModel != null) {
-                mIsCorner = recipientAddressModel.isCornerAddress();
+            if (mRecipientAddress != null) {
+                mIsCorner = mRecipientAddress.isCornerAddress();
             }
             isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
             setupRecyclerView(mCartPosition);
@@ -196,7 +197,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             if (shipmentDetailData != null) {
                 // Called from checkout
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, recipientAddressModel);
+                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress);
             } else if (shippingParam != null) {
                 // Called from express checkout
                 presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing);
@@ -359,7 +360,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData,
+                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                     flagNeedToSetPinpoint, true, true);
             try {
                 dismiss();
@@ -403,7 +404,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
         shippingDurationBottomsheetListener.onLogisticPromoChosen(
                 serviceData.getShippingCourierViewModelList(), courierData,
-                presenter.getRecipientAddressModel(), mCartPosition,
+                mRecipientAddress, mCartPosition,
                 serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
         dismiss();
     }
@@ -435,7 +436,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             courierData.setLogPromoMsg(data.getDisableText());
             shippingDurationBottomsheetListener.onLogisticPromoChosen(
                     serviceData.getShippingCourierViewModelList(), courierData,
-                    presenter.getRecipientAddressModel(), mCartPosition,
+                    mRecipientAddress, mCartPosition,
                     serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
             tkpdDialog.dismiss();
             dismiss();

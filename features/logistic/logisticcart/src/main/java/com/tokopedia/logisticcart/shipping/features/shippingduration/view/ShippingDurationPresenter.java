@@ -39,7 +39,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     private final GetRatesUseCase ratesUseCase;
     private final GetRatesApiUseCase ratesApiUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
-    private RecipientAddressModel recipientAddressModel;
 
     @Inject
     public ShippingDurationPresenter(GetRatesUseCase ratesUseCase,
@@ -48,16 +47,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
-    }
-
-    @Override
-    public RecipientAddressModel getRecipientAddressModel() {
-        return recipientAddressModel;
-    }
-
-    @Override
-    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
-        this.recipientAddressModel = recipientAddressModel;
     }
 
     @Override
