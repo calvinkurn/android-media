@@ -47,20 +47,20 @@ import javax.inject.Inject;
 public class ShippingDurationBottomsheet extends BottomSheets
         implements ShippingDurationContract.View, ShippingDurationAdapterListener {
 
-    public static final String ARGUMENT_SHIPPING_PARAM = "ARGUMENT_SHIPPING_PARAM";
-    public static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
-    public static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
-    public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
-    public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
-    public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
-    public static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
-    public static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
-    public static final String ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING";
-    public static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
-    public static final String ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS";
-    public static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
-    public static final String ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS";
-    public static final String ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF";
+    private static final String ARGUMENT_SHIPPING_PARAM = "ARGUMENT_SHIPPING_PARAM";
+    private static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
+    private static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
+    private static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
+    private static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
+    private static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
+    private static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
+    private static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
+    private static final String ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING";
+    private static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
+    private static final String ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS";
+    private static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
+    private static final String ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS";
+    private static final String ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
