@@ -305,7 +305,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             tooltip.setTitle(activity?.getString(R.string.title_bottomsheet_insurance))
             tooltip.setDesc(insuranceInfo)
             tooltip.setTextButton(activity?.getString(R.string.label_button_bottomsheet_close))
-            tooltip.setIcon(R.drawable.ic_insurance)
+            tooltip.setIcon(R.drawable.ic_pp_insurance)
             tooltip.btnAction.setOnClickListener {
                 tooltip.dismiss()
             }
