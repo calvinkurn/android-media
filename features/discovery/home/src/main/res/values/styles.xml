@@ -7,10 +7,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-<!--        <item name="android:windowEnterTransition" tools:targetApi="lollipop"></item>-->
-<!--        <item name="android:windowExitTransition" tools:targetApi="lollipop"></item>-->
-<!--        <item name="android:windowSharedElementEnterTransition"></item>-->
-<!--        <item name="android:windowSharedElementEnterTransition"></item>-->
+        <item name="android:windowEnterTransition" tools:targetApi="lollipop">@transition/shared_enter</item>
+        <item name="android:windowExitTransition" tools:targetApi="lollipop">@transition/shared_enter</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/shared_enter</item>
+        <item name="android:windowSharedElementExitTransition">@transition/shared_enter</item>
     </style>
 
     <style name="home_channel_badge_style">
