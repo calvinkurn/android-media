@@ -1589,25 +1589,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void addRecyclerViewScrollImpressionListener(int adapterPosition, @NotNull Function0<Unit> onImpressionListener) {
-        RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
-                    onImpressionListener.invoke();
-                    homeRecyclerView.removeOnScrollListener(this);
+        if (!impressionScrollListeners.containsKey(adapterPosition)) {
+            RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
+                        onImpressionListener.invoke();
+                        homeRecyclerView.removeOnScrollListener(this);
+                    }
                 }
-            }
-        };
-
-        if (impressionScrollListeners.containsKey(adapterPosition)) {
-            RecyclerView.OnScrollListener currentScrollListener = impressionScrollListeners.get(adapterPosition);
-            if (currentScrollListener != null) {
-                homeRecyclerView.removeOnScrollListener(currentScrollListener);
-            }
+            };
+            impressionScrollListeners.put(adapterPosition, impressionScrollListener);
+            homeRecyclerView.addOnScrollListener(impressionScrollListener);
         }
-        impressionScrollListeners.put(adapterPosition, impressionScrollListener);
-        homeRecyclerView.addOnScrollListener(impressionScrollListener);
     }
 
     private void resetImpressionListener() {
