@@ -87,10 +87,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
             } else if (!isValidPhone(phone)) {
                 setErrorText(getString(R.string.wrong_phone_format))
             } else {
-                context?.let {
-                    showLoading()
-                    viewModel.userProfileCompletionValidate(it, phone)
-                }
+                showLoading()
+                viewModel.userProfileValidate(phone)
             }
         }
     }
@@ -159,7 +157,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessUserValidate(pojo: UserValidatePojo) {
-        if (pojo.userProfileCompletionValidate.isValid) {
+        if (pojo.userProfileValidate.isValid) {
             goToVerificationActivity()
         }
     }
@@ -201,10 +199,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        context?.let {
-            val phone = etPhone.text.toString()
-            viewModel.mutateAddPhone(it, phone.trim(), "")
-        }
+        val phone = etPhone.text.toString()
+        viewModel.mutateAddPhone(phone.trim())
     }
 
 
