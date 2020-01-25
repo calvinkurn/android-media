@@ -63,7 +63,7 @@ public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
         if (!payloads.isEmpty()) {
             holder.bind(getItem(position), payloads);
         } else {
-            onBindViewHolder(holder, position);
+            super.onBindViewHolder(holder, position, payloads);
         }
     }
 
