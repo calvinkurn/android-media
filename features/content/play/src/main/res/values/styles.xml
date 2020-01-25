@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Play.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowSoftInputMode">stateAlwaysHidden|stateHidden</item>
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <!--        <item name="android:windowEnterTransition" tools:targetApi="lollipop"></item>-->
+        <!--        <item name="android:windowExitTransition" tools:targetApi="lollipop"></item>-->
+        <!--        <item name="android:windowSharedElementEnterTransition"></item>-->
+        <!--        <item name="android:windowSharedElementEnterTransition"></item>-->
     </style>
 </resources>

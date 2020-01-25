@@ -43,9 +43,12 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.isActive
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -203,7 +206,19 @@ class HomePresenter(private val userSession: UserSessionInterface,
     override fun refreshHomeData() {
         launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
-            _updateNetworkLiveData.setValue(resource)
+            if(resource.status == Resource.Status.SUCCESS) {
+                homeFlowData.collect {
+                    var homeData = evaluateGeolocationComponent(it)
+                    homeData = evaluateAvailableComponent(homeData)
+                    _homeLiveData.value = homeData
+                    getHeaderData()
+                    getReviewData()
+
+                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list
+                            ?: listOf<Visitable<*>>()))
+                }
+            }
+            _updateNetworkLiveData.value = resource
         }){
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.setValue(Resource.error(Throwable(), null))

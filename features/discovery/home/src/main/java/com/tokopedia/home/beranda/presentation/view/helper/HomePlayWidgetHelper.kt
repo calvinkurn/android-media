@@ -126,7 +126,7 @@ class HomePlayWidgetHelper(
     }
 
     fun preparePlayer(){
-        if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if(videosUri.toString().isNotEmpty() && DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             exoPlayerView.setPlayer(mPlayer)
             TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videosUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
