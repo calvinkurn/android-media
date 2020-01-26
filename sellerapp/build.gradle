@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+//apply plugin: 'auto-patch-plugin'
+//apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 
@@ -426,4 +428,5 @@ dependencies {
     })
     testImplementation rootProject.ext.testDependencies.junit
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation 'com.meituan.robust:robust:0.4.91'
 }

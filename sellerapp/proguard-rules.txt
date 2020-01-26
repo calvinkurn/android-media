@@ -198,7 +198,7 @@
 # this is retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature
+-keepattributes Signature,SourceFile,LineNumberTable
 -keepattributes Exceptions
 # this is retrofit
 
@@ -385,3 +385,9 @@
 -keep class com.scottyab.rootbeer.** { *; }
 -dontwarn com.scottyab.rootbeer.**
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
+
+# -- robust
+-keeppackagenames
+-ignorewarnings
+-dontwarn android.support.v4.**,**CompatHoneycomb,com.tenpay.android.**
+-optimizations !class/unboxing/enum,!code/simplification/arithmetic
