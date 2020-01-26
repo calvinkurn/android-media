@@ -119,8 +119,8 @@ class FlexBoxChatLayout : FrameLayout {
                 status!!.measuredWidth + statusLayout.leftMargin + statusLayout.rightMargin
         val statusHeight =
                 status!!.measuredHeight + statusLayout.topMargin + statusLayout.bottomMargin
-        val messageLineCount = message?.lineCount
-        val lastLineWidth: Float = if (messageLineCount!! > 0) {
+        val messageLineCount = message!!.lineCount
+        val lastLineWidth: Float = if (messageLineCount > 0) {
             message!!.layout.getLineWidth(messageLineCount - 1)
         } else {
             0f
