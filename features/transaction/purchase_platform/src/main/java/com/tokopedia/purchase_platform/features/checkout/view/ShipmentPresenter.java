@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateTransformer;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -186,6 +186,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String PARAM_MERCHANT = "merchant";
     private String PARAM_LOGISTIC = "logistic";
     private String statusOK = "OK";
+    private RatesResponseStateConverter stateConverter;
 
     @Inject
     public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
@@ -203,6 +204,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CodCheckoutUseCase codCheckoutUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              SubmitHelpTicketUseCase submitHelpTicketUseCase,
+                             RatesResponseStateConverter stateConverter,
                              ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
                              UserSessionInterface userSessionInterface,
@@ -223,6 +225,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
+        this.stateConverter = stateConverter;
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
         this.codCheckoutUseCase = codCheckoutUseCase;
@@ -1785,7 +1788,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             observable = ratesUseCase.execute(param);
         }
         observable
-                .map(new RatesResponseStateTransformer(shopShipmentList, spId, 0))
+                .map(shippingRecommendationData ->
+                        stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                spId, 0))
                 .subscribe(
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,

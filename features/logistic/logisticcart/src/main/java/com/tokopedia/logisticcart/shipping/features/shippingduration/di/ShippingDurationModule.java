@@ -1,10 +1,9 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.di;
 
-import android.content.Context;
-
 import com.tokopedia.logisticcart.domain.executor.MainScheduler;
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationContract;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
@@ -43,10 +42,13 @@ public class ShippingDurationModule {
 
     @Provides
     @ShippingDurationScope
-    ShippingDurationContract.Presenter provideShippingDurationPresenter(GetRatesUseCase ratesUseCase,
-                                                                        GetRatesApiUseCase ratesApiUseCase,
-                                                                        ShippingCourierConverter shippingCourierConverter) {
-        return new ShippingDurationPresenter(ratesUseCase, ratesApiUseCase, shippingCourierConverter);
+    ShippingDurationContract.Presenter provideShippingDurationPresenter(
+            GetRatesUseCase ratesUseCase,
+            GetRatesApiUseCase ratesApiUseCase,
+            RatesResponseStateConverter stateConverter,
+            ShippingCourierConverter shippingCourierConverter) {
+        return new ShippingDurationPresenter(ratesUseCase, ratesApiUseCase, stateConverter,
+                shippingCourierConverter);
     }
 
     @Provides

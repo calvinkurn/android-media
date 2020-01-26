@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RatesParam;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
@@ -38,14 +37,17 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
 
     private final GetRatesUseCase ratesUseCase;
     private final GetRatesApiUseCase ratesApiUseCase;
+    private final RatesResponseStateConverter stateConverter;
     private final ShippingCourierConverter shippingCourierConverter;
 
     @Inject
     public ShippingDurationPresenter(GetRatesUseCase ratesUseCase,
                                      GetRatesApiUseCase ratesApiUseCase,
+                                     RatesResponseStateConverter stateTransformer,
                                      ShippingCourierConverter shippingCourierConverter) {
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
+        this.stateConverter = stateTransformer;
         this.shippingCourierConverter = shippingCourierConverter;
     }
 
@@ -113,7 +115,9 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         }
 
         observable
-                .map(new RatesResponseStateTransformer(shopShipmentList, selectedSpId, selectedServiceId))
+                .map(shippingRecommendationData ->
+                        stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                selectedSpId, selectedServiceId))
                 .subscribe(
                         new Subscriber<ShippingRecommendationData>() {
                             @Override

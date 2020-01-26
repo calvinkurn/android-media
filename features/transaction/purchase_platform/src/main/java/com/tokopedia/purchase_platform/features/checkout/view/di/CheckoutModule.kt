@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
@@ -111,6 +112,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  codCheckoutUseCase: CodCheckoutUseCase,
                                  ratesUseCase: GetRatesUseCase,
                                  ratesApiUseCase: GetRatesApiUseCase,
+                                 stateConverter: RatesResponseStateConverter,
                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                  submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                  shippingCourierConverter: ShippingCourierConverter,
@@ -126,8 +128,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 editAddressUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase,
                 ratesUseCase, ratesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
-                shipmentFragment, userSessionInterface,
+                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase)
     }
 

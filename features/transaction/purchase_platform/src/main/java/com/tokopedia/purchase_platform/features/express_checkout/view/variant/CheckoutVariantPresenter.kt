@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateTransformer
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -38,6 +38,7 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
                                                    private val doCheckoutExpressUseCase: DoCheckoutExpressUseCase,
                                                    private val ratesUseCase: GetRatesUseCase,
                                                    private val addToCartOcsUseCase: AddToCartOcsUseCase,
+                                                   private val stateConverter: RatesResponseStateConverter,
                                                    private val atcDomainModelMapper: AtcDomainModelMapper,
                                                    private val checkoutDomainModelMapper: CheckoutDomainModelMapper,
                                                    private var viewModelMapper: ViewModelMapper,
@@ -82,7 +83,10 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
         val param = RatesParam.Builder(shopShipmentModels, shippingParam).build()
         ratesUseCase.execute(param)
-                .map(RatesResponseStateTransformer(shopShipmentModels, selectedSpId, selectedServiceId))
+                .map { shippingRecommendationData ->
+                    stateConverter.fillState(shippingRecommendationData, shopShipmentModels,
+                            selectedSpId, selectedServiceId)
+                }
                 .subscribe(
                         GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
                 )

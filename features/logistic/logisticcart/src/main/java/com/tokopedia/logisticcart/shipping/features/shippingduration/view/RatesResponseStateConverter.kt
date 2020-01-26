@@ -5,14 +5,13 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import rx.functions.Func1
+import javax.inject.Inject
 
-class RatesResponseStateTransformer(private val shopShipments: List<ShopShipment>,
-                                    private val selectedSpId: Int,
-                                    private val selectedServiceId: Int)
-    : Func1<ShippingRecommendationData, ShippingRecommendationData> {
 
-    override fun call(response: ShippingRecommendationData): ShippingRecommendationData {
+class RatesResponseStateConverter @Inject constructor() {
+
+    fun fillState(response: ShippingRecommendationData, shopShipments: List<ShopShipment>,
+                  selectedSpId: Int, selectedServiceId: Int): ShippingRecommendationData {
         val isPromoApplied = isPromoStackingApplied(response.logisticPromo)
         response.shippingDurationViewModels?.forEach { duration ->
             duration.shippingCourierViewModelList?.forEach { courier ->
