@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.usecase
 
-import android.accounts.NetworkErrorException
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,11 +13,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.common.data.model.response.cod.Message
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 // Typealias to make it shorter and have unconfusing meaning
