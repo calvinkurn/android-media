@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.reflect.TypeToken;
+import com.meituan.robust.patch.RobustModify;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
@@ -186,6 +188,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RobustModify.modify();
+//                Toast.makeText(getActivity(), "Coba Toast", Toast.LENGTH_SHORT).show();
                 powerMerchantTracking.eventUpgradeShopHome();
                 RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
             }

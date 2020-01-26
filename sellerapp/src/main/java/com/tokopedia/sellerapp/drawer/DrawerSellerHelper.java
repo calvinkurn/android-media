@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 
 import com.meituan.robust.PatchExecutor;
+import com.meituan.robust.patch.annotaion.Modify;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -94,6 +95,7 @@ public class DrawerSellerHelper extends DrawerHelper
         return new DrawerSellerHelper(activity, sessionHandler, drawerCache);
     }
 
+    @Modify
     @Override
     public ArrayList<DrawerItem> createDrawerData() {
         initRemoteConfig();
@@ -140,9 +142,12 @@ public class DrawerSellerHelper extends DrawerHelper
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
+                TkpdState.DrawerPosition.LOGOUT,
+                true));
+        data.add(new DrawerItem("Patch",
+                R.drawable.ic_warning_alert,
                 TkpdState.DrawerPosition.PATCH,
                 true));
-        data.add(new DrawerItem("Patch", R.drawable.icon_setting, true));
         shopLayout.setVisibility(View.VISIBLE);
         footerShadow.setVisibility(View.VISIBLE);
 
