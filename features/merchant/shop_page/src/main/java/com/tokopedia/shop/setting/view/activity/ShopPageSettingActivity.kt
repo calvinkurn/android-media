@@ -10,13 +10,16 @@ import com.tokopedia.shop.setting.di.component.DaggerShopPageSettingComponent
 import com.tokopedia.shop.setting.di.component.ShopPageSettingComponent
 import com.tokopedia.shop.setting.di.module.ShopPageSettingModule
 import com.tokopedia.shop.setting.view.fragment.ShopPageSettingFragment
+import com.tokopedia.shop.setting.view.fragment.ShopPageSettingFragment.Companion.SHOP_ID
 
 class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSettingComponent> {
 
     companion object {
 
-        fun createIntent(context: Context): Intent {
-            return Intent(context, ShopPageSettingActivity::class.java)
+        fun createIntent(context: Context, shopId: String): Intent {
+            return Intent(context, ShopPageSettingActivity::class.java).apply {
+                putExtra(SHOP_ID, shopId)
+            }
         }
     }
 

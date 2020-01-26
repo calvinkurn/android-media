@@ -61,6 +61,7 @@ import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderV
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
+import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -459,8 +460,10 @@ class ShopPageFragment :
     }
 
     private fun redirectToShopSettingsPage() {
-        context?.let {
-            RouteManager.route(it, SHOP_PAGE_SETTING)
+        context?.let {context ->
+            shopId?.let{shopId ->
+                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+            }
         }
     }
 
