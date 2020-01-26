@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 
+import com.meituan.robust.PatchExecutor;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -19,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -44,6 +47,9 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.sellerapp.robustutil.PatchManipulateImp;
+import com.tokopedia.sellerapp.robustutil.PermissionUtils;
+import com.tokopedia.sellerapp.robustutil.RobustCallBackSample;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.view.SimpleWebViewActivity;
 
@@ -58,6 +64,7 @@ public class DrawerSellerHelper extends DrawerHelper
         DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
     private static final String DIGITAL_PATH_MITRA = "mitra";
+    public static final int REQUEST_CODE_SDCARD_READ = 24834;
     private TextView shopName;
     private TextView shopLabel;
     private ImageView shopIcon;
@@ -133,8 +140,9 @@ public class DrawerSellerHelper extends DrawerHelper
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
-                TkpdState.DrawerPosition.LOGOUT,
+                TkpdState.DrawerPosition.PATCH,
                 true));
+        data.add(new DrawerItem("Patch", R.drawable.icon_setting, true));
         shopLayout.setVisibility(View.VISIBLE);
         footerShadow.setVisibility(View.VISIBLE);
 
@@ -400,6 +408,13 @@ public class DrawerSellerHelper extends DrawerHelper
                         sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
                     }
                     break;
+                case TkpdState.DrawerPosition.PATCH:
+                    if(isGrantSDCardReadPermission()){
+                        runRobust();
+                    } else {
+                        requestPermission();
+                    }
+                    break;
                 default:
                     super.onItemClicked(item);
             }
@@ -410,6 +425,26 @@ public class DrawerSellerHelper extends DrawerHelper
             }
             closeDrawer();
         }
+    }
+
+    public void handlePermissionResult() {
+        if (isGrantSDCardReadPermission()) {
+            runRobust();
+        } else {
+            Toast.makeText(context, "failure because without sd card read permission", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void requestPermission() {
+        PermissionUtils.requestSDCardReadPermission(context, REQUEST_CODE_SDCARD_READ);
+    }
+
+    private boolean isGrantSDCardReadPermission() {
+        return PermissionUtils.isGrantSDCardReadPermission(context);
+    }
+
+    private void runRobust(){
+        new PatchExecutor(context, new PatchManipulateImp(), new RobustCallBackSample()).start();
     }
 
     public void eventSellerInfo(String eventAction, String eventLabel) {
