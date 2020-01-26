@@ -1,0 +1,10 @@
+query TravelDestinationSummary($cityID:String!) {
+  TravelDestinationSummary(cityID: $cityID) {
+    title
+    images{
+      id
+      imageURL
+    }
+    description
+  }
+}

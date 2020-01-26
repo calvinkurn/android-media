@@ -7,7 +7,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.unifycomponents.UnifyButton
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -18,7 +18,7 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val totalPrice: TextView
-    private val nextButton: ButtonCompat
+    private val nextButton: UnifyButton
     private val buyLayout: RelativeLayout
     private lateinit var listener: ActionListener
 
@@ -51,7 +51,6 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
 
     fun setBuyButtonState(state: Boolean) {
         nextButton.isEnabled = state
-        nextButton.buttonCompatType = if (state) ButtonCompat.VISIBLE else ButtonCompat.DISABLE
     }
 
     interface ActionListener {

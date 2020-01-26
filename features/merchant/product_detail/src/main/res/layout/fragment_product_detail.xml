@@ -103,7 +103,7 @@
                     android:fitsSystemWindows="true"
                     app:layout_collapseMode="none"
                     app:scrimAnimationDuration="50"
-                    tools:visibility="gone" />
+                    tools:visibility="visible" />
                 <include layout="@layout/partial_product_detail_header"/>
                 <include layout="@layout/partial_product_rating_talk_courier"/>
                 <include layout="@layout/partial_product_detail_visibility"/>
@@ -124,15 +124,17 @@
 
                 <include layout="@layout/partial_product_detail_wholesale"/>
 
-                <com.tokopedia.common_tradein.customviews.TradeInTextView
-                    android:id="@+id/tv_trade_in"
+                <include
+                    android:id="@+id/baseTradein"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    layout="@layout/partial_product_trade_in"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
+
                 <include layout="@layout/partial_product_full_descr"/>
                 <include layout="@layout/partial_product_recom_1"/>
                 <include layout="@layout/partial_product_shop_info"/>
@@ -263,34 +265,36 @@
             </FrameLayout>
 
         </RelativeLayout>
-        
+
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_gravity="bottom">
-    
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
             <com.tokopedia.stickylogin.view.StickyLoginView
-              android:id="@+id/sticky_login_text"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/sticky_bg_color"
-              android:visibility="gone"
-              app:layout_constraintTop_toTopOf="parent"
-              app:sticky_highlight_color="@color/g_500"
-              app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
-            
-            <include layout="@layout/partial_layout_button_action"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
-            
+                android:id="@+id/sticky_login_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/sticky_bg_color"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:sticky_highlight_color="@color/g_500"
+                app:sticky_left_icon="@drawable/ic_toped_widget_login" />
+
+            <include
+                layout="@layout/partial_layout_button_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            app:useCompatPadding="true"
             android:clickable="true"
             android:visibility="visible"
             tools:visibility="visible"
@@ -328,7 +332,6 @@
             android:layout_gravity="center"
             android:visibility="gone"
             tools:visibility="visible"/>
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

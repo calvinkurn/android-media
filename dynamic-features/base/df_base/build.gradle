@@ -60,7 +60,9 @@ dependencies {
     implementation project(rootProject.ext.features.digitalHomepage)
     implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.rechargeOcr)
+    implementation project(rootProject.ext.features.rechargeGeneral)
     implementation project(rootProject.ext.features.digitalDeals)
+    implementation project(rootProject.ext.features.digitalproduct)
     //Discovery
     implementation project(rootProject.ext.features.imageSearch)
     implementation project(rootProject.ext.features.similarSearch)
@@ -98,5 +100,7 @@ dependencies {
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.kyccentralized)
+    implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.attachvoucher)
 }

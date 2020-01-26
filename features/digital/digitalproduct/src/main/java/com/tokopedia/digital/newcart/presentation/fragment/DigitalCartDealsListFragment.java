@@ -1,17 +1,20 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartDealsComponent;
@@ -38,8 +41,6 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
 
     @Inject
     DigitalCartDealsListPresenter presenter;
-    @Inject
-    DigitalModuleRouter digitalModuleRouter;
 
     private InteractionListener interactionListener;
 
@@ -70,7 +71,7 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_digital_cart_deals_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_deals_cart_list, container, false);
         return view;
     }
 
@@ -124,13 +125,9 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
 
     @Override
     public void navigateToDetailPage(DealProductViewModel viewModel) {
-        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(),
-                viewModel.getUrl(),
-                false,
-                false,
-                false,
-                false)
-        );
+        Intent intent = RouteManager.getIntent(getActivity(),
+                ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
+        startActivity(intent);
     }
 
     @Override
