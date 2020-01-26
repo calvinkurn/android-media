@@ -202,18 +202,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     @Override
-    public CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel) {
-        CourierItemData result = new CourierItemData();
-        result.setShipperId(promoModel.getShipperId());
-        result.setShipperProductId(promoModel.getShipperProductId());
-        result.setServiceId(promoModel.getServiceId());
-        result.setServiceName(promoModel.getShipperDesc());
-        result.setName(promoModel.getShipperName());
-        result.setLogPromoCode(promoModel.getPromoCode());
-        return result;
-    }
-
-    @Override
     public CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels) {
         for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
             if (shippingCourierViewModel.getProductData().isRecommend()) {
