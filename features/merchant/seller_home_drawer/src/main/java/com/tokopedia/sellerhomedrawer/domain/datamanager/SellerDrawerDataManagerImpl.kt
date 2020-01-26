@@ -48,10 +48,9 @@ class SellerDrawerDataManagerImpl(private val context: Context,
 
         val query = GraphqlHelper.loadRawString(viewListener.getActivity().resources, R.raw.sah_seller_drawer_data_query)
 
-        getSellerHomeUserAttrUseCase.execute(getSellerHomeUserAttrUseCase.getUserAttrParams(userSession.userId, query), object : Subscriber<SellerUserData>() {
-            override fun onNext(sellerUserData: SellerUserData?) {
-                if (sellerUserData != null)
-                    renderAndUpdateValues(sellerUserData)
+        getSellerHomeUserAttrUseCase.execute(GetSellerHomeUserAttributesUseCase.getUserAttrParams(userSession.userId, query), object : Subscriber<SellerUserData>() {
+            override fun onNext(sellerUserData: SellerUserData) {
+                renderAndUpdateValues(sellerUserData)
             }
 
             override fun onCompleted() {
@@ -59,6 +58,7 @@ class SellerDrawerDataManagerImpl(private val context: Context,
             }
 
             override fun onError(e: Throwable?) {
+                e?.printStackTrace()
 
             }
         })
@@ -98,6 +98,10 @@ class SellerDrawerDataManagerImpl(private val context: Context,
             sellerUserData.shopInfoMoengage?.info?.shopAvatar?.let { sellerDrawerProfile.shopAvatar = it }
             sellerUserData.shopInfoMoengage?.info?.shopCover?.let { sellerDrawerProfile.shopCover = it }
             MethodChecker.fromHtml(sellerUserData.shopInfoMoengage?.info?.shopName).toString().let { sellerDrawerProfile.shopName = it }
+            sellerUserData.profile?.profilePicture?.let { sellerDrawerProfile.userAvatar = it }
+            MethodChecker.fromHtml(sellerUserData.profile?.fullName).toString().let { sellerDrawerProfile.userName = it }
+
+            viewListener.onGetProfile(sellerDrawerProfile)
         }
 
     }

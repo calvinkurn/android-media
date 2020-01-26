@@ -3,13 +3,13 @@ package com.tokopedia.sellerhomedrawer.data.userdata.wallet
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class AbTag {
+data class AbTag (
 
     @SerializedName("__typename")
     @Expose
-    var typename: String? = null
+    var typename: String? = "",
     @SerializedName("tag")
     @Expose
-    var tag: String? = null
+    var tag: String? = ""
 
-}
+)

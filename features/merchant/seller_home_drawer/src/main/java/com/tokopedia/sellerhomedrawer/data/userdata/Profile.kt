@@ -3,40 +3,40 @@ package com.tokopedia.sellerhomedrawer.data.userdata
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Profile {
+data class Profile (
 
     @SerializedName("user_id")
     @Expose
-    var userId: String? = null
+    var userId: String? = "",
     @SerializedName("first_name")
     @Expose
-    val firstName: String? = null
+    val firstName: String? = "",
     @SerializedName("full_name")
     @Expose
-    var fullName: String? = null
+    var fullName: String? = "",
     @SerializedName("email")
     @Expose
-    var email: String? = null
+    var email: String? = "",
     @SerializedName("gender")
     @Expose
-    var gender: String? = null
+    var gender: String? = "",
     @SerializedName("bday")
     @Expose
-    var bday: String? = null
+    var bday: String? = "",
     @SerializedName("age")
     @Expose
-    var age: String? = null
+    var age: String? = "",
     @SerializedName("phone")
     @Expose
-    var phone: String? = null
+    var phone: String? = "",
     @SerializedName("register_date")
     @Expose
-    var registerDate: String? = null
+    var registerDate: String? = "",
     @SerializedName("profile_picture")
     @Expose
-    var profilePicture: String? = null
+    var profilePicture: String? = "",
     @SerializedName("completion")
     @Expose
-    var completion: Int? = null
+    var completion: Int? = 0
 
-}
+)

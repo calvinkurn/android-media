@@ -5,37 +5,38 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerhomedrawer.data.userdata.notifications.*
 
 
-class Notifications {
+data class Notifications (
 
     @SerializedName("sales")
     @Expose
-    var sales: Sales? = null
+    var sales: Sales? = Sales(),
     @SerializedName("inbox")
     @Expose
-    val inbox: Inbox? = null
+    val inbox: Inbox? = Inbox(),
     @SerializedName("purchase")
     @Expose
-    var purchase: Purchase? = null
+    var purchase: Purchase? = Purchase(),
     @SerializedName("resolution_as")
     @Expose
-    val resolutionAs: ResolutionAs? = null
+    val resolutionAs: ResolutionAs? = ResolutionAs(),
     @SerializedName("total_notif")
     @Expose
-    val totalNotif: Int = 0
+    val totalNotif: Int = 0,
     @SerializedName("total_cart")
     @Expose
-    val totalCart: Int = 0
+    val totalCart: Int = 0,
     @SerializedName("resolution")
     @Expose
-    val resolution: Int = 0
+    val resolution: Int = 0,
     @SerializedName("shop_id")
     @Expose
-    val shopId: Int = 0
+    val shopId: Int = 0,
     @SerializedName("chat")
     @Expose
-    val chat: Chat? = null
+    val chat: Chat? = Chat(),
     @SerializedName("incr_notif")
     @Expose
     val incrNotif: Int = 0
 
-}
+)
+

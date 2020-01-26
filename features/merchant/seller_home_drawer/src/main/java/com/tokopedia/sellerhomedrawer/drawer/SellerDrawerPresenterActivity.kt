@@ -21,23 +21,26 @@ import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerDeposit
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerTopPoints
+import com.tokopedia.sellerhomedrawer.di.DaggerSellerHomeDashboardComponent
+import com.tokopedia.sellerhomedrawer.di.SellerHomeDashboardComponent
+import com.tokopedia.sellerhomedrawer.di.module.SellerHomeDashboardModule
 import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManager
 import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManagerImpl
-import com.tokopedia.sellerhomedrawer.domain.repository.SellerUserAttributesRepository
-import com.tokopedia.sellerhomedrawer.domain.repository.SellerUserAttributesRepositoryImpl
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
 import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
+import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
 import kotlinx.android.synthetic.main.sh_drawer_activity.*
 import rx.Observable
+import javax.inject.Inject
 
-abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
+abstract class SellerDrawerPresenterActivity : BasePresenterActivity<SellerHomeDashboardDrawerPresenter>(),
         SellerDrawerDataListener
 {
     private val MAX_NOTIF = 999
@@ -53,12 +56,17 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
     private var broadcastReceiverTokoPoint: BroadcastReceiver? = null
     private var broadcastReceiverPendingTokocash: BroadcastReceiver? = null
 
+    @Inject
+    lateinit var getSellerHomeUserAttributesUseCase: GetSellerHomeUserAttributesUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //TODO : Is this context true ?
         userSession = UserSession(applicationContext)
         drawerCache = LocalCacheHandler(this, SellerHomeDrawerHelper.DRAWER_CACHE)
         remoteConfig = FirebaseRemoteConfigImpl(this)
+
+        injectDependency()
         setupDrawer()
     }
 
@@ -66,16 +74,17 @@ abstract class SellerDrawerPresenterActivity<T> : BasePresenterActivity<T>(),
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
+    fun injectDependency() {
+        val component: SellerHomeDashboardComponent = DaggerSellerHomeDashboardComponent.builder()
+                .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
+                .build()
+        component.inject(this)
+    }
+
     fun setupDrawer() {
 
         val sellerTokoCashObservable = Observable.just(SellerTokoCashData())
         val sellerTokoCashUseCase = SellerTokoCashUseCase(sellerTokoCashObservable)
-
-        val sellerUserAttributesRepository: SellerUserAttributesRepository = SellerUserAttributesRepositoryImpl()
-        val getSellerHomeUserAttributesUseCase = GetSellerHomeUserAttributesUseCase(sellerUserAttributesRepository)
-
-//        val userAttributesRepository = SellerGetUser
-//        val sellerGetUserAttributesUseCase = SellerGetUserAttributesUseCase()
 
         sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache, remoteConfig)
         sellerDrawerHelper.initDrawer(this)

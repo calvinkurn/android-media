@@ -22,7 +22,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
 import javax.inject.Inject
 
-class SellerDashboardActivity: BaseSellerReceiverDrawerActivity<SellerHomeDashboardDrawerPresenter>(), SellerHomeDashboardContract.View{
+class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
 
     companion object {
         @JvmStatic

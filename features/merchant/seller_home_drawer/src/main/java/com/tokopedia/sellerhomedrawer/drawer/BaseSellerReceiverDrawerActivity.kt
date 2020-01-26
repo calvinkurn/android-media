@@ -7,7 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.sellerhomedrawer.service.SellerDrawerGetNotificationService
 
-open class BaseSellerReceiverDrawerActivity<T>: SellerDrawerPresenterActivity<T>() {
+open class BaseSellerReceiverDrawerActivity: SellerDrawerPresenterActivity() {
 
     val drawerGetNotificationReceiver = object : BroadcastReceiver() {
 

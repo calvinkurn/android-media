@@ -6,7 +6,5 @@ import rx.Observable
 
 interface SellerUserAttributesRepository {
 
-    fun getConsumerUserAttributes(parameters: RequestParams): Observable<SellerUserData>
-
     fun getSellerUserAttributes(parameters: RequestParams): Observable<SellerUserData>
 }

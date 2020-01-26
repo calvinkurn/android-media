@@ -1,16 +1,13 @@
 package com.tokopedia.sellerhomedrawer.domain.repository
 
 import com.tokopedia.sellerhomedrawer.data.SellerUserData
+import com.tokopedia.sellerhomedrawer.domain.factory.SellerUserAttributesFactory
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 
-class SellerUserAttributesRepositoryImpl: SellerUserAttributesRepository {
-
-    override fun getConsumerUserAttributes(parameters: RequestParams): Observable<SellerUserData> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class SellerUserAttributesRepositoryImpl(val sellerUserAttributesFactory: SellerUserAttributesFactory): SellerUserAttributesRepository {
 
     override fun getSellerUserAttributes(parameters: RequestParams): Observable<SellerUserData> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return sellerUserAttributesFactory.getCloudAttrDataSource().getSellerUserAttributes(parameters)
     }
 }

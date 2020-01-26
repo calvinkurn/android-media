@@ -5,27 +5,29 @@ import com.google.gson.annotations.SerializedName
 
 import com.tokopedia.sellerhomedrawer.data.userdata.*
 
-class SellerUserData {
-
-    @SerializedName("shopInfoMoengage")
+data class SellerUserData (
+        @SerializedName("status")
+        @Expose
+        var status: String? = "",
+        @SerializedName("shopInfoMoengage")
     @Expose
-    var shopInfoMoengage: ShopInfoMoengage? = null
-    @SerializedName("profile")
+    var shopInfoMoengage: ShopInfoMoengage? = ShopInfoMoengage(),
+        @SerializedName("profile")
     @Expose
-    var profile: Profile? = null
-    @SerializedName("wallet")
+    var profile: Profile? = Profile(),
+        @SerializedName("wallet")
     @Expose
-    var wallet: Wallet? = null
-    @SerializedName("balance")
+    var wallet: Wallet? = Wallet(),
+        @SerializedName("balance")
     @Expose
-    var saldo: Saldo? = null
-    @SerializedName("paymentAdminProfile")
+    var saldo: Saldo? = Saldo(),
+        @SerializedName("paymentAdminProfile")
     @Expose
-    var paymentAdminProfile: PaymentAdminProfile? = null
-    @SerializedName("topadsDeposit")
+    var paymentAdminProfile: PaymentAdminProfile? = PaymentAdminProfile(),
+        @SerializedName("topadsDeposit")
     @Expose
-    var topadsDeposit: TopadsDeposit? = null
-    @SerializedName("notifications")
+    var topadsDeposit: TopadsDeposit? = TopadsDeposit(),
+        @SerializedName("notifications")
     @Expose
-    var notifications: Notifications? = null
-}
+    var notifications: Notifications? = Notifications()
+)
