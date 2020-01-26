@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'auto-patch-plugin'
-//apply plugin: 'robust'
+apply plugin: 'auto-patch-plugin'
+apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 
@@ -121,6 +121,12 @@ android {
         debug {
             storeFile file("debug.keystore")
         }
+        release {
+            storeFile file("keystore.jks")
+            storePassword "android"
+            keyAlias "key0"
+            keyPassword "android"
+        }
     }
 
 
@@ -134,9 +140,7 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (devMode()) {
-                signingConfig signingConfigs.debug
-            }
+            signingConfig signingConfigs.release
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
