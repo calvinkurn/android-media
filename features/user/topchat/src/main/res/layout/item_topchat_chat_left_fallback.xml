@@ -60,10 +60,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_topchat_left_chat_message"
-            android:paddingLeft="16dp"
-            android:paddingTop="10dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="10dp"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/dimen_topchat_10dp"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/dimen_topchat_10dp"
             app:showCheckMark="false" />
 
     </LinearLayout>

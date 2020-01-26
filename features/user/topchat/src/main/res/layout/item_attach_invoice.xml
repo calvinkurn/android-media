@@ -24,12 +24,12 @@
             android:layout_marginBottom="@dimen/spacing_lvl1"
             android:background="@drawable/bg_shadow_attach_product"
             android:minWidth="@dimen/chat_width"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingEnd="@dimen/dp_18"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_12">
+            android:paddingStart="@dimen/topchat_12dp"
+            android:paddingLeft="@dimen/topchat_12dp"
+            android:paddingTop="@dimen/topchat_12dp"
+            android:paddingEnd="@dimen/topchat_18dp"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/topchat_12dp">
 
             <ImageView
                 android:id="@+id/iv_thumbnail"

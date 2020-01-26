@@ -19,8 +19,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_group_chat_message"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="@dimen/topchat_240dp"
+        android:layout_height="@dimen/topchat_240dp"
         android:layout_below="@+id/llChatHeaderContainer"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

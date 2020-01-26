@@ -64,14 +64,12 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
     private fun setChatLeft() {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.START
         chatStatus.visibility = View.GONE
-//        itemView.llReadStatusContainer?.setBackgroundResource(R.drawable.bg_topchat_chat_left_voucher)
     }
 
     private fun setChatRight(element: TopChatVoucherViewModel) {
         itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
         chatStatus.visibility = View.VISIBLE
         bindChatReadStatus(element)
-//        itemView.llReadStatusContainer?.setBackgroundResource(R.drawable.bg_topchat_chat_right_voucher)
     }
 
     override fun isOwner(): Boolean {

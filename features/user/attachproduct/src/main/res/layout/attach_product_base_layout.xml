@@ -240,8 +240,8 @@
 
         <ImageView
             android:id="@+id/chat_status"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+            android:layout_width="@dimen/attachproduct_14dp"
+            android:layout_height="@dimen/attachproduct_14dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
             android:layout_marginRight="@dimen/spacing_lvl1"

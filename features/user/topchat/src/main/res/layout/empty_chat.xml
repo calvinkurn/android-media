@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_12"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12">
+    android:paddingBottom="@dimen/topchat_12dp">
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/thumbnail"
