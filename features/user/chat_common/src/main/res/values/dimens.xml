@@ -25,5 +25,6 @@
     <dimen name="attachment_title_max_width">172dp</dimen>
     <dimen name="chatcommon_14dp">14dp</dimen>
     <dimen name="chatcommon_1dp">1dp</dimen>
+    <dimen name="chatcommon_12dp">12dp</dimen>
 
 </resources>
