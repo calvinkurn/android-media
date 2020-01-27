@@ -132,7 +132,7 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, ItemCl
         })
     }
 
-    fun clearData() {
+    private fun clearData() {
         pageAdapter.getRegisteredFragment(0).clearData()
         pageAdapter.getRegisteredFragment(1).clearData()
         pageAdapter.getRegisteredFragment(2).clearData()

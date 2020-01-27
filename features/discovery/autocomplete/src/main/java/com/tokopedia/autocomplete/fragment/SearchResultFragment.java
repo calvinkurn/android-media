@@ -26,7 +26,6 @@ import java.util.List;
 
 public class SearchResultFragment extends TkpdBaseV4Fragment {
 
-    private static final String TAG = SearchResultFragment.class.getSimpleName();
     private static final String ARGS_INSTANCE_NAME = "ARGS_INSTANCE_NAME";
     private static final String DEFAULT_INSTANCE_TPE = "unknown";
     private static final String ARGS_INSTANCE_TYPE = "ARGS_INSTANCE_TYPE";

@@ -70,7 +70,7 @@ public class AutoCompleteActivity extends BaseActivity
 
         setStatusBarColor();
         proceed();
-        initActivityOnCreate(savedInstanceState);
+        initActivityOnCreate();
         handleIntent(getIntent());
     }
 
@@ -79,7 +79,7 @@ public class AutoCompleteActivity extends BaseActivity
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            window.setStatusBarColor(getResources().getColor(R.color.white,null));
+            window.setStatusBarColor(getResources().getColor(R.color.white, null));
         }
     }
 
@@ -109,7 +109,7 @@ public class AutoCompleteActivity extends BaseActivity
         TransitionManager.beginDelayedTransition(mInitialStateView, fade);
     }
 
-    private void initActivityOnCreate(Bundle savedInstanceState) {
+    private void initActivityOnCreate() {
         GraphqlClient.init(this);
         autocompleteTracking = new AutocompleteTracking(new UserSession(this));
     }
@@ -140,7 +140,7 @@ public class AutoCompleteActivity extends BaseActivity
             suggestionFragment.setSearchParameter(param);
             suggestionFragment.setSuggestionViewUpdateListener(this);
         }
-        if(initialStateFragment != null) {
+        if (initialStateFragment != null) {
             initialStateFragment.setSearchParameter(param);
             initialStateFragment.setInitialStateViewUpdateListener(this);
         }
@@ -235,28 +235,25 @@ public class AutoCompleteActivity extends BaseActivity
 
     @Override
     public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
-        if(searchParameter.getSearchQuery().isEmpty()){
-            suggestionFragment.clearData();
-            if (initialStateFragment != null ) {
+        if (searchParameter.getSearchQuery().isEmpty()) {
+            if (initialStateFragment != null) {
                 initialStateFragment.search(searchParameter);
             }
-        }else{
-            if (suggestionFragment != null ) {
+        } else {
+            if (suggestionFragment != null) {
                 suggestionFragment.search(searchParameter);
             }
         }
     }
 
     @Override
-    public void showInitialStateView(){
-        if(mInitialStateView.getVisibility() == View.GONE && mSuggestionView.getVisibility() == View.VISIBLE){
-            mSuggestionView.setVisibility(View.GONE);
-            mInitialStateView.setVisibility(View.VISIBLE);
-            animateInitialView();
-        }
+    public void showInitialStateView() {
+        mSuggestionView.setVisibility(View.GONE);
+        mInitialStateView.setVisibility(View.VISIBLE);
+        animateInitialView();
     }
 
-    private void animateInitialView(){
+    private void animateInitialView() {
         TransitionSet transitionSet = new TransitionSet();
         Fade fade = new Fade(Fade.MODE_IN);
         transitionSet.addTransition(fade);
@@ -265,14 +262,12 @@ public class AutoCompleteActivity extends BaseActivity
 
     @Override
     public void showSuggestionView() {
-        if(mSuggestionView.getVisibility() == View.GONE && mInitialStateView.getVisibility() == View.VISIBLE){
-            mInitialStateView.setVisibility(View.GONE);
-            mSuggestionView.setVisibility(View.VISIBLE);
-            animateSuggestionView();
-        }
+        mInitialStateView.setVisibility(View.GONE);
+        mSuggestionView.setVisibility(View.VISIBLE);
+        animateSuggestionView();
     }
 
-    private void animateSuggestionView(){
+    private void animateSuggestionView() {
         TransitionSet transitionSet = new TransitionSet();
         Fade fade = new Fade(Fade.MODE_IN);
         transitionSet.addTransition(fade);
