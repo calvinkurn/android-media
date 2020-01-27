@@ -21,7 +21,7 @@ val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
 val FPM_THEMATIC_CARD_VIEW = "home_thematic_card"
 val FPM_DYNAMIC_LEGO_BANNER = "home_lego_banner"
 val FPM_USE_CASE_ICON = "home_use_case_icon"
-val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/200-square/"
+val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
