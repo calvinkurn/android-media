@@ -1,10 +1,12 @@
 package com.tokopedia.tokopoints.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -240,14 +242,14 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (getView() == null) {
             return;
         }
-        serverErrorView.setErrorButtonClickListener((view)->{
+        serverErrorView.setErrorButtonClickListener((view) -> {
             mPresenter.getCatalogDetail(code);
         });
     }
 
     @Override
     public void openWebView(String url) {
-        RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
+        RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
@@ -672,7 +674,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         //hide gift section when user is in public page
-        if (!mUserSession.isLoggedIn()){
+        if (!mUserSession.isLoggedIn()) {
             giftSectionMainLayout.setVisibility(View.GONE);
             bottomSeparator.setVisibility(View.GONE);
         }
@@ -724,7 +726,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 AnalyticsTrackerUtil.ActionKeys.VIEW_COUPON,
                 mCouponName);
     }
-
 
 
     private void loadWebViewInBottomsheet(String data, String title) {
@@ -780,7 +781,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_LOGIN) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             pointValueText.setText(getResources().getString(R.string.points_saya));
             mPresenter.getCatalogDetail(code);
             if (catalogsValueEntity.isDisabled()) {
