@@ -46,11 +46,9 @@ class SellerDrawerGroupViewHolder(itemView: View,
     private fun setNotification(notifCount: Int) {
         with(itemView) {
             notif.visibility = View.GONE
-            toggle_notif.visibility.apply {
-                if (notifCount > 0)
-                    View.VISIBLE
-                else View.GONE
-            }
+            if (notifCount > 0)
+                toggle_notif.visibility = View.VISIBLE
+            else toggle_notif.visibility = View.GONE
         }
     }
 

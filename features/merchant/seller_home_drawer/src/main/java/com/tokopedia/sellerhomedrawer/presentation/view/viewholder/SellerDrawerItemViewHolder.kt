@@ -42,7 +42,7 @@ class SellerDrawerItemViewHolder (itemView: View,
         notif.visibility = View.VISIBLE
         when {
             notificationCount > 0 ->
-                notif.text = notif.toString()
+                notif.text = notificationCount.toString()
             notificationCount > maximumCounter ->
                 notif.text = MAX_PLACEHOLDER
             else -> notif.visibility = View.GONE

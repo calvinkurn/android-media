@@ -4,7 +4,7 @@
     android:id="@+id/drawer_item"
     android:layout_width="match_parent"
     android:layout_height="@dimen/drawer_item_height"
-    android:background="@drawable/selectable_white_background"
+    android:background="@drawable/sh_selectable_white_background"
     android:clickable="true"
     android:orientation="horizontal">
 
@@ -60,6 +60,6 @@
         android:paddingRight="@dimen/padding_ms"
         android:paddingTop="@dimen/padding_vvs"
         android:paddingBottom="@dimen/padding_vvs"
-        android:background="@drawable/notif_red"
+        android:background="@drawable/sh_notif_red"
         android:visibility="gone" />
 </RelativeLayout>
