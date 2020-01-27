@@ -16,7 +16,7 @@
         app:layout_goneMarginEnd="@dimen/dp_0"
         >
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_chat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="@string/play_chat_placeholder"
-            android:inputType="textVisiblePassword|textShortMessage"
+            android:inputType="textNoSuggestions|textShortMessage"
             android:longClickable="false"
             android:textColor="@color/Neutral_N0"
             android:textColorHint="@color/play_chat_text"
