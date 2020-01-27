@@ -3,7 +3,7 @@ package com.tokopedia.common_digital.cart.data.datasource
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData

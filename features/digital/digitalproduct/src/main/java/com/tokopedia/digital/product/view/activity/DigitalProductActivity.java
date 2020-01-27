@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.core.app.TaskStackBuilder;
+
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -77,7 +79,11 @@ public class DigitalProductActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     @Override

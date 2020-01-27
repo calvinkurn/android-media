@@ -154,6 +154,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         isDreamFundViewed = false
         isRequestedSpinnerLike = false
         isRequestedBanner = false
+        isRequestedPartner = false
     }
 
     private fun loadDataAll() {
@@ -244,6 +245,11 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onImpressionBanner(banner: UmrahBanner, position: Int) {
         trackingUmrahUtil.umrahImpressionBannerTracker(banner,position)
     }
+
+    override fun onBindPartnerVH(isLoadFromCloud: Boolean) {
+        umrahHomepageViewModel.getPartnerTravelData(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_umrah_common_travel_agents), isLoadFromCloud)
+    }
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false
@@ -251,6 +257,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         var isRequestedCategory = false
         var isRequestedSpinnerLike = false
         var isRequestedBanner = false
+        var isRequestedPartner = false
         const val REQUEST_CODE_LOGIN = 400
         const val UMRAH_SEARCH_PARAM_INDEX = 0
     }

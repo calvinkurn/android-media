@@ -31,7 +31,7 @@ class PreCachingLayoutManager : LinearLayoutManager {
         } else return super.getExtraLayoutSpace(state)
     }
 
-    override fun findLastVisibleItemPosition(): Int {
+    fun findMaxVisibleItemPosition(): Int {
         return itemCount
     }
 }

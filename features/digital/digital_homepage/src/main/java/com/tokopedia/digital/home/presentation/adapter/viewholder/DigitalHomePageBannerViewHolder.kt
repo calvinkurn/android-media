@@ -46,14 +46,14 @@ class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: 
         itemView.banner?.onPromoScrolledListener = this
         itemView.banner?.setOnPromoLoadedListener(this)
         itemView.banner?.setOnPromoDragListener(this)
-        if (element?.isLoaded?:false) {
+        if (element?.isLoaded == true) {
             itemView.banner_shimmering.hide()
             try {
-                bannerList = element?.bannerList
-                itemView.banner.shouldShowSeeAllButton(bannerList?.isNotEmpty()?:false)
+                bannerList = element.bannerList
+                itemView.banner.shouldShowSeeAllButton(bannerList?.isNotEmpty() ?: false)
 
                 val promoUrls = arrayListOf<String>()
-                for (slidesModel in bannerList?: listOf()) {
+                for (slidesModel in bannerList ?: listOf()) {
                     promoUrls.add(slidesModel.filename)
                 }
                 itemView.banner.setPromoList(promoUrls)

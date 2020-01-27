@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler

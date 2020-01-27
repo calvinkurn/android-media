@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.exception;
 
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.io.IOException;
 
