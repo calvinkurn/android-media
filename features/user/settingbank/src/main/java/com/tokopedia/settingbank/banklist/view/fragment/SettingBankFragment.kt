@@ -75,17 +75,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         presenter.attachView(this)
     }
 
-    override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
-            val addSettingBankComponent = DaggerSettingBankComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
-
-            addSettingBankComponent.inject(this)
-            presenter.attachView(this)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (activity != null && activity!!.applicationContext != null) {
@@ -97,6 +86,17 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         super.onStart()
         if (activity != null) {
             analyticTracker.sendScreen(activity!!, screenName)
+        }
+    }
+
+    override fun initInjector() {
+        if (activity != null && (activity as Activity).application != null) {
+            val addSettingBankComponent = DaggerSettingBankComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+
+            addSettingBankComponent.inject(this)
+            presenter.attachView(this)
         }
     }
 

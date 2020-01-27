@@ -1,6 +1,7 @@
 package com.tokopedia.home.account;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.Instrumentation;
 import android.util.Log;
 
@@ -14,8 +15,14 @@ import androidx.test.filters.SmallTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.banklist.di.test.DaggerSettingBankTestComponent;
+import com.banklist.di.test.SettingBankTestComponent;
+import com.banklist.di.test.SettingBankTestModule;
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.settingbank.R;
+import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent;
+import com.tokopedia.settingbank.banklist.di.SettingBankComponent;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.settingbank.banklist.view.fragment.SettingBankFragment;
 
@@ -62,7 +69,26 @@ public class SettingBankActivityTest {
                         getSupportFragmentManager().
                         findFragmentByTag("TAG_FRAGMENT");
 
-//        fragment.reInitInjector();
+        // wait until onresume
+        androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        BaseMainApplication application = (BaseMainApplication) getActivity().getApplication();
+        DaggerSettingBankComponent
+                .builder()
+                .settingBankModule(new SettingBankTestModule())
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+
+
+        // Test mode
+        SettingBankComponent settingBankComponent = DaggerSettingBankTestComponent
+                .builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+
+        fragment.reInitInjector(settingBankComponent);
+
+
 
         Espresso.onView(ViewMatchers.withId(R.id.account_list_rv))
                 .inRoot(RootMatchers.withDecorView(

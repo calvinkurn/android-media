@@ -31,8 +31,13 @@ open class SettingBankModule{
 
     @SettingBankScope
     @Provides
-    open fun provideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
+    fun provideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
                                    okHttpClient: OkHttpClient): Retrofit{
+        return realprovideSettingBankRetrofit(retrofitBuilder, okHttpClient)
+    }
+
+    open fun realprovideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
+                                            okHttpClient: OkHttpClient): Retrofit{
         return retrofitBuilder.baseUrl(SettingBankUrl.BASE_URL).client(okHttpClient).build()
     }
 

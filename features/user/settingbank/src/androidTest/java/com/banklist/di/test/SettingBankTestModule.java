@@ -30,9 +30,9 @@ public class SettingBankTestModule extends SettingBankModule {
         }
     }
 
-//    @NotNull
-//    @Override
-//    public Retrofit provideSettingBankRetrofit(@NotNull Retrofit.Builder retrofitBuilder, @NotNull OkHttpClient okHttpClient) {
-//        return retrofitBuilder.baseUrl(SettingBankUrl.BASE_URL).client(okHttpClient).build()
-//    }
+    @NotNull
+    @Override
+    public Retrofit realprovideSettingBankRetrofit(@NotNull Retrofit.Builder retrofitBuilder, @NotNull OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(url).client(okHttpClient).build();
+    }
 }
