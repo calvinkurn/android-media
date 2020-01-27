@@ -114,5 +114,7 @@ interface ICartListView : CustomerView {
 
     fun removeInsuranceProductItem(productId: List<Long>)
 
+    fun getAdsId(): String?
+
     fun goToLite(url: String)
 }

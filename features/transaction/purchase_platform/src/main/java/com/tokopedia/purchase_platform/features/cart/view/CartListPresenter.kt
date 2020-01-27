@@ -2,12 +2,11 @@ package com.tokopedia.purchase_platform.features.cart.view
 
 import android.os.Build
 import android.text.TextUtils
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Order
 import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail
@@ -90,8 +89,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val ITEM_CHECKED_PARTIAL_ITEM = 4
         val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
 
-        private val ADVERTISINGID = "ADVERTISINGID"
-        private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         private val QUERY_APP_CLIENT_ID = "{app_client_id}"
     }
 
@@ -1177,8 +1174,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun redirectToLite(url: String) {
         view?.let {
             it.showProgressLoading()
-            val localCacheHandler = LocalCacheHandler(it.getActivityObject(), ADVERTISINGID)
-            val adsId = localCacheHandler.getString(KEY_ADVERTISINGID)
+            val adsId = it.getAdsId()
             if (adsId != null && !adsId.trim { it <= ' ' }.isEmpty()) {
                 seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), object : SeamlessLoginSubscriber {
                     override fun onUrlGenerated(url: String) {
@@ -1197,7 +1193,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 })
             } else {
                 it.hideProgressLoading()
-                it.showToastMessageRed(ErrorHandler.getErrorMessage(it.getActivityObject(), null))
+                it.showToastMessageRed(ResponseErrorException())
             }
         }
     }

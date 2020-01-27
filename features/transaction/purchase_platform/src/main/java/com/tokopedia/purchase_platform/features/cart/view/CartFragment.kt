@@ -27,6 +27,7 @@ import com.readystatesoftware.chuck.Chuck
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.abstraction.constant.IRouterConstant
@@ -188,6 +189,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val CART_ALL_TRACE = "mp_cart_all"
         private val CART_PAGE = "cart"
         private val NAVIGATION_PDP = 64728
+        private val ADVERTISINGID = "ADVERTISINGID"
+        private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         val GO_TO_DETAIL = 2
         val GO_TO_LIST = 1
 
@@ -2404,6 +2407,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onShowTickerTobacco() {
         cartPageAnalytics.eventViewTickerProductContainTobacco()
+    }
+
+    override fun getAdsId(): String? {
+        val localCacheHandler = LocalCacheHandler(activity, ADVERTISINGID)
+        val adsId = localCacheHandler.getString(KEY_ADVERTISINGID)
+
+        return adsId
     }
 
     override fun goToLite(url: String) {
