@@ -291,13 +291,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderOperatorList(operatorGroup: RechargeGeneralOperatorCluster.CatalogOperatorGroup, isHidden: Boolean, label: String) {
-        if (operatorGroup.operators.size == 1) {
-            if (isHidden) operator_select.hide()
-            // Get product data based on operator id
-            operatorId = operatorGroup.operators.firstOrNull()?.id ?: 0
-            adapter.showLoading()
-            getProductList(menuId, operatorId)
-        } else if (operatorGroup.operators.isNotEmpty()) {
+         if (operatorGroup.operators.isNotEmpty()) {
             operator_select.show()
             operator_select.setLabel(label)
             operator_select.setHint("")
@@ -325,7 +319,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     showOperatorSelectDropdown(operator_select, dropdownData)
                 }
             }
-            operator_select.show()
+
+             if (operatorGroup.operators.size == 1) {
+                 if (isHidden) operator_select.hide()
+                 // Get product data based on operator id
+                 operatorId = operatorGroup.operators.firstOrNull()?.id ?: 0
+                 adapter.showLoading()
+                 getProductList(menuId, operatorId)
+             }
         }
 
         // Set operator name
