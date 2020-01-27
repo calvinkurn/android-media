@@ -18,6 +18,8 @@
     <color name="shop_status_background">#ae31353b</color>
     <color name="shop_status_text_background">#e131353b</color>
     <color name="shop_status_text_color">#f5ffffff</color>
+    <color name="shop_empty_search_title_color">#f531353b</color>
+    <color name="shop_empty_search_recommendation_title_color">#f531353b</color>
     <color name="shadow">#AD31353B</color>
     <color name="grey_400">#bdbdbd</color>
 
