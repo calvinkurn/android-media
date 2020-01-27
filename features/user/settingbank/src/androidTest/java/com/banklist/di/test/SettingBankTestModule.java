@@ -35,4 +35,8 @@ public class SettingBankTestModule extends SettingBankModule {
     public Retrofit realprovideSettingBankRetrofit(@NotNull Retrofit.Builder retrofitBuilder, @NotNull OkHttpClient okHttpClient) {
         return retrofitBuilder.baseUrl(url).client(okHttpClient).build();
     }
+
+    public MockWebServer getMockWebServer() {
+        return mockWebServer;
+    }
 }

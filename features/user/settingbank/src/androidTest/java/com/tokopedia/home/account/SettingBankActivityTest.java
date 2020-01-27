@@ -25,6 +25,8 @@ import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent;
 import com.tokopedia.settingbank.banklist.di.SettingBankComponent;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.settingbank.banklist.view.fragment.SettingBankFragment;
+import com.tokopedia.tkpd.BaseJsonFactory;
+import com.tokopedia.tkpd.BaseRetrofitJsonFactory;
 
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
@@ -81,14 +83,23 @@ public class SettingBankActivityTest {
 
 
         // Test mode
+        SettingBankTestModule settingBankTestModule = new SettingBankTestModule();
+        settingBankTestModule.getMockWebServer().enqueue(
+                new BaseRetrofitJsonFactory(InstrumentationRegistry.getContext())
+                        .createSuccess200Response("setting_bank.json")
+        );
+
         SettingBankComponent settingBankComponent = DaggerSettingBankTestComponent
                 .builder()
+                .settingBankTestModule(settingBankTestModule)
                 .baseAppComponent(application.getBaseAppComponent())
                 .build();
 
         fragment.reInitInjector(settingBankComponent);
 
+        fragment.getBankList();
 
+        Thread.sleep(2000);
 
         Espresso.onView(ViewMatchers.withId(R.id.account_list_rv))
                 .inRoot(RootMatchers.withDecorView(

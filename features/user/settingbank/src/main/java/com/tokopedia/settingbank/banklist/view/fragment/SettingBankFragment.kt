@@ -132,7 +132,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         })
     }
 
-    private fun getBankList() {
+    public fun getBankList() {
         presenter.getBankListFirstTime()
     }
 

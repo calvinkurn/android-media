@@ -78,6 +78,11 @@ dependencies {
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    }
 
 // For recycler view actions
     androidTestImplementation ('com.android.support.test.espresso:espresso-contrib:2.0') {
