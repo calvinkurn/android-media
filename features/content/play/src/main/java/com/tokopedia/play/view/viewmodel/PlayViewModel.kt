@@ -124,7 +124,7 @@ class PlayViewModel @Inject constructor(
     }
 
     val isLive: Boolean
-        get() = _observableChanelInfo.value?.isLive?:false
+        get() = _observableChanelInfo.value?.isLive ?: false
     val contentId: Int
         get() = _observableChanelInfo.value?.contentId.toZeroIfNull()
     val contentType: Int
@@ -191,7 +191,6 @@ class PlayViewModel @Inject constructor(
             playVideoStream(channel)
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
-            getPartnerInfo(completeInfoUiModel.channelInfo)
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
             _observableChanelInfo.value = completeInfoUiModel.channelInfo
@@ -200,6 +199,8 @@ class PlayViewModel @Inject constructor(
             _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = mapEvent(channel)
+            _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+
         }) {
             if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
         }
@@ -259,30 +260,27 @@ class PlayViewModel @Inject constructor(
         _observableIsLikeContent.value = isLiked
     }
 
-    private suspend fun getPartnerInfo(channel: ChannelInfoUiModel?) {
-        if (channel == null)
-            return
+    private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
         val partnerType = PartnerType.getTypeByValue(channel.partnerType)
         val partnerId = channel.partnerId
-        if (partnerType == PartnerType.ADMIN) {
-            _observablePartnerInfo.value = PartnerInfoUiModel(
+        return if (partnerType == PartnerType.ADMIN) {
+            PartnerInfoUiModel(
                     id = partnerId,
                     name = channel.moderatorName,
                     type = partnerType,
                     isFollowed = true,
                     isFollowable = false
             )
-            return
         } else {
             val shopInfo = getPartnerInfo(partnerId, partnerType)
-            _observablePartnerInfo.value = mapPartnerInfoFromShop(shopInfo)
+            mapPartnerInfoFromShop(shopInfo)
         }
     }
 
     private fun checkIsFollowedShop() {
         launchCatchError(block = {
             val channel = _observableChanelInfo.value?.copy()
-            getPartnerInfo(channel)
+            if (channel != null) _observablePartnerInfo.value = getPartnerInfo(channel)
         }, onError = {})
     }
 
