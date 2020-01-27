@@ -370,8 +370,6 @@ public abstract class ChartView extends RelativeLayout {
         super.onDraw(canvas);
 
         if (mReadyToDraw) {
-            //long time = System.currentTimeMillis();
-
             // Draw grid
             if (mGridType == GridType.FULL || mGridType == GridType.VERTICAL)
                 drawVerticalGrid(canvas);
@@ -387,14 +385,14 @@ public abstract class ChartView extends RelativeLayout {
                         getInnerChartTop(), data.get(0).getEntry(mThresholdEndLabel).getX(),
                         getInnerChartBottom());
 
-            // Draw data
-            if (!data.isEmpty()) onDrawChart(canvas, data);
-
             // Draw Axis Y
             yRndr.draw(canvas);
 
             // Draw axis X
             xRndr.draw(canvas);
+
+            // Draw data
+            if (!data.isEmpty()) onDrawChart(canvas, data);
         }
 
         mIsDrawing = false;
