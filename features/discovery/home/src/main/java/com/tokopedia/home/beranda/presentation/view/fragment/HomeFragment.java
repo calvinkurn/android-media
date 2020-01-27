@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -13,24 +14,33 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.AsyncDifferConfig;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.transition.Explode;
+import android.transition.Fade;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.AsyncDifferConfig;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.transition.TransitionInflater;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -44,13 +54,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.home.IHomeRouter;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
-import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.PlayChannel;
-import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
@@ -108,7 +114,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -117,12 +125,10 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
-import kotlin.Unit;
-import kotlin.coroutines.CoroutineContext;
-import kotlin.jvm.functions.Function1;
-import rx.Observable;
 
-import static android.view.View.INVISIBLE;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 import static com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView.ANIMATION_TRANSITION_NAME;
 
 /**
@@ -145,16 +151,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    private androidx.transition.Transition transition;
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
-    private boolean shouldDisplayReview = true;
-    private int playPosition = -1;
-    private PlayerView playerView;
-    private SimpleExoPlayer videoPlayer;
-    private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
     private ActivityStateListener activityStateListener;
 
@@ -235,6 +237,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().getWindow().setEnterTransition(new Explode());
+        getActivity().getWindow().setExitTransition(new Explode());
+        transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.anim_play_shared_enter);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
@@ -329,12 +334,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
         homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-//                onHandlingScrollVideoPlayer(newState);
-            }
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -524,6 +523,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(() -> {
             if (presenter != null) {
                 presenter.searchHint();
+                presenter.refreshHomeData();
             }
             /**
              * set notification gimmick
@@ -558,6 +558,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             } else {
                 showLoading();
             }
+        });
+
+        presenter.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
+            Glide.with(getContext())
+                    .asBitmap()
+                    .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            presenter.setPlayBanner(playCardViewModelEvent.peekContent());
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            presenter.clearPlayBanner();
+                        }
+                    });
         });
     }
 
@@ -689,7 +710,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build();
-        adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<Visitable>());
+        adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<HomeVisitable>());
+        getLifecycle().addObserver(adapter);
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -1519,13 +1541,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onGetPlayBanner(int adapterPosition) {
-        presenter.getPlayBanner(adapterPosition);
-    }
-
-    @Override
     public void setPlayContentBanner(PlayChannel playContentBanner, int adapterPosition) {
-        adapter.setPlayData(playContentBanner, adapterPosition);
+//        adapter.setPlayData(playContentBanner, adapterPosition);
     }
 
     @Override
@@ -1638,4 +1655,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
         Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
     }
+
+
 }

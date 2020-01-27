@@ -34,7 +34,7 @@ class ToolbarComponent(
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
                             is ScreenStateEvent.VideoStreamChanged ->
-                                uiView.setLiveBadgeVisibility(it.videoStream.videoType.isLive)
+                                uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show()
                             is ScreenStateEvent.NoActionMore -> uiView.hideActionMore()

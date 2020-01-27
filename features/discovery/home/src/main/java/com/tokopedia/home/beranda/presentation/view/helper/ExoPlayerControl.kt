@@ -2,15 +2,16 @@ package com.tokopedia.home.beranda.presentation.view.helper
 
 
 interface ExoPlayerControl {
-    fun isPlayerNull(): Boolean
-    fun createPlayer()
+    fun init()
+    fun play(url: String)
     fun preparePlayer()
+    fun onViewAttach()
+    fun onViewDetach()
     fun releasePlayer()
     fun playerPause()
-    fun playerPlay()
-    fun seekToDefaultPosition()
+    fun playerPlayWithDelay()
+    fun isPlayerPlaying(): Boolean
     fun setExoPlayerEventsListener(pExoPlayerListenerListener: ExoPlayerListener?)
-    fun onActivityStart()
     fun onActivityResume()
     fun onActivityPause()
     fun onActivityStop()

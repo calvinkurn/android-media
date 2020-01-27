@@ -1,7 +1,7 @@
 package com.tokopedia.play.domain
 
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.ERR_SERVER_ERROR
 import com.tokopedia.play.data.Channel

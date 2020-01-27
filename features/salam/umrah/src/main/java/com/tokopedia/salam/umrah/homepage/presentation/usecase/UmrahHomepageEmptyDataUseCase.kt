@@ -1,6 +1,7 @@
 package com.tokopedia.salam.umrah.homepage.presentation.usecase
 
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.homepage.data.*
 
 /**
@@ -24,11 +25,15 @@ class UmrahHomepageEmptyDataUseCase {
         val umrahBanner = UmrahHomepageBannerEntity()
         umrahBanner.isLoadFromCloud = isLoadedFromCloud
 
+        val umrahPartnerTravel = UmrahTravelAgentsEntity()
+        umrahPartnerTravel.isLoadFromCloud = isLoadedFromCloud
+
         return listOf(umrahSearchParam,
                 umrahBanner,
                 umrahDreamFund,
                 umrahCategory,
-                umrahCategoryFeatured
+                umrahCategoryFeatured,
+                umrahPartnerTravel
         )
     }
 }

@@ -4,10 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -33,7 +30,6 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import javax.inject.Inject
-
 
 /**
  * Created by jegul on 29/11/19
@@ -78,6 +74,8 @@ class PlayFragment : BaseDaggerFragment() {
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
     private lateinit var flGlobalError: FrameLayout
+
+    private val keyboardWatcher = KeyboardWatcher()
 
     override fun getScreenName(): String = "Play"
 
@@ -125,21 +123,6 @@ class PlayFragment : BaseDaggerFragment() {
                     .replace(flGlobalError.id, PlayErrorFragment.newInstance(channelId), ERROR_FRAGMENT_TAG)
                     .commit()
         }
-
-        KeyboardWatcher().listen(view, object : KeyboardWatcher.Listener {
-            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                playViewModel.showKeyboard(estimatedKeyboardHeight)
-                ivClose.visible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
-
-            override fun onKeyboardHidden() {
-                playViewModel.hideKeyboard()
-                ivClose.invisible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-                this@PlayFragment.onKeyboardHidden()
-            }
-        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -148,6 +131,19 @@ class PlayFragment : BaseDaggerFragment() {
 
         observeSocketInfo()
         observeEventUserInfo()
+        observeVideoProperty()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireView().post {
+            registerKeyboardListener(requireView())
+        }
+    }
+
+    override fun onPause() {
+        unregisterKeyboardListener(requireView())
+        super.onPause()
     }
 
     private fun initView(view: View) {
@@ -222,6 +218,12 @@ class PlayFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun observeVideoProperty() {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            setWindowSoftInputMode(it.type.isLive)
+        })
+    }
+
     private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
@@ -293,7 +295,35 @@ class PlayFragment : BaseDaggerFragment() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(v.windowToken, 0)
+            imm?.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
+    }
+
+    private fun setWindowSoftInputMode(isLive: Boolean) {
+        requireActivity().window.setSoftInputMode(
+                if (!isLive) WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                else WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        )
+    }
+
+    private fun registerKeyboardListener(view: View) {
+        keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
+            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
+                playViewModel.onKeyboardShown(estimatedKeyboardHeight)
+                ivClose.visible()
+                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+
+            override fun onKeyboardHidden() {
+                playViewModel.onKeyboardHidden()
+                ivClose.invisible()
+                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                this@PlayFragment.onKeyboardHidden()
+            }
+        })
+    }
+
+    private fun unregisterKeyboardListener(view: View) {
+        keyboardWatcher.unlisten(view)
     }
 }
