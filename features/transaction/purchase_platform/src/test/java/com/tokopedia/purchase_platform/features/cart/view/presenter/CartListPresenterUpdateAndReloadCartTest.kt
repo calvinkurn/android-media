@@ -118,7 +118,6 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
 
             Then("should render success") {
                 verifyOrder {
-                    view.hideProgressLoading()
                     view.renderLoadGetCartDataFinish()
                     view.renderInitialGetCartListDataSuccess(updateAndReloadCartListData.cartListData)
                 }
@@ -148,8 +147,7 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(exception)
                 }
             }

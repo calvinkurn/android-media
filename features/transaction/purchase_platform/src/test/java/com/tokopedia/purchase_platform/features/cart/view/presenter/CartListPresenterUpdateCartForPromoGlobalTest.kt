@@ -21,6 +21,7 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -86,8 +87,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             }
 
             Then("should render success and redirect to coupon list") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.goToCouponList()
                 }
             }
@@ -109,8 +109,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             }
 
             Then("should render success and redirect to coupon list") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.goToDetailPromoStacking(promoStackingData)
                 }
             }
@@ -132,8 +131,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(updateCartData.message)
                 }
             }
@@ -152,8 +150,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(exception)
                 }
             }

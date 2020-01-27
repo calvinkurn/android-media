@@ -24,6 +24,7 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -104,8 +105,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), cartItemDataList, any(), any())
                 }
             }
@@ -145,8 +145,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with eligible COD") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), any(), true, any())
                 }
             }
@@ -182,8 +181,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with not eligible COD") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), any(), false, any())
                 }
             }
@@ -208,8 +206,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITHOUT_CHANGES") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES)
                 }
             }
@@ -234,8 +231,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES)
                 }
             }
@@ -272,8 +268,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_ITEM") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM)
                 }
             }
@@ -308,8 +303,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP)
                 }
             }
@@ -362,8 +356,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM)
                 }
             }
@@ -385,8 +378,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderErrorToShipmentForm(updateCartData.message)
                 }
             }
@@ -405,8 +397,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.renderErrorToShipmentForm(exception)
                 }
             }

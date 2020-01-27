@@ -23,9 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verifyOrder
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -100,7 +98,6 @@ object CartListPresenterAddToCartTest : Spek({
 
             Then("should render success add to cart wishlist item") {
                 verifyOrder {
-                    view.hideProgressLoading()
                     view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
@@ -127,8 +124,7 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(errorMessage)
                 }
             }
@@ -158,7 +154,6 @@ object CartListPresenterAddToCartTest : Spek({
 
             Then("should render success") {
                 verifyOrder {
-                    view.hideProgressLoading()
                     view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
@@ -184,8 +179,7 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(addToCartDataModel.errorMessage[0])
                 }
             }
@@ -204,8 +198,7 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(exception)
                 }
             }
@@ -235,7 +228,6 @@ object CartListPresenterAddToCartTest : Spek({
 
             Then("should render success") {
                 verifyOrder {
-                    view.hideProgressLoading()
                     view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
                 }
@@ -264,8 +256,7 @@ object CartListPresenterAddToCartTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(addToCartDataModel.errorMessage[0])
                 }
             }

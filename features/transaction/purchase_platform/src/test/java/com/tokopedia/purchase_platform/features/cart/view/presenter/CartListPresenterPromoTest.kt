@@ -125,8 +125,7 @@ object CartListPresenterPromoTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onSuccessCheckPromoFirstStep(promoStackUiModel)
                 }
             }
@@ -185,8 +184,7 @@ object CartListPresenterPromoTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(promoStackUiModel.data.message.text)
                 }
             }
@@ -255,8 +253,7 @@ object CartListPresenterPromoTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onSuccessCheckPromoFirstStep(promoStackUiModel)
                 }
             }
@@ -322,8 +319,7 @@ object CartListPresenterPromoTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(promoStackUiModel.data.voucherOrders[0].message.text)
                 }
             }
@@ -379,8 +375,7 @@ object CartListPresenterPromoTest : Spek({
             }
 
             Then("should render clash") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onClashCheckPromo(promoStackUiModel.data.clashings, type)
                 }
             }
@@ -413,8 +408,7 @@ object CartListPresenterPromoTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(promoStackUiModel.data.message.text)
                 }
             }
@@ -444,8 +438,7 @@ object CartListPresenterPromoTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(exception)
                 }
             }

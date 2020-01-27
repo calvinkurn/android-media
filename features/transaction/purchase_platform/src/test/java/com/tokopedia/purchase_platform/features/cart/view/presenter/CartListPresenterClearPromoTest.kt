@@ -88,8 +88,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onSuccessClearPromoStack(shopIndex)
                 }
             }
@@ -114,8 +113,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onFailedClearPromoStack(ignoreApiResponse)
                 }
             }
@@ -135,8 +133,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onFailedClearPromoStack(ignoreApiResponse)
                 }
             }
@@ -161,8 +158,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onSuccessClearPromoStack(shopIndex)
                 }
             }
@@ -186,7 +182,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should just hide progress loading") {
-                verifyOrder {
+                verify {
                     view.hideProgressLoading()
                 }
             }
@@ -204,7 +200,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should only hide progress loading") {
-                verifyOrder {
+                verify {
                     view.hideProgressLoading()
                 }
             }
@@ -228,8 +224,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onSuccessClearPromoStackAfterClash()
                 }
             }
@@ -253,8 +248,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onFailedClearPromoStack(false)
                 }
             }
@@ -272,8 +266,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.onFailedClearPromoStack(false)
                 }
             }

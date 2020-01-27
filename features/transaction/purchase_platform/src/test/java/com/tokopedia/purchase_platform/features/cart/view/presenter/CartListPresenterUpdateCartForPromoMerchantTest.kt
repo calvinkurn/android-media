@@ -21,6 +21,7 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -87,8 +88,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             }
 
             Then("should render success and show promo merchant bottomsheet") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
                 }
             }
@@ -110,8 +110,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(updateCartData.message)
                 }
             }
@@ -130,8 +129,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             }
 
             Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
+                verify {
                     view.showToastMessageRed(exception)
                 }
             }
