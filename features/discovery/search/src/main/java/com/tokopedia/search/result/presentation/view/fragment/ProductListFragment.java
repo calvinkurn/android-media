@@ -480,7 +480,7 @@ public class ProductListFragment
 
     private RedirectionListener castContextToRedirectionListener(Context context) {
         if (context instanceof RedirectionListener) {
-            this.redirectionListener = (RedirectionListener) context;
+            return (RedirectionListener) context;
         }
 
         return null;
