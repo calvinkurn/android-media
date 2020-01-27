@@ -206,19 +206,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
     override fun refreshHomeData() {
         launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
-            if(resource.status == Resource.Status.SUCCESS) {
-                homeFlowData.collect {
-                    var homeData = evaluateGeolocationComponent(it)
-                    homeData = evaluateAvailableComponent(homeData)
-                    _homeLiveData.value = homeData
-                    getHeaderData()
-                    getReviewData()
-                    getPlayBanner()
-
-                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list
-                            ?: listOf<Visitable<*>>()))
-                }
-            }
             _updateNetworkLiveData.value = resource
         }){
             homeRateLimit.reset(HOME_LIMITER_KEY)
@@ -710,6 +697,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     _homeLiveData.value = homeData
                     getHeaderData()
                     getReviewData()
+                    getPlayBanner()
 
                     _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf<Visitable<*>>()))
                 } else {

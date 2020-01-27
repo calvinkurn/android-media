@@ -127,18 +127,19 @@ class PlayCardViewHolder(
     fun getHelper() = helper
 
     fun onViewAttach(){
-        if(playCardViewModel != null) {
-            masterJob.cancelChildren()
-            launch {
-                delay(DELAY_CLICKABLE)
-                isClickable = true
-            }
-
+        thumbnailView.show()
+        masterJob.cancelChildren()
+        launch {
+            delay(DELAY_CLICKABLE)
+            isClickable = true
+        }
+        if(playCardViewModel != null && playCardViewModel?.playCardHome != null) {
             helper?.onViewAttach()
         }
     }
 
     fun onViewDetach(){
+        thumbnailView.show()
         isClickable = false
         helper?.onViewDetach()
     }
