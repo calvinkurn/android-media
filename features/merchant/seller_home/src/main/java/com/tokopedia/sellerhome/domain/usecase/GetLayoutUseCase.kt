@@ -6,6 +6,8 @@ import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhome.view.model.SectionWidgetUiModel
+import com.tokopedia.sellerhome.view.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhome.view.model.DescriptionState
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -48,6 +50,14 @@ class GetLayoutUseCase(
                         "Total Pendapatan",
                         "",
                         ""
+                ),
+                DescriptionWidgetUiModel(
+                        WidgetType.DESCRIPTION,
+                        "Description Card",
+                        "",
+                        "",
+                        DescriptionState.IDEAL,
+                        "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant."
                 )
         )
     }
