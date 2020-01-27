@@ -1,24 +1,19 @@
 package com.tokopedia.shop.newproduct.view.viewholder
 
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant.URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE
-import com.tokopedia.shop.newproduct.view.datamodel.EmptyOwnShopModel
+import com.tokopedia.shop.newproduct.view.datamodel.ShopEmptyProductViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopProductsEmptyViewHolder(
         val view: View,
         private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolderListener?
-) : AbstractViewHolder<EmptyOwnShopModel>(view) {
+) : AbstractViewHolder<ShopEmptyProductViewModel>(view) {
 
     companion object {
         @JvmField
@@ -47,24 +42,15 @@ class ShopProductsEmptyViewHolder(
     }
 
 
-    override fun bind(element: EmptyOwnShopModel) {
+    override fun bind(element: ShopEmptyProductViewModel) {
         ImageHandler.loadImage(
                 view.context,
                 imageViewEmptyImage,
                 URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE,
                 R.drawable.ic_loading_image
         )
-        if (element.isMyShop) {
-            buttonChooseProduct.apply {
-                setOnClickListener { shopProductsEmptyViewHolderListener?.chooseProductClicked() }
-            }.show()
-            textTitle.text = view.context.getString(R.string.text_shop_no_product_seller)
-            textDescription.text = view.context.getString(R.string.text_shop_no_product_description_buyer)
-        } else {
-            buttonChooseProduct.hide()
-            textTitle.text = view.context.getString(R.string.text_shop_no_product)
-            textDescription.text = view.context.getString(R.string.text_shop_no_product_follow)
-        }
+        textTitle.text = element.title
+        textDescription.text = element.description
     }
 
 }
