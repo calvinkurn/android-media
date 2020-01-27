@@ -1,9 +1,9 @@
-package ai.advance.liveness.activity
+package ai.advance.liveness.view.activity
 
 import ai.advance.common.utils.ScreenUtil
-import ai.advance.liveness.OnBackListener
+import ai.advance.liveness.view.OnBackListener
 import ai.advance.liveness.R
-import ai.advance.liveness.fragment.LivenessFragment
+import ai.advance.liveness.view.fragment.LivenessFragment
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK
 import ai.advance.liveness.lib.LivenessResult
 import android.Manifest

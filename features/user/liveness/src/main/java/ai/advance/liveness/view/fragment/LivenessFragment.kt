@@ -1,17 +1,17 @@
-package ai.advance.liveness.fragment
+package ai.advance.liveness.view.fragment
 
 import ai.advance.common.entity.BaseResultEntity
-import ai.advance.liveness.BackgroundOverlay
 import ai.advance.liveness.LivenessConstants
-import ai.advance.liveness.OnBackListener
 import ai.advance.liveness.R
-import ai.advance.liveness.activity.LivenessFailedActivity
 import ai.advance.liveness.analytics.LivenessDetectionAnalytics
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.impl.LivenessCallback
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback
+import ai.advance.liveness.view.BackgroundOverlay
+import ai.advance.liveness.view.OnBackListener
+import ai.advance.liveness.view.activity.LivenessFailedActivity
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +30,7 @@ public class UserIdentificationFormKtpFragment extends
         BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>
         implements UserIdentificationFormActivity.Listener {
 
-    protected TextView subtitleBody;
+    protected LinearLayout bulletTextLayout;
 
     public static Fragment createInstance() {
         Fragment fragment = new UserIdentificationFormKtpFragment();
@@ -42,7 +42,7 @@ public class UserIdentificationFormKtpFragment extends
     @Override
     protected void initView(View view) {
         super.initView(view);
-        subtitleBody = view.findViewById(R.id.subtitle_body);
+        bulletTextLayout = view.findViewById(R.id.layout_info_bullet);
     }
 
     @Override
@@ -64,8 +64,9 @@ public class UserIdentificationFormKtpFragment extends
         title.setText(R.string.ktp_title);
         subtitle.setText(MethodChecker.fromHtml(getString(R.string.ktp_subtitle)));
         subtitle.setGravity(Gravity.LEFT);
-        subtitleBody.setText(MethodChecker.fromHtml(getString(R.string.ktp_body)));
-        subtitleBody.setVisibility(View.VISIBLE);
+        ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.ktp_body_1), getContext(), bulletTextLayout);
+        ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.ktp_body_2), getContext(), bulletTextLayout);
+        ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.ktp_body_3), getContext(), bulletTextLayout);
         button.setText(R.string.ktp_button);
         button.setOnClickListener(v -> {
             analytics.eventClickNextKtpPage();

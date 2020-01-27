@@ -1,4 +1,4 @@
-package ai.advance.liveness
+package ai.advance.liveness.view
 
 import android.content.Context
 import android.graphics.Canvas

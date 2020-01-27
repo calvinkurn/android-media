@@ -38,10 +38,11 @@
     <string name="kyc_blacklist_text">Sistem tidak dapat membaca informasi\nyang terdapat pada dokumen anda.</string>
 
     <string name="ktp_title">Foto bagian depan KTP</string>
-    <string name="ktp_subtitle"><![CDATA[Yuk, ikuti cara berikut!]]> </string>
-    <string name="ktp_body">"<![CDATA[<font color='#dbdee2'>\u25CF</font> &nbsp Gunakan KTP asli yang masih berlaku.<br>
-        <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP berada dalam bingkai.<br>
-        <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP terlihat terang dan jelas.]]>"</string>
+    <string name="ktp_subtitle">Yuk, ikuti cara berikut!</string>
+    <string name="ktp_body_1">Gunakan KTP asli yang masih berlaku.</string>
+    <string name="ktp_body_2">Pastikan foto KTP berada dalam bingkai.</string>
+    <string name="ktp_body_3">Pastikan foto KTP terlihat terang dan jelas.</string>
+
     <string name="ktp_button">Ambil Foto KTP</string>
     <string name="ktp_protection">Kerahasiaan data kamu dijamin sistem Tokopedia</string>
 
@@ -76,6 +77,8 @@
     <string name="title_kyc_form_face">Verifikasi Wajah</string>
     <string name="title_kyc_form_upload">Kirim Dokumen</string>
 
+    <string name="title_kyc_form_fail_verification">Verifikasi Gagal</string>
+
     <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x24 jam.</string>
 
     <string name="error_upload_image_kyc">Terjadi kesalahan. Mohon coba beberapa saat lagi
@@ -98,5 +101,31 @@
     <string name="kyc_face_failed_time_limit_subtitle">Kamu telah melebih batas waktu. Coba lagi dan ikuti instruksinya, ya.</string>
     <string name="kyc_face_failed_time_limit_button">Coba Lagi</string>
 
+    <string name="kyc_dialog_title">Keluar dari halaman ini?</string>
+    <string name="kyc_dialog_description">Kalau keluar sekarang, dokumen yang ingin kamu kirim tidak akan tersimpan.</string>
+    <string name="kyc_dialog_primary_button">Lanjut Kirim</string>
+    <string name="kyc_dialog_secondary_button">Keluar</string>
+
+    <string name="kyc_ktp_ok_face_fail_verification_subtitle">Verifikasi Wajah tidak berhasil, silakan coba lagi.</string>
+    <string name="kyc_ktp_face_fail_verification_subtitle">Foto KTP dan Verifikasi Wajah tidak dapat diproses, silakan coba lagi.</string>
+    <string name="kyc_ktp_fail_face_ok_verification_subtitle">Upload foto KTP tidak berhasil, silakan coba lagi.</string>
+
+    <string name="kyc_ktp_ok_face_fail_verification_info">Agar verifikasi berhasil, scan wajah kamu di tempat terang, ya.</string>
+<!--    <string name="kyc_ktp_face_fail_verification_info">"<![CDATA[Ulangi dan ikuti instruksi ini, ya: <br>-->
+<!--    <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP bisa dikenali sebagai orang yang sama<br>-->
+<!--    <font color='#dbdee2'>\u25CF</font> &nbsp Scan wajah di tempat terang<br>-->
+<!--    <font color='#dbdee2'>\u25CF</font> &nbsp Pastikan foto KTP tidak terpotong, tidak gelap, dan tidak buram]]>"</string>-->
+    <string name="kyc_ktp_face_fail_verification_info">Ulangi dan ikuti instruksi ini, ya: </string>
+    <string name="kyc_ktp_face_fail_info_1">Pastikan foto KTP bisa dikenali sebagai orang yang sama</string>
+    <string name="kyc_ktp_face_fail_info_2">Scan wajah di tempat terang</string>
+    <string name="kyc_ktp_face_fail_info_3">Pastikan foto KTP tidak terpotong, tidak gelap, dan tidak buram</string>
+
+    <string name="kyc_ktp_fail_face_ok_verification_info">Ulangi dan ikuti instruksi ini, ya: </string>
+    <string name="kyc_ktp_fail_face_ok_info_1">Gunakan KTP asli</string>
+    <string name="kyc_ktp_fail_face_ok_info_2">Pastikan foto KTP tidak terpotong, tidak gelap, dan tidak buram</string>
+
+    <string name="kyc_ktp_ok_face_fail_button">Verifikasi Ulang Wajah</string>
+    <string name="kyc_ktp_face_fail_button">Coba Lagi</string>
+    <string name="kyc_ktp_fail_face_ok_button">Foto Ulang KTP</string>
 
 </resources>

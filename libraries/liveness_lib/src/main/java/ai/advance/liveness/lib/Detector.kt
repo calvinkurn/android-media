@@ -481,7 +481,7 @@ class Detector(context: Activity) {
     }
 
     companion object {
-        private const val ACTION_TIME_LIMIT = 10_000L
+        private const val ACTION_TIME_LIMIT = 30_000L
         var isTestAccount: Boolean = false
     }
 

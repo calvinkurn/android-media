@@ -62,12 +62,16 @@ public class UserIdentificationCommonAnalytics {
         private static final String CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE = "click on ubah foto selfie KTP";
         private static final String CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE = "click on syarat dan ketentuan";
         private static final String CLICK_UPLOAD_PHOTOS = "click on unggah foto KTP";
+
+        private static final String CLICK_ON_BUTTON_EXIT = "click on button keluar";
+        private static final String CLICK_ON_BUTTON_STAY = "click on button lanjut kirim";
     }
 
     private static class Category {
         private static final String KYC_PAGE = "kyc page";
         private static final String KYC_KTP_PAGE = "kyc ktp page";
         private static final String KYC_LIVENESS_PAGE = "kyc liveness page";
+        private static final String KYC_SUBMISSION_PAGE = "kyc submission page";
         private static final String KYC_PAGE_TRADEIN = "kyc trade in page";
     }
 
@@ -422,6 +426,24 @@ public class UserIdentificationCommonAnalytics {
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 Label.labelOne
+        ));
+    }
+
+    public void eventClickDialogExit() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SUBMISSION_PAGE,
+                Action.CLICK_ON_BUTTON_EXIT,
+                ""
+        ));
+    }
+
+    public void eventClickDialogStay() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SUBMISSION_PAGE,
+                Action.CLICK_ON_BUTTON_STAY,
+                ""
         ));
     }
 

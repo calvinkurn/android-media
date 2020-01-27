@@ -9,7 +9,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="ai.advance.liveness.activity.LivenessActivity"
+            android:name="ai.advance.liveness.view.activity.LivenessActivity"
             android:label="@string/title_liveness_detection"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ai.advance.liveness.activity.LivenessFailedActivity"
+            android:name="ai.advance.liveness.view.activity.LivenessFailedActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

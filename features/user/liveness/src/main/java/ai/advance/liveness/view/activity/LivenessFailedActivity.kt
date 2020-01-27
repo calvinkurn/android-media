@@ -1,7 +1,7 @@
-package ai.advance.liveness.activity
+package ai.advance.liveness.view.activity
 
-import ai.advance.liveness.OnBackListener
-import ai.advance.liveness.fragment.LivenessErrorFragment
+import ai.advance.liveness.view.OnBackListener
+import ai.advance.liveness.view.fragment.LivenessErrorFragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity

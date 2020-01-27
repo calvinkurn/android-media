@@ -2,22 +2,19 @@ package com.tokopedia.kyc_centralized.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -25,7 +22,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity;
@@ -35,7 +31,7 @@ import com.tokopedia.kyc_centralized.view.di.UserIdentificationCommonComponent;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.user_identification_common.KycCommonUrl;
+import com.tokopedia.user_identification_common.KycUrl;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 
@@ -60,14 +56,19 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         UserIdentificationFormActivity.Listener {
 
     private ConstraintLayout loadingLayout;
+    private ConstraintLayout mainLayout;
     private ImageView imageKtp;
     private ImageView imageFace;
+    private ImageView resultImageKtp;
+    private ImageView resultImageFace;
+    private TextView resultTextKtp;
+    private TextView resultTextFace;
 //    private TextView buttonKtp;
 //    private TextView buttonFace;
+    private LinearLayout bulletTextLayout;
     private TextView info;
     private TextView subtitle;
     private TextView uploadButton;
-    private ImageView errorImageView;
     private UserIdentificationStepperModel stepperModel;
 
     private StepperListener stepperListener;
@@ -149,10 +150,47 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private void setContentView() {
         loadingLayout.setVisibility(View.GONE);
-        setImageKtp(stepperModel.getKtpFile());
-        setImageFace(stepperModel.getFaceFile());
-        subtitle.setText(getResources().getString(R.string.form_final_subtitle));
-        generateLink();
+//        setImageKtp(stepperModel.getKtpFile());
+//        setImageFace(stepperModel.getFaceFile());
+        int state = 1;
+        switch (state) {
+            case 0 : {
+                setResultViews(KycUrl.KTP_VERIF_OK,
+                        KycUrl.FACE_VERIF_FAIL,
+                        getString(R.string.kyc_ktp_ok_face_fail_verification_subtitle),
+                        getString(R.string.kyc_ktp_ok_face_fail_verification_info),
+                        ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
+                        null,
+                        getString(R.string.kyc_ktp_ok_face_fail_button));
+                break;
+            }
+            case 1 : {
+                setResultViews(KycUrl.KTP_VERIF_FAIL,
+                        KycUrl.FACE_VERIF_FAIL,
+                        getString(R.string.kyc_ktp_face_fail_verification_subtitle),
+                        getString(R.string.kyc_ktp_face_fail_verification_info),
+                        null,
+                        null,
+                        getString(R.string.kyc_ktp_face_fail_button));
+                ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_face_fail_info_1), getContext(), bulletTextLayout);
+                ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_face_fail_info_2), getContext(), bulletTextLayout);
+                ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_face_fail_info_3), getContext(), bulletTextLayout);
+                break;
+            }
+            case 2 : {
+                setResultViews(KycUrl.KTP_VERIF_FAIL,
+                        KycUrl.FACE_VERIF_OK,
+                        getString(R.string.kyc_ktp_fail_face_ok_verification_subtitle),
+                        getString(R.string.kyc_ktp_fail_face_ok_verification_info),
+                        null,
+                        ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null),
+                        getString(R.string.kyc_ktp_fail_face_ok_button));
+                ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_1), getContext(), bulletTextLayout);
+                ((UserIdentificationFormActivity) getActivity()).setTextViewWithBullet(getString(R.string.kyc_ktp_fail_face_ok_info_2), getContext(), bulletTextLayout);
+                break;
+            }
+        }
+//        generateLink();
 //        buttonKtp.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -176,18 +214,36 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         });
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_upload));
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_fail_verification));
+//                    .updateToolbarTitle(getString(R.string.title_kyc_form_upload));
         }
+    }
+
+    private void setResultViews(String urlKtp, String urlFace, String subtitleText, String infoText, Integer colorKtp, Integer colorFace, String buttonText){
+        ImageHandler.LoadImage(resultImageKtp, urlKtp);
+        ImageHandler.LoadImage(resultImageFace, urlFace);
+        if(colorKtp != null){
+            resultTextKtp.setTextColor(colorKtp);
+        }
+        if(colorFace != null){
+            resultTextFace.setTextColor(colorFace);
+        }
+        subtitle.setGravity(Gravity.LEFT);
+        subtitle.setText(subtitleText);
+        info.setGravity(Gravity.LEFT);
+        info.setText(infoText);
+        uploadButton.setText(buttonText);
+//        subtitle.setText(getResources().getString(R.string.form_final_subtitle));
     }
 
     private void checkKtp(){
         showLoading();
-        presenter.checkKtp(stepperModel.getKtpFile());
+//        presenter.checkKtp(stepperModel.getKtpFile());
     }
 
     private void uploadImage() {
         showLoading();
-        presenter.uploadImage(stepperModel, projectId);
+//        presenter.uploadImage(stepperModel, projectId);
     }
 
     private void setImageKtp(String imagePath) {
@@ -206,14 +262,19 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private void initView(View view) {
         loadingLayout = view.findViewById(R.id.user_identification_final_loading_layout);
+        mainLayout = view.findViewById(R.id.layout_main);
         imageKtp = view.findViewById(R.id.image_ktp);
         imageFace = view.findViewById(R.id.image_face);
+        resultImageKtp = view.findViewById(R.id.result_image_ktp);
+        resultImageFace = view.findViewById(R.id.result_image_face);
+        resultTextKtp = view.findViewById(R.id.result_text_ktp);
+        resultTextFace = view.findViewById(R.id.result_text_face);
+        bulletTextLayout = view.findViewById(R.id.layout_info_bullet);
 //        buttonKtp = view.findViewById(R.id.change_ktp);
 //        buttonFace = view.findViewById(R.id.change_face);
         subtitle = view.findViewById(R.id.text_subtitle);
         info = view.findViewById(R.id.text_info);
         uploadButton = view.findViewById(R.id.upload_button);
-        errorImageView = view.findViewById(R.id.user_identification_final_x_img);
     }
 
     @Override
@@ -242,31 +303,31 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         return null;
     }
 
-    private void generateLink() {
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                analytics.eventClickTermsFinalFormPage();
-                RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
-            }
-
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.kyc_centralized_42b549));
-            }
-        };
-
-        SpannableString infoText = new SpannableString(info.getText());
-        String linked = getResources().getString(R.string.terms_and_condition);
-        int startIndex = info.getText().toString().indexOf(linked);
-        infoText.setSpan(clickableSpan, startIndex, startIndex + linked.length(), Spanned
-                .SPAN_EXCLUSIVE_EXCLUSIVE);
-        info.setHighlightColor(Color.TRANSPARENT);
-        info.setMovementMethod(LinkMovementMethod.getInstance());
-        info.setText(infoText, TextView.BufferType.SPANNABLE);
-    }
+//    private void generateLink() {
+//        ClickableSpan clickableSpan = new ClickableSpan() {
+//            @Override
+//            public void onClick(View widget) {
+//                analytics.eventClickTermsFinalFormPage();
+//                RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
+//            }
+//
+//            @Override
+//            public void updateDrawState(TextPaint ds) {
+//                super.updateDrawState(ds);
+//                ds.setUnderlineText(false);
+//                ds.setColor(getResources().getColor(R.color.kyc_centralized_42b549));
+//            }
+//        };
+//
+//        SpannableString infoText = new SpannableString(info.getText());
+//        String linked = getResources().getString(R.string.terms_and_condition);
+//        int startIndex = info.getText().toString().indexOf(linked);
+//        infoText.setSpan(clickableSpan, startIndex, startIndex + linked.length(), Spanned
+//                .SPAN_EXCLUSIVE_EXCLUSIVE);
+//        info.setHighlightColor(Color.TRANSPARENT);
+//        info.setMovementMethod(LinkMovementMethod.getInstance());
+//        info.setText(infoText, TextView.BufferType.SPANNABLE);
+//    }
 
     @Override
     public void onSuccessUpload() {
@@ -292,25 +353,35 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     @Override
     public void showLoading() {
-        imageKtp.setVisibility(View.GONE);
-        imageFace.setVisibility(View.GONE);
-//        buttonKtp.setVisibility(View.GONE);
-//        buttonFace.setVisibility(View.GONE);
-        info.setVisibility(View.GONE);
-        subtitle.setVisibility(View.GONE);
-        uploadButton.setVisibility(View.GONE);
+//        imageKtp.setVisibility(View.GONE);
+//        imageFace.setVisibility(View.GONE);
+////        buttonKtp.setVisibility(View.GONE);
+////        buttonFace.setVisibility(View.GONE);
+//        info.setVisibility(View.GONE);
+//        subtitle.setVisibility(View.GONE);
+//        uploadButton.setVisibility(View.GONE);
+//        resultImageKtp.setVisibility(View.GONE);
+//        resultImageFace.setVisibility(View.GONE);
+//        resultTextKtp.setVisibility(View.GONE);
+//        resultTextFace.setVisibility(View.GONE);
+        mainLayout.setVisibility(View.GONE);
         loadingLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        imageKtp.setVisibility(View.VISIBLE);
-        imageFace.setVisibility(View.VISIBLE);
-//        buttonKtp.setVisibility(View.VISIBLE);
-//        buttonFace.setVisibility(View.VISIBLE);
-        info.setVisibility(View.VISIBLE);
-        subtitle.setVisibility(View.GONE);
-        uploadButton.setVisibility(View.VISIBLE);
+//        imageKtp.setVisibility(View.VISIBLE);
+//        imageFace.setVisibility(View.VISIBLE);
+////        buttonKtp.setVisibility(View.VISIBLE);
+////        buttonFace.setVisibility(View.VISIBLE);
+//        info.setVisibility(View.VISIBLE);
+//        subtitle.setVisibility(View.VISIBLE);
+//        uploadButton.setVisibility(View.VISIBLE);
+//        resultImageKtp.setVisibility(View.VISIBLE);
+//        resultImageFace.setVisibility(View.VISIBLE);
+//        resultTextKtp.setVisibility(View.VISIBLE);
+//        resultTextFace.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
         loadingLayout.setVisibility(View.GONE);
     }
 
@@ -326,9 +397,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             analytics.eventClickUploadPhotos();
             checkKtp();
         });
-        errorImageView.setVisibility(View.GONE);
-        info.setText(R.string.form_final_info);
-        generateLink();
         hideLoading();
     }
 
@@ -338,11 +406,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         uploadButton.setOnClickListener(v -> {
             openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
         });
-
-        errorImageView.setVisibility(View.VISIBLE);
-
-        info.setText(R.string.form_reupload_info);
-        generateLink();
+//        info.setText(R.string.form_reupload_info);
+//        generateLink();
 //        buttonKtp.setVisibility(View.GONE);
 //        buttonFace.setVisibility(View.GONE);
     }

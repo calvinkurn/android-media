@@ -2,11 +2,19 @@ package com.tokopedia.kyc_centralized.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.BulletSpan;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -16,11 +24,14 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFragment;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 import com.tokopedia.user_identification_common.view.fragment.NotFoundFragment;
 
 import java.util.ArrayList;
@@ -37,6 +48,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     private List<Fragment> fragmentList;
     private SnackbarRetry snackbar;
     private int projectId = -1;
+    protected UserIdentificationCommonAnalytics analytics;
 
     public interface Listener {
         void trackOnBackPressed();
@@ -53,6 +65,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+            analytics = UserIdentificationCommonAnalytics.createInstance(projectId);
         } catch (NumberFormatException | NullPointerException e) {
             projectId = KYCConstant.STATUS_DEFAULT;
         } catch (Exception e) {
@@ -129,17 +142,19 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     public void showDocumentAlertDialog(){
         DialogUnify dialog = new DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-        dialog.setTitle("Keluar dari halaman ini?");
-        dialog.setDescription("Kalau keluar sekarang, dokumen yang\ningin kamu kirim tidak akan tersimpan.");
-        dialog.setPrimaryCTAText("Lanjut Kirim");
-        dialog.setSecondaryCTAText("Keluar");
+        dialog.setTitle(getString(R.string.kyc_dialog_title));
+        dialog.setDescription(getString(R.string.kyc_dialog_description));
+        dialog.setPrimaryCTAText(getString(R.string.kyc_dialog_primary_button));
+        dialog.setSecondaryCTAText(getString(R.string.kyc_dialog_secondary_button));
 
         dialog.setPrimaryCTAClickListener(() -> {
+            analytics.eventClickDialogStay();
             dialog.dismiss();
             return Unit.INSTANCE;
         });
 
         dialog.setSecondaryCTAClickListener(() -> {
+            analytics.eventClickDialogExit();
             dialog.dismiss();
             backToPreviousFragment();
             return Unit.INSTANCE;
@@ -166,6 +181,42 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
                 return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void setTextViewWithBullet(String text, Context context, LinearLayout layout){
+        Typography tv = new Typography(context);
+        SpannableString span = new SpannableString(text);
+
+        int radius = dpToPx(4);
+        int gapWidth = dpToPx(12);
+        int color = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_dbdee2, null);
+        BulletSpan bulletSpan;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            bulletSpan = new BulletSpan(gapWidth, color, radius);
+        } else{
+            bulletSpan = new BulletSpan(gapWidth, color);
+        }
+
+        span.setSpan(bulletSpan, 0, text.length(), 0);
+        tv.setType(Typography.BODY_2);
+        tv.setText(span);
+        tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        int margin = dpToPx(8);
+        setMargins(tv, 0, 0, 0, margin);
+        layout.addView(tv);
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public void setMargins (View view, int left, int top, int right, int bottom) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            view.requestLayout();
         }
     }
 }

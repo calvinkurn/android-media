@@ -1,9 +1,9 @@
-package ai.advance.liveness.fragment
+package ai.advance.liveness.view.fragment
 
 import ai.advance.liveness.LivenessConstants
-import ai.advance.liveness.OnBackListener
+import ai.advance.liveness.view.OnBackListener
 import ai.advance.liveness.R
-import ai.advance.liveness.activity.LivenessFailedActivity
+import ai.advance.liveness.view.activity.LivenessFailedActivity
 import ai.advance.liveness.analytics.LivenessDetectionAnalytics
 import android.app.Activity
 import android.os.Bundle
