@@ -255,10 +255,12 @@
     <string name="coachmark_filter_info">Tampilkan daftar pesanan sesuai jenis kurir, tipe pesanan, dan jatuh tempo.</string>
     <string name="coachmark_chat">Chat pembeli</string>
     <string name="coachmark_chat_info">Ada detail pesanan yang kurang jelas? Yuk, tanya langsung ke pembelimu.</string>
+    <string name="coachmark_header">Cek info pesananmu</string>
+    <string name="coachmark_header_info">Temukan info seputar nama pembeli, tanggal transaksi, hingga batas respons di sini.</string>
     <string name="coachmark_product">Produk yang dipesan</string>
     <string name="coachmark_product_info">Pastikan barang yang kamu kirim sudah sesuai dengan yang dipesan oleh pembeli.</string>
-    <string name="coachmark_detail_pengiriman">Detail pengiriman</string>
-    <string name="coachmark_detail_pengiriman_info">Kirim pesanan ke alamat pembeli dengan menggunakan kurir yang telah ditentukan.</string>
+    <string name="coachmark_shipping">Detail pengiriman</string>
+    <string name="coachmark_shipping_info">Kirim pesanan ke alamat pembeli dengan menggunakan kurir yang telah ditentukan.</string>
     <string name="coachmark_edit">Edit kurir atau resi di sini</string>
     <string name="coachmark_edit_info">Klik ini jika butuh mengganti kurir, edit resi, atau menolak pesanan yang masuk.</string>
     <string name="coachmark_terima_pesanan">Saatnya proses pesananmu!</string>
