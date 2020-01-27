@@ -175,7 +175,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
         }
 
-        Scenario("fail remove cart data with CartResponseErrorException") {
+        Scenario("fail remove cart data with exception") {
 
             val cartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
@@ -184,32 +184,6 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Given("fail delete") {
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            When("process delete cart item") {
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
-            }
-
-            Then("should show error message") {
-                verify {
-                    view.showToastMessageRed(exception)
-                }
-            }
-        }
-
-        Scenario("fail remove cart data with other exception") {
-
-            val exception = IllegalStateException()
-            val cartItemData = CartItemData().apply {
-                originData = CartItemData.OriginData()
-            }
-
-            Given("fail delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process delete cart item") {

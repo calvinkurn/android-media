@@ -125,39 +125,9 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             }
         }
 
-        Scenario("failed update and reload cart with CartResponseErrorException") {
+        Scenario("failed update and reload cart with exception") {
 
             val exception = CartResponseErrorException("error message")
-            val cartItemData = CartItemData().apply {
-                originData = CartItemData.OriginData()
-                updatedData = CartItemData.UpdatedData().apply {
-                    remark = ""
-                }
-            }
-
-            Given("cart data") {
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            Given("all available cart data") {
-                every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
-            }
-
-            When("process to update and reload cart data") {
-                cartListPresenter.processToUpdateAndReloadCartData("0")
-            }
-
-            Then("should render success") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(exception)
-                }
-            }
-        }
-
-        Scenario("failed update and reload cart with other exception") {
-
-            val exception = IllegalStateException()
             val cartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
                 updatedData = CartItemData.UpdatedData().apply {
