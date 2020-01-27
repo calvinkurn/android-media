@@ -176,7 +176,6 @@
         <item name="actionModeStyle">@style/CustomActionMode</item>
         <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
-        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <style name="Theme.AppCompat.NoTitleBar.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
