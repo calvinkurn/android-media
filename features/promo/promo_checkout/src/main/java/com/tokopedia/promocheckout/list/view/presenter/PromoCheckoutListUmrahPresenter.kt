@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.mapper.UmrahCheckPromoMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckUmrahPromoCode
-import com.tokopedia.promocheckout.common.domain.model.CheckUmrahPromoCodeData
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
 import rx.Subscriber
 
@@ -19,11 +18,11 @@ class PromoCheckoutListUmrahPresenter (private val umrahCheckPromoUseCase: Umrah
         umrahCheckPromoUseCase.execute(umrahCheckPromoUseCase.createRequestParams(promoCode, totalPrice), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-                val checkVoucherData = objects.getData<CheckUmrahPromoCode.Response>(CheckUmrahPromoCode.Response::class.java).umrahPromoCheck
-                if (checkVoucherData.umrahPromoData.success) {
-                    view.onSuccessCheckPromo(umrahCheckPromoMapper.mapData(checkVoucherData.umrahPromoData))
+                val checkVoucherData = objects.getData<CheckUmrahPromoCode.Response>(CheckUmrahPromoCode.Response::class.java).umrahPromoCheck.umrahPromoData
+                if (checkVoucherData.success) {
+                    view.onSuccessCheckPromo(umrahCheckPromoMapper.mapData(checkVoucherData))
                 } else {
-                    view.onErrorCheckPromo(MessageErrorException(checkVoucherData.umrahPromoData.message.text))
+                    view.onErrorCheckPromo(MessageErrorException(checkVoucherData.message.text))
                 }
             }
 

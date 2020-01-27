@@ -20,9 +20,7 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
     @Inject
     lateinit var promoCheckoutListUmrahPresenter: PromoCheckoutListUmrahPresenter
 
-    override var serviceId: String
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        set(value) {}
+    override var serviceId: String = ""
 
     override fun onPromoCodeUse(promoCode: String) {
         if (promoCode.isNotEmpty()) promoCheckoutListUmrahPresenter.checkPromo(promoCode, totalPrice)
@@ -42,7 +40,7 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
     }
 
     override fun loadData(page: Int) {
-       hideLoading()
+        hideLoading()
     }
 
     override fun onDestroyView() {
@@ -53,7 +51,7 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
-        totalPrice = arguments?.getInt(EXTRA_TOTAL_PRICE) ?:0
+        totalPrice = arguments?.getInt(EXTRA_TOTAL_PRICE) ?: 0
 
         promoCheckoutListUmrahPresenter.attachView(this)
     }
@@ -62,12 +60,12 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
-    companion object{
-        fun createInstance(promoCode: String?, totalPrice:Int?): PromoCheckoutListUmrahFragment {
+    companion object {
+        fun createInstance(promoCode: String?, totalPrice: Int?): PromoCheckoutListUmrahFragment {
             val promoCheckoutListUmrahFragment = PromoCheckoutListUmrahFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
-            bundle.putInt(EXTRA_TOTAL_PRICE, totalPrice ?:0)
+            bundle.putInt(EXTRA_TOTAL_PRICE, totalPrice ?: 0)
             promoCheckoutListUmrahFragment.arguments = bundle
             return promoCheckoutListUmrahFragment
         }

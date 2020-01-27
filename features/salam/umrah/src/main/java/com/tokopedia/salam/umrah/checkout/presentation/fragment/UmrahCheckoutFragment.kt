@@ -29,6 +29,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSalam
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.salam.umrah.R
@@ -719,6 +721,45 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     userData = this.getParcelableExtra(UmrahCheckoutContactDataFragment.EXTRA_CONTACT_DATA)
                     updateContactData()
                 }
+            } else if (requestCode == PROMO_EXTRA_LIST_ACTIVITY_RESULT && data !=null){
+                data.let {
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) {
+                        val itemPromoData = it.getParcelableExtra<PromoData>(EXTRA_PROMO_DATA)
+                        promoCode = itemPromoData.promoCode
+
+                        when (itemPromoData.state) {
+                            TickerCheckoutView.State.EMPTY -> {
+                                promoCode = ""
+                                setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                        "",
+                                        "")
+                            }
+                            TickerCheckoutView.State.FAILED -> {
+                                promoCode = ""
+                                setupPromoTicker(TickerCheckoutView.State.FAILED,
+                                        itemPromoData?.title.toEmptyStringIfNull(),
+                                        itemPromoData?.description.toEmptyStringIfNull())
+
+                            }
+                            TickerCheckoutView.State.ACTIVE -> {
+                                setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+                                        itemPromoData?.title.toEmptyStringIfNull(),
+                                        itemPromoData?.description.toEmptyStringIfNull())
+                            }
+                            TickerCheckoutView.State.INACTIVE -> {
+                                setupPromoTicker(TickerCheckoutView.State.INACTIVE,
+                                        itemPromoData?.title.toEmptyStringIfNull(),
+                                        itemPromoData?.description.toEmptyStringIfNull())
+                            }
+                            else -> {
+                                promoCode = ""
+                                setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                        "",
+                                        "")
+                            }
+                        }
+                    }
+                }
             }
             renderButtonCheckout()
             super.onActivityResult(requestCode, resultCode, data)
@@ -774,6 +815,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             ticker_promo_umrah.title = title
             ticker_promo_umrah.desc = description
             ticker_promo_umrah.state = TickerPromoStackingCheckoutView.State.ACTIVE
+        } else if (state == TickerCheckoutView.State.INACTIVE) {
+            ticker_promo_umrah.title = title
+            ticker_promo_umrah.desc = description
+            ticker_promo_umrah.state = TickerPromoStackingCheckoutView.State.INACTIVE
         }
     }
 
@@ -804,8 +849,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         const val CHECKOUT_FULL_PAID = "Bayar Penuh"
         const val CHECKOUT_INSTALLMENT = "Uang Muka"
 
-        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
-        val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"
+        const val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        const val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"
+        const val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
 
         const val PROMO_EXTRA_LIST_ACTIVITY_RESULT = 123
