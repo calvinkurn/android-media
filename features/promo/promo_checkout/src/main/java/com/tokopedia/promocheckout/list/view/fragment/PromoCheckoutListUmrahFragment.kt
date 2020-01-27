@@ -11,6 +11,7 @@ import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListUmrahActivity.Companion.EXTRA_TOTAL_PRICE
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListUmrahPresenter
+import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
 
 open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
@@ -32,7 +33,7 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
-        val promoData = PromoData(data.isCoupon, data.codes[0],
+        val promoData = PromoData(data.isCoupon, textInputCoupon.text.toString(),
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
 
