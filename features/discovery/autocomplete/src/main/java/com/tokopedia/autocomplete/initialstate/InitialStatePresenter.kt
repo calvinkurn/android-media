@@ -9,6 +9,7 @@ import com.tokopedia.autocomplete.usecase.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.viewmodel.TitleSearch
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.user.session.UserSessionInterface
+import rx.Subscriber
 import javax.inject.Inject
 
 class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
@@ -76,25 +77,22 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
 
     override fun getInitialStateResult(list: MutableList<SearchData>, searchTerm: String): List<Visitable<*>>{
         val data = mutableListOf<Visitable<*>>()
-        loop@ for (searchData in list) {
+        for (searchData in list) {
             when (searchData.id) {
                 SearchData.AUTOCOMPLETE_RECENT_SEARCH -> {
                     data.addAll(
                             searchData.convertRecentSearchToVisitableList(searchTerm).insertTitleWithDeleteAll(searchData.name)
                     )
-                    continue@loop
                 }
                 SearchData.AUTOCOMPLETE_RECENT_VIEW -> {
                     data.addAll(
                             searchData.convertRecentViewSearchToVisitableList(searchTerm).insertTitle(searchData.name)
                     )
-                    continue@loop
                 }
                 SearchData.AUTOCOMPLETE_POPULAR_SEARCH -> {
                     data.addAll(
                             searchData.convertPopularSearchToVisitableList(searchTerm).insertTitle(searchData.name)
                     )
-                    continue@loop
                 }
             }
         }
@@ -113,5 +111,40 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
         titleSearch.title = name
         this.add(0, titleSearch)
         return this
+    }
+
+    internal class InitialStateSubscriber(
+            private val querySearch: String,
+            private val initialStateViewModel: InitialStateViewModel,
+            private val view: InitialStateContract.View
+    ) : Subscriber<List<SearchData>>() {
+
+        override fun onCompleted() {
+
+        }
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(searchDatas: List<SearchData>) {
+            for (searchData in searchDatas) {
+                if (searchData.items.size > 0) {
+                    when (searchData.id) {
+                        RECENT_SEARCH, RECENT_VIEW, POPULAR_SEARCH -> {
+                            initialStateViewModel.searchTerm = querySearch
+                            initialStateViewModel.addList(searchData)
+                        }
+                    }
+                }
+            }
+            view.showInitialStateResult(initialStateViewModel)
+        }
+
+        companion object {
+            const val RECENT_SEARCH = "recent_search"
+            const val RECENT_VIEW = "recent_view"
+            const val POPULAR_SEARCH = "popular_search"
+        }
     }
 }

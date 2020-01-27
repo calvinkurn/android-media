@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/search_top_bar"
+    android:id="@+id/searchTopBar"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
@@ -12,7 +12,7 @@
     android:background="@android:color/white">
 
         <ImageView
-            android:id="@+id/action_up_btn"
+            android:id="@+id/actionUpBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_12"
@@ -44,11 +44,11 @@
             android:lineSpacingExtra="@dimen/sp_6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/action_up_btn"
-            app:layout_constraintRight_toLeftOf="@id/action_voice_btn"/>
+            app:layout_constraintLeft_toRightOf="@id/actionUpBtn"
+            app:layout_constraintRight_toLeftOf="@id/actionVoiceButton"/>
 
         <ImageView
-            android:id="@+id/autocomplete_ic_search"
+            android:id="@+id/autocompleteIconSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -59,7 +59,7 @@
             app:layout_constraintLeft_toLeftOf="@id/searchTextView"/>
 
         <ImageView
-            android:id="@+id/action_image_search_btn"
+            android:id="@+id/actionImageSearchButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -71,7 +71,7 @@
             app:layout_constraintRight_toRightOf="@id/searchTextView"/>
 
         <ImageView
-            android:id="@+id/action_empty_btn"
+            android:id="@+id/actionEmptyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -84,7 +84,7 @@
             app:layout_constraintRight_toRightOf="@id/searchTextView"/>
 
         <ImageView
-            android:id="@+id/action_voice_btn"
+            android:id="@+id/actionVoiceButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
@@ -96,7 +96,7 @@
             app:layout_constraintLeft_toRightOf="@id/searchTextView"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/action_cancel_button"
+            android:id="@+id/actionCancelButton"
             android:text="@string/search_cancel_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

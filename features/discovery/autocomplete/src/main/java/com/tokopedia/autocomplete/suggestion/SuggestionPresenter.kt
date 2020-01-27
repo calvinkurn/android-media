@@ -32,9 +32,9 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var allFragmentList = mutableListOf<Visitable<*>>()
-    private var productFragmentList = mutableListOf<Visitable<*>>()
-    private var shopFragmentList = mutableListOf<Visitable<*>>()
+    private var allSuggestionList = mutableListOf<Visitable<*>>()
+    private var productSuggestionList = mutableListOf<Visitable<*>>()
+    private var shopSuggestionList = mutableListOf<Visitable<*>>()
 
     override fun search(searchParameter: SearchParameter) {
         this.querySearch = searchParameter.getSearchQuery()
@@ -47,23 +47,22 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 object : Subscriber<List<SearchData>>() {
                     override fun onNext(t: List<SearchData>) {
                         val tabAutoCompleteViewModel = TabSuggestionViewModel()
-                        allFragmentList.clear()
-                        productFragmentList.clear()
-                        shopFragmentList.clear()
+                        allSuggestionList.clear()
+                        productSuggestionList.clear()
+                        shopSuggestionList.clear()
 
-                        loop@ for (searchData in t) {
+                        for (searchData in t) {
                             if (searchData.items.size > 0) {
                                 when (searchData.id) {
                                     DIGITAL, CATEGORY, AUTOCOMPLETE, HOTLIST, IN_CATEGORY, SHOP, PROFILE, TOP_PROFILE -> {
                                         tabAutoCompleteViewModel.searchTerm = querySearch
                                         tabAutoCompleteViewModel.addList(searchData)
-                                        continue@loop
                                     }
                                 }
                             }
                         }
                         prepareFragmentResult(tabAutoCompleteViewModel.list, tabAutoCompleteViewModel.searchTerm)
-                        view.showSuggestionResult(allFragmentList, productFragmentList, shopFragmentList)
+                        view.showSuggestionResult(allSuggestionList, productSuggestionList, shopSuggestionList)
                     }
 
                     override fun onCompleted() {}
@@ -76,45 +75,37 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     private fun prepareFragmentResult(data: List<SearchData>, searchTerm: String) {
-        loop@ for (searchData in data) {
+        for (searchData in data) {
             when (searchData.id) {
                 SearchData.AUTOCOMPLETE_DIGITAL -> {
-                    allFragmentList.addAll(searchData.convertDigitalSearchToVisitableList(searchTerm))
-                    continue@loop
+                    allSuggestionList.addAll(searchData.convertDigitalSearchToVisitableList(searchTerm))
                 }
                 SearchData.AUTOCOMPLETE_CATEGORY -> {
-                    allFragmentList.addAll(searchData.convertCategorySearchToVisitableList(searchTerm).insertTitle(searchData.name))
-                    continue@loop
+                    allSuggestionList.addAll(searchData.convertCategorySearchToVisitableList(searchTerm).insertTitle(searchData.name))
                 }
                 SearchData.AUTOCOMPLETE_DEFAULT -> {
                     val list = searchData.convertAutoCompleteSearchToVisitableList(searchTerm)
-                    allFragmentList.addAll(list)
-                    productFragmentList.addAll(list)
-                    continue@loop
+                    allSuggestionList.addAll(list)
+                    productSuggestionList.addAll(list)
                 }
                 SearchData.AUTOCOMPLETE_HOTLIST -> {
-                    allFragmentList.addAll(searchData.convertHotlistSearchToVisitableList(searchTerm).insertTitle(searchData.name))
-                    continue@loop
+                    allSuggestionList.addAll(searchData.convertHotlistSearchToVisitableList(searchTerm).insertTitle(searchData.name))
                 }
                 SearchData.AUTOCOMPLETE_IN_CATEGORY -> {
                     val list = searchData.convertInCategorySearchToVisitableList(searchTerm)
-                    allFragmentList.addAll(list)
-                    productFragmentList.addAll(list)
-                    continue@loop
+                    allSuggestionList.addAll(list)
+                    productSuggestionList.addAll(list)
                 }
                 SearchData.AUTOCOMPLETE_SHOP -> {
                     val list = searchData.convertShopSearchToVisitableList(searchTerm)
-                    shopFragmentList.addAll(list)
-                    allFragmentList.addAll(list.insertTitle(searchData.name))
-                    continue@loop
+                    shopSuggestionList.addAll(list)
+                    allSuggestionList.addAll(list.insertTitle(searchData.name))
                 }
                 SearchData.AUTOCOMPLETE_PROFILE -> {
-                    allFragmentList.addAll(searchData.convertProfileSearchToVisitableList(searchTerm).insertTitle(searchData.name))
-                    continue@loop
+                    allSuggestionList.addAll(searchData.convertProfileSearchToVisitableList(searchTerm).insertTitle(searchData.name))
                 }
                 SearchData.AUTOCOMPLETE_TOP_PROFILE -> {
-                    allFragmentList.addAll(searchData.convertTopProfileSearchToVisitableList(searchTerm))
-                    continue@loop
+                    allSuggestionList.addAll(searchData.convertTopProfileSearchToVisitableList(searchTerm))
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.tokopedia.autocomplete.searchbar
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -23,7 +22,6 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -76,14 +74,14 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private var hint: String? = null
 
     private val mOnClickListener = OnClickListener { v ->
-        if (v === action_up_btn || v === action_cancel_button) {
+        if (v === actionUpBtn || v === actionCancelButton) {
             KeyboardHandler.DropKeyboard(activity, searchTextView)
             activity?.finish()
-        } else if (v === action_voice_btn) {
+        } else if (v === actionVoiceButton) {
             onVoiceClicked()
-        } else if (v === action_image_search_btn) {
+        } else if (v === actionImageSearchButton) {
             onImageSearchClicked()
-        } else if (v === action_empty_btn) {
+        } else if (v === actionEmptyButton) {
             searchTextView?.text = null
         }
     }
@@ -138,18 +136,18 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun setListener(){
-        action_up_btn?.setOnClickListener(mOnClickListener)
-        action_voice_btn?.setOnClickListener(mOnClickListener)
-        action_empty_btn?.setOnClickListener(mOnClickListener)
-        action_cancel_button?.setOnClickListener(mOnClickListener)
-        action_image_search_btn?.setOnClickListener(mOnClickListener)
+        actionUpBtn?.setOnClickListener(mOnClickListener)
+        actionVoiceButton?.setOnClickListener(mOnClickListener)
+        actionEmptyButton?.setOnClickListener(mOnClickListener)
+        actionCancelButton?.setOnClickListener(mOnClickListener)
+        actionImageSearchButton?.setOnClickListener(mOnClickListener)
     }
 
     private fun showVoiceButton(show: Boolean) {
         if (show && isVoiceAvailable && allowVoiceSearch) {
-            action_voice_btn?.visibility = View.VISIBLE
+            actionVoiceButton?.visibility = View.VISIBLE
         } else {
-            action_voice_btn?.visibility = View.GONE
+            actionVoiceButton?.visibility = View.GONE
             if (!isVoiceAvailable) {
                 setMargin(searchTextView, convertDpToPx(8), 0, convertDpToPx(12), 0)
             }
@@ -171,9 +169,9 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     private fun showImageSearch(show: Boolean) {
         if (show && isAllowImageSearch) {
-            action_image_search_btn?.visibility = View.VISIBLE
+            actionImageSearchButton?.visibility = View.VISIBLE
         } else {
-            action_image_search_btn?.visibility = View.GONE
+            actionImageSearchButton?.visibility = View.GONE
         }
     }
 
@@ -279,17 +277,17 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         mUserQuery = text
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
-            action_empty_btn?.visibility = View.VISIBLE
-            action_cancel_button?.visibility = View.VISIBLE
+            actionEmptyButton?.visibility = View.VISIBLE
+            actionCancelButton?.visibility = View.VISIBLE
             showVoiceButton(false)
             showImageSearch(false)
-            setConstraint(search_top_bar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.action_cancel_button, ConstraintSet.LEFT, 0)
+            setConstraint(searchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.actionCancelButton, ConstraintSet.LEFT, 0)
         } else {
-            action_empty_btn?.visibility = View.GONE
-            action_cancel_button?.visibility = View.GONE
+            actionEmptyButton?.visibility = View.GONE
+            actionCancelButton?.visibility = View.GONE
             showVoiceButton(true)
             showImageSearch(true)
-            setConstraint(search_top_bar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.action_voice_btn, ConstraintSet.LEFT, 0)
+            setConstraint(searchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.actionVoiceButton, ConstraintSet.LEFT, 0)
         }
 
         if (!TextUtils.equals(newText, mOldQueryText)) {
@@ -324,7 +322,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
             val showCaseObjectList = ArrayList<ShowCaseObject>()
             showCaseObjectList.add(ShowCaseObject(
-                    action_image_search_btn,
+                    actionImageSearchButton,
                     mContext.resources.getString(R.string.on_board_title),
                     remoteConfig.getString(RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
                             mContext.resources.getString(R.string.on_board_desc)),
@@ -340,8 +338,8 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private fun shouldShowImageSearchShowCase(): Boolean {
         return (isAllowImageSearch
                 && !isShowShowCase
-                && action_image_search_btn != null
-                && action_image_search_btn?.visibility == View.VISIBLE)
+                && actionImageSearchButton != null
+                && actionImageSearchButton?.visibility == View.VISIBLE)
     }
 
     private fun createShowCase(): ShowCaseDialog {
@@ -385,14 +383,14 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     override fun setBackground(background: Drawable?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            search_top_bar?.background = background
+            searchTopBar?.background = background
         } else {
-            search_top_bar?.background = background
+            searchTopBar?.background = background
         }
     }
 
     override fun setBackgroundColor(color: Int) {
-        search_top_bar?.setBackgroundColor(color)
+        searchTopBar?.setBackgroundColor(color)
     }
 
     private fun setImageSearch(imageSearch: Boolean) {
@@ -428,7 +426,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private fun showSearch() {
         textViewRequestFocus()
 
-        search_top_bar?.visibility = View.VISIBLE
+        searchTopBar?.visibility = View.VISIBLE
         initShowCase()
     }
 

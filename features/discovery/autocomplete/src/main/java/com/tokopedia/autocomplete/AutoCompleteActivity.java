@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.presentation.activity;
+package com.tokopedia.autocomplete;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.autocomplete.R;
 import com.tokopedia.autocomplete.analytics.AutocompleteEventTracking;
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking;
 import com.tokopedia.autocomplete.initialstate.InitialStateFragment;
@@ -250,10 +249,10 @@ public class AutoCompleteActivity extends BaseActivity
     public void showInitialStateView() {
         mSuggestionView.setVisibility(View.GONE);
         mInitialStateView.setVisibility(View.VISIBLE);
-        animateInitialView();
+        animateInitialStateView();
     }
 
-    private void animateInitialView() {
+    private void animateInitialStateView() {
         TransitionSet transitionSet = new TransitionSet();
         Fade fade = new Fade(Fade.MODE_IN);
         transitionSet.addTransition(fade);

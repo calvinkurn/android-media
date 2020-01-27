@@ -18,7 +18,7 @@ import com.tokopedia.autocomplete.adapter.SearchPageAdapter
 import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.di.AutoCompleteComponent
 import com.tokopedia.autocomplete.di.DaggerAutoCompleteComponent
-import com.tokopedia.autocomplete.presentation.activity.AutoCompleteActivity
+import com.tokopedia.autocomplete.AutoCompleteActivity
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
