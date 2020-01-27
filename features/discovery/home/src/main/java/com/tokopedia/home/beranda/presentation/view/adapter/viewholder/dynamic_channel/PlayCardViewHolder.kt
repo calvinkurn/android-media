@@ -31,7 +31,7 @@ class PlayCardViewHolder(
     private val play = view.findViewById<ImageView>(R.id.play)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
     private val viewer = view.findViewById<TextView>(R.id.viewer)
-    private val live = view.findViewById<TextView>(R.id.live)
+    private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
