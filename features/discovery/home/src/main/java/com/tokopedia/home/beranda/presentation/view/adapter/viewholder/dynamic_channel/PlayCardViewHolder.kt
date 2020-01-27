@@ -100,7 +100,7 @@ class PlayCardViewHolder(
     }
 
     private fun handlingTracker(model: PlayCardViewModel){
-        itemView.addOnImpressionListener(model){
+        container.addOnImpressionListener(model){
             HomePageTracking.eventEnhanceImpressionPlayBanner(model)
         }
     }
