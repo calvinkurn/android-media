@@ -6,7 +6,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerhomedrawer.R
-//import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerItem
+import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerItem
 
 abstract class SellerDrawerHelper {
 
@@ -29,7 +29,7 @@ abstract class SellerDrawerHelper {
         val REQUEST_LOGIN = 345
     }
 
-//    abstract fun createDrawerData(): ArrayList<SellerDrawerItem>
+    abstract fun createDrawerData(): ArrayList<SellerDrawerItem>
 
     abstract fun initDrawer(activity: Activity)
 

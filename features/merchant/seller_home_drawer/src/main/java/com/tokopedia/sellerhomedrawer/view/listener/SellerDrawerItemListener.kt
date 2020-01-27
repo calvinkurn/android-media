@@ -1,10 +1,10 @@
 package com.tokopedia.sellerhomedrawer.view.listener
 
-//import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerItem
+import com.tokopedia.sellerhomedrawer.view.viewmodel.SellerDrawerItem
 
 interface SellerDrawerItemListener {
 
-//    fun onItemClicked(drawerItem: SellerDrawerItem)
+    fun onItemClicked(drawerItem: SellerDrawerItem)
     fun notifyDataSetChanged()
 
 }
