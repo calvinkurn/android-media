@@ -13,7 +13,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
-import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
 import com.tokopedia.home.beranda.presentation.view.helper.setValue
@@ -79,23 +78,23 @@ class PlayCardViewHolder(
 
             thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
 
+
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
             viewer.text = playChannel.totalView
             if(playChannel.videoStream.isLive) live.show()
             else live.hide()
 
-            itemView.setSafeOnClickListener {
-                if(isClickable){
-                    videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
-                    HomePageTracking.eventClickPlayBanner(model)
-                }
+            container.setSafeOnClickListener {
+                goToPlayChannel(model)
             }
 
-            play.setSafeOnClickListener { _ ->
-                if(isClickable) {
-                    videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
-                }
+            itemView.setSafeOnClickListener {
+                goToPlayChannel(model)
+            }
+
+            play.setSafeOnClickListener {
+                goToPlayChannel(model)
             }
         }
     }
@@ -110,6 +109,13 @@ class PlayCardViewHolder(
         helper?.play(url)
     }
 
+    private fun goToPlayChannel(model: PlayCardViewModel){
+        if(isClickable){
+            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.playCardHome?.channelId) }
+            HomePageTracking.eventClickPlayBanner(model)
+        }
+    }
+
     fun resume(){
         helper?.onActivityResume()
     }
@@ -119,8 +125,6 @@ class PlayCardViewHolder(
     }
 
     fun getHelper() = helper
-
-    fun wantsToPlay() = visibleAreaOffset(videoPlayer, itemView.parent) >= 0.65
 
     fun onViewAttach(){
         if(playCardViewModel != null) {
