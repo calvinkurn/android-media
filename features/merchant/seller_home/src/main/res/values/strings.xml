@@ -3,4 +3,5 @@
     <string name="sah_more">Selengkapnya</string>
     <string name="sah_score">Skor</string>
     <string name="sah_max_progress">/100</string>
+    <string name="sah_load_data_error_message">Oops, informasi gagal ditampilkan</string>
 </resources>

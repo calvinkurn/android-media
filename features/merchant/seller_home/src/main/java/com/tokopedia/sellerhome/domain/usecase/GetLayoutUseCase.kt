@@ -2,7 +2,10 @@ package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.WidgetType
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
+import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
+import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhome.view.model.ProgressUiModel
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -46,7 +49,7 @@ class GetLayoutUseCase(
                         "",
                         "",
                         60f,
-                        ProgressState.ORANGE,
+                        ProgressUiModel.State.ORANGE,
                         "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant."
                 )
         )

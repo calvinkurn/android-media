@@ -11,16 +11,16 @@ class ProgressUiModel(
         override val url: String,
         override val appLink: String,
         var currentProgress: Float,
-        var state: ProgressState,
+        var state: State,
         var description: String
 ) : BaseWidgetUiModel {
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-}
 
-enum class ProgressState {
-    GREEN,
-    ORANGE,
-    RED
+    enum class State {
+        GREEN,
+        ORANGE,
+        RED
+    }
 }
