@@ -1,9 +1,19 @@
 package com.tokopedia.brandlist.brandlist_category.presentation.fragment
 
 import android.os.Bundle
+import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.brandlist.BrandlistInstance
+import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryComponent
+import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryModule
+import com.tokopedia.brandlist.brandlist_category.di.DaggerBrandlistCategoryComponent
+import com.tokopedia.brandlist.brandlist_category.presentation.viewmodel.BrandlistCategoryViewModel
+import javax.inject.Inject
 
-class BrandlistContainerFragment : BaseDaggerFragment() {
+
+class BrandlistContainerFragment : BaseDaggerFragment(),
+        HasComponent<BrandlistCategoryComponent> {
 
     companion object {
         fun createInstance() = BrandlistContainerFragment()
@@ -14,12 +24,29 @@ class BrandlistContainerFragment : BaseDaggerFragment() {
 //                }}
     }
 
+    @Inject
+    lateinit var viewModel: BrandlistCategoryViewModel
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getBrandlistCategories()
+    }
+
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ""
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        component?.inject(this)
     }
 
+    override fun getComponent(): BrandlistCategoryComponent? {
+        return activity?.run {
+            DaggerBrandlistCategoryComponent
+                    .builder()
+                    .brandlistCategoryModule(BrandlistCategoryModule())
+                    .brandlistComponent(BrandlistInstance.getComponent(application))
+                    .build()
+        }
+    }
 }
