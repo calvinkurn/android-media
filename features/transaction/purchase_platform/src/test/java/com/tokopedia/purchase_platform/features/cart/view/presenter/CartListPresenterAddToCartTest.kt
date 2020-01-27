@@ -6,7 +6,6 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
@@ -137,26 +136,6 @@ object CartListPresenterAddToCartTest : Spek({
             }
         }
 
-        Scenario("failed add to cart wishlist item with exception") {
-
-            val errorMessage = "Add to cart error with exception"
-
-            Given("add to cart data") {
-                every { addToCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processAddToCart(CartWishlistItemHolderData(id = "0", shopId = "0"))
-            }
-
-            Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
-                }
-            }
-        }
-
         Scenario("success add to cart recent view item") {
 
             val productModel = CartRecentViewItemHolderData(id = "0", shopId = "0")
@@ -209,7 +188,7 @@ object CartListPresenterAddToCartTest : Spek({
             Then("should show error") {
                 verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(addToCartDataModel.data.message[0])
+                    view.showToastMessageRed(addToCartDataModel.errorMessage[0])
                 }
             }
         }
@@ -290,26 +269,6 @@ object CartListPresenterAddToCartTest : Spek({
                 verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(addToCartDataModel.errorMessage[0])
-                }
-            }
-        }
-
-        Scenario("failed add to cart wishlist item with exception") {
-
-            val errorMessage = "Add to cart error with exception"
-
-            Given("add to cart data") {
-                every { addToCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processAddToCart(CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0)))
-            }
-
-            Then("should show error") {
-                verifyOrder {
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
                 }
             }
         }
