@@ -29,6 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSalam
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -742,11 +743,13 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
                             }
                             TickerCheckoutView.State.ACTIVE -> {
+                                tickerStatic()
                                 setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                                         itemPromoData?.title.toEmptyStringIfNull(),
                                         itemPromoData?.description.toEmptyStringIfNull())
                             }
                             TickerCheckoutView.State.INACTIVE -> {
+                                tickerStatic()
                                 setupPromoTicker(TickerCheckoutView.State.INACTIVE,
                                         itemPromoData?.title.toEmptyStringIfNull(),
                                         itemPromoData?.description.toEmptyStringIfNull())
@@ -822,6 +825,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         }
     }
 
+    private fun tickerStatic(){
+        ticker_announc_umroh_checkout_promo.show()
+        ticker_announc_umroh_checkout_promo.setTextDescription(getString(R.string.umrah_ticker_static_promo))
+    }
     companion object {
 
         private var pilgrimCount = 0
