@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -21,11 +19,7 @@ class UpdateCartPromoMerchantSubscriber(private val view: ICartListView?,
         e.printStackTrace()
         view?.let {
             it.hideProgressLoading()
-            var errorMessage = e.message
-            if (e !is CartResponseErrorException) {
-                errorMessage = ErrorHandler.getErrorMessage(it.getActivityObject(), e)
-            }
-            it.showToastMessageRed(errorMessage ?: "")
+            it.showToastMessageRed(e)
         }
     }
 

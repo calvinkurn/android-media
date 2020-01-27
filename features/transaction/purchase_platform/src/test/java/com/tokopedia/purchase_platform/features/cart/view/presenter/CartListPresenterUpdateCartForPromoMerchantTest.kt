@@ -21,7 +21,7 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -51,6 +51,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list for promo merchant") {
 
@@ -66,19 +67,19 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             )
         }
 
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
         Scenario("success update cart") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
             val shopGroupAvailableData = ShopGroupAvailableData()
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process to update cart data") {
@@ -86,7 +87,7 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
             }
 
             Then("should render success and show promo merchant bottomsheet") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showMerchantVoucherListBottomsheet(shopGroupAvailableData)
                 }
@@ -95,79 +96,47 @@ object CartListPresenterUpdateCartForPromoMerchantTest : Spek({
 
         Scenario("failed update cart") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = false
+                message = "Error message"
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = false
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
                 cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed("Message")
+                    view.showToastMessageRed(updateCartData.message)
                 }
             }
         }
 
-        Scenario("failed update cart with CartResponseErrorException") {
+        Scenario("failed update cart with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val errorMessage = "Error"
-
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
-            }
-
-            Then("should show error") {
-                verify {
-                    view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
-                }
-            }
-        }
-
-        Scenario("failed update cart with other exception") {
-
-            val view: ICartListView = mockk(relaxed = true)
-            val exception = RuntimeException()
+            val exception = CartResponseErrorException("Error message")
 
             Given("update cart data") {
                 every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
                 cartListPresenter.processUpdateCartDataPromoMerchant(arrayListOf(), ShopGroupAvailableData())
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(exception)
                 }
             }
         }
+
     }
 
 })
