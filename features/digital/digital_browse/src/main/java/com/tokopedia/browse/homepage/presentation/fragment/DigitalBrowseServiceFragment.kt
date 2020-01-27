@@ -303,6 +303,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     override fun onCategoryItemClicked(viewModel: DigitalBrowseServiceCategoryViewModel?, itemPosition: Int) {
         val analyticsModel = presenter.getItemPositionInGroup(this.viewModel.titleMap!!, itemPosition)
         analyticsModel.iconName = viewModel!!.name!!
+        analyticsModel.buIdentifier = viewModel.buIdentifier?:""
 
         digitalBrowseAnalytics.eventClickIconLayanan(analyticsModel)
 
@@ -325,6 +326,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
                     this.viewModel.titleMap!!,
                     position)
             analyticsModel.iconName = item.name ?: ""
+            analyticsModel.buIdentifier = item.buIdentifier?:""
             dataObjects.add(analyticsModel)
             position++
         }

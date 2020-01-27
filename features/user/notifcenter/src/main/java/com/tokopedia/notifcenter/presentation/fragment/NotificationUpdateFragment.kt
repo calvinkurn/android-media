@@ -41,7 +41,7 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
@@ -274,6 +274,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             updateMarkAllReadCounter()
             notifyBottomActionView()
         }
+    }
+
+    override fun addProductToCheckout(notification: NotificationItemViewBean) {
+        RouteManager.route(context, notification.dataNotification.checkoutUrl)
+        analytics.trackProductCheckoutBuyClick(notification)
     }
 
     private fun updateMarkAllReadCounter() {
