@@ -18,7 +18,7 @@
 -->
 
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">#fff</item>
         <item name="android:background">@color/tkpd_main_green</item>
@@ -175,7 +175,6 @@
         <item name="android:actionModeStyle">@style/CustomActionMode</item>
         <item name="actionModeStyle">@style/CustomActionMode</item>
         <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
-        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
     </style>
 
     <style name="Theme.AppCompat.NoTitleBar.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
