@@ -10,4 +10,8 @@
         android:startColor="#50000000"
         android:type="linear" />
 
+    <stroke
+        android:width="@dimen/dimen_topchat_1dp"
+        android:color="@color/Neutral_N75" />
+
 </shape>
