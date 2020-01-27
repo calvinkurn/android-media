@@ -14,6 +14,7 @@ include "libraries:common_network"
 include "libraries:core_legacy"
 include "libraries:core_network"
 include 'libraries:date_picker_range'
+include 'libraries:device_info'
 include 'libraries:dynamic_features'
 include "libraries:fingerprint"
 include "libraries:image_picker"
@@ -33,6 +34,7 @@ include "libraries:play_core"
 include "libraries:promotions_target"
 include "libraries:react_native"
 include "libraries:remote_config"
+include "libraries:shake_detect"
 include "libraries:sharedata"
 include "libraries:traceroute"
 include "libraries:translator"

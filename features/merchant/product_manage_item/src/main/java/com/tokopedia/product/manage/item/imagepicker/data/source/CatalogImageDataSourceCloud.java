@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.imagepicker.data.source;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.product.manage.item.imagepicker.data.model.CatalogImage;
 import com.tokopedia.product.manage.item.imagepicker.data.model.DataResponseCatalogImage;
 

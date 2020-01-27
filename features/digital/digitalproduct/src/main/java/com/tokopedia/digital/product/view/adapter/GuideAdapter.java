@@ -26,7 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder> {
 
-    private static final int LAYOUT = R.layout.item_guide_tab;
+    private static final int LAYOUT = R.layout.view_digital_item_guide_tab;
 
     private List<GuideData> guideDataList = new ArrayList<>();
     private Context context;
@@ -118,7 +118,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             itemView.findViewById(R.id.circle_thumbnail_view)
                     .setBackground(MethodChecker
                             .getDrawable(itemView.getContext(),
-                                    R.drawable.ic_play_circle_outline_48dp));
+                                    R.drawable.digital_ic_play_circle_outline_48dp));
 
             progressBar = itemView.findViewById(R.id.youtube_thumbnail_loading_bar);
         }

@@ -2,6 +2,8 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+            campaignShakeLanding            : ":features:user:campaign_shake_landing",
+
             resourcesCommon                 : ":features:common:resources_common",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
@@ -175,6 +177,8 @@ ext {
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
+            attachvoucher                   : ":features:user:attachvoucher",
+            attachcommon                   : ":features:user:attachcommon",
             changepassword                  : ":features:user:changepassword",
 //            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",
