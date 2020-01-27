@@ -21,7 +21,7 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -51,6 +51,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list for promo global") {
 
@@ -66,18 +67,18 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             )
         }
 
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
         Scenario("success update cart and redirect to coupon list") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
-
-            Given("update cart data") {
-                updateCartData.isSuccess = true
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("update cart data") {
+                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
             When("process to update cart data") {
@@ -85,7 +86,7 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
             }
 
             Then("should render success and redirect to coupon list") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.goToCouponList()
                 }
@@ -94,25 +95,21 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
         Scenario("success update cart and redirect to coupon detail") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
             val promoStackingData = PromoStackingData()
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), promoStackingData, 0)
+                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), promoStackingData, CartFragment.GO_TO_DETAIL)
             }
 
             Then("should render success and redirect to coupon list") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.goToDetailPromoStacking(promoStackingData)
                 }
@@ -121,50 +118,41 @@ object CartListPresenterUpdateCartForPromoGlobalTest : Spek({
 
         Scenario("failed update cart") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = false
+                message = "Error"
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = false
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), PromoStackingData(), 0)
+                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), PromoStackingData(), CartFragment.GO_TO_LIST)
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed("message")
+                    view.showToastMessageRed(updateCartData.message)
                 }
             }
         }
 
         Scenario("failed update cart with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val errorMessage = "Error"
-            val exception = IllegalStateException(errorMessage)
+            val exception = IllegalStateException()
 
             Given("update cart data") {
                 every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), PromoStackingData(), 0)
+                cartListPresenter.processUpdateCartDataPromoGlobal(arrayListOf(), PromoStackingData(), CartFragment.GO_TO_LIST)
             }
 
             Then("should show error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(exception)
                 }
