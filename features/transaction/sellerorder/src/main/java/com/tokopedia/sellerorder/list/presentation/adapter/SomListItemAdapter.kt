@@ -66,7 +66,9 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(somItemList[position].statusColor))
         }
         holder.itemView.label_invoice.text = somItemList[position].orderResi
-        holder.itemView.ic_product.loadImage(somItemList[position].listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+        if (somItemList[position].listOrderProduct.isNotEmpty()) {
+            holder.itemView.ic_product.loadImage(somItemList[position].listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+        }
         holder.itemView.label_date_order.text = somItemList[position].orderDate
         holder.itemView.label_buyer_name.text = somItemList[position].buyerName
 

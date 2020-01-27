@@ -34,7 +34,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -257,8 +257,8 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     override fun onErrorGetShopInfo(e: Throwable) {}
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        total_follower.text = resources.getQuantityString(R.plurals.template_follower, shopInfo.info.shopTotalFavorit.toInt(),
-                shopInfo.info.shopTotalFavorit.toInt())
-        shopName = shopInfo.info.shopName
+        total_follower.text = resources.getQuantityString(R.plurals.template_follower, shopInfo.favoriteData.totalFavorite,
+                shopInfo.favoriteData.totalFavorite)
+        shopName = shopInfo.shopCore.name
     }
 }

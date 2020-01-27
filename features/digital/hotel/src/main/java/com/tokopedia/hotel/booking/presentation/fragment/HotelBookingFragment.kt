@@ -153,7 +153,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         })
 
         bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
-            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
+            contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
     }
 
@@ -253,7 +253,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     fun initGuestInfoEditText() {
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
-                    arrayListOf(), object: TravelContactArrayAdapter.ContactArrayListener {
+                    arrayListOf(), object : TravelContactArrayAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return til_guest.editText.text.toString()
                 }
@@ -473,8 +473,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
 
                 override fun onResetPromoDiscount() {
-                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
                     promoCode = ""
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
                 }
 
                 override fun onClickDetailPromo() {
@@ -497,7 +498,11 @@ class HotelBookingFragment : HotelBaseFragment() {
                     }
                 }
 
-                override fun onDisablePromoDiscount() { }
+                override fun onDisablePromoDiscount() {
+                    promoCode = ""
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
+                }
             }
         }
     }
@@ -642,6 +647,9 @@ class HotelBookingFragment : HotelBaseFragment() {
     override fun onErrorRetryClicked() {
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
     }
+
+    private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources,
+            com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
 
     companion object {
         const val ARG_CART_ID = "arg_cart_id"

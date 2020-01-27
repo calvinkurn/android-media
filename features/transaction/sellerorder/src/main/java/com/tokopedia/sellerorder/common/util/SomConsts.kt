@@ -33,6 +33,10 @@ object SomConsts {
     const val FILTER_TYPE_SEPARATOR = "separator"
 
     const val STATUS_ALL_ORDER = "all_order"
+    const val STATUS_NEW_ORDER = "new_order"
+    const val STATUS_IN_SHIPPING = "in_shipping"
+    const val STATUS_DONE = "done"
+    const val STATUS_ORDER_CANCELLED = "order_canceled"
     const val STATUS_DELIVERED = "delivered"
 
     const val DETAIL_HEADER_TYPE = "header"
@@ -132,4 +136,7 @@ object SomConsts {
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"
+
+    const val SORT_ASCENDING = 0
+    const val SORT_DESCENDING = 2
 }
