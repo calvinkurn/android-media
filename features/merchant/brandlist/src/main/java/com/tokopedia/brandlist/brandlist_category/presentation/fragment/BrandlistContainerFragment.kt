@@ -2,8 +2,16 @@ package com.tokopedia.brandlist.brandlist_category.presentation.fragment
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.brandlist.BrandlistInstance
+import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryComponent
+import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryModule
+import com.tokopedia.brandlist.brandlist_category.di.DaggerBrandlistCategoryComponent
 
-class BrandlistContainerFragment : BaseDaggerFragment() {
+
+
+class BrandlistContainerFragment : BaseDaggerFragment(),
+        HasComponent<BrandlistCategoryComponent> {
 
     companion object {
         fun createInstance() = BrandlistContainerFragment()
@@ -15,11 +23,20 @@ class BrandlistContainerFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ""
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        component?.inject(this)
     }
 
+    override fun getComponent(): BrandlistCategoryComponent? {
+        return activity?.run {
+            DaggerBrandlistCategoryComponent
+                    .builder()
+                    .brandlistCategoryModule(BrandlistCategoryModule())
+                    .brandlistComponent(BrandlistInstance.getComponent(application))
+                    .build()
+        }
+    }
 }
