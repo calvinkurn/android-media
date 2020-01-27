@@ -36,6 +36,7 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -397,10 +398,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
             promoUrls.add(attribute.imageUrl)
         }
 
+        banner_hotel_homepage_promo.customWidth = resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
+        banner_hotel_homepage_promo.customHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
         banner_hotel_homepage_promo.setPromoList(promoUrls)
         banner_hotel_homepage_promo.buildView()
         banner_hotel_homepage_promo.bannerSeeAll.hide()
         banner_hotel_homepage_promo.bannerIndicator.hide()
+        if (bannerList.size > 1) {
+            banner_hotel_homepage_promo.bannerIndicator.show()
+        } else {
+            banner_hotel_homepage_promo.bannerIndicator.hide()
+        }
     }
 
     private fun renderHotelLastSearch(data: HotelRecentSearchModel) {
