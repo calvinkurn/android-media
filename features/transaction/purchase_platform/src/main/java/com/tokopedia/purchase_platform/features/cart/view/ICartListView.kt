@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
@@ -30,8 +29,6 @@ interface ICartListView : CustomerView {
     fun getAllAvailableCartDataList(): List<CartItemData>
 
     fun getAllSelectedCartDataList(): List<CartItemData>?
-
-    fun getActivityObject(): FragmentActivity?
 
     fun getCartId(): String
 
@@ -113,6 +110,10 @@ interface ICartListView : CustomerView {
     fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean)
 
     fun removeInsuranceProductItem(productId: List<Long>)
+
+    fun showMessageRemoveInsuranceProductSuccess()
+
+    fun showMessageUpdateInsuranceProductSuccess()
 
     fun getAdsId(): String?
 

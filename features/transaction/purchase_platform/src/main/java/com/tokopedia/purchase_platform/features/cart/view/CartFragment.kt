@@ -207,10 +207,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun getActivityObject(): FragmentActivity? {
-        return activity
-    }
-
     private fun getDialogDeleteConfirmation(): DialogUnify? {
         activity?.apply {
             return DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -2021,6 +2017,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun removeInsuranceProductItem(productId: List<Long>) {
         cartAdapter.removeInsuranceDataItem(productId)
+    }
+
+    override fun showMessageUpdateInsuranceProductSuccess() {
+        val message = activity?.resources?.getString(R.string.update_insurance_data_success) ?: ""
+        if (message.isNotBlank()) showToastMessageGreen(message)
+    }
+
+    override fun showMessageRemoveInsuranceProductSuccess() {
+        val message = activity?.resources?.getString(R.string.remove_macro_insurance_success) ?: ""
+        if (message.isNotBlank()) showToastMessageGreen(message)
     }
 
     override fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean) {
