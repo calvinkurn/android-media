@@ -34,7 +34,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
     var isCustomInput = false
     set(value) {
         field = value
-        if (value) iv_input_dropdown.show() else iv_input_dropdown.hide()
+        toggleDropdownIcon(value)
     }
 
     var infoListener: InfoListener? = null
@@ -132,6 +132,10 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
     fun hideErrorMessage() {
         error_label.text = ""
         error_label.visibility = View.GONE
+    }
+
+    fun toggleDropdownIcon(value: Boolean) {
+        if (value) iv_input_dropdown.show() else iv_input_dropdown.hide()
     }
 
     open fun getLayout(): Int {
