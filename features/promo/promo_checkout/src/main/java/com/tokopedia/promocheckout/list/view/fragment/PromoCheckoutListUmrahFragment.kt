@@ -35,6 +35,7 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
         val promoData = PromoData(data.isCoupon, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
+
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
