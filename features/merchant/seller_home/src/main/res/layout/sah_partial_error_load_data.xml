@@ -11,8 +11,6 @@
         android:id="@+id/tv_error_card_title"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:lineSpacingExtra="@dimen/sp_4"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,12 +22,10 @@
     <ImageView
         android:layout_width="@dimen/dp_10"
         android:layout_height="@dimen/dp_10"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@id/tv_error_card_title"
         app:layout_constraintStart_toEndOf="@id/tv_error_card_title"
         app:layout_constraintTop_toTopOf="@id/tv_error_card_title"
-        app:srcCompat="@drawable/sah_icon_information" />
+        app:srcCompat="@drawable/ic_sah_information" />
 
     <ImageView
         android:id="@+id/iv_error"
@@ -37,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:adjustViewBounds="true"
-        android:src="@drawable/global_error_totopolis_03"
+        android:src="@drawable/img_sah_error"
         app:layout_constraintBottom_toTopOf="@id/tv_error_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +44,7 @@
         android:id="@+id/tv_error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sah_load_data_error_message"
+        android:text="@string/sah_widget_error_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -8,4 +8,6 @@ object WidgetType {
     const val CARD = "card"
     const val LINE_GRAPH = "line_graph"
     const val SECTION = "section"
+    const val PROGRESS = "progress"
+    const val LIST = "list"
 }

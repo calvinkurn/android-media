@@ -19,34 +19,42 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         val RES_LAYOUT = R.layout.sah_progress_card_widget
     }
 
-    private var state = State.SUCESS
+    private var state = State.LOADING
 
     override fun bind(element: ProgressUiModel) {
-        when (state) {
-            State.LOADING -> {
-                hideErrorLayout()
-                hideProgressLayout()
-                showShimmeringLayout()
-            }
-            State.SUCESS -> {
-                hideErrorLayout()
-                hideShimmeringLayout()
+        showLoadingState()
+        itemView.postDelayed({
+            showErrorState(element)
+        }, 5000)
+        itemView.postDelayed({
+            showSuccessState(element)
+        }, 10000)
+    }
 
-                with(element) {
-                    itemView.tv_card_title.text = title
-                    itemView.tv_description.text = description
-                    setupCurrentProgress(currentProgress, state)
-                }
+    private fun showLoadingState() {
+        hideErrorLayout()
+        hideProgressLayout()
+        showShimmeringLayout()
+    }
 
-                showProgressLayout()
-            }
-            State.ERROR -> {
-                hideProgressLayout()
-                hideShimmeringLayout()
-                itemView.tv_error_card_title.text = element.title
-                showErrorLayout()
-            }
+    private fun showSuccessState(element: ProgressUiModel) {
+        hideErrorLayout()
+        hideShimmeringLayout()
+
+        with(element) {
+            itemView.tv_card_title.text = title
+            itemView.tv_description.text = description
+            setupCurrentProgress(currentProgress, state)
         }
+
+        showProgressLayout()
+    }
+
+    private fun showErrorState(element: ProgressUiModel) {
+        hideProgressLayout()
+        hideShimmeringLayout()
+        itemView.tv_error_card_title.text = element.title
+        showErrorLayout()
     }
 
     private fun setupCurrentProgress(currentProgress: Float, state: ProgressUiModel.State) {

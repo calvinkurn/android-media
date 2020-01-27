@@ -23,32 +23,40 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
     private var state = State.SUCCESS
 
     override fun bind(element: ListUiModel) {
-        when (state) {
-            State.LOADING -> {
-                hideErrorLayout()
-                hideListLayout()
-                showShimmeringLayout()
-            }
-            State.SUCCESS -> {
-                hideErrorLayout()
-                hideShimmeringLayout()
-                itemView.tv_card_title.text = element.title
-                setupListInfoSeller()
+        showLoadingState()
+        itemView.postDelayed({
+            showErrorState(element)
+        }, 5000)
+        itemView.postDelayed({
+            showSuccessState(element)
+        }, 10000)
+    }
 
-                (itemView.rv_info_seller.adapter as BaseListAdapter<ListItemUiModel, *>).run {
-                    data.addAll(element.listItems)
-                    notifyDataSetChanged()
-                }
+    private fun showLoadingState() {
+        hideErrorLayout()
+        hideListLayout()
+        showShimmeringLayout()
+    }
 
-                showListLayout()
-            }
-            State.ERROR -> {
-                hideListLayout()
-                hideShimmeringLayout()
-                itemView.tv_error_card_title.text = element.title
-                showErrorLayout()
-            }
+    private fun showSuccessState(element: ListUiModel) {
+        hideErrorLayout()
+        hideShimmeringLayout()
+        itemView.tv_card_title.text = element.title
+        setupListInfoSeller()
+
+        (itemView.rv_info_seller.adapter as BaseListAdapter<ListItemUiModel, *>).run {
+            data.addAll(element.listItems)
+            notifyDataSetChanged()
         }
+
+        showListLayout()
+    }
+
+    private fun showErrorState(element: ListUiModel) {
+        hideListLayout()
+        hideShimmeringLayout()
+        itemView.tv_error_card_title.text = element.title
+        showErrorLayout()
     }
 
     private fun setupListInfoSeller() {
