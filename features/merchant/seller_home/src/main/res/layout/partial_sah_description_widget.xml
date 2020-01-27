@@ -58,6 +58,6 @@
         app:layout_constraintTop_toTopOf="@id/tv_description_url"
         app:layout_constraintBottom_toBottomOf="@id/tv_description_url"
         app:layout_constraintStart_toEndOf="@id/tv_description_url"
-        app:srcCompat="@drawable/icon_arrow" />
+        app:srcCompat="@drawable/ic_arrow_right_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
