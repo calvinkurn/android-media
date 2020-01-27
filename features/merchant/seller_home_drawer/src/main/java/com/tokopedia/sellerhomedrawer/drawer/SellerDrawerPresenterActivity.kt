@@ -252,6 +252,12 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
             drawerDataManager?.unsubscribe()
     }
 
+    override fun onBackPressed() {
+        if (sellerDrawerHelper.isOpened())
+            sellerDrawerHelper.closeDrawer()
+        super.onBackPressed()
+    }
+
     private fun Toolbar.initNotificationMenu() {
         val notif = layoutInflater.inflate(R.layout.sh_custom_actionbar_drawer_notification, null)
         val drawerToggle = notif.findViewById<ImageView>(R.id.toggle_but_ab)
