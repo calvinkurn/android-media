@@ -246,7 +246,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             renderOperatorCluster(cluster)
 
             val operatorGroup = cluster.operatorGroups.first { it.name == operatorCluster }
-            renderOperatorList(operatorGroup, cluster.text)
+            val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
+            renderOperatorList(operatorGroup, isOperatorHidden, cluster.text)
 
             if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
         }
@@ -268,8 +269,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         operator_select.setInputText("", false)
                         rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryId, operatorCluster)
 
+                        val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
                         cluster.operatorGroups.find { it.name == input }?.let {
-                            renderOperatorList(it, cluster.text)
+                            renderOperatorList(it, isOperatorHidden, cluster.text)
                         }
                     }
                 }
@@ -288,14 +290,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun renderOperatorList(operatorGroup: RechargeGeneralOperatorCluster.CatalogOperatorGroup, label: String) {
+    private fun renderOperatorList(operatorGroup: RechargeGeneralOperatorCluster.CatalogOperatorGroup, isHidden: Boolean, label: String) {
         if (operatorGroup.operators.size == 1) {
-            operator_select.hide()
+            if (isHidden) operator_select.hide()
             // Get product data based on operator id
-            operatorId = operatorGroup.operators.first().id
+            operatorId = operatorGroup.operators.firstOrNull()?.id ?: 0
             adapter.showLoading()
             getProductList(menuId, operatorId)
-        } else if (operatorGroup.operators.size > 1) {
+        } else if (operatorGroup.operators.isNotEmpty()) {
             operator_select.show()
             operator_select.setLabel(label)
             operator_select.setHint("")
@@ -324,12 +326,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
             }
             operator_select.show()
+        }
 
-            // Set operator name
-            if (operatorId > 0) {
-                operatorGroup.operators.find { it.id == operatorId }?.attributes?.name?.let { name ->
-                    operator_select.setInputText(name, false)
-                }
+        // Set operator name
+        if (operatorId > 0) {
+            operatorGroup.operators.find { it.id == operatorId }?.attributes?.name?.let { name ->
+                operator_select.setInputText(name, false)
             }
         }
     }
@@ -824,6 +826,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_INPUT_DATA = "EXTRA_PARAM_INPUT_DATA"
         const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
+
+        const val OPERATOR_TYPE_VISIBLE = "select_dropdown"
+        const val OPERATOR_TYPE_HIDDEN = "hidden"
 
         const val INPUT_TYPE_FAVORITE_NUMBER = "input_favorite"
         const val INPUT_TYPE_ENQUIRY_INFO = "enquiry"
