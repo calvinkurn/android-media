@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -60,7 +61,7 @@ class ImagePreviewSliderAdapter(val images: MutableList<String>,
     }
 
     inner class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-        val bannerImage: ImageView = view.findViewById(R.id.image_banner)
+        val bannerImage: AppCompatImageView = view.findViewById(R.id.image_banner)
 
         init {
             itemView.setOnClickListener {
