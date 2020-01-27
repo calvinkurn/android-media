@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.graphics.Typeface
 import android.view.View
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -129,5 +131,22 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.rl_som_dropshipper.visibility = View.GONE
             }
         }
+
+        val coachMarkBooking = CoachMarkItem(itemView.rl_booking_code,
+                itemView.context.getString(R.string.coachmark_booking),
+                itemView.context.getString(R.string.coachmark_booking_info))
+
+        val coachmarkShipping = CoachMarkItem(itemView,
+                itemView.context.getString(R.string.coachmark_shipping),
+                itemView.context.getString(R.string.coachmark_shipping_info))
+
+        actionListener.onAddedCoachMarkBookingCode(
+                coachMarkBooking
+        )
+
+        actionListener.onAddedCoachMarkShipping(
+                coachmarkShipping
+        )
+
     }
 }

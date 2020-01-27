@@ -13,6 +13,7 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -125,6 +126,7 @@ import kotlinx.android.synthetic.main.fragment_som_list.*
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -133,22 +135,12 @@ import kotlin.collections.HashMap
  */
 class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBottomSheetCourierProblemsAdapter.ActionListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val coachMark: CoachMark by lazy {
         CoachMarkBuilder().build()
-    }
-
-    //should be som_action_chat but it was menu  after all
-    private val coachMarkChat: CoachMarkItem by lazy {
-        CoachMarkItem(btn_chat_buyer, getString(R.string.coachmark_search), getString(R.string.coachmark_search_info))
-    }
-
-
-
-    private val coachMarkShipping: CoachMarkItem by lazy {
-        CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
     }
 
     private val coachMarkEdit: CoachMarkItem by lazy {
@@ -157,6 +149,13 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     private val coachMarkAccept: CoachMarkItem by lazy {
         CoachMarkItem(btn_primary, getString(R.string.coachmark_terima_pesanan), getString(R.string.coachmark_terima_pesanan_info))
+    }
+
+    private val coachMarkChat: CoachMarkItem by lazy {
+        CoachMarkItem(view?.rootView?.findViewById(R.id.som_action_chat),
+                getString(R.string.coachmark_chat),
+                getString(R.string.coachmark_chat_info)
+        )
     }
 
     private var orderId = ""
@@ -178,14 +177,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private lateinit var reasonCourierProblemText: String
     private val tagConfirm = "tag_confirm"
 
+    private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
+
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
-    }
-
-    private val coachMarkOrderedProduct: CoachMarkItem by lazy {
-        CoachMarkItem(card_label_info, getString(R.string.coachmark_product), getString(R.string.coachmark_product_info))
-//        ((ViewGroup())getView().getParent()).getId()
-
     }
 
     companion object {
@@ -240,8 +235,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
-
-        coachMark.show(activity, "FirstTimeUser", arrayListOf(coachMarkEdit, coachMarkAccept))
+//        coachMarkChat()
 
     }
 
@@ -350,6 +344,33 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()
 
+    }
+
+    override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
+        coachMarkItems.add(coachMarkChat)
+        coachMarkItems.add(coachMarkItemHeader)
+    }
+
+    override fun onAddedCoachMarkProducts(coachMarkItemProduct: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemProduct)
+    }
+
+    override fun onAddedCoachMarkBookingCode(coachMarkItemBooking: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemBooking)
+    }
+
+
+    override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemShipping)
+        addedCoachMark()
+    }
+
+    private fun addedCoachMark(){
+        coachMarkItems.add(coachMarkEdit)
+        coachMarkItems.add(coachMarkAccept)
+        Log.d("COACHMARKJUMLAK", coachMarkItems.size.toString())
+
+        coachMark.show(activity, "detail", coachMarkItems)
     }
 
     private fun renderHeader() {
