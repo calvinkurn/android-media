@@ -20,8 +20,10 @@ class DigitalHomePageSubscriptionViewHolder(itemView: View?, val onItemBindListe
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         itemView.rv_digital_homepage_subscription.layoutManager = layoutManager
         if (element.isLoaded) {
-            if (element.isSuccess) {
-                element.data?.section?.run {
+            if (element.isSuccess
+                    && element.data != null
+                    && element.data.section.items.isNotEmpty()) {
+                with (element.data.section) {
                     itemView.digital_homepage_subscription_shimmering.hide()
                     itemView.rv_digital_homepage_subscription.show()
 

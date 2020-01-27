@@ -87,8 +87,9 @@ class PromoCheckoutDetailModule {
     @Provides
     fun provideHotelPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
-                              hotelCheckVoucherMapper: HotelCheckVoucherMapper): PromoCheckoutDetailHotelPresenter {
-        return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper)
+                              hotelCheckVoucherMapper: HotelCheckVoucherMapper,
+                              flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailHotelPresenter {
+        return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper, flightCancelVoucherUseCase)
     }
 
     @PromoCheckoutDetailScope
