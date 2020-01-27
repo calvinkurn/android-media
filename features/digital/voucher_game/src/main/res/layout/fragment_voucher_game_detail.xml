@@ -52,11 +52,29 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:textColor="@color/black_70"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toStartOf="@id/btn_info_icon"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toEndOf="@+id/product_image_container"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="heading_4"
                     tools:text="Mobile Legends" />
+
+                <ImageView
+                    android:id="@+id/btn_info_icon"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/product_name"
+                    app:layout_constraintTop_toTopOf="@id/product_name"
+                    app:srcCompat="@drawable/ic_info_black" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/help_label"
@@ -73,17 +91,6 @@
                     app:typographyType="heading_5"
                     app:typographyWeight="bold"
                     tools:text="Cara Input Nomor ID" />
-
-                <ImageView
-                    android:id="@+id/btn_info_icon"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    app:layout_constraintBottom_toBottomOf="@+id/product_name"
-                    app:layout_constraintStart_toEndOf="@+id/product_name"
-                    app:layout_constraintTop_toTopOf="@+id/product_name"
-                    app:srcCompat="@drawable/ic_info_black" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

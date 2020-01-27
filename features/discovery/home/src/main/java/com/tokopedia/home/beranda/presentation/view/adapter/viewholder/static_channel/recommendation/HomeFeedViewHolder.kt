@@ -3,14 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.app.Activity
 import androidx.annotation.LayoutRes
 import com.google.android.material.snackbar.Snackbar
-import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.domain.gql.feed.Badge
 import com.tokopedia.home.beranda.domain.gql.feed.LabelGroup
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel

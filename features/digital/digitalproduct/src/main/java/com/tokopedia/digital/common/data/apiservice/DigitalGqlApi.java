@@ -1,6 +1,6 @@
 package com.tokopedia.digital.common.data.apiservice;
 
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 
 import java.util.List;

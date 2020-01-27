@@ -95,7 +95,7 @@ class FindPageAnalytics {
                 KEY_EVENT_LABEL, "",
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, CURRENCY_VALUE,
-                KEY_IMPRESSIONS, DataLayer.listOf(list)))
+                KEY_IMPRESSIONS, list))
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 

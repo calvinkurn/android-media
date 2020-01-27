@@ -66,7 +66,7 @@ public class CheckETollBalanceView extends LinearLayout {
 
     private void init() {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.view_holder_check_etoll_balance_view, this, true);
+                .inflate(R.layout.view_holder_digital_etoll_check_balance, this, true);
 
         textLabelNote = view.findViewById(R.id.text_label_note);
         buttonFeature = view.findViewById(R.id.button_feature);

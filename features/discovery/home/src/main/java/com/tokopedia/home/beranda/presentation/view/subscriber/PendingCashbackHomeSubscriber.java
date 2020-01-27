@@ -1,11 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * Created by meta on 16/07/18.
@@ -23,7 +23,7 @@ public class PendingCashbackHomeSubscriber extends Subscriber<PendingCashback> {
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper(e);
+        Timber.d(e);
     }
 
     @Override

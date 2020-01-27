@@ -3,7 +3,7 @@ package com.tokopedia.events.view.presenter;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.events.domain.model.scanticket.ScanTicketResponse;
 import com.tokopedia.events.domain.scanTicketUsecase.RedeemTicketUseCase;
