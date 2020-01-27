@@ -28,8 +28,8 @@
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
-            android:layout_toEndOf="@+id/shop_icon"
-            android:layout_toRightOf="@+id/shop_icon"
+            android:layout_toEndOf="@+id/icon"
+            android:layout_toRightOf="@+id/icon"
             android:layout_centerVertical="true"
             >
 
