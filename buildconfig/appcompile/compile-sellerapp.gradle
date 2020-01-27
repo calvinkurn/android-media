@@ -30,6 +30,7 @@ include 'features:discovery:productcard'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
+include "features:discovery:carousel_productcard"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
@@ -141,6 +142,7 @@ include "features:user:profilecompletion"
 include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:tradein_common"
+include "features:common:common_tradein"
 include "features:fintech:merchant_lending_widget"
 
 include 'tkpdloyalty'
