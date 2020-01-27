@@ -4,10 +4,10 @@
     android:id="@+id/sah_description_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="181dp"
     android:layout_margin="@dimen/layout_lvl1"
-    app:cardCornerRadius="@dimen/dp_8"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/dp_8">
 
     <include layout="@layout/partial_sah_description_widget"/>
 
