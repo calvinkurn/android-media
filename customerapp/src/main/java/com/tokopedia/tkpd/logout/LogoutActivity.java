@@ -90,7 +90,7 @@ public class LogoutActivity extends AppCompatActivity {
         }
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        new Handler().postDelayed(() -> startActivity(intent), 10000);
+        startActivity(intent);
     }
 
     private void setTetraUserId(String userId) {

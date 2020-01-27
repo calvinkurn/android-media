@@ -35,7 +35,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun initInjector() {
         activity?.let {
-            presenter = ChangePasswordDependencyInjector.Companion.inject(activity!!.applicationContext)
+            presenter = ChangePasswordDependencyInjector.Companion.inject(it.applicationContext)
             presenter.attachView(this)
         }
     }
@@ -75,11 +75,11 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun onGoToForgotPass() {
-        if (activity != null && activity!!.applicationContext != null) {
+        activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, presenter.userSession.email)
             startActivity(intent)
-            activity!!.finish()
+            it.finish()
         }
     }
 
