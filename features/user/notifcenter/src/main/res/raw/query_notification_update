@@ -16,6 +16,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
       title
       short_description
       short_description_html
+      is_longer_content
       button_text
       content
       type_of_user
@@ -31,6 +32,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         desktop_link
         info_thumbnail_url
         mobile_link
+        checkout_url
       }
       product_data {
         product_id
@@ -67,6 +69,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
             id
             name
             location
+            free_shipping_icon
             badges {
                 title
                 image_url
@@ -74,6 +77,9 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         }
       }
       total_product
+    }
+    options {
+      longer_content
     }
     user_info {
       user_id

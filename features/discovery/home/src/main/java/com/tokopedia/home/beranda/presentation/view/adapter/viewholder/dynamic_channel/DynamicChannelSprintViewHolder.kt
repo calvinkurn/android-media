@@ -83,7 +83,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         mappingGrid(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
         val channel = element?.channel
 
         if (payloads.isNotEmpty()) {

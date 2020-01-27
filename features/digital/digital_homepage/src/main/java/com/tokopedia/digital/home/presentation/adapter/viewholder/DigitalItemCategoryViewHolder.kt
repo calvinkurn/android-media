@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.main.layout_digital_home_category_item.view.cat
 class DigitalItemCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(element: DigitalHomePageCategoryModel.Subtitle?, onItemBindListener: OnItemBindListener) {
         val layoutManager = GridLayoutManager(itemView.context, DigitalHomePageCategoryViewHolder.CATEGORY_SPAN_COUNT)
-        itemView?.category_recycler_view.layoutManager = layoutManager
-        itemView?.category_recycler_view.adapter = DigitalItemSubMenuCategoryAdapter(element?.submenu, onItemBindListener)
-        itemView.subtitle.text = element?.label
+        itemView.category_recycler_view.layoutManager = layoutManager
+        itemView.category_recycler_view.adapter = DigitalItemSubMenuCategoryAdapter(element?.submenu, onItemBindListener)
+        itemView.subtitle.text = element?.label ?: ""
     }
 
 }
