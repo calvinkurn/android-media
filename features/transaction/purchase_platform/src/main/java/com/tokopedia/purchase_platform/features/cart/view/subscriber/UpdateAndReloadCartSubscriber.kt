@@ -25,10 +25,10 @@ class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
     override fun onNext(updateAndReloadCartListData: UpdateAndReloadCartListData) {
         view?.let {
             it.hideProgressLoading()
-            updateAndReloadCartListData.cartListData?.let {
-                presenter?.setCartListData(it)
-                view.renderLoadGetCartDataFinish()
-                view.renderInitialGetCartListDataSuccess(it)
+            updateAndReloadCartListData.cartListData?.let { cartListData ->
+                presenter?.setCartListData(cartListData)
+                it.renderLoadGetCartDataFinish()
+                it.renderInitialGetCartListDataSuccess(cartListData)
             }
         }
     }
