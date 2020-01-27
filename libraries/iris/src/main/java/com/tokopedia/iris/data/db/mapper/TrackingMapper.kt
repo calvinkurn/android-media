@@ -1,8 +1,8 @@
 package com.tokopedia.iris.data.db.mapper
 
+import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.util.KEY_CONTAINER
 import com.tokopedia.iris.util.KEY_EVENT
-import com.tokopedia.iris.data.db.table.Tracking
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -39,7 +39,11 @@ class TrackingMapper {
         for (i in tracking.indices) {
             val item = tracking[i]
             if (!item.event.isBlank() && (item.event.contains("event"))) {
-                event.put(JSONObject(item.event))
+                val eventObject = JSONObject(item.event)
+                if (eventObject.getString("userId") == null) {
+                    eventObject.put("userId", item.userId)
+                }
+                event.put(eventObject)
                 val nextItem: Tracking? = try {
                     tracking[i+1]
                 } catch (e: IndexOutOfBoundsException) {
