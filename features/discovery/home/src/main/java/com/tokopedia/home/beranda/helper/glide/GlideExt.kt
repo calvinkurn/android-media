@@ -29,7 +29,7 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
 
     if (!fpmItemLabel.isEmpty()) {
         performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
-        performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
+        //performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
     }
 
     Glide.with(context)
