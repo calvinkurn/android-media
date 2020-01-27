@@ -688,7 +688,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         (activity as? ProductDetailActivity)?.goToHomePageClicked()
     }
 
-    override fun goToTobacooError(url: String) {
+    override fun goToWebView(url: String) {
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
@@ -733,7 +733,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onReviewClick() {
         viewModel.getDynamicProductInfoP1?.run {
-            productDetailTracking.eventReviewClicked()
             dynamicProductDetailTracking.eventReviewClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
                     ?: "")
             dynamicProductDetailTracking.sendMoEngageClickReview(this, viewModel.shopInfo?.shopCore?.name
@@ -888,8 +887,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDiscussionClicked() {
-        productDetailTracking.eventTalkClicked()
-
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
@@ -1057,7 +1054,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     p1.data.preOrder)
             actionButtonView.visibility = !isAffiliate && it.shopInfo?.statusInfo?.shopStatus == 1
 
-            pdpHashMapUtil.getShopInfo.shopInfo?.let { shopInfo ->
+            viewModel.shopInfo?.let { shopInfo ->
                 dynamicProductDetailTracking.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
                 dynamicProductDetailTracking.eventAppsFylerOpenProduct(p1)
 
@@ -1460,8 +1457,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (viewModel.getDynamicProductInfoP1 == null) {
             menuShare.isVisible = false
             menuShare.isEnabled = false
-            menuCart.isVisible = false
-            menuCart.isEnabled = false
+            menuCart.isVisible = true
+            menuCart.isEnabled = true
             menuReport.isVisible = false
             menuReport.isEnabled = false
             menuWarehouse.isVisible = false
