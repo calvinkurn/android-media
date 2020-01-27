@@ -12,7 +12,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"/>
+        app:corners="10" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="150dp"
