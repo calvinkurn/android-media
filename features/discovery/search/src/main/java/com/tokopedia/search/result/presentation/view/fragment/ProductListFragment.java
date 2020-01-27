@@ -1025,8 +1025,8 @@ public class ProductListFragment
         performNewProductSearch(queryParams);
     }
 
-    public void performNewProductSearch(String query) {
-        redirectionListener.startActivityWithApplink(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + query);
+    public void performNewProductSearch(String queryParams) {
+        redirectionListener.startActivityWithApplink(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + queryParams);
     }
 
     @Override
@@ -1670,5 +1670,12 @@ public class ProductListFragment
 
     public void onBottomSheetHide() {
         FilterTracking.eventApplyFilter(getFilterTrackingData(), getScreenName(), getSelectedFilter());
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
     }
 }
