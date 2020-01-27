@@ -40,9 +40,6 @@ class TrackingMapper {
             val item = tracking[i]
             if (!item.event.isBlank() && (item.event.contains("event"))) {
                 val eventObject = JSONObject(item.event)
-                if (eventObject.getString("userId") == null) {
-                    eventObject.put("userId", item.userId)
-                }
                 event.put(eventObject)
                 val nextItem: Tracking? = try {
                     tracking[i+1]
@@ -79,7 +76,9 @@ class TrackingMapper {
                 item.put("container", KEY_CONTAINER)
                 item.put("event", KEY_EVENT)
                 item.put("hits_time", Calendar.getInstance().timeInMillis)
-                item.put("userId", userId)
+                if (item.get("userId") == null) {
+                    item.put("userId", userId)
+                }
                 item
             } catch (e: JSONException) {
                 JSONObject()
