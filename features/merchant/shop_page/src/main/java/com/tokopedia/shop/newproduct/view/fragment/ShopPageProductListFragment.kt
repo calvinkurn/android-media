@@ -307,12 +307,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
         if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
-            return
-        }
-        if (shopProductViewModel.isWishList) {
-            viewModel.removeWishList(shopProductViewModel.id ?: "", this)
         } else {
-            viewModel.addWishList(shopProductViewModel.id ?: "", this)
+            viewModel.clearGetShopProductUseCase()
+            if (shopProductViewModel.isWishList) {
+                viewModel.removeWishList(shopProductViewModel.id ?: "", this)
+            } else {
+                viewModel.addWishList(shopProductViewModel.id ?: "", this)
+            }
         }
     }
 
@@ -467,9 +468,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     viewModel.isMyShop(shopInfo!!.shopCore.shopID),
                     CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
                             shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
-            if(isOwner){
+            if (isOwner) {
                 redirectToShopSettingsEtalase()
-            }else{
+            } else {
                 redirectToEtalasePicker()
             }
         }
