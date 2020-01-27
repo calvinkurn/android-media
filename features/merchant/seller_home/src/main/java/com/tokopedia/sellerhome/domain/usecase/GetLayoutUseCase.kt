@@ -47,22 +47,6 @@ class GetLayoutUseCase(
                         "",
                         DescriptionState.IDEAL,
                         "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant."
-                ),
-                DescriptionWidgetUiModel(
-                        WidgetType.DESCRIPTION,
-                        "Description Loading Card",
-                        "",
-                        "",
-                        DescriptionState.LOADING,
-                        ""
-                ),
-                DescriptionWidgetUiModel(
-                        WidgetType.DESCRIPTION,
-                        "Description Error Card",
-                        "",
-                        "",
-                        DescriptionState.ERROR,
-                        ""
                 )
         )
     }

@@ -53,6 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_3"
         app:layout_constraintTop_toTopOf="@id/tv_description_url"
         app:layout_constraintBottom_toBottomOf="@id/tv_description_url"
         app:layout_constraintStart_toEndOf="@id/tv_description_url"
