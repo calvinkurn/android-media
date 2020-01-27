@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
-import androidx.fragment.app.FragmentActivity
-import com.tokopedia.abstraction.R
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
@@ -56,6 +54,7 @@ object CartListPresenterGetCartListTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("get cart list") {
 
@@ -70,18 +69,17 @@ object CartListPresenterGetCartListTest : Spek({
                     seamlessLoginUsecase, TestSchedulers
             )
         }
-        val emptyCartListData = CartListData()
+
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
 
         Scenario("initial load success") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val emptyCartListData = CartListData()
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process initial get cart data") {
@@ -104,14 +102,10 @@ object CartListPresenterGetCartListTest : Spek({
 
         Scenario("refresh load success") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val emptyCartListData = CartListData()
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process initial get cart data") {
@@ -134,23 +128,15 @@ object CartListPresenterGetCartListTest : Spek({
 
         Scenario("initial load failed") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val context: FragmentActivity = mockk()
-            val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
+            val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
             Given("throw error") {
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(ResponseErrorException("testing"))
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
                 every { getRecentViewUseCase.createObservable(any(), any()) } answers {
                     Observable.just(GraphqlResponse(
                             mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
                             .subscribe(secondArg() as Subscriber<GraphqlResponse>)
                 }
-            }
-
-            Given("attach view") {
-                every { view.getActivityObject() } returns context
-                every { context.getString(R.string.default_request_error_internal_server) } returns errorMessage
-                cartListPresenter.attachView(view)
             }
 
             When("process initial get cart data") {
@@ -159,30 +145,22 @@ object CartListPresenterGetCartListTest : Spek({
 
             Then("should render error") {
                 verify {
-                    view.renderErrorInitialGetCartListData(errorMessage)
+                    view.renderErrorInitialGetCartListData(exception)
                 }
             }
         }
 
         Scenario("refresh load failed") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val context: FragmentActivity = mockk()
-            val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
+            val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
             Given("throw error") {
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(ResponseErrorException("testing"))
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
                 every { getRecentViewUseCase.createObservable(any(), any()) } answers {
                     Observable.just(GraphqlResponse(
                             mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
                             .subscribe(secondArg() as Subscriber<GraphqlResponse>)
                 }
-            }
-
-            Given("attach view") {
-                every { view.getActivityObject() } returns context
-                every { context.getString(R.string.default_request_error_internal_server) } returns errorMessage
-                cartListPresenter.attachView(view)
             }
 
             When("process initial get cart data") {
@@ -191,7 +169,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Then("should render error") {
                 verify {
-                    view.renderErrorInitialGetCartListData(errorMessage)
+                    view.renderErrorInitialGetCartListData(exception)
                 }
             }
         }

@@ -43,7 +43,7 @@ interface ICartListView : CustomerView {
 
     fun renderInitialGetCartListDataSuccess(cartListData: CartListData?)
 
-    fun renderErrorInitialGetCartListData(message: String)
+    fun renderErrorInitialGetCartListData(throwable: Throwable)
 
     fun renderToShipmentFormSuccess(eeCheckoutData: Map<String, Any>,
                                     cartItemDataList: List<CartItemData>,

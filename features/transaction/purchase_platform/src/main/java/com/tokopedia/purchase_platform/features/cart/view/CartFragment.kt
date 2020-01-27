@@ -1461,11 +1461,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 .showRetrySnackbar()
     }
 
-    override fun renderErrorInitialGetCartListData(message: String) {
+    override fun renderErrorInitialGetCartListData(throwable: Throwable) {
+        var errorMessage = throwable.message ?: ""
+        if (throwable !is CartResponseErrorException) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
         if (cartAdapter.itemCount > 0) {
-            showSnackbarRetry(message)
+            showSnackbarRetry(errorMessage)
         } else {
-            showErrorLayout(message)
+            showErrorLayout(errorMessage)
         }
     }
 
