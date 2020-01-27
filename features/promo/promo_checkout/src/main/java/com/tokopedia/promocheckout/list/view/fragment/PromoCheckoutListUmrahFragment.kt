@@ -42,6 +42,7 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
 
     override fun loadData(page: Int) {
         hideLoading()
+        showEmpty()
     }
 
     override fun onDestroyView() {
