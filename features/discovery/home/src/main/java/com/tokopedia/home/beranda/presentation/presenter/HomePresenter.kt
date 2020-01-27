@@ -662,16 +662,18 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     // play widget it will be removed when load image is failed (deal from PO)
-    // because don't ever let the banner blank
+    // because don't let the banner blank
     fun clearPlayBanner(){
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(_homeLiveData.value?.list ?: listOf())
 
         val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
-        newList.removeAt(playIndex)
-        _homeLiveData.value = _homeLiveData.value?.copy(
-                list = newList
-        )
+        if(playIndex != -1) {
+            newList.removeAt(playIndex)
+            _homeLiveData.value = _homeLiveData.value?.copy(
+                    list = newList
+            )
+        }
     }
 
     companion object {

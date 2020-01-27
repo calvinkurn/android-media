@@ -3,6 +3,9 @@ package com.tokopedia.play.view.activity
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeImageTransform
+import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.play.R
@@ -27,7 +30,6 @@ class PlayActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
-
         inject()
         setupPage()
         setupView()
