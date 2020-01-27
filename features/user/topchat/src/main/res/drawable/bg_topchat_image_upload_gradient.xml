@@ -14,4 +14,5 @@
         android:width="@dimen/dimen_topchat_1dp"
         android:color="@color/Neutral_N75" />
 
+    <corners android:radius="@dimen/dimen_topchat_20dp" />
 </shape>
