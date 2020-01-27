@@ -100,10 +100,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.wrong_phone_format))
                 phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
             } else {
-                context?.let {
-                    showLoading()
-                    viewModel.userProfileCompletionValidate(it, phone)
-                }
+                showLoading()
+                viewModel.userProfileValidate(phone)
             }
         }
     }
@@ -173,8 +171,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessUserValidate(pojo: UserValidatePojo) {
-        if (pojo.userProfileCompletionValidate.isValid) {
-            phoneNumberTracker.clickOnButtonNext(true, pojo.userProfileCompletionValidate.msisdnMessage)
+        if (pojo.userProfileValidate.isValid) {
+            phoneNumberTracker.clickOnButtonNext(true, pojo.userProfileValidate.message)
             goToVerificationActivity()
         }
     }
@@ -217,12 +215,9 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        context?.let {
-            val phone = etPhone?.text.toString()
-            viewModel.mutateAddPhone(it, phone.trim(), "")
-        }
+        val phone = etPhone.text.toString()
+        viewModel.mutateAddPhone(phone.trim())
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
