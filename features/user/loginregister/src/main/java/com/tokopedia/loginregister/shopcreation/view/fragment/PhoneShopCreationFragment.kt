@@ -29,6 +29,7 @@ import com.tokopedia.profilecommon.domain.pojo.UserProfileValidate
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -45,6 +46,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     lateinit var container: View
     lateinit var buttonContinue: UnifyButton
     lateinit var textFieldPhone: TextFieldUnify
+    lateinit var errorMessage: Typography
     lateinit var phone: String
 
     @Inject
@@ -65,6 +67,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
         buttonContinue = view.findViewById(R.id.btn_continue)
         textFieldPhone = view.findViewById(R.id.text_field_phone)
+        errorMessage = view.findViewById(R.id.error_message)
         this.container = view.findViewById(R.id.container)
         return view
     }
@@ -87,7 +90,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         textFieldPhone.textFieldInput.addTextChangedListener(object : PhoneNumberTextWatcher(textFieldPhone.textFieldInput) {
             override fun onTextChanged(s: CharSequence, cursorPosition: Int, before: Int, count: Int) {
                 super.onTextChanged(s, cursorPosition, before, count)
-                buttonContinue.isEnabled = isValidPhone(s.toString())
+                if(isValidPhone(s.toString())) {
+                    buttonContinue.isEnabled = true
+                    clearMessageFieldPhone()
+                }
             }
         })
 
@@ -111,9 +117,9 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 phone = "0$phone"
                 buttonContinue.isLoading = true
                 if(userSession.isLoggedIn) {
-                    shopCreationViewModel.validateUserProfile(phone)
+                    shopCreationViewModel.validateUserProfile(phone.replace("-", ""))
                 } else {
-                    shopCreationViewModel.registerCheck(phone)
+                    shopCreationViewModel.registerCheck(phone.replace("-", ""))
                 }
             } else {
                 emptyStatePhoneField()
@@ -188,7 +194,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                     REQUEST_REGISTER_PHONE -> {
                         if(phone.isNotEmpty())
-                            goToRegisterAddNamePage(phone)
+                            goToRegisterAddNamePage(phone.replace("-", ""))
                     }
                     REQUEST_NAME_SHOP_CREARION -> {
                         activity?.let {
@@ -198,7 +204,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                     REQUEST_COTP_PHONE_VERIFICATION -> {
                         if(phone.isNotEmpty()) {
-                            shopCreationViewModel.addPhone(phone)
+                            shopCreationViewModel.addPhone(phone.replace("-", ""))
                         } else {
                             toastError(getString(R.string.please_fill_phone_number))
                         }
@@ -245,7 +251,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun onSuccessAddPhone(userProfileUpdate: UserProfileUpdate) {
-        storeLocalSession(phone)
+        storeLocalSession(phone.replace("-", ""))
         activity?.let {
             it.setResult(Activity.RESULT_OK)
             it.finish()
@@ -258,7 +264,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun onSuccessValidateUserProfile(userProfileValidate: UserProfileValidate) {
         if(userProfileValidate.isValid && phone.isNotEmpty()) {
-            goToAddPhoneVerifyPage(phone)
+            goToAddPhoneVerifyPage(phone.replace("-", ""))
         } else {
             toastError(getString(R.string.please_fill_phone_number))
         }
@@ -280,11 +286,11 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun setMessageFieldPhone(message: String) {
-        textFieldPhone.setMessage(message)
+        errorMessage.text = message
     }
 
     private fun clearMessageFieldPhone() {
-        textFieldPhone.setMessage("")
+        errorMessage.text = getString(R.string.desc_phone_shop_creation)
     }
 
     private fun toastError (throwable: Throwable) {
@@ -347,6 +353,9 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onBackPressed(): Boolean {
         shopCreationAnalytics.eventClickBackPhoneShopCreation()
+        LetUtil.ifLet(context, view?.parent) {  (context, view) ->
+            hideKeyboardFrom(context as Context, view as View)
+        }
         return true
     }
 
