@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -21,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,7 +33,7 @@ import javax.inject.Inject
 class HotelDestinationViewModel @Inject constructor(
         val userSessionInterface: UserSessionInterface,
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        dispatcher: HotelDispatcherProvider): BaseViewModel(dispatcher.Main) {
 
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()

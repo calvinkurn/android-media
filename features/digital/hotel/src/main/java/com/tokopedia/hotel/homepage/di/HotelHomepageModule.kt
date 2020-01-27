@@ -15,7 +15,4 @@ class HotelHomepageModule {
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
             MultiRequestGraphqlUseCase(graphqlRepository)
-
-    @Provides
-    fun provideHotelDispatcherProvider(): HotelDispatcherProvider = HotelDispatcherProvider()
 }

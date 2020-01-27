@@ -59,5 +59,9 @@ class HotelModule {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday)
     }
 
+    @HotelScope
+    @Provides
+    fun provideHotelDispatcherProvider(): HotelDispatcherProvider = HotelDispatcherProvider()
+
 
 }
