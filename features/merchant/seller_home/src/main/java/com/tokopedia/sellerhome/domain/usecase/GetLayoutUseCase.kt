@@ -5,6 +5,7 @@ import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
 import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhome.view.model.SectionWidgetUiModel
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -18,6 +19,12 @@ class GetLayoutUseCase(
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel> {
         //handle request here
         return listOf(
+                SectionWidgetUiModel(
+                        WidgetType.SECTION,
+                        "Performa Toko, tes jika textnya kepanjangan akan seperti apa hasilnya",
+                        "",
+                        ""
+                ),
                 CardWidgetUiModel(
                         WidgetType.CARD,
                         "Card 1",
