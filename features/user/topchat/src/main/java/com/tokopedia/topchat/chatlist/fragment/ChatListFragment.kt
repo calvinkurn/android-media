@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -19,14 +20,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.goToFirst
-import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -59,9 +59,11 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -143,7 +145,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        debug(TAG, "$sightTag onViewCreated")
+        Timber.d("$sightTag onViewCreated")
         mViewCreated = true
         tryViewCreatedFirstSight()
         super.onViewCreated(view, savedInstanceState)
@@ -209,7 +211,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> adapter?.deleteItem(itemPositionLongClicked)
-                is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
+                is Fail -> view?.let {
+                    Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
             }
         })
     }
@@ -484,7 +488,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun onDestroy() {
         super.onDestroy()
         removeLiveDataObserver()
-        chatItemListViewModel.clear()
+        chatItemListViewModel.flush()
     }
 
     private fun removeLiveDataObserver() {
@@ -505,18 +509,18 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun onViewCreatedFirstSight(view: View?) {
-        debug(TAG, "$sightTag onViewCreatedFirstSight")
+        Timber.d("$sightTag onViewCreatedFirstSight")
         (activity as ChatListContract.Activity).notifyViewCreated()
         loadInitialData()
     }
 
     private fun onUserFirstSight() {
-        debug(TAG, "$sightTag onUserFirstSight")
+        Timber.d("$sightTag onUserFirstSight")
     }
 
 
     private fun onUserVisibleChanged(visible: Boolean) {
-        debug(TAG, "$sightTag onUserVisibleChanged $visible")
+        Timber.d("$sightTag onUserVisibleChanged $visible")
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -531,18 +535,21 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         var title = ""
         var subtitle = ""
         var image = ""
+        var ctaText = ""
+        var ctaApplink = ""
         activity?.let {
             when (sightTag) {
-                PARAM_TAB_USER -> {
-                    title = it.getString(R.string.buyer_empty_chat_title)
-                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
-                    image = CHAT_BUYER_EMPTY
-                }
-
                 PARAM_TAB_SELLER -> {
-                    title = it.getString(R.string.seller_empty_chat_title)
+                    title = it.getString(R.string.title_topchat_empty_chat)
                     subtitle = it.getString(R.string.seller_empty_chat_subtitle)
                     image = CHAT_SELLER_EMPTY
+                    ctaText = it.getString(R.string.title_topchat_manage_product)
+                    ctaApplink = ApplinkConst.PRODUCT_MANAGE
+                }
+                PARAM_TAB_USER -> {
+                    title = it.getString(R.string.title_topchat_empty_chat)
+                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
+                    image = CHAT_BUYER_EMPTY
                 }
             }
 
@@ -553,7 +560,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             }
         }
 
-        return EmptyChatModel(title, subtitle, image)
+        return EmptyChatModel(title, subtitle, image, ctaText, ctaApplink)
     }
 
     override fun onSwipeRefresh() {

@@ -3,11 +3,6 @@ package com.tokopedia.digital.newcart.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.style.ClickableSpan
 import androidx.appcompat.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +11,6 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
-import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
@@ -81,7 +75,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_digital_cart_my_bill, container, false)
+        return inflater.inflate(R.layout.fragment_digital_cart_mybills, container, false)
     }
 
     companion object {
@@ -160,7 +154,12 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun renderMyBillsEgoldView(data: FintechProduct?) {
         if (data != null) {
             with(data) {
-                mybillEgold.getSubscriptionCheckbox().visibility = if (checkBoxDisabled) View.GONE else View.VISIBLE
+                if (checkBoxDisabled) {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.GONE
+                } else {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.VISIBLE
+                    mybillEgold.setChecked(data.optIn)
+                }
                 mybillEgold.hasMoreInfo(true)
                 info?.title?.let { title -> mybillEgold.setHeaderTitle(title) }
                 info?.subtitle?.let { desc -> mybillEgold.setDescription(desc) }
@@ -196,7 +195,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
             moreInfoBottomSheet.setCloseClickListener {
                 moreInfoBottomSheet.dismiss()
             }
-            moreInfoBottomSheet.show(fragmentManager,"E-gold more info bottom sheet")
+            fragmentManager?.run { moreInfoBottomSheet.show(this,"E-gold more info bottom sheet") }
         }
     }
 

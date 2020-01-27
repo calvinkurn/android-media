@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -40,6 +41,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
+        const val KEY_CATEGORY = "key_category"
     }
 
     @Inject
@@ -48,9 +50,12 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
+    private var loadingLayout: View? = null
     private var viewPager: ViewPager? = null
+    private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
+    private var keyCategory = "0"
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
@@ -62,6 +67,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
+        arguments?.let {
+            keyCategory = it.getString(KEY_CATEGORY, "0")
+        }
         context?.let {
             tracking = OfficialStoreTracking(it)
         }
@@ -120,6 +128,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         viewModel.officialStoreCategoriesResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
@@ -136,13 +145,23 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         })
     }
 
+    private fun getSelectedCategory(officialStoreCategories: OfficialStoreCategories): Int {
+        officialStoreCategories.categories.forEachIndexed { index, category ->
+            if (keyCategory !== "0" && category.categoryId == keyCategory) {
+                return index
+            }
+        }
+        return 0
+    }
+
     private fun populateCategoriesData(officialStoreCategories: OfficialStoreCategories) {
         officialStoreCategories.categories.forEachIndexed { _, category ->
             tabAdapter.categoryList.add(category)
         }
         tabAdapter.notifyDataSetChanged()
-        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
-        tabLayout?.getTabAt(0)?.select()
+        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories), appbarCategory!!)
+        val categorySelected = getSelectedCategory(officialStoreCategories)
+        tabLayout?.getTabAt(categorySelected)?.select()
 
         val category = tabAdapter.categoryList[0]
         tracking.eventImpressionCategory(
@@ -184,7 +203,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
+        loadingLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
+        appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
     }
@@ -200,6 +221,11 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
+    }
+
+    private fun removeLoading() {
+        loadingLayout?.visibility = View.GONE
+        tabLayout?.visibility = View.VISIBLE
     }
 
     private fun configMainToolbar(view: View) {

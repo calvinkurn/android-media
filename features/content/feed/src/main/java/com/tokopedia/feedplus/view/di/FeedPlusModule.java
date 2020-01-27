@@ -7,7 +7,6 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
@@ -26,6 +25,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -171,9 +171,8 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
-                                                               UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
+    ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi) {
+        return new ShopCommonCloudDataSource(shopCommonApi);
     }
 
     @FeedPlusScope
@@ -218,6 +217,12 @@ public class FeedPlusModule {
     @FeedPlusScope
     CoroutineDispatcher provideMainDispatcher() {
         return Dispatchers.getMain();
+    }
+
+    @Provides
+    @FeedPlusScope
+    FeedDispatcherProvider provideFeedDispatcherProvider() {
+        return new FeedProductionDispatcherProvider();
     }
 
     @FeedPlusScope

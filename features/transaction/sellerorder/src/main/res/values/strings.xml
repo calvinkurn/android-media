@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sellerorder</string>
+    <string name="som_app_name">Seller Order Management</string>
     <string name="title_som_list">Penjualan</string>
     <string name="title_som_filter">Filter</string>
     <string name="title_som_detail">Detail Pesanan</string>
@@ -8,6 +8,7 @@
     <string name="title_som_change_courier">Ganti Kurir</string>
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
+    <string name="title_som_invoice">Invoice</string>
     <string name="hint_search_product">Cari nama pembeli, produk, resi, atau invoice</string>
     <string name="response_due">Batas Respons</string>
     <string name="seller_info">Seller Info</string>
@@ -41,6 +42,7 @@
     <string name="terapkan">Terapkan</string>
     <string name="reset">Reset</string>
     <string name="simpan">Simpan</string>
+    <string name="cetak">Cetak</string>
 
     <!--DETAIL-->
     <string name="daftar_produk">Daftar Produk</string>
@@ -55,10 +57,14 @@
     <string name="salin_caps">SALIN</string>
     <string name="awb_label">awb</string>
     <string name="resi_tersalin">Nomor resi sudah tersalin</string>
+    <string name="invoice_label">invoice</string>
+    <string name="invoice_tersalin">Invoice sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
     <string name="kode_booking">Kode Booking</string>
     <string name="kurir_pengiriman">Kurir Pengiriman</string>
     <string name="alamat_pengiriman">Alamat Pengiriman</string>
+    <string name="alamat_pengiriman_tersalin">Alamat Pengiriman sudah tersalin</string>
+    <string name="salin_alamat">Salin Alamat</string>
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="informasi_pembayaran">Informasi Pembayaran</string>
@@ -208,7 +214,7 @@
         <html>
         <body>
         <p>Pembeli telah mengajukan pembatalan.</p>
-        <p><strong style="color: red;">Lihat Alasan</strong></p>
+        <p><font color="#ef144a"><b>Lihat Alasan</b></font></a></p>
         </body>
         </html>
         ]]>
@@ -219,7 +225,7 @@
         <![CDATA[
         <html>
         <body>
-        <p><a href="https://m.tokopedia.com/myorder/seller/ticker-info"><strong style="color: green;">Info Selengkapnya</strong></a></p>
+        <a href="https://m.tokopedia.com/myorder/seller/ticker-info"><strong style="color: green;">Info Selengkapnya</strong></a>
         </body>
         </html>
         ]]>
@@ -233,12 +239,13 @@
     <string name="som_request_buyer_notes_html">
         <![CDATA[
         <html>
-        <body>
-        <p><b>#custName</b> telah mengajukan pembatalan pesanan <strong style="color: red;">#invoiceNo</strong> dengan alasan:</p>
+        <body><b>#custName</b> telah mengajukan pembatalan pesanan <font color="#ef144a">#invoiceNo</font> dengan alasan:
         </body>
         </html>
         ]]>
     </string>
     <string name="som_penalty_subtitle">Apakah Anda yakin ingin membatalkan pesanan?</string>
+
+    <string name="som_dropshipper_label">Dropshipper</string>
 
 </resources>

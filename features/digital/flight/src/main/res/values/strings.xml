@@ -441,6 +441,8 @@
     <string name="flight_booking_action_okay">Oke</string>
     <string name="flight_booking_action_check_again">Cek Pesanan</string>
     <string name="flight_booking_total_payment_title">Total Pembayaran</string>
+    <string name="flight_booking_general_error_title">Oops, ada sedikit gangguan</string>
+    <string name="flight_booking_general_error_subtitle">Tenang, kami sedang memperbaiki gangguan ini.</string>
     <string name="flight_duplicate_user_error_toaster_text">Ada nama penumpang yang sama, ubah dulu agar bisa bayar. </string>
     <string name="flight_passport_search_hint">Cari Negara Penerbit Paspor</string>
     <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>

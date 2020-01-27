@@ -3,10 +3,11 @@ package com.tokopedia.purchase_platform.features.cart.domain.usecase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedResponse
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapperV3
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import io.mockk.every
 import io.mockk.mockk
@@ -19,7 +20,7 @@ import rx.observers.AssertableSubscriber
 class GetCartListSimplifiedUseCaseTest : Spek({
 
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
-    val cartMapperV3 = mockk<CartMapperV3>()
+    val cartMapperV3 = mockk<CartSimplifiedMapper>()
     val usecase by memoized {
         GetCartListSimplifiedUseCase("query", graphqlUseCase, cartMapperV3, TestSchedulers)
     }
@@ -74,7 +75,7 @@ class GetCartListSimplifiedUseCaseTest : Spek({
             }
 
             Then("should contains custom error message") {
-                assertEquals(errorMessages.joinToString(), (onErrorEvents.first() as ResponseErrorException).message)
+                assertEquals(errorMessages.joinToString(), (onErrorEvents.first() as CartResponseErrorException).message)
             }
         }
 

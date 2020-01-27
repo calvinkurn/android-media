@@ -1,7 +1,10 @@
 package com.tokopedia.seller.selling.presenter.adapter;
 
 import android.content.Context;
+
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +39,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
         public void onRetryCliked();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
             super(itemView);
 //            super(itemView);
@@ -46,11 +49,13 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
 
     public static class ViewHolderRetry extends RecyclerView.ViewHolder {
         TextView retry;
+        TextView labelMessageRetry;
 
         public ViewHolderRetry(View itemView) {
             super(itemView);
 
             retry = (TextView) itemView.findViewById(R.id.button_retry);
+            labelMessageRetry = itemView.findViewById(R.id.message_retry);
         }
     }
 
@@ -66,6 +71,7 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
 
     protected int loading = 0;
     protected int retry = 0;
+    private String retryMessage;
 
     public BaseSellingAdapter(Class<T> mModelClass, Context context, int mModelLayout, Class<VH> mViewHolderClass) {
         this.context = context;
@@ -139,6 +145,11 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
 
     private void bindRetryHolder(ViewHolderRetry viewHolder) {
         viewHolder.retry.setOnClickListener(onRetryListener());
+        if (!TextUtils.isEmpty(retryMessage)) {
+            viewHolder.labelMessageRetry.setText(retryMessage);
+        } else {
+            viewHolder.labelMessageRetry.setText(R.string.msg_network_error_1);
+        }
     }
 
     private View.OnClickListener onRetryListener() {
@@ -208,6 +219,14 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
             retry = 0;
         }
         notifyDataSetChanged();
+    }
+
+    public void addRetryMessage(String message) {
+        retryMessage = message;
+    }
+
+    public void removeRetryMessage() {
+        retryMessage = null;
     }
 
     public boolean isLastItemPosition(int position) {

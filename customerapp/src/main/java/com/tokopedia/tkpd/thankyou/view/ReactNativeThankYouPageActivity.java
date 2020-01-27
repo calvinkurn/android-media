@@ -1,29 +1,38 @@
 package com.tokopedia.tkpd.thankyou.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.view.KeyEvent;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.google.android.play.core.inappreview.InAppReviewInfo;
+import com.google.android.play.core.inappreview.InAppReviewManager;
+import com.google.android.play.core.inappreview.InAppReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.Task;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tkpd.utils.InAppReviewUtils;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
@@ -33,7 +42,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 
 
-public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
+public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> implements ReputationRouter {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
     private static final String PLATFORM = "platform";
@@ -41,11 +50,17 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String GL_THANK_YOU_PAGE = "gl_thank_you_page";
     private static final String PAGE_TITLE = "Thank You";
 
-    private boolean enableInAppReview;
+    private static final String CACHE_THANK_YOU_PAGE = "CACHE_THANK_YOU_PAGE";
+    private static final String CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE = "CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE";
+
     private ReactInstanceManager reactInstanceManager;
     private static final String SAVED_VERSION = "SAVED_VERSION";
     private static final String REACT_NAVIGATION_MODULE = "REACT_NAVIGATION_MODULE";
     private static final String IS_SHOWING_APP_RATING = "isShowAppRating";
+    private Task<InAppReviewInfo> inAppReviewRequest;
+
+    private InAppReviewManager inAppReviewManager;
+    private LocalCacheHandler cacheHandler;
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
@@ -72,11 +87,30 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
         resetWalletCache();
+
+        cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
+        boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
+        boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
+
+        if (enableInAppReview && !hasShownInAppReviewBefore) {
+            requestInAppReviewFlow();
+        }
+    }
+
+    private void requestInAppReviewFlow() {
+        inAppReviewManager = InAppReviewManagerFactory.create(this);
+        inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+            @Override
+            public void onComplete(Task<InAppReviewInfo> request) {
+                if (request.isSuccessful()) {
+                    inAppReviewRequest = request;
+                }
+            }
+        });
     }
 
     @Override
@@ -141,14 +175,21 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
             return true;
         } else {
             String[] splittedCurrentVersionName = GlobalVersionName.split(".");
-            String currentMinorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[1] : "00" ;
+            String currentMajorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[0] : "00";
+            String currentMinorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[1] : "00";
+            int currentMajorVersionInt = Integer.parseInt(currentMajorVersion);
             int currentMinorVersionInt = Integer.parseInt(currentMinorVersion);
 
             String[] splittedSavedVersionName = savedVersion.split(".");
+            String savedMajorVersion = splittedSavedVersionName.length > 0 ? splittedSavedVersionName[0]: "00";
             String savedMinorVersion = splittedSavedVersionName.length > 0 ? splittedSavedVersionName[1]: "00";
+            int savedMajorVersionInt = Integer.parseInt(savedMajorVersion);
             int savedMinorVersionInt = Integer.parseInt(savedMinorVersion);
 
-            if (currentMinorVersionInt - savedMinorVersionInt >= 4) {
+            if (currentMajorVersionInt - savedMajorVersionInt >= 1) {
+                sharedPreferences.edit().putString(SAVED_VERSION, GlobalVersionName).apply();
+                return true;
+            } else if (currentMinorVersionInt - savedMinorVersionInt >= 4) {
                 sharedPreferences.edit().putString(SAVED_VERSION, GlobalVersionName).apply();
                 return true;
             } else {
@@ -161,10 +202,11 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
         if (isDigital() && manager != null) {
-            if (enableInAppReview) {
-                InAppReviewUtils.showInAppReview(this, new InAppReviewUtils.Callback() {
+            if (inAppReviewManager != null && inAppReviewRequest != null) {
+                inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
                     @Override
-                    public void onFinish() {
+                    public void onComplete(Task<Integer> task) {
+                        setInAppReviewHasShownBefore();
                         closeThankyouPage();
                     }
                 });
@@ -176,6 +218,21 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         } else {
             closeThankyouPage();
         }
+    }
+
+    private boolean getInAppReviewHasShownBefore() {
+        if (cacheHandler == null) {
+            return false;
+        }
+        return cacheHandler.getBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE);
+    }
+
+    private void setInAppReviewHasShownBefore() {
+        if (cacheHandler == null) {
+            return;
+        }
+        cacheHandler.putBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE, true);
+        cacheHandler.applyEditor();
     }
 
     private boolean isDigital() {
@@ -194,5 +251,45 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private void closeThankyouPage() {
         RouteManager.route(this, ApplinkConst.HOME);
         finish();
+    }
+
+    @Override
+    public Intent getInboxReputationIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Fragment getReputationHistoryFragment() {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getShopPageIntent(Context context, String shopId) {
+        return null;
+    }
+
+    @Override
+    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
+        return null;
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String reviewUserId) {
+        return null;
+    }
+
+    @Override
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
+
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+
     }
 }

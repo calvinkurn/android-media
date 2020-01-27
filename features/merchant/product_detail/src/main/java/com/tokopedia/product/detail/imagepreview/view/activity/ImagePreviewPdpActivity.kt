@@ -118,7 +118,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
                 val swipeDirection = if(lastPosition > position) IMAGE_SWIPE_DIRECTION_LEFT else IMAGE_SWIPE_DIRECTION_RIGHT
-                imagePreviewTracking.onImageSwipe(productId, swipeDirection)
+                imagePreviewTracking.onImageSwipe(productId, swipeDirection, position)
                 lastPosition = position
             }
 

@@ -8,11 +8,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
-import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
@@ -46,6 +44,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -115,8 +114,7 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightRepository provideFlightRepository(BannerDataSource bannerDataSource,
-                                                    FlightClassesDataSource getFlightClassesUseCase,
+    public FlightRepository provideFlightRepository(FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                                     FlightBookingDataSource flightBookingDataSource,
@@ -125,7 +123,7 @@ public class FlightModule {
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
                                                     FlightCancelVoucherDataSource flightCancelVoucherDataSource,
                                                     FlightBookingCartDataSource flightBookingCartDataSource) {
-        return new FlightRepositoryImpl(bannerDataSource, getFlightClassesUseCase, flightCartDataSource,
+        return new FlightRepositoryImpl(getFlightClassesUseCase, flightCartDataSource,
                 flightCheckVoucheCodeDataSource, flightBookingDataSource, flightOrderDataSource,
                 flightOrderMapper, flightCancellationCloudDataSource, flightCancelVoucherDataSource,
                 flightBookingCartDataSource);

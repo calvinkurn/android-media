@@ -1,9 +1,7 @@
 package com.tokopedia.flight.common.data.source.cloud.api;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
@@ -21,6 +19,7 @@ import com.tokopedia.flight.search.data.api.combined.request.FlightSearchCombine
 import com.tokopedia.flight.search.data.api.combined.response.FlightSearchCombinedResponse;
 import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleRequestData;
 import com.tokopedia.flight.search.data.api.single.response.FlightDataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +34,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
-import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -91,9 +89,6 @@ public interface FlightApi {
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
     Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest, @Header("x-tkpd-userid") String userId);
-
-    @GET
-    Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url String url, @QueryMap Map<String, String> params);
 
     @GET(FlightUrl.FLIGHT_EMAIL)
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);

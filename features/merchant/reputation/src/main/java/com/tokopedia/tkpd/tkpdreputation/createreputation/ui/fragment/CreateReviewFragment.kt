@@ -21,17 +21,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -43,6 +46,7 @@ import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
@@ -71,6 +75,18 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
         private const val IMAGE_REVIEW_YELLOW_BG = "https://ecs7.tokopedia.net/android/others/4_5reviewbg.png"
         private const val IMAGE_BG_TRANSITION = 250
+        private const val LOTTIE_ANIM_1 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
+        private const val LOTTIE_ANIM_2 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
+        private const val LOTTIE_ANIM_3 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_3.json"
+        private const val LOTTIE_ANIM_4 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
+        private const val LOTTIE_ANIM_5 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
+
+
+        private const val IMAGE_PEDIE_1 = "https://ecs7.tokopedia.net/android/pedie/1star.png"
+        private const val IMAGE_PEDIE_2 = "https://ecs7.tokopedia.net/android/pedie/2star.png"
+        private const val IMAGE_PEDIE_3 = "https://ecs7.tokopedia.net/android/pedie/3star.png"
+        private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
+        private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
@@ -91,6 +107,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this::addImageClick)
     }
+    private var isLowDevice = false
     private var selectedImage: ArrayList<String> = arrayListOf()
 
     private var isImageAdded: Boolean = false
@@ -136,6 +153,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
         }
+
+        if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
+            reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING
+        }
+
         createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
     }
 
@@ -168,6 +190,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
+        isLowDevice = DevicePerformanceInfo.isLow(context)
+
         getReviewData()
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
@@ -184,7 +208,13 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 )
                 reviewClickAt = position
                 shouldPlayAnimation = true
-                playAnimation()
+                context?.let {
+                    if (isLowDevice) {
+                        generatePeddieImageByIndex()
+                    } else {
+                        playAnimation()
+                    }
+                }
                 generateReviewBackground(position)
             }
         })
@@ -374,32 +404,59 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun generatePeddieImageByIndex() {
+        val url = when (animatedReviewPicker.getReviewClickAt()) {
+            1 -> IMAGE_PEDIE_1
+            2 -> IMAGE_PEDIE_2
+            3 -> IMAGE_PEDIE_3
+            4 -> IMAGE_PEDIE_4
+            5 -> IMAGE_PEDIE_5
+            else -> IMAGE_PEDIE_5
+        }
+        showImage(url)
+    }
+
+    private fun showImage(url: String) {
+        ImageHandler.loadImageWithoutPlaceholder(img_animation_review, url)
+    }
+
     private fun generateAnimationByIndex(index: Int) {
         context?.let {
             imgAnimationView.repeatCount = 0
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_1)
                 }
                 2 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_2)
                 }
                 3 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_3)
                 }
                 4 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_4)
                 }
                 5 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
-                    imgAnimationView.playAnimation()
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_5)
                 }
             }
+        }
+    }
+
+    /**
+     * Fetch the animation from http URL and play the animation
+     */
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                imgAnimationView.setComposition(result)
+                imgAnimationView.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { throwable -> }
         }
     }
 
@@ -450,7 +507,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         stopLoading()
         showLayout()
         Handler(Looper.getMainLooper()).postDelayed({
-            finishIfRoot()
+            finishIfRoot(true)
         }, 800)
     }
 
@@ -508,16 +565,20 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     }
 
-    private fun finishIfRoot() {
+    private fun finishIfRoot(success: Boolean = false) {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-                setResult(Activity.RESULT_OK, intent)
+                if (success) {
+                    setResult(Activity.RESULT_OK, intent)
+                }
                 startActivity(intent)
             } else {
                 val intent = Intent()
                 intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
-                setResult(Activity.RESULT_OK, intent)
+                if (success) {
+                    setResult(Activity.RESULT_OK, intent)
+                }
             }
             finish()
         }

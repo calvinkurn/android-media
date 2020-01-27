@@ -7,18 +7,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.CallSuper;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.ActionBar;
-
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
@@ -60,11 +60,11 @@ abstract class BaseToolbarActivity extends BaseActivity {
          */
         if (isToolbarWhite()) {
             setToolbarColorWhite();
-            toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarText_SansSerifMedium);
-            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarSubtitleText_SansSerifMedium);
+            toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
+            toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleText_SansSerifMedium);
         } else {
-            toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarText);
-            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarSubtitleText);
+            toolbar.setTitleTextAppearance(this, R.style.ToolbarText);
+            toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleText);
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));

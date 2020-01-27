@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -95,7 +96,7 @@ class OfficialHomeFragment :
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    val CATEGORY_CONST: String = category?.title?:""
+                    val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
@@ -111,7 +112,9 @@ class OfficialHomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { category = it.getParcelable(BUNDLE_CATEGORY) }
+        arguments?.let {
+            category = it.getParcelable(BUNDLE_CATEGORY)
+        }
         context?.let { tracking = OfficialStoreTracking(it) }
     }
 
@@ -178,6 +181,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBannersResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                     setLoadMoreListener()
@@ -354,7 +358,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.officialStoreProductRecommendationResult.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
@@ -573,6 +577,15 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun removeLoading() {
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is LoadingModel
+            }
+            adapter?.notifyDataSetChanged()
+        }
+    }
+
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventImpressionFeatureBrand(
                 categoryName,
@@ -600,9 +613,8 @@ class OfficialHomeFragment :
         RouteManager.route(context, shopData.url)
     }
 
-
     private fun initFirebasePerformanceMonitoring() {
-        val CATEGORY_CONST: String = category?.title?:""
+        val CATEGORY_CONST: String = category?.slug.orEmpty()
 
         val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
         bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)

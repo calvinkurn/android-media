@@ -16,4 +16,5 @@ object ValidatorQueryConstant{
     const val PARAM_MSISDN = "msisdn"
     const val PARAM_CODE = "code"
     const val PARAM_MODE = "mode"
+    const val PARAM_OTP_DIGIT = "otpDigit"
 }
