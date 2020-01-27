@@ -4,16 +4,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by yfsx on 08/05/19.
  */
 interface FeedShopContract {
     interface View : BaseListViewListener<Visitable<*>> {
+
+        var userSession: UserSessionInterface
+
         fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain)
 
         fun onSuccessGetFeedNotLoginFirstPage(element: List<Visitable<*>>, lastCursor: String)
@@ -29,8 +33,6 @@ interface FeedShopContract {
         fun onSuccessDeletePost(rowNumber: Int)
 
         fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
-
-        fun getUserSession(): UserSession
 
         fun onWhitelistClicked(element: WhitelistViewModel)
 
@@ -52,9 +54,9 @@ interface FeedShopContract {
 
         fun unfollowKol(id: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
         fun deletePost(id: Int, rowNumber: Int)
 

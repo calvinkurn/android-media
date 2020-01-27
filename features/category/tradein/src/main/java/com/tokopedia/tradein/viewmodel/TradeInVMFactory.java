@@ -34,19 +34,7 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection TryWithIdenticalCatches
-        if (TradeInTextViewModel.class.isAssignableFrom(modelClass)) {
-            try {
-                return modelClass.getConstructor(Application.class).newInstance(application);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
-            }
-        } else if (TradeInHomeViewModel.class.isAssignableFrom(modelClass)) {
+        if (TradeInHomeViewModel.class.isAssignableFrom(modelClass)) {
             try {
                 return modelClass.getConstructor(Application.class, Intent.class).newInstance(application, intent);
             } catch (NoSuchMethodException e) {

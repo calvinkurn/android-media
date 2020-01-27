@@ -80,9 +80,8 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
         view?.showLoading()
         getCourierRecommendationUseCase.execute(
-                query, -1, false, false, "", 0, 0, shopShipmentModels,
-                GetRatesSubscriber(view, this, selectedServiceId, selectedSpId),
-                shippingParam
+                query, -1, false, false, "", 0, 0, shopShipmentModels, shippingParam,
+                GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
         )
     }
 

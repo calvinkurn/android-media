@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:gravity="center_vertical">
+  
+  <TextView
+    android:id="@+id/textEmailExtension"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dp_32"
+    android:background="@drawable/bg_rounded_corner_email_extension"
+    android:textColor="@color/medium_green_70"
+    android:textSize="@dimen/sp_14"
+    android:paddingTop="@dimen/dp_6"
+    android:paddingBottom="@dimen/dp_6"
+    android:paddingLeft="@dimen/dp_12"
+    android:paddingRight="@dimen/dp_12"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_4"
+    android:gravity="center_horizontal"/>
+  
+</LinearLayout>

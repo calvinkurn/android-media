@@ -8,7 +8,13 @@ import com.tokopedia.search.result.presentation.model.*;
 public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(ProductItemViewModel productItem);
 
-    int type(HeaderViewModel headerViewModel);
+    int type(CpmViewModel cpmViewModel);
+
+    int type(TickerViewModel tickerViewModel);
+
+    int type(SuggestionViewModel suggestionViewModel);
+
+    int type(QuickFilterViewModel quickFilterViewModel);
 
     int type(TopAdsViewModel topAdsViewModel);
 
@@ -19,6 +25,10 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(RecommendationTitleViewModel titleViewModel);
 
     int type(RecommendationItemViewModel recommendationItemViewModel);
+
+    int type(BannedProductsEmptySearchViewModel bannedProductsEmptySearchViewModel);
+
+    int type(BannedProductsTickerViewModel bannedProductsTickerViewModel);
 
     AbstractViewHolder createViewHolder(View view, int type);
 }

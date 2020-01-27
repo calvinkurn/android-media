@@ -60,24 +60,24 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
 
             it.forEachIndexed { index, shop ->
                 officialStoreTracking?.eventImpressionFeatureBrand(
-                        element.categoryName.toEmptyStringIfNull(),
-                        shop.shopId.toString().toEmptyStringIfNull(),
+                        element.categoryName.orEmpty(),
                         index + 1,
-                        shop.name.toEmptyStringIfNull(),
-                        shop.url.toEmptyStringIfNull(),
-                        shop.additionalInformation.toEmptyStringIfNull()
+                        shop.name.orEmpty(),
+                        shop.imageUrl.orEmpty(),
+                        shop.additionalInformation.orEmpty(),
+                        shop.featuredBrandId.orEmpty()
                 )
             }
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int, shop: Shop) {
                     officialStoreTracking?.eventClickFeaturedBrand(
-                            element.categoryName.toEmptyStringIfNull(),
-                            shop.shopId.toEmptyStringIfNull(),
+                            element.categoryName.orEmpty(),
                             position,
-                            shop.name.toEmptyStringIfNull(),
-                            shop.url.toEmptyStringIfNull(),
-                            shop.additionalInformation.toEmptyStringIfNull()
+                            shop.name.orEmpty(),
+                            shop.url.orEmpty(),
+                            shop.additionalInformation.orEmpty(),
+                            shop.featuredBrandId.orEmpty()
                     )
 
                     RouteManager.route(context, shop.url)

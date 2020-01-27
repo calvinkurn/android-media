@@ -46,9 +46,11 @@ public interface ProductListSectionContract {
 
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
 
-        void backToTop();
+        void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
-        List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
+        void trackEventImpressionBannedProducts(boolean isEmptySearch);
+
+        void backToTop();
 
         void addLoading();
 
@@ -75,6 +77,8 @@ public interface ProductListSectionContract {
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
+
+        void sendTrackingGTMEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 
@@ -104,10 +108,6 @@ public interface ProductListSectionContract {
 
         void setDefaultLayoutType(int defaultView);
 
-        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
-
-        void hideErrorMessage();
-
         void successRemoveRecommendationWishlist(String productId);
 
         void successAddRecommendationWishlist(String productId);
@@ -115,6 +115,10 @@ public interface ProductListSectionContract {
         void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
+
+        boolean isTickerHasDismissed();
+
+        void redirectToBrowser(String url);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
@@ -126,5 +130,7 @@ public interface ProductListSectionContract {
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 
         void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
+
+        void onBannedProductsGoToBrowserClick(String url);
     }
 }

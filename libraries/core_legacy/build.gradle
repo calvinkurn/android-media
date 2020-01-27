@@ -55,13 +55,7 @@ dependencies {
     }
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
-    implementation rootProject.ext.analyticsDependencies.moengageFirebase
-    implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
-    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
+
     implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.messaging
@@ -85,13 +79,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.analyticsDependencies.moengageSdk
-    implementation rootProject.ext.analyticsDependencies.moengagePushbase
-    implementation rootProject.ext.analyticsDependencies.moengageInapp
-    implementation "com.moengage:moe-push-firebase:3.2.00"
-    implementation "com.moengage:moe-location-lib:5.2.02"
-    implementation "com.moengage:addon-realtime-trigger:2.2.00"
-    implementation "com.moengage:integration-verifier:1.0.00"
+    implementation(rootProject.ext.analyticsDependencies.moengage)
+    implementation rootProject.ext.analyticsDependencies.moengageAmp
 }
 
 project.ext {

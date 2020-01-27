@@ -10,10 +10,6 @@ public class RedeemCouponEntity {
     @SerializedName("coupons")
     private List<CouponDetailEntity> coupons;
 
-    @Expose
-    @SerializedName("reward_points")
-    private long rewardPoints;
-
     public List<CouponDetailEntity> getCoupons() {
         return coupons;
     }
@@ -22,19 +18,10 @@ public class RedeemCouponEntity {
         this.coupons = coupons;
     }
 
-    public long getRewardPoints() {
-        return rewardPoints;
-    }
-
-    public void setRewardPoints(long rewardPoints) {
-        this.rewardPoints = rewardPoints;
-    }
-
     @Override
     public String toString() {
         return "RedeemCouponEntity{" +
                 "coupons=" + coupons +
-                ", rewardPoints=" + rewardPoints +
                 '}';
     }
 }

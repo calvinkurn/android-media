@@ -158,6 +158,6 @@ class GridPostAdapter(private val contentPosition: Int,
         fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
                             redirectLink: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

@@ -90,4 +90,7 @@
     <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
     <string name="bullet_string">• %1$s</string>
     <string name="description">Deskripsi</string>
+    <string name="buka_browser">Buka Browser</string>
+    <string name="category_server_error_header">There is some error on server</string>
+    <string name="try_again">try again</string>
 </resources>

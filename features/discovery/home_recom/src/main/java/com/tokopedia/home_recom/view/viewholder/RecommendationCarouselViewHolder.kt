@@ -31,7 +31,10 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
-        seeMore.setOnClickListener { RouteManager.route(itemView.context, element.appLinkSeeMore) }
+        seeMore.visibility = if(element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
+        seeMore.setOnClickListener {
+            RouteManager.route(itemView.context, element.appLinkSeeMore)
+        }
         setupRecyclerView(element)
     }
 

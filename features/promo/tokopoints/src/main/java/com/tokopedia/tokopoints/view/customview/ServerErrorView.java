@@ -74,7 +74,8 @@ public class ServerErrorView extends NestedScrollView {
         btnError = findViewById(R.id.text_failed_action);
     }
 
-    public void showErrorUi(boolean hasInternet) {
+
+    public void showErrorUi(boolean hasInternet ) {
 
         int noConnectionImageId = R.drawable.ic_tp_toped_sorry;
         int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
@@ -98,8 +99,13 @@ public class ServerErrorView extends NestedScrollView {
         btnError.setTextColor(buttonFontColor);
         btnError.setButtonColor(buttonColor);
         btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
-
         tvTitleError.setText(errorTitle);
         tvLabelError.setText(errorSubTitle);
     }
+
+    public void setErrorButtonClickListener(OnClickListener onClickListener){
+        btnError.setOnClickListener(onClickListener);
+    }
+
+
 }

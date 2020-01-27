@@ -1,6 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.hotlistRevamp.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
@@ -142,13 +144,31 @@ class HotlistNavAnalytics {
     fun eventProductImpression(hotlistName: String,
                                isLoggedIn: Boolean,
                                hotlistType: String,
-                               position: Int,
-                               isTopAds: Boolean,
-                               name: String,
-                               id: String,
-                               price: String,
-                               path: String) {
+                               viewedProductList: List<Visitable<Any>>,
+                               viewedTopAdsList: List<Visitable<Any>>) {
         val tracker = getTracker()
+        val list = ArrayList<Map<String, Any>>()
+        val itemList = ArrayList<Visitable<Any>>()
+
+        itemList.addAll(viewedProductList)
+        itemList.addAll(viewedTopAdsList)
+
+        for (element in itemList) {
+            val item = element as ProductsItem
+            val map = HashMap<String, Any>()
+            map[KEY_NAME] = item.name
+            map[KEY_ID] = item.id.toString()
+            map[KEY_PRICE] = item.price
+            map[KEY_BRAND] = ""
+            map[KEY_CATEGORY] = item.categoryBreadcrumb + " / " + item.category
+            map[KEY_VARIANT] = ""
+            map[KEY_LIST] = "actionField: list:/hot/" + hotlistName + " - " + getLoginType(isLoggedIn) + " - " + hotlistType + " - " + item.adapter_position + " - " + getIsTopAdsString(item.isTopAds)
+            map[KEY_POSITION] = item.adapter_position
+            map[KEY_ATTRIBUTION] = ""
+
+            list.add(map)
+        }
+
         val map = DataLayer.mapOf(
                 KEY_EVENT, "productView",
                 KEY_EVENT_CATEGORY, "hotlist page",
@@ -157,16 +177,7 @@ class HotlistNavAnalytics {
                 KEY_LOGIN_TYPE, getLoginType(isLoggedIn),
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, CURRENCY_VALUE,
-                KEY_IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
-                KEY_NAME, name,
-                KEY_ID, id,
-                KEY_PRICE, price,
-                KEY_BRAND, "",
-                KEY_CATEGORY, path,
-                KEY_VARIANT, "",
-                KEY_LIST, "actionField: list:/hot/" + hotlistName + " - " + getLoginType(isLoggedIn) + " - " + hotlistType + " - " + position + " - " + getIsTopAdsString(isTopAds),
-                KEY_POSITION, position,
-                KEY_ATTRIBUTION, "")))
+                KEY_IMPRESSIONS, DataLayer.listOf(list))
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }

@@ -4,6 +4,7 @@ import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 /**
  * Created by Lukas on 29/08/19
@@ -86,6 +87,22 @@ object SingleProductRecommendationMapper {
                     false
             )
          } ?: emptyList()
+    }
+
+    fun convertIntoRecommendationWidget(
+            singleWidget: SingleProductRecommendationEntity.RecommendationData?
+    ): RecommendationWidget{
+        return RecommendationWidget(
+                recommendationItemList = convertIntoRecommendationList(
+                        singleWidget?.recommendation ?: listOf(),
+                        singleWidget?.title, singleWidget?.pageName, singleWidget?.layoutType
+                ),
+                title = singleWidget?.title ?: "",
+                pageName = singleWidget?.pageName ?: "",
+                seeMoreAppLink = singleWidget?.seeMoreAppLink ?: "",
+                foreignTitle = singleWidget?.foreignTitle ?: "",
+                tid = singleWidget?.tid ?: ""
+        )
     }
 
     fun isLabelDiscountVisible(productItem: SingleProductRecommendationEntity.Recommendation): Boolean {

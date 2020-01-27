@@ -22,6 +22,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -37,8 +39,6 @@ import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.user.session.UserSessionInterface
 
 import javax.inject.Inject
@@ -56,14 +56,14 @@ class ContentExploreFragment :
 
     companion object {
 
-        var PARAM_CATEGORY_ID = "category_id"
-        var DEFAULT_CATEGORY = "0"
-        var PEFORMANCE_EXPLORE = "mp_explore"
-        var CATEGORY_POSITION_NONE = -1
+        const val PARAM_CATEGORY_ID = "category_id"
+        private const val DEFAULT_CATEGORY = "0"
+        private const val PEFORMANCE_EXPLORE = "mp_explore"
+        private const val CATEGORY_POSITION_NONE = -1
 
-        private val IMAGE_SPAN_COUNT = 3
-        private val IMAGE_SPAN_SINGLE = 1
-        private val LOAD_MORE_THRESHOLD = 2
+        private const val IMAGE_SPAN_COUNT = 3
+        private const val IMAGE_SPAN_SINGLE = 1
+        private const val LOAD_MORE_THRESHOLD = 2
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentExploreFragment {
@@ -107,7 +107,7 @@ class ContentExploreFragment :
     }
 
     override fun initInjector() {
-        val baseAppComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+        val baseAppComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
         DaggerExploreComponent.builder()
                 .baseAppComponent(baseAppComponent)
                 .build()
@@ -345,20 +345,20 @@ class ContentExploreFragment :
         imageAdapter.showEmpty()
     }
 
-    override fun goToKolPostDetail(kolPostViewModel: KolPostViewModel) {
-        val intent = KolPostDetailActivity.getInstance(
-                context,
-                kolPostViewModel.contentId.toString()
+    override fun goToKolPostDetail(postId: Int, name: String) {
+        RouteManager.route(
+                requireContext(),
+                ApplinkConst.CONTENT_DETAIL,
+                postId.toString()
         )
-        startActivity(intent)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 ContentExloreEventTracking.Event.EXPLORE,
                 ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                 ContentExloreEventTracking.Action.CLICK_GRID_CONTENT,
                 String.format(
                         ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
-                        kolPostViewModel.name,
-                        kolPostViewModel.contentId
+                        name,
+                        postId
                 )
         ))
     }

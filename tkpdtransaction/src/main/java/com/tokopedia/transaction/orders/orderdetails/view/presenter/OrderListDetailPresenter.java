@@ -75,6 +75,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
     private static final String TAB_ID = "tabId";
+    private static final String CATEGORY_PRODUCT = "Kategori Produk";
     private static final int DEFAULT_TAB_ID = 1;
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
@@ -639,6 +640,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     private String formatTitleHtml(String desc, String urlText, String url) {
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
+    }
+
+    public String getProductCategory() {
+        if (details.title() != null) {
+            for (Title title : details.title()) {
+                if (title.label().equalsIgnoreCase(CATEGORY_PRODUCT))
+                    return title.value();
+            }
+        }
+        return null;
     }
 
     public void showRetryButtonToaster(String message) {

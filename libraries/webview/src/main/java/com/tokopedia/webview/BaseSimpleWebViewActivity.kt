@@ -81,14 +81,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         val query = intentUri.query
         return if (query != null && query.contains("$KEY_URL=")) {
             url = query.substringAfter("$KEY_URL=").decode()
-            val slashIndex = url.indexOf("/&")
-            if (slashIndex > -1) {
-                url = url.substring(0, slashIndex + 1)
-            }
+            url = validateSymbol(url)
             if (!url.contains("$KEY_URL=")) {
                 return url
             }
-            val url2 = url.substringAfter("$KEY_URL=")
+            val url2 = url.substringAfter("$KEY_URL=", "")
             if (url2.isNotEmpty()) {
                 val url2BeforeAnd = url2.substringBefore("&")
                 val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "")
@@ -101,6 +98,33 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
         } else {
             ""
+        }
+    }
+
+    /**
+     * Validate the & and ? symbol
+     * Example input/output
+     * https://www.tokopedia.com/events/hiburan
+     * https://www.tokopedia.com/events/hiburan
+     *
+     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
+     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
+     *
+     * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
+     * https://www.tokopedia.com/events/hiburan
+     */
+    private fun validateSymbol(url: String): String {
+        val indexAnd = url.indexOf("&")
+        return if (indexAnd == -1) {
+            url
+        } else {
+            val urlBeforeAnd = url.substringBefore("&", "")
+            val indexQuestion = urlBeforeAnd.indexOf("?")
+            if (indexQuestion == -1) {
+                urlBeforeAnd
+            } else {
+                url
+            }
         }
     }
 

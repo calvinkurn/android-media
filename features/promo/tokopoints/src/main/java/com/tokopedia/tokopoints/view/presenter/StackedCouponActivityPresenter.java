@@ -21,6 +21,7 @@ import rx.Subscriber;
 public class StackedCouponActivityPresenter extends BaseDaggerPresenter<StackedCouponActivityContract.View>
         implements StackedCouponActivityContract.Presenter {
     private GraphqlUseCase mGetFilter;
+    private GraphqlRequest filterRequest;
 
     @Inject
     public StackedCouponActivityPresenter(GraphqlUseCase getFilter) {
@@ -36,13 +37,15 @@ public class StackedCouponActivityPresenter extends BaseDaggerPresenter<StackedC
 
     @Override
     public void getFilter(String slug) {
-        Map<String, Object> variablesFilter = new HashMap<>();
-        variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug == null ? "" : slug.toLowerCase());
-        GraphqlRequest filterRequest = new GraphqlRequest(getView().getStringRaw(R.raw.tp_gql_coupon_filter),
-                CouponFilterBase.class,
-                variablesFilter, false);
+        mGetFilter.clearRequest();
+        if (filterRequest == null) {
+            Map<String, Object> variablesFilter = new HashMap<>();
+            variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug == null ? "" : slug.toLowerCase());
+            filterRequest = new GraphqlRequest(getView().getStringRaw(R.raw.tp_gql_coupon_filter),
+                    CouponFilterBase.class,
+                    variablesFilter, false);
+        }
         mGetFilter.addRequest(filterRequest);
-
         mGetFilter.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {

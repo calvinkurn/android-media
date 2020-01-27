@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.favorite.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.ObservableFactory;
@@ -14,6 +13,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.data.mapper.WishlistMapper;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,8 +24,6 @@ import rx.Observable;
 
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_COUNT;
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_PAGE;
-import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
-import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
 
 /**
  * @author Kulomady on 1/18/17.
@@ -33,6 +31,8 @@ import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
 public class CloudWishlistDataStore {
 
     private Context context;
+    public static final String PAGE_NO = "page";
+    public static final String ITEM_COUNT = "count";
 
     public CloudWishlistDataStore(Context context) {
         this.context = context;

@@ -1,24 +1,24 @@
 package com.tokopedia.seller.seller.info.view.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.seller.info.di.component.DaggerSellerInfoComponent;
 import com.tokopedia.seller.seller.info.view.SellerInfoTracking;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;
-import com.tokopedia.seller.seller.info.view.activity.SellerInfoWebViewActivity;
 import com.tokopedia.seller.seller.info.view.adapter.SellerInfoAdapter;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
@@ -41,7 +41,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     private SellerInfoDateUtil sellerInfoDateUtil;
 
     private static final String TAG = "SellerInfoFragment";
-
+    private String lastNotifId = "";
     @Inject
     SellerInfoPresenter sellerInfoPresenter;
 
@@ -74,7 +74,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     protected void searchForPage(int page) {
-        sellerInfoPresenter.getSellerInfoList(page);
+        sellerInfoPresenter.getSellerInfoList(page, lastNotifId);
         hasNextPage = false;
     }
 
@@ -94,12 +94,15 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
         SellerInfoTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
         if(!sellerInfoModel.isRead())
             sellerInfoPresenter.markReadNotification(sellerInfoModel.getInfoId());
-        startActivity(SellerInfoWebViewActivity.getCallingIntent(getContext(), sellerInfoModel.getExternalLink()));
+        RouteManager.route(getContext(), sellerInfoModel.getExternalLink());
     }
 
 
     @Override
     public void onSearchLoaded(@NonNull List<SellerInfoModel> list, int totalItem, boolean hasNext) {
+        if (list.size() != 0) {
+            lastNotifId = list.get(list.size() - 1).getNotifId();
+        }
         onSearchLoaded(list, totalItem);
         hasNextPage = hasNext  && list != null && !list.isEmpty() && totalItem > 0;
     }
@@ -111,8 +114,9 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     protected void onPullToRefresh() {
-        if(adapter != null && adapter instanceof SellerInfoAdapter) {
-            ((SellerInfoAdapter)adapter).clearRawAdapter();
+        lastNotifId = "";
+        if (adapter != null && adapter instanceof SellerInfoAdapter) {
+            ((SellerInfoAdapter) adapter).clearRawAdapter();
         }
         super.onPullToRefresh();
     }

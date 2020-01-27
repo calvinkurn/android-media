@@ -105,9 +105,6 @@
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
         <meta-data
-            android:name="GTM_RESOURCE"
-            android:resource="@raw/gtm_seller" />
-        <meta-data
             android:name="GTM_ID"
             android:value="@string/key_gtm" />
         <meta-data
@@ -220,7 +217,6 @@
             </intent-filter>
         </activity>
 
-
         <service
             android:name="com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService"
             android:exported="false" />
@@ -287,5 +283,7 @@
             android:name="com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail"
             android:label="@string/title_activity_shop_statistic_detail"
             android:screenOrientation="portrait" />
+        <service android:name="com.tokopedia.core.drawer2.service.DrawerGetNotificationService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 </manifest>

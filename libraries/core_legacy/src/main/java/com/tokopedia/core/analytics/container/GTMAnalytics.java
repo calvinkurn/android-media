@@ -96,7 +96,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
-        pushGeneral(value);
+        pushGeneral(clone(value));
 
         StringBuilder stacktrace = new StringBuilder();
 
@@ -821,8 +821,18 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = new Bundle();
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
-        bundle.putString("userId", sessionHandler.getLoginID());
+        if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
+            bundle.putString("userId", sessionHandler.getLoginID());
+        }else{
+            bundle.putString("userId", "");
+        }
         bundle.putString("clientId", getClientIDString());
+        bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
+        if(!TextUtils.isEmpty(sessionHandler.getShopId())) {
+            bundle.putString("shopId", sessionHandler.getShopId());
+        }else{
+            bundle.putString("shopId", "");
+        }
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
@@ -842,7 +852,9 @@ public class GTMAnalytics extends ContextAnalytics {
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     log(getContext(), eventName, it);
-                    getTagManager().getDataLayer().pushEvent(eventName, it);
+                    if (!GlobalConfig.isSellerApp()) {
+                        getTagManager().getDataLayer().pushEvent(eventName, it);
+                    }
                     pushIris(eventName, it);
                     return true;
                 })
@@ -1099,13 +1111,15 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = clone(values);
+        Map<String, Object> data = new HashMap<>(values);
         Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     log(getContext(), null, it);
-                    TagManager.getInstance(getContext()).getDataLayer().push(it);
+                    if (!GlobalConfig.isSellerApp()) {
+                        TagManager.getInstance(getContext()).getDataLayer().push(it);
+                    }
                     pushIris("", it);
                     return true;
                 })

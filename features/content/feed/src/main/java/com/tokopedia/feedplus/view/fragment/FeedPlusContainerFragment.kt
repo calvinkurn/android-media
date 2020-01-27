@@ -114,8 +114,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,7 +143,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun initInjector() {
         DaggerFeedContainerComponent.builder()
-                .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
                 .build().inject(this)
     }
 
@@ -214,7 +215,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
         feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset + toolbar.height < 0) {
+                if (verticalOffset + (toolbar?.height ?: 0) < 0) {
                     showNormalTextWhiteToolbar()
                 } else {
                     showWhiteTextTransparentToolbar()

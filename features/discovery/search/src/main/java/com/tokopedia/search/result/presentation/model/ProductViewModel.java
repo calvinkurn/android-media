@@ -28,7 +28,7 @@ public class ProductViewModel implements Parcelable {
     private boolean imageSearch;
     private boolean isQuerySafe;
     private DynamicFilterModel dynamicFilterModel;
-    private DataValue quickFilterModel;
+    private QuickFilterViewModel quickFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
     private RelatedSearchViewModel relatedSearchModel;
@@ -75,11 +75,11 @@ public class ProductViewModel implements Parcelable {
         this.dynamicFilterModel = dynamicFilterModel;
     }
 
-    public DataValue getQuickFilterModel() {
+    public QuickFilterViewModel getQuickFilterModel() {
         return quickFilterModel;
     }
 
-    public void setQuickFilterModel(DataValue quickFilterModel) {
+    public void setQuickFilterModel(QuickFilterViewModel quickFilterModel) {
         this.quickFilterModel = quickFilterModel;
     }
 
@@ -223,7 +223,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isQuerySafe ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.dynamicFilterModel, flags);
-        dest.writeParcelable(this.quickFilterModel, flags);
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
         dest.writeParcelable(this.relatedSearchModel, flags);
@@ -246,7 +245,6 @@ public class ProductViewModel implements Parcelable {
         this.imageSearch = in.readByte() != 0;
         this.isQuerySafe = in.readByte() != 0;
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
-        this.quickFilterModel = in.readParcelable(DataValue.class.getClassLoader());
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
         this.relatedSearchModel = in.readParcelable(RelatedSearchViewModel.class.getClassLoader());

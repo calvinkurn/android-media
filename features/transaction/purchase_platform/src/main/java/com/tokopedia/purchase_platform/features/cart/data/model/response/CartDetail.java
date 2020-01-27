@@ -30,6 +30,9 @@ public class CartDetail {
     @SerializedName("similar_product")
     @Expose
     private SimilarProduct similarProduct;
+    @SerializedName("nicotine_lite_message")
+    @Expose
+    private NicotineLiteMessage nicotineLiteMessage;
 
     public int getCartId() {
         return cartId;
@@ -53,5 +56,9 @@ public class CartDetail {
 
     public SimilarProduct getSimilarProduct() {
         return similarProduct;
+    }
+
+    public NicotineLiteMessage getNicotineLiteMessage() {
+        return nicotineLiteMessage;
     }
 }
