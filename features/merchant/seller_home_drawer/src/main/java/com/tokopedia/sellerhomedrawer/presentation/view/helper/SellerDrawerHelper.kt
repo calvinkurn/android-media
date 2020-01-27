@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.core.ManageGeneral
-import com.tokopedia.core.drawer2.view.DrawerAdapter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
@@ -171,6 +170,7 @@ class SellerDrawerHelper(val context: Activity,
                     context.startActivity(SellerHomeWebViewActivity.createIntent(context, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER))
                 }
                 SellerHomeState.DrawerPosition.SETTINGS -> {
+                    //TODO: Change ManageGeneral to abstraction
                     val settingsIntent = Intent(context, ManageGeneral::class.java)
                     val settingsCanonicalName = ManageGeneral::class.java.canonicalName
                     eventDrawerClick(EventLabel.SETTING)
@@ -311,7 +311,8 @@ class SellerDrawerHelper(val context: Activity,
                     label = context.getString(R.string.drawer_title_home),
                     iconId = R.drawable.icon_home,
                     id = SellerHomeState.DrawerPosition.SELLER_INDEX_HOME,
-                    isExpanded = true))
+                    isExpanded = true,
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.SELLER_INDEX_HOME))
             add(getSellerMenu())
             add(getInboxMenu())
             add(getProductMenu())
@@ -319,7 +320,8 @@ class SellerDrawerHelper(val context: Activity,
                     label = context.getString(R.string.drawer_title_top_ads),
                     iconId = R.drawable.sh_ic_top_ads,
                     id = SellerHomeState.DrawerPosition.SELLER_TOP_ADS,
-                    isExpanded = true
+                    isExpanded = true,
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.SELLER_TOP_ADS
             ))
 
             if (adapter != null && !adapter.isOfficialStore && powerMerchantDrawerItem != null)
@@ -331,37 +333,43 @@ class SellerDrawerHelper(val context: Activity,
                     iconId = R.drawable.sh_ic_reso,
                     id = SellerHomeState.DrawerPosition.RESOLUTION_CENTER,
                     isExpanded = true,
-                    notif = getTotalResoNotif()
+                    notif = getTotalResoNotif(),
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.RESOLUTION_CENTER
             ))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_mitra_toppers),
                     iconId = R.drawable.sh_ic_mitra_toppers,
                     id = SellerHomeState.DrawerPosition.SELLER_MITRA_TOPPERS,
-                    isExpanded = true
+                    isExpanded = true,
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.SELLER_MITRA_TOPPERS
             ))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_statistic),
                     iconId = R.drawable.sh_statistik_icon,
                     id = SellerHomeState.DrawerPosition.SELLER_GM_STAT,
-                    isExpanded = true
+                    isExpanded = true,
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.SELLER_GM_STAT
             ))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_setting),
                     iconId = R.drawable.sh_icon_setting,
                     id = SellerHomeState.DrawerPosition.SETTINGS,
-                    isExpanded = true
+                    isExpanded = true,
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.SETTINGS
             ))
             add(SellerDrawerItem(
                     label = context.getString(R.string.title_activity_contact_us),
                     iconId = R.drawable.sh_ic_contactus,
                     id = SellerHomeState.DrawerPosition.CONTACT_US,
-                    isExpanded = true
+                    isExpanded = true,
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.CONTACT_US
             ))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_logout),
                     iconId = R.drawable.sh_ic_menu_logout,
                     id = SellerHomeState.DrawerPosition.LOGOUT,
-                    isExpanded = true
+                    isExpanded = true,
+                    isSelected = selectedPosition == SellerHomeState.DrawerPosition.LOGOUT
             ))
         }
         context.drawer_shop.visibility = View.VISIBLE
@@ -517,7 +525,7 @@ class SellerDrawerHelper(val context: Activity,
                 context.getString(R.string.drawer_title_product),
                 R.drawable.sh_ic_manage_produk,
                 SellerHomeState.DrawerPosition.SELLER_PRODUCT_EXTEND,
-                drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_OPENED, false),
+                drawerCache.getBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, false),
                 notif = 0)
 
         productMenu.apply {

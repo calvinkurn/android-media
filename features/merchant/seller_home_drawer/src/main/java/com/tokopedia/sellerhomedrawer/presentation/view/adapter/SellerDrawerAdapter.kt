@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
-import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerSeparator
 
 class SellerDrawerAdapter(adapterTypeFactory: SellerDrawerAdapterTypeFactory,
                           visitables: List<Visitable<*>>,
@@ -29,19 +28,5 @@ class SellerDrawerAdapter(adapterTypeFactory: SellerDrawerAdapterTypeFactory,
 
     var drawerItemData : MutableList<SellerDrawerItem> = arrayListOf()
     var isOfficialStore: Boolean = false
-
-//    override fun getItemViewType(position: Int): Int =
-//        when {
-//            position == 0 -> SellerDrawerHeaderViewHolder.LAYOUT_RES
-//            isDrawerSeparator(position) -> SellerDrawerSeparatorViewHolder.LAYOUT_RES
-//            isDrawerGroup(position) -> SellerDrawerGroupViewHolder.LAYOUT_RES
-//            else -> SellerDrawerItemViewHolder.LAYOUT_RES
-//        }
-
-    private fun isDrawerSeparator(position: Int) : Boolean =
-            visitables[position - itemCount] is SellerDrawerSeparator
-
-    private fun isDrawerGroup(position: Int) : Boolean =
-            visitables[position - itemCount] is SellerDrawerItem
 
 }

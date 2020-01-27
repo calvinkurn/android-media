@@ -27,7 +27,6 @@ import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManager
 import com.tokopedia.sellerhomedrawer.domain.datamanager.SellerDrawerDataManagerImpl
 import com.tokopedia.sellerhomedrawer.domain.usecase.GetSellerHomeUserAttributesUseCase
 import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
-import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
@@ -63,7 +62,7 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         super.onCreate(savedInstanceState)
         //TODO : Is this context true ?
         userSession = UserSession(applicationContext)
-        drawerCache = LocalCacheHandler(this, SellerHomeDrawerHelper.DRAWER_CACHE)
+        drawerCache = LocalCacheHandler(this, SellerDrawerHelper.DRAWER_CACHE)
         remoteConfig = FirebaseRemoteConfigImpl(this)
 
         injectDependency()
@@ -84,14 +83,12 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         val sellerTokoCashUseCase = SellerTokoCashUseCase(sellerTokoCashObservable)
 
         sellerDrawerHelper = SellerDrawerHelper(this, userSession, drawerCache, remoteConfig)
-        sellerDrawerHelper.initDrawer(this)
         sellerDrawerHelper.selectedPosition = setDrawerPosition()
+        sellerDrawerHelper.initDrawer(this)
         drawerDataManager = SellerDrawerDataManagerImpl(this, this, sellerTokoCashUseCase, getSellerHomeUserAttributesUseCase)
     }
 
     protected abstract fun setDrawerPosition(): Int
-
-    fun getDrawerHelper(): SellerHomeDrawerHelper? = null
 
     protected open fun updateDrawerData() {
         if (userSession.isLoggedIn) {

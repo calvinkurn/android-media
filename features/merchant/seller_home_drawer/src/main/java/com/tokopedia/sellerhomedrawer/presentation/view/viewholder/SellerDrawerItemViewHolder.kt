@@ -17,18 +17,12 @@ class SellerDrawerItemViewHolder (itemView: View,
         const val MAX_PLACEHOLDER = "999+"
     }
 
-    private var selectedItem : Int = 0
-        set(value) {
-            field = value
-            listener.notifyDataSetChanged()
-        }
-
     override fun bind(sellerDrawerItem: SellerDrawerItem) {
         with(itemView) {
             label.text = sellerDrawerItem.label
             icon.setImageResource(sellerDrawerItem.iconId)
             setNotificationCounter(sellerDrawerItem.notif)
-            setSelectedBackground(sellerDrawerItem.id)
+            setSelectedBackground(sellerDrawerItem.isSelected)
             setDrawerHighlightVisibility(sellerDrawerItem.isNew)
             drawer_item.setOnClickListener {
                 listener.onItemClicked(sellerDrawerItem)
@@ -49,8 +43,8 @@ class SellerDrawerItemViewHolder (itemView: View,
         }
     }
 
-    private fun setSelectedBackground(sellerDrawerItemId: Int) {
-        if (sellerDrawerItemId == selectedItem)
+    private fun setSelectedBackground(isSelected: Boolean) {
+        if (isSelected)
             itemView.label.setTypeface(null, Typeface.BOLD)
         else itemView.label.setTypeface(null, Typeface.NORMAL)
     }

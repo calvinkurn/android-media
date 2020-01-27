@@ -10,7 +10,8 @@ open class SellerDrawerItem (
         var isExpanded: Boolean = false,
         var id: Int,
         var position: Int? = null,
-        var isNew: Boolean = false
+        var isNew: Boolean = false,
+        var isSelected: Boolean = false
 ) : Visitable<SellerDrawerAdapterTypeFactory> {
 
     override fun type(typeFactory: SellerDrawerAdapterTypeFactory): Int {
