@@ -22,14 +22,14 @@ import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.analytics.*
 import com.tokopedia.sellerhomedrawer.constant.SellerBaseUrl
 import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
+import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.listener.*
 import com.tokopedia.sellerhomedrawer.presentation.view.adapter.SellerDrawerAdapter
 import com.tokopedia.sellerhomedrawer.presentation.view.adapter.SellerDrawerAdapterTypeFactory
 import com.tokopedia.sellerhomedrawer.presentation.view.dashboard.SellerDashboardActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerGroup
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
-import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
-import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerHomeWebViewActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerSimpleWebViewActivity
@@ -386,10 +386,10 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     fun setFooterData(profile: SellerDrawerProfile) {
-        context.label.text = profile.shopName
-        context.icon.visibility = View.VISIBLE
-        context.sublabel.visibility = View.VISIBLE
-        ImageHandler.LoadImage(context.icon, profile.shopAvatar)
+        context.shop_label.text = profile.shopName
+        context.shop_icon.visibility = View.VISIBLE
+        context.shop_sublabel.visibility = View.VISIBLE
+        ImageHandler.LoadImage(context.shop_icon, profile.shopAvatar)
         context.drawer_shop.setOnClickListener {
             onGoToShop()
         }

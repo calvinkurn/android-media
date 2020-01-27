@@ -15,7 +15,7 @@
         android:padding="@dimen/padding_vs">
 
         <ImageView
-            android:id="@+id/icon"
+            android:id="@+id/shop_icon"
             android:layout_width="@dimen/drawer_icon"
             android:layout_height="@dimen/drawer_icon"
             android:layout_centerVertical="true"
@@ -34,7 +34,7 @@
             >
 
             <TextView
-                android:id="@+id/sublabel"
+                android:id="@+id/shop_sublabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Toko saya"
@@ -43,7 +43,7 @@
                 android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/label"
+                android:id="@+id/shop_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
