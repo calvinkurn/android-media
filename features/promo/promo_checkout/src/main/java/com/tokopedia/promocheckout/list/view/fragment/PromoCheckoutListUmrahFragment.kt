@@ -52,7 +52,6 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCouponActive = arguments?.getBoolean(EXTRA_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
         totalPrice = arguments?.getInt(EXTRA_TOTAL_PRICE) ?:0
 
@@ -64,10 +63,9 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
     }
 
     companion object{
-        fun createInstance(isCouponActive: Boolean?, promoCode: String?, totalPrice:Int?): PromoCheckoutListUmrahFragment {
+        fun createInstance(promoCode: String?, totalPrice:Int?): PromoCheckoutListUmrahFragment {
             val promoCheckoutListUmrahFragment = PromoCheckoutListUmrahFragment()
             val bundle = Bundle()
-            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
             bundle.putInt(EXTRA_TOTAL_PRICE, totalPrice ?:0)
             promoCheckoutListUmrahFragment.arguments = bundle

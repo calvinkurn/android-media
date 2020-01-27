@@ -19,7 +19,6 @@ class PromoCheckoutListUmrahActivity : BaseSimpleActivity(), HasComponent<PromoC
 
     override fun getNewFragment(): Fragment? {
         return PromoCheckoutListUmrahFragment.createInstance(
-                intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, ""),
                 intent?.extras?.getInt(EXTRA_TOTAL_PRICE,0)
         )
@@ -29,11 +28,11 @@ class PromoCheckoutListUmrahActivity : BaseSimpleActivity(), HasComponent<PromoC
 
         val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"
 
-        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String): Intent {
+        fun newInstance(activity: Context, promoCode: String, totalPrice:Int): Intent {
             val intent = Intent(activity, PromoCheckoutListUmrahActivity::class.java)
             val bundle = Bundle()
-            bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
             bundle.putString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, promoCode)
+            bundle.putInt(EXTRA_TOTAL_PRICE,totalPrice)
             intent.putExtras(bundle)
             return intent
         }
