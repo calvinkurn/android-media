@@ -25,7 +25,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_error_card_title"
         app:layout_constraintStart_toEndOf="@id/tv_error_card_title"
         app:layout_constraintTop_toTopOf="@id/tv_error_card_title"
-        app:srcCompat="@drawable/ic_sah_information" />
+        app:srcCompat="@drawable/sah_ic_information" />
 
     <ImageView
         android:id="@+id/iv_error"
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:adjustViewBounds="true"
-        android:src="@drawable/img_sah_error"
+        android:src="@drawable/unify_globalerrors_connection"
         app:layout_constraintBottom_toTopOf="@id/tv_error_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
