@@ -10,7 +10,9 @@ import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactory
 data class EmptyChatModel(
         var title: String = "",
         var body: String = "",
-        var image: String = ""
+        var image: String = "",
+        var ctaText: String = "",
+        var ctaApplink: String =  ""
 ) : Visitable<ChatListTypeFactory>{
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
