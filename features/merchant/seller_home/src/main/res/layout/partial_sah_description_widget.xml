@@ -35,7 +35,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_description_url"
-        android:layout_width="93dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/sah_description_url"
         android:text="@string/sah_more"

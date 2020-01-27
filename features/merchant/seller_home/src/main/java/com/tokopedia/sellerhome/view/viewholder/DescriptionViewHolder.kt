@@ -19,9 +19,9 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
     override fun bind(element: DescriptionWidgetUiModel) {
         with(element) {
             when(state) {
-                DescriptionState.ERROR -> showOnError()
                 DescriptionState.LOADING -> showShimmer()
                 DescriptionState.IDEAL -> showIdeal(element)
+                DescriptionState.ERROR -> showOnError(element)
             }
         }
     }
@@ -39,11 +39,12 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
         }
     }
 
-    private fun showOnError() {
+    private fun showOnError(element: DescriptionWidgetUiModel) {
         with(itemView) {
             ideal_description_layout.visibility = View.GONE
             shimmer_description_layout.visibility = View.GONE
             error_description_layout.visibility = View.VISIBLE
+            tv_description_error_title.text = element.title
         }
     }
 
