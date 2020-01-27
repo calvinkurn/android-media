@@ -1,9 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.review.shop.data.source;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 import com.tokopedia.tkpd.tkpdreputation.utils.GetData;
 
 import java.util.HashMap;

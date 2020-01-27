@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
 import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 
