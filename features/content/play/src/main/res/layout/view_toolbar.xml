@@ -19,35 +19,17 @@
             app:srcCompat="@drawable/ic_play_back_white"
             />
 
-        <FrameLayout
-            android:id="@+id/fl_live_badge"
+        <include
+            android:id="@+id/live_badge"
+            layout="@layout/layout_live_badge"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
-            android:background="@drawable/bg_play_live_badge"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/iv_back"
             app:layout_constraintStart_toEndOf="@id/iv_back"
-            app:layout_constraintTop_toTopOf="@id/iv_back"
-            >
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_live"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineHeight="@dimen/dp_14"
-                android:layout_gravity="center"
-                android:text="@string/play_live"
-                android:textAllCaps="true"
-                android:textColor="@color/Neutral_N0"
-                app:typographyWeight="bold"
-                app:typographyType="small"
-                />
-
-        </FrameLayout>
+            app:layout_constraintTop_toTopOf="@id/iv_back" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_stream_name"
@@ -61,10 +43,10 @@
             android:lineHeight="@dimen/sp_20"
             android:maxLines="1"
             android:textColor="@color/Neutral_N0"
-            app:layout_constraintBottom_toBottomOf="@id/fl_live_badge"
+            app:layout_constraintBottom_toBottomOf="@id/live_badge"
             app:layout_constraintEnd_toStartOf="@id/iv_more"
-            app:layout_constraintStart_toEndOf="@id/fl_live_badge"
-            app:layout_constraintTop_toTopOf="@id/fl_live_badge"
+            app:layout_constraintStart_toEndOf="@id/live_badge"
+            app:layout_constraintTop_toTopOf="@id/live_badge"
             app:layout_goneMarginLeft="@dimen/dp_16"
             app:layout_goneMarginStart="@dimen/dp_16"
             app:typographyType="heading_5"
@@ -89,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/fl_live_badge"
+            app:layout_constraintStart_toStartOf="@id/live_badge"
             app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
             app:layout_goneMarginLeft="@dimen/dp_16"
             app:layout_goneMarginStart="@dimen/dp_16"

@@ -7,7 +7,6 @@
         android:id="@+id/bannerPlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
         <com.tokopedia.unifyprinciples.Typography
@@ -57,21 +56,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-        <com.tokopedia.unifyprinciples.Typography
+
+        <include
             android:id="@+id/live"
+            layout="@layout/layout_live_badge"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LIVE"
-            android:background="@drawable/home_background_live"
-            android:textColor="@android:color/white"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:visibility="gone"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
+            app:layout_constraintBottom_toTopOf="@+id/title_play"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/title_play"/>
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/viewer"
