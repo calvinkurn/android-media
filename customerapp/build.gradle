@@ -455,6 +455,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.performance
+    implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design

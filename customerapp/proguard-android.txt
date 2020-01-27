@@ -204,5 +204,4 @@ public protected *;
     public void initTranslator();
 }
 
--keep class com.google.firebase.perf.** { *; }
--dontwarn com.google.firebase.**
+-keep class com.google.firebase.perf.FirebasePerformance
