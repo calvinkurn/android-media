@@ -52,6 +52,7 @@ object CartListPresenterDeleteCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("delete cart item") {
 
@@ -67,22 +68,21 @@ object CartListPresenterDeleteCartTest : Spek({
             )
         }
 
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
         Scenario("remove all cart data") {
 
-            val view: ICartListView = mockk(relaxed = true)
             val emptyCartListData = CartListData()
+            val deleteCartData = DeleteCartData(isSuccess = true)
 
             Given("success delete") {
-                val deleteCartData = DeleteCartData(isSuccess = true)
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("empty cart list data") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process delete cart item") {
@@ -100,24 +100,20 @@ object CartListPresenterDeleteCartTest : Spek({
 
         Scenario("remove some cart data") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val deleteCartData = DeleteCartData(isSuccess = true)
+            val firstCartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+            }
+            val secondCartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+                originData?.cartId = 1
+            }
 
             Given("success delete") {
-                val deleteCartData = DeleteCartData(isSuccess = true)
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process delete cart item") {
-                val firstCartItemData = CartItemData()
-                firstCartItemData.originData = CartItemData.OriginData()
-                val secondCartItemData = CartItemData()
-                secondCartItemData.originData = CartItemData.OriginData()
-                secondCartItemData.originData?.cartId = 1
-
                 cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
                         arrayListOf(firstCartItemData), arrayListOf(), false, false)
             }
@@ -131,24 +127,20 @@ object CartListPresenterDeleteCartTest : Spek({
 
         Scenario("remove some cart data and insurance data") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val deleteCartData = DeleteCartData(isSuccess = true)
+            val firstCartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+            }
+            val secondCartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+                originData?.cartId = 1
+            }
 
             Given("success delete") {
-                val deleteCartData = DeleteCartData(isSuccess = true)
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process delete cart item") {
-                val firstCartItemData = CartItemData()
-                firstCartItemData.originData = CartItemData.OriginData()
-                val secondCartItemData = CartItemData()
-                secondCartItemData.originData = CartItemData.OriginData()
-                secondCartItemData.originData?.cartId = 1
-
                 cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
                         arrayListOf(firstCartItemData), arrayListOf(), false, false)
             }
@@ -162,21 +154,17 @@ object CartListPresenterDeleteCartTest : Spek({
 
         Scenario("fail remove cart data") {
 
-            val view: ICartListView = mockk(relaxed = true)
             val errorMessage = "fail testing delete"
+            val deleteCartData = DeleteCartData(isSuccess = false, message = errorMessage)
+            val cartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+            }
 
             Given("fail delete") {
-                val deleteCartData = DeleteCartData(isSuccess = false, message = errorMessage)
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process delete cart item") {
-                val cartItemData = CartItemData()
-                cartItemData.originData = CartItemData.OriginData()
                 cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
             }
 
@@ -189,34 +177,32 @@ object CartListPresenterDeleteCartTest : Spek({
 
         Scenario("fail remove cart data with CartResponseErrorException") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val errorMessage = "fail testing delete"
+            val cartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+            }
+            val exception = CartResponseErrorException("fail testing delete")
 
             Given("fail delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             When("process delete cart item") {
-                val cartItemData = CartItemData()
-                cartItemData.originData = CartItemData.OriginData()
                 cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
             }
 
             Then("should show error message") {
                 verify {
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(exception)
                 }
             }
         }
 
         Scenario("fail remove cart data with other exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
             val exception = IllegalStateException()
+            val cartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+            }
 
             Given("fail delete") {
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(exception)
@@ -227,8 +213,6 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             When("process delete cart item") {
-                val cartItemData = CartItemData()
-                cartItemData.originData = CartItemData.OriginData()
                 cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
             }
 
