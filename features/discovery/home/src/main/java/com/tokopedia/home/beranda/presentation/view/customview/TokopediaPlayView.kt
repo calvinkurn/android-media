@@ -104,6 +104,8 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
         }
     }
 
+    fun getPlayer() = player
+
     inner class ComponentListener : VideoListener {
         // VideoListener implementation
         override fun onVideoSizeChanged(
