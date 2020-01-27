@@ -23,6 +23,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -52,6 +53,7 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("update and reload cart list") {
 
@@ -67,18 +69,16 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             )
         }
 
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
         Scenario("success update and reload empty cart") {
 
-            val view: ICartListView = mockk(relaxed = true)
             val emptyCartListData = UpdateAndReloadCartListData()
 
             Given("empty data") {
                 every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-                every { view.getAllAvailableCartDataList() } returns arrayListOf()
             }
 
             When("process to update and reload cart data") {
@@ -94,22 +94,21 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
 
         Scenario("success update and reload cart") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val cartListData = UpdateAndReloadCartListData()
-
-            Given("cart data") {
-                cartListData.cartListData = CartListData()
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(cartListData)
+            val cartItemData = CartItemData().apply {
+                updatedData = CartItemData.UpdatedData().apply {
+                    remark = ""
+                }
+                originData = CartItemData.OriginData()
+            }
+            val updateAndReloadCartListData = UpdateAndReloadCartListData().apply {
+                cartListData = CartListData()
             }
 
-            Given("attach view") {
-                val cartItemData = CartItemData()
-                val updatedData = CartItemData.UpdatedData()
-                cartItemData.originData = CartItemData.OriginData()
-                updatedData.remark = ""
-                cartItemData.updatedData = updatedData
+            Given("cart data") {
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(updateAndReloadCartListData)
+            }
 
-                cartListPresenter.attachView(view)
+            Given("all available cart data") {
                 every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
             }
 
@@ -118,29 +117,29 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             }
 
             Then("should render success") {
-                verify {
-                    view.renderInitialGetCartListDataSuccess(any())
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.renderLoadGetCartDataFinish()
+                    view.renderInitialGetCartListDataSuccess(updateAndReloadCartListData.cartListData)
                 }
             }
         }
 
         Scenario("failed update and reload cart with CartResponseErrorException") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val errorMessage = "Error"
-
-            Given("cart data") {
-                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
+            val exception = CartResponseErrorException("error message")
+            val cartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+                updatedData = CartItemData.UpdatedData().apply {
+                    remark = ""
+                }
             }
 
-            Given("attach view") {
-                val cartItemData = CartItemData()
-                val updatedData = CartItemData.UpdatedData()
-                cartItemData.originData = CartItemData.OriginData()
-                updatedData.remark = ""
-                cartItemData.updatedData = updatedData
+            Given("cart data") {
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
 
-                cartListPresenter.attachView(view)
+            Given("all available cart data") {
                 every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
             }
 
@@ -149,30 +148,28 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(errorMessage)
+                    view.showToastMessageRed(exception)
                 }
             }
         }
 
         Scenario("failed update and reload cart with other exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
             val exception = IllegalStateException()
+            val cartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+                updatedData = CartItemData.UpdatedData().apply {
+                    remark = ""
+                }
+            }
 
             Given("cart data") {
                 every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
-            Given("attach view") {
-                val cartItemData = CartItemData()
-                val updatedData = CartItemData.UpdatedData()
-                cartItemData.originData = CartItemData.OriginData()
-                updatedData.remark = ""
-                cartItemData.updatedData = updatedData
-
-                cartListPresenter.attachView(view)
+            Given("all available cart data") {
                 every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
             }
 
@@ -181,7 +178,7 @@ object CartListPresenterUpdateAndReloadCartTest : Spek({
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(exception)
                 }

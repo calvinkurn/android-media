@@ -1,8 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndReloadCartListData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -13,8 +10,7 @@ import rx.Subscriber
  */
 
 class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
-                                    private val presenter: ICartListPresenter?,
-                                    private val cartListData: CartListData?) : Subscriber<UpdateAndReloadCartListData>() {
+                                    private val presenter: ICartListPresenter?) : Subscriber<UpdateAndReloadCartListData>() {
     override fun onCompleted() {
 
     }
@@ -22,11 +18,7 @@ class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
     override fun onError(e: Throwable) {
         view?.let {
             it.hideProgressLoading()
-            var errorMessage = e.message
-            if (e !is CartResponseErrorException) {
-                errorMessage = ErrorHandler.getErrorMessage(it.getActivityObject(), e)
-            }
-            it.showToastMessageRed(errorMessage ?: "")
+            it.showToastMessageRed(e)
         }
     }
 
@@ -36,7 +28,7 @@ class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
             updateAndReloadCartListData.cartListData?.let {
                 presenter?.setCartListData(it)
                 view.renderLoadGetCartDataFinish()
-                view.renderInitialGetCartListDataSuccess(cartListData)
+                view.renderInitialGetCartListDataSuccess(it)
             }
         }
     }
