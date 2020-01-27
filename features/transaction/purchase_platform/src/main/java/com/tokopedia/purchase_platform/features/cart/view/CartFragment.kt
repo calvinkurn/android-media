@@ -1515,6 +1515,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showToastMessageRed(message)
     }
 
+    override fun renderErrorToShipmentForm(throwable: Throwable) {
+        var errorMessage = throwable.message ?: ""
+        if (throwable !is CartResponseErrorException) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
+        renderErrorToShipmentForm(errorMessage)
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
@@ -1646,6 +1655,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (throwable !is CartResponseErrorException) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
+
         showToastMessageRed(errorMessage)
     }
 

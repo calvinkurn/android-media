@@ -24,7 +24,7 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -54,6 +54,7 @@ object CartListPresenterUpdateCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list") {
 
@@ -69,18 +70,33 @@ object CartListPresenterUpdateCartTest : Spek({
             )
         }
 
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
+
         Scenario("success update cart") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData().apply {
+                        isCod = true
+                        pricePlan = 1000.0
+                    }
+                    updatedData = CartItemData.UpdatedData().apply {
+                        quantity = 10
+                    }
+                })
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
             When("process to update cart data") {
@@ -88,41 +104,36 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.renderToShipmentFormSuccess(any(), any(), any(), any())
+                    view.renderToShipmentFormSuccess(any(), cartItemDataList, any(), any())
                 }
             }
         }
 
         Scenario("success update cart with eligible COD") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData().apply {
+                        isCod = true
+                        pricePlan = 1000.0
+                    }
+                    updatedData = CartItemData.UpdatedData().apply {
+                        quantity = 10
+                    }
+                })
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers {
-                    val cartItemDataList = mutableListOf<CartItemData>().apply {
-                        add(CartItemData().let {
-                            it.originData = CartItemData.OriginData().let { originData ->
-                                originData.isCod = true
-                                originData.pricePlan = 1000.0
-                                originData
-                            }
-                            it.updatedData = CartItemData.UpdatedData().let { updatedData ->
-                                updatedData.quantity = 10
-                                updatedData
-                            }
-                            it
-                        })
-                    }
-                    cartItemDataList
-                }
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
             Given("attach view") {
@@ -134,7 +145,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with eligible COD") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), true, any())
                 }
@@ -143,36 +154,27 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with not eligible COD") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData().apply {
+                    originData = CartItemData.OriginData().apply {
+                        isCod = false
+                        pricePlan = 1000000.0
+                    }
+                    updatedData = CartItemData.UpdatedData().apply {
+                        quantity = 10
+                    }
+                })
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers {
-                    val cartItemDataList = mutableListOf<CartItemData>().apply {
-                        add(CartItemData().let {
-                            it.originData = CartItemData.OriginData().let { originData ->
-                                originData.isCod = false
-                                originData.pricePlan = 1000000.0
-                                originData
-                            }
-                            it.updatedData = CartItemData.UpdatedData().let { updatedData ->
-                                updatedData.quantity = 10
-                                updatedData
-                            }
-                            it
-                        })
-                    }
-                    cartItemDataList
-                }
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
             When("process to update cart data") {
@@ -180,7 +182,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with not eligible COD") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), false, any())
                 }
@@ -189,11 +191,11 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_ALL_WITHOUT_CHANGES") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
@@ -201,16 +203,12 @@ object CartListPresenterUpdateCartTest : Spek({
                 cartListPresenter.setHasPerformChecklistChange(false)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
                 cartListPresenter.processUpdateCartData()
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITHOUT_CHANGES") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES)
                 }
@@ -219,11 +217,11 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
@@ -231,16 +229,12 @@ object CartListPresenterUpdateCartTest : Spek({
                 cartListPresenter.setHasPerformChecklistChange(true)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
                 cartListPresenter.processUpdateCartData()
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES)
                 }
@@ -249,34 +243,28 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_ITEM") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
+            val shopDataList = mutableListOf<CartShopHolderData>().apply {
+                add(CartShopHolderData().apply {
+                    shopGroupAvailableData = ShopGroupAvailableData().apply {
+                        cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                            add(CartItemHolderData(
+                                    cartItemData = null,
+                                    isSelected = false
+                            ))
+                        }
+                    }
+                })
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
             Given("shop data list") {
-                every { view.getAllShopDataList() } answers {
-                    val shopDataList = mutableListOf<CartShopHolderData>().apply {
-                        add(CartShopHolderData().apply {
-                            shopGroupAvailableData = ShopGroupAvailableData().apply {
-                                cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
-                                    add(CartItemHolderData(
-                                            cartItemData = null,
-                                            isSelected = false
-                                    ))
-                                }
-                            }
-                        })
-                    }
-                    shopDataList
-                }
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+                every { view.getAllShopDataList() } answers { shopDataList }
             }
 
             When("process to update cart data") {
@@ -284,7 +272,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_ITEM") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM)
                 }
@@ -293,32 +281,26 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_SHOP") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
+            val shopDataList = mutableListOf<CartShopHolderData>().apply {
+                add(CartShopHolderData().apply {
+                    shopGroupAvailableData = ShopGroupAvailableData()
+                    isAllSelected = true
+                })
+                add(CartShopHolderData().apply {
+                    shopGroupAvailableData = ShopGroupAvailableData()
+                    isAllSelected = false
+                })
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
             Given("shop data list") {
-                every { view.getAllShopDataList() } answers {
-                    val shopDataList = mutableListOf<CartShopHolderData>().apply {
-                        add(CartShopHolderData().apply {
-                            shopGroupAvailableData = ShopGroupAvailableData()
-                            isAllSelected = true
-                        })
-                        add(CartShopHolderData().apply {
-                            shopGroupAvailableData = ShopGroupAvailableData()
-                            isAllSelected = false
-                        })
-                    }
-                    shopDataList
-                }
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+                every { view.getAllShopDataList() } answers { shopDataList }
             }
 
             When("process to update cart data") {
@@ -326,7 +308,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP)
                 }
@@ -335,50 +317,44 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = true
+            }
+            val shopDataList = mutableListOf<CartShopHolderData>().apply {
+                add(CartShopHolderData().apply {
+                    shopGroupAvailableData = ShopGroupAvailableData().apply {
+                        cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                            add(CartItemHolderData(
+                                    cartItemData = null,
+                                    isSelected = true
+                            ))
+                            add(CartItemHolderData(
+                                    cartItemData = null,
+                                    isSelected = false
+                            ))
+                        }
+                    }
+                    isAllSelected = false
+                })
+                add(CartShopHolderData().apply {
+                    shopGroupAvailableData = ShopGroupAvailableData().apply {
+                        cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
+                            add(CartItemHolderData(
+                                    cartItemData = null,
+                                    isSelected = false
+                            ))
+                        }
+                    }
+                    isAllSelected = false
+                })
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = true
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
             Given("shop data list") {
-                every { view.getAllShopDataList() } answers {
-                    val shopDataList = mutableListOf<CartShopHolderData>().apply {
-                        add(CartShopHolderData().apply {
-                            shopGroupAvailableData = ShopGroupAvailableData().apply {
-                                cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
-                                    add(CartItemHolderData(
-                                            cartItemData = null,
-                                            isSelected = true
-                                    ))
-                                    add(CartItemHolderData(
-                                            cartItemData = null,
-                                            isSelected = false
-                                    ))
-                                }
-                            }
-                            isAllSelected = false
-                        })
-                        add(CartShopHolderData().apply {
-                            shopGroupAvailableData = ShopGroupAvailableData().apply {
-                                cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
-                                    add(CartItemHolderData(
-                                            cartItemData = null,
-                                            isSelected = false
-                                    ))
-                                }
-                            }
-                            isAllSelected = false
-                        })
-                    }
-                    shopDataList
-                }
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+                every { view.getAllShopDataList() } answers { shopDataList }
             }
 
             When("process to update cart data") {
@@ -386,7 +362,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM)
                 }
@@ -395,41 +371,33 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("failed update cart") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val updateCartData = UpdateCartData()
+            val updateCartData = UpdateCartData().apply {
+                isSuccess = false
+                message = "Error message"
+            }
 
             Given("update cart data") {
-                updateCartData.isSuccess = false
                 every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process to update cart data") {
                 cartListPresenter.processUpdateCartData()
             }
 
             Then("should render error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(any())
+                    view.renderErrorToShipmentForm(updateCartData.message)
                 }
             }
         }
 
-        Scenario("failed update cart with CartResponseErrorException") {
+        Scenario("failed update cart with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
-            val errorMessage = "Error"
+            val exception = CartResponseErrorException("Error message")
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             When("process to update cart data") {
@@ -437,32 +405,9 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Then("should render error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(errorMessage)
-                }
-            }
-        }
-
-        Scenario("failed update cart with other exception") {
-
-            val view: ICartListView = mockk(relaxed = true)
-            Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
-            When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
-            }
-
-            Then("should render error") {
-                verify {
-                    view.hideProgressLoading()
-                    view.renderErrorToShipmentForm(any())
+                    view.renderErrorToShipmentForm(exception)
                 }
             }
         }
