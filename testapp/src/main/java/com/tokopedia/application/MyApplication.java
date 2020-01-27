@@ -293,21 +293,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-
-    }
-
-    @Override
-    public void unregisterShake() {
-
-    }
-
-    @Override
     public CacheManager getGlobalCacheManager() {
         return null;
     }
@@ -380,11 +365,6 @@ public class MyApplication extends BaseMainApplication
     @Override
     public ApplinkDelegate applinkDelegate() {
         return null;
-    }
-
-    @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
     }
 
     private void setVersionCode() {
