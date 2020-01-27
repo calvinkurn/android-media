@@ -23,7 +23,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="17dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer_description_title" />
+        app:layout_constraintTop_toBottomOf="@id/shimmer_description_title" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_description_desc_second_line"
@@ -33,7 +33,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer_description_desc_first_line" />
+        app:layout_constraintTop_toBottomOf="@id/shimmer_description_desc_first_line" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_description_link"
@@ -44,7 +44,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginTop="61dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmer_description_desc_second_line"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_description_desc_second_line"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

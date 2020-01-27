@@ -18,31 +18,39 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
 
     override fun bind(element: DescriptionWidgetUiModel) {
         with(element) {
-            showOnError(element.state)
-            showShimmer(element.state)
-            itemView.tv_description_title.text = title
-            itemView.tv_description_desc.text = description
-            itemView.tv_description_url.setOnClickListener {
+            when(state) {
+                DescriptionState.ERROR -> showOnError()
+                DescriptionState.LOADING -> showShimmer()
+                DescriptionState.IDEAL -> showIdeal(element)
+            }
+        }
+    }
+
+    private fun showIdeal(element: DescriptionWidgetUiModel) {
+        with(itemView) {
+            shimmer_description_layout.visibility = View.GONE
+            error_description_layout.visibility = View.GONE
+            tv_description_title.text = element.title
+            tv_description_desc.text = element.description
+            tv_description_url.setOnClickListener {
                 //GO TO LINK
 
             }
         }
     }
 
-    private fun showOnError(errorState: DescriptionState){
-        if(errorState != DescriptionState.ERROR) return
+    private fun showOnError() {
         with(itemView) {
-            tv_description_desc.visibility = View.GONE
-            tv_description_url.visibility = View.GONE
-            iv_description_arrow.visibility = View.GONE
+            ideal_description_layout.visibility = View.GONE
             shimmer_description_layout.visibility = View.GONE
-            iv_description_error.visibility = View.VISIBLE
+            error_description_layout.visibility = View.VISIBLE
         }
     }
 
-    private fun showShimmer(loadingState: DescriptionState){
-        if(loadingState != DescriptionState.LOADING) return
+    private fun showShimmer() {
         with(itemView) {
+            ideal_description_layout.visibility = View.GONE
+            error_description_layout.visibility = View.GONE
             shimmer_description_layout.visibility = View.VISIBLE
         }
     }
