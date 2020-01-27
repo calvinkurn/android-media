@@ -1,10 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
-import androidx.fragment.app.FragmentActivity
-import com.tokopedia.abstraction.R
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
@@ -14,8 +10,6 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -29,9 +23,7 @@ import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
-import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import java.lang.IllegalStateException
 
 /**
  * Created by Irfan Khoirul on 2020-01-17.
@@ -57,6 +49,7 @@ object CartListPresenterClearPromoTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val view: ICartListView = mockk(relaxed = true)
 
     Feature("clear promo test") {
 
@@ -71,139 +64,121 @@ object CartListPresenterClearPromoTest : Spek({
                     seamlessLoginUsecase, TestSchedulers
             )
         }
-        val emptyCartListData = CartListData()
+
+        beforeEachTest {
+            cartListPresenter.attachView(view)
+        }
 
         Scenario("clear promo success") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val response = ClearCacheAutoApplyStackResponse().apply {
+                successData = SuccessData().apply {
+                    success = true
+                }
+            }
+            val shopIndex = 1
 
             Given("success response") {
-                val response = ClearCacheAutoApplyStackResponse().apply {
-                    successData = SuccessData().apply {
-                        success = true
-                    }
-                }
                 every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process clear promo") {
-                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), false)
+                cartListPresenter.processCancelAutoApplyPromoStack(shopIndex, arrayListOf("code"), false)
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.onSuccessClearPromoStack(any())
+                    view.onSuccessClearPromoStack(shopIndex)
                 }
             }
         }
 
         Scenario("clear promo error") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val response = ClearCacheAutoApplyStackResponse().apply {
+                successData = SuccessData().apply {
+                    success = false
+                }
+            }
+            val ignoreApiResponse = false
 
             Given("error response") {
-                val response = ClearCacheAutoApplyStackResponse().apply {
-                    successData = SuccessData().apply {
-                        success = false
-                    }
-                }
                 every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process clear promo") {
-                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), false)
+                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), ignoreApiResponse)
             }
 
             Then("should render error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.onFailedClearPromoStack(any())
+                    view.onFailedClearPromoStack(ignoreApiResponse)
                 }
             }
         }
 
         Scenario("clear promo error with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val ignoreApiResponse = false
 
             Given("error response") {
                 every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process clear promo") {
-                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), false)
+                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), ignoreApiResponse)
             }
 
             Then("should render error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.onFailedClearPromoStack(any())
+                    view.onFailedClearPromoStack(ignoreApiResponse)
                 }
             }
         }
 
         Scenario("clear promo fire and forget success") {
 
-            val view: ICartListView = mockk(relaxed = true)
+            val response = ClearCacheAutoApplyStackResponse().apply {
+                successData = SuccessData().apply {
+                    success = true
+                }
+            }
+            val shopIndex = 1
 
             Given("success response") {
-                val response = ClearCacheAutoApplyStackResponse().apply {
-                    successData = SuccessData().apply {
-                        success = true
-                    }
-                }
                 every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
-            }
-
             When("process clear promo") {
-                cartListPresenter.processCancelAutoApplyPromoStack(1, arrayListOf("code"), true)
+                cartListPresenter.processCancelAutoApplyPromoStack(shopIndex, arrayListOf("code"), true)
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.onSuccessClearPromoStack(any())
+                    view.onSuccessClearPromoStack(shopIndex)
                 }
             }
         }
 
         Scenario("clear promo fire and forget error") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
-            Given("error response") {
-                val response = ClearCacheAutoApplyStackResponse().apply {
-                    successData = SuccessData().apply {
-                        success = false
-                    }
+            val response = ClearCacheAutoApplyStackResponse().apply {
+                successData = SuccessData().apply {
+                    success = false
                 }
-                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("error response") {
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
+                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
             When("process clear promo") {
@@ -211,7 +186,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should just hide progress loading") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                 }
             }
@@ -219,15 +194,9 @@ object CartListPresenterClearPromoTest : Spek({
 
         Scenario("clear promo fire and forget error with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("error response") {
                 every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process clear promo") {
@@ -235,7 +204,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should only hide progress loading") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                 }
             }
@@ -243,20 +212,15 @@ object CartListPresenterClearPromoTest : Spek({
 
         Scenario("clear promo after clash success") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
-            Given("success response") {
-                val response = ClearCacheAutoApplyStackResponse().apply {
-                    successData = SuccessData().apply {
-                        success = true
-                    }
+            val response = ClearCacheAutoApplyStackResponse().apply {
+                successData = SuccessData().apply {
+                    success = true
                 }
-                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("success response") {
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
+                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
             When("process clear promo") {
@@ -264,7 +228,7 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render success") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
                     view.onSuccessClearPromoStackAfterClash()
                 }
@@ -273,20 +237,15 @@ object CartListPresenterClearPromoTest : Spek({
 
         Scenario("clear promo after clash error") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
-            Given("success response") {
-                val response = ClearCacheAutoApplyStackResponse().apply {
-                    successData = SuccessData().apply {
-                        success = false
-                    }
+            val response = ClearCacheAutoApplyStackResponse().apply {
+                successData = SuccessData().apply {
+                    success = false
                 }
-                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
-                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            Given("attach view") {
-                cartListPresenter.attachView(view)
+            Given("success response") {
+                every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
+                every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
             When("process clear promo") {
@@ -294,24 +253,18 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.onFailedClearPromoStack(any())
+                    view.onFailedClearPromoStack(false)
                 }
             }
         }
 
         Scenario("clear promo after clash error with exception") {
 
-            val view: ICartListView = mockk(relaxed = true)
-
             Given("success response") {
                 every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just runs
                 every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-            }
-
-            Given("attach view") {
-                cartListPresenter.attachView(view)
             }
 
             When("process clear promo") {
@@ -319,9 +272,9 @@ object CartListPresenterClearPromoTest : Spek({
             }
 
             Then("should render error") {
-                verify {
+                verifyOrder {
                     view.hideProgressLoading()
-                    view.onFailedClearPromoStack(any())
+                    view.onFailedClearPromoStack(false)
                 }
             }
         }

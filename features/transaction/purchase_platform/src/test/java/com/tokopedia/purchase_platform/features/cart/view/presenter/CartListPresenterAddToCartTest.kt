@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
-import android.content.Context
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -57,7 +56,6 @@ object CartListPresenterAddToCartTest : Spek({
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
-    val context = mockk<Context>(relaxed = true)
 
     Feature("add to cart") {
 
