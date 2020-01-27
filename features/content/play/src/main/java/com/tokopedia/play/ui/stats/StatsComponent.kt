@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.stats
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -13,13 +14,14 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 03/12/19
  */
-class StatsComponent(
+open class StatsComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         launch {
@@ -43,6 +45,6 @@ class StatsComponent(
         return emptyFlow()
     }
 
-    private fun initView(container: ViewGroup): StatsView =
+    protected open fun initView(container: ViewGroup): StatsView =
             StatsView(container)
 }

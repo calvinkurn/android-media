@@ -1,11 +1,10 @@
 package com.tokopedia.play.ui.loading
 
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayVideoType
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import io.mockk.*
@@ -42,7 +41,7 @@ class VideoLoadingComponentTest {
     @Test
     fun testLoadingVODBuffer() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
-                type = PlayVideoType.VOD,
+                type = PlayChannelType.VOD,
                 state = TokopediaPlayVideoState.Buffering
         )
 
@@ -56,7 +55,7 @@ class VideoLoadingComponentTest {
     @Test
     fun testLoadingLiveBuffer() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
-                type = PlayVideoType.Live,
+                type = PlayChannelType.Live,
                 state = TokopediaPlayVideoState.Buffering
         )
 
@@ -70,7 +69,7 @@ class VideoLoadingComponentTest {
     @Test
     fun testPlayingVOD() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
-                type = PlayVideoType.VOD,
+                type = PlayChannelType.VOD,
                 state = TokopediaPlayVideoState.Playing
         )
 
@@ -82,7 +81,7 @@ class VideoLoadingComponentTest {
     @Test
     fun testPlayingLive() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
-                type = PlayVideoType.Live,
+                type = PlayChannelType.Live,
                 state = TokopediaPlayVideoState.Playing
         )
 

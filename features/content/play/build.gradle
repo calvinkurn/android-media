@@ -46,6 +46,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
 
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.couroutinesTest
 
     implementation "com.google.android.exoplayer:exoplayer-core:$newExoPlayerVersion"
