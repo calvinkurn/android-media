@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -23,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
@@ -80,6 +80,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var menuId: Int = 0
     private var categoryId: Int = 0
     private var operatorId: Int = 0
+    set(value) {
+        field = value
+        // Get operator name for tracking
+        val operatorCluster = viewModel.operatorCluster.value
+        if (operatorCluster is Success) {
+            operatorName = getOperatorDataOfOperatorId(operatorCluster.data, value)?.attributes?.name ?: ""
+        }
+    }
     private var selectedProduct: RechargeGeneralProductSelectData? = null
     private var operatorCluster: String = ""
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
@@ -87,6 +95,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private var enquiryLabel = ""
     private var enquiryData: TopupBillsEnquiry? = null
+
+    private var operatorName = ""
+    private var categoryName = ""
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
@@ -152,7 +163,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         sharedViewModel.recommendationItem.observe(this, Observer {
             val operatorClusters = viewModel.operatorCluster.value
             if (operatorClusters is Success) {
-                rechargeGeneralAnalytics.eventClickRecentIcon(it, it.position)
+                rechargeGeneralAnalytics.eventClickRecentIcon(it, categoryName, it.position)
                 operatorId = it.operatorId
                 selectedProduct = RechargeGeneralProductSelectData(it.productId.toString(), it.title, it.description)
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
@@ -202,7 +213,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
                 favNumber?.let {
                     hasInputData = true
-                    rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryId, operatorId)
+                    rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryName, operatorName)
                     renderClientNumber(favNumber.clientNumber)
                 }
             } else if (requestCode == REQUEST_CODE_LOGIN) {
@@ -259,7 +270,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (operatorCluster != input) {
                         operatorCluster = input
                         resetInputData()
-                        rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryId, operatorCluster)
+                        rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryName, operatorCluster)
 
                         cluster.operatorGroups.find { it.name == input }?.let {
                             renderOperatorList(it, cluster.text)
@@ -268,7 +279,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
 
                 override fun onCustomInputClick() {
-                    rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryId)
+                    rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryName)
 
                     val dropdownData = cluster.operatorGroups.map { TopupBillsInputDropdownData(it.name) }
                     showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
@@ -299,7 +310,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                             // Save operator id for enquiry
                             operatorId = it.id
                             resetInputData()
-                            rechargeGeneralAnalytics.eventChooseOperator(categoryId, operatorId)
+                            rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
 
                             adapter.showLoading()
                             getProductList(menuId, it.id)
@@ -308,7 +319,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
 
                 override fun onCustomInputClick() {
-                    rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryId)
+                    rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryName)
 
                     val dropdownData = operatorGroup.operators.map { TopupBillsInputDropdownData(it.attributes.name) }
                     showOperatorSelectDropdown(operator_select, dropdownData)
@@ -419,7 +430,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun showProductSelectDropdown(field: TopupBillsInputFieldWidget,
                                           data: List<RechargeGeneralProductSelectData>,
                                           title: String = "") {
-        rechargeGeneralAnalytics.eventClickProductListDropdown(categoryId, operatorId)
+        rechargeGeneralAnalytics.eventClickProductListDropdown(categoryName, operatorName)
         context?.let { context ->
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
@@ -437,7 +448,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     // Show label & store id for enquiry
                     field.setInputText(item.title, false)
                     selectedProduct = item
-                    rechargeGeneralAnalytics.eventClickProductCard(categoryId, operatorId, item.id)
+                    rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
                     toggleEnquiryButton()
                 }
             })
@@ -520,7 +531,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 tab_layout.setupWithViewPager(product_view_pager)
                 tab_layout.onTabSelected {
                     if (it.text == getString(R.string.promo_tab_title)) {
-                        rechargeGeneralAnalytics.eventClickPromoTab(categoryId, operatorId)
+                        rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
                     }
                 }
                 tab_layout.show()
@@ -598,7 +609,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun updateInputData(label: String, input: String, position: Int) {
         if (label.isNotEmpty() && input.isNotEmpty()) {
-            rechargeGeneralAnalytics.eventInputManualNumber(categoryId, operatorId, position)
+            rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
             inputData[label] = input
         } else {
             inputData.remove(label)
@@ -642,6 +653,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
+        categoryName = data.catalog.name
         // Set recommendation data if available
         if (data.recommendations.isNotEmpty() && !hasInputData) {
             setupAutoFillData(data.recommendations[0])
@@ -670,7 +682,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             checkoutBottomSheet = BottomSheetUnify()
             checkoutBottomSheet.setTitle(getString(R.string.checkout_view_title))
             checkoutBottomSheet.setCloseClickListener {
-                rechargeGeneralAnalytics.eventCloseInquiry(categoryId, operatorId)
+                rechargeGeneralAnalytics.eventCloseInquiry(categoryName, operatorName)
                 checkoutBottomSheet.dismiss()
             }
             checkoutBottomSheet.setFullPage(true)
@@ -689,7 +701,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
         if (::checkoutBottomSheet.isInitialized) checkoutBottomSheet.dismiss()
-        rechargeGeneralAnalytics.eventClickBuy(categoryId, operatorId, false, data)
+        // Temporary check bills tracking
+        rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, selectedProduct?.title ?: "")
+        rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
         processCheckout()
     }
 
@@ -740,8 +754,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         return null
     }
 
+    private fun getOperatorDataOfOperatorId(cluster: RechargeGeneralOperatorCluster, operatorId: Int): CatalogOperator? {
+        cluster.operatorGroups.forEach { group ->
+            group.operators.forEach { operator ->
+                if (operator.id == operatorId) return operator
+            }
+        }
+        return null
+    }
+
     fun onBackPressed() {
-        rechargeGeneralAnalytics.eventClickBackButton(categoryId, operatorId)
+        rechargeGeneralAnalytics.eventClickBackButton(categoryName, operatorName)
     }
 
     override fun getScreenName(): String {

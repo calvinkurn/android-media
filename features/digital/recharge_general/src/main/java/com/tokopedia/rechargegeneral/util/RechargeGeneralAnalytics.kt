@@ -14,102 +14,102 @@ import com.tokopedia.track.TrackAppUtils
 
 class RechargeGeneralAnalytics {
 
-    fun eventClickOperatorClusterDropdown(categoryId: Int) {
+    fun eventClickOperatorClusterDropdown(categoryName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_OPERATOR_CLUSTER_DROPDOWN,
-                categoryId.toString()
+                categoryName
         ))
     }
 
-    fun eventChooseOperatorCluster(categoryId: Int, operatorCluster: String) {
+    fun eventChooseOperatorCluster(categoryName: String, operatorCluster: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CHOOSE_OPERATOR_CLUSTER,
-                "$categoryId - $operatorCluster"
+                "$categoryName - $operatorCluster"
         ))
     }
 
-    fun eventClickOperatorListDropdown(categoryId: Int) {
+    fun eventClickOperatorListDropdown(categoryName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_OPERATOR_LIST_DROPDOWN,
-                categoryId.toString()
+                categoryName
         ))
     }
 
-    fun eventChooseOperator(categoryId: Int, operatorId: Int) {
+    fun eventChooseOperator(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CHOOSE_OPERATOR,
-                "$categoryId - $operatorId"
+                "$categoryName - $operatorName"
         ))
     }
 
-    fun eventClickProductListDropdown(categoryId: Int, operatorId: Int) {
+    fun eventClickProductListDropdown(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CATEGORY,
                 Category.DIGITAL_CATEGORY,
                 Action.CLICK_PRODUCT_LIST_DROPDOWN,
-                "$categoryId - $operatorId"
+                "$categoryName - $operatorName"
         ))
     }
 
-    fun eventClickProductCard(categoryId: Int, operatorId: Int, productId: String) {
+    fun eventClickProductCard(categoryName: String, operatorName: String, productName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_PRODUCT_CARD,
-                "$categoryId - $operatorId - $productId"
+                "$categoryName - $operatorName - $productName"
         ))
     }
 
-    fun eventInputManualNumber(categoryId: Int, operatorId: Int, index: Int) {
+    fun eventInputManualNumber(categoryName: String, operatorName: String, index: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 "${Action.INPUT_MANUAL_NUMBER} $index",
-                "$categoryId - $operatorId"
+                "$categoryName - $operatorName"
         ))
     }
 
-    fun eventClickCheckBills(categoryId: Int, operatorId: Int, productId: String) {
+    fun eventClickCheckBills(categoryName: String, operatorName: String, productName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_CHECK_BILLS,
-                "$categoryId - $operatorId - $productId"
+                "$categoryName - $operatorName - $productName"
         ))
     }
 
-    fun eventChecklistSusbcriptionBox(categoryId: Int, operatorId: Int, productId: String) {
+    fun eventChecklistSusbcriptionBox(categoryName: String, operatorName: String, productName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CHECKLIST_SUBSCRIPTION_BOX,
-                "$categoryId - $operatorId - $productId"
+                "$categoryName - $operatorName - $productName"
         ))
     }
 
-    fun eventCloseInquiry(categoryId: Int, operatorId: Int) {
+    fun eventCloseInquiry(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_CLOSE_INQUIRY,
-                "$categoryId - $operatorId"
+                "$categoryName - $operatorName"
         ))
     }
 
-    fun eventClickPromoTab(categoryId: Int, operatorId: Int) {
+    fun eventClickPromoTab(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_PROMO_TAB,
-                "$categoryId - $operatorId"
+                "$categoryName - $operatorName"
         ))
     }
 
@@ -122,26 +122,26 @@ class RechargeGeneralAnalytics {
         ))
     }
 
-    fun eventClickBackButton(categoryId: Int, operatorId: Int) {
+    fun eventClickBackButton(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_BACK,
-                "$categoryId - $operatorId"
+                "$categoryName - $operatorName"
         ))
     }
 
-    fun eventInputFavoriteNumber(categoryId: Int, operatorId: Int) {
+    fun eventInputFavoriteNumber(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.INPUT_FAVORITE_NUMBER,
-                "$categoryId - $operatorId"
+                "$categoryName - $operatorName"
         ))
     }
 
-    fun eventClickBuy(categoryId: Int,
-                 operatorId: Int,
+    fun eventClickBuy(categoryName: String,
+                 operatorName: String,
                  isInstantCheckout: Boolean,
                  enquiryData: TopupBillsEnquiry) {
         val instantCheckoutValue = if (isInstantCheckout) "instant" else "no instant"
@@ -151,14 +151,14 @@ class RechargeGeneralAnalytics {
                             TrackAppUtils.EVENT, Event.ADD_TO_CART,
                             TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_NATIVE,
                             TrackAppUtils.EVENT_ACTION, Action.CLICK_BUY,
-                            TrackAppUtils.EVENT_LABEL, "$categoryId - $operatorId - $instantCheckoutValue - $productId",
+                            TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $instantCheckoutValue - $productId",
                             "ecommerce", DataLayer.mapOf(
                                     "currencyCode", "IDR",
                                     "add", DataLayer.mapOf(
                                             "products", DataLayer.listOf(DataLayer.mapOf(
                                                     EnhanceEccomerce.ID, productId,
                                                     EnhanceEccomerce.PRICE, price,
-                                                    EnhanceEccomerce.CATEGORY, categoryId,
+                                                    EnhanceEccomerce.CATEGORY, categoryName,
                                                     EnhanceEccomerce.QUANTITY, 1
                                             ))
                                     )
@@ -169,21 +169,22 @@ class RechargeGeneralAnalytics {
     }
 
     fun eventClickRecentIcon(recommendationItem: TopupBillsRecommendation,
-                        position: Int) {
+                             categoryName: String,
+                             position: Int) {
         with (recommendationItem) {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     DataLayer.mapOf(
                             TrackAppUtils.EVENT, Event.PRODUCT_CLICK,
                             TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_HOMEPAGE,
                             TrackAppUtils.EVENT_ACTION, Action.CLICK_RECENT_ICON,
-                            TrackAppUtils.EVENT_LABEL, "$categoryId - $position",
+                            TrackAppUtils.EVENT_LABEL, "$categoryName - $position",
                             "ecommerce", DataLayer.mapOf(
                                     "click", DataLayer.mapOf(
                                             "actionField", DataLayer.mapOf("list", productId),
                                             "products", DataLayer.listOf(DataLayer.mapOf(
                                                     EnhanceEccomerce.ID, productId,
                                                     EnhanceEccomerce.PRICE, title,
-                                                    EnhanceEccomerce.CATEGORY, categoryId,
+                                                    EnhanceEccomerce.CATEGORY, categoryName,
                                                     EnhanceEccomerce.LIST, productId,
                                                     EnhanceEccomerce.POSITION, position
                                             ))
