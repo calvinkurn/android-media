@@ -18,15 +18,13 @@
         android:id="@+id/dc_thematic_banner_container"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_marginLeft="@dimen/dp_6"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        app:layout_constraintBottom_toTopOf="@+id/dc_thematic_rv"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dc_header_main_container">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dc_header_main_container"
+        app:layout_constraintBottom_toTopOf="@+id/dc_thematic_rv">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/dc_thematic_banner_image"
