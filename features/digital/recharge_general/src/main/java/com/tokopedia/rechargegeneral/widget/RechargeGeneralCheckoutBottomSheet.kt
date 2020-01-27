@@ -7,7 +7,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.rechargegeneral.R
-import kotlinx.android.synthetic.main.view_widget_checkout_view_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.view_recharge_general_widget_checkout_view_bottom_sheet.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -20,7 +20,7 @@ class RechargeGeneralCheckoutBottomSheet @JvmOverloads constructor(@NotNull cont
     lateinit var listener: CheckoutListener
 
     init {
-        View.inflate(context, R.layout.view_widget_checkout_view_bottom_sheet, this)
+        View.inflate(context, R.layout.view_recharge_general_widget_checkout_view_bottom_sheet, this)
 
         enquiry_data_view.title = "Data"
 

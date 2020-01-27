@@ -645,7 +645,11 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         configureButtonCart();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     private void configureButtonCart() {

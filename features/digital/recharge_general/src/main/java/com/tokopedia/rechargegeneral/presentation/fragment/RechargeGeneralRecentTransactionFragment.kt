@@ -13,7 +13,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
-import kotlinx.android.synthetic.main.fragment_digital_recommendation.*
+import kotlinx.android.synthetic.main.fragment_recharge_general_recommendation.*
 import javax.inject.Inject
 
 class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBillsRecentTransactionWidget.ActionListener {
@@ -26,7 +26,7 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
     private lateinit var recommendationList: ArrayList<TopupBillsRecommendation>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_digital_recommendation, container, false)
+        return inflater.inflate(R.layout.fragment_recharge_general_recommendation, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

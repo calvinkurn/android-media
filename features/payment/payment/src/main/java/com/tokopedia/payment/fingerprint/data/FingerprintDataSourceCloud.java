@@ -2,7 +2,7 @@ package com.tokopedia.payment.fingerprint.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.payment.fingerprint.data.model.DataResponseSavePublicKey;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.payment.fingerprint.data.model.ResponseRegisterFingerprint;

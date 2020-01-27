@@ -3,7 +3,7 @@ package com.tokopedia.events.data.source;
 import java.io.IOException;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 
 public class EventErrorResponse extends BaseResponseError {
 
