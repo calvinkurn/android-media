@@ -3,14 +3,13 @@ package com.tokopedia.sellerhomedrawer.drawer
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.core.app.BasePresenterActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.constant.SellerDrawerActivityBroadcastReceiverConstant
@@ -31,24 +30,25 @@ import com.tokopedia.sellerhomedrawer.domain.usecase.SellerTokoCashUseCase
 import com.tokopedia.sellerhomedrawer.helper.SellerHomeDrawerHelper
 import com.tokopedia.sellerhomedrawer.presentation.listener.SellerDrawerDataListener
 import com.tokopedia.sellerhomedrawer.presentation.view.helper.SellerDrawerHelper
-import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_custom_action_bar_title.view.*
 import kotlinx.android.synthetic.main.sh_custom_actionbar_drawer_notification.view.*
-import kotlinx.android.synthetic.main.sh_drawer_activity.*
 import rx.Observable
 import javax.inject.Inject
 
-abstract class SellerDrawerPresenterActivity : BasePresenterActivity<SellerHomeDashboardDrawerPresenter>(),
+abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
         SellerDrawerDataListener
 {
     private val MAX_NOTIF = 999
+    private val HELLO_STRING = "Halo, "
 
     lateinit var sellerDrawerHelper: SellerDrawerHelper
     lateinit var userSession: UserSession
     lateinit var drawerCache: LocalCacheHandler
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
+    lateinit var toolbarTitle: View
 
     protected var drawerDataManager: SellerDrawerDataManager? = null
     private var isLogin: Boolean? = null
@@ -68,11 +68,8 @@ abstract class SellerDrawerPresenterActivity : BasePresenterActivity<SellerHomeD
 
         injectDependency()
         setupDrawer()
+        setupToolbar()
     }
-
-//    override fun getNewFragment(): Fragment? {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
 
     fun injectDependency() {
         val component: SellerHomeDashboardComponent = DaggerSellerHomeDashboardComponent.builder()
@@ -110,55 +107,14 @@ abstract class SellerDrawerPresenterActivity : BasePresenterActivity<SellerHomeD
 
     }
 
-    override fun initVar() {
-
-    }
-
-    override fun initView() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-    }
-
-    override fun initialPresenter() {
-    }
-
-    override fun setActionVar() {
-
-    }
-
-    override fun setViewListener() {
-
-    }
-
-    override fun setupBundlePass(extras: Bundle?) {
-
-    }
-
-    override fun setupURIPass(data: Uri?) {
-
-    }
-
-    override fun getLayoutId(): Int {
-        return 0
-    }
-
-    override fun getContentId(): Int {
+    override fun getLayoutRes(): Int {
         return R.layout.sh_drawer_activity
     }
 
-    override fun setupToolbar() {
-        app_bar.apply {
-            removeAllViews()
-            initNotificationMenu()
-            initTitle()
-        }
-        setSupportActionBar(app_bar)
-        supportActionBar?.apply {
-            setDisplayShowCustomEnabled(true)
-            setDisplayHomeAsUpEnabled(false)
-            setDisplayShowTitleEnabled(false)
-            setHomeButtonEnabled(false)
-        }
-    }
+
+//    override fun getContentId(): Int {
+//        return R.layout.sh_drawer_activity
+//    }
 
     override fun onErrorGetDeposit(errorMessage: String) {
 
@@ -255,6 +211,9 @@ abstract class SellerDrawerPresenterActivity : BasePresenterActivity<SellerHomeD
         (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerProfile = drawerProfile
         sellerDrawerHelper.notifyDataSetChanged()
         sellerDrawerHelper.setFooterData(drawerProfile)
+
+        val title = HELLO_STRING + drawerProfile.userName
+        setToolbarTitle(title)
     }
 
     override fun onErrorGetProfile(errorMessage: String) {
@@ -306,73 +265,29 @@ abstract class SellerDrawerPresenterActivity : BasePresenterActivity<SellerHomeD
     }
 
     private fun Toolbar.initTitle() {
-        val title = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
-        title.actionbar_title.text = getTitle()
-        this.addView(title)
+        toolbarTitle = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
+        toolbarTitle.actionbar_title.text = getTitle()
+        this.addView(toolbarTitle)
     }
-//
-//    inner class DrawerActivityBroadcastReceiver : BroadcastReceiver() {
-//
-//        override fun onReceive(context: Context, intent: Intent) {
-//            try {
-//                if (!DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equals(intent.action!!, ignoreCase = true))
-//                    return
-//                when (intent.getIntExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER, 0)) {
-//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA -> drawerDataManager?.getTokoCash()
-//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_PENDING_DATA -> sendBroadcast(Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP))
-//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOPOINT_DATA -> getTokoPointData()
-//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA -> {
-//                        val drawerTokoCash: SellerDrawerTokoCash? = intent.getParcelableExtra(
-//                                DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA)
-//
-//                        if (drawerTokoCash != null) {
-//                            (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).sellerDrawerTokoCash = drawerTokoCash
-//
-//                        }
-//                        sellerDrawerHelper.notifyDataSetChanged()
-//                    }
-//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA -> {
-//                    }
-//                    DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA -> {
-//                        var tokoPointDrawerData: SellerTokoPointDrawerData? = null
-//                        tokoPointDrawerData = intent.getParcelableExtra(
-//                                DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA
-//                        )
-//                        if (tokoPointDrawerData == null) return
-//                        (sellerDrawerHelper.sellerDrawerAdapter?.list?.get(0) as SellerDrawerHeader).tokoPointDrawerData = tokoPointDrawerData
-//                        sellerDrawerHelper.notifyDataSetChanged()
-//
-//                        if (tokoPointDrawerData.hasNotif == 1 && tokoPointDrawerData.popUpNotif != null) {
-//                            if (application is ILoyaltyRouter) {
-//
-//                                val ft = fragmentManager.beginTransaction()
-//                                ft.add((application as ILoyaltyRouter)
-//                                        .getLoyaltyTokoPointNotificationDialogFragment(
-//                                                tokoPointDrawerData.popUpNotif
-//                                        ), ILoyaltyRouter.LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG)
-//                                ft.commitAllowingStateLoss()
-//                            }
-//                        }
-//                    }
-//                    else -> {
-//                    }
-//                }// no
-//            } catch (e: Exception) {
-//                // no-op
-//            }
-//
-//        }
-//    }
-//
-//    private fun getTokoPointData() {
-//        sendBroadcast(Intent(SellerTokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP))
-//    }
-//
-//    protected fun registerBroadcastReceiverHeaderTokoCash() {
-//        drawerActivityBroadcastReceiver = DrawerActivityBroadcastReceiver()
-//        registerReceiver(
-//                drawerActivityBroadcastReceiver,
-//                IntentFilter(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
-//        )
-//    }
+
+    protected fun setToolbarTitle(title: String) {
+        toolbarTitle.actionbar_title.text = title
+    }
+
+    private fun setupToolbar() {
+        toolbar.apply {
+            removeAllViews()
+            initNotificationMenu()
+            initTitle()
+        }
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayShowCustomEnabled(true)
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowTitleEnabled(false)
+            setHomeButtonEnabled(false)
+        }
+    }
+
+
 }

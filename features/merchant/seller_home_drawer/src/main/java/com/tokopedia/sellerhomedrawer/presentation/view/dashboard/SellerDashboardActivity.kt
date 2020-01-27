@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomedrawer.presentation.view.dashboard
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
@@ -19,7 +20,6 @@ import com.tokopedia.sellerhomedrawer.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.sh_drawer_layout.*
 import javax.inject.Inject
 
 class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
@@ -41,7 +41,7 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
         initInjector()
         sellerHomeDashboardDrawerPresenter.attachView(this)
 
-        inflateView(R.layout.sh_activity_simple_fragment)
+//        inflateView(R.layout.sh_activity_simple_fragment)
         if (savedInstanceState != null) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.container, SellerDashboardFragment.newInstance(), TAG)
@@ -50,6 +50,10 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
 
         checkAppUpdate()
 
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return SellerDashboardFragment.newInstance()
     }
 
     override fun onResume() {
@@ -74,6 +78,8 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
         super.onPause()
         sellerHomeDashboardDrawerPresenter.unsubscribe()
     }
+
+
 
     private fun checkAppUpdate() {
         val appUpdate: ApplicationUpdate = SellerFirebaseRemoteAppUpdate(this)
@@ -111,8 +117,6 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
 
     override val context: Context
         get() = this
-
-    override fun getLayoutId(): Int = 0
 
     override fun updateDrawerData() {
         if (userSession.isLoggedIn) {

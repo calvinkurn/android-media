@@ -17,6 +17,7 @@
         android:paddingBottom="5dp"
         android:paddingRight="5dp"
         android:paddingTop="5dp"
+        android:tint="@color/sah_drawer_actionbar_grey"
         app:srcCompat="@drawable/ic_new_drawer" />
 
     <TextView

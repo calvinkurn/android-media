@@ -17,12 +17,10 @@
             app:elevation="@dimen/dp_10">
 
             <androidx.appcompat.widget.Toolbar
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/app_bar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/tkpd_main_green"
+                android:background="@color/white"
                 android:minHeight="?attr/actionBarSize"
                 app:theme="@style/AppBarTheme"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"

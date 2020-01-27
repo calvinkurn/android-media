@@ -12,6 +12,6 @@
         android:padding="@dimen/padding_vs"
         android:singleLine="true"
         style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title"
-        android:textColor="@color/white"
+        android:textColor="@color/sah_drawer_actionbar_grey"
         android:id="@+id/actionbar_title" />
 </LinearLayout>
