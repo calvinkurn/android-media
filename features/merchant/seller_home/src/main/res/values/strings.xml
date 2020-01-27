@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Seller Home</string>
     <string name="sah_more">Selengkapnya</string>
+    <string name="sah_description_error">Oops, informasi gagal ditampilkan</string>
 </resources>
