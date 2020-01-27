@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.browse.R
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 
 
@@ -18,6 +19,7 @@ class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
         return launchSource
     }
 
+    override fun getScreenName() = getString(R.string.belanja_screen_name)
 
     object DeepLinkIntents {
         val KEY_EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID"

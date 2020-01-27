@@ -3,7 +3,7 @@ package com.tokopedia.flight.search.data.api.single;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.search.data.api.single.request.Attributes;
 import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleRequestData;

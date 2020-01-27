@@ -20,10 +20,6 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageCategoryViewHolder.LAYOUT
     }
 
-    fun type(digitalHomePagePromoModel: DigitalHomePagePromoModel): Int {
-        return DigitalHomePagePromoViewHolder.LAYOUT
-    }
-
     fun type(digitalHomePageTransactionModel: DigitalHomePageTransactionModel): Int {
         return DigitalHomePageTransactionViewHolder.LAYOUT
     }
@@ -56,7 +52,6 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         when (type) {
             DigitalHomePageBannerViewHolder.LAYOUT -> return DigitalHomePageBannerViewHolder(parent, onItemBindListener)
             DigitalHomePageCategoryViewHolder.LAYOUT -> return DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
-            DigitalHomePagePromoViewHolder.LAYOUT -> return DigitalHomePagePromoViewHolder(parent, onItemBindListener)
             DigitalHomePageTransactionViewHolder.LAYOUT -> return DigitalHomePageTransactionViewHolder(parent, transactionListener)
             DigitalHomePageFavoriteViewHolder.LAYOUT -> return DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
             DigitalHomePageTrustMarkViewHolder.LAYOUT -> return DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
