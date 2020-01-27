@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import android.util.Log
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import javax.inject.Inject
@@ -18,9 +19,14 @@ class GetChatRoomSettingUseCase @Inject constructor(
             setRequestParams(params)
             setGraphqlQuery(query)
             execute({ result ->
+                val topWidget: List<Visitable<Any>> = filterSettingToBeShown(result)
                 Log.d("ASD", result.toString())
             }, { })
         }
+    }
+
+    private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<Any>> {
+        return listOf()
     }
 
     private fun generateParams(msgId: String): Map<String, Any> {

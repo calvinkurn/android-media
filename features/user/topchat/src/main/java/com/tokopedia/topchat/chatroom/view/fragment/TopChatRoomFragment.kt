@@ -169,7 +169,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onErrorInitiateData(),
                     onSuccessGetExistingChatFirstTime())
             presenter.connectWebSocket(messageId)
-            presenter.loadChatRoomSettings(messageId)
         } else {
             presenter.getMessageId(toUserId,
                     toShopId,
@@ -213,9 +212,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             getViewState().onSetCustomMessage(customMessage)
             presenter.getTemplate(getUserSession().shopId == shopId.toString())
+            loadChatRoomSettings(it)
 
             fpm.stopTrace()
         }
+    }
+
+    private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {
+        if (chatRoom.canLoadMore) return
+        presenter.loadChatRoomSettings(messageId)
     }
 
     private fun checkCanAttachVoucher(room: ChatroomViewModel) {
@@ -263,6 +268,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             renderList(it.listChat, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
+            loadChatRoomSettings(it)
         }
     }
 
