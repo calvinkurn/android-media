@@ -76,8 +76,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     companion object {
 
-        private const val REQUEST_CODE_LOGIN = 55
-
         private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
         private const val VISIBILITY_ANIMATION_DURATION = 200L
@@ -143,6 +141,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        playViewModel.resume()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

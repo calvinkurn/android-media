@@ -6,5 +6,12 @@ package com.tokopedia.play.view.uimodel
 data class ChannelInfoUiModel(
         val id: String,
         val title: String,
-        val description: String
+        val description: String,
+        val isLive: Boolean,
+        val partnerId: Long,
+        val partnerType: Int,
+        val moderatorName: String,
+        val contentId: Int,
+        val contentType: Int,
+        val likeType: Int
 )

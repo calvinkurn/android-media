@@ -13,7 +13,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
-import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
 import com.tokopedia.home.beranda.presentation.view.helper.setValue
@@ -39,10 +38,11 @@ class PlayCardViewHolder(
     private val description = view.findViewById<TextView>(R.id.description)
     private var isClickable = false
     private val masterJob = Job()
+    private var playCardViewModel: PlayCardViewModel? = null
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
-        private const val DELAY_CLICKABLE = 1000
+        private const val DELAY_CLICKABLE = 1000L
     }
 
     private var helper: HomePlayWidgetHelper? = null
@@ -59,25 +59,25 @@ class PlayCardViewHolder(
         get() = masterJob + Dispatchers.IO
 
     override fun bind(element: PlayCardViewModel) {
-        element.let { element ->
-            initView(element)
-            handlingTracker(element)
-            playChannel(element.playCardHome?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
-        }
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
-        if(container.visibility == View.GONE) container.show()
-        element?.let { initView(it) }
-        playChannel(element?.playCardHome?.videoStream?.config?.streamUrl ?: "https://vod.tokopedia.net/73a58b49941d430d949b4a8273efdc74/100779c2d405420da252cc44d4ca21b3-edef9725173feab592c030523316fc60-sd.mp4")
+        playCardViewModel = element
+        if(playCardViewModel != null) {
+            if (container.visibility == View.GONE) container.show()
+            initView(playCardViewModel!!)
+            playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+        }
     }
 
     private fun initView(model: PlayCardViewModel){
         model.playCardHome?.let{ playChannel ->
+            handlingTracker(model)
             title.setValue(model.channel.header.name)
             description.setValue("")
 
             thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
+
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
@@ -85,29 +85,35 @@ class PlayCardViewHolder(
             if(playChannel.videoStream.isLive) live.show()
             else live.hide()
 
-            itemView.setSafeOnClickListener {
-                if(isClickable){
-                    videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
-                    HomePageTracking.eventClickPlayBanner(model)
-                }
+            container.setSafeOnClickListener {
+                goToPlayChannel(model)
             }
 
-            play.setSafeOnClickListener { _ ->
-                if(isClickable) {
-                    videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, playChannel.channelId) }
-                }
+            itemView.setSafeOnClickListener {
+                goToPlayChannel(model)
+            }
+
+            play.setSafeOnClickListener {
+                goToPlayChannel(model)
             }
         }
     }
 
     private fun handlingTracker(model: PlayCardViewModel){
-        thumbnailView?.addOnImpressionListener(model){
+        container.addOnImpressionListener(model){
             HomePageTracking.eventEnhanceImpressionPlayBanner(model)
         }
     }
 
     private fun playChannel(url: String){
         helper?.play(url)
+    }
+
+    private fun goToPlayChannel(model: PlayCardViewModel){
+        if(isClickable){
+            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.playCardHome?.channelId) }
+            HomePageTracking.eventClickPlayBanner(model)
+        }
     }
 
     fun resume(){
@@ -120,19 +126,20 @@ class PlayCardViewHolder(
 
     fun getHelper() = helper
 
-    fun wantsToPlay() = visibleAreaOffset(videoPlayer, itemView.parent) >= 0.65
-
     fun onViewAttach(){
+        thumbnailView.show()
         masterJob.cancelChildren()
-        launch{
-            delay(1000)
+        launch {
+            delay(DELAY_CLICKABLE)
             isClickable = true
         }
-
-        helper?.onViewAttach()
+        if(playCardViewModel != null && playCardViewModel?.playCardHome != null) {
+            helper?.onViewAttach()
+        }
     }
 
     fun onViewDetach(){
+        thumbnailView.show()
         isClickable = false
         helper?.onViewDetach()
     }

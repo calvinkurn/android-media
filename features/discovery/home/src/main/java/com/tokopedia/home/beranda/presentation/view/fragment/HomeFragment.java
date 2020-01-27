@@ -34,12 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.CustomViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -160,11 +155,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
-    private boolean shouldDisplayReview = true;
-    private int playPosition = -1;
-    private PlayerView playerView;
-    private SimpleExoPlayer videoPlayer;
-    private int reviewAdapterPosition = -1;
     private MainParentStatusBarListener mainParentStatusBarListener;
     private ActivityStateListener activityStateListener;
 
@@ -528,6 +518,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(() -> {
             if (presenter != null) {
                 presenter.searchHint();
+                presenter.refreshHomeData();
             }
             /**
              * set notification gimmick
@@ -576,7 +567,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
                         @Override
                         public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
 
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            presenter.clearPlayBanner();
                         }
                     });
         });

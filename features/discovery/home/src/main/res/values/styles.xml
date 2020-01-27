@@ -7,6 +7,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowSharedElementEnterTransition" tools:targetApi="lollipop">@transition/anim_play_shared_enter</item>
+        <item name="android:windowSharedElementExitTransition" tools:targetApi="lollipop">@transition/anim_play_shared_enter</item>
     </style>
 
     <style name="home_channel_badge_style">

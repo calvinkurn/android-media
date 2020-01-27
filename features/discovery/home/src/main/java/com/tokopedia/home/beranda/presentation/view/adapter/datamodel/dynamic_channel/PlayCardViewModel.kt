@@ -14,12 +14,15 @@ data class PlayCardViewModel(
         val playCardHome: PlayChannel? = null
 ): HomeVisitable, ImpressHolder() {
     override fun visitableId(): String {
-        return channel.id
+        return channel.type
     }
 
     override fun equalsWith(b: Any?): Boolean {
         if (b is PlayCardViewModel) {
-            return channel.id == b.channel.id && playCardHome?.channelId == b.playCardHome?.channelId
+            return channel.id == b.channel.id
+                    && playCardHome == b.playCardHome
+                    && playCardHome?.channelId == b.playCardHome?.channelId
+                    && playCardHome?.coverUrl == b.playCardHome?.coverUrl
                     && playCardHome?.videoStream?.config?.streamUrl == b.playCardHome?.videoStream?.config?.streamUrl
                     && playCardHome?.videoStream?.isLive == b.playCardHome?.videoStream?.isLive
                     && playCardHome?.description == b.playCardHome?.description
