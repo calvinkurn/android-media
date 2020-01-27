@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 
 @TokoPointScope
-class CouponDetailViewModel @Inject constructor( bundle: Bundle, private val repository: CouponDetailRepository) : BaseViewModel(Dispatchers.Main) {
+class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repository: CouponDetailRepository) : BaseViewModel(Dispatchers.Main) {
 
 
     val detailLiveData = MutableLiveData<Resources<CouponValueEntity>>()
@@ -25,17 +25,18 @@ class CouponDetailViewModel @Inject constructor( bundle: Bundle, private val rep
     val onCouponSwipe = MutableLiveData<Resources<CouponSwipeUpdate>>()
     val onReFetch = MutableLiveData<Resources<String>>()
     val onRedeemCoupon = MutableLiveData<Resources<String>>()
-    val finish  = MutableLiveData<Unit>()
+    val finish = MutableLiveData<Unit>()
+    val userInfo = MutableLiveData<MfGetUserInfo>()
 
     lateinit var data: CouponValueEntity
     lateinit var couponCode: String
 
     init {
         val code = bundle.getString(CommonConstant.EXTRA_COUPON_CODE)
-        val checkCode  : Boolean = code?.isEmpty() ?: true
-        if (checkCode){
+        val checkCode: Boolean = code?.isEmpty() ?: true
+        if (checkCode) {
             detailLiveData.postValue(Loading())
-           finish.postValue(Unit)
+            finish.postValue(Unit)
         } else {
             couponCode = bundle.getString(CommonConstant.EXTRA_COUPON_CODE) as String
             getCouponDetail()
@@ -117,6 +118,14 @@ class CouponDetailViewModel @Inject constructor( bundle: Bundle, private val rep
             onRedeemCoupon.value = Success(cta)
         }) {
             onRedeemCoupon.value = ErrorMessage(cta)
+        }
+    }
+
+    fun isPhonerVerfied() {
+        launchCatchError(block = {
+            val data = repository.getUserPhoneVerificationInfo().getSuccessData<PhoneVerificationResponse>()
+            userInfo.value = data.mfGetUserInfo
+        }) {
         }
     }
 }

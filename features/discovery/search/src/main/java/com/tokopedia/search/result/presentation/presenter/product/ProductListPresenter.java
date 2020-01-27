@@ -943,7 +943,6 @@ final class ProductListPresenter
         }
 
         getView().removeLoading();
-        clearData();
         getView().setProductList(list);
         getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
 

@@ -22,20 +22,10 @@ class DynamicChannelViewModel : HomeVisitable {
     companion object {
         val HOME_RV_BANNER_IMAGE_URL = "home_rv_banner_image_url"
         val HOME_RV_SPRINT_BG_IMAGE_URL = "home_rv_sprint_bg_image_url"
+        val HOME_RV_DC_IMPRESSED = "home_rv_dc_impressed"
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is DynamicChannelViewModel) {
-            if (channel?.grids?.size != b.channel?.grids?.size?:0) return false
-            channel?.grids?.let {
-                it.forEachIndexed() {position, grid->
-                    b.channel?.grids?.let {newGrid->
-                        if (grid.imageUrl != newGrid[position].imageUrl) return false
-                    }
-                }
-                return true
-            }
-        }
         return false
     }
 
@@ -49,6 +39,8 @@ class DynamicChannelViewModel : HomeVisitable {
             if (channel?.header?.backImage != b.channel?.header?.backImage?:"") {
                 bundle.putString(HOME_RV_SPRINT_BG_IMAGE_URL, b.channel?.header?.backImage)
             }
+
+            bundle.putBoolean(HOME_RV_DC_IMPRESSED, false)
         }
         return bundle
     }

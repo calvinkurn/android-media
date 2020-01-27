@@ -645,6 +645,7 @@ public class ProductListFragment
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
         String userId = getUserId();
+        String searchRef = getSearchRef();
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
         for (Visitable object : list) {
@@ -653,12 +654,16 @@ public class ProductListFragment
                 if (!item.isTopAds()) {
                     String filterSortParams
                             = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
-                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams));
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
                     productItemViewModels.add(item);
                 }
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey());
+    }
+
+    private String getSearchRef() {
+        return searchParameter.get(SearchApiConst.SEARCH_REF);
     }
 
     private void loadMoreProduct(final int startRow) {
@@ -906,9 +911,10 @@ public class ProductListFragment
         } else {
             String filterSortParams
                     = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+            String searchRef = getSearchRef();
             SearchTracking.trackEventClickSearchResultProduct(
                     item,
-                    item.getProductAsObjectDataLayer(userId, filterSortParams),
+                    item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
                     item.getPageNumber(),
                     getQueryKey(),
                     filterSortParams

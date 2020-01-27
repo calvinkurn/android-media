@@ -42,7 +42,8 @@ import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
-import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
+import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity;
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.CatalogSortTypePagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
@@ -373,7 +374,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void gotoMyCoupons() {
-        startActivity(CouponListingStackedActivity.getCallingIntent(getContext()));
+        startActivity(CouponListingStackedActivity.Companion.getCallingIntent(getContext()));
 
         AnalyticsTrackerUtil.sendEvent(getActivityContext(),
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

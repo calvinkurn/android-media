@@ -41,6 +41,7 @@ class NotificationTransactionFactoryImpl(
             NotificationItemViewBean.TYPE_BANNER_2X1 -> BigBannerNotificationViewHolder.LAYOUT
             NotificationItemViewBean.TYPE_RECOMMENDATION -> ProductRecomNotificationViewHolder.LAYOUT
             NotificationItemViewBean.TYPE_WISHLIST -> WishListNotificationViewHolder.LAYOUT
+            NotificationItemViewBean.TYPE_PRODUCT_CHECKOUT -> ProductCheckoutViewHolder.LAYOUT
             else -> TextNotificationViewHolder.LAYOUT
         }
     }
@@ -53,18 +54,19 @@ class NotificationTransactionFactoryImpl(
         return EmptyDataStateViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            PurchaseViewHolder.LAYOUT -> PurchaseViewHolder(parent, transactionMenuListener)
-            SaleViewHolder.LAYOUT -> SaleViewHolder(parent, transactionMenuListener)
-            TextNotificationViewHolder.LAYOUT -> TextNotificationViewHolder(parent, notificationUpdateListener)
-            SmallBannerNotificationViewHolder.LAYOUT -> SmallBannerNotificationViewHolder(parent, notificationUpdateListener)
-            BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(parent, notificationUpdateListener)
-            ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(parent, notificationUpdateListener)
-            WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(parent, notificationUpdateListener)
-            NotificationFilterViewHolder.LAYOUT -> NotificationFilterViewHolder(parent, notificationFilterListener, userSession)
-            EmptyDataStateViewHolder.LAYOUT -> EmptyDataStateViewHolder(parent)
-            else -> super.createViewHolder(parent, type)
+            PurchaseViewHolder.LAYOUT -> PurchaseViewHolder(view, transactionMenuListener)
+            SaleViewHolder.LAYOUT -> SaleViewHolder(view, transactionMenuListener)
+            TextNotificationViewHolder.LAYOUT -> TextNotificationViewHolder(view, notificationUpdateListener)
+            SmallBannerNotificationViewHolder.LAYOUT -> SmallBannerNotificationViewHolder(view, notificationUpdateListener)
+            BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(view, notificationUpdateListener)
+            ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(view, notificationUpdateListener)
+            WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(view, notificationUpdateListener)
+            NotificationFilterViewHolder.LAYOUT -> NotificationFilterViewHolder(view, notificationFilterListener, userSession)
+            ProductCheckoutViewHolder.LAYOUT -> ProductCheckoutViewHolder(view, notificationUpdateListener)
+            EmptyDataStateViewHolder.LAYOUT -> EmptyDataStateViewHolder(view)
+            else -> super.createViewHolder(view, type)
         }
     }
 
