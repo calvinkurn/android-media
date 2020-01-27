@@ -75,6 +75,7 @@ public class SettingBankActivityTest {
         androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
         BaseMainApplication application = (BaseMainApplication) getActivity().getApplication();
+
         DaggerSettingBankComponent
                 .builder()
                 .settingBankModule(new SettingBankTestModule())
@@ -97,9 +98,15 @@ public class SettingBankActivityTest {
 
         fragment.reInitInjector(settingBankComponent);
 
-        fragment.getBankList();
+        mActivityRule.getActivity().runOnUiThread(new Runnable() {
+                                                     @Override
+                                                     public void run() {
+                                                         fragment.getBankList();
+                                                     }
+                                                 });
 
-        Thread.sleep(2000);
+
+        Thread.sleep(10_000);
 
         Espresso.onView(ViewMatchers.withId(R.id.account_list_rv))
                 .inRoot(RootMatchers.withDecorView(

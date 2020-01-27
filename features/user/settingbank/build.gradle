@@ -69,6 +69,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
+    testImplementation rootProject.ext.testDependencies.mockitorCore
 
     androidTestImplementation 'androidx.test:rules:1.1.0'
     androidTestImplementation rootProject.ext.playServicesDependencies.core

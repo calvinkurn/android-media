@@ -69,8 +69,10 @@ open class SettingBankModule{
     @SettingBankScope
     @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface)
-            : FingerprintInterceptor =  FingerprintInterceptor(networkRouter, userSession)
+            : FingerprintInterceptor =  realProvideFingerprintInterceptor(networkRouter, userSession)
 
+    open fun realProvideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface)
+            : FingerprintInterceptor =  FingerprintInterceptor(networkRouter, userSession)
 
     @SettingBankScope
     @Provides
