@@ -2,6 +2,8 @@ package com.tokopedia.topchat.chatroom.domain.pojo.roomsettings
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 data class RoomSettingBanner(
         @SerializedName("enable")
@@ -12,4 +14,10 @@ data class RoomSettingBanner(
         val text: String = "",
         @SerializedName("typeString")
         val typeString: String = ""
-)
+) : Visitable<TopChatTypeFactory> {
+
+        override fun type(typeFactory: TopChatTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+
+}

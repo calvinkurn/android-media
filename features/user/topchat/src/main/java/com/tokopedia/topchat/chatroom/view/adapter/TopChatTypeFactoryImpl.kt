@@ -15,6 +15,8 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.FallbackMessageViewHolder
@@ -81,6 +83,14 @@ open class TopChatTypeFactoryImpl(
         return TopchatImageUploadViewHolder.LAYOUT
     }
 
+    override fun type(roomSettingBanner: RoomSettingBanner): Int {
+        return RoomSettingBannerViewHolder.LAYOUT
+    }
+
+    override fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int {
+        return RoomSettingFraudAlertViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(parent: ViewGroup, type: Int): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -96,6 +106,8 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
+            RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent)
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
             LeftFallbackMessageViewHolder.LAYOUT -> LeftFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)

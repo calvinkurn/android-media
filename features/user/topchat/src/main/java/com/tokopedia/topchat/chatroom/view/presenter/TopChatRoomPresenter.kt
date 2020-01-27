@@ -45,6 +45,7 @@ import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
@@ -689,8 +690,11 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun loadChatRoomSettings(messageId: String) {
-        getChatRoomSettingUseCase.execute(messageId)
+    override fun loadChatRoomSettings(
+            messageId: String,
+            onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
+    ) {
+        getChatRoomSettingUseCase.execute(messageId, onSuccess)
     }
 
 }

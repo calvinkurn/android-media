@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import javax.inject.Inject
 
 class GetChatRoomSettingUseCase @Inject constructor(
@@ -12,21 +12,34 @@ class GetChatRoomSettingUseCase @Inject constructor(
 
     val paramMsgId = "msgId"
 
-    fun execute(msgId: String) {
+    fun execute(
+            msgId: String,
+            onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
+    ) {
         val params = generateParams(msgId)
         gqlUseCase.apply {
             setTypeClass(RoomSettingResponse::class.java)
             setRequestParams(params)
             setGraphqlQuery(query)
             execute({ result ->
-                val topWidget: List<Visitable<Any>> = filterSettingToBeShown(result)
-                Log.d("ASD", result.toString())
+                val topWidget: List<Visitable<TopChatTypeFactory>> = filterSettingToBeShown(result)
+                onSuccess(topWidget)
             }, { })
         }
     }
 
-    private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<Any>> {
-        return listOf()
+    private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<TopChatTypeFactory>> {
+        val widgets = arrayListOf<Visitable<TopChatTypeFactory>>()
+
+        if (result.showFraudAlert) {
+            widgets.add(result.fraudAlert)
+        }
+
+        if (result.showBanner) {
+            widgets.add(result.roomBanner)
+        }
+
+        return widgets
     }
 
     private fun generateParams(msgId: String): Map<String, Any> {

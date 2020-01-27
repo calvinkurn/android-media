@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 /**
@@ -123,6 +124,6 @@ interface TopChatContract {
 
         fun initVoucherPreview(extras: Bundle?)
 
-        fun loadChatRoomSettings(messageId: String)
+        fun loadChatRoomSettings(messageId: String, onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit)
     }
 }

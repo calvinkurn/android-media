@@ -55,6 +55,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
@@ -104,6 +105,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
+    private lateinit var adapter: TopChatRoomAdapter
     var indexFromInbox = -1
     var isMoveItemInboxToTop = false
 
@@ -218,11 +220,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {
-        if (chatRoom.canLoadMore) return
-        presenter.loadChatRoomSettings(messageId)
-    }
-
     private fun checkCanAttachVoucher(room: ChatroomViewModel) {
         if (room.isSeller()) {
             addVoucherAttachmentMenu()
@@ -270,6 +267,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)
         }
+    }
+
+    private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {
+        if (chatRoom.canLoadMore) return
+        presenter.loadChatRoomSettings(messageId, ::onSuccessLoadChatRoomSetting)
+    }
+
+    private fun onSuccessLoadChatRoomSetting(widgets: List<Visitable<TopChatTypeFactory>>) {
+        adapter.addWidgetHeader(widgets)
     }
 
     private fun checkShowLoading(canLoadMore: Boolean) {
@@ -425,7 +431,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
         }
         val typeFactory = adapterTypeFactory as TopChatTypeFactoryImpl
-        return TopChatRoomAdapter(typeFactory)
+        return TopChatRoomAdapter(typeFactory).also {
+            adapter = it
+        }
     }
 
     override fun addDummyMessage(visitable: Visitable<*>) {
