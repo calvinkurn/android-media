@@ -136,7 +136,9 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
-        registerKeyboardListener(requireView())
+        requireView().post {
+            registerKeyboardListener(requireView())
+        }
     }
 
     override fun onPause() {
@@ -299,9 +301,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun setWindowSoftInputMode(isLive: Boolean) {
         requireActivity().window.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or
-                        if (!isLive) WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
-                        else WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                if (!isLive) WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                else WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         )
     }
 

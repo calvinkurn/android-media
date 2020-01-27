@@ -203,6 +203,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
             sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
             sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
+            sizeContainerView.layoutParams = sizeContainerMarginLp
 
             val endLiveInfoView = view.findViewById<View>(endLiveInfoComponent.getContainerId())
             endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
