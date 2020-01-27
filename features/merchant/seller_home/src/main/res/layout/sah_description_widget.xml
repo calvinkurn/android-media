@@ -3,14 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sah_description_layout"
     android:orientation="vertical"
-    android:layout_width="304dp"
-    android:layout_height="181dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/layout_lvl1"
     app:cardCornerRadius="@dimen/dp_8"
-    app:contentPaddingBottom="@dimen/dp_14"
-    app:contentPaddingLeft="@dimen/dp_16"
-    app:contentPaddingRight="@dimen/dp_16"
-    app:contentPaddingTop="@dimen/dp_15">
+    android:padding="@dimen/dp_16">
 
     <include layout="@layout/partial_sah_description_widget"/>
 

@@ -6,15 +6,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_description_error_title"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_description_title"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:textColor="@color/sah_description_title"
         android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/sah_description_title"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_15"
         app:typographyType="heading_5"
+        app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
