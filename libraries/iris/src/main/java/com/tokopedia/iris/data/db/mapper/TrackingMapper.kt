@@ -20,7 +20,7 @@ class TrackingMapper {
         val row = JSONObject()
         val event = JSONArray()
 
-        event.put(reformatEvent(track, sessionId))
+        event.put(reformatEvent(track, sessionId, userId))
 
         row.put("device_id", deviceId)
         row.put("user_id", userId)
@@ -68,7 +68,7 @@ class TrackingMapper {
 
     companion object {
 
-        fun reformatEvent(event: String, sessionId: String) : JSONObject {
+        fun reformatEvent(event: String, sessionId: String, userId: String) : JSONObject {
             return try {
                 val item = JSONObject(event)
                 if (item.get("event") != null) {
@@ -79,6 +79,7 @@ class TrackingMapper {
                 item.put("container", KEY_CONTAINER)
                 item.put("event", KEY_EVENT)
                 item.put("hits_time", Calendar.getInstance().timeInMillis)
+                item.put("userId", userId)
                 item
             } catch (e: JSONException) {
                 JSONObject()

@@ -92,7 +92,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 val trackingRepository = TrackingRepository(context)
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
-                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), session.getUserId())
                 trackingRepository.saveEvent(resultEvent.toString(), session)
                 setAlarm(true)
             }
