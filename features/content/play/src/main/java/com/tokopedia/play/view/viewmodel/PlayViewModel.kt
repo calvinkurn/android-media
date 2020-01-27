@@ -156,14 +156,14 @@ class PlayViewModel @Inject constructor(
         return playManager.getDurationVideo()
     }
 
-    fun showKeyboard(estimatedKeyboardHeight: Int) {
+    fun onKeyboardShown(estimatedKeyboardHeight: Int) {
         _observableKeyboardState.value =
-                if (_observableVideoStream.value?.channelType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight)
-                else KeyboardState.Hidden
+                if (_observableVideoStream.value?.channelType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight, _observableKeyboardState.value?.isHidden == false)
+                else KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
     }
 
-    fun hideKeyboard() {
-        _observableKeyboardState.value = KeyboardState.Hidden
+    fun onKeyboardHidden() {
+        _observableKeyboardState.value = KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
     }
 
     fun getChannelInfo(channelId: String) {
@@ -181,8 +181,8 @@ class PlayViewModel @Inject constructor(
             // TODO("remove, for testing")
 //            channel.videoStream = VideoStream(
 //                    "vertical",
-//                    "vod",
-//                    false,
+//                    "live",
+//                    true,
 //                    VideoStream.Config(streamUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
 
             if (channel.videoStream.isLive
@@ -424,7 +424,7 @@ class PlayViewModel @Inject constructor(
     private fun doOnChannelFreeze() {
         destroy()
         stopPlayer()
-        hideKeyboard()
+        onKeyboardHidden()
     }
 
     private fun stopPlayer() {

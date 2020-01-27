@@ -206,6 +206,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
             sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
             sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
+            sizeContainerView.layoutParams = sizeContainerMarginLp
 
             val endLiveInfoView = view.findViewById<View>(endLiveInfoComponent.getContainerId())
             endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
@@ -316,7 +317,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
 
-                if (it is KeyboardState.Shown) calculateInteractionHeightOnKeyboardShown(it.estimatedKeyboardHeight)
+                if (it is KeyboardState.Shown && !it.isPreviousStateSame) calculateInteractionHeightOnKeyboardShown(it.estimatedKeyboardHeight)
             }
         })
     }
@@ -400,6 +401,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun initSendChatComponent(container: ViewGroup): UIComponent<SendChatInteractionEvent> {
         val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
 
         launch {
             sendChatComponent.getUserInteractionEvents()
