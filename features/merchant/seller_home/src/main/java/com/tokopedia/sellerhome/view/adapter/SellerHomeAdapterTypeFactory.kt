@@ -30,6 +30,7 @@ class SellerHomeAdapterTypeFactory : BaseAdapterTypeFactory() {
 
     fun type(descriptionWidget: DescriptionWidgetUiModel): Int {
         return DescriptionViewHolder.RES_LAYOUT
+    }
       
     fun type(sectionWdget: SectionWidgetUiModel): Int {
         return SectionViewHolder.RES_LAYOUT

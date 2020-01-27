@@ -7,6 +7,7 @@ import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhome.view.model.SectionWidgetUiModel
 import com.tokopedia.sellerhome.view.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhome.view.model.DescriptionState
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
