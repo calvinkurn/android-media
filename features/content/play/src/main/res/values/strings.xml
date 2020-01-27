@@ -24,4 +24,5 @@
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
     <string name="play_mock_stream_name">Review Australia Fabulous Shop Fashion Outlet</string>
     <string name="play_mock_shop_name">Yoenik Apparel</string>
+    <string name="play_transition_root">root_play</string>
 </resources>

@@ -7,19 +7,18 @@
     <!-- Change bounds of all shared elements -->
     <transitionSet>
         <targets>
-            <target android:targetId="@+id/fl_fragment" />
+            <target android:targetId="@id/fl_fragment" />
         </targets>
         <changeBounds/>
     </transitionSet>
 
-
     <!-- Start fading background of activity -->
     <transition
         class="com.tokopedia.play.view.animation.FadeTransition"
-        app:startAlpha="0.5"
-        app:endAlpha="1.0">
+        app:startAlpha="1.0"
+        app:endAlpha="0.0">
         <targets>
-            <target android:targetId="@+id/fl_fragment" />
+            <target android:targetId="@id/fl_fragment" />
         </targets>
     </transition>
 

@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -27,6 +28,7 @@ class PlayCardViewHolder(
         val listener: HomeCategoryListener
 ): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener, CoroutineScope {
 
+    internal val frameLayout = view.findViewById<FrameLayout>(R.id.play_frame_layout)
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val play = view.findViewById<ImageView>(R.id.play)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
@@ -111,7 +113,7 @@ class PlayCardViewHolder(
 
     private fun goToPlayChannel(model: PlayCardViewModel){
         if(isClickable){
-            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it, model.playCardHome?.channelId) }
+            listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
     }

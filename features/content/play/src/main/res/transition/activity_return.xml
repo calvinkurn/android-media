@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:transitionOrdering="together"
+    android:interpolator="@android:interpolator/fast_out_linear_in">
+
+    <!-- Start sliding to bottom all the views of the activity (except some) -->
+    <slide android:slideEdge="bottom"
+        android:duration="@integer/animation_duration">
+        <targets>
+            <target android:excludeId="@android:id/navigationBarBackground" />
+            <target android:excludeId="@android:id/statusBarBackground" />
+        </targets>
+    </slide>
+
+    <!-- Start fading some views to make sure they disappear before the middle of the screen -->
+    <fade android:duration="@integer/animation_alpha_duration_return">
+<!--        <targets>-->
+<!--            <target android:targetId="@id/fl_live_badge" />-->
+<!--            <target android:targetId="@id/fl_play_pause" />-->
+<!--            <target android:targetId="@id/fl_video" />-->
+<!--            <target android:targetId="@id/fl_interaction" />-->
+<!--            <target android:targetId="@id/tv_partner_name" />-->
+<!--            <target android:targetId="@id/tv_stream_name" />-->
+<!--            <target android:targetId="@id/cl_like"/>-->
+<!--            <target android:targetId="@id/cl_chat_form"/>-->
+<!--            <target android:targetId="@id/ll_stats"/>-->
+<!--            <target android:targetId="@id/cl_pinned"/>-->
+<!--            <target android:targetId="@id/tv_follow"/>-->
+<!--        </targets>-->
+    </fade>
+
+</transitionSet>
