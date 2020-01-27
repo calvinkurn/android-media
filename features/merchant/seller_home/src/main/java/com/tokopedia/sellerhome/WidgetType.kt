@@ -8,4 +8,5 @@ object WidgetType {
     const val CARD = "card"
     const val LINE_GRAPH = "line_graph"
     const val DESCRIPTION = "description"
+    const val SECTION = "section"
 }
