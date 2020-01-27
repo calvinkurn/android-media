@@ -77,8 +77,6 @@ public interface IProductDigitalView extends IBaseView {
 
     void removeCheckPulsaCards();
 
-    void navigateToWebview();
-
     Activity getActivity();
 
     boolean isDigitalSmartcardEnabled();

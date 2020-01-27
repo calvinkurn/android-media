@@ -2,6 +2,8 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+            campaignShakeLanding            : ":features:user:campaign_shake_landing",
+
             resourcesCommon                 : ":features:common:resources_common",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
@@ -38,6 +40,7 @@ ext {
             commonTopupBills                : ":features:digital:common_topup_bills",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
             voucherGame                     : ":features:digital:voucher_game",
+            rechargeGeneral                 : ":features:digital:recharge_general",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
             flightOrderList                 : ":features:digital:flight_orderlist",

@@ -19,15 +19,6 @@ public class DateFormatUtils {
     public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
-    @SuppressLint("SimpleDateFormat")
-    public static String getStringDateAfter(int count) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_YEAR, count);
-        Date newDate = calendar.getTime();
-        return new SimpleDateFormat("dd/MM/yyyy").format(newDate);
-    }
-
     public static String formatDate(String currentFormat, String newFormat, String dateString){
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
     }

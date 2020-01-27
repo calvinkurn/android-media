@@ -43,9 +43,9 @@ class NotificationUpdateFilterSectionItemViewHolder(
 
     private fun setChipBackground(element: NotificationUpdateFilterSectionViewBean) {
         if(element.selected) {
-            category.background = MethodChecker.getDrawable(category.context, R.drawable.bg_item_filter_pressed)
+            category.background = MethodChecker.getDrawable(category.context, R.drawable.notifcenter_bg_item_filter_pressed)
         } else {
-            category.background = MethodChecker.getDrawable(category.context, R.drawable.bg_filter_green_border)
+            category.background = MethodChecker.getDrawable(category.context, R.drawable.notifcenter_bg_filter_green_border)
         }
     }
 
