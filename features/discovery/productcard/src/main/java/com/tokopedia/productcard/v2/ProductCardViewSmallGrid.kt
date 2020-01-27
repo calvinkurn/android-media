@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.R
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -15,6 +17,9 @@ class ProductCardViewSmallGrid: ProductCardView {
 
     private var imageShop: ImageView? = null
     private var textViewAddToCart: Typography? = null
+    private var labelSoldOut: Label? = null
+    private var labelPreOrder: Label? = null
+    private var labelWholesale: Label? = null
 
     constructor(context: Context): super(context)
 
@@ -35,6 +40,32 @@ class ProductCardViewSmallGrid: ProductCardView {
 
         imageShop = inflatedView.findViewById(R.id.imageShop)
         textViewAddToCart = inflatedView.findViewById(R.id.textViewAddToCart)
+        labelSoldOut = inflatedView.findViewById(R.id.labelEmptyStock)
+        labelPreOrder= inflatedView.findViewById(R.id.label_pre_order)
+        labelWholesale= inflatedView.findViewById(R.id.label_wholesale)
+    }
+
+    override fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig) {
+        super.setProductModel(productCardModel, blankSpaceConfig)
+        initLabelSoldOut(productCardModel.isProductSoldOut)
+        initLabelPreOrder(productCardModel.isProductPreOrder)
+        initLabelWholesale(productCardModel.isProductWholesale)
+    }
+
+    private fun initLabelWholesale(productWholesale: Boolean) {
+        labelWholesale?.visibility = if (productWholesale) View.VISIBLE else View.GONE
+    }
+
+    private fun initLabelPreOrder(productPreOrder: Boolean) {
+        labelPreOrder?.visibility = if (productPreOrder) View.VISIBLE else View.GONE
+    }
+
+    private fun initLabelSoldOut(productSoldOut: Boolean) {
+        val drawable =  MethodChecker.getDrawable(context, R.drawable.sold_out_label_bg)
+        drawable?.let{
+            labelSoldOut?.background = it
+        }
+        labelSoldOut?.visibility = if (productSoldOut) View.VISIBLE else View.GONE
     }
 
     fun setImageShopVisible(isVisible: Boolean) {

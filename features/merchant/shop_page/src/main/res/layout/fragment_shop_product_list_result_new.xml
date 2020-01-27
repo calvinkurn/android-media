@@ -42,7 +42,11 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:clipToPadding="false"
-                        android:padding="@dimen/dp_16" />
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_8"
+                        android:paddingBottom="@dimen/dp_8"
+                        />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/v_etalase_more"
@@ -75,10 +79,10 @@
                 android:descendantFocusability="blocksDescendants"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:paddingStart="@dimen/dp_10"
-                android:paddingLeft="@dimen/dp_10"
-                android:paddingEnd="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_12"
+                android:paddingRight="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_8"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

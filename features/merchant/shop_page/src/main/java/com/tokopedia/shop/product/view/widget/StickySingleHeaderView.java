@@ -61,6 +61,7 @@ public class StickySingleHeaderView extends FrameLayout
         }
         hasInit = true;
         setClipToPadding(false);
+        setClipChildren(false);
         View view = getChildAt(0);
         if (!(view instanceof RecyclerView))
             throw new RuntimeException("RecyclerView should be the first child view.");
@@ -68,6 +69,7 @@ public class StickySingleHeaderView extends FrameLayout
         mHeaderContainer = new FrameLayout(getContext());
         mHeaderContainer.setBackgroundColor(Color.WHITE);
         mHeaderContainer.setClipToPadding(false);
+        mHeaderContainer.setClipChildren(false);
         mHeaderContainer.setLayoutParams(
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mHeaderContainer.setPadding(mRecyclerView.getPaddingLeft(), 0, mRecyclerView.getPaddingRight(), 0);

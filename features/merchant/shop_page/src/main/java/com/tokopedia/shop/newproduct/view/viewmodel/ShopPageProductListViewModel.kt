@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
@@ -15,7 +14,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.newproduct.view.datamodel.*
 import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
-import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCaseNew
+import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -34,7 +33,7 @@ class ShopPageProductListViewModel @Inject constructor(
         private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
         private val getMembershipUseCase: GetMembershipUseCaseNew,
         private val userSession: UserSessionInterface,
-        private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCaseNew,
+        private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val getShopProductUseCase: Provider<GqlGetShopProductUseCase>,
@@ -68,6 +67,7 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
+    private val listGetShopProductUseCase: MutableList<GqlGetShopProductUseCase> =  mutableListOf()
 
     fun getBuyerShopPageProductTabData(shopId: String, shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel) {
         launchCatchError(coroutineContext, {
@@ -206,7 +206,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getFeaturedProductData(shopId: String, userId: String): ShopProductFeaturedViewModel? {
         try {
-            getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCaseNew.createParams(
+            getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
                     shopId.toIntOrZero(),
                     userId.toIntOrZero()
             )
@@ -235,6 +235,7 @@ class ShopPageProductListViewModel @Inject constructor(
             productFilter: ShopProductFilterInput
     ): Pair<Boolean, List<ShopProductViewModel>> {
         val getShopProductUseCase = getShopProductUseCase.get()
+        listGetShopProductUseCase.add(getShopProductUseCase)
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
         val productListResponse = getShopProductUseCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(productFilter.page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
@@ -328,7 +329,10 @@ class ShopPageProductListViewModel @Inject constructor(
         deleteShopInfoUseCase.executeSync()
         clearMerchantVoucherCache()
         getShopEtalaseByShopUseCase.clearCache()
-        getShopProductUseCase.get().clearCache()
+        listGetShopProductUseCase.forEach {
+            it.clearCache()
+        }
+        listGetShopProductUseCase.clear()
         getShopFeaturedProductUseCase.clearCache()
     }
 

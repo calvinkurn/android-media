@@ -42,7 +42,7 @@ class ShopMerchantVoucherViewHolder(itemView: View, onMerchantVoucherListWidgetL
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_product_merchant_voucher
+        val LAYOUT = R.layout.item_new_shop_product_merchant_voucher
     }
 
 }

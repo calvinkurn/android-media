@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
@@ -137,9 +136,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (isNewShopPageEnabled(this)) {
-            super.onCreate(savedInstanceState)
-        } else {
+        super.onCreate(savedInstanceState)
+        if (!isNewShopPageEnabled(this)) {
             openOldShopPage()
             finish()
         }
@@ -149,15 +147,20 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment = ShopPageFragment.createInstance()
+    override fun getNewFragment(): Fragment? {
+        return if (isNewShopPageEnabled(this)) {
+            ShopPageFragment.createInstance()
+        } else {
+            null
+        }
+    }
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
     private fun openOldShopPage() {
-        startActivity(Intent(
-                this,
-                com.tokopedia.shop.oldpage.view.activity.ShopPageActivity::class.java)
-        )
+        val oldShopPageIntent = Intent(intent)
+        oldShopPageIntent.setClass(this, com.tokopedia.shop.oldpage.view.activity.ShopPageActivity::class.java)
+        startActivity(oldShopPageIntent)
     }
 
 }

@@ -103,7 +103,11 @@ class ShopProductViewHolder(
                         ProductCardModel.Label(),
                         ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon!!),
                         false
-                ),
+                ).apply {
+                    isProductSoldOut = shopProductViewModel.isSoldOut
+                    isProductPreOrder = shopProductViewModel.isPo
+                    isProductWholesale = shopProductViewModel.isWholesale
+                },
                 BlankSpaceConfig()
         )
 

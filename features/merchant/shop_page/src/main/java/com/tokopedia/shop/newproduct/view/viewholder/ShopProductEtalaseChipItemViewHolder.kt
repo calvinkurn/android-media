@@ -27,7 +27,7 @@ class ShopProductEtalaseChipItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_product_etalase_chip
+        val LAYOUT = R.layout.item_new_shop_product_etalase_chip
     }
 
     lateinit var textViewEtalaseChip: TextView

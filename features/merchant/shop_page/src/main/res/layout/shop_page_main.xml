@@ -16,6 +16,8 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center_vertical"
+        android:paddingEnd="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -27,6 +29,8 @@
             android:id="@+id/searchBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
             android:background="@drawable/bg_shop_page_search"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
@@ -111,37 +115,34 @@
                 android:layout_height="wrap_content"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <LinearLayout
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                app:backgroundTint="@color/white"
+                app:fabCustomSize="@dimen/dp_56"
+                app:layout_behavior="com.tokopedia.shop.ShopPageFABBehaviour"
+                app:maxImageSize="@dimen/dp_32"
+                app:srcCompat="@drawable/ic_chat_floating_button" />
+
+            <com.tokopedia.stickylogin.view.StickyLoginView
+                android:id="@+id/sticky_login_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:orientation="vertical">
-
-                <com.tokopedia.design.image.RoundedCornerImageView
-                    android:id="@+id/button_chat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_margin="@dimen/dp_16"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_chat_floating_button"
-                    tools:visibility="visible" />
-
-                <com.tokopedia.stickylogin.view.StickyLoginView
-                    android:id="@+id/sticky_login_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@color/sticky_bg_color"
-                    android:visibility="gone"
-                    app:sticky_highlight_color="@color/g_500"
-                    app:sticky_left_icon="@drawable/ic_toped_widget_login"
-                    tools:visibility="visible" />
-            </LinearLayout>
+                android:background="@color/sticky_bg_color"
+                android:visibility="gone"
+                app:sticky_highlight_color="@color/g_500"
+                app:sticky_left_icon="@drawable/ic_toped_widget_login"
+                tools:visibility="visible" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>
-

@@ -16,7 +16,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -29,10 +28,10 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
@@ -48,7 +47,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
@@ -58,19 +56,18 @@ import com.tokopedia.shop.oldpage.di.component.DaggerOldShopPageComponent
 import com.tokopedia.shop.oldpage.di.component.OldShopPageComponent
 import com.tokopedia.shop.oldpage.di.module.OldShopPageModule
 import com.tokopedia.shop.oldpage.view.ShopPageViewModel
-import com.tokopedia.shop.oldpage.view.activity.ShopWebViewActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
+import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -95,6 +92,7 @@ class ShopPageFragment :
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SHOP_TRACE = "mp_shop"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
@@ -146,6 +144,7 @@ class ShopPageFragment :
     private val iconTabProduct = R.drawable.ic_shop_tab_products_inactive
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
+    private val intentData: Intent = Intent()
 
 
     val isMyShop: Boolean
@@ -228,6 +227,7 @@ class ShopPageFragment :
 
     private fun observeLiveData(owner: LifecycleOwner) {
         shopViewModel.shopFavouriteResp.observe(this, Observer {
+            updateFavouriteResult(it.alreadyFavorited == 1)
             shopPageFragmentHeaderViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
         })
         shopViewModel.shopInfoResp.observe(owner, Observer { result ->
@@ -460,14 +460,10 @@ class ShopPageFragment :
     }
 
     private fun redirectToShopSettingsPage() {
-        view?.run {
-            Toaster.make(
-                    this,
-                    "Open Shop Settings",
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    context.getString(R.string.oke)
-            )
+        context?.let {context ->
+            shopId?.let{shopId ->
+                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+            }
         }
     }
 
@@ -635,15 +631,23 @@ class ShopPageFragment :
     private fun onSuccessToggleFavourite(successValue: Boolean) {
         if (successValue) {
             shopPageFragmentHeaderViewHolder.toggleFavourite()
-            updateFavouriteResult()
+            updateFavouriteResult(shopPageFragmentHeaderViewHolder.isShopFavourited())
         }
         shopPageFragmentHeaderViewHolder.updateFavoriteButton()
     }
 
-    private fun updateFavouriteResult() {
+    private fun updateFavouriteResult(isFavorite: Boolean) {
         activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(SHOP_STATUS_FAVOURITE, shopPageFragmentHeaderViewHolder.isShopFavourited())
+            setResult(Activity.RESULT_OK, intentData.apply {
+                putExtra(SHOP_STATUS_FAVOURITE, isFavorite)
+            })
+        }
+    }
+
+    private fun updateStickyResult() {
+        activity?.run {
+            setResult(Activity.RESULT_OK, intentData.apply {
+                putExtra(SHOP_STICKY_LOGIN, true)
             })
         }
     }
@@ -772,7 +776,9 @@ class ShopPageFragment :
         }
     }
 
-    override fun changeShopCover(isOfficial: Boolean, isPowerMerchant: Boolean) {}
+    override fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
+    }
 
     private fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
                                           isShopOfficaial: Boolean, isFollowed: Boolean) {
@@ -810,6 +816,7 @@ class ShopPageFragment :
                 onSuccess = {
                     this.tickerDetail = it
                     updateStickyState()
+                    updateStickyResult()
                 },
                 onError = {
                     stickyLoginView.hide()
