@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/global_error_totopolis_03"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBannerErrorTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        android:textSize="@dimen/fontSize_lvl3"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_16"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Oops, informasi gagal ditampilkan" />
+
+</LinearLayout>
