@@ -9,12 +9,9 @@ import com.tokopedia.autocomplete.usecase.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.viewmodel.TitleSearch
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Subscriber
 import javax.inject.Inject
 
 class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
-
-    private var querySearch = ""
 
     @Inject
     lateinit var autoCompleteUseCase: AutoCompleteUseCase
@@ -25,17 +22,20 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var initialStateSubscriber:InitialStateSubscriber? = null
+
     override fun search(searchParameter: SearchParameter) {
-        this.querySearch = searchParameter.getSearchQuery()
+        initialStateSubscriber?.let {
+            InitialStateSubscriber(searchParameter.getSearchQuery() , InitialStateViewModel(), view)
+        } ?: initialStateSubscriber?.setQuerySearch(searchParameter.getSearchQuery())
+
         autoCompleteUseCase.execute(
                 AutoCompleteUseCase.getParams(
                         searchParameter.getSearchParameterMap(),
                         userSession.deviceId,
                         userSession.userId
                 ),
-                InitialStateSubscriber(querySearch,
-                        InitialStateViewModel(),
-                        view)
+                initialStateSubscriber
         )
     }
 
@@ -47,22 +47,19 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                InitialStateSubscriber(querySearch,
-                        InitialStateViewModel(),
-                        view)
+                initialStateSubscriber
         )
     }
 
     override fun deleteAllRecentSearch() {
+        initialStateSubscriber?.setQuerySearch("")
         val params = DeleteRecentSearchUseCase.getParams(
                 userSession.deviceId,
                 userSession.userId
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                InitialStateSubscriber("",
-                        InitialStateViewModel(),
-                        view)
+                initialStateSubscriber
         )
     }
 
@@ -111,40 +108,5 @@ class InitialStatePresenter @Inject constructor() : BaseDaggerPresenter<InitialS
         titleSearch.title = name
         this.add(0, titleSearch)
         return this
-    }
-
-    internal class InitialStateSubscriber(
-            private val querySearch: String,
-            private val initialStateViewModel: InitialStateViewModel,
-            private val view: InitialStateContract.View
-    ) : Subscriber<List<SearchData>>() {
-
-        override fun onCompleted() {
-
-        }
-
-        override fun onError(e: Throwable) {
-            e.printStackTrace()
-        }
-
-        override fun onNext(searchDatas: List<SearchData>) {
-            for (searchData in searchDatas) {
-                if (searchData.items.size > 0) {
-                    when (searchData.id) {
-                        RECENT_SEARCH, RECENT_VIEW, POPULAR_SEARCH -> {
-                            initialStateViewModel.searchTerm = querySearch
-                            initialStateViewModel.addList(searchData)
-                        }
-                    }
-                }
-            }
-            view.showInitialStateResult(initialStateViewModel)
-        }
-
-        companion object {
-            const val RECENT_SEARCH = "recent_search"
-            const val RECENT_VIEW = "recent_view"
-            const val POPULAR_SEARCH = "popular_search"
-        }
     }
 }
