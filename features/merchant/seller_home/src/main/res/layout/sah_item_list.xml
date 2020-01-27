@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/layout_lvl1">
+
+    <ImageView
+        android:id="@+id/iv_info_seller"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info_seller_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_info_seller"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Tips Sukses Kak Irfan: Bisnis Bermanfaat Untuk Diri Sendiri" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info_seller_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        app:layout_constraintStart_toStartOf="@id/tv_info_seller_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_info_seller_title"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Info" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info_seller_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/tv_info_seller_type"
+        app:layout_constraintStart_toEndOf="@id/tv_info_seller_type"
+        app:layout_constraintTop_toTopOf="@id/tv_info_seller_type"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="・24 SEP 19" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
