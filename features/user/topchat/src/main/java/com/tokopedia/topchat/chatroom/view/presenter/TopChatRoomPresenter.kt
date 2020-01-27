@@ -87,7 +87,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private var addToCartUseCase: AddToCartUseCase,
         private var compressImageUseCase: CompressImageUseCase,
-        private var seamlessLoginUsecase: SeamlessLoginUsecase)
+        private var seamlessLoginUsecase: SeamlessLoginUsecase,
+        private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
@@ -686,6 +687,10 @@ class TopChatRoomPresenter @Inject constructor(
                 view.redirectToBrowser(liteUrl)
             }
         }
+    }
+
+    override fun loadChatRoomSettings(messageId: String) {
+        getChatRoomSettingUseCase.execute(messageId)
     }
 
 }

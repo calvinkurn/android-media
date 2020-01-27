@@ -122,5 +122,7 @@ interface TopChatContract {
         fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
 
         fun initVoucherPreview(extras: Bundle?)
+
+        fun loadChatRoomSettings(messageId: String)
     }
 }

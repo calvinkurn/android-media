@@ -169,6 +169,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onErrorInitiateData(),
                     onSuccessGetExistingChatFirstTime())
             presenter.connectWebSocket(messageId)
+            presenter.loadChatRoomSettings(messageId)
         } else {
             presenter.getMessageId(toUserId,
                     toShopId,

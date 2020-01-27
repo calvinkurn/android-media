@@ -33,6 +33,7 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
 import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter
@@ -221,6 +222,13 @@ class ChatModule {
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @ChatScope
+    @Provides
+    fun provideChatRoomSettingUseCase(graphqlRepository: GraphqlRepository)
+            : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RoomSettingResponse> {
+        return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
     }
 
 }
