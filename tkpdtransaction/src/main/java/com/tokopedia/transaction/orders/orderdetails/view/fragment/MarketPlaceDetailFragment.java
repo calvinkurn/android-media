@@ -228,7 +228,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshHandler = new RefreshHandler(getActivity(), getView(), this);
+        refreshHandler = new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), this);
         refreshHandler.startRefresh();
         refreshHandler.setPullEnabled(true);
     }

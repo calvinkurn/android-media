@@ -37,8 +37,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -172,6 +172,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     companion object {
 
+        private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
@@ -391,7 +392,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         llCartContainer = view.findViewById(R.id.ll_cart_container)
 
         activity?.let {
-            refreshHandler = RefreshHandler(it, view, this)
+            refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
             progressDialog = AlertDialog.Builder(it)
                     .setView(R.layout.purchase_platform_progress_dialog_view)
                     .setCancelable(false)
@@ -1583,7 +1584,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.promoStackingGlobalData?.apply {
                 val promo = dPresenter.generateCheckPromoFirstStepParam(this)
                 val intent = getIntentToPromoList(promo, it)
-                startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+                startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
             }
         }
     }
@@ -1594,10 +1595,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 val promo = dPresenter.generateCheckPromoFirstStepParam(this)
                 if (promoStackingData.typePromo == PromoStackingData.TYPE_COUPON) {
                     val intent = getIntentToPromoDetail(promo, promoStackingData, it)
-                    startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+                    startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
                 } else {
                     val intent = getIntentToPromoList(promo, it)
-                    startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+                    startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
                 }
             }
         }
@@ -1686,7 +1687,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE -> onResultFromRequestCodeLoyalty(resultCode, data)
+            LOYALTY_ACTIVITY_REQUEST_CODE -> onResultFromRequestCodeLoyalty(resultCode, data)
             ShipmentActivity.REQUEST_CODE -> onResultFromRequestCodeCartShipment(resultCode, data)
             NAVIGATION_PDP -> {
                 refreshHandler?.isRefreshing = true
@@ -1955,7 +1956,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             promo, "cart", cartItemDataVoucherArrayList
                     )
                     merchantVoucherListBottomSheetFragment.actionListener = this@CartFragment
-                    merchantVoucherListBottomSheetFragment.show(fragmentManager, "")
+                    merchantVoucherListBottomSheetFragment.show(fragmentManager!!, "")
                 }
             }
         }

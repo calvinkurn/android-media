@@ -4,14 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetData
 import com.tokopedia.salam.umrah.homepage.data.UmrohHomepageBottomSheetwithType
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_umrah_home_page_bottom_sheet.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,11 +39,7 @@ class UmrahHomepageBottomSheetAdapter(context: Context,
                     notifyDataSetChanged()
 
                     listener.getDatafromBottomSheet(data)
-                    if (radio_umrah_home_page_bottom_sheet.isChecked)
-                        radio_umrah_home_page_bottom_sheet.isChecked = false
-                    else {
-                        radio_umrah_home_page_bottom_sheet.isChecked = true
-                    }
+                    radio_umrah_home_page_bottom_sheet.isChecked = !radio_umrah_home_page_bottom_sheet.isChecked
 
                     CoroutineScope(Dispatchers.Main).launch{
                         delay(250)

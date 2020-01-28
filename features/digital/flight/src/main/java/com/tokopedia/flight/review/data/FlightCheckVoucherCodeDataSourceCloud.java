@@ -1,6 +1,6 @@
 package com.tokopedia.flight.review.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 

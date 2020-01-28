@@ -25,7 +25,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.datepicker.DatePickerUnify
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -87,6 +86,7 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
+import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
@@ -103,6 +103,8 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.webview.KEY_TITLE
+import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
@@ -117,7 +119,6 @@ import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -206,7 +207,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         observingAcceptOrder()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.chat_menu, menu)
     }
 
@@ -478,7 +479,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 dialogView.label_confirmation_msg_3?.text = msg3
 
                 dialogView.btn_batal?.setOnClickListener { dialogUnify.dismiss() }
-                dialogView.btn_batal?.btn_terima?.setOnClickListener {
+                dialogView.btn_terima?.setOnClickListener {
                     val mapParam = buttonResp.param.convertStrObjToHashMap()
                     if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
                         somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
@@ -692,7 +693,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setFullPage(false)
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let { bottomSheetUnify.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let{
+            bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
         bottomSheetUnify.setTitle(TITLE_UBAH_RESI)
 
         viewBottomSheet?.btn_cancel_order_canceled?.setOnClickListener { bottomSheetUnify.dismiss() }
@@ -823,9 +826,24 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         startActivity(intent)
     }
 
-    override fun onSeeInvoice(invoiceUrl: String) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, invoiceUrl))
-        SomAnalytics.eventClickViewInvoice()
+    override fun onSeeInvoice(url: String) {
+        Intent(activity, SomSeeInvoiceActivity::class.java).apply {
+            putExtra(KEY_URL, url)
+            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
+            startActivity(this)
+        }
+    }
+
+    override fun onCopiedInvoice(invoice: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(invoice, str)
+        showCommonToaster(getString(R.string.invoice_tersalin))
+    }
+
+    override fun onCopiedAddress(address: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(address, str)
+        showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
     private fun setProductEmpty(rCode: String) {
@@ -840,6 +858,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             adapter = somBottomSheetStockEmptyAdapter
         }
 
+        viewBottomSheet.tf_extra_notes?.visibility = View.VISIBLE
         viewBottomSheet.tf_extra_notes?.setLabelStatic(true)
         viewBottomSheet.tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
         viewBottomSheet.tf_extra_notes?.setPlaceholder(getString(R.string.empty_stock_extra_placeholder))
@@ -870,10 +889,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.setFullPage(true)
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
             bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
         }
-
         somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
         somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
     }
@@ -915,7 +935,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.setFullPage(true)
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
             bottomSheetUnify.setTitle(TITLE_ATUR_TOKO_TUTUP)
         }
 
@@ -982,7 +1004,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.setFullPage(true)
             bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
             bottomSheetUnify.setChild(viewBottomSheet)
+            fragmentManager?.let{
             bottomSheetUnify.show(it, getString(R.string.show_bottomsheet))
+        }
             bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
         }
         somBottomSheetCourierProblemsAdapter.listChildCourierProblems = listChild.toMutableList()
@@ -1124,7 +1148,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(tfEndShopClosed: TextFieldUnify, viewBottomSheet: View) {
         context?.let { context ->
-            val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            val dateNow = Calendar.getInstance()
             val maxDate = Calendar.getInstance()
             maxDate.add(Calendar.YEAR, 100)
 

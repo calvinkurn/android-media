@@ -8,19 +8,19 @@ import kotlinx.android.synthetic.main.layout_digital_home_transaction.view.*
 
 class DigitalHomePageTransactionViewHolder(itemView : View?, val listener : TransactionListener?) : AbstractViewHolder<DigitalHomePageTransactionModel>(itemView){
     override fun bind(element: DigitalHomePageTransactionModel?) {
-        itemView?.favouriteNumber.setOnClickListener {
+        itemView.favouriteNumber.setOnClickListener {
             listener?.onClickFavNumber()
         }
 
-        itemView?.orderList.setOnClickListener {
+        itemView.orderList.setOnClickListener {
             listener?.onClickOrderList()
         }
 
-        itemView?.help.setOnClickListener {
+        itemView.help.setOnClickListener {
             listener?.onClickHelp()
         }
 
-        itemView?.myBills.setOnClickListener {
+        itemView.myBills.setOnClickListener {
             listener?.onClickMyBills()
         }
     }

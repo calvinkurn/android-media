@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -158,7 +157,7 @@ class TopAdsAutoTopUpFragment:
     }
 
     override fun onDestroy() {
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 

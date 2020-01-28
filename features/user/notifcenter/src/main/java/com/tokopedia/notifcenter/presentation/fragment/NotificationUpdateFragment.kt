@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -27,6 +26,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
@@ -41,7 +41,7 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
@@ -276,6 +276,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
+    override fun addProductToCheckout(notification: NotificationItemViewBean) {
+        RouteManager.route(context, notification.dataNotification.checkoutUrl)
+        analytics.trackProductCheckoutBuyClick(notification)
+    }
+
     private fun updateMarkAllReadCounter() {
         markAllReadCounter -= 1
     }
@@ -330,18 +335,19 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun showMessageAtcError(e: Throwable?) {
         view?.let {
-            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(it.context, e)
+            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
             Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
     override fun showMessageAtcSuccess(message: String) {
         view?.let {
-            Toaster.showNormalWithAction(
+            Toaster.make(
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
-                    getString(R.string.wishlist_check_cart),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.notifcenter_title_view),
                     onClickSeeButtonOnAtcSuccessToaster()
             )
         }
@@ -359,7 +365,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
         bundle.putString(PARAM_CTA_APPLINK, element.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TEXT, element.bodyHtml)
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
@@ -382,6 +388,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     override fun trackOnClickCtaButton(templateKey: String) {
         analytics.trackOnClickLongerContentBtn(templateKey)
     }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"

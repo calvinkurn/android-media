@@ -38,11 +38,11 @@ public class ProductViewModelMapper {
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setQuery(searchProduct.getQuery());
-        productViewModel.setShareUrl(searchProduct.getShareUrl());
         productViewModel.setTickerModel(createTickerModel(searchProduct));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
         productViewModel.setResponseCode(searchProduct.getResponseCode());
+        productViewModel.setKeywordProcess(searchProduct.getKeywordProcess());
         productViewModel.setErrorMessage(searchProduct.getErrorMessage());
         productViewModel.setIsQuerySafe(searchProduct.isQuerySafe());
         if (searchProductModel.getDynamicFilterModel() != null) {

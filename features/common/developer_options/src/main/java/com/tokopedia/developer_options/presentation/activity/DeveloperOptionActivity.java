@@ -1,17 +1,22 @@
 package com.tokopedia.developer_options.presentation.activity;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Process;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,12 +37,16 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.developer_options.R;
+import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {
@@ -53,6 +62,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
     private static final String IP_GROUPCHAT = "ip_groupchat";
     private static final String LOG_GROUPCHAT = "log_groupchat";
+    public static final String STAGING = "staging";
+    public static final String LIVE = "live";
+    public static final String DEVELOPEROPTION = "developeroption";
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
@@ -87,6 +99,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
 
+    private Button requestFcmToken;
+
     @Override
     public String getScreenName() {
         return getString(R.string.screen_name);
@@ -95,15 +109,47 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            setContentView(R.layout.activity_developer_options);
+        if (GlobalConfig.isAllowDebuggingTools() && getIntent()!=null && getIntent().getData()!=null) {
             userSession = new UserSession(this);
-            setupView();
-            initListener();
-            initTranslator();
+            Uri uri = getIntent().getData();
+            if(uri.getHost().equals(DEVELOPEROPTION)) {
+                handleUri(uri);
+            } else {
+                setContentView(R.layout.activity_developer_options);
+                setupView();
+                initListener();
+                initTranslator();
+            }
         } else {
             finish();
         }
+    }
+
+    private void handleUri(Uri uri) {
+        if(uri.getLastPathSegment().startsWith(STAGING)){
+            TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.STAGING);
+        } else if (uri.getLastPathSegment().startsWith(LIVE)){
+            TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.LIVE);
+        }
+        TokopediaUrl.Companion.deleteInstance();
+        TokopediaUrl.Companion.init(DeveloperOptionActivity.this);
+        userSession.logoutSession();
+        new Handler().postDelayed(() -> restart(DeveloperOptionActivity.this), 500);
+    }
+
+    /**
+     * Call to restart the application process using the specified intents.
+     * <p>
+     * Behavior of the current process after invoking this method is undefined.
+     */
+    private void restart(Context context) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        if (context instanceof Activity) {
+            ((Activity) context).finish();
+        }
+        Process.killProcess(Process.myPid());
     }
 
     private void setupView() {
@@ -138,6 +184,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
         accessTokenView = findViewById(R.id.access_token);
+        requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
@@ -282,6 +329,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
             }
+        });
+
+        requestFcmToken.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
+            startService(intent);
         });
     }
 
