@@ -9,8 +9,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_variant.R
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
-import com.tokopedia.tradein_common.IAccessRequestListener
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.design.dialog.IAccessRequestListener
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
