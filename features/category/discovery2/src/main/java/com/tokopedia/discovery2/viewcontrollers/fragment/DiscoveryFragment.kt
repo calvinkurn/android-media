@@ -59,10 +59,9 @@ class DiscoveryFragment : Fragment() {
                 is Success -> {
                     val list = ArrayList<ComponentsItem>()
 
-                    //RouteManager.route(this, "tokopedia://discovery/160")
+
                     it.data.components?.get(0)?.let { it1 -> list.add(it1) }
                     it.data.components?.get(2)?.let { it1 -> list.add(it1) }
-
 
 //        RouteManager.route(this, "tokopedia://discovery/test-disco")
 //                    it.data.components?.get(2)?.let { it1 -> list.add(it1) }

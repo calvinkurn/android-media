@@ -2,14 +2,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.multibannerresponse.PushSubscriptionResponse
-import com.tokopedia.discovery2.usecase.MultiBannerDataUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
+import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -29,7 +25,7 @@ class MultiBannerViewModelTest {
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
     private val pushSubscriptionResponse: PushSubscriptionResponse = mockk(relaxed = true)
-    private val multiBannerDataUseCase:MultiBannerDataUseCase = mockk(relaxed = true)
+    private val multiBannerDataUseCase:CheckPushStatusUseCase = mockk(relaxed = true)
 
     private val viewModel: MultiBannerViewModel by lazy {
         spyk(MultiBannerViewModel(application, componentsItem))

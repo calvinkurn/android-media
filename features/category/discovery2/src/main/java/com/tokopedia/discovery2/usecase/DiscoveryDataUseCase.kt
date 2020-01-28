@@ -20,4 +20,5 @@ class DiscoveryDataUseCase @Inject constructor(var repository: BaseRepository) {
         val discoveryResponse = response?.getData() as DataResponse<DiscoveryResponse>
         return discoveryResponse.data
     }
+
 }
