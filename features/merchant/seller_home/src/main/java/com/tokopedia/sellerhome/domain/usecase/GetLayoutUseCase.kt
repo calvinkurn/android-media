@@ -14,14 +14,15 @@ class GetLayoutUseCase(
 ) : UseCase<List<BaseWidgetUiModel>>() {
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel> {
+
+        val strings: ArrayList<String> = ArrayList()
+        strings.add("http://placekitten.com/100/50")
+        strings.add("http://placekitten.com/100/51")
+        strings.add("http://placekitten.com/100/53")
+        strings.add("http://placekitten.com/100/54")
+
         //handle request here
         return listOf(
-                SectionWidgetUiModel(
-                        WidgetType.SECTION,
-                        "Performa Toko, tes jika textnya kepanjangan akan seperti apa hasilnya",
-                        "",
-                        ""
-                ),
                 CardWidgetUiModel(
                         WidgetType.CARD,
                         "Card 1",
@@ -42,9 +43,16 @@ class GetLayoutUseCase(
                 ),
                 LineGraphWidgetUiModel(
                         WidgetType.LINE_GRAPH,
-                        "Total Pendapatan",
+                        "Line Graph",
                         "",
                         ""
+                ),
+                CarouselWidgetUiModel(
+                        WidgetType.CAROUSEL,
+                        "Carousel",
+                        "",
+                        "",
+                        strings
                 ),
                 DescriptionWidgetUiModel(
                         WidgetType.DESCRIPTION,
