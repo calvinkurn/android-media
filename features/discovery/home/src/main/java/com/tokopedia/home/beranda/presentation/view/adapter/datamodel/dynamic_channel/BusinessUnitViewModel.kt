@@ -12,7 +12,10 @@ class BusinessUnitViewModel(var title: String?, var position: Int, var forceRefr
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        return !forceRefresh
+        if (b is BusinessUnitViewModel) {
+            return !forceRefresh
+        }
+        return false
     }
     override fun isCache(): Boolean {
         return isCache
