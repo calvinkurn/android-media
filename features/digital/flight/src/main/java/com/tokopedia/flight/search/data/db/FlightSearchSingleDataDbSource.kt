@@ -233,14 +233,14 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     private fun getOrderBy(@TravelSortOption flightSortOption: Int): String {
         return when (flightSortOption) {
-            TravelSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPriceNumeric ASC"
+            TravelSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPriceNumeric ASC, FlightJourneyTable.departureTimeInt ASC"
             TravelSortOption.EARLIEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt ASC"
             TravelSortOption.EARLIEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt ASC"
             TravelSortOption.LATEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt DESC"
             TravelSortOption.LATEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt DESC"
-            TravelSortOption.SHORTEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute ASC"
-            TravelSortOption.LONGEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute DESC"
-            TravelSortOption.MOST_EXPENSIVE -> " ORDER BY FlightJourneyTable.sortPriceNumeric DESC"
+            TravelSortOption.SHORTEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute ASC, FlightJourneyTable.departureTimeInt ASC"
+            TravelSortOption.LONGEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute DESC, FlightJourneyTable.departureTimeInt ASC"
+            TravelSortOption.MOST_EXPENSIVE -> " ORDER BY FlightJourneyTable.sortPriceNumeric DESC, FlightJourneyTable.departureTimeInt ASC"
             TravelSortOption.NO_PREFERENCE -> ""
             else -> ""
         }
