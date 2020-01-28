@@ -2,13 +2,16 @@ package com.tokopedia.sellerhome.view.model
 
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 
-class DescriptionWidgetUiModel(
+data class DescriptionWidgetUiModel (
         override val widgetType: String,
         override val title: String,
+        override val subTitle: String,
+        override val tooltip: TooltipUiModel,
         override val url: String,
         override val appLink: String,
-        var state: DescriptionState,
-        var description: String) : BaseWidgetUiModel {
+        override val dataKey: String,
+        override val ctaText: String,
+        override var data: DescriptionDataUiModel?) : BaseWidgetUiModel<DescriptionDataUiModel> {
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
