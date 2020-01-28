@@ -287,18 +287,6 @@ public class ProductListFragment
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
     }
 
-    private void setupRecyclerView() {
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(createProductItemDecoration());
-        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
-    }
-
-    @NonNull
-    private ProductItemDecoration createProductItemDecoration() {
-        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16));
-    }
-
     private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
         return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             @Override
@@ -316,6 +304,18 @@ public class ProductListFragment
         return getUserVisibleHint()
                 && presenter != null
                 && presenter.hasNextPage();
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(createProductItemDecoration());
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
+    }
+
+    @NonNull
+    private ProductItemDecoration createProductItemDecoration() {
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16));
     }
 
     private void startToLoadDataForFirstActiveTab() {
