@@ -46,6 +46,14 @@ class GetLayoutUseCase(
                         "",
                         ""
                 ),
+                DescriptionWidgetUiModel(
+                        WidgetType.DESCRIPTION,
+                        "Description Card",
+                        "",
+                        "",
+                        DescriptionState.IDEAL,
+                        "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant."
+                ),
                 ProgressUiModel(
                         WidgetType.PROGRESS,
                         "Power Merchant (Aktif)",
