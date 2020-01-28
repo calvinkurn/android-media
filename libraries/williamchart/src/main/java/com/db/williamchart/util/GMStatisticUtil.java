@@ -96,6 +96,28 @@ public final class GMStatisticUtil {
         return pairs;
     }
 
+    private static List<Pair<Integer, String>> joinLabelsAndValues(List<String> yLabels, List<Integer> graph) {
+        List<Pair<Integer, String>> pairs = new ArrayList<>();
+        if (yLabels == null || graph == null || yLabels.isEmpty() || graph.isEmpty())
+            return null;
+
+        int lowerSize;
+        if (yLabels.size() > graph.size()) {
+            lowerSize = graph.size();
+        } else {
+            lowerSize = yLabels.size();
+        }
+
+        for (int i = 0; i < lowerSize; i++) {
+            String label = yLabels.get(i);
+            Integer gross = graph.get(i);
+
+            pairs.add(new Pair<>(gross, label));
+        }
+
+        return pairs;
+    }
+
     private static Pair<String[], float[]> joinDateAndGraph2(List<Integer> dateGraph, List<Integer> graph, String[] monthNamesAbrev) {
         List<Pair<Integer, String>> pairs = joinDateAndGraph(dateGraph, graph);
         if (pairs == null)
@@ -116,6 +138,24 @@ public final class GMStatisticUtil {
     public static BaseWilliamChartModel joinDateAndGraph3(List<Integer> dateGraph, List<Integer> graph, String[] monthNamesAbrev) {
         Pair<String[], float[]> pair = joinDateAndGraph2(dateGraph, graph, monthNamesAbrev);
         return (pair != null) ? new BaseWilliamChartModel(pair.getModel1(), pair.getModel2()) : null;
+    }
+
+    public static BaseWilliamChartModel getChartModel(List<String> yLabels, List<Integer> graph) {
+        List<Pair<Integer, String>> pairs = joinLabelsAndValues(yLabels, graph);
+        if (pairs == null)
+            return null;
+
+        String[] labels = new String[pairs.size()];
+        float[] values = new float[pairs.size()];
+        int i = 0;
+        for (Pair<Integer, String> integerStringPair : pairs) {
+            labels[i] = integerStringPair.getModel2();
+            values[i] = integerStringPair.getModel1();
+            i++; // increment the index here
+        }
+
+        Pair<String[], float[]> pair = new Pair<>(labels, values);
+        return new BaseWilliamChartModel(pair.getModel1(), pair.getModel2());
     }
 
     public static List<Integer> sumTwoGraph(List<Integer> firstGraph, List<Integer> secondGraph) {

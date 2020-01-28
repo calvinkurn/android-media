@@ -71,8 +71,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel, SellerHomeAdapter
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return try {
-                        val isHeaderSection = adapter.data[position].widgetType != WidgetType.CARD
-                        if (isHeaderSection) spanCount else 1
+                        val isCardWidget = adapter.data[position].widgetType != WidgetType.CARD
+                        if (isCardWidget) spanCount else 1
                     } catch (e: IndexOutOfBoundsException) {
                         spanCount
                     }

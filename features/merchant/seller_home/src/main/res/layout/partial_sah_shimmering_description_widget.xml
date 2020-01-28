@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/shimmer_description_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_description_title"
+        android:layout_width="156dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_15"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_description_desc_first_line"
+        android:layout_width="272dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="17dp"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_description_title" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_description_desc_second_line"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_description_desc_first_line" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_description_link"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="61dp"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_description_desc_second_line"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

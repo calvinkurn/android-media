@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sah_description_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="181dp"
+    android:layout_margin="@dimen/layout_lvl1"
+    android:padding="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/dp_8">
+
+    <include layout="@layout/partial_sah_description_widget"/>
+
+    <include layout="@layout/partial_sah_error_description_widget"/>
+
+    <include layout="@layout/partial_sah_shimmering_description_widget"/>
+</androidx.cardview.widget.CardView>

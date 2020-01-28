@@ -271,7 +271,6 @@ public class LineChartView extends ChartView {
 
 				// Style dot
 				mStyle.mDotsPaint.setColor(dot.getColor());
-				mStyle.mDotsPaint.setAlpha((int) (set.getAlpha() * 255));
 				applyShadow(mStyle.mDotsPaint, set.getAlpha(), dot.getShadowDx(), dot
 						  .getShadowDy(), dot.getShadowRadius(), dot.getShadowColor());
 
@@ -284,7 +283,6 @@ public class LineChartView extends ChartView {
 					// Style stroke
 					mStyle.mDotsStrokePaint.setStrokeWidth(dot.getStrokeThickness());
 					mStyle.mDotsStrokePaint.setColor(dot.getStrokeColor());
-					mStyle.mDotsStrokePaint.setAlpha((int) (set.getAlpha() * 255));
 					applyShadow(mStyle.mDotsStrokePaint, set.getAlpha(), dot.getShadowDx(), dot
 							  .getShadowDy(), dot.getShadowRadius(), dot.getShadowColor());
 
@@ -294,8 +292,8 @@ public class LineChartView extends ChartView {
 				// Draw drawable
 				if (dot.getDrawable() != null) {
 					Bitmap dotsBitmap = Tools.drawableToBitmap(dot.getDrawable());
-					canvas.drawBitmap(dotsBitmap, dot.getX() - dotsBitmap.getWidth() / 2,
-							  dot.getY() - dotsBitmap.getHeight() / 2, mStyle.mDotsPaint);
+					canvas.drawBitmap(dotsBitmap, dot.getX() - dotsBitmap.getWidth() / 2f,
+							  dot.getY() - dotsBitmap.getHeight() / 2f, mStyle.mDotsPaint);
 				}
 			}
 		}
