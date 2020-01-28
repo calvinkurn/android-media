@@ -16,5 +16,5 @@ interface BaseWidgetUiModel<T> : Visitable<SellerHomeAdapterTypeFactory> {
     val appLink: String
     val dataKey: String
     val ctaText: String
-    val data: T?
+    var data: T?
 }
