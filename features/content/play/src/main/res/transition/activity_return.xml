@@ -6,10 +6,10 @@
 
     <targets>
         <target android:excludeId="@+id/pv_video" />
-        <target android:excludeId="@+id/play_background" />
+<!--        <target android:excludeId="@+id/play_background" />-->
     </targets>
     <slide android:slideEdge="bottom" android:duration="@integer/animation_duration"/>
     <!-- Start fading some views to make sure they disappear before the middle of the screen -->
-    <fade android:duration="@integer/animation_alpha_duration_enter" android:fadingMode="fade_out"/>
+    <fade android:duration="@integer/animation_duration" android:fadingMode="fade_out"/>
 
 </transitionSet>

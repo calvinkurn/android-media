@@ -3,12 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:transitionOrdering="together"
     android:interpolator="@android:interpolator/linear_out_slow_in"
-    android:duration="@integer/animation_duration">
-
+    android:duration="@integer/animation_duration_enter">
     <transitionSet>
         <targets>
-            <target android:excludeId="@id/play_background" />
+            <target android:excludeId="@android:id/navigationBarBackground" />
+            <target android:excludeId="@android:id/statusBarBackground" />
             <target android:excludeId="@id/pv_video" />
+            <target android:excludeId="@id/play_background" />
         </targets>
         <transition
             class="android.transition.Slide"/>
@@ -18,7 +19,4 @@
             android:fadingMode="fade_in"
             android:startDelay="@integer/animation_alpha_duration_enter" />
     </transitionSet>
-
-
-
 </transitionSet>

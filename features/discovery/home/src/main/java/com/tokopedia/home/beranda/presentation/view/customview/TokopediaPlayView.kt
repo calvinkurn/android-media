@@ -7,6 +7,7 @@ import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.TextureView
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.exoplayer2.Player
@@ -107,14 +108,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
             surfaceView?.let{ surfaceView ->
                 applyCrop(surfaceView, width.toFloat(), height.toFloat())
             }
-        }
-
-        override fun onRenderedFirstFrame() {
-
-        }
-
-        override fun onSurfaceSizeChanged(width: Int, height: Int) {
-
         }
     }
 }

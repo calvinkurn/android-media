@@ -6,7 +6,7 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowSoftInputMode">stateAlwaysHidden|stateHidden</item>
 
-<!--        <item name="android:windowSharedElementsUseOverlay">false</item>-->
+        <item name="android:windowSharedElementsUseOverlay">false</item>
         <item name="android:windowContentTransitions">true</item>
 
         <item name="android:windowSharedElementEnterTransition">@transition/anim_play_shared_enter</item>
