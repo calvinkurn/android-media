@@ -9,9 +9,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_card_title"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,8 +20,8 @@
         tools:text="Power Merchant (Aktif)" />
 
     <ImageView
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@id/tv_card_title"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:maxLines="2"
         android:textColor="@color/sah_description"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:text="@string/sah_more"
         android:textColor="@color/Green_G500"
         app:layout_constraintStart_toStartOf="parent"

@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/iv_info_seller"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -18,8 +18,8 @@
         android:id="@+id/tv_info_seller_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
         android:ellipsize="end"
         android:maxLines="2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,7 @@
         android:id="@+id/tv_info_seller_type"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         app:layout_constraintStart_toStartOf="@id/tv_info_seller_title"
         app:layout_constraintTop_toBottomOf="@id/tv_info_seller_title"
         app:typographyType="body_3"

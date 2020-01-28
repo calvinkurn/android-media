@@ -9,7 +9,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_card_title"
         android:layout_width="156dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         app:corners="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -17,7 +17,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_score"
         android:layout_width="40dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         app:corners="10"
         app:layout_constraintBottom_toBottomOf="@id/shimmering_shop_score_widget"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_shop_score_widget"
         android:layout_width="50dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/layout_lvl3"
         app:corners="10"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_first_line_description"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/layout_lvl4"
         app:corners="10"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_second_line_description"
         android:layout_width="136dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginTop="4dp"
         app:corners="10"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
         android:id="@+id/shimmering_see_details"
         android:layout_width="136dp"
         android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         app:corners="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_second_line_description" />

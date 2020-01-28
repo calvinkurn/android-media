@@ -9,9 +9,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_error_card_title"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,8 +20,8 @@
         tools:text="Power Merchant (Aktif)" />
 
     <ImageView
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/tv_error_card_title"
         app:layout_constraintStart_toEndOf="@id/tv_error_card_title"
         app:layout_constraintTop_toTopOf="@id/tv_error_card_title"

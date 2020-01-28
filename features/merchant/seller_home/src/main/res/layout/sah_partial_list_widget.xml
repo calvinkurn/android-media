@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_card_title"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
@@ -19,8 +19,8 @@
         tools:text="Info Seller" />
 
     <ImageView
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@id/tv_card_title"
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_card_title"
-        tools:itemCount="@integer/int_3"
+        tools:itemCount="3"
         tools:listitem="@layout/sah_item_list" />
 
     <com.tokopedia.unifyprinciples.Typography

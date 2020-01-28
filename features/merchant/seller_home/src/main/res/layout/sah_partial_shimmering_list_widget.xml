@@ -9,8 +9,8 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_card_title"
         android:layout_width="156dp"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_height="16dp"
+        android:layout_marginTop="2dp"
         app:corners="10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +41,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="156dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/spacing_lvl6"
         app:corners="10"
         app:layout_constraintBottom_toBottomOf="parent"
