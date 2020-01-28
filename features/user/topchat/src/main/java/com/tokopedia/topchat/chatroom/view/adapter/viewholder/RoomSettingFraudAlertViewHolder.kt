@@ -15,8 +15,8 @@ class RoomSettingFraudAlertViewHolder(itemView: View?) : AbstractViewHolder<Room
     }
 
     private fun bindAlertText(alert: RoomSettingFraudAlert) {
-        val htmlTEext = HtmlCompat.fromHtml(alert.text, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        itemView.tvText?.text = htmlTEext
+        val htmlText = HtmlCompat.fromHtml(alert.text, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        itemView.tvText?.text = htmlText
     }
 
     companion object {
