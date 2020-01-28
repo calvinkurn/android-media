@@ -7,10 +7,14 @@ import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-interface BaseWidgetUiModel : Visitable<SellerHomeAdapterTypeFactory> {
-
+interface BaseWidgetUiModel<T> : Visitable<SellerHomeAdapterTypeFactory> {
     val widgetType: String
     val title: String
+    val subTitle: String
+    val tooltip: TooltipUiModel
     val url: String
     val appLink: String
+    val dataKey: String
+    val ctaText: String
+    val data: T?
 }

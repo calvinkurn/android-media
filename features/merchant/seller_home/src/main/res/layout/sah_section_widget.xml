@@ -46,7 +46,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvSectionTitle"
         app:layout_constraintTop_toTopOf="@+id/tvSectionTitle"
-        app:srcCompat="@drawable/sah_ic_information"
+        app:srcCompat="@drawable/ic_sah_information"
         app:unifyImageButtonVariant="image" />
 
     <com.tokopedia.unifyprinciples.Typography

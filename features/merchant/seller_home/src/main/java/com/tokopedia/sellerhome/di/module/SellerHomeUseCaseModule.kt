@@ -2,7 +2,9 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerhome.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetLineGraphDataUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -18,5 +20,14 @@ class SellerHomeUseCaseModule {
     @Provides
     fun provideGetSellerHomeLayoutUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): GetLayoutUseCase {
         return GetLayoutUseCase(multiRequestGraphqlUseCase)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetLineGraphDataUseCase(
+            multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
+            lineGraphMapper: LineGraphMapper
+    ): GetLineGraphDataUseCase {
+        return GetLineGraphDataUseCase(multiRequestGraphqlUseCase, lineGraphMapper)
     }
 }

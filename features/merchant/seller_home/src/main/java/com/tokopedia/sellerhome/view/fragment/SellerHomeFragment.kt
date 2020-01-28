@@ -31,7 +31,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel, SellerHomeAdapterTypeFactory>() {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
@@ -86,7 +86,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel, SellerHomeAdapter
         return SellerHomeAdapterTypeFactory()
     }
 
-    override fun onItemClicked(t: BaseWidgetUiModel?) {
+    override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
 
     }
 

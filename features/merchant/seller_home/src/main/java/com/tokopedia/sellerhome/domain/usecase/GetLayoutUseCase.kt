@@ -11,9 +11,9 @@ import com.tokopedia.usecase.coroutines.UseCase
 
 class GetLayoutUseCase(
         graphqlUseCase: MultiRequestGraphqlUseCase
-) : UseCase<List<BaseWidgetUiModel>>() {
+) : UseCase<List<BaseWidgetUiModel<*>>>() {
 
-    override suspend fun executeOnBackground(): List<BaseWidgetUiModel> {
+    override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
 
         val strings: ArrayList<String> = ArrayList()
         strings.add("http://placekitten.com/100/50")
@@ -23,63 +23,102 @@ class GetLayoutUseCase(
 
         //handle request here
         return listOf(
-                CardWidgetUiModel(
-                        WidgetType.CARD,
-                        "Card 1",
-                        "",
-                        ""
+                SectionWidgetUiModel(
+                        widgetType = WidgetType.SECTION,
+                        title = "Performa Toko, tes jika textnya kepanjangan akan seperti apa hasilnya",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = SectionDataUiModel()
                 ),
                 CardWidgetUiModel(
-                        WidgetType.CARD,
-                        "Card 2",
-                        "",
-                        ""
+                        widgetType = WidgetType.CARD,
+                        title = "Card 1",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = CardDataUiModel()
                 ),
                 CardWidgetUiModel(
-                        WidgetType.CARD,
-                        "Card 3",
-                        "",
-                        ""
+                        widgetType = WidgetType.CARD,
+                        title = "Card 2",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = CardDataUiModel()
+                ),
+                CardWidgetUiModel(
+                        widgetType = WidgetType.CARD,
+                        title = "Card 3",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = CardDataUiModel()
                 ),
                 LineGraphWidgetUiModel(
-                        WidgetType.LINE_GRAPH,
-                        "Line Graph",
-                        "",
-                        ""
-                ),
-                CarouselWidgetUiModel(
-                        WidgetType.CAROUSEL,
-                        "Carousel",
-                        "",
-                        "",
-                        strings
-                ),
-                DescriptionWidgetUiModel(
-                        WidgetType.DESCRIPTION,
-                        "Description Card",
-                        "",
-                        "",
-                        DescriptionState.IDEAL,
-                        "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant."
-                ),
-                ProgressUiModel(
-                        WidgetType.PROGRESS,
-                        "Power Merchant (Aktif)",
-                        "",
-                        "",
-                        60f,
-                        ProgressUiModel.State.ORANGE,
-                        "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant."
-                ),
-                ListUiModel(
-                        WidgetType.LIST,
-                        "Info Seller",
-                        "",
-                        "",
-                        mutableListOf(
-                                ListItemUiModel("https://i.chzbgr.com/full/9159688704/h92CDB2ED/meme-about-trumps-hair-and-comparing-his-hairstyle-to-fibers-of-corn-on-the-cob", "Cara Membangun Brand Awareness Bisnismu", "Info", "・24 SEP 19"),
-                                ListItemUiModel("https://www.fosi.org/media/images/funny-game-of-thrones-memes-coverimage.width-800.jpg", "Tertarik Bisnis fashion? Ini Tips Buat Mulai Aja Dulu!", "Promo", "・24 SEP 19"),
-                                ListItemUiModel("https://cdn2.tstatic.net/jabar/foto/bank/images/petinggi-sunda-empire-dan-raja-keraton-agung-sejagat.jpg", "Tips Sukses Kak Irfan: Bisnis Bermanfaat Untuk Diri Sendiri", "Seller Event", "・24 SEP 19")
+                        widgetType = WidgetType.LINE_GRAPH,
+                        title = "Total Pendapatan",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = LineGraphDataUiModel(
+                                dataKey = "",
+                                description = "<span style=color:#EF144A;><b>-87%</b></span>",
+                                error = "",
+                                header = "Rp2.000.000",
+                                yLabels = emptyList(),
+                                list = listOf(
+                                        XYAxisUiModel(
+                                                xLabel = "29 des",
+                                                yLabel = "",
+                                                yVal = 1000
+                                        ),
+                                        XYAxisUiModel(
+                                                xLabel = "30 ",
+                                                yLabel = "",
+                                                yVal = 200
+                                        ),
+                                        XYAxisUiModel(
+                                                xLabel = "31",
+                                                yLabel = "",
+                                                yVal = 600
+                                        ),
+                                        XYAxisUiModel(
+                                                xLabel = "1 jan",
+                                                yLabel = "",
+                                                yVal = 1200
+                                        ),
+                                        XYAxisUiModel(
+                                                xLabel = "2",
+                                                yLabel = "",
+                                                yVal = 700
+                                        ),
+                                        XYAxisUiModel(
+                                                xLabel = "3",
+                                                yLabel = "",
+                                                yVal = 1100
+                                        ),
+                                        XYAxisUiModel(
+                                                xLabel = "4",
+                                                yLabel = "",
+                                                yVal = 1500
+                                        )
+                                )
                         )
                 )
         )
