@@ -85,7 +85,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         // Get operator name for tracking
         val operatorCluster = viewModel.operatorCluster.value
         if (operatorCluster is Success) {
-            operatorName = getOperatorDataOfOperatorId(operatorCluster.data, value)?.attributes?.name ?: ""
+            operatorName = getOperatorDataOfOperatorId(operatorCluster.data, value)?.attributes?.name?.toLowerCase() ?: ""
         }
     }
     private var selectedProduct: RechargeGeneralProductSelectData? = null
@@ -653,7 +653,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
-        categoryName = data.catalog.name
+        categoryName = data.catalog.name.toLowerCase()
         // Set recommendation data if available
         if (data.recommendations.isNotEmpty() && !hasInputData) {
             setupAutoFillData(data.recommendations[0])

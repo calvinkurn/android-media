@@ -15,129 +15,129 @@ import com.tokopedia.track.TrackAppUtils
 class RechargeGeneralAnalytics {
 
     fun eventClickOperatorClusterDropdown(categoryName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_OPERATOR_CLUSTER_DROPDOWN,
                 categoryName
-        ))
+        )
     }
 
     fun eventChooseOperatorCluster(categoryName: String, operatorCluster: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CHOOSE_OPERATOR_CLUSTER,
                 "$categoryName - $operatorCluster"
-        ))
+        )
     }
 
     fun eventClickOperatorListDropdown(categoryName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_OPERATOR_LIST_DROPDOWN,
                 categoryName
-        ))
+        )
     }
 
     fun eventChooseOperator(categoryName: String, operatorName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CHOOSE_OPERATOR,
                 "$categoryName - $operatorName"
-        ))
+        )
     }
 
     fun eventClickProductListDropdown(categoryName: String, operatorName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_CATEGORY,
                 Category.DIGITAL_CATEGORY,
                 Action.CLICK_PRODUCT_LIST_DROPDOWN,
                 "$categoryName - $operatorName"
-        ))
+        )
     }
 
     fun eventClickProductCard(categoryName: String, operatorName: String, productName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_PRODUCT_CARD,
                 "$categoryName - $operatorName - $productName"
-        ))
+        )
     }
 
     fun eventInputManualNumber(categoryName: String, operatorName: String, index: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 "${Action.INPUT_MANUAL_NUMBER} $index",
                 "$categoryName - $operatorName"
-        ))
+        )
     }
 
     fun eventClickCheckBills(categoryName: String, operatorName: String, productName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_CHECK_BILLS,
                 "$categoryName - $operatorName - $productName"
-        ))
+        )
     }
 
     fun eventChecklistSusbcriptionBox(categoryName: String, operatorName: String, productName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CHECKLIST_SUBSCRIPTION_BOX,
                 "$categoryName - $operatorName - $productName"
-        ))
+        )
     }
 
     fun eventCloseInquiry(categoryName: String, operatorName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_CLOSE_INQUIRY,
                 "$categoryName - $operatorName"
-        ))
+        )
     }
 
     fun eventClickPromoTab(categoryName: String, operatorName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_PROMO_TAB,
                 "$categoryName - $operatorName"
-        ))
+        )
     }
 
     fun eventClickCopyPromo(promoName: String, position: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_COPY_PROMO,
                 "$promoName - $position"
-        ))
+        )
     }
 
     fun eventClickBackButton(categoryName: String, operatorName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_BACK,
                 "$categoryName - $operatorName"
-        ))
+        )
     }
 
     fun eventInputFavoriteNumber(categoryName: String, operatorName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.INPUT_FAVORITE_NUMBER,
                 "$categoryName - $operatorName"
-        ))
+        )
     }
 
     fun eventClickBuy(categoryName: String,
