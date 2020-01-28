@@ -19,8 +19,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         HasComponent<BrandlistCategoryComponent> {
 
     companion object {
-//        const val CATEGORY_EXTRA_APPLINK = "category"
-
         @JvmStatic
         fun createInstance(category: String): Fragment {
             return BrandlistContainerFragment().apply {
@@ -29,12 +27,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                 }
             }
         }
-//        fun createInstance() = BrandlistContainerFragment()
-//        fun createInstance(shopAddressViewModel: ShopLocationViewModel?, isAddNew: Boolean) =
-//                ShopSettingAddressAddEditFragment().also { it.arguments = Bundle().apply {
-//                    putParcelable(PARAM_EXTRA_SHOP_ADDRESS, shopAddressViewModel)
-//                    putBoolean(PARAM_EXTRA_IS_ADD_NEW, isAddNew)
-//                }}
     }
 
     @Inject
@@ -42,13 +34,17 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
-    private var categorySlug = ""
+    private var categorySlug = "0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        context?.let {  }
-        categorySlug = arguments?.getString(CATEGORY_EXTRA_APPLINK) ?: ""
-        println(categorySlug)
         super.onCreate(savedInstanceState)
+        context?.let {
+            // Insert tracking here
+        }
+        arguments?.let {
+            categorySlug = it.getString(CATEGORY_EXTRA_APPLINK)
+            println(categorySlug)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
