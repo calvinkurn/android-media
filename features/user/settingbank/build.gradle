@@ -76,7 +76,7 @@ dependencies {
     androidTestImplementation rootProject.ext.firebase.core
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     // For espresso test cases
-    androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
@@ -87,7 +87,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     // For recycler view actions
-    androidTestImplementation ('com.android.support.test.espresso:espresso-contrib:2.0') {
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.0') {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'recyclerview-v7'
