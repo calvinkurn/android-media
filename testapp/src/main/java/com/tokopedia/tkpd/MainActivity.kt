@@ -9,6 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.readystatesoftware.chuck.Chuck
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -194,6 +198,7 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
+        RouteManager.route(this, ApplinkConstInternalEntertainment.ENTERTAINMENT_HOME)
     }
 
 }

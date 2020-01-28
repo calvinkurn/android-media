@@ -37,6 +37,7 @@ ext {
             commonTravel                    : ":features:digital:common_travel",
             digitalHomepage                 : ":features:digital:digital_homepage",
             digitalproduct                  : ":features:digital:digitalproduct",
+            entertainment                   : ":features:digital:entertainment",
             commonTopupBills                : ":features:digital:common_topup_bills",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
             voucherGame                     : ":features:digital:voucher_game",
