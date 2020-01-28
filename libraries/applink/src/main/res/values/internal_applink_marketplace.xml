@@ -66,4 +66,6 @@
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
 
+    <string name="path_brandlist" translatable="false">/official-store/brand/.*\\</string>
+
 </resources>

@@ -157,7 +157,6 @@ import rx.schedulers.Schedulers;
         UserIdentificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        BrandlistApplinkModule.class,
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class
 })
@@ -205,7 +204,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new UserIdentificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new BrandlistApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader()
             );
