@@ -4,11 +4,21 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Use a separate view for the background, rather than on the root view because it is a
+    shared element. Otherwise it interferes with the window enter transition i.e. as it is
+    resized for the shared element transition, many views are considered 'off-screen' so
+    visibility transitions are not run. -->
+    <View
+        android:id="@+id/activity_detail_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:background="@android:color/white"
+        android:transitionName="@string/play_transition_root"/>
     <FrameLayout
         android:id="@+id/fl_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:transitionName="@string/play_transition_root"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

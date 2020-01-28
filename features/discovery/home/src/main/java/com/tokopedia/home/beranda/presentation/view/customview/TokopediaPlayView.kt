@@ -20,7 +20,7 @@ import com.tokopedia.home.R
 class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
     companion object{
         private val playerLayoutId = R.layout.tokopedia_play_view
-        const val ANIMATION_TRANSITION_NAME = "play_video"
+        const val ANIMATION_TRANSITION_NAME = "video_play"
 
     }
     private val componentListener: ComponentListener
@@ -44,6 +44,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 //        contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
+        surfaceView?.id = R.id.texture_view
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             surfaceView?.transitionName = ANIMATION_TRANSITION_NAME
         }
@@ -67,7 +68,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
             val viewFinderRatio = viewWidth / viewHeight
             val scaling = viewFinderRatio * previewRatio
             pivotX = 0f
-            pivotY = viewHeight * 0.4f
+            pivotY = viewHeight * 0.15f
             PointF(1f, scaling)
         } else {
             // Landscape

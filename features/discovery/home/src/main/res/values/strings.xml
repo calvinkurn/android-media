@@ -79,4 +79,5 @@
     <string name="home_transition_title">title_play</string>
     <string name="home_transition_description">description_play</string>
     <string name="home_transition_root">root_play</string>
+    <string name="home_transition_video">video_play</string>
 </resources>

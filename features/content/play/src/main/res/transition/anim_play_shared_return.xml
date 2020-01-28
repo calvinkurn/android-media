@@ -8,8 +8,11 @@
     <transitionSet>
         <targets>
             <target android:targetId="@id/fl_fragment" />
+            <target android:targetId="@+id/texture_view" />
         </targets>
         <changeBounds/>
+        <changeImageTransform/>
+        <changeTransform/>
     </transitionSet>
 
     <!-- Start fading background of activity -->

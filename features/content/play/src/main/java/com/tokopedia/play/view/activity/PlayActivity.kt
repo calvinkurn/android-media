@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.activity
 
 import android.os.Bundle
+import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.transition.ChangeBounds

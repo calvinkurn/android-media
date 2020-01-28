@@ -20,7 +20,7 @@ import com.tokopedia.play.R
 class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
     companion object{
         private val playerLayoutId = R.layout.video_play_custom
-        const val ANIMATION_TRANSITION_NAME = "play_video"
+        const val ANIMATION_TRANSITION_NAME = "video_play"
     }
     private val componentListener: ComponentListener
     private var overlayFrameLayout: FrameLayout? = null
@@ -46,6 +46,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
+        surfaceView?.id = R.id.texture_view
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             surfaceView?.transitionName = ANIMATION_TRANSITION_NAME
         }

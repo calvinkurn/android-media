@@ -25,4 +25,5 @@
     <string name="play_mock_stream_name">Review Australia Fabulous Shop Fashion Outlet</string>
     <string name="play_mock_shop_name">Yoenik Apparel</string>
     <string name="play_transition_root">root_play</string>
+    <string name="play_transition_video">video_play</string>
 </resources>
