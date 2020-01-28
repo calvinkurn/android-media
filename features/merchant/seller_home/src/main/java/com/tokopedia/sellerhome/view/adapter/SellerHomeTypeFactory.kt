@@ -1,8 +1,5 @@
 package com.tokopedia.sellerhome.view.adapter
 
-import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.view.model.*
 
 /**
@@ -20,6 +17,4 @@ interface SellerHomeTypeFactory {
     fun type(descriptionWidget: DescriptionWidgetUiModel): Int
 
     fun type(sectionWdget: SectionWidgetUiModel): Int
-
-    fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<*>
 }
