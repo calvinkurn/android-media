@@ -39,6 +39,8 @@ class RoundedFrameLayout : FrameLayout {
     }
 
     override fun dispatchDraw(canvas: Canvas) {
+        setupCorner(width.toFloat(), height.toFloat())
+
         val save = canvas.save()
         canvas.clipPath(cornerPath)
         super.dispatchDraw(canvas)
@@ -47,7 +49,6 @@ class RoundedFrameLayout : FrameLayout {
 
     fun setCornerRadius(cornerRadius: Float) {
         this.cornerRadius = cornerRadius
-        setupCorner(width.toFloat(), height.toFloat())
     }
 
     private fun setupCorner(width: Float, height: Float) {
