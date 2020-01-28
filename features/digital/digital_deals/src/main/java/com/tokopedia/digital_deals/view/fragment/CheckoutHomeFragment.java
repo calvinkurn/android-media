@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
@@ -34,6 +35,7 @@ import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import javax.inject.Inject;
 
@@ -129,7 +131,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         clPromoAmount = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo);
         Drawable img = MethodChecker.getDrawable(getActivity(),com.tokopedia.digital_deals.R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-
+        ((Ticker)view.findViewById(R.id.ticker_info)).setTextDescription(getString(R.string.ticker_desc));
     }
 
     private void setCardViewElevation() {
