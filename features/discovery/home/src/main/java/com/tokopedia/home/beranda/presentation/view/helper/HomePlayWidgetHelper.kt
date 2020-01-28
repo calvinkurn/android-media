@@ -10,6 +10,8 @@ import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.util.DimensionUtils
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.util.PlayConnectionMonitor
+import com.tokopedia.play_common.util.PlayConnectionState
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -31,6 +33,8 @@ class HomePlayWidgetHelper(
 
     private var videoUri: Uri? = null
 
+    private var playConnectionMonitor = PlayConnectionMonitor(context)
+
     /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
@@ -51,6 +55,22 @@ class HomePlayWidgetHelper(
             }
         }
     }
+
+    private val connectionStateObserver = object :  Observer<PlayConnectionState> {
+        override fun onChanged(state: PlayConnectionState?) {
+            when (state) {
+                is PlayConnectionState.UnAvailable -> {
+                    playerPause()
+                    mExoPlayerListener?.onPlayerIdle()
+                }
+                is PlayConnectionState.Available -> {
+                    resumeVideo()
+                    mExoPlayerListener?.onPlayerPlaying()
+                }
+            }
+        }
+    }
+
 
     /* Master job */
     private val masterJob = Job()
@@ -108,21 +128,22 @@ class HomePlayWidgetHelper(
     override fun play(url: String){
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             videoUri = Uri.parse(url)
-            preparePlayer()
+            resumeVideo()
         }else{
             playerPause()
         }
     }
 
     override fun preparePlayer(){
-        if(videoUri != null && videoUri.toString().isNotEmpty() && DeviceConnectionInfo.isConnectWifi(context)
-                && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
+        if (DeviceConnectionInfo.isConnectWifi(context)) resumeVideo()
+    }
+
+    fun resumeVideo() {
+        if(videoUri != null && videoUri.toString().isNotEmpty() && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
             TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)
             playerPlayWithDelay()
-        } else {
-            playerPause()
         }
     }
 
@@ -133,7 +154,6 @@ class HomePlayWidgetHelper(
     }
 
     override fun onViewDetach() {
-        exoPlayerView.setPlayer(null)
         playerPause()
     }
 
@@ -175,11 +195,13 @@ class HomePlayWidgetHelper(
     private fun observeVideoPlayer() {
         TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().observeForever(playerObserver)
         TokopediaPlayManager.getInstance(context).getObservablePlayVideoState().observeForever(playerStateObserver)
+        playConnectionMonitor.getObservablePlayConnectionState().observeForever(connectionStateObserver)
     }
 
     private fun removeVideoPlayerObserver() {
         TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().removeObserver(playerObserver)
         TokopediaPlayManager.getInstance(context).getObservablePlayVideoState().removeObserver(playerStateObserver)
+        playConnectionMonitor.getObservablePlayConnectionState().removeObserver(connectionStateObserver)
     }
 
     private fun muteVideoPlayer() {
