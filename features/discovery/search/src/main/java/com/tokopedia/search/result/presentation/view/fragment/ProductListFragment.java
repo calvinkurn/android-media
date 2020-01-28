@@ -148,7 +148,6 @@ public class ProductListFragment
     private FilterController quickFilterController = new FilterController();
     private FilterController filterController = new FilterController();
 
-    private int spanCount;
     private boolean hasLoadData;
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
@@ -182,6 +181,12 @@ public class ProductListFragment
         }
     }
 
+    private void copySearchParameter(@Nullable SearchParameter searchParameterToCopy) {
+        if (searchParameterToCopy != null) {
+            this.searchParameter = new SearchParameter(searchParameterToCopy);
+        }
+    }
+
     @Override
     protected void initInjector() {
         ProductListViewComponent component = DaggerProductListViewComponent.builder()
@@ -206,7 +211,6 @@ public class ProductListFragment
 
         initLayoutManager();
         initSwipeToRefresh(view);
-        restoreInstanceState(savedInstanceState);
         onViewCreatedBeforeLoadData(view);
 
         startToLoadDataForFirstActiveTab();
@@ -220,23 +224,6 @@ public class ProductListFragment
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setOnRefreshListener(this::onSwipeToRefresh);
-    }
-
-    private void restoreInstanceState(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            onRestoreInstanceState(savedInstanceState);
-        }
-    }
-
-    private void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
-        switchLayoutType();
-    }
-
-    private void copySearchParameter(@Nullable SearchParameter searchParameterToCopy) {
-        if (searchParameterToCopy != null) {
-            this.searchParameter = new SearchParameter(searchParameterToCopy);
-        }
     }
 
     private void switchLayoutType() {
@@ -1591,11 +1578,5 @@ public class ProductListFragment
 
     public void onBottomSheetHide() {
         FilterTracking.eventApplyFilter(getFilterTrackingData(), getScreenName(), getSelectedFilter());
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
     }
 }
