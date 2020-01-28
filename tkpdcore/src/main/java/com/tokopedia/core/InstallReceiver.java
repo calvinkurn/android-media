@@ -39,9 +39,10 @@ public class InstallReceiver extends BroadcastReceiver {
                         appsflyerInstall.onReceive(receiverData.contextData, receiverData.intentData);
                         new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
 
-                        ((CustomerRouter.IrisInstallRouter) context.getApplicationContext()).sendIrisInstallEvent();
-
                         trackIfFromCampaignUrl(data.contextData, receiverData.intentData.getStringExtra(REFERRER));
+
+                        if (receiverData.contextData != null && receiverData.contextData.getApplicationContext() instanceof CustomerRouter.IrisInstallRouter)
+                            ((CustomerRouter.IrisInstallRouter) receiverData.contextData.getApplicationContext()).sendIrisInstallEvent();
                         return true;
                     }
                 })

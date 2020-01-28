@@ -62,11 +62,11 @@ public class ConsumerSplashScreen extends SplashScreen {
 
         finishWarmStart();
 
-        trackIrisEventForAppOpen();
-
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
+
+        trackIrisEventForAppOpen();
 
     }
 
