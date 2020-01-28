@@ -14,6 +14,7 @@ open class CreateManualAdsStepperModel() : StepperModel {
     var groupName: String = ""
     var selectedProductIds = mutableListOf<Int>()
     var selectedKeywords = mutableListOf<String>()
+    var selectedSuggestBid = mutableListOf<Int>()
 
     constructor(parcel: Parcel) : this() {
         toolbarTitle = parcel.readString()
@@ -25,6 +26,9 @@ open class CreateManualAdsStepperModel() : StepperModel {
         selectedKeywords = arrayListOf<String>().apply {
             parcel.readList(this, String::class.java.classLoader)
         }
+        selectedSuggestBid = arrayListOf<Int>().apply {
+            parcel.readList(this, String::class.java.classLoader)
+        }
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -33,6 +37,7 @@ open class CreateManualAdsStepperModel() : StepperModel {
         parcel.writeString(groupName)
         parcel.writeList(selectedProductIds)
         parcel.writeList(selectedKeywords)
+        parcel.writeList(selectedSuggestBid)
     }
 
     override fun describeContents(): Int {

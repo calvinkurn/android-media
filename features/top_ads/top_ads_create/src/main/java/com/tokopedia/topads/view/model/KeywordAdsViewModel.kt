@@ -32,13 +32,13 @@ class KeywordAdsViewModel @Inject constructor(
         private val repository: GraphqlRepository): BaseViewModel(dispatcher) {
 
     companion object {
-        val PRODUCT_IDS = "product_ids"
-        val GROUP_ID = "group_id"
-        val SHOP_ID = "shop_id"
+        const val PRODUCT_IDS = "product_ids"
+        const val GROUP_ID = "group_id"
+        const val SHOP_ID = "shop_id"
     }
 
-    val selectedKeywordList = MutableLiveData<KeywordViewModel>()
-    val keywordList = HashSet<String>()
+    private val selectedKeywordList = MutableLiveData<KeywordViewModel>()
+    private val keywordList = HashSet<String>()
     private val searchCount = HashMap<String, ArrayList<Int>>()
     private val map = ArrayList<Int>()
 

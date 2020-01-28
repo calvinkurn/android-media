@@ -36,7 +36,7 @@ import javax.inject.Inject
 class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var sortProductList: ProductSortSheetList
-    private lateinit var filteSheetProductList: ProductFilterSheetList
+    private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
 
     @Inject
@@ -46,17 +46,17 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     companion object {
 
-        private val NOT_PROMOTED = "0"
-        private val PROMOTED = "4"
-        private val ALL = "1"
-        private val ROW = 10
-        private val START = 0
+        private const val NOT_PROMOTED = "0"
+        private const val PROMOTED = "4"
+        private const val ALL = "1"
+        private const val ROW = 10
+        private const val START = 0
 
         fun createInstance(): Fragment {
 
             val fragment = ProductAdsListFragment()
             val args = Bundle()
-            fragment.setArguments(args)
+            fragment.arguments = args
             return fragment
         }
     }
@@ -71,7 +71,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel = stepperModel ?: CreateManualAdsStepperModel()
     }
 
-    override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) { }
+    override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
 
     override fun gotoNextPage() {
         stepperModel?.selectedProductIds = getSelectedProduct()
@@ -106,7 +106,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         super.onViewCreated(view, savedInstanceState)
         context?.let {
             sortProductList = ProductSortSheetList.newInstance(it)
-            filteSheetProductList = ProductFilterSheetList.newInstance(it)
+            filterSheetProductList = ProductFilterSheetList.newInstance(it)
         }
         btn_next.setOnClickListener {
             gotoNextPage()
@@ -118,16 +118,16 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             sortProductList.show()
         }
         btn_filter.setOnClickListener {
-            if(filteSheetProductList.getSelectedFilter().isBlank()) {
+            if (filterSheetProductList.getSelectedFilter().isBlank()) {
                 fetchEtalase()
             }
-            filteSheetProductList.show()
+            filterSheetProductList.show()
         }
-        filteSheetProductList.onItemClick = { refreshProduct() }
+        filterSheetProductList.onItemClick = { refreshProduct() }
         sortProductList.onItemClick = { refreshProduct() }
         not_promoted.setOnClickListener { refreshProduct() }
         promoted.setOnClickListener { refreshProduct() }
-        searchInputView.setListener(object : SearchInputView.Listener{
+        searchInputView.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
                 refreshProduct()
             }
@@ -142,7 +142,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         product_list.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun refreshProduct(){
+    private fun refreshProduct() {
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.items.clear()
         viewModel.productList(getKeyword(),
@@ -162,14 +162,14 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         refreshProduct()
     }
 
-    private fun getSelectedEtalaseId() = filteSheetProductList.getSelectedFilter()
+    private fun getSelectedEtalaseId() = filterSheetProductList.getSelectedFilter()
 
     private fun getSelectedSortId() = sortProductList.getSelectedSortId()
 
     private fun getKeyword() = searchInputView.searchText
 
     private fun getPromoted(): String {
-        return when(promotedGroup.checkedRadioButtonId){
+        return when (promotedGroup.checkedRadioButtonId) {
             R.id.not_promoted -> NOT_PROMOTED
             R.id.promoted -> PROMOTED
             else -> ALL
@@ -178,7 +178,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun onProductListSelected() {
         var count = productListAdapter.getSelectedItems().size
-        select_product_info.setText(String.format(getString(R.string.format_selected_produk), count))
+        select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
     }
 
@@ -190,7 +190,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onError(t: Throwable) {
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage, object : NetworkErrorHelper.RetryClickedListener{
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage, object : NetworkErrorHelper.RetryClickedListener {
             override fun onRetryClicked() {
                 refreshProduct()
             }
@@ -199,18 +199,19 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         clearRefreshLoading()
+        btn_next.isEnabled = false
         data.forEach { result -> productListAdapter.items.add(ProductItemViewModel(result)) }
         productListAdapter.notifyDataSetChanged()
     }
 
-    private fun clearRefreshLoading(){
+    private fun clearRefreshLoading() {
         swipe_refresh_layout.isRefreshing = false
     }
 
-    fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
+    private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
         var items = mutableListOf<EtalaseViewModel>()
         data.forEachIndexed { index, result -> items.add(index, EtalaseItemViewModel(index == 0, result)) }
-        filteSheetProductList.updateData(items)
+        filterSheetProductList.updateData(items)
     }
 
 }

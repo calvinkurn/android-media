@@ -33,8 +33,8 @@ object Utils {
     }
 
     fun dismissKeyboard(context: Context?, view: View?) {
-        val inputMethodManager = context?.getSystemService( Context.INPUT_METHOD_SERVICE ) as InputMethodManager
-        if( inputMethodManager.isAcceptingText )
-            inputMethodManager.hideSoftInputFromWindow(view?.windowToken,0)
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (inputMethodManager.isAcceptingText)
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }

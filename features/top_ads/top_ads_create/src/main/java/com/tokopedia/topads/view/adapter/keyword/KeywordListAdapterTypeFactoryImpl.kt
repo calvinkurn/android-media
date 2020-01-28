@@ -9,7 +9,7 @@ import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordGroupViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 
-class KeywordListAdapterTypeFactoryImpl(var actionSelected: (() -> Unit)?) : KeywordListAdapterTypeFactory {
+class KeywordListAdapterTypeFactoryImpl(var actionSelected: ((pos: Int) -> Unit)?) : KeywordListAdapterTypeFactory {
     override fun type(model: KeywordGroupViewModel): Int = KeywordGroupViewHolder.LAYOUT
 
     override fun type(model: KeywordItemViewModel): Int = KeywordItemViewHolder.LAYOUT
@@ -17,7 +17,7 @@ class KeywordListAdapterTypeFactoryImpl(var actionSelected: (() -> Unit)?) : Key
     override fun type(model: KeywordEmptyViewModel): Int = KeywordEmptyViewHolder.LAYOUT
 
     override fun holder(type: Int, view: View): KeywordViewHolder<*> {
-        return when(type){
+        return when (type) {
             KeywordItemViewHolder.LAYOUT -> KeywordItemViewHolder(view, actionSelected)
             KeywordGroupViewHolder.LAYOUT -> KeywordGroupViewHolder(view)
             KeywordEmptyViewHolder.LAYOUT -> KeywordEmptyViewHolder(view)

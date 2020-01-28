@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
 import com.tokopedia.topads.view.model.ProductAdsListViewModel
@@ -36,4 +37,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(KeywordAdsViewModel::class)
     internal abstract fun provideKeywordAdsViewModel(viewModel: KeywordAdsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BudgetingAdsViewModel::class)
+    internal abstract fun provideBudgetingAdsViewModel(viewModel: BudgetingAdsViewModel): ViewModel
 }

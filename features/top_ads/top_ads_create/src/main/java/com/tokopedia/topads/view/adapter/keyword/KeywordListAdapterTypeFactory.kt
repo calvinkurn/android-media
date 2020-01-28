@@ -5,7 +5,6 @@ import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordViewHolder
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordGroupViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
-import com.tokopedia.topads.view.adapter.product.viewholder.ProductViewHolder
 
 /**
  * Author errysuprayogi on 11,November,2019

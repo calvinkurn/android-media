@@ -15,10 +15,10 @@
         android:text="@string/biaya_per_klik"
         android:textColor="@color/topads_heading_color"
         android:textStyle="bold"
-        app:typographyType="heading_6"
         app:layout_constraintBottom_toBottomOf="@+id/btn_info"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_info" />
+        app:layout_constraintTop_toTopOf="@+id/btn_info"
+        app:typographyType="heading_6" />
 
     <ImageView
         android:id="@+id/btn_info"
@@ -56,10 +56,32 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_16"
                 android:hint="Rp"
-                app:layout_constraintEnd_toStartOf="@+id/recom_txt"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/subtitle" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/recom_txt"
+                style="@style/TextView.Micro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recommendated_bid_message"
+                app:layout_constraintStart_toStartOf="@+id/budget"
+                app:layout_constraintTop_toBottomOf="@+id/budget"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/error_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bright_red"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/budget"
+                app:layout_constraintTop_toBottomOf="@+id/budget"
+                app:typographyType="body_3"
+                tools:text="@string/error_max_length_keyword"
+                tools:visibility="visible" />
+
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/subtitle"
@@ -72,43 +94,32 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/recom_txt"
-                style="@style/TextView.Micro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/rekomendasi_rp"
-                app:layout_constraintBottom_toBottomOf="@+id/budget"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/budget"
-                app:layout_constraintTop_toTopOf="@+id/budget"
-                app:typographyType="body_3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography27"
+        android:id="@+id/selected_keyword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="20dp"
-        android:text="Kata Kunci (3)"
-        android:textStyle="bold"
+        android:text="@string/kata_kunci_count"
         android:textColor="@color/topads_heading_color"
-        app:typographyType="heading_6"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card1" />
+        app:layout_constraintTop_toBottomOf="@+id/card1"
+        app:typographyType="heading_6" />
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView2"
+        android:id="@+id/bid_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography27"
+        app:layout_constraintTop_toBottomOf="@+id/selected_keyword"
         tools:itemCount="10"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_create_layout_budget_list_item"

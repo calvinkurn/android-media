@@ -1,23 +1,45 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.data.response.DataSuggestions
+import com.tokopedia.topads.data.response.ResponseBidInfo
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapter
+import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapterTypeFactoryImpl
+import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
+import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
+import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetBudgetList
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
+import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.budget
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.tip_btn
+import java.util.ArrayList
+import javax.inject.Inject
 
 /**
  * Author errysuprayogi on 29,October,2019
  */
-class BudgetingAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
+class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: BudgetingAdsViewModel
+    private lateinit var bidInfoAdapter: BidInfoAdapter
+    private var maxBid = 0
+    private var minBid = 0
 
     companion object {
         val TAG = BudgetingAdsFragment::class.simpleName
@@ -25,13 +47,27 @@ class BudgetingAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
 
             val fragment = BudgetingAdsFragment()
             val args = Bundle()
-            fragment.setArguments(args)
+            fragment.arguments = args
             return fragment
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(BudgetingAdsViewModel::class.java)
+        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, this::onClickCloseButton))
+
+    }
+
+    private fun onClickCloseButton(pos: Int): Unit {
+        bidInfoAdapter.items.removeAt(pos)
+        bidInfoAdapter.notifyDataSetChanged()
+        updateString()
+    }
+
+
     override fun initiateStepperModel() {
-        stepperModel = stepperModel?: CreateManualAdsStepperModel()
+        stepperModel = stepperModel ?: CreateManualAdsStepperModel()
     }
 
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
@@ -56,6 +92,52 @@ class BudgetingAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
         return inflater.inflate(R.layout.topads_create_fragment_budget_list, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val dummyId: MutableList<Int> = mutableListOf()
+        val productIds = stepperModel!!.selectedProductIds
+        val suggestions = ArrayList<DataSuggestions>()
+        suggestions.add(DataSuggestions("group", dummyId))
+        val suggestionsDefault = ArrayList<DataSuggestions>()
+        suggestionsDefault.add(DataSuggestions("product", productIds))
+        viewModel.getBidInfoDefault(suggestionsDefault, this::onDefaultSuccessSuggestion, this::onErrorSuggestion, this::oneDefaultEmptySuggestion)
+        viewModel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
+
+    }
+
+    private fun oneDefaultEmptySuggestion() {
+    }
+
+    private fun onDefaultSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+        recom_txt.text = String.format(getString(R.string.recommendated_bid_message), data[0].suggestionBid)
+        budget.setText(data[0].suggestionBid.toString())
+        maxBid = data[0].maxBid
+        minBid = data[0].minBid
+    }
+
+    private fun onEmptySuggestion() {
+        bidInfoAdapter.items.add(BidInfoEmptyViewModel())
+        bidInfoAdapter.notifyDataSetChanged()
+    }
+    private fun onErrorSuggestion(throwable: Throwable) {
+
+    }
+
+    private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+        stepperModel!!.selectedKeywords.forEach { index ->
+            bidInfoAdapter.items.add(BidInfoItemViewModel(data[0]))
+        }
+        bidInfoAdapter.notifyDataSetChanged()
+        updateString()
+    }
+
+    private fun updateString() {
+
+        selected_keyword.text = String.format(getString(R.string.kata_kunci_count), bidInfoAdapter.items.count())
+        if (bidInfoAdapter.items.count() == 0)
+            onEmptySuggestion()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_next.setOnClickListener {
@@ -67,5 +149,27 @@ class BudgetingAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
         btn_info.setOnClickListener {
             InfoSheetBudgetList.newInstance(it.context).show()
         }
+        budget.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val result = Integer.parseInt(budget.text.toString())
+                if (result < minBid) {
+                    error_text.visibility = View.VISIBLE
+                    recom_txt.visibility = View.GONE
+                    error_text.text = String.format(getString(R.string.min_bid_error), minBid)
+                } else {
+                    error_text.visibility = View.GONE
+                    recom_txt.visibility = View.VISIBLE
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+
+        bid_list.adapter = bidInfoAdapter
+        bid_list.layoutManager = LinearLayoutManager(context)
     }
 }

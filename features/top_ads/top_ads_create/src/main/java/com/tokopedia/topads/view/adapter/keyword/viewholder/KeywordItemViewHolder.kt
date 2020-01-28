@@ -12,7 +12,7 @@ import java.lang.Exception
 /**
  * Author errysuprayogi on 11,November,2019
  */
-class KeywordItemViewHolder(val view: View, var actionSelected: (() -> Unit)?): KeywordViewHolder<KeywordItemViewModel>(view) {
+class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: Int) -> Unit)?) : KeywordViewHolder<KeywordItemViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -22,7 +22,7 @@ class KeywordItemViewHolder(val view: View, var actionSelected: (() -> Unit)?): 
     init {
         view?.setOnClickListener {
             it.checkBox.isChecked = !it.checkBox.isChecked
-            actionSelected?.invoke()
+            actionSelected?.invoke(adapterPosition)
         }
     }
 
@@ -31,14 +31,14 @@ class KeywordItemViewHolder(val view: View, var actionSelected: (() -> Unit)?): 
             view.keyword_name.text = it.keyword
             view.checkBox.setOnCheckedChangeListener(null)
             view.checkBox.isChecked = item.isChecked
-            try{
+            try {
                 view.keyword_count.text = Utils.format(Integer.parseInt(it.totalSearch).toLong())
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 view.keyword_count.text = it.totalSearch
             }
             view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
-                actionSelected?.invoke()
+                actionSelected?.invoke(adapterPosition)
             }
         }
     }

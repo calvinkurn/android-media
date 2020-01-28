@@ -7,49 +7,58 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_weight="1"
-        android:hint="@string/ketik_kata_kunci"
-        android:lines="1"
-        android:singleLine="true"
-        android:imeOptions="actionDone"
-        app:layout_constraintBottom_toBottomOf="@+id/add_btn"
-        app:layout_constraintEnd_toStartOf="@+id/add_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/add_btn"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/error_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/bright_red"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
-        app:typographyType="body_3"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        tools:text="@string/error_max_length_keyword" />
-
-    <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/add_btn"
-        style="@style/Button.Submit.Green.Full"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/tambah"
-        app:buttonCompatSize="medium"
-        app:buttonCompatType="primary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_weight="1"
+            android:hint="@string/ketik_kata_kunci"
+            android:imeOptions="actionDone"
+            android:lines="1"
+            android:singleLine="true"
+            app:layout_constraintBottom_toBottomOf="@+id/add_btn"
+            app:layout_constraintEnd_toStartOf="@+id/add_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/add_btn" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/bright_red"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/editText"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            app:typographyType="body_3"
+            tools:text="@string/error_max_length_keyword"
+            tools:visibility="visible" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/add_btn"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="@string/tambah"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
-        android:id="@+id/sparator"
+        android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="@dimen/dp_4"
@@ -57,7 +66,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/error_text" />
+        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/coachitem_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginBottom="@dimen/dp_18"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/separator">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/group_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="REKOMENDASI"
+            android:textAllCaps="true"
+            android:textColor="@color/topads_heading_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/group_subtitle"
+            style="@style/TextView.Micro"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/pencarian_bulan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keyword_list"
@@ -65,8 +111,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sparator"
+        app:layout_constraintTop_toBottomOf="@+id/coachitem_title"
+        app:layout_constraintVertical_bias="0.0"
         tools:itemCount="20"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_create_layout_keyword_list_item" />
@@ -114,8 +162,8 @@
         android:id="@+id/selected_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="16dp"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_weight="1"
         android:padding="@dimen/dp_16"
         android:text="@string/_0_kata_kunci_dipilih"
