@@ -19,7 +19,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -36,6 +35,7 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -175,7 +175,7 @@ class ShopPageFragment :
         shopViewModel.shopBadgeResp.removeObservers(this)
         shopViewModel.shopModerateResp.removeObservers(this)
         shopViewModel.shopFavouriteResp.removeObservers(this)
-        shopViewModel.clear()
+        shopViewModel.flush()
         super.onDestroy()
     }
 
@@ -407,15 +407,15 @@ class ShopPageFragment :
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (isMyShop) {
-            inflater?.inflate(R.menu.menu_shop_page_fragment_seller, menu)
+            inflater.inflate(R.menu.menu_shop_page_fragment_seller, menu)
         } else {
-            inflater?.inflate(R.menu.menu_shop_page_fragment_buyer, menu)
+            inflater.inflate(R.menu.menu_shop_page_fragment_buyer, menu)
         }
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         context?.let {
             val userSession = UserSession(it)
             if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
