@@ -38,11 +38,10 @@ class PlayActivity : BaseActivity() {
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
             startActivity(intent)
+            finish()
         } else {
             super.onBackPressed()
         }
-
-        finish()
     }
 
     private fun inject() {
