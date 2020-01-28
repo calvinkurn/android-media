@@ -7,13 +7,13 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.SmallTest;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.banklist.di.test.DaggerSettingBankTestComponent;
 import com.banklist.di.test.SettingBankTestComponent;
@@ -86,7 +86,7 @@ public class SettingBankActivityTest {
         // Test mode
         SettingBankTestModule settingBankTestModule = new SettingBankTestModule();
         settingBankTestModule.getMockWebServer().enqueue(
-                new BaseRetrofitJsonFactory(InstrumentationRegistry.getContext())
+                new BaseRetrofitJsonFactory(InstrumentationRegistry.getInstrumentation().getContext())
                         .createSuccess200Response("setting_bank.json")
         );
 
