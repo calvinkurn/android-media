@@ -1,40 +1,73 @@
-package com.tokopedia.logisticcart.datamock
-
-val shippingParamJson = """
-    {
-      "addressId": 99367774,
-      "categoryIds": "753",
-      "destinationDistrictId": "2253",
-      "destinationLatitude": "-6.148635",
-      "destinationLongitude": "106.735185",
-      "destinationPostalCode": "11720",
-      "insurance": 1,
-      "isBlackbox": false,
-      "isTradeInDropOff": false,
-      "isTradein": false,
-      "orderValue": 24600,
-      "originDistrictId": "2267",
-      "originLatitude": "-6.2565354",
-      "originLongitude": "106.85040979999997",
-      "originPostalCode": "12750",
-      "preorder": true,
-      "productInsurance": 0,
-      "products": [
-        {
-          "is_free_shipping": false,
-          "product_id": 516791889
-        }
-      ],
-      "shopId": "1479278",
-      "token": "Tokopedia+Kero:vo2MKxZf6DChiCSX+/MQDBcP4LQ=",
-      "uniqueId": "1479278-30-740525-99367774",
-      "ut": "1580200911",
-      "weightInKilograms": 0.224
-    }
-""".trimIndent()
-
-val shopShipmentsJson = """
-    [
+{
+  "addressId": 99367774,
+  "courierPromoApplied": false,
+  "dropshipperNameValid": false,
+  "dropshipperPhoneValid": false,
+  "isBlackbox": false,
+  "isTradein": false,
+  "preorder": true,
+  "selectedCourier": {
+    "additionalPrice": 0,
+    "allowDropshiper": true,
+    "benefitAmount": 0,
+    "blackboxInfo": "",
+    "checksum": "2qGkJppqfwDXpZFMFswL9PqeeKY%3D",
+    "discountedRate": 0,
+    "estimatedTimeDelivery": "Reguler (2-4 hari)",
+    "hideShipperName": false,
+    "insurancePrice": 200,
+    "insuranceType": 2,
+    "insuranceUsedDefault": 2,
+    "insuranceUsedInfo": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.40% dari harga invoice dan berlaku pembulatan ke atas",
+    "insuranceUsedType": 2,
+    "isNow": false,
+    "maxEtd": 172800,
+    "minEtd": 86400,
+    "name": "AnterAja",
+    "ontimeDelivery": {
+      "available": false,
+      "text_detail": "",
+      "text_label": "",
+      "url_detail": "",
+      "value": 0
+    },
+    "priorityCheckboxMessage": "",
+    "priorityDurationMessage": "",
+    "priorityFeeMessage": "",
+    "priorityFormattedPrice": "",
+    "priorityInnactiveMessage": "",
+    "priorityPdpMessage": "",
+    "priorityPrice": 0,
+    "priorityWarningboxMessage": "",
+    "promoCode": "",
+    "selected": true,
+    "serviceId": 1104,
+    "shipperFormattedPrice": "Rp10.000",
+    "shipperId": 23,
+    "shipperPrice": 10000,
+    "shipperProductId": 45,
+    "shippingRate": 0,
+    "usePinPoint": false,
+    "ut": "1580204486"
+  },
+  "shipmentCartData": {
+    "categoryIds": "753",
+    "deliveryPriceTotal": 0,
+    "destinationAddress": "jl prof dr satrio",
+    "destinationDistrictId": "2253",
+    "destinationLatitude": "-6.148635",
+    "destinationLongitude": "106.735185",
+    "destinationPostalCode": "11720",
+    "insurance": 1,
+    "orderValue": 24600,
+    "originDistrictId": "2267",
+    "originLatitude": "-6.2565354",
+    "originLongitude": "106.85040979999997",
+    "originPostalCode": "12750",
+    "productInsurance": 0,
+    "shippingNames": "jne,pos,gojek,ninja,grab,anteraja,lion",
+    "shippingServices": "regular,nextday,instant,sameday",
+    "shopShipments": [
       {
         "isDropshipEnabled": true,
         "shipCode": "jne",
@@ -194,9 +227,12 @@ val shopShipmentsJson = """
           }
         ]
       }
-    ]
-""".trimIndent()
-
-val productsJson = """
-    [{"is_free_shipping":false,"product_id":516791889}]
-""".trimIndent()
+    ],
+    "token": "Tokopedia+Kero:GrX4it8Rx1t4xrfhQ1ozDBXUKXc=",
+    "ut": "1580204484",
+    "weight": 224
+  },
+  "shopId": "1479278",
+  "totalQuantity": 2,
+  "usePartialOrder": false
+}

@@ -2,6 +2,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import com.tokopedia.logisticcart.datamock.DummyProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -51,6 +52,34 @@ object ShippingDurationPresenterTest : Spek({
             Then("view showing positive data") {
                 verify {
                     view.showData(shippingData.shippingDurationViewModels, shippingData.logisticPromo)
+                }
+            }
+
+        }
+
+        Scenario("get rates") {
+
+            val shipmentDetailData = DummyProvider.shipmentDetailData
+            val shopShipments = DummyProvider.getShopShipments()
+            val products = DummyProvider.products
+            val address = DummyProvider.address
+            val shippingData = DummyProvider.shippingRecommendationDataWithState
+
+            Given("data") {
+                every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+                every {
+                    responseConverter.fillState(any(), shopShipments, any(), 0)
+                } returns shippingData
+            }
+
+            When("executed") {
+                presenter.loadCourierRecommendation(shipmentDetailData, 0, shopShipments, -1, false, false, "", products,
+                        "1479278-30-740525-99367774", false, address)
+            }
+
+            Then("view showing positive data") {
+                verify {
+                    view.showData(any(), any())
                 }
             }
 
