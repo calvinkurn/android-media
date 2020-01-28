@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
@@ -139,7 +140,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val coachMark: CoachMark by lazy {
+    private val coachMarkDetail: CoachMark by lazy {
         CoachMarkBuilder().build()
     }
 
@@ -184,6 +185,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     companion object {
+        private val TAG_COACHMARK_DETAIL = "coachmark"
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
@@ -235,12 +237,29 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
-//        coachMarkChat()
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.chat_menu, menu)
+    }
+
+    override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
+        coachMarkItems.add(coachMarkChat)
+        coachMarkItems.add(coachMarkItemHeader)
+    }
+
+    override fun onAddedCoachMarkProducts(coachMarkItemProduct: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemProduct)
+    }
+
+    override fun onAddedCoachMarkBookingCode(coachMarkItemBooking: CoachMarkItem) {
+//        coachMarkItems.add(coachMarkItemBooking)
+    }
+
+    override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemShipping)
+        addedCoachMark()
     }
 
     private fun prepareLayout() {
@@ -343,34 +362,21 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()
-
-    }
-
-    override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
-        coachMarkItems.add(coachMarkChat)
-        coachMarkItems.add(coachMarkItemHeader)
-    }
-
-    override fun onAddedCoachMarkProducts(coachMarkItemProduct: CoachMarkItem) {
-        coachMarkItems.add(coachMarkItemProduct)
-    }
-
-    override fun onAddedCoachMarkBookingCode(coachMarkItemBooking: CoachMarkItem) {
-        coachMarkItems.add(coachMarkItemBooking)
-    }
-
-
-    override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
-        coachMarkItems.add(coachMarkItemShipping)
-        addedCoachMark()
     }
 
     private fun addedCoachMark(){
         coachMarkItems.add(coachMarkEdit)
         coachMarkItems.add(coachMarkAccept)
         Log.d("COACHMARKJUMLAK", coachMarkItems.size.toString())
+        showCoachMark()
 
-        coachMark.show(activity, "detail", coachMarkItems)
+    }
+
+    private fun showCoachMark(){
+        if(!coachMarkDetail.hasShown(activity, TAG_COACHMARK_DETAIL)){
+            coachMarkDetail.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
+        }
+        coachMarkDetail.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
     }
 
     private fun renderHeader() {
@@ -502,6 +508,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         } else {
             rl_btn_detail?.visibility = View.GONE
         }
+
+//        showCoachMark()
     }
 
     private fun setActionSeeComplaint(url: String) {
