@@ -213,6 +213,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
             insets
         }
+
+        view.requestApplyInsets()
     }
 
     //region observe
