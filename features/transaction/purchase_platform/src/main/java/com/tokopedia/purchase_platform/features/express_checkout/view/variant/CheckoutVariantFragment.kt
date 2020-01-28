@@ -276,7 +276,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
         val selectedServiceId = fragmentViewModel.getProfileViewModel()?.shippingDurationId
         shippingDurationBottomsheet.updateArguments(shippingParam, selectedServiceId
-            ?: 0, -1, true, shopShipmentList)
+            ?: 0, shopShipmentList)
         if (!shippingDurationBottomsheet.isAdded) {
             activity?.supportFragmentManager?.run {
                 shippingDurationBottomsheet.show(this, "")

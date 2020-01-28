@@ -130,13 +130,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     // Called from express checkout only
-    public void updateArguments(ShippingParam shippingParam, int selectedServiceId, int codHistory, boolean disableCourierPromo, List<ShopShipment> shopShipmentList) {
+    public void updateArguments(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPPING_PARAM, shippingParam);
         bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
         bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
-        bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
-        bundle.putBoolean(ARGUMENT_DISABLE_PROMO_COURIER, disableCourierPromo);
+        bundle.putBoolean(ARGUMENT_DISABLE_PROMO_COURIER, true);
         setArguments(bundle);
     }
 
@@ -200,7 +199,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                         shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress);
             } else if (shippingParam != null) {
                 // Called from express checkout
-                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing);
+                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments);
             }
         }
     }

@@ -70,11 +70,10 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
      */
     @Override
     public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList, int codHistory,
-                                          boolean isCorner, boolean isLeasing) {
+                                          List<ShopShipment> shopShipmentList) {
         if (getView() != null) {
             getView().showLoading();
-            loadDuration(0, selectedServiceId, codHistory, isCorner, isLeasing,
+            loadDuration(0, selectedServiceId, -1, false, false,
                     shopShipmentList, false, shippingParam, "");
         }
     }
