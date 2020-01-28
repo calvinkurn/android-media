@@ -14,8 +14,6 @@ import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -126,8 +124,6 @@ public class ProductListFragment
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
-    private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
-    private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
     private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
@@ -139,8 +135,6 @@ public class ProductListFragment
     @Inject
     ProductListSectionContract.Presenter presenter;
 
-    private GridLayoutManager gridLayoutManager;
-    private LinearLayoutManager linearLayoutManager;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout refreshLayout;
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
@@ -153,7 +147,7 @@ public class ProductListFragment
     private TrackingQueue trackingQueue;
     private PerformanceMonitoring performanceMonitoring;
     private Config topAdsConfig;
-    protected SearchParameter searchParameter;
+    private SearchParameter searchParameter;
     private FilterController quickFilterController = new FilterController();
     private FilterController filterController = new FilterController();
 
@@ -217,7 +211,7 @@ public class ProductListFragment
         initLayoutManager();
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
-        onViewCreatedBeforeLoadData(view, savedInstanceState);
+        onViewCreatedBeforeLoadData(view);
 
         startToLoadDataForFirstActiveTab();
     }
@@ -226,7 +220,7 @@ public class ProductListFragment
         setSpanCount(calcColumnSize(getResources().getConfiguration().orientation));
     }
 
-    public void setSpanCount(int spanCount) {
+    private void setSpanCount(int spanCount) {
         this.spanCount = spanCount;
     }
 
@@ -244,11 +238,6 @@ public class ProductListFragment
     }
 
     private void initLayoutManager() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-
-        gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
-
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     }
@@ -326,7 +315,6 @@ public class ProductListFragment
 
     private void recyclerViewLayoutManagerChangeSpanCount(int spanCount) {
         setSpanCount(spanCount);
-        gridLayoutManager.setSpanCount(spanCount);
         staggeredGridLayoutManager.setSpanCount(spanCount);
     }
 
@@ -336,7 +324,7 @@ public class ProductListFragment
         searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
 
-    private void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    private void onViewCreatedBeforeLoadData(@NonNull View view) {
         bindView(view);
         initTopAdsConfig();
         initTopAdsParams();
@@ -595,14 +583,6 @@ public class ProductListFragment
                 && getPresenter() != null;
     }
 
-    private GridLayoutManager getGridLayoutManager() {
-        return gridLayoutManager;
-    }
-
-    private LinearLayoutManager getLinearLayoutManager() {
-        return linearLayoutManager;
-    }
-
     private StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
         return staggeredGridLayoutManager;
     }
@@ -701,22 +681,6 @@ public class ProductListFragment
     @Override
     public String getScreenNameId() {
         return SCREEN_SEARCH_PAGE_PRODUCT_TAB;
-    }
-
-    private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
-        return new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (adapter.isEmptyItem(position) ||
-                        adapter.isRelatedSearch(position) ||
-                        adapter.isHeaderBanner(position) ||
-                        adapter.isLoading(position)) {
-                    return spanCount;
-                } else {
-                    return 1;
-                }
-            }
-        };
     }
 
     private boolean isSortEnabled() {
@@ -1025,7 +989,7 @@ public class ProductListFragment
         performNewProductSearch(queryParams);
     }
 
-    public void performNewProductSearch(String queryParams) {
+    private void performNewProductSearch(String queryParams) {
         redirectionListener.startActivityWithApplink(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + queryParams);
     }
 
@@ -1085,7 +1049,7 @@ public class ProductListFragment
         reloadData();
     }
 
-    public void removeFilterFromFilterController(Option option) {
+    private void removeFilterFromFilterController(Option option) {
         if(filterController == null) return;
 
         String optionKey = option.getKey();
@@ -1113,7 +1077,7 @@ public class ProductListFragment
         showSearchInputView();
     }
 
-    public void showSearchInputView() {
+    private void showSearchInputView() {
         redirectionListener.showSearchInputView();
     }
 
@@ -1243,7 +1207,7 @@ public class ProductListFragment
         isListEmpty = true;
         adapter.setGlobalNavViewModel(globalNavViewModel);
         presenter.clearData();
-        adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
+        adapter.showEmptyState(getActivity(), isFilterActive());
     }
 
     private boolean isFilterActive() {
@@ -1315,7 +1279,7 @@ public class ProductListFragment
     private void refreshAdapterForEmptySearch() {
         if (adapter != null) {
             presenter.clearData();
-            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
+            adapter.showEmptyState(getActivity(), isFilterActive());
         }
     }
 
@@ -1358,14 +1322,6 @@ public class ProductListFragment
         reloadData();
     }
 
-    private int getFilterRequestCode() {
-        return REQUEST_ACTIVITY_FILTER_PRODUCT;
-    }
-
-    private int getSortRequestCode() {
-        return REQUEST_ACTIVITY_SORT_PRODUCT;
-    }
-
     private ProductListAdapter getAdapter() {
         return adapter;
     }
@@ -1389,11 +1345,11 @@ public class ProductListFragment
         recyclerView.requestLayout();
     }
 
-    public SearchParameter getSearchParameter() {
+    private SearchParameter getSearchParameter() {
         return searchParameter;
     }
 
-    public void setSearchParameter(SearchParameter searchParameter) {
+    private void setSearchParameter(SearchParameter searchParameter) {
         this.searchParameter = searchParameter;
     }
 
