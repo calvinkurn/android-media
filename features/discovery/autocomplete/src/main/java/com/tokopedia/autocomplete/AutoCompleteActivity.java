@@ -148,7 +148,11 @@ public class AutoCompleteActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        unregisterShake();
+    }
+
+    @Override
+    public boolean isAllowShake() {
+        return false;
     }
 
     public void dropKeyboard() {
