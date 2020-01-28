@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -101,8 +100,6 @@ import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
-import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
-import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
@@ -127,10 +124,10 @@ public class ProductListFragment
     private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
-    private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final String SHOP = "shop";
+    private static final int DEFAULT_SPAN_COUNT = 2;
 
     @Inject
     ProductListSectionContract.Presenter presenter;
@@ -207,7 +204,6 @@ public class ProductListFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initSpan();
         initLayoutManager();
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
@@ -216,34 +212,9 @@ public class ProductListFragment
         startToLoadDataForFirstActiveTab();
     }
 
-    private void initSpan() {
-        setSpanCount(calcColumnSize(getResources().getConfiguration().orientation));
-    }
-
-    private void setSpanCount(int spanCount) {
-        this.spanCount = spanCount;
-    }
-
-    private int calcColumnSize(int orientation) {
-        int defaultColumnNumber = 1;
-        switch (orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                defaultColumnNumber = PORTRAIT_COLUMN_MAIN;
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                defaultColumnNumber = LANDSCAPE_COLUMN_MAIN;
-                break;
-        }
-        return defaultColumnNumber;
-    }
-
     private void initLayoutManager() {
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-    }
-
-    private int getSpanCount() {
-        return spanCount;
     }
 
     private void initSwipeToRefresh(View view) {
@@ -258,7 +229,6 @@ public class ProductListFragment
     }
 
     private void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         switchLayoutType();
     }
@@ -297,25 +267,20 @@ public class ProductListFragment
 
         switch (layoutType) {
             case LIST:
-                recyclerViewLayoutManagerChangeSpanCount(1);
+                staggeredGridLayoutManager.setSpanCount(1);
                 getAdapter().changeListView();
                 break;
             case SMALL_GRID:
-                recyclerViewLayoutManagerChangeSpanCount(2);
+                staggeredGridLayoutManager.setSpanCount(2);
                 getAdapter().changeDoubleGridView();
                 break;
             case BIG_GRID:
-                recyclerViewLayoutManagerChangeSpanCount(1);
+                staggeredGridLayoutManager.setSpanCount(1);
                 getAdapter().changeSingleGridView();
                 break;
         }
 
         refreshMenuItemGridIcon();
-    }
-
-    private void recyclerViewLayoutManagerChangeSpanCount(int spanCount) {
-        setSpanCount(spanCount);
-        staggeredGridLayoutManager.setSpanCount(spanCount);
     }
 
     private void refreshMenuItemGridIcon() {
@@ -1631,7 +1596,6 @@ public class ProductListFragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
     }
 }
