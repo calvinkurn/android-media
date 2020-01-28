@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
@@ -28,6 +29,7 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                     customHeight = getHeightPx()
 
                     setBannerIndicator(GREEN_INDICATOR)
+                    bannerSeeAll.gone()
                     val listImageUrl = UmrahHomepageBannerMapper.bannerMappertoString(element.umrahBanners)
                     setPromoList(listImageUrl)
                     setOnPromoClickListener {

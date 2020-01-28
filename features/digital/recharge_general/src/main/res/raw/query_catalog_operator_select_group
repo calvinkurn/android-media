@@ -10,6 +10,7 @@ query catalogOperatorSelectGroup($menuID: Int!) {
         attributes{
           name
           operator_labels
+          image_url
           description
         }
       }
