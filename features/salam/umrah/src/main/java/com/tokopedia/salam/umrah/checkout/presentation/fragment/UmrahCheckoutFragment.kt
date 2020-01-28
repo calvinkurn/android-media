@@ -788,7 +788,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     private fun renderPromo(){
         ticker_promo_umrah.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickDetailPromo() {
-
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_UMROH)
+                intent.putExtra(EXTRA_TOTAL_PRICE,totalPrice)
+                intent.putExtra(EXTRA_PROMO_CODE,promoCode)
+                startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
             }
 
             override fun onClickUsePromo() {
