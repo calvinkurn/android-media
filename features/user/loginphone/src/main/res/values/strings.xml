@@ -26,7 +26,7 @@
     <string name="verification_masking_x">**** - **** - %1$s</string>
     <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
         lewat<br>panggilan telepon ke]]></string>
-    <string name="choose_account_title">Akunmu sudah terdaftar</string>
+    <string name="choose_account_title">Pilih salah satu akun untuk mulai belanja atau berjualan</string>
     <string name="choose_account_subtitle">Sekarang kamu bisa berbelanja sekaligus berjualan dengan satu nomor HP. Pilih salah satu akunmu di bawah ini untuk melanjutkan</string>
     <string name="phone_number_not_connected_to_tokocash">Nomor Ponsel Belum\nTerhubung ke
         TokoCash</string>
