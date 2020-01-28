@@ -19,7 +19,10 @@ class BrandlistActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return BrandlistContainerFragment.createInstance()
+//        return BrandlistContainerFragment.createInstance()
+        return BrandlistContainerFragment.createInstance(
+                intent.getStringExtra(CATEGORY_EXTRA_APPLINK)
+        )
     }
 
     companion object {
@@ -28,7 +31,7 @@ class BrandlistActivity : BaseSimpleActivity() {
     }
 
     object DeeplinkIntents {
-        @DeepLink(ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH, ApplinkConst.BRAND_LIST_CATEGORY)
+//        @DeepLink(ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH, ApplinkConst.BRAND_LIST_CATEGORY)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             return Intent(context, BrandlistActivity::class.java)

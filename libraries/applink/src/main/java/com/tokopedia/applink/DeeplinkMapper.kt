@@ -80,6 +80,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationSalamUmrah(deeplink, context)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL, true) ->
                         getRegisteredNavigationSalamUmrahOrderDetail(deeplink, context)
+                    deeplink.startsWith(ApplinkConst.BRAND_LIST, true) ->
+                        getBrandlistInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     else -> {
@@ -215,6 +217,14 @@ object DeeplinkMapper {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating)
     }
 
+    private fun getBrandlistInternal(deeplink: String): String {
+        val parsedUri = Uri.parse(deeplink)
+        val segments = parsedUri.pathSegments
+
+        val categoryId = if (segments.size > 1) segments.last() else ""
+        val completedURI = UriUtil.buildUri(ApplinkConstInternalMarketplace.BRANDLIST, categoryId)
+        return completedURI
+    }
     /**
      * Mapping sellerapp link to registered deplink in manifest if necessary
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item

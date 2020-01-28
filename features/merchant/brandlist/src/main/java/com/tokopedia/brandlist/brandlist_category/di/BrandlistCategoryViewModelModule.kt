@@ -15,7 +15,7 @@ abstract class BrandlistCategoryViewModelModule {
 
     @BrandlistCategoryScope
     @Binds
-    internal abstract fun bindVIewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap

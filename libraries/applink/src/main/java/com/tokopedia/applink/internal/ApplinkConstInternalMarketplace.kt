@@ -73,6 +73,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
+    // Official Store Brandlist
+    @JvmField
+    val BRANDLIST = "$INTERNAL_MARKETPLACE/official-store/brand/{category_id}/"
+
     // CreateReviewActivity
     @JvmField
     val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/?rating={rating}"
