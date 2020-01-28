@@ -18,23 +18,23 @@ internal object DummyProvider {
     val products: List<Product> =
             Gson().fromJson(productsJson, object : TypeToken<List<Product>>() {}.type)
 
-    val shippingRecommendationDataNoState: ShippingRecommendationData =
+    fun getShippingRecommendationDataNoState(): ShippingRecommendationData =
             Gson().fromJson(
                     fileUtils.getJsonFromAsset("rates.json"),
                     ShippingRecommendationData::class.java)
 
-    val shippingRecommendationDataWithState: ShippingRecommendationData =
+    fun getShippingRecommendationDataWithState(): ShippingRecommendationData =
             Gson().fromJson(
                     fileUtils.getJsonFromAsset("ratesWithState.json"),
                     ShippingRecommendationData::class.java)
 
-    val shipmentDetailData: ShipmentDetailData =
+    fun getShipmentDetailData(): ShipmentDetailData =
             Gson().fromJson(
                     fileUtils.getJsonFromAsset("shipment_detail_data.json"),
                     ShipmentDetailData::class.java
             )
 
-    val address: RecipientAddressModel =
+    fun getAddress(): RecipientAddressModel =
             Gson().fromJson(
                     fileUtils.getJsonFromAsset("address.json"),
                     RecipientAddressModel::class.java
