@@ -61,6 +61,7 @@ class PlayCardViewHolder(
         get() = masterJob + Dispatchers.IO
 
     override fun bind(element: PlayCardViewModel) {
+        container.hide()
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
