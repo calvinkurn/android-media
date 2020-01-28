@@ -38,6 +38,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_ORGANIC = 2
         const val TYPE_SIX_GRID_LEGO = 3
         const val TYPE_THREE_GRID_LEGO = 4
+        const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_CURATED = 5
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
@@ -48,6 +49,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         when(channels.layout) {
             DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
             DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
             DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
             DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC

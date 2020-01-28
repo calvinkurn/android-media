@@ -33,19 +33,21 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
     companion object {
         private const val TYPE_SIX_GRID_LEGO = 3
         private const val TYPE_THREE_GRID_LEGO = 4
+        private const val TYPE_FOUR_GRID_LEGO = 9
 
         @LayoutRes
         val LAYOUT = R.layout.home_dc_lego_banner
     }
 
     val context = legoBannerView.context
-    val defaultSpanCount = 3
+    var defaultSpanCount = 3
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         when(getLayoutType(channel)) {
             TYPE_SIX_GRID_LEGO -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
                     context, applink, channel.id)
             TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, channel.header.name, channel.id)
+            TYPE_FOUR_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, channel.header.name, channel.id)
             else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
                     context, applink, channel.id)
         }
@@ -57,6 +59,11 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+
+        defaultSpanCount = when(getLayoutType(channel)){
+            TYPE_FOUR_GRID_LEGO -> 2
+            else -> 3
+        }
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount, 0, true))
