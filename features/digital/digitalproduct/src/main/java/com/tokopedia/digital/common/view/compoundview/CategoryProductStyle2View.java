@@ -86,7 +86,7 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected int getHolderLayoutId() {
-        return R.layout.view_holder_category_product_style_2;
+        return R.layout.view_holder_digital_product_style_2;
     }
 
     @Override

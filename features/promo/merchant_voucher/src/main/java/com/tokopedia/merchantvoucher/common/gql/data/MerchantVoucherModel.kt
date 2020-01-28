@@ -8,7 +8,7 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDe
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 
 
-data class MerchantVoucherModel(
+open class MerchantVoucherModel(
         @SerializedName("voucher_id")
         @Expose
         var voucherId: Int,
@@ -75,6 +75,9 @@ data class MerchantVoucherOwner(
 )
 
 data class MerchantVoucherBanner(
+        @SerializedName("desktop_url")
+        @Expose
+        var desktopUrl: String = "",
         @SerializedName("mobile_url")
         @Expose
         var mobileUrl: String = ""

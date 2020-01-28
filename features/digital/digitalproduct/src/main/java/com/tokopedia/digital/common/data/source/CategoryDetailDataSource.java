@@ -2,22 +2,20 @@ package com.tokopedia.digital.common.data.source;
 
 import android.content.Context;
 import android.content.res.Resources;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
-import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,16 +35,13 @@ import rx.functions.Func1;
 public class CategoryDetailDataSource {
 
     private DigitalGqlApi digitalGqlApi;
-    private CacheManager cacheManager;
     private ProductDigitalMapper productDigitalMapper;
     private Context context;
 
     public CategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
-                                    CacheManager cacheManager,
                                     ProductDigitalMapper productDigitalMapper,
                                     Context context) {
         this.digitalGqlApi = digitalGqlApi;
-        this.cacheManager = cacheManager;
         this.productDigitalMapper = productDigitalMapper;
         this.context = context;
     }
@@ -84,7 +79,7 @@ public class CategoryDetailDataSource {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
             digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
-                    cacheManager.get(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
+                    PersistentCacheManager.instance.getString(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
                     new TypeToken<RechargeResponseEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
@@ -162,7 +157,7 @@ public class CategoryDetailDataSource {
 
     private Action1<RechargeResponseEntity> saveCategoryDetailToCache(final String categoryId) {
         return digitalCategoryDetailEntity -> {
-            cacheManager.save(
+            PersistentCacheManager.instance.put(
                     DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId,
                     CacheUtil.convertModelToString(digitalCategoryDetailEntity,
                             new TypeToken<RechargeResponseEntity>() {
@@ -189,19 +184,14 @@ public class CategoryDetailDataSource {
         return digitalCategoryDetailEntity -> productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity);
     }
 
-    @Deprecated
-    public Observable<String> getHelpUrl(String categoryId) {
-        return Observable.just(DigitalUrl.DIGITAL_BANTUAN);
-    }
-
     private String getCategoryRequestPayload(String categoryId) {
-        String query = loadRawString(context.getResources(), R.raw.common_digital_category_query);
+        String query = loadRawString(context.getResources(), com.tokopedia.common_digital.R.raw.common_digital_category_query);
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
         return String.format(query, categoryId, isSeller);
     }
 
     private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
-        String query = loadRawString(context.getResources(), R.raw.common_digital_category_favourites_query);
+        String query = loadRawString(context.getResources(), com.tokopedia.common_digital.R.raw.common_digital_category_favourites_query);
 
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
 

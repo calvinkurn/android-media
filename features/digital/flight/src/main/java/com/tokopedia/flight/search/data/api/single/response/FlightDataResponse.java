@@ -2,7 +2,7 @@ package com.tokopedia.flight.search.data.api.single.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.List;
 

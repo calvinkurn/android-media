@@ -3,7 +3,6 @@ package com.tokopedia.digital.newcart.di;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.di.DigitalComponent;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
@@ -25,8 +24,6 @@ public interface DigitalCartComponent {
     RechargeAnalytics rechargeAnalytics();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
-
-    DigitalModuleRouter digitalModuleRouter();
 
     void inject(DigitalCartActivity digitalCartActivity);
 

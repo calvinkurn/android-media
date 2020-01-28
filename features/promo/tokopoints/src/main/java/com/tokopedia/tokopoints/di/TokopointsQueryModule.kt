@@ -65,4 +65,28 @@ class TokopointsQueryModule {
         return GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.tp_gql_swipe_coupon)
     }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_FILTER)
+    fun getGQLCouponFilter(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_coupon_filter)
+    }
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_LISTING_STACK)
+    fun getGQLCouponListingStack(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_coupon_listing_stack)
+    }
+
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_IN_STACK)
+    fun getGQLCouponInStack(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_coupon_in_stack)
+    }
 }

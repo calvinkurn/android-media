@@ -30,6 +30,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
+import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.model.NotificationViewData
@@ -41,7 +42,7 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
@@ -324,6 +325,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         presenter.addProductToCart(product, onSuccessAddToCart)
     }
 
+    override fun addProductToCheckout(notification: DataNotification) {
+        RouteManager.route(context, notification.checkoutUrl)
+    }
+
     override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {
         analytics.trackAtcOnClick(product, atc)
     }
@@ -360,7 +365,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
         bundle.putString(PARAM_CTA_APPLINK, element.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TEXT, element.bodyHtml)
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
@@ -383,6 +388,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     override fun trackOnClickCtaButton(templateKey: String) {
         analytics.trackOnClickLongerContentBtn(templateKey)
     }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"

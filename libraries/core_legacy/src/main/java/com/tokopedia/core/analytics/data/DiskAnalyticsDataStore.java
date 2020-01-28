@@ -24,17 +24,8 @@ public class DiskAnalyticsDataStore {
         mLocalCacheHandler.applyEditor();
     }
 
-    public String getActiveAuthenticationState() {
-        return mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.SESSION_STATE, "");
-    }
-
     public void setActiveAuthenticationMedium(String medium) {
         mLocalCacheHandler.putString(AppEventTracking.GTMCacheKey.MEDIUM, medium);
         mLocalCacheHandler.applyEditor();
-    }
-
-    public String getActiveAuthenticationMedium() {
-        return mLocalCacheHandler.getString(AppEventTracking.GTMCacheKey.MEDIUM,
-                AppEventTracking.DEFAULT_CHANNEL);
     }
 }
