@@ -11,8 +11,6 @@
             <target android:targetId="@+id/pv_video" />
         </targets>
         <changeBounds/>
-        <changeTransform/>
-        <changeImageTransform/>
     </transitionSet>
 
     <!-- Start fading background of activity -->
