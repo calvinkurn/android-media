@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.annotation.TargetApi
 import android.content.Context
+import android.os.Build
 import android.transition.Transition
 import android.transition.TransitionValues
 import android.util.AttributeSet
@@ -12,7 +13,7 @@ import android.view.ViewGroup
 import com.tokopedia.play.R
 
 
-@TargetApi(21)
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class FadeTransition : Transition {
 
     private var startAlpha: Float = 0.0f
