@@ -21,7 +21,7 @@ class BusinessUnitViewModel(var title: String?, var position: Int, var forceRefr
         return null
     }
     override fun visitableId(): String? {
-        return "dcSection"
+        return "buWidgetSection"
     }
 
     fun setCache(cache: Boolean) {

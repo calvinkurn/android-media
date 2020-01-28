@@ -43,6 +43,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -115,6 +119,15 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_GIF_BANNER;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_ORGANIC;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_LEGO;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_SALE;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -191,7 +204,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
-    private Map<Integer,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
+    private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -526,7 +539,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
 
         presenter.getTrackingLiveData().observe(this, trackingData-> {
-            addImpressionToTrackingQueue(new ArrayList(trackingData.getContentIfNotHandled()));
+            List<Visitable> visitables = new ArrayList(trackingData.getContentIfNotHandled());
+            addImpressionToTrackingQueue(visitables);
+            setupViewportImpression(visitables);
         });
 
         presenter.getUpdateNetworkLiveData().observe(this, resource -> {
@@ -1587,26 +1602,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return displayMetrics.widthPixels;
     }
 
-    @Override
-    public void addRecyclerViewScrollImpressionListener(int adapterPosition, @NotNull Function0<Unit> onImpressionListener) {
-        if (!impressionScrollListeners.containsKey(adapterPosition)) {
-            RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
-                        onImpressionListener.invoke();
-                        homeRecyclerView.removeOnScrollListener(this);
-                    }
-                }
-            };
-            impressionScrollListeners.put(adapterPosition, impressionScrollListener);
-            homeRecyclerView.addOnScrollListener(impressionScrollListener);
-        }
-    }
-
     private void resetImpressionListener() {
-        for (Map.Entry<Integer, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
+        for (Map.Entry<String, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
             if (homeRecyclerView != null) {
                 homeRecyclerView.removeOnScrollListener(entry.getValue());
             }
@@ -1631,5 +1628,88 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
         Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
+    }
+
+    public void addRecyclerViewScrollImpressionListener(DynamicChannelViewModel dynamicChannelViewModel, int adapterPosition) {
+        if (!impressionScrollListeners.containsKey(dynamicChannelViewModel.getChannel().getId())) {
+            RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
+                        sendIrisTracker(DynamicChannelViewHolder.Companion.getLayoutType(dynamicChannelViewModel.getChannel()),
+                                dynamicChannelViewModel.getChannel(),
+                                adapterPosition);
+                        homeRecyclerView.removeOnScrollListener(this);
+                    }
+                }
+            };
+            impressionScrollListeners.put(dynamicChannelViewModel.getChannel().getId(), impressionScrollListener);
+            homeRecyclerView.addOnScrollListener(impressionScrollListener);
+        }
+    }
+
+    private void sendIrisTracker(int layoutType, DynamicHomeChannel.Channels channel, int position) {
+        switch (layoutType) {
+            case TYPE_SPRINT_SALE :
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
+                                channel.getId(), channel.getGrids(), position
+                        )
+                );
+                break;
+            case TYPE_ORGANIC :
+            case TYPE_SPRINT_LEGO :
+                putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
+                                channel.getId(), channel.getGrids(), channel.getHeader().getName()
+                        )
+                );
+                break;
+            case TYPE_SIX_GRID_LEGO :
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
+                                channel.getId(), channel.getGrids(), channel.getHeader().getName(), position
+                        )
+                );
+                break;
+            case TYPE_THREE_GRID_LEGO :
+                putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
+                                channel.getId(), channel.getGrids(), channel.getHeader().getName(), position
+                        )
+                );
+                break;
+            case TYPE_GIF_BANNER :
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel));
+                break;
+            case TYPE_BANNER_CAROUSEL :
+            case TYPE_BANNER :
+                String bannerType = BannerOrganicViewHolder.Companion.getTYPE_NON_CAROUSEL();
+                if (layoutType == TYPE_BANNER_CAROUSEL) bannerType = BannerOrganicViewHolder.Companion.getTYPE_CAROUSEL();
+                putEEToIris(
+                        HomePageTracking.getEnhanceImpressionProductChannelMix(
+                                channel, bannerType
+                        )
+                );
+                putEEToIris(
+                        HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
+                );
+                break;
+        }
+    }
+
+    private void setupViewportImpression(List<Visitable> visitables) {
+        int index = 0;
+        for (Visitable visitable: visitables) {
+            if (visitable instanceof DynamicChannelViewModel) {
+                DynamicChannelViewModel dynamicChannelViewModel = ((DynamicChannelViewModel) visitable);
+                if (!dynamicChannelViewModel.isCache() && !dynamicChannelViewModel.getChannel().isInvoke()) {
+                    addRecyclerViewScrollImpressionListener(dynamicChannelViewModel, index);
+                }
+            }
+            index++;
+        }
     }
 }

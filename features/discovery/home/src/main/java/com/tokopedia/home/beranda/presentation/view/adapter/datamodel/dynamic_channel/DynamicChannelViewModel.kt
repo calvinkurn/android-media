@@ -50,7 +50,7 @@ class DynamicChannelViewModel : HomeVisitable {
     }
 
     override fun visitableId(): String {
-        return "dcSection"
+        return channel?.id?:""
     }
 
     fun setCache(cache: Boolean) {
