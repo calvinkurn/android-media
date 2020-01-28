@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:inputType="number"
-                    android:maxLength="5"
+                    android:maxLength="6"
                     android:textColor="@color/black_70"
                     android:textColorHighlight="@color/tkpd_main_green"
                     android:textSize="@dimen/sp_16"

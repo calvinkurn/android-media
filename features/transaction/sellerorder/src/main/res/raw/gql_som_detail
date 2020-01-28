@@ -78,6 +78,7 @@ query GetSOMDetail($orderID: String!, $lang: String!){
         booking_code
         state
         message
+        message_array
         barcode_type
       }
     }
@@ -106,6 +107,11 @@ query GetSOMDetail($orderID: String!, $lang: String!){
     exclusive_promo{
       amount
       note
+    }
+    buyer_request_cancel {
+      is_request_cancel
+      request_cancel_time
+      reason
     }
     flag_order_type{
       is_order_cod
@@ -191,6 +197,12 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       title
       content
       param
+    }
+    online_booking {
+      is_hide_input_awb
+      is_remove_input_awb
+      is_show_info
+      info_text
     }
   }
 }

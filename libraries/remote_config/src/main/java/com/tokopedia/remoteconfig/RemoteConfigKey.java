@@ -184,4 +184,14 @@ public class RemoteConfigKey {
     public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
 
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
+
+    public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
+
+    public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
+
+
+    public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
+    public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
+
+    public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 }

@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
@@ -16,6 +17,7 @@ import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCouponOuter;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter;
+import com.tokopedia.tokopoints.view.subscriber.Tokopoint2020Subscriber;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
@@ -52,7 +54,7 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
             mRedeemCouponUseCase.unsubscribe();
         }
 
-        if (mGetCouponCountUseCase != null){
+        if (mGetCouponCountUseCase != null) {
             mGetCouponCountUseCase.unsubscribe();
         }
     }
@@ -117,6 +119,11 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
                 if (getView() != null) getView().onFinishRendering();
             }
         });
+    }
+
+    @Override
+    public void tokopointOnboarding2020() {
+        TokoPointsNotificationManager.fetchNotification(getView().getActivityContext(), "onboarding", new Tokopoint2020Subscriber(getView()));
     }
 
     @Override

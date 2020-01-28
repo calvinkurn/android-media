@@ -434,6 +434,7 @@ public class Utils {
                         Intent share = new Intent(android.content.Intent.ACTION_SEND);
                         share.setType("text/plain");
                         share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
+                        share.putExtra(Intent.EXTRA_HTML_TEXT, linkerShareData.getUrl());
                         Intent intent = Intent.createChooser(share, context.getResources().getString(com.tokopedia.digital_deals.R.string.share_link));
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         context.startActivity(intent);

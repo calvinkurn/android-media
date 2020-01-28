@@ -164,24 +164,30 @@ public class ReputationTracking {
             String orderId,
             String productId,
             String ratingValue,
-            boolean isSuccessful
+            boolean isSuccessful,
+            boolean isEditReview
     ) {
         String successState = isSuccessful ? "success" : "unsuccessful";
 
         tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
-                "product review detail page",
+                "product review detail page" + getEditMarker(isEditReview),
                 "click - product star rating - " + ratingValue,
                 orderId + " - " + productId + " - " + successState
         ));
     }
 
-    public void reviewOnMessageChangedTracker(String orderId, String productId, boolean isMessageEmpty) {
+    public void reviewOnMessageChangedTracker(
+            String orderId,
+            String productId,
+            boolean isMessageEmpty,
+            boolean isEditReview
+    ) {
         String messageState = isMessageEmpty ? "blank" : "filled";
 
         tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
-                "product review detail page",
+                "product review detail page" + getEditMarker(isEditReview),
                 "click - ulasan product description",
                 orderId + " - " + productId + " - " + messageState
         ));
@@ -191,22 +197,27 @@ public class ReputationTracking {
             String orderId,
             String productId,
             boolean isSuccessful,
-            String imageNum
+            String imageNum,
+            boolean isEditReview
     ) {
         String successState = isSuccessful ? "success" : "unsuccessful";
 
         tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
-                "product review detail page",
+                "product review detail page" + getEditMarker(isEditReview),
                 "click - upload gambar produk",
                 orderId + " - " + productId + " - " + successState + " - " + imageNum
         ));
     }
 
-    public void reviewOnAnonymousClickTracker(String orderId, String productId) {
+    public void reviewOnAnonymousClickTracker(
+            String orderId,
+            String productId,
+            boolean isEditReview
+    ) {
         tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
-                "product review detail page",
+                "product review detail page" + getEditMarker(isEditReview),
                 "click - anonim on ulasan produk",
                 orderId + " - " + productId
         ));
@@ -218,14 +229,15 @@ public class ReputationTracking {
             String ratingValue,
             boolean isMessageEmpty,
             String imageNum,
-            boolean isAnonymous
+            boolean isAnonymous,
+            boolean isEditReview
     ) {
         String messageState = isMessageEmpty ? "blank" : "filled";
         String anonymousState = isAnonymous ? "true" : "false";
 
         tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
-                "product review detail page",
+                "product review detail page" + getEditMarker(isEditReview),
                 "click - kirim ulasan produk",
                 "order_id : " + orderId +
                         " - product_id : " + productId +
@@ -234,5 +246,11 @@ public class ReputationTracking {
                         " - gambar : " + imageNum +
                         " - anonim : " + anonymousState
         ));
+    }
+
+
+
+    private String getEditMarker(boolean isEditReview) {
+        return isEditReview ? " - edit" : "";
     }
 }

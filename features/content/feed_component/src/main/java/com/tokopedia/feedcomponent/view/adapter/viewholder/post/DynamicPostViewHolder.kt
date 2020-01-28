@@ -103,7 +103,7 @@ open class DynamicPostViewHolder(v: View,
         }
 
         bindTitle(element.title, element.template.cardpost.title)
-        bindHeader(element.id, element.header, element.template.cardpost.header)
+        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
@@ -142,7 +142,7 @@ open class DynamicPostViewHolder(v: View,
         return template.text || template.textBadge || template.ctaLink
     }
 
-    private fun bindHeader(postId: Int, header: Header, template: TemplateHeader) {
+    private fun bindHeader(postId: Int, header: Header, template: TemplateHeader, activityName: String) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 if (!TextUtils.isEmpty(header.avatar)) {
@@ -152,7 +152,7 @@ open class DynamicPostViewHolder(v: View,
                             MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
                     )
                 }
-                itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink) }
+                itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
             }
 
             if (template.avatarBadge && header.avatarBadgeImage.isNotBlank()) {
@@ -166,13 +166,13 @@ open class DynamicPostViewHolder(v: View,
 
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
                 itemView.authorTitle.text = header.avatarTitle
-                itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink) }
+                itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
             }
 
             itemView.authorSubtitile.shouldShowWithAction(template.avatarDate) {
                 header.avatarDate = TimeConverter.generateTime(itemView.context, header.avatarDate)
                 itemView.authorSubtitile.text = header.avatarDate
-                itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink) }
+                itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
             }
 
             itemView.headerAction.shouldShowWithAction(template.followCta
@@ -196,8 +196,8 @@ open class DynamicPostViewHolder(v: View,
         return reportable || deletable || editable
     }
 
-    private fun onAvatarClick(redirectUrl: String) {
-        listener.onAvatarClick(adapterPosition, redirectUrl)
+    private fun onAvatarClick(redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
+        listener.onAvatarClick(adapterPosition, redirectUrl, activityId, activityName, followCta)
     }
 
     private fun bindFollow(followCta: FollowCta) {
@@ -405,7 +405,8 @@ open class DynamicPostViewHolder(v: View,
             }
             else -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
-                itemView.likeText.setText(R.string.kol_action_like)
+                val text : String  = if (like.fmt.isNotEmpty()) like.fmt else getString(R.string.kol_action_like)
+                itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
                 )
@@ -415,8 +416,10 @@ open class DynamicPostViewHolder(v: View,
 
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
-                if (comment.value == 0) getString(R.string.kol_action_comment)
-                else comment.fmt
+                if (comment.value == 0) if(comment.fmt.isNotEmpty()) comment.fmt else getString(R.string.kol_action_comment)
+                else {
+                    if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
+                }
     }
 
     private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String, authorType: String) {
@@ -507,7 +510,7 @@ open class DynamicPostViewHolder(v: View,
     }
 
     interface DynamicPostListener {
-        fun onAvatarClick(positionInFeed: Int, redirectUrl: String)
+        fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta)
 
         fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
 

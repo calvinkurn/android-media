@@ -15,18 +15,9 @@ data class StickyLoginTickerPojo(
     )
 
     data class TickerDetail(
-        @SerializedName("id")
-        @Expose
-        val id: Int = 0,
-        @SerializedName("title")
-        @Expose
-        val title: String = "",
         @SerializedName("message")
         @Expose
         val message: String = "",
-        @SerializedName("color")
-        @Expose
-        val color: String = "",
         @SerializedName("layout")
         @Expose
         val layout: String = ""

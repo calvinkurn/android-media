@@ -35,11 +35,6 @@ public class FlightFilterTransitFragment extends BaseFlightFilterFragment<Transi
     }
 
     @Override
-    public int getRecyclerViewResourceId() {
-        return R.id.recycler_view;
-    }
-
-    @Override
     public void onItemChecked(TransitStat transitStat, boolean isChecked) {
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
         List<TransitStat> transitStatList = adapter.getCheckedDataList();

@@ -19,7 +19,7 @@ public class DetailsData {
         return "[DetailsData:{" + orderDetails + "}]";
     }
 
-    public OrderDetails orderDetails() {
+    public OrderDetails  orderDetails() {
         return orderDetails;
     }
 }
