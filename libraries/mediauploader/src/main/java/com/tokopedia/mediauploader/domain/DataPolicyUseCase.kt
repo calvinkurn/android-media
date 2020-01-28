@@ -3,14 +3,11 @@ package com.tokopedia.mediauploader.domain
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.mediauploader.data.consts.Properties.NAMED_QUERY_MEDIA_UPLOADER
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 internal class DataPolicyUseCase @Inject constructor(
-        @Named(NAMED_QUERY_MEDIA_UPLOADER)
         private val query: String,
         private val cacheStrategy: GraphqlCacheStrategy,
         private val repository: GraphqlRepository
