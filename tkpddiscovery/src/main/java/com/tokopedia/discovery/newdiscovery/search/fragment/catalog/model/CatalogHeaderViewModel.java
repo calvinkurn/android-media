@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogAdapterTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 
 /**
