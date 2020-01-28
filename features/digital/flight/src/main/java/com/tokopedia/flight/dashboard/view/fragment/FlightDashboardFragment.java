@@ -83,7 +83,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
     private static final String TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture";
     private static final String TAG_RETURN_CALENDAR = "flightCalendarReturn";
-    private static final String FLIGHT_TRACE = "tr_flight";
+    private static final String FLIGHT_HOMEPAGE_TRACE = "tr_flight_homepage";
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
@@ -151,7 +151,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_HOMEPAGE_TRACE);
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
@@ -291,7 +291,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        stopTrace();
 
         passData = new FlightDashboardPassDataViewModel();
         presenter.attachView(this);
@@ -591,6 +590,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void renderBannerView(List<TravelCollectiveBannerModel.Banner> bannerList) {
         bannerLayout.setVisibility(View.VISIBLE);
         bannerView.setVisibility(View.VISIBLE);
+        bannerView.setCustomWidth(getResources().getDimensionPixelSize(R.dimen.banner_width));
+        bannerView.setCustomHeight(getResources().getDimensionPixelSize(R.dimen.banner_height));
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
         for (TravelCollectiveBannerModel.Banner bannerModel : bannerList) {

@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:clipToPadding="false"
+    android:paddingBottom="@dimen/dp_16">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -201,6 +203,49 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/hotel_container_last_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_hotel_last_search_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hotel_homepage_last_search_title"
+                    app:fontSize="title"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_hotel_homepage_delete_last_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/hotel_delete_all_last_search"
+                    android:textColor="@color/green_500"
+                    app:fontSize="micro" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_hotel_homepage_last_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:padding="@dimen/dp_16" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/hotel_container_promo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -237,7 +282,7 @@
                 android:id="@+id/banner_hotel_homepage_promo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"/>
+                android:clipToPadding="false" />
 
         </LinearLayout>
 

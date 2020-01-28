@@ -1,0 +1,19 @@
+{
+  "data": {
+    "kycStatus": {
+      "Message": [
+        "ErrorBadRequest"
+      ],
+      "Detail": {
+        "IsSuccess": 0,
+        "UserId": 0,
+        "ProjectId": 0,
+        "Status": 0,
+        "StatusName": "",
+        "CreateTime": "",
+        "CreateBy": 0,
+        "UpdateTime": ""
+      }
+    }
+  }
+}

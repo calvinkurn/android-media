@@ -19,33 +19,32 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.listener.NotificationActivityListener
+import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
-import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
-import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
-import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
-import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
-import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
@@ -59,12 +58,12 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         NotificationUpdateContract.View,
         NotificationItemListener,
         NotificationUpdateFilterAdapter.FilterAdapterListener,
-        NotificationActivityListener,
         NotificationUpdateLongerTextFragment.LongerContentListener {
 
     private var cursor = ""
     private var lastItem = 0
     private var markAllReadCounter = 0L
+    private var _isFirstLoaded = true
 
     private lateinit var bottomActionView: BottomActionView
 
@@ -76,11 +75,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         return NotificationUpdateTypeFactoryImpl(this)
     }
 
-    @Inject
-    lateinit var presenter: NotificationUpdatePresenter
-
-    @Inject
-    lateinit var analytics: NotificationUpdateAnalytics
+    @Inject lateinit var presenter: NotificationUpdatePresenter
+    @Inject lateinit var analytics: NotificationUpdateAnalytics
 
     private var notificationUpdateListener: NotificationUpdateListener? = null
 
@@ -155,20 +151,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
     }
 
-    override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>, tag: String) {
-        if (!::filterRecyclerView.isInitialized) return
-        coachMarkItems.add(
-                1 ,
-                CoachMarkItem(
-                        filterRecyclerView,
-                        getString(R.string.coachicon_title_filter),
-                        getString(R.string.coachicon_description_filter)
-                )
-        )
-        val coachMark = CoachMarkBuilder().build()
-        coachMark.show(activity, tag, coachMarkItems)
-    }
-
     override fun updateFilter(filter: HashMap<String, Int>) {
         presenter.updateFilter(filter)
         cursor = ""
@@ -200,13 +182,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun onItemClicked(datum: Visitable<*>?) {
+    override fun onItemClicked(datum: Visitable<*>?) {}
 
-    }
-
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         activity?.let {
@@ -241,6 +219,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             hideLoading()
             _adapter.removeEmptyState()
 
+            if (_isFirstLoaded && it.list.isEmpty()) {
+                filterRecyclerView.hide()
+            }
+
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 _adapter.addElement(EmptyDataStateProvider.emptyData())
@@ -252,6 +234,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                 if (swipeToRefresh.isRefreshing) {
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
+
+                _isFirstLoaded = false
+                filterRecyclerView.show()
 
                 _adapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)
@@ -289,6 +274,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             updateMarkAllReadCounter()
             notifyBottomActionView()
         }
+    }
+
+    override fun addProductToCheckout(notification: NotificationItemViewBean) {
+        RouteManager.route(context, notification.dataNotification.checkoutUrl)
+        analytics.trackProductCheckoutBuyClick(notification)
     }
 
     private fun updateMarkAllReadCounter() {
@@ -345,18 +335,19 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun showMessageAtcError(e: Throwable?) {
         view?.let {
-            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(it.context, e)
+            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
             Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
     override fun showMessageAtcSuccess(message: String) {
         view?.let {
-            Toaster.showNormalWithAction(
+            Toaster.make(
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
-                    getString(R.string.wishlist_check_cart),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.notifcenter_title_view),
                     onClickSeeButtonOnAtcSuccessToaster()
             )
         }
@@ -374,7 +365,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
         bundle.putString(PARAM_CTA_APPLINK, element.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TEXT, element.bodyHtml)
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
@@ -397,6 +388,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     override fun trackOnClickCtaButton(templateKey: String) {
         analytics.trackOnClickLongerContentBtn(templateKey)
     }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"

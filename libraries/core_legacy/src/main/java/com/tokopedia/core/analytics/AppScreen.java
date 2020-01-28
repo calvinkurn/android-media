@@ -121,6 +121,7 @@ public final class AppScreen {
     public static final String SCREEN_HOME_PRODUCT_FEED = "Home - Product feed";
     public static final String SCREEN_HOME_PRODUCT_CATEGORY = "Top category page";
     public static final String SCREEN_HOME_HOTLIST = "Home - hot list";
+    public static final String SCREEN_FIND = "Find";
     public static final String SCREEN_TOPADS = "Top Ads Screen";
     public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_SEARCH = "Browse Produk - From Search";
@@ -184,6 +185,7 @@ public final class AppScreen {
     public static final String SCREEN_WEBVIEW = "General Web View";
     public static final String SCREEN_SHOP_INFO = "Shop info detail page";
     public static final String SCREEN_RECOMMENDATION = "Recommendation page";
+    public static final String DEALS_PAGE = "Deals page";
     public static final String SCREEN_SIMILAR_PRODUCT = "Similar Product";
     public static final String SCREEN_PRODUCT_IMAGE_PREVIEW = "Preview Image Product page";
     public static final String SCREEN_LOYALTY = "Loyalty page";

@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.fragment.app.FragmentManager
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -24,14 +25,13 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -112,6 +112,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
     val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
+    val REQUEST_ATTACH_INVOICE = 116
+    val REQUEST_ATTACH_VOUCHER = 117
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
@@ -201,6 +203,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             updateViewData(it)
+            checkCanAttachVoucher(it)
             presenter.connectWebSocket(messageId)
             presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                     onSuccessGetShopFollowingStatus())
@@ -211,6 +214,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
             fpm.stopTrace()
+        }
+    }
+
+    private fun checkCanAttachVoucher(room: ChatroomViewModel) {
+        if (room.isSeller()) {
+            addVoucherAttachmentMenu()
         }
     }
 
@@ -505,7 +514,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             }
 
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
-                if (resultCode != Activity.RESULT_OK || data == null) {
+                if (resultCode != RESULT_OK || data == null) {
                     return
                 }
                 processImagePathToUpload(data)?.let { model ->
@@ -526,7 +535,23 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
 
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
+
+            REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
+
+            REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
         }
+    }
+
+    private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != RESULT_OK) return
+        presenter.initInvoicePreview(data.extras)
+        presenter.initAttachmentPreview()
+    }
+
+    private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != RESULT_OK) return
+        presenter.initVoucherPreview(data.extras)
+        presenter.initAttachmentPreview()
     }
 
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
@@ -561,7 +586,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     it.getStringExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL)
             )
 
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 getViewState().onCheckChatBlocked(opponentRole, opponentName,
                         blockedStatus, onUnblockChatClicked())
             }
@@ -571,7 +596,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK && data != null) {
             getViewState().isShopFollowed = data.getBooleanExtra(TopChatRouter
                     .EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP, false)
         }
@@ -830,7 +855,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         return listOf(
                 ProductMenu(),
-                ImageMenu()
+                ImageMenu(),
+                InvoiceMenu()
         )
     }
 
@@ -846,6 +872,31 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         pickImageToUpload()
     }
 
+    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
+        analytics.trackChatMenuClicked(voucherMenu.label)
+        pickVoucherToUpload()
+    }
+
+    override fun onClickAttachInvoice(menu: AttachmentMenu) {
+        analytics.trackChatMenuClicked(menu.label)
+        pickInvoiceToUpload()
+    }
+
+    private fun pickVoucherToUpload() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER).apply {
+            putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId.toString())
+        }
+        startActivityForResult(intent, REQUEST_ATTACH_VOUCHER)
+    }
+
+    private fun pickInvoiceToUpload() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE).apply {
+            putExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
+            putExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, opponentName)
+        }
+        startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
+    }
+
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
         analytics.eventClickBannedProduct(viewModel)
         presenter.onClickBannedProduct(viewModel.liteUrl)
@@ -855,5 +906,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (url.isEmpty()) return
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
+    }
+
+    override fun getSupportChildFragmentManager(): FragmentManager {
+        return childFragmentManager
     }
 }

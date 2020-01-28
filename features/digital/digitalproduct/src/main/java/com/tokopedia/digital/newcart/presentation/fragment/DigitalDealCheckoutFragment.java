@@ -1,17 +1,9 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,12 +15,23 @@ import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
@@ -91,8 +94,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Inject
     DigitalDealCheckoutPresenter presenter;
-    @Inject
-    DigitalModuleRouter digitalModuleRouter;
 
     public DigitalDealCheckoutFragment() {
         // Required empty public constructor
@@ -118,7 +119,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_digital_deal_checkout, container, false);
+        return inflater.inflate(R.layout.fragment_digital_checkout, container, false);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         presenter.onDealsCheckout();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             containerLayout.setElevation(60);
-            containerLayout.setBackgroundResource(android.R.color.white);
+            containerLayout.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
             containerLayout.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }
@@ -284,7 +285,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
                     checkoutHolderView.getCheckoutViewHeight() +
                     containerCategoryLabel.getMeasuredHeight() +
-                    getResources().getDimensionPixelOffset(R.dimen.dp_6);
+                    getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_6);
         }
 
         final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
@@ -308,7 +309,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_8), 0, 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), 0, 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );
@@ -331,7 +332,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToExpand() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_up_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_up_grey)
             );
         }
     }
@@ -340,7 +341,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToCollapse() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_down_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_down_grey)
             );
         }
     }
@@ -442,7 +443,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void navigateToDealDetailPage(String slug) {
-        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), slug, false, false, false, false));
+        Intent intent = RouteManager.getIntent(getActivity(),
+                ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
+        startActivity(intent);
     }
 
     @Override

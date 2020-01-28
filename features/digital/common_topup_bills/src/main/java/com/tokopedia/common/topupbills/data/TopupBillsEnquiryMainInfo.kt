@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 27/05/19.
  */
-class TopupBillsEnquiryMainInfo(
+data class TopupBillsEnquiryMainInfo(
         @SerializedName("label")
         @Expose
-        val label: String,
+        val label: String = "",
         @SerializedName("value")
         @Expose
-        val value: String
+        val value: String = ""
 )

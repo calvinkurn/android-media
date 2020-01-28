@@ -34,24 +34,25 @@ class SomSubFilterActivity : BaseSimpleActivity() {
     /*override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple*/
     override fun getLayoutRes(): Int = R.layout.activity_filter_sublist
+
     override fun getNewFragment(): Fragment? = null
 
     interface ActionListener {
         fun onResetClicked()
-        fun saveSubFilter() : SomListOrderParam
+        fun saveSubFilter(): SomListOrderParam
     }
 
     companion object {
         private const val PARAM_LIST_FILTER = "LIST_FILTER"
         private const val CURRENT_FILTER_PARAM = "CURRENT_FILTER_PARAM"
-        private const val CATEGORY_PARAM  = "CATEGORY_PARAM"
+        private const val CATEGORY_PARAM = "CATEGORY_PARAM"
 
         @JvmStatic
         fun createIntent(context: Context, listFilter: ArrayList<SomSubFilter>, currentFilterParams: SomListOrderParam?, category: String): Intent =
-                 Intent(context, SomSubFilterActivity::class.java)
+                Intent(context, SomSubFilterActivity::class.java)
                         .putParcelableArrayListExtra(PARAM_LIST_FILTER, ArrayList(listFilter))
-                         .putExtra(CURRENT_FILTER_PARAM, currentFilterParams)
-                         .putExtra(CATEGORY_PARAM, category)
+                        .putExtra(CURRENT_FILTER_PARAM, currentFilterParams)
+                        .putExtra(CATEGORY_PARAM, category)
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -99,8 +100,14 @@ class SomSubFilterActivity : BaseSimpleActivity() {
         currentFilterParam = intent.getParcelableExtra(CURRENT_FILTER_PARAM)
         category = intent.getStringExtra(CATEGORY_PARAM)
 
-        subFilterAdapter.listSubFilter = listFilter.toMutableList()
         subFilterAdapter.currentFilterParam = currentFilterParam
+        subFilterAdapter.listSubFilter = listFilter.toMutableList()
+        subFilterAdapter.listSubFilter.forEach {
+            if (currentFilterParam.statusList.isNotEmpty() && currentFilterParam.statusList == it.listValue) {
+                it.isChecked = true
+                return@forEach
+            }
+        }
         subFilterAdapter.category = category
         subFilterAdapter.notifyDataSetChanged()
     }

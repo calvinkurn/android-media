@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -20,10 +20,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.goldMerchantResource)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.firebase.core
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -42,8 +43,16 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    implementation('de.hdodenhof:circleimageview:2.2.0') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
 }
 
