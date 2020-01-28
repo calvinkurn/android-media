@@ -26,10 +26,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMes
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
-import com.tokopedia.topchat.chatroom.view.listener.SecurityInfoListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 
 open class TopChatTypeFactoryImpl(
@@ -38,7 +36,6 @@ open class TopChatTypeFactoryImpl(
         private val imageUploadListener: ImageUploadListener,
         productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
-        private val securityInfoListener: SecurityInfoListener,
         private val voucherListener: TopChatVoucherListener,
         private val invoiceThumbnailListener: InvoiceThumbnailListener
 ) : BaseChatTypeFactoryImpl(
@@ -61,10 +58,6 @@ open class TopChatTypeFactoryImpl(
         } else {
             default
         }
-    }
-
-    override fun type(securityInfoViewModel: SecurityInfoViewModel): Int {
-        return SecurityInfoChatViewHolder.LAYOUT
     }
 
     override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementViewModel): Int {
@@ -113,7 +106,6 @@ open class TopChatTypeFactoryImpl(
             RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener)
-            SecurityInfoChatViewHolder.LAYOUT -> SecurityInfoChatViewHolder(parent, securityInfoListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
             AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent, invoiceThumbnailListener)

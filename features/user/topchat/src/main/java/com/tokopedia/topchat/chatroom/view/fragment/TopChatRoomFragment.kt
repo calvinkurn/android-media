@@ -83,8 +83,8 @@ import javax.inject.Inject
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
-        HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
-        TopChatVoucherListener, InvoiceThumbnailListener {
+        HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
+        InvoiceThumbnailListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -415,7 +415,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return TopChatTypeFactoryImpl(
-                this,
                 this,
                 this,
                 this,
@@ -774,12 +773,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             val intent = MerchantVoucherDetailActivity.createIntent(it, data.voucherId,
                     data, shopId.toString())
             startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
-        }
-    }
-
-    override fun onGoToSecurityInfo(url: String) {
-        if (url.isNotEmpty()) {
-            onGoToWebView(url, "")
         }
     }
 
