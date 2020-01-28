@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.checkout.domain.usecase
+package com.tokopedia.purchase_platform.features.checkout.domain.usecase.saf
 
 import com.google.gson.Gson
 import com.tokopedia.network.utils.TKPDMapParam
@@ -7,6 +7,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
