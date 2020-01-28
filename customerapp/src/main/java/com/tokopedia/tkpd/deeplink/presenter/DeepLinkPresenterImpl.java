@@ -753,6 +753,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 pageId);
         intent.putExtras(bundle);
         context.startActivity(intent);
+        context.finish();
     }
 
     private void openHomepageHot(Bundle bundle) {
