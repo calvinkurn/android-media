@@ -15,7 +15,7 @@ data class CardWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
-        override val data: CardDataUiModel?
+        override var data: CardDataUiModel?
 ) : BaseWidgetUiModel<CardDataUiModel> {
 
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {

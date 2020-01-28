@@ -15,7 +15,7 @@ data class LineGraphWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
-        override val data: LineGraphDataUiModel?
+        override var data: LineGraphDataUiModel?
 ) : BaseWidgetUiModel<LineGraphDataUiModel> {
 
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
