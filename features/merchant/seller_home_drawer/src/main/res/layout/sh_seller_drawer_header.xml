@@ -161,7 +161,7 @@
 
     <include
         android:id="@+id/drawer_points_layout"
-        layout="@layout/drawer_saldo_seller"
+        layout="@layout/sh_drawer_saldo_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/drawer_header"/>

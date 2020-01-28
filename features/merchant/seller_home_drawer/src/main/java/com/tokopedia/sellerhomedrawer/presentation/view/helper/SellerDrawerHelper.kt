@@ -66,6 +66,7 @@ class SellerDrawerHelper(val context: Activity,
 
     }
 
+    val sellerDrawerHeader = SellerDrawerHeader()
     var sellerDrawerAdapter: SellerDrawerAdapter? = null
     var powerMerchantInstance: SellerDrawerItem? = null
 
@@ -199,8 +200,13 @@ class SellerDrawerHelper(val context: Activity,
                         SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, contactUsClassName, CONTACT_US)
                     context.startActivity(contactUsIntent)
                 }
+                SellerHomeState.DrawerPosition.LOGOUT -> {
+                    moveActivityApplink(ApplinkConstInternalGlobal.LOGOUT)
+                    eventDrawerClick(EventLabel.SIGN_OUT)
+                    SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, "Home", "Logout")
+                }
                 else -> {
-                    //TODO: Extends from DrawerHelper ?
+
                 }
             }
 
@@ -220,15 +226,27 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     override fun onGoToDeposit() {
+
+    }
+
+    override fun onGoToProfile() {
+
+    }
+
+    override fun onGoToProfileCompletion() {
+
+    }
+
+    override fun onGoToDepositHeader() {
         startSaldoDepositIntent()
         eventDrawerClick(EventLabel.SHOP_EN)
     }
 
-    override fun onGoToProfile() {
+    override fun onGoToProfileHeader() {
         moveActivityApplink(ApplinkConstInternalContent.PROFILE_DETAIL, userSession.userId)
     }
 
-    override fun onGoToProfileCompletion() {
+    override fun onGoToProfileCompletionHeader() {
         moveActivityApplink(ApplinkConstInternalGlobal.PROFILE_COMPLETION)
     }
 
@@ -256,7 +274,7 @@ class SellerDrawerHelper(val context: Activity,
     private fun SellerDrawerAdapter.addAllElements(position: Int, elementList: List<SellerDrawerItem>) {
         var incrementalPosition = position
         elementList.forEach{
-            this.addElement(position, it)
+            this.addElement(incrementalPosition, it)
             incrementalPosition++
         }
     }
@@ -313,11 +331,9 @@ class SellerDrawerHelper(val context: Activity,
     fun createDrawerData(): MutableList<SellerDrawerItem> {
         val drawerItemData = mutableListOf<SellerDrawerItem>()
         
-        if (powerMerchantInstance == null) 
-            powerMerchantInstance = getPowerMerchantDrawerInstance()
+        powerMerchantInstance = getPowerMerchantDrawerInstance()
         
         val adapter = sellerDrawerAdapter
-        val powerMerchantDrawerItem = powerMerchantInstance
 
         drawerItemData.apply {
             add(SellerDrawerItem(
@@ -337,8 +353,10 @@ class SellerDrawerHelper(val context: Activity,
                     isSelected = selectedPosition == SellerHomeState.DrawerPosition.SELLER_TOP_ADS
             ))
 
-            if (adapter != null && !adapter.isOfficialStore && powerMerchantDrawerItem != null)
+            val powerMerchantDrawerItem = powerMerchantInstance
+            if (adapter != null && !adapter.isOfficialStore && powerMerchantDrawerItem != null) {
                 add(powerMerchantDrawerItem)
+            }
             else remove(powerMerchantDrawerItem)
 
             add(SellerDrawerItem(
@@ -392,7 +410,7 @@ class SellerDrawerHelper(val context: Activity,
 
     fun initDrawer(activity: Activity) {
         val visitableList = mutableListOf<Visitable<*>>().apply {
-            add(SellerDrawerHeader())
+            add(sellerDrawerHeader)
             addAll(createDrawerData())
         }
 
@@ -420,7 +438,7 @@ class SellerDrawerHelper(val context: Activity,
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
-    private fun setExpand() {
+    fun setExpand() {
         checkExpand(SellerDrawerAdapter.IS_INBOX_OPENED, SellerHomeState.DrawerPosition.INBOX)
         checkExpand(SellerDrawerAdapter.IS_PEOPLE_OPENED, SellerHomeState.DrawerPosition.PEOPLE)
         checkExpand(SellerDrawerAdapter.IS_SHOP_OPENED, SellerHomeState.DrawerPosition.SHOP)
@@ -454,14 +472,13 @@ class SellerDrawerHelper(val context: Activity,
     fun isOpened() = context.drawer_layout_nav.isDrawerOpen(GravityCompat.START)
 
     private fun getSellerMenu() : SellerDrawerItem {
+        val isExpanded = drawerCache.getBoolean(SellerDrawerAdapter.IS_SHOP_OPENED, false)
         val sellerMenu = SellerDrawerGroup(
                 context.getString(R.string.drawer_title_seller),
                         R.drawable.sh_icon_penjualan,
                         SellerHomeState.DrawerPosition.SHOP,
-                        drawerCache.getBoolean(SellerDrawerAdapter.IS_SHOP_OPENED, false),
+                        isExpanded,
                         getTotalSellerNotif())
-
-        val isExpanded = drawerCache.getBoolean(SellerDrawerAdapter.IS_INBOX_OPENED, false)
 
         sellerMenu.apply {
             add(SellerDrawerItem(
@@ -534,34 +551,35 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     private fun getProductMenu(): SellerDrawerItem {
+        val isExpanded = drawerCache.getBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, false)
         val productMenu =  SellerDrawerGroup(
                 context.getString(R.string.drawer_title_product),
                 R.drawable.sh_ic_manage_produk,
                 SellerHomeState.DrawerPosition.SELLER_PRODUCT_EXTEND,
-                drawerCache.getBoolean(SellerDrawerAdapter.IS_PRODUCT_OPENED, false),
+                isExpanded,
                 notif = 0)
 
         productMenu.apply {
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_etalase_list),
                     id = SellerHomeState.DrawerPosition.MANAGE_ETALASE,
-                    isExpanded = true))
+                    isExpanded = isExpanded))
             add(SellerDrawerItem(
                     label = context.getString(R.string.featured_product_title),
                     id = SellerHomeState.DrawerPosition.FEATURED_PRODUCT,
-                    isExpanded = true))
+                    isExpanded = isExpanded))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_draft_list),
                     id = SellerHomeState.DrawerPosition.DRAFT_PRODUCT,
-                    isExpanded = true))
+                    isExpanded = isExpanded))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_product_list),
                     id = SellerHomeState.DrawerPosition.MANAGE_PRODUCT,
-                    isExpanded = true))
+                    isExpanded = isExpanded))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_add_product),
                     id = SellerHomeState.DrawerPosition.ADD_PRODUCT,
-                    isExpanded = true))
+                    isExpanded = isExpanded))
         }
         return productMenu
     }
@@ -578,12 +596,14 @@ class SellerDrawerHelper(val context: Activity,
 
     private fun getTotalResoNotif(): Int = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0)
 
-    private fun getPowerMerchantDrawerInstance(): SellerDrawerItem {
-        return SellerDrawerItem(
+    private fun getPowerMerchantDrawerInstance(): SellerDrawerItem? {
+        if (powerMerchantInstance == null)
+            powerMerchantInstance =  SellerDrawerItem(
                     label = context.getString(R.string.pm_title),
                     iconId = R.drawable.ic_pm_badge_shop_regular,
                     id = SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                     isExpanded = true)
+        return powerMerchantInstance
     }
 
     private fun moveActivityApplink(applink: String) {

@@ -51,10 +51,10 @@ class SellerDrawerHeaderViewHolder(itemView: View,
 
     private fun setListener() {
         with(itemView) {
-            drawer_saldo.setOnClickListener { sellerDrawerHeaderListener.onGoToDeposit() }
-            name_text.setOnClickListener { sellerDrawerHeaderListener.onGoToProfile() }
-            user_avatar.setOnClickListener { sellerDrawerHeaderListener.onGoToProfile() }
-            complete_profile.setOnClickListener { sellerDrawerHeaderListener.onGoToProfileCompletion() }
+            drawer_saldo.setOnClickListener { sellerDrawerHeaderListener.onGoToDepositHeader() }
+            name_text.setOnClickListener { sellerDrawerHeaderListener.onGoToProfileHeader() }
+            user_avatar.setOnClickListener { sellerDrawerHeaderListener.onGoToProfileHeader() }
+            complete_profile.setOnClickListener { sellerDrawerHeaderListener.onGoToProfileCompletionHeader() }
         }
     }
 

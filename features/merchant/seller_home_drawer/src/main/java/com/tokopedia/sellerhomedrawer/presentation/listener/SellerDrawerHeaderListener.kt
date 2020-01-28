@@ -2,9 +2,9 @@ package com.tokopedia.sellerhomedrawer.presentation.listener
 
 interface SellerDrawerHeaderListener {
 
-    fun onGoToDeposit()
+    fun onGoToDepositHeader()
 
-    fun onGoToProfile()
+    fun onGoToProfileHeader()
 
-    fun onGoToProfileCompletion()
+    fun onGoToProfileCompletionHeader()
 }

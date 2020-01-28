@@ -57,6 +57,7 @@ object EventLabel {
     const val PRODUCT_DISCUSSION = "Product Discussion"
     const val MESSAGE = "Message"
     const val INBOX = "Inbox"
+    const val SIGN_OUT = "Sign Out"
 
 }
 

@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -97,10 +98,13 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
     }
 
     protected fun setDataDrawer() {
-        sellerDrawerHelper.sellerDrawerAdapter?.drawerItemData?.clear()
         val dataDrawer = sellerDrawerHelper.createDrawerData()
-        sellerDrawerHelper.sellerDrawerAdapter?.drawerItemData = dataDrawer
-
+        val visitableList = mutableListOf<Visitable<*>>().apply {
+            add(sellerDrawerHelper.sellerDrawerHeader)
+            addAll(dataDrawer)
+        }
+        sellerDrawerHelper.sellerDrawerAdapter?.setVisitables(visitableList)
+        sellerDrawerHelper.setExpand()
     }
 
     override fun getLayoutRes(): Int {
