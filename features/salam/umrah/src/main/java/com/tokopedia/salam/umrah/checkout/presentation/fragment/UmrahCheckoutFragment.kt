@@ -156,7 +156,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                 is Success -> {
                     if (it.data.checkoutGeneral.data.success == 0) {
                         progressDialog.dismiss()
-                        showBottomSheetCheckoutError()
+                        showBottomSheetCheckoutError(it.data.checkoutGeneral.data.error)
                     } else {
                         context?.run {
                             val taskStackBuilder = TaskStackBuilder.create(this)
@@ -584,9 +584,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     }
 
 
-    private fun showBottomSheetCheckoutError() {
+    private fun showBottomSheetCheckoutError(error: String) {
         val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
-            setCustomContentView(inflatingViewError(context,R.layout.bottom_sheet_umrah_checkout_error),"",false)
+            if (!error.isNullOrEmpty())
+            setCustomContentView(inflatingViewError(context,R.layout.bottom_sheet_umrah_checkout_error,error),"",false)
             img_umrah_checkout_error_bottom_sheet_closed.setOnClickListener { dismiss() }
         }
         bottomSheet.show()
@@ -613,12 +614,14 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     }
 
-    private fun inflatingViewError(context: Context, id: Int): View? {
+    private fun inflatingViewError(context: Context, id: Int, error:String): View? {
+        var errorMessage = error
+        if(error.isNullOrEmpty()) errorMessage = getString(R.string.umrah_empty_state_desc)
         val view = LayoutInflater.from(context).inflate(id, null)
         view.es_checkout.apply {
             ContextCompat.getDrawable(context,R.drawable.umrah_img_error_checkout)?.let { setImageDrawable(it) }
             setTitle(getString(R.string.umrah_checkout_error_title))
-            setDescription(getString(R.string.umrah_empty_state_desc))
+            setDescription(errorMessage)
             setPrimaryCTAText(getString(R.string.umrah_checkout_error_btn))
             setPrimaryCTAClickListener {
                 activity?.finish()
