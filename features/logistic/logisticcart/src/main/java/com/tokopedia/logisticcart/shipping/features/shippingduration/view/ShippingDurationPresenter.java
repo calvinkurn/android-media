@@ -63,6 +63,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         ratesApiUseCase.unsubscribe();
     }
 
+    /**
+     * This method is only called from express checkout,
+     * once express checkout is deleted, this should be deleted.
+     * If someone need to call courier recommendation, please use the other one
+     */
     @Override
     public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId,
                                           List<ShopShipment> shopShipmentList, int codHistory,
@@ -74,6 +79,9 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         }
     }
 
+    /**
+     *  Calls rates
+     */
     @Override
     public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
                                           int selectedServiceId,
