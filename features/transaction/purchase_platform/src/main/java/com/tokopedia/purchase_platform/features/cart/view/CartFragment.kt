@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
-import com.readystatesoftware.chuck.Chuck
+import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -583,7 +583,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onGoToChuck() {
         activity?.let {
-            startActivity(Chuck.getLaunchIntent(it))
+            startActivity(Chucker.getLaunchIntent(it))
         }
     }
 
