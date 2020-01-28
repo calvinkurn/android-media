@@ -19,10 +19,10 @@ class BrandlistActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return BrandlistContainerFragment.createInstance()
-//        return BrandlistContainerFragment.createInstance(
-//                intent.getStringExtra(CATEGORY_EXTRA_APPLINK)
-//        )
+//        return BrandlistContainerFragment.createInstance()
+        return BrandlistContainerFragment.createInstance(
+                intent.getStringExtra(CATEGORY_EXTRA_APPLINK)
+        )
     }
 
     companion object {

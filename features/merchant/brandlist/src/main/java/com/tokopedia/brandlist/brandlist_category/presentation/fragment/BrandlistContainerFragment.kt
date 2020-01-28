@@ -22,14 +22,14 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 //        const val CATEGORY_EXTRA_APPLINK = "category"
 
         @JvmStatic
-//        fun createInstance(category: String): Fragment {
-//            return BrandlistContainerFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(CATEGORY_EXTRA_APPLINK, category)
-//                }
-//            }
-//        }
-        fun createInstance() = BrandlistContainerFragment()
+        fun createInstance(category: String): Fragment {
+            return BrandlistContainerFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CATEGORY_EXTRA_APPLINK, category)
+                }
+            }
+        }
+//        fun createInstance() = BrandlistContainerFragment()
 //        fun createInstance(shopAddressViewModel: ShopLocationViewModel?, isAddNew: Boolean) =
 //                ShopSettingAddressAddEditFragment().also { it.arguments = Bundle().apply {
 //                    putParcelable(PARAM_EXTRA_SHOP_ADDRESS, shopAddressViewModel)
