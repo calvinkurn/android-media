@@ -30,7 +30,7 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
 
         with(itemView) {
             tvBannerTitle.text = element.title
-            renderBanners(bannerImages, element.imageUrls)
+            renderBanners(bannerImages, emptyList())
             setVisibilityState(state, itemView)
         }
     }

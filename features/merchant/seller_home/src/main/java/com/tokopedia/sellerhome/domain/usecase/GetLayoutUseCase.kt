@@ -15,12 +15,6 @@ class GetLayoutUseCase(
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
 
-        val strings: ArrayList<String> = ArrayList()
-        strings.add("http://placekitten.com/100/50")
-        strings.add("http://placekitten.com/100/51")
-        strings.add("http://placekitten.com/100/53")
-        strings.add("http://placekitten.com/100/54")
-
         //handle request here
         return listOf(
                 SectionWidgetUiModel(
@@ -117,6 +111,38 @@ class GetLayoutUseCase(
                                                 xLabel = "4",
                                                 yLabel = "",
                                                 yVal = 1500
+                                        )
+                                )
+                        )
+                ),
+                CarouselWidgetUiModel(
+                        widgetType = WidgetType.CAROUSEL,
+                        title = "Caruosel",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = CarouselDataUiModel(
+                                data = listOf(
+                                        CarouselDataModel(
+                                                id = "",
+                                                url = "http://placekitten.com/300/100",
+                                                applink = "",
+                                                featuredMediaURL = "http://placekitten.com/300/101"
+                                        ),
+                                        CarouselDataModel(
+                                                id = "",
+                                                url = "http://placekitten.com/300/101",
+                                                applink = "",
+                                                featuredMediaURL = "http://placekitten.com/300/102"
+                                        ),
+                                        CarouselDataModel(
+                                                id = "",
+                                                url = "http://placekitten.com/300/102",
+                                                applink = "",
+                                                featuredMediaURL = "http://placekitten.com/300/103"
                                         )
                                 )
                         )
