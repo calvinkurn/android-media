@@ -386,6 +386,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         this.shopDomain = shopDomain
     }
 
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        bulkCheckBox.isChecked = false
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
+    }
+
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {
         context?.let {
             showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
