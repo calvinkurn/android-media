@@ -1,8 +1,0 @@
-mutation markAllReadStatusNotificationUpdate{
-  notifcenter_markAllReadStatus{
-    data {
-        is_success
-    }
-    message_error
-  }
-}

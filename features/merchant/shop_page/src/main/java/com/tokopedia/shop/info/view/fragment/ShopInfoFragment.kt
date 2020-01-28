@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -103,7 +104,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     override fun onDestroy() {
         shopViewModel.shopNotesResp.removeObservers(this)
         shopViewModel.shopStatisticsResp.removeObservers(this)
-        shopViewModel.clear()
+        shopViewModel.flush()
         super.onDestroy()
     }
 
@@ -199,7 +200,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     shopViewModel.isMyShop(shopId),
                     CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1, goldOS.isGold == 1))
 
-            val talkIntent = RouteManager.getIntent(context, ApplinkConst.SHOP_TALK, shopId) ?: return@run
+           val talkIntent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SHOP_TALK).apply {
+               putExtra(ApplinkConstInternalGlobal.PARAM_SHOP_ID, shopId)
+           }
             startActivity(talkIntent)
         }
     }
@@ -284,9 +287,12 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     shopViewModel.isMyShop(shopId), position.toInt(),
                     CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
+            startActivity(ShopNoteDetailActivity.createIntent(
+                    activity,
+                    shopId,
+                    shopNoteViewModel.shopNoteId.toString()
+            ))
         }
-
-        startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))
     }
 
     private fun onSuccessGetReputation(speedFmt: String) {

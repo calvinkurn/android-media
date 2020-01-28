@@ -47,9 +47,20 @@ query image_search($image: String!, $params: String!) {
             title
             color
         }
+        free_ongkir {
+          is_active
+          img_url
+        }
+
+        label_groups {
+            position
+            type
+            title
+        }
         badges {
-          title
-          image_url
+            title
+            image_url
+            show
         }
         is_featured
       }

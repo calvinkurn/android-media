@@ -2,13 +2,14 @@ package com.tokopedia.flight.review.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
+
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
-import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.bookingV2.di.DaggerFlightBookingComponent;
+import com.tokopedia.flight.bookingV2.di.FlightBookingComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;

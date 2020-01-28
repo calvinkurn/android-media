@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/image"
+        android:layout_width="@dimen/dp_96"
+        android:layout_height="@dimen/dp_96"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:corners="@integer/corner_radius_shimmering"
+        app:width_weight="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/text"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        app:corners="@integer/corner_radius_shimmering"
+        app:width_weight="0.8"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/text2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        app:corners="@integer/corner_radius_shimmering"
+        app:width_weight="0.8"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/text"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:corners="@integer/corner_radius_shimmering"
+        app:width_weight="0.8"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/text2"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

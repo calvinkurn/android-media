@@ -9,6 +9,7 @@ import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFa
 abstract class BaseCategoryAdapter(val itemChangeView: OnItemChangeView) :
         RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
+    abstract fun setDimension(dimension:String)
 
     fun changeListView() {
         getTypeFactory().setRecyclerViewItem(CategoryNavConstants.RecyclerView.VIEW_PRODUCT)
@@ -45,9 +46,11 @@ abstract class BaseCategoryAdapter(val itemChangeView: OnItemChangeView) :
 
         fun onChangeSingleGrid()
 
-        fun onListItemImpressionEvent(item:Visitable<Any>,position:Int)
+        fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>,viewedTopAdsList: List<Visitable<Any>>)
 
         fun wishListEnabledTracker(wishListTrackerUrl: String)
+
+        fun topAdsTrackerUrlTrigger(url:String)
     }
 
 }

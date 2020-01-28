@@ -5,12 +5,11 @@ package com.tokopedia.shop.settings.etalase.view.fragment
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -33,9 +32,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReord
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
 import com.tokopedia.user.session.UserSessionInterface
-
-import java.util.ArrayList
-
+import java.util.*
 import javax.inject.Inject
 
 class ShopSettingsEtalaseReorderFragment :
@@ -143,10 +140,12 @@ class ShopSettingsEtalaseReorderFragment :
     fun saveReorder() {
         showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
         val shopNoteList = ArrayList<String>()
-        val sortDataList = adapter!!.data
-        for (shopEtalaseViewModel in sortDataList) {
-            shopNoteList.add(shopEtalaseViewModel.id)
+        adapter?.data?.let {
+            for (shopEtalaseViewModel in it) {
+                shopNoteList.add(shopEtalaseViewModel.id)
+            }
         }
+
         shopSettingEtalaseListReorderPresenter.reorderShopNotes(shopNoteList)
     }
 

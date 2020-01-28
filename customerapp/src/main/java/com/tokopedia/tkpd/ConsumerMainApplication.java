@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,10 +14,12 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+import android.os.Handler;
+
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
@@ -29,6 +33,9 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -40,15 +47,16 @@ import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
+import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogWrapper;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.shakedetect.ShakeDetectManager;
+import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -71,6 +79,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.jvm.functions.Function1;
+import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -78,14 +87,18 @@ import kotlin.jvm.functions.Function1;
 
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener,
-        CharacterPerMinuteInterface {
+        InAppManager.InAppMessageListener {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_ONE = "Promo BTS 1";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_TWO = "Promo BTS 2";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_ONE = "custom_sound_bts_one";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_TWO = "custom_sound_bts_two";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
-    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -95,6 +108,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        if (!isMainProcess()) {
+            return;
+        }
         UIBlockDebugger.init(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
@@ -129,9 +145,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().initializeAllApis();
 
         PersistentCacheManager.init(this);
+        initReact();
 
         super.onCreate();
-        initReact();
+
+        StethoUtil.initStetho(this);
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -154,14 +172,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }).start();
         }
 
-        if (callback == null) {
-            callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
-        }
-        registerActivityLifecycleCallbacks(callback);
-
-        LogWrapper.init(this);
-        if (LogWrapper.instance != null) {
-            LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        LogManager.init(this);
+        if (LogManager.instance != null) {
+            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
 
@@ -169,6 +182,33 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
+
+        ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
+            @Override
+            public void onShakeDetected(boolean isLongShake) {
+                openShakeDetectCampaignPage(isLongShake);
+            }
+        });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
+    }
+
+    private void openShakeDetectCampaignPage(boolean isLongShake) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+    }
+
+    private boolean isMainProcess() {
+        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
+
+        if (manager == null || manager.getRunningAppProcesses() == null) return false;
+
+        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+            if (processInfo.pid == android.os.Process.myPid()) {
+                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -178,14 +218,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
         TokopediaUrl.Companion.deleteInstance();
-        unregisterActivityLifecycleCallbacks(callback);
         CoreLegacyDbFlowDatabase.reset();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        unregisterActivityLifecycleCallbacks(callback);
         CoreLegacyDbFlowDatabase.reset();
     }
 
@@ -202,6 +240,28 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                     R.raw.tokopedia_endtune), att);
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_ONE,
+                    NOTIFICATION_CHANNEL_NAME_BTS_ONE, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_ONE);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_one), att);
+            notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_TWO,
+                    NOTIFICATION_CHANNEL_NAME_BTS_TWO, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_TWO);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_two), att);
             notificationManager.createNotificationChannel(mChannel);
         }
     }
@@ -247,7 +307,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
+        Timber.d("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
         return handleClick(screenName, extras, deepLinkUri);
     }
 
@@ -292,7 +352,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 startActivity(intent);
 
             } else {
-                CommonUtils.dumper("FCM entered no one");
+                Timber.d("FCM entered no one");
             }
 
             return true;
@@ -324,18 +384,30 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     public boolean checkAppSignature() {
-        PackageInfo info = null;
         try {
-            info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            PackageInfo info;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+                if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
+                    byte[] rawCertNative = bytesFromJNI();
+                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                } else {
+                    return false;
+                }
+            } else {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+                if (null != info && info.signatures.length > 0) {
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
+                    byte[] rawCertNative = bytesFromJNI();
+
+                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                } else {
+                    return false;
+                }
+            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }
-        if (null != info && info.signatures.length > 0) {
-            byte[] rawCertJava = info.signatures[0].toByteArray();
-            byte[] rawCertNative = bytesFromJNI();
-
-            return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-        } else {
             return false;
         }
     }
@@ -362,13 +434,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 md = MessageDigest.getInstance("MD5");
                 md.update(bytes);
                 byte[] byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA");
                 md.update(bytes);
                 byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA256");
@@ -405,21 +475,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
-    }
-
-    @Override
-    public void saveCPM(@NonNull String cpm) {
-        PersistentCacheManager.instance.put(CharacterPerMinuteInterface.KEY, cpm, TimeUnit.MINUTES.toMillis(1));
-    }
-
-    @Override
-    public String getCPM() {
-        return PersistentCacheManager.instance.getString(CharacterPerMinuteInterface.KEY);
-    }
-
-    @Override
-    public boolean isEnable() {
-        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
     }
 
 

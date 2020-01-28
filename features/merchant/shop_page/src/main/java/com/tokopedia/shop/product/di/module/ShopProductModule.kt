@@ -13,7 +13,6 @@ import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
 import com.tokopedia.gm.common.data.source.GMCommonDataSource
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.network.NetworkRouter
@@ -167,12 +166,6 @@ class ShopProductModule {
     @Provides
     fun provideGMCommonRepository(gmCommonDataSource: GMCommonDataSource?): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideGetFeatureProductListUseCase(gmCommonRepository: GMCommonRepository?): GetFeatureProductListUseCase {
-        return GetFeatureProductListUseCase(gmCommonRepository)
     }
 
     // WishList

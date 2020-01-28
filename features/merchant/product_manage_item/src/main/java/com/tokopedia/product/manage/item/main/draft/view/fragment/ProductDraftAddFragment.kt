@@ -18,10 +18,11 @@ class ProductDraftAddFragment : ProductDraftEditFragment() {
     }
 
     companion object {
-        fun createInstance(draftProductId: Long): Fragment {
+        fun createInstance(draftProductId: Long, cacheManagerId: String): Fragment {
             val fragment = ProductDraftAddFragment()
             val args = Bundle()
             args.putLong(DRAFT_PRODUCT_ID, draftProductId)
+            args.putString(CACHE_MANAGER_ID, cacheManagerId)
             fragment.arguments = args
             return fragment
         }

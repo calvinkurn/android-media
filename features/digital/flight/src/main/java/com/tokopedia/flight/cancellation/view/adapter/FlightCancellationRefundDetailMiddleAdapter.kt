@@ -1,12 +1,12 @@
 package com.tokopedia.flight.cancellation.view.adapter
 
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationTitleContentEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity
 
@@ -31,7 +31,7 @@ class FlightCancellationRefundDetailMiddleAdapter(var items: MutableList<Cancell
 
     class CancellationRefundDetailMiddleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val title: TextView = itemView.findViewById(com.tokopedia.design.R.id.tv_title)
+        private val title: TextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_title)
         private val rvItems: RecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.rv_item)
 
         fun bindData(info: CancellationTitleContentEntity) {

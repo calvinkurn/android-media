@@ -1,6 +1,6 @@
 package com.tokopedia.analytic_constant;
 
-import com.google.android.gms.common.util.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.HashMap;

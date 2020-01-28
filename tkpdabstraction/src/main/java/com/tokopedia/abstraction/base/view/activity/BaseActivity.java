@@ -56,7 +56,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
             }
         };
-        initShake();
     }
 
     @Override
@@ -65,7 +64,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         pauseFlag = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
-        unregisterShake();
 
     }
 
@@ -87,29 +85,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         registerForceLogoutReceiver();
         registerInAppReceiver();
         checkIfForceLogoutMustShow();
-        registerShake();
-    }
-
-    protected void initShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).init();
-        }
-    }
-
-    protected void registerShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            String screenName = getScreenName();
-            if (screenName == null) {
-                screenName = this.getClass().getSimpleName();
-            }
-            ((AbstractionRouter) getApplication()).registerShake(screenName, this);
-        }
-    }
-
-    protected void unregisterShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).unregisterShake();
-        }
     }
 
     protected void sendScreenAnalytics() {
@@ -238,5 +213,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (gratificationSubscriber != null) {
             gratificationSubscriber.onActivityDestroyed(this);
         }
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            String screenName = getScreenName();
+            if (screenName == null) {
+                screenName = this.getClass().getSimpleName();
+            }
+        }
+    }
+
+    public boolean isAllowShake() {
+        return true;
     }
 }

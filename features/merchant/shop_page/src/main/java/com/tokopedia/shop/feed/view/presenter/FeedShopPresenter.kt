@@ -87,7 +87,7 @@ class FeedShopPresenter @Inject constructor(
                     GetDynamicFeedUseCase.createRequestParams(
                             userId = getUserId(),
                             cursor = cursor,
-                            source = GetDynamicFeedUseCase.SOURCE_SHOP,
+                            source = GetDynamicFeedUseCase.FeedV2Source.Shop,
                             sourceId = shopId),
                     object : Subscriber<DynamicFeedDomainModel>() {
                         override fun onNext(t: DynamicFeedDomainModel?) {
@@ -117,7 +117,7 @@ class FeedShopPresenter @Inject constructor(
                 GetDynamicFeedUseCase.createRequestParams(
                         userId = getUserId(),
                         cursor = cursor,
-                        source = GetDynamicFeedUseCase.SOURCE_SHOP,
+                        source = GetDynamicFeedUseCase.FeedV2Source.Shop,
                         sourceId = shopId),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
@@ -345,6 +345,10 @@ class FeedShopPresenter @Inject constructor(
         } else {
             view.onAddToCartFailed(postTagItem.applink)
         }
+    }
+
+    override fun clearCache() {
+        getDynamicFeedFirstUseCase.clearFeedFirstCache()
     }
 
     private fun getUserId(): String {

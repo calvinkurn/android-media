@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -14,6 +15,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class PlayCardViewHolder(
@@ -21,6 +23,7 @@ class PlayCardViewHolder(
         val listener: HomeCategoryListener
 ): AbstractViewHolder<PlayCardViewModel>(view) {
 
+    private val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val imgBanner = view.findViewById<ImageView>(R.id.imgBanner)
     private val chipPlayLive = view.findViewById<LinearLayout>(R.id.chipPlayLive)
     private val chipPlayViewers = view.findViewById<LinearLayout>(R.id.chipPlayViewers)
@@ -33,6 +36,7 @@ class PlayCardViewHolder(
             this.playCardHome = viewModel //flag to preventing re-hit
 
             bindCard(viewModel.playGetCardHome.data.card)
+            container.show()
 
             //impression tracker
             HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
@@ -48,16 +52,35 @@ class PlayCardViewHolder(
                 }
             }
         }
-
-        if (playCardHome == null) {
-            listener.onGetPlayBanner(adapterPosition)
-        }
     }
 
     private fun bindCard(card: PlayCard) {
         chipLive(card)
         chipViewers(card)
         ImageHandler.loadImageRounded2(view.context, imgBanner, card.imageUrl, ROUNDED_RADIUS)
+    }
+
+    override fun bind(element: PlayCardViewModel, payloads: MutableList<Any>) {
+        element.getPlayCardHome()?.let { viewModel ->
+            this.playCardHome = viewModel //flag to preventing re-hit
+
+            bindCard(viewModel.playGetCardHome.data.card)
+            container.show()
+
+            //impression tracker
+            HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
+
+            itemView.setOnClickListener {
+                val appLink = viewModel.playGetCardHome.data.card.applink
+                with(view.context) {
+                    //event click tracker
+                    HomePageTracking.eventClickPlayBanner(this, element.getChannel())
+
+                    //start applink
+                    startActivity(RouteManager.getIntent(this, appLink))
+                }
+            }
+        }
     }
 
     private fun chipLive(card: PlayCard) {

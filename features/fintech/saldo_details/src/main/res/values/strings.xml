@@ -79,5 +79,6 @@
     <string name="modal_toko">Modal Toko</string>
     <string name="financial_services">Layanan Finansial</string>
     <string name="saldo_webview_title">Tokopedia</string>
+    <string name="tickerClickableText">Bayar Sekarang</string>
 
 </resources>

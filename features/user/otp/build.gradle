@@ -7,6 +7,13 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
+
+android {
+    androidExtensions {
+        experimental = true
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -24,6 +31,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -46,6 +55,15 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+
+    implementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

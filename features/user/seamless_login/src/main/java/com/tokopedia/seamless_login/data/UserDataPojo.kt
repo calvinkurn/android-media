@@ -8,11 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UserDataPojo(
+        @SerializedName("date")
         val date: String = "",
 
         @SerializedName("content-md5")
         val content_md5: String = "",
 
+        @SerializedName("authorization")
         val authorization: String = "",
 
         @SerializedName("accounts-authorization")

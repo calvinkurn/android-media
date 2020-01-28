@@ -18,6 +18,7 @@ public interface KYCConstant {
     int REQUEST_CODE_CAMERA_KTP = 1010;
     int REQUEST_CODE_CAMERA_FACE = 2020;
 
+    int STATUS_DEFAULT = -3;
     int STATUS_ERROR = -2;
     int STATUS_REJECTED = -1;
     int STATUS_PENDING = 0;

@@ -134,6 +134,22 @@ public class ProductItem extends BaseItem implements Parcelable {
     private Catalog catalog;
     @SerializedName("is_liked")
     private boolean isLiked;
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public String getAppUrl() {
+        return appUrl;
+    }
+
+    @SerializedName("web_url")
+    @Expose
+    private String webUrl;
+
+    @SerializedName("app_url")
+    @Expose
+    private String appUrl;
     private boolean isTrack = false;
 
 
@@ -183,6 +199,8 @@ public class ProductItem extends BaseItem implements Parcelable {
         isLiked = in.readByte() != 0;
         this.isTrack = in.readByte() != 0;
         desktopUrl = in.readString();
+        webUrl = in.readString();
+        appUrl = in.readString();
 
     }
 
@@ -521,6 +539,8 @@ public class ProductItem extends BaseItem implements Parcelable {
         dest.writeByte((byte) (isLiked ? 1 : 0));
         dest.writeByte(this.isTrack ? (byte) 1 : (byte) 0);
         dest.writeString(desktopUrl);
+        dest.writeString(webUrl);
+        dest.writeString(appUrl);
 
     }
 

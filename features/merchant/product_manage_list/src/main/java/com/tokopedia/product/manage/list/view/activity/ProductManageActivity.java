@@ -1,20 +1,18 @@
 package com.tokopedia.product.manage.list.view.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.user.session.UserSession;
@@ -26,25 +24,26 @@ import com.tokopedia.user.session.UserSessionInterface;
 public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
-    public UserSessionInterface userSession;
 
-    @DeepLink(ApplinkConst.PRODUCT_MANAGE)
-    public static Intent getApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ProductManageActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
+    private static final int MANAGE_PRODUCT = 8;
+
+    public UserSessionInterface userSession;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
-        inflateView(R.layout.activity_simple_fragment);
+        inflateView(com.tokopedia.core2.R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new ProductManageSellerFragment(), TAG).commit();
+                    .replace(com.tokopedia.core2.R.id.container, new ProductManageSellerFragment(), TAG).commit();
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.installActivity(this);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
 
     @Override
     protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
+        return MANAGE_PRODUCT;
     }
 
     @Override

@@ -28,12 +28,14 @@ class HotlistParamBuilder {
         private const val KEY_TOP_PARAMS = "top_params"
         private const val KEY_PARAMS = "params"
         private const val KEY_SRC_HOTLIST = "hotlist"
+        private const val KEY_HEADLINE_PRODUCT_COUNT = "headline_product_count"
 
         private const val DEVICE_TYPE = "android"
         private const val ITEMS_PER_PAGE = 10
         private const val CPM_ADS_PER_PAGE = 1
         private const val TOP_ADS_PER_PAGE = "2"
         private const val CPM_TEMPLATE_ID = "3"
+        private const val CPM_HEADLINE_PRODUCT_COUNT_VALUE = "3"
 
         val hotlistParamBuilder: HotlistParamBuilder by lazy { HotlistParamBuilder() }
     }
@@ -127,35 +129,35 @@ class HotlistParamBuilder {
         cpmParams.putString(KEY_TEMPLATE_ID, CPM_TEMPLATE_ID)
         cpmParams.putString(KEY_PAGE, CPM_ADS_PER_PAGE.toString())
         cpmParams.putString(KEY_QUERY, queryItem)
+        cpmParams.putString(KEY_HEADLINE_PRODUCT_COUNT,CPM_HEADLINE_PRODUCT_COUNT_VALUE)
         param.putString(KEY_PARAMS, createParametersForQuery(cpmParams.parameters))
         return param
     }
 
     private fun prepareProductListParams(strFilterAttribute: String, start: Int, rows: Int, unique_id: String, sortParam: String, filterParam: String): String {
-        var param = "$strFilterAttribute&device=$DEVICE_TYPE&$START=$start&$ROWS=$rows&$UNIQUE_ID=$unique_id"
+        var param: String
+        param = "$KEY_SAFE_SEARCH=false"
         if (filterParam.isNotEmpty()) {
             param = "$param&$filterParam"
         }
         if (sortParam.isNotEmpty()) {
             param = "$param&$sortParam"
         }
-        if (param.isNotEmpty()) {
-            param = "$param&$KEY_SAFE_SEARCH=false"
-        }
+        param = "$param&$strFilterAttribute&device=$DEVICE_TYPE&$START=$start&$ROWS=$rows&$UNIQUE_ID=$unique_id"
+
         return param
     }
 
     private fun preparetopAdsParams(strFilterAttribute: String, page: Int, sortParam: String, filterParam: String): String {
-        var param = "$strFilterAttribute&device=$DEVICE_TYPE&page=$page&item=$TOP_ADS_PER_PAGE&ep=${EpType.PRODUCT.value}&$KEY_F_SHOP=1&src=${SourceType.DIRECTORY.value}"
+        var param: String
+        param = "$KEY_SAFE_SEARCH=false"
         if (filterParam.isNotEmpty()) {
             param = "$param&$filterParam"
         }
         if (sortParam.isNotEmpty()) {
             param = "$param&$sortParam"
         }
-        if (param.isNotEmpty()) {
-            param = "$param&$KEY_SAFE_SEARCH=false"
-        }
+        param = "$param&$strFilterAttribute&device=$DEVICE_TYPE&page=$page&item=$TOP_ADS_PER_PAGE&ep=${EpType.PRODUCT.value}&$KEY_F_SHOP=1&src=${SourceType.DIRECTORY.value}"
         return param
     }
 

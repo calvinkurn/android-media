@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -56,7 +56,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = repository.getRestData(USER_DOB_PATH,
+                    val response = getRepo().getRestData(USER_DOB_PATH,
                             object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
                             RequestType.GET,
                             RequestParams.EMPTY.parameters)
@@ -70,6 +70,8 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
 
         )
     }
+
+    fun getRepo() = repository
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()

@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+android{
+    /*dataBinding {
+        enabled = true
+    }*/
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.datepicker
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+
+    implementation rootProject.ext.miscDependencies.scannerZxing
+}
+
+project.ext {
+    artifactId = "sellerorder"
+    groupId = "com.tokopedia.sellerorder"
+    versionName = "1.0.0"
+    artifactName = "sellerorder-release"
+}
+
+apply from: "$rootProject.projectDir/publish_local.gradle"

@@ -1,11 +1,11 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.domain.DeleteSingleDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;

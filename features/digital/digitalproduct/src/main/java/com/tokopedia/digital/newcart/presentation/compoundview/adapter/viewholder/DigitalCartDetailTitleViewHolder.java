@@ -8,7 +8,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.digital.R;
 
 public class DigitalCartDetailTitleViewHolder extends RecyclerView.ViewHolder {
-    public static final int LAYOUT = R.layout.item_digital_cart_detail_title;
+    public static final int LAYOUT = R.layout.view_digital_title_item_cart_detail;
 
     private AppCompatTextView titleTextView;
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -26,14 +27,17 @@ import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
-import com.tokopedia.officialstore.common.RecyclerViewScrollListener
+import com.tokopedia.officialstore.common.listener.FeaturedShopListener
+import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
@@ -50,6 +54,7 @@ class OfficialHomeFragment :
         BaseDaggerFragment(),
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
+        FeaturedShopListener,
         DynamicChannelEventHandler
 {
 
@@ -70,7 +75,6 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -80,6 +84,7 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
+    private var isLoadedOnce: Boolean = false
     private var isScrolling = false
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
@@ -91,7 +96,7 @@ class OfficialHomeFragment :
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    val CATEGORY_CONST: String = category?.title?:""
+                    val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
@@ -107,14 +112,16 @@ class OfficialHomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { category = it.getParcelable(BUNDLE_CATEGORY) }
+        arguments?.let {
+            category = it.getParcelable(BUNDLE_CATEGORY)
+        }
         context?.let { tracking = OfficialStoreTracking(it) }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+            loadData()
         }
     }
 
@@ -125,7 +132,7 @@ class OfficialHomeFragment :
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -140,7 +147,7 @@ class OfficialHomeFragment :
         observeDynamicChannel()
         observeProductRecommendation()
         resetData()
-        refreshData()
+        loadData()
         setListener()
     }
 
@@ -151,19 +158,30 @@ class OfficialHomeFragment :
 
     private fun resetData() {
         adapter?.clearAllElements()
-        adapter?.resetState()
+        adapter?.resetState(this)
         endlessScrollListener?.resetState()
     }
 
-    private fun refreshData() {
+    private fun loadData(isRefresh: Boolean = false) {
         initFirebasePerformanceMonitoring()
-        viewModel.loadFirstData(category)
+
+        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
+            if (!isLoadedOnce || isRefresh) {
+                viewModel.loadFirstData(category)
+                isLoadedOnce = true
+
+                if (!isRefresh) {
+                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+                }
+            }
+        }
     }
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                     setLoadMoreListener()
@@ -199,7 +217,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
+                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
                     setLoadMoreListener()
                 }
                 is Fail -> {
@@ -285,7 +303,7 @@ class OfficialHomeFragment :
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
             recyclerView?.removeOnScrollListener(endlessScrollListener)
-            refreshData()
+            loadData(true)
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
@@ -340,7 +358,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.officialStoreProductRecommendationResult.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
@@ -419,15 +437,19 @@ class OfficialHomeFragment :
                 category?.title.toEmptyStringIfNull(),
                 isAddWishlist,
                 viewModel.isLoggedIn(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION)
+                item.productId,
+                item.isTopAds
+        )
     }
 
     override fun onCountDownFinished() {
-        adapter?.getVisitables()?.removeAll {
-            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+            }
+            adapter?.notifyDataSetChanged()
         }
-        adapter?.notifyDataSetChanged()
-        refreshData()
+        loadData(true)
     }
 
     override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {
@@ -472,13 +494,15 @@ class OfficialHomeFragment :
         return View.OnClickListener {
             val gridData = channelData.grids?.get(position)
             val applink = gridData?.applink ?: ""
+            val campaignId = channelData.campaignID
 
             gridData?.let {
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        campaignId
                 )
             }
 
@@ -488,7 +512,8 @@ class OfficialHomeFragment :
 
     override fun flashSaleImpression(channelData: Channel) {
         if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            tracking?.flashSaleImpression(viewModel.currentSlug, channelData)
+            val campaignId = channelData.campaignID
+            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, campaignId)
             sentDynamicChannelTrackers.add(channelData.id)
         }
     }
@@ -552,8 +577,44 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun removeLoading() {
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is LoadingModel
+            }
+            adapter?.notifyDataSetChanged()
+        }
+    }
+
+    override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
+        tracking?.eventImpressionFeatureBrand(
+                categoryName,
+                position,
+                shopData.name.orEmpty(),
+                shopData.imageUrl.orEmpty(),
+                shopData.additionalInformation.orEmpty(),
+                shopData.featuredBrandId.orEmpty(),
+                viewModel.isLoggedIn(),
+                shopData.shopId.orEmpty()
+        )
+    }
+
+    override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
+        tracking?.eventClickFeaturedBrand(
+                categoryName,
+                position,
+                shopData.name.orEmpty(),
+                shopData.url.orEmpty(),
+                shopData.additionalInformation.orEmpty(),
+                shopData.featuredBrandId.orEmpty(),
+                viewModel.isLoggedIn(),
+                shopData.shopId.orEmpty()
+        )
+        RouteManager.route(context, shopData.url)
+    }
+
     private fun initFirebasePerformanceMonitoring() {
-        val CATEGORY_CONST: String = category?.title?:""
+        val CATEGORY_CONST: String = category?.slug.orEmpty()
 
         val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
         bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)

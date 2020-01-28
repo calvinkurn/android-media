@@ -49,6 +49,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     lateinit var webview: TkpdWebView
     lateinit var progressBar: ProgressBar
+    lateinit var errorView: View
     private val userSession: UserSessionInterface by lazy {
         UserSession(context)
     }
@@ -157,7 +158,8 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         CookieManager.getInstance().setAcceptCookie(true)
 
         webview = view.findViewById(R.id.webview)
-        progressBar = view.findViewById(R.id.progress_bar)
+        progressBar = view.findViewById(R.id.progressBar)
+        errorView = view.findViewById(R.id.errorView)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE

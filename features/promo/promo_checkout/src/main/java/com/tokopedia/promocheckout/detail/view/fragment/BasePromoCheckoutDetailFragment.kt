@@ -5,15 +5,14 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
@@ -33,6 +32,7 @@ import com.tokopedia.promocheckout.widget.TimerPromoCheckout
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
@@ -103,14 +103,14 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel) {
-        promoCheckoutDetailModel.let {
+    override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel?) {
+        promoCheckoutDetailModel?.let {
             ImageHandler.LoadImage(imageBannerPromo, it.imageUrlMobile)
-            view?.titlePeriod?.text = promoCheckoutDetailModel.usage?.text
-            view?.titleMinTrans?.text = promoCheckoutDetailModel.minimumUsageLabel
-            if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage)) {
+            view?.titlePeriod?.text = it.usage.text
+            view?.titleMinTrans?.text = it.minimumUsageLabel
+            if (TextUtils.isEmpty(it.minimumUsage)) {
                 view?.textMinTrans?.visibility = View.GONE
-                if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsageLabel)) {
+                if (TextUtils.isEmpty(it.minimumUsageLabel)) {
                     view?.titleMinTrans?.visibility = View.GONE
                     view?.imageMinTrans?.visibility = View.GONE
                 } else {
@@ -121,18 +121,18 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
                 view?.titleMinTrans?.visibility = View.VISIBLE
                 view?.imageMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.visibility = View.VISIBLE
-                view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
+                view?.textMinTrans?.text = it.minimumUsage
             }
             textTitlePromo?.text = it.title
             hideTimerView()
-            if ((it.usage?.activeCountDown ?: 0 > 0 &&
-                            it.usage?.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setActiveTimerUsage(it.usage?.activeCountDown?.toLong() ?: 0)
-            } else if ((it.usage?.expiredCountDown ?: 0 > 0 &&
-                            it.usage?.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setExpiryTimerUsage(it.usage?.expiredCountDown?.toLong() ?: 0)
+            if ((it.usage.activeCountDown > 0 &&
+                            it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setActiveTimerUsage(it.usage.activeCountDown.toLong())
+            } else if ((it.usage.expiredCountDown > 0 &&
+                            it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setExpiryTimerUsage(it.usage.expiredCountDown.toLong())
             }
-            view?.textPeriod?.text = it.usage?.usageStr
+            view?.textPeriod?.text = it.usage.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
             webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
             enableOrDisableViews(it)
@@ -220,7 +220,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         if (e is CheckPromoCodeException) {
             message = e.message
         }
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }.showRetrySnackbar()
     }
 
     override fun onErrorCheckPromoStacking(e: Throwable) {
@@ -299,7 +299,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         try {
             progressDialog?.show()
         } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
+            Timber.d(exception)
         }
     }
 

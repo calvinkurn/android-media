@@ -66,7 +66,7 @@ public class ProductEmptySearchViewHolder extends EmptySearchViewHolder {
 
         @Override
         public ProductSelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_empty_state_selected_filter_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_product_empty_state_selected_filter_item, parent, false);
             return new ProductSelectedFilterItemViewHolder(view, clickListener);
         }
 

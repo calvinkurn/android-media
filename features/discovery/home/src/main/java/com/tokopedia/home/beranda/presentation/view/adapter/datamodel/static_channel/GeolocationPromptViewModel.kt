@@ -1,9 +1,25 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class GeolocationPromptViewModel : HomeVisitable<HomeTypeFactory> {
+class GeolocationPromptViewModel : HomeVisitable {
+    override fun visitableId(): String {
+        return "geolocation"
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is GeolocationPromptViewModel) {
+            return visitableId() == b.visitableId()
+        }
+        return false
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
+    }
+
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false

@@ -9,11 +9,46 @@ import com.google.gson.annotations.SerializedName;
 
 public class TopchatNotificationPojo {
 
-    @SerializedName("notif_unreads")
+    @SerializedName("unreads")
     @Expose
     private int notifUnreads;
 
+    @SerializedName("unreadsSeller")
+    @Expose
+    private int notifUnreadsSeller;
+
+    @SerializedName("unreadsUser")
+    @Expose
+    private int notifUnreadsBuyer;
+
     public int getNotifUnreads() {
         return notifUnreads;
+    }
+
+    public int getNotifUnreadsSeller() {
+        return notifUnreadsSeller;
+    }
+
+    public int getNotifUnreadsBuyer() {
+        return notifUnreadsBuyer;
+    }
+
+    public class ChatNotificationResponse {
+
+        @SerializedName("notifications")
+        Notifications notifications = new Notifications();
+
+        public Notifications getNotifications() {
+            return notifications;
+        }
+
+        public class Notifications {
+            @SerializedName("chat")
+            TopchatNotificationPojo topchatNotificationPojo = new TopchatNotificationPojo();
+
+            public TopchatNotificationPojo getTopchatNotificationPojo() {
+                return topchatNotificationPojo;
+            }
+        }
     }
 }

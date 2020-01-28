@@ -25,10 +25,23 @@ class tupleComposite {
 }
 List<compositeModel> pathComposite = new ArrayList<>()
 
-if (new File("$rootDir/.compositeScan-enable").exists()) {
-    def fileTreeComposite = fileTree(dir: "${rootDir}", include: '**/settings.gradle')
-    fileTreeComposite.each { file ->
-        pathComposite.add(new compositeModel("$file"))
+def enableScanComposite = new File("$rootDir/.compositeScan-enable").exists()
+// enableAllComposite is to bypass checking enbale one by one, so will be faster.
+def enableAllComposite = new File("$rootDir/.composite-enable-all").exists()
+def enableComposite = enableScanComposite || enableAllComposite
+
+if (enableComposite) {
+    if (enableAllComposite) {
+        println("All Composite lib is enabled")
+        // this is to by pass scanning all folder, so will be faster
+        // However, we need to maintain this, if there is an addition for composite folder.
+        println("composite file $rootDir/libraries/composite_lib")
+        pathComposite.add(new compositeModel("$rootDir/libraries/composite_lib"))
+    } else {
+        def fileTreeComposite = fileTree(dir: "${rootDir}", include: '**/settings.gradle')
+        fileTreeComposite.each { file ->
+            pathComposite.add(new compositeModel("$file"))
+        }
     }
     pathComposite.each { file ->
         List<String> listModule = new ArrayList<>()
@@ -63,7 +76,8 @@ if (new File("$rootDir/.compositeScan-enable").exists()) {
 
     pathComposite.each { file ->
         if ("$rootDir" != file.pathComposite) {
-            if (new File("${file.pathComposite}/.composite-enable").exists()) {
+            // enableAllComposite is to bypass checking composite-enable file
+            if (enableAllComposite || new File("${file.pathComposite}/.composite-enable").exists()) {
                 includeBuild("${file.pathComposite.replace("$rootDir/", "").trim()}") {
                     dependencySubstitution {
                         file.listModuleComposite.each {

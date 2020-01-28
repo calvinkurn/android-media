@@ -1,28 +1,28 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.URLUtil;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
-import android.webkit.URLUtil;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
@@ -30,12 +30,21 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.logger.LogManager;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -43,12 +52,6 @@ import com.tokopedia.url.TokopediaUrl;
 
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
-
-    public static final int SELLER_APPLICATION = 2;
-
-    public static SellerMainApplication get(Context context) {
-        return (SellerMainApplication) context.getApplicationContext();
-    }
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -82,7 +85,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         if (deepLinkUri != null) {
-            CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
+            Timber.d("FCM moengage SELLER clicked " + deepLinkUri.toString());
             if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -95,7 +98,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
             } else {
-                CommonUtils.dumper("FCM entered no one");
+                Timber.d("FCM entered no one");
             }
 
             return true;
@@ -139,6 +142,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
+        LogManager.init(this);
+        if (LogManager.instance != null) {
+            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        }
+        TimberWrapper.init(this);
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
@@ -146,6 +154,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
+        initializeAbTestVariant();
     }
 
     @Override
@@ -153,6 +162,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         super.attachBaseContext(base);
         SplitCompat.install(this);
     }
+
+    private void initializeAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        RemoteConfigInstance.initAbTestPlatform(this);
+        Long current = new Date().getTime();
+
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
+        }
+    }
+
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {
@@ -169,14 +191,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void generateSellerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
-    public void initDbFlow() {
-        try {
-            FlowManager.getConfig();
-        } catch (IllegalStateException e) {
-            FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
-        }
     }
 
     private void initCacheApi() {
@@ -198,10 +212,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return null;
     }
-
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
-    }
-
 }

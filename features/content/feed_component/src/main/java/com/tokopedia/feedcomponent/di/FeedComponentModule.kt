@@ -4,8 +4,11 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.domain.SUSPEND_GRAPHQL_REPOSITORY
 import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase.Companion.SEARCH_PROFILE_QUERY
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
+import com.tokopedia.graphql.coroutines.data.Interactor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
@@ -31,4 +34,8 @@ class FeedComponentModule {
 
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
+
+    @Provides
+    @Named(SUSPEND_GRAPHQL_REPOSITORY)
+    fun provideSuspendGraphqlInteractor(): GraphqlRepository = Interactor.getInstance().graphqlRepository
 }

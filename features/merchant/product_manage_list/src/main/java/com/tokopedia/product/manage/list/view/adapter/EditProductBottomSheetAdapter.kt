@@ -15,7 +15,7 @@ class EditProductBottomSheetAdapter(private val listener: EditProductBottomSheet
 
     private var data: List<BulkBottomSheetType> = listOf()
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): EditProductBottomSheetViewHolder {
-        return EditProductBottomSheetViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_bs_edit, parent, false))
+        return EditProductBottomSheetViewHolder(LayoutInflater.from(parent.context).inflate(com.tokopedia.product.manage.list.R.layout.item_bs_edit, parent, false))
     }
 
     override fun getItemCount(): Int = data.size
@@ -46,10 +46,10 @@ class EditProductBottomSheetAdapter(private val listener: EditProductBottomSheet
 
 
     inner class EditProductBottomSheetViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private var imgDrawable = view.findViewById<ImageView>(R.id.img_bs_edit)
-        private var txtTitle = view.findViewById<TextView>(R.id.txt_title_edit)
-        private var txtValue = view.findViewById<TextView>(R.id.txt_value_edit)
-        private var imgArrow = view.findViewById<ImageView>(R.id.img_arrow_bulk)
+        private var imgDrawable = view.findViewById<ImageView>(com.tokopedia.product.manage.list.R.id.img_bs_edit)
+        private var txtTitle = view.findViewById<TextView>(com.tokopedia.product.manage.list.R.id.txt_title_edit)
+        private var txtValue = view.findViewById<TextView>(com.tokopedia.product.manage.list.R.id.txt_value_edit)
+        private var imgArrow = view.findViewById<ImageView>(com.tokopedia.product.manage.list.R.id.img_arrow_bulk)
 
         fun bind(data: BulkBottomSheetType) {
             view.setOnClickListener {

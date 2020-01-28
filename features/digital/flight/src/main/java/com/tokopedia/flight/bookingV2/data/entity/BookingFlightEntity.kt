@@ -2,7 +2,7 @@ package com.tokopedia.flight.bookingV2.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.flight.booking.data.cloud.entity.Amenity
+import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity
 
 /**

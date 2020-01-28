@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -13,16 +14,18 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
@@ -31,6 +34,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.transition.Fade;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
+import androidx.transition.TransitionSet;
 
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.autocomplete.R;
@@ -82,11 +93,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private RelativeLayout mSuggestionView;
     private EditTextCompat mSearchSrcTextView;
     private ImageView mBackBtn;
+    private ImageView mSearchIcon;
     private View mCancelBtn;
     private ImageView mVoiceBtn;
     private ImageView mImageSearchButton;
     private ImageView mEmptyBtn;
-    private LinearLayout mSearchTopBar;
+    private ConstraintLayout mSearchTopBar;
     private LinearLayout mSearchContainer;
     private CharSequence mOldQueryText;
     private CharSequence mUserQuery;
@@ -138,6 +150,20 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         initStyle(attrs, defStyleAttr);
 
         initCompositeSubscriber();
+
+        mSuggestionView.post(new Runnable() {
+            @Override
+            public void run() {
+                setSuggestionViewAnimation();
+            }
+        });
+    }
+
+    private void setSuggestionViewAnimation() {
+        TransitionSet transitionSet = new TransitionSet();
+        Transition fade = new Fade(Fade.MODE_IN);
+        transitionSet.addTransition(fade);
+        TransitionManager.beginDelayedTransition(mSuggestionView, fade);
     }
 
     private void initCompositeSubscriber() {
@@ -259,9 +285,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         LayoutInflater.from(mContext).inflate(R.layout.autocomplete_search_view, this, true);
         mSearchLayout = findViewById(R.id.search_layout);
         mSearchContainer = (LinearLayout) mSearchLayout.findViewById(R.id.search_container);
-        mSearchTopBar = (LinearLayout) mSearchLayout.findViewById(R.id.search_top_bar);
+        mSearchTopBar = (ConstraintLayout) mSearchLayout.findViewById(R.id.search_top_bar);
         mSearchSrcTextView = (EditTextCompat) mSearchLayout.findViewById(R.id.searchTextView);
         mBackBtn = mSearchLayout.findViewById(R.id.action_up_btn);
+        mSearchIcon = mSearchLayout.findViewById(R.id.autocomplete_ic_search);
         mCancelBtn = mSearchLayout.findViewById(R.id.action_cancel_button);
         mVoiceBtn = mSearchLayout.findViewById(R.id.action_voice_btn);
         mImageSearchButton = mSearchLayout.findViewById(R.id.action_image_search_btn);
@@ -332,7 +359,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                for (UnderlineSpan span : s.getSpans(0, s.length(), UnderlineSpan.class)) {
+                    s.removeSpan(span);
+                }
             }
         });
 
@@ -348,11 +377,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void startShowCase() {
-
-        if (isAllowImageSearch() &&
-                !isShowShowCase()) {
-
-
+        if (shouldShowImageSearchShowCase()) {
             final String showCaseTag = "Image Search ShowCase";
             if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
                 return;
@@ -381,11 +406,18 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                             mContext.getResources().getString(R.string.on_board_desc)),
                     ShowCaseContentPosition.UNDEFINED,
                     com.tokopedia.design.R.color.tkpd_main_green));
-            if(activity != null) {
+            if (activity != null) {
                 showCaseDialog.show(activity, showCaseTag, showCaseObjectList);
             }
 
         }
+    }
+
+    private boolean shouldShowImageSearchShowCase() {
+        return isAllowImageSearch()
+                && !isShowShowCase()
+                && mImageSearchButton != null
+                && mImageSearchButton.getVisibility() == View.VISIBLE;
     }
 
     private ShowCaseDialog createShowCase() {
@@ -451,22 +483,31 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mCancelBtn.setVisibility(VISIBLE);
             showVoice(false);
             showImageSearch(false);
+            setConstraint(mSearchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.action_cancel_button, ConstraintSet.LEFT, 0);
         } else {
             mEmptyBtn.setVisibility(GONE);
             mCancelBtn.setVisibility(GONE);
             showVoice(true);
             showImageSearch(true);
+            setConstraint(mSearchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.action_voice_btn, ConstraintSet.LEFT, 0);
         }
 
         if (mOnQueryChangeListener != null && !TextUtils.equals(newText, mOldQueryText)) {
             mOnQueryChangeListener.onQueryTextChange(newText.toString());
         }
 
-        if (mSuggestionFragment != null  && !TextUtils.equals(newText, mOldQueryText)) {
+        if (mSuggestionFragment != null && !TextUtils.equals(newText, mOldQueryText)) {
             mSuggestionFragment.search(searchParameter);
         }
 
         mOldQueryText = newText.toString();
+    }
+
+    private void setConstraint(ConstraintLayout layout, int startId, int startSide, int endId, int endSide, int margin) {
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(layout);
+        constraintSet.connect(startId, startSide, endId, endSide, margin);
+        constraintSet.applyTo(layout);
     }
 
     private void onSubmitQuery() {
@@ -482,7 +523,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private void modifyQueryInSearchParameter(CharSequence query) {
         String finalQuery = query.toString();
 
-        if(isQueryEmptyAndHintExists(query)) {
+        if (isQueryEmptyAndHintExists(query)) {
             finalQuery = hint;
         }
 
@@ -653,7 +694,23 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mVoiceBtn.setVisibility(VISIBLE);
         } else {
             mVoiceBtn.setVisibility(GONE);
+            if (!isVoiceAvailable()) {
+                setMargin(mSearchSrcTextView, convertDpToPx(8), 0, convertDpToPx(12), 0);
+            }
         }
+    }
+
+    private void setMargin(View view, int left, int top, int right, int bottom) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            view.requestLayout();
+        }
+    }
+
+    private int convertDpToPx(int dp) {
+        Resources r = mContext.getResources();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
 
     public void showImageSearch(boolean show) {
@@ -665,7 +722,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     public void showSearch(SearchParameter searchParameter) {
-        if(mSuggestionFragment != null) {
+        if (mSuggestionFragment != null) {
             mSuggestionFragment.setSearchParameter(this.searchParameter);
         }
 
@@ -677,7 +734,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void setHintIfExists(String hint) {
-        if(!TextUtils.isEmpty(hint)) {
+        if (!TextUtils.isEmpty(hint)) {
             setHint(searchParameter.get(SearchApiConst.HINT));
         }
     }

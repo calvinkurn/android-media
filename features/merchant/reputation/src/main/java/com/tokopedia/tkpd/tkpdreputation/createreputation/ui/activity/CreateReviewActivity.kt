@@ -12,19 +12,19 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.base.di.component.AppComponent
-import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
+import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
-import javax.inject.Inject
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
 
-    @Inject lateinit var reviewTracker: ReputationTracking
-
     private var productId: String = ""
+    lateinit var createReviewFragment: CreateReviewFragment
 
     companion object {
+        const val PARAM_RATING = "rating"
+        const val DEFAULT_PRODUCT_RATING = 5
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
@@ -32,22 +32,22 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
+        val rating = uri?.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
-
             productId = uri.lastPathSegment ?: ""
             reputationId = uriSegment[uriSegment.size - 2]
         } else {
             productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
         }
-
-        return CreateReviewFragment.createInstance(
+        createReviewFragment = CreateReviewFragment.createInstance(
                 productId,
                 reputationId,
-                bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, 0) ?: 0
+                bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: rating
         )
+        return createReviewFragment
 
     }
 
@@ -69,7 +69,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     }
 
     override fun onBackPressed() {
-        reviewTracker.reviewOnCloseTracker("", productId)
+        if (::createReviewFragment.isInitialized)
+            ReviewTracking.reviewOnCloseTracker(createReviewFragment.getOrderId, productId)
 
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)

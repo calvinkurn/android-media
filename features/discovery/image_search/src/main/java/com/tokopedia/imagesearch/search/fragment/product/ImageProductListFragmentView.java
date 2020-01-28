@@ -33,7 +33,7 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     void enableWishlistButton(String productId);
 
-    String getQueryKey();
+    void setQueryKey(String query);
 
     SearchParameter getSearchParameter();
 

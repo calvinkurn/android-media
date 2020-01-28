@@ -14,6 +14,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 10/09/18.
  */
+@Deprecated ("use SubmitInterestPickUseCase instead", ReplaceWith("SubmitInterestPickUseCase"))
 class UpdateInterestUseCase @Inject constructor(@ApplicationContext val context: Context,
                                              val graphqlUseCase: GraphqlUseCase) {
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>?) {
@@ -32,7 +33,7 @@ class UpdateInterestUseCase @Inject constructor(@ApplicationContext val context:
         private val PARAM_ACTION = "action"
         private val ACTION_SKIP = "skip"
 
-        fun getRequestParams(interestIds: Array<Int>): HashMap<String, Any> {
+        fun getRequestParams(interestIds: List<Int>): HashMap<String, Any> {
             val variables: HashMap<String, Any> = HashMap()
             variables.put(PARAM_INTERESTS_ID, interestIds)
             return variables

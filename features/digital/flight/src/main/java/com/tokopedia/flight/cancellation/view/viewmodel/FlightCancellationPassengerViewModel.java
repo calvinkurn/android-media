@@ -153,14 +153,11 @@ public class FlightCancellationPassengerViewModel implements Parcelable {
     public boolean equals(Object obj) {
         boolean isEquals = false;
 
-        if (obj != null && obj instanceof FlightCancellationPassengerViewModel) {
+        if (obj instanceof FlightCancellationPassengerViewModel) {
             isEquals = this.getRelationId().equals(((FlightCancellationPassengerViewModel) obj).getRelationId()) &&
                     this.getPassengerId().equals(((FlightCancellationPassengerViewModel) obj).getPassengerId()) &&
                     this.getFirstName().equals(((FlightCancellationPassengerViewModel) obj).getFirstName()) &&
-                    this.getLastName().equals(((FlightCancellationPassengerViewModel) obj).getLastName()) &&
-                    this.getStatus() == ((FlightCancellationPassengerViewModel) obj).getStatus() &&
-                    this.getStatusString() != null &&
-                    this.getStatusString().equals(((FlightCancellationPassengerViewModel) obj).getStatusString());
+                    this.getLastName().equals(((FlightCancellationPassengerViewModel) obj).getLastName());
         }
 
         return isEquals;
