@@ -169,10 +169,7 @@ public class ProductListFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadDataFromArguments();
-
-        if(getContext() == null) return;
-
-        trackingQueue = new TrackingQueue(getContext());
+        initTrackingQueue();
     }
 
     private void loadDataFromArguments() {
@@ -185,6 +182,11 @@ public class ProductListFragment
         if (searchParameterToCopy != null) {
             this.searchParameter = new SearchParameter(searchParameterToCopy);
         }
+    }
+
+    private void initTrackingQueue() {
+        if(getContext() == null) return;
+        trackingQueue = new TrackingQueue(getContext());
     }
 
     @Override
@@ -224,56 +226,6 @@ public class ProductListFragment
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setOnRefreshListener(this::onSwipeToRefresh);
-    }
-
-    private void switchLayoutType() {
-        if (!getUserVisibleHint() || getAdapter() == null) {
-            return;
-        }
-
-        switch (getAdapter().getCurrentLayoutType()) {
-            case LIST:
-                switchLayoutTypeTo(BIG_GRID);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
-                break;
-            case SMALL_GRID:
-                switchLayoutTypeTo(LIST);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
-                break;
-            case BIG_GRID:
-                switchLayoutTypeTo(SMALL_GRID);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
-                break;
-        }
-    }
-
-    private void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
-        if (!getUserVisibleHint() || getAdapter() == null) {
-            return;
-        }
-
-        switch (layoutType) {
-            case LIST:
-                staggeredGridLayoutManager.setSpanCount(1);
-                getAdapter().changeListView();
-                break;
-            case SMALL_GRID:
-                staggeredGridLayoutManager.setSpanCount(2);
-                getAdapter().changeDoubleGridView();
-                break;
-            case BIG_GRID:
-                staggeredGridLayoutManager.setSpanCount(1);
-                getAdapter().changeSingleGridView();
-                break;
-        }
-
-        refreshMenuItemGridIcon();
-    }
-
-    private void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null || getAdapter() == null) return;
-
-        searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
 
     private void onViewCreatedBeforeLoadData(@NonNull View view) {
@@ -463,6 +415,56 @@ public class ProductListFragment
                     }
                 }, isSortEnabled());
         refreshMenuItemGridIcon();
+    }
+
+    private void switchLayoutType() {
+        if (!getUserVisibleHint() || getAdapter() == null) {
+            return;
+        }
+
+        switch (getAdapter().getCurrentLayoutType()) {
+            case LIST:
+                switchLayoutTypeTo(BIG_GRID);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
+                break;
+            case SMALL_GRID:
+                switchLayoutTypeTo(LIST);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
+                break;
+            case BIG_GRID:
+                switchLayoutTypeTo(SMALL_GRID);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
+                break;
+        }
+    }
+
+    private void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
+            return;
+        }
+
+        switch (layoutType) {
+            case LIST:
+                staggeredGridLayoutManager.setSpanCount(1);
+                getAdapter().changeListView();
+                break;
+            case SMALL_GRID:
+                staggeredGridLayoutManager.setSpanCount(2);
+                getAdapter().changeDoubleGridView();
+                break;
+            case BIG_GRID:
+                staggeredGridLayoutManager.setSpanCount(1);
+                getAdapter().changeSingleGridView();
+                break;
+        }
+
+        refreshMenuItemGridIcon();
+    }
+
+    private void refreshMenuItemGridIcon() {
+        if(searchNavigationListener == null || getAdapter() == null) return;
+
+        searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
 
     private void openFilterActivity() {
