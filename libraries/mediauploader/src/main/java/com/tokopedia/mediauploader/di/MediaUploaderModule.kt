@@ -3,6 +3,7 @@ package com.tokopedia.mediauploader.di
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.mediauploader.data.consts.MediaUploaderQuery
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.usecase.coroutines.UseCase
@@ -15,7 +16,7 @@ import dagger.Provides
     @Provides
     fun provideDataPolicyUseCase(): UseCase<DataUploaderPolicy> {
         return DataPolicyUseCase(
-                "",
+                MediaUploaderQuery.dataPolicyQuery,
                 GraphqlCacheStrategy.Builder(CacheType.NONE).build(),
                 GraphqlInteractor.getInstance().graphqlRepository
         )
