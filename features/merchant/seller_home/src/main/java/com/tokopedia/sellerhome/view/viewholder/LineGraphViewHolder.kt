@@ -9,8 +9,8 @@ import com.db.williamchart.base.BaseWilliamChartModel
 import com.db.williamchart.model.LineSet
 import com.db.williamchart.util.GMStatisticUtil
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.util.getResColor
 import com.tokopedia.sellerhome.util.getResDrawable
 import com.tokopedia.sellerhome.util.parseAsHtml
 import com.tokopedia.sellerhome.util.toast
@@ -31,16 +31,22 @@ class LineGraphViewHolder(view: View?) : AbstractViewHolder<LineGraphWidgetUiMod
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
         tvLineGraphTitle.text = element.title
-        tvLineGraphValue.text = "Rp200.000"
-        tvLineGraphSubValue.text = "<span style=color:#03ac0e;><b>+25%</b></span>".parseAsHtml()
+        tvLineGraphValue.text = element.data?.header.orEmpty()
+        tvLineGraphSubValue.text = element.data?.description.orEmpty().parseAsHtml()
         btnLineGraphMore.setOnClickListener {
             context.toast("Selengkapnya")
+        }
+        btnLineGraphNext.setOnClickListener {
+            context.toast("Selengkapnya")
+        }
+        tvLineGraphTitle.setOnClickListener {
+            context.toast("Information")
         }
         btnLineGraphInformation.setOnClickListener {
             context.toast("Information")
         }
 
-        val colors = intArrayOf(Color.parseColor("#66E76B"), Color.TRANSPARENT)
+        val colors = intArrayOf(context.getResColor(R.color.sah_green_light), Color.TRANSPARENT)
         lineGraphView.setGradientFillColors(colors)
 
         Handler().postDelayed({
@@ -50,8 +56,8 @@ class LineGraphViewHolder(view: View?) : AbstractViewHolder<LineGraphWidgetUiMod
 
         Handler().postDelayed({
             showOnErrorState(false)
-            showLineGraph()
-        }, 12000)
+            showLineGraph(element)
+        }, 10000)
 
         showViewComponent(false)
 
@@ -66,7 +72,6 @@ class LineGraphViewHolder(view: View?) : AbstractViewHolder<LineGraphWidgetUiMod
 
     private fun showOnErrorState(isShown: Boolean) = with(itemView) {
         layoutLineGraphErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
-        ImageHandler.loadImageWithId(imgLineGraphError, R.drawable.img_sah_error)
         showViewComponent(!isShown)
         tvLineGraphTitle.visibility = View.VISIBLE
         btnLineGraphInformation.visibility = View.VISIBLE
@@ -78,41 +83,26 @@ class LineGraphViewHolder(view: View?) : AbstractViewHolder<LineGraphWidgetUiMod
         tvLineGraphValue.visibility = componentVisibility
         tvLineGraphSubValue.visibility = componentVisibility
         btnLineGraphMore.visibility = componentVisibility
+        btnLineGraphNext.visibility = componentVisibility
         btnLineGraphInformation.visibility = componentVisibility
         linearLineGraphView.visibility = componentVisibility
     }
 
-    private fun showLineGraph() {
-        val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(getDateGraph(), getData())
+    private fun showLineGraph(element: LineGraphWidgetUiModel) {
+        val lineGraphModel: BaseWilliamChartModel = GMStatisticUtil.getChartModel(getDateGraph(element), getData(element))
         val lineGraphConfig: BaseWilliamChartConfig = Tools.getSellerHomeLineGraphWidgetConfig(itemView.lineGraphView, lineGraphModel)
         lineGraphConfig.setDotDrawable(itemView.context.getResDrawable(R.drawable.sah_oval_chart_dot))
         lineGraphConfig.setLineSet(LineSet().apply {
-            setDotsStrokeColor(Color.parseColor("#4fd15a"))
+            setDotsStrokeColor(itemView.context.getResColor(R.color.Green_G400))
         })
         lineGraphConfig.buildChart(itemView.lineGraphView)
     }
 
-    private fun getData(): List<Int>? {
-        val integers = mutableListOf<Int>()
-        for (i in 0..6) {
-            when {
-                i == 0 -> integers.add(800)
-                i % 2 == 0 -> integers.add(i * 100)
-                else -> integers.add(i * 300)
-            }
-        }
-        return integers
+    private fun getData(element: LineGraphWidgetUiModel): List<Int>? {
+        return element.data?.list.orEmpty().map { it.yVal.toInt() }
     }
 
-    private fun getDateGraph(): List<String>? {
-        val days = mutableListOf<String>()
-        days.add("Sun")
-        days.add("Mon")
-        days.add("Tue")
-        days.add("Wed")
-        days.add("Thu")
-        days.add("Fri")
-        days.add("Sat")
-        return days
+    private fun getDateGraph(element: LineGraphWidgetUiModel): List<String>? {
+        return element.data?.list.orEmpty().map { it.xLabel }
     }
 }
