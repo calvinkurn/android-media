@@ -6,14 +6,14 @@ import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import com.tokopedia.user_identification_common.domain.pojo.GetApprovalStatusPojo
-import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.user_identification_common.domain.usecase.GetUserProjectInfoUseCase
 import rx.Observable
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatusUseCase: GetShopStatusUseCase,
-                                                        private val getApprovalStatusUseCase: GetApprovalStatusUseCase,
+                                                        private val getUserProjectInfoUseCase: GetUserProjectInfoUseCase,
                                                         private val getShopScoreUseCase: GetShopScoreUseCase)
     : UseCase<PowerMerchantStatus>() {
 
@@ -36,8 +36,9 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
         return getShopScoreUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
     }
 
-    private fun getKycStatus(): Observable<GetApprovalStatusPojo> {
-        return getApprovalStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam())
+    private fun getKycStatus(): Observable<KycUserProjectInfoPojo> {
+        val requestParams = createKycStatusRequestParam()
+        return getUserProjectInfoUseCase.execute(requestParams.parameters)
     }
 
     companion object {
@@ -46,7 +47,14 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
                 putString(GMParamApiContant.SHOP_ID, shopId)
             }
         }
+
+        fun createKycStatusRequestParam(): RequestParams {
+            return RequestParams.create().apply {
+                putInt(PROJECT_ID, PROJECT_ID_POWER_MERCHANT_KYC)
+            }
+        }
+
+        const val PROJECT_ID = "projectId"
+        const val PROJECT_ID_POWER_MERCHANT_KYC = 10
     }
-
-
 }

@@ -18,7 +18,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
-import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_KYC_POWER_MERCHANT
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
@@ -135,7 +135,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
     }
 
     private fun openKycPage() {
-        val intent = RouteManager.getIntent(activity, APPLINK_KYC_POWER_MERCHANT)
+        val intent = RouteManager.getIntent(activity, APPLINK_POWER_MERCHANT_KYC)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
         startActivity(intent)
         activity?.finish()
