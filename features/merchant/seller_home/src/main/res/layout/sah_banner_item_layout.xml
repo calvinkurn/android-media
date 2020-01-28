@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/unify_banner_card_margin_top"
+    android:layout_marginBottom="@dimen/unify_banner_card_margin_top"
+    android:layout_marginRight="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_8"
+    app:cardPreventCornerOverlap="false"
+    app:elevation="@dimen/unify_banner_card_elevation"
+    app:cardCornerRadius="@dimen/unify_banner_card_radius">
+
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_banner_image_height_default"
+        android:adjustViewBounds="true"
+        android:focusable="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/bannerview_image_placeholder" />
+
+</androidx.cardview.widget.CardView>

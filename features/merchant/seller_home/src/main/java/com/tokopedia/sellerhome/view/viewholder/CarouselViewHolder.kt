@@ -1,15 +1,11 @@
 package com.tokopedia.sellerhome.view.viewholder
 
-import android.util.TypedValue
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.banner.Banner
-import com.tokopedia.banner.Indicator
-import com.tokopedia.core2.R2.color.unify_G500
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.model.CarouselWidgetUiModel
 import kotlinx.android.synthetic.main.sah_carousel_widget.view.*
+import timber.log.Timber
 
 /**
  * Created By @faisalramd on 2020-01-23
@@ -19,7 +15,6 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
 
     companion object {
         val RES_LAYOUT = R.layout.sah_carousel_widget
-        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_12
         const val STATE_LOADING = 0
         const val STATE_NORMAL = 1
         const val STATE_ERROR = 2
@@ -82,22 +77,19 @@ class CarouselViewHolder(itemView: View?) : AbstractViewHolder<CarouselWidgetUiM
                 isSeeAllVisible = false
                 isBottomItemVisible = false
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 
-    private fun renderBanners(banner: Banner, data: List<String>) {
+    private fun renderBanners(banner: BannerCarousel, data: List<String>) {
+
         if (data.isNotEmpty()) {
-            with (banner) {
+            with(banner) {
                 setPromoList(data)
-                setOnPromoClickListener { print(it) }
-                setOnPromoScrolledListener { print(it)}
-                setOnPromoAllClickListener { print("all click") }
-                context?.let {
-                    setBannerSeeAllTextColor(ContextCompat.getColor(it, unify_G500))
-                }
-                setBannerIndicator(Indicator.GREEN)
-                bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
+                setOnPromoClickListener { Timber.e(it.toString()) }
+                setOnPromoScrolledListener { Timber.e(it.toString()) }
+                setOnPromoAllClickListener { Timber.e("Lihat Semua") }
                 buildView()
 
                 if (!isSeeAllVisible) bannerSeeAll.visibility = View.GONE

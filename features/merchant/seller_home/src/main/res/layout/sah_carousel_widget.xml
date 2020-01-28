@@ -28,7 +28,7 @@
             app:typographyWeight="bold"
             tools:text="Title" />
 
-        <com.tokopedia.banner.Banner
+        <com.tokopedia.sellerhome.view.viewholder.BannerCarousel
             android:id="@+id/bannerImages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
