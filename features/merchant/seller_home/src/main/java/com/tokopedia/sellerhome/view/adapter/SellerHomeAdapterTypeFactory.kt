@@ -33,11 +33,11 @@ class SellerHomeAdapterTypeFactory : BaseAdapterTypeFactory(), SellerHomeTypeFac
         return SectionViewHolder.RES_LAYOUT
     }
 
-    fun type(progressWidget: ProgressUiModel): Int {
+    override fun type(progressWidget: ProgressUiModel): Int {
         return ProgressViewHolder.RES_LAYOUT
     }
 
-    fun type(listWidget: ListUiModel): Int {
+    override fun type(listWidget: ListUiModel): Int {
         return ListViewHolder.RES_LAYOUT
     }
 
