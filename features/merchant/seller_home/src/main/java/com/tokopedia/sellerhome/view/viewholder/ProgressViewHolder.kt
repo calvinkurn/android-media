@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.model.ProgressUiModel
+import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import kotlinx.android.synthetic.main.sah_partial_error_load_data.view.*
 import kotlinx.android.synthetic.main.sah_partial_progress_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_shimmering_progress_widget.view.*
@@ -41,10 +42,12 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         hideErrorLayout()
         hideShimmeringLayout()
 
-        with(element) {
-            itemView.tv_card_title.text = title
-            itemView.tv_description.text = description
-            setupCurrentProgress(currentProgress, state)
+        element.data?.run {
+            with(element) {
+                itemView.tv_card_title.text = title
+                itemView.tv_description.text = subtitle
+                setupProgressBar(title, value, maxValue, state)
+            }
         }
 
         showProgressLayout()
@@ -57,14 +60,11 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         showErrorLayout()
     }
 
-    private fun setupCurrentProgress(currentProgress: Float, state: ProgressUiModel.State) {
+    private fun setupProgressBar(progressTitle: String, currentProgress: Int, maxProgress: Int, state: ShopScorePMWidget.State) {
+        itemView.shop_score_widget.setProgressTitle(progressTitle)
         itemView.shop_score_widget.setProgress(currentProgress)
-
-        when (state) {
-            ProgressUiModel.State.GREEN -> itemView.shop_score_widget.setProgressColor(intArrayOf(R.color.Green_G400, R.color.Green_G600))
-            ProgressUiModel.State.ORANGE -> itemView.shop_score_widget.setProgressColor(intArrayOf(R.color.Yellow_Y300, R.color.Yellow_Y400))
-            ProgressUiModel.State.RED -> itemView.shop_score_widget.setProgressColor(intArrayOf(R.color.Red_R400, R.color.Red_R500))
-        }
+        itemView.shop_score_widget.setMaxProgress(maxProgress)
+        itemView.shop_score_widget.setProgressColor(state)
     }
 
     private fun showShimmeringLayout() {
