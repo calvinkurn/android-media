@@ -149,7 +149,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
-    private androidx.transition.Transition transition;
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     @NonNull
     public static Boolean HIDE_TICKER = false;

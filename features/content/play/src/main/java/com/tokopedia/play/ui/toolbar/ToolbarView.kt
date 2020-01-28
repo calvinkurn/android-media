@@ -30,7 +30,7 @@ class ToolbarView(
             LayoutInflater.from(container.context).inflate(R.layout.view_toolbar, container, true)
                     .findViewById(R.id.cl_toolbar)
 
-    private val flLiveBadge = view.findViewById<FrameLayout>(R.id.fl_live_badge)
+    private val liveBadge = view.findViewById<View>(R.id.live_badge)
     private val tvChannelName = view.findViewById<Typography>(R.id.tv_stream_name)
     private val tvPartnerName = view.findViewById<Typography>(R.id.tv_partner_name)
     private val tvFollow = view.findViewById<Typography>(R.id.tv_follow)
@@ -61,7 +61,7 @@ class ToolbarView(
     }
 
     internal fun setLiveBadgeVisibility(isLive: Boolean) {
-        if (isLive) flLiveBadge.visible() else flLiveBadge.gone()
+        if (isLive) liveBadge.visible() else liveBadge.gone()
     }
 
     internal fun setTitle(title: String) {
