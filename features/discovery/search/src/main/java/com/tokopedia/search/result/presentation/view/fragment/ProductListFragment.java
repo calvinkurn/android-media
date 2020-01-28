@@ -211,11 +211,29 @@ public class ProductListFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setupBeforeLoadData(view);
+        startToLoadDataForFirstActiveTab();
+    }
+
+    private void setupBeforeLoadData(@NonNull View view) {
+        bindView(view);
+
         initLayoutManager();
         initSwipeToRefresh(view);
-        onViewCreatedBeforeLoadData(view);
+        initTopAdsConfig();
+        initTopAdsParams();
+        initAdapter();
+        initLoadMoreListener();
 
-        startToLoadDataForFirstActiveTab();
+        setupRecyclerView();
+
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
+    }
+
+    private void bindView(View rootView) {
+        recyclerView = rootView.findViewById(R.id.recyclerview);
     }
 
     private void initLayoutManager() {
@@ -226,21 +244,6 @@ public class ProductListFragment
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setOnRefreshListener(this::onSwipeToRefresh);
-    }
-
-    private void onViewCreatedBeforeLoadData(@NonNull View view) {
-        bindView(view);
-        initTopAdsConfig();
-        initTopAdsParams();
-        setupAdapter();
-        setupRecyclerViewListener();
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
-    }
-
-    private void bindView(View rootView) {
-        recyclerView = rootView.findViewById(R.id.recyclerview);
     }
 
     private void initTopAdsConfig() {
@@ -267,7 +270,7 @@ public class ProductListFragment
         topAdsConfig.setTopAdsParams(adsParams);
     }
 
-    private void setupAdapter() {
+    private void initAdapter() {
         ProductListTypeFactory productListTypeFactory = new ProductListTypeFactoryImpl(
                 this,
                 this,
@@ -276,20 +279,24 @@ public class ProductListFragment
                 this, this, this,
                 this,
                 topAdsConfig);
+
         adapter = new ProductListAdapter(this, productListTypeFactory);
-        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
+    }
+
+    private void initLoadMoreListener() {
+        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(createProductItemDecoration());
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
     @NonNull
     private ProductItemDecoration createProductItemDecoration() {
         return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16));
-    }
-
-    private void setupRecyclerViewListener() {
-        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
-        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
     private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
@@ -413,7 +420,7 @@ public class ProductListFragment
                     public void onChangeGridClick() {
                         switchLayoutType();
                     }
-                }, isSortEnabled());
+                }, true);
         refreshMenuItemGridIcon();
     }
 
@@ -635,10 +642,6 @@ public class ProductListFragment
     @Override
     public String getScreenNameId() {
         return SCREEN_SEARCH_PAGE_PRODUCT_TAB;
-    }
-
-    private boolean isSortEnabled() {
-        return true;
     }
 
     @Override
