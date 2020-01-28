@@ -5,7 +5,6 @@ import android.content.ContextWrapper
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.text.TextUtils
 import android.widget.ImageView
 import androidx.annotation.RawRes
 import com.tkpd.remoteresourcerequest.database.ResourceDB
@@ -39,13 +38,13 @@ class ResourceDownloadManager private constructor() {
     private val map = mutableMapOf<String, ArrayList<DeferredResourceTask>?>()
 
     private lateinit var mClient: OkHttpClient
-    private lateinit var density: String
+    private var density: String = ""
 
     fun initialize(context: Context, @RawRes resourceId: Int) {
         initializeFields()
         this.context = WeakReference(context.applicationContext)
         roomDB = ResourceDB.getDatabase(context)
-        density = DensityFinder.findDensity(context)
+        density = getDisplayDensity(context)
         if (!::mBaseUrl.isInitialized)
             mBaseUrl = BASE_URL
         if (!::mRelativeUrl.isInitialized)
@@ -53,22 +52,24 @@ class ResourceDownloadManager private constructor() {
         readFromFile(resourceId)
     }
 
+    fun getDisplayDensity(context: Context): String {
+        return DensityFinder.findDensity(context)
+    }
+
     /**
      * Call this method when you need to change the base url and relative url of the remote server
      * where file to be downloaded is placed.
      */
     fun setBaseAndRelativeUrl(baseUrl: String, relativeUrl: String): ResourceDownloadManager {
-        if (!TextUtils.isEmpty(baseUrl) && !::mBaseUrl.isInitialized)
+        if (baseUrl != "" && !::mBaseUrl.isInitialized)
             mBaseUrl = baseUrl
-        if (!TextUtils.isEmpty(relativeUrl) && !::mRelativeUrl.isInitialized)
+        if (relativeUrl != "" && !::mRelativeUrl.isInitialized)
             mRelativeUrl = relativeUrl
         return this
     }
 
     private fun initializeFields() {
-        handler = Handler(Looper.getMainLooper()) {
-            handleMessage(it)
-        }
+        handler = getMainHandler()
         resourceDownloadTaskQueue = LinkedBlockingQueue<DeferredResourceTask>()
         mCheckEntryInDB = LinkedBlockingQueue<Runnable>()
         mDownloadWorkQueue = LinkedBlockingQueue<Runnable>()
@@ -84,7 +85,7 @@ class ResourceDownloadManager private constructor() {
         )
     }
 
-    private fun readFromFile(@RawRes resourceId: Int) {
+    fun readFromFile(@RawRes resourceId: Int) {
         val localContext = context.get()
         if (localContext != null) {
             val json: String?
@@ -113,9 +114,9 @@ class ResourceDownloadManager private constructor() {
         if (!::context.isInitialized)
             throw IllegalStateException("ResourceDownloadManager not initialized!! " +
                     "Call ResourceDownloadManager.initialize(context, resId) first!!!!")
-        var task = resourceDownloadTaskQueue.poll()
+        var task = pollForIdleTask()
         if (task == null) {
-            task = DeferredResourceTask(this, getClient(), roomDB)
+            task = getNewDownloadTaskInstance()
         }
         task.initTask(customUrl, imageView)
 
@@ -128,6 +129,12 @@ class ResourceDownloadManager private constructor() {
         }
         map[customUrl]!!.add(task) // Added !! since null case handled in if case above
 
+    }
+
+    fun pollForIdleTask()= resourceDownloadTaskQueue.poll()
+
+    fun getNewDownloadTaskInstance(): DeferredResourceTask {
+        return DeferredResourceTask(this, getClient(), roomDB)
     }
 
     private fun convertToCustomUrl(url: String): String {
@@ -156,7 +163,7 @@ class ResourceDownloadManager private constructor() {
         message.sendToTarget()
     }
 
-    private fun handleMessage(message: Message): Boolean {
+    fun handleMessage(message: Message): Boolean {
         val task = message.obj as DeferredResourceTask
         when (message.what) {
 
@@ -256,6 +263,11 @@ class ResourceDownloadManager private constructor() {
                 mDownloadTaskThreadPool.remove(task.getDownloadRunnable())
         }
     }
+
+    fun getMainHandler() = Handler(Looper.getMainLooper()) {
+        handleMessage(it)
+    }
+
 
     companion object {
 
