@@ -33,6 +33,8 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
 
         Scenario("Disable Dropshipper") {
 
+            val result by lazy { subscriber.onNextEvents[0] }
+
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureDropshipper, ShipmentAddressFormDataResponse::class.java))
             }
@@ -41,18 +43,34 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should only have dropshipper disabled") {
-                val result = subscriber.onNextEvents[0]
+            Then("should have dropshipper disabled") {
                 assertEquals(true, result.isDropshipperDisable)
+            }
+
+            Then("should not have multiple address disabled") {
                 assertEquals(false, result.isMultipleDisable)
+            }
+
+            Then("should not have order prioritas disabled") {
                 assertEquals(false, result.isOrderPrioritasDisable)
+            }
+
+            Then("should have egold attributes") {
                 assertNotNull(result.egoldAttributes)
+            }
+
+            Then("should have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should have donation") {
                 assertNotNull(result.donation)
             }
         }
 
         Scenario("Disable Multiple Address") {
+
+            val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureMultipleAddress, ShipmentAddressFormDataResponse::class.java))
@@ -62,18 +80,34 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should only have multiple address disabled") {
-                val result = subscriber.onNextEvents[0]
+            Then("should not have dropshipper disabled") {
                 assertEquals(false, result.isDropshipperDisable)
+            }
+
+            Then("should have multiple address disabled") {
                 assertEquals(true, result.isMultipleDisable)
+            }
+
+            Then("should not have order prioritas disabled") {
                 assertEquals(false, result.isOrderPrioritasDisable)
+            }
+
+            Then("should have egold attributes") {
                 assertNotNull(result.egoldAttributes)
+            }
+
+            Then("should have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should have donation") {
                 assertNotNull(result.donation)
             }
         }
 
         Scenario("Disable Order Prioritas") {
+
+            val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureOrderPrioritas, ShipmentAddressFormDataResponse::class.java))
@@ -83,18 +117,34 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should only have order prioritas disabled") {
-                val result = subscriber.onNextEvents[0]
+            Then("should not have dropshipper disabled") {
                 assertEquals(false, result.isDropshipperDisable)
+            }
+
+            Then("should not have multiple address disabled") {
                 assertEquals(false, result.isMultipleDisable)
+            }
+
+            Then("should have order prioritas disabled") {
                 assertEquals(true, result.isOrderPrioritasDisable)
+            }
+
+            Then("should have egold attributes") {
                 assertNotNull(result.egoldAttributes)
+            }
+
+            Then("should have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should have donation") {
                 assertNotNull(result.donation)
             }
         }
 
         Scenario("Disable Egold") {
+
+            val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureEGold, ShipmentAddressFormDataResponse::class.java))
@@ -104,18 +154,34 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should only have egold disabled") {
-                val result = subscriber.onNextEvents[0]
+            Then("should not have dropshipper disabled") {
                 assertEquals(false, result.isDropshipperDisable)
+            }
+
+            Then("should not have multiple address disabled") {
                 assertEquals(false, result.isMultipleDisable)
+            }
+
+            Then("should not have order prioritas disabled") {
                 assertEquals(false, result.isOrderPrioritasDisable)
+            }
+
+            Then("should not have egold attributes") {
                 assertNull(result.egoldAttributes)
+            }
+
+            Then("should have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should have donation") {
                 assertNotNull(result.donation)
             }
         }
 
         Scenario("Disable PPP") {
+
+            val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeaturePPP, ShipmentAddressFormDataResponse::class.java))
@@ -125,18 +191,34 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should only have ppp disabled") {
-                val result = subscriber.onNextEvents[0]
+            Then("should not have dropshipper disabled") {
                 assertEquals(false, result.isDropshipperDisable)
+            }
+
+            Then("should not have multiple address disabled") {
                 assertEquals(false, result.isMultipleDisable)
+            }
+
+            Then("should not have order prioritas disabled") {
                 assertEquals(false, result.isOrderPrioritasDisable)
+            }
+
+            Then("should have egold attributes") {
                 assertNotNull(result.egoldAttributes)
+            }
+
+            Then("should not have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should have donation") {
                 assertNotNull(result.donation)
             }
         }
 
         Scenario("Disable donation") {
+
+            val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureDonation, ShipmentAddressFormDataResponse::class.java))
@@ -146,18 +228,34 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should only have donation disabled") {
-                val result = subscriber.onNextEvents[0]
+            Then("should not have dropshipper disabled") {
                 assertEquals(false, result.isDropshipperDisable)
+            }
+
+            Then("should not have multiple address disabled") {
                 assertEquals(false, result.isMultipleDisable)
+            }
+
+            Then("should not have order prioritas disabled") {
                 assertEquals(false, result.isOrderPrioritasDisable)
+            }
+
+            Then("should have egold attributes") {
                 assertNotNull(result.egoldAttributes)
-                assertNull(result.donation)
+            }
+
+            Then("should have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should not have donation") {
+                assertNull(result.donation)
             }
         }
 
         Scenario("Disable all but not new buyer") {
+
+            val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAllOldBuyer, ShipmentAddressFormDataResponse::class.java))
@@ -167,18 +265,34 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should have no disabled features") {
-                val result = subscriber.onNextEvents[0]
+            Then("should not have dropshipper disabled") {
                 assertEquals(false, result.isDropshipperDisable)
+            }
+
+            Then("should not have multiple address disabled") {
                 assertEquals(false, result.isMultipleDisable)
+            }
+
+            Then("should not have order prioritas disabled") {
                 assertEquals(false, result.isOrderPrioritasDisable)
+            }
+
+            Then("should have egold attributes") {
                 assertNotNull(result.egoldAttributes)
-                assertNull(result.donation)
+            }
+
+            Then("should have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should have donation") {
+                assertNotNull(result.donation)
             }
         }
 
         Scenario("Disable all") {
+
+            val result by lazy { subscriber.onNextEvents[0] }
 
             Given("mock response") {
                 every { repository.getShipmentAddressForm(any()) } returns Observable.just(gson.fromJson(apiResponseSAFDisableFeatureAllNewBuyer, ShipmentAddressFormDataResponse::class.java))
@@ -188,14 +302,28 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 subscriber = useCase.createObservable(param).test()
             }
 
-            Then("should have disabled features") {
-                val result = subscriber.onNextEvents[0]
+            Then("should have dropshipper disabled") {
                 assertEquals(true, result.isDropshipperDisable)
+            }
+
+            Then("should have multiple address disabled") {
                 assertEquals(true, result.isMultipleDisable)
+            }
+
+            Then("should have order prioritas disabled") {
                 assertEquals(true, result.isOrderPrioritasDisable)
+            }
+
+            Then("should not have egold attributes") {
                 assertNull(result.egoldAttributes)
-                assertNull(result.donation)
+            }
+
+            Then("should not have purchase protection plan data") {
                 result.groupAddress.each { groupShop.each { products.each { assertNull(purchaseProtectionPlanData) } } }
+            }
+
+            Then("should not have donation") {
+                assertNull(result.donation)
             }
         }
     }
