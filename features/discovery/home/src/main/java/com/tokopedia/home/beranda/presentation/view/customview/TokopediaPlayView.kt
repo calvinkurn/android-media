@@ -63,7 +63,7 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
             val viewFinderRatio = viewWidth / viewHeight
             val scaling = viewFinderRatio * previewRatio
             pivotX = 0f
-            pivotY = viewHeight * 0.15f
+            pivotY = viewHeight * 0.50f
             PointF(1f, scaling)
         } else {
             // Landscape

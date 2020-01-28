@@ -2,28 +2,14 @@
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:transitionOrdering="together"
-    android:duration="350"
     android:interpolator="@android:interpolator/fast_out_slow_in">
-    <transitionSet>
-        <slide android:slideEdge="bottom">
-            <targets>
-                <target android:excludeId="@+id/pv_video" />
-                <target android:excludeId="@+id/play_background" />
-            </targets>
-        </slide>
 
-        <!-- Start fading some views to make sure they disappear before the middle of the screen -->
-        <fade android:duration="@integer/animation_alpha_duration_return"/>
-    </transitionSet>
-<!--        <targets>-->
-<!--            <target android:targetId="@id/fl_fragment" />-->
-<!--            <target android:targetId="@id/fl_interaction" />-->
-<!--            <target android:targetId="@id/fl_global_error" />-->
-<!--            <target android:targetId="@id/iv_close" />-->
-<!--            <target android:targetId="@id/cl_like"/>-->
-<!--            <target android:targetId="@id/cl_toolbar"/>-->
-<!--            <target android:targetId="@id/cl_chat_form"/>-->
-<!--        </targets>-->
-<!--    </fade>-->
+    <targets>
+        <target android:excludeId="@+id/pv_video" />
+        <target android:excludeId="@+id/play_background" />
+    </targets>
+    <slide android:slideEdge="bottom" android:duration="@integer/animation_duration"/>
+    <!-- Start fading some views to make sure they disappear before the middle of the screen -->
+    <fade android:duration="@integer/animation_alpha_duration_enter" android:fadingMode="fade_out"/>
 
 </transitionSet>

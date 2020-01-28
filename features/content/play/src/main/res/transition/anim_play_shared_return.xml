@@ -2,7 +2,7 @@
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:duration="350">
+    android:duration="@integer/animation_duration">
 
     <!-- Change bounds of all shared elements -->
     <transitionSet>
@@ -10,9 +10,9 @@
             <target android:targetId="@+id/play_background" />
             <target android:targetId="@+id/pv_video" />
         </targets>
-        <changeBounds/>
-        <changeImageTransform/>
         <changeTransform/>
+        <changeImageTransform/>
+        <changeBounds/>
     </transitionSet>
 
     <!-- Start fading background of activity -->
