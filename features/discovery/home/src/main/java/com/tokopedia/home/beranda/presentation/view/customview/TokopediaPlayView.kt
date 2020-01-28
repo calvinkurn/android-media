@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Matrix
 import android.graphics.PointF
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -41,13 +40,9 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
 
         // Content frame.
         contentFrame = findViewById(R.id.exo_content_frame)
-//        contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
-        surfaceView?.id = R.id.texture_view
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            surfaceView?.transitionName = ANIMATION_TRANSITION_NAME
-        }
+        surfaceView?.id = R.id.home_play_texture
         val params = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         surfaceView?.layoutParams = params
@@ -104,8 +99,6 @@ class TokopediaPlayView(context: Context, attrs: AttributeSet?, defStyleAttr: In
             }
         }
     }
-
-    fun getPlayer() = player
 
     inner class ComponentListener : VideoListener {
         // VideoListener implementation

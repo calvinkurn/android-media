@@ -28,7 +28,7 @@ class PlayCardViewHolder(
         val listener: HomeCategoryListener
 ): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener, CoroutineScope {
 
-    internal val frameLayout = view.findViewById<FrameLayout>(R.id.play_frame_layout)
+    private val frameLayout = view.findViewById<FrameLayout>(R.id.play_frame_layout)
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val play = view.findViewById<ImageView>(R.id.play)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
@@ -80,7 +80,6 @@ class PlayCardViewHolder(
             description.setValue("")
 
             thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
-
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title

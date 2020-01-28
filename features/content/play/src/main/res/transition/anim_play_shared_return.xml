@@ -2,13 +2,13 @@
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:duration="@integer/animation_duration">
+    android:duration="350">
 
     <!-- Change bounds of all shared elements -->
     <transitionSet>
         <targets>
-            <target android:targetId="@id/fl_fragment" />
-            <target android:targetId="@+id/texture_view" />
+            <target android:targetId="@+id/play_background" />
+            <target android:targetId="@+id/pv_video" />
         </targets>
         <changeBounds/>
         <changeImageTransform/>
@@ -21,7 +21,7 @@
         app:startAlpha="1.0"
         app:endAlpha="0.0">
         <targets>
-            <target android:targetId="@id/fl_fragment" />
+            <target android:targetId="@+id/play_background" />
         </targets>
     </transition>
 

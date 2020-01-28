@@ -62,4 +62,8 @@ class PlayActivity : BaseActivity() {
                     .commit()
         }
     }
+
+    override fun onBackPressed() {
+        supportFinishAfterTransition()
+    }
 }
