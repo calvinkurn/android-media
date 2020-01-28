@@ -130,6 +130,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     companion object {
+        private val TAG_COACHMARK = "co`achmark"
         private const val REQUEST_FILTER = 2888
 
         @JvmStatic
@@ -496,7 +497,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         somListItemAdapter.notifyDataSetChanged()
 
-        coachMark.show(activity, "FirstTimeUser", arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+        showCoachMark()
+    }
+
+    private fun showCoachMark(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+        }
     }
 
     private fun renderFilterEmpty(title: String, desc: String) {
