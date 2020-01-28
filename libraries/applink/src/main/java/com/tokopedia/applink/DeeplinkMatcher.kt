@@ -94,7 +94,6 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)
-//            add(Pattern(GT, 1, mapOf(0 to "official-store")) to )
         }
     }
 
