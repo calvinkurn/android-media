@@ -31,12 +31,12 @@ class GetChatRoomSettingUseCase @Inject constructor(
     private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<TopChatTypeFactory>> {
         val widgets = arrayListOf<Visitable<TopChatTypeFactory>>()
 
-        if (result.showFraudAlert) {
-            widgets.add(result.fraudAlert)
-        }
-
         if (result.showBanner) {
             widgets.add(result.roomBanner)
+        }
+
+        if (result.showFraudAlert) {
+            widgets.add(result.fraudAlert)
         }
 
         return widgets
