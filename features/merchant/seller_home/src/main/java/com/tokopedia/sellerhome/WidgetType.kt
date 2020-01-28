@@ -10,4 +10,6 @@ object WidgetType {
     const val CAROUSEL = "carousel"
     const val DESCRIPTION = "description"
     const val SECTION = "section"
+    const val PROGRESS = "progress"
+    const val LIST = "list"
 }

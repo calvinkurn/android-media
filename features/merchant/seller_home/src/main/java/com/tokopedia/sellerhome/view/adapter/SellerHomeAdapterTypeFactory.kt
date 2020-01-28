@@ -33,6 +33,14 @@ class SellerHomeAdapterTypeFactory : BaseAdapterTypeFactory(), SellerHomeTypeFac
         return SectionViewHolder.RES_LAYOUT
     }
 
+    override fun type(progressWidget: ProgressUiModel): Int {
+        return ProgressViewHolder.RES_LAYOUT
+    }
+
+    override fun type(listWidget: ListUiModel): Int {
+        return ListViewHolder.RES_LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent)
@@ -40,6 +48,8 @@ class SellerHomeAdapterTypeFactory : BaseAdapterTypeFactory(), SellerHomeTypeFac
             LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent)
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent)
             DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
+            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent)
+            ListViewHolder.RES_LAYOUT -> ListViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
