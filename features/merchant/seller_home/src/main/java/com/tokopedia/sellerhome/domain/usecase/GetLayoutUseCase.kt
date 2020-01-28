@@ -2,12 +2,7 @@ package com.tokopedia.sellerhome.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.WidgetType
-import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
-import com.tokopedia.sellerhome.view.model.CardWidgetUiModel
-import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhome.view.model.SectionWidgetUiModel
-import com.tokopedia.sellerhome.view.model.DescriptionWidgetUiModel
-import com.tokopedia.sellerhome.view.model.DescriptionState
+import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -19,14 +14,15 @@ class GetLayoutUseCase(
 ) : UseCase<List<BaseWidgetUiModel>>() {
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel> {
+
+        val strings: ArrayList<String> = ArrayList()
+        strings.add("http://placekitten.com/100/50")
+        strings.add("http://placekitten.com/100/51")
+        strings.add("http://placekitten.com/100/53")
+        strings.add("http://placekitten.com/100/54")
+
         //handle request here
         return listOf(
-                SectionWidgetUiModel(
-                        WidgetType.SECTION,
-                        "Performa Toko, tes jika textnya kepanjangan akan seperti apa hasilnya",
-                        "",
-                        ""
-                ),
                 CardWidgetUiModel(
                         WidgetType.CARD,
                         "Card 1",
@@ -47,9 +43,16 @@ class GetLayoutUseCase(
                 ),
                 LineGraphWidgetUiModel(
                         WidgetType.LINE_GRAPH,
-                        "Total Pendapatan",
+                        "Line Graph",
                         "",
                         ""
+                ),
+                CarouselWidgetUiModel(
+                        WidgetType.CAROUSEL,
+                        "Carousel",
+                        "",
+                        "",
+                        strings
                 ),
                 DescriptionWidgetUiModel(
                         WidgetType.DESCRIPTION,
