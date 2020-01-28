@@ -18,7 +18,7 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
 
     override fun bind(element: DescriptionWidgetUiModel) {
         with(element) {
-            when(state) {
+            when(data?.state) {
                 DescriptionState.LOADING -> showShimmer()
                 DescriptionState.IDEAL -> showIdeal(element)
                 DescriptionState.ERROR -> showOnError(element)
@@ -31,7 +31,7 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
             shimmer_description_layout.visibility = View.GONE
             error_description_layout.visibility = View.GONE
             tv_description_title.text = element.title
-            tv_description_desc.text = element.description
+            tv_description_desc.text = element.data?.description
             tv_description_url.setOnClickListener {
                 //GO TO LINK
 
