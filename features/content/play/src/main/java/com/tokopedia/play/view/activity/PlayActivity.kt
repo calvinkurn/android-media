@@ -3,11 +3,10 @@ package com.tokopedia.play.view.activity
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import androidx.transition.ChangeBounds
-import androidx.transition.ChangeImageTransform
-import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -33,6 +32,17 @@ class PlayActivity : BaseActivity() {
         inject()
         setupPage()
         setupView()
+    }
+
+    override fun onBackPressed() {
+        if (isTaskRoot) {
+            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+            startActivity(intent)
+        } else {
+            super.onBackPressed()
+        }
+
+        finish()
     }
 
     private fun inject() {
