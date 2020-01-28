@@ -20,4 +20,9 @@ data class RoomSettingBanner(
                 return typeFactory.type(this)
         }
 
+        companion object {
+                const val TYPE_INFO = "info"
+                const val TYPE_WARNING = "warning"
+                const val TYPE_ERROR = "error"
+        }
 }
