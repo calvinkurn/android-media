@@ -60,7 +60,6 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //TODO : Is this context true ?
         userSession = UserSession(applicationContext)
         drawerCache = LocalCacheHandler(this, SellerDrawerHelper.DRAWER_CACHE)
         remoteConfig = FirebaseRemoteConfigImpl(this)
@@ -160,6 +159,8 @@ abstract class SellerDrawerPresenterActivity : BaseSimpleActivity(),
             notifDrawable = R.drawable.sh_green_circle
         }
         MethodChecker.setBackground(notifRed, resources.getDrawable(notifDrawable))
+
+        setDataDrawer()
     }
 
     override fun onGetTokoCash(drawerTokoCash: SellerDrawerTokoCash) {

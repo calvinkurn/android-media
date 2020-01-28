@@ -382,18 +382,8 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void openTab() {
         try {
-            Uri uri = getIntent().getData();
-            int tabPosition;
-            List<String> pathSegments;
-            if (uri != null) {
-                //If from internal applink
-                pathSegments = uri.getPathSegments();
-                tabPosition = Integer.valueOf(pathSegments.get(pathSegments.size() - 1));
-            } else {
-                tabPosition = getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION);
-            }
-            mViewPager.setCurrentItem(tabPosition);
-            setDrawerPosition(tabPosition);
+            mViewPager.setCurrentItem(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
+            setDrawerPosition(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
         } catch (Exception e) {
             e.printStackTrace();
         }

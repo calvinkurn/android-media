@@ -20,6 +20,7 @@ import com.tokopedia.sellerhomedrawer.firebase.SellerFirebaseRemoteAppUpdate
 import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
 import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.sh_drawer_layout.*
 import javax.inject.Inject
 
 class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View{
@@ -71,7 +72,13 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
     }
 
     override fun onSuccessGetFlashSaleSellerStatus(isVisible: Boolean) {
-
+        val sellerDrawerAdapter = sellerDrawerHelper.sellerDrawerAdapter
+        if (isVisible != sellerDrawerAdapter?.isFlashSaleVisible) {
+            sellerDrawerAdapter?.isFlashSaleVisible = isVisible
+            left_drawer.post {
+                sellerDrawerAdapter?.renderFlashSaleDrawer()
+            }
+        }
     }
 
     override fun onPause() {
@@ -112,7 +119,13 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
     }
 
     override fun onSuccessGetShopInfo(goldGetPmOsStatus: GoldGetPmOsStatus) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val shopStatusModel = goldGetPmOsStatus.result.data
+        val sellerDrawerAdapter = sellerDrawerHelper.sellerDrawerAdapter
+        val isGoldMerchant = shopStatusModel.isPowerMerchantActive()
+        val isOfficialStore = shopStatusModel.isOfficialStore()
+        sellerDrawerAdapter?.isGoldMerchant = isGoldMerchant
+        sellerDrawerAdapter?.isOfficialStore = isOfficialStore
+        userSession.setIsGoldMerchant(isGoldMerchant)
     }
 
     override val context: Context

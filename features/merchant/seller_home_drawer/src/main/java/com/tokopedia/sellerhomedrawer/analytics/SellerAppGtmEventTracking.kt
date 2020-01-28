@@ -52,6 +52,11 @@ object EventLabel {
     const val FEATURED_PRODUCT = "Featured Product"
     const val SELLER_INFO = "seller info"
     const val SHOP_EN = "Shop"
+    const val HELP = "Help"
+    const val REVIEW = "Review"
+    const val PRODUCT_DISCUSSION = "Product Discussion"
+    const val MESSAGE = "Message"
+    const val INBOX = "Inbox"
 
 }
 

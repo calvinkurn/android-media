@@ -1,11 +1,15 @@
 package com.tokopedia.sellerhomedrawer.presentation.view.adapter
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.sellerhomedrawer.R
+import com.tokopedia.sellerhomedrawer.constant.SellerHomeState
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerItem
 
-class SellerDrawerAdapter(adapterTypeFactory: SellerDrawerAdapterTypeFactory,
+class SellerDrawerAdapter(val context: Context,
+                          adapterTypeFactory: SellerDrawerAdapterTypeFactory,
                           visitables: List<Visitable<*>>,
                           val drawerCache: LocalCacheHandler)
     : BaseAdapter<SellerDrawerAdapterTypeFactory>(adapterTypeFactory, visitables){
@@ -28,5 +32,28 @@ class SellerDrawerAdapter(adapterTypeFactory: SellerDrawerAdapterTypeFactory,
 
     var drawerItemData : MutableList<SellerDrawerItem> = arrayListOf()
     var isOfficialStore: Boolean = false
+    var isGoldMerchant: Boolean = false
+    var isFlashSaleVisible: Boolean = false
+
+    fun renderFlashSaleDrawer() {
+        var flashSaleIndexPosition = -1
+        if (isFlashSaleVisible) {
+            visitables.forEachIndexed{ index, visitable ->
+                if ((visitable as SellerDrawerItem).id == SellerHomeState.DrawerPosition.SELLER_TOP_ADS &&
+                        (visitables.get(index + 1) as SellerDrawerItem).id != SellerHomeState.DrawerPosition.SELLER_FLASH_SALE) {
+                    flashSaleIndexPosition = index + 1
+                }
+                return@forEachIndexed
+            }
+        }
+        if (flashSaleIndexPosition >= 0) {
+            val flashSaleDrawerItem = SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_flash_sale),
+                    iconId = R.drawable.sh_ic_flash_sale_grey,
+                    id = SellerHomeState.DrawerPosition.SELLER_FLASH_SALE,
+                    isExpanded = true)
+            visitables.add(flashSaleDrawerItem)
+        }
+    }
 
 }

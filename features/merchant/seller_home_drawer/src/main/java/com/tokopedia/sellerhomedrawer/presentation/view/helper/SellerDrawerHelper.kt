@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.core.ManageGeneral
@@ -32,6 +33,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerIt
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerHomeWebViewActivity
 import com.tokopedia.sellerhomedrawer.presentation.view.webview.SellerSimpleWebViewActivity
+import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.sh_drawer_activity.*
@@ -56,6 +58,12 @@ class SellerDrawerHelper(val context: Activity,
         val DRAWER_CACHE = "DRAWER_CACHE"
         @JvmStatic
         val REQUEST_LOGIN = 345
+        const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
+        const val INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity"
+        const val INBOX_REPUTATION_ACTIVITY = "com.tokopedia.tkpd.tkpdreputation.inbox.view.activity"
+        const val REPUTATION_DEEPLINK = "tokopedia://review"
+        const val URL_KEY = "url"
+
     }
 
     var sellerDrawerAdapter: SellerDrawerAdapter? = null
@@ -70,46 +78,58 @@ class SellerDrawerHelper(val context: Activity,
             when(drawerItem.id) {
                 SellerHomeState.DrawerPosition.INDEX_HOME -> {
                     eventDrawerClick(EventLabel.SELLER_HOME)
-                    //TODO: implement full SellerDashboardActivity feature
                     context.startActivity(SellerDashboardActivity.createInstance(context))
                 }
                 SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND -> {
+                    //TODO : Check why the drawer item is not showing
                     if (context.application is AbstractionRouter)
                         sendClickHamburgerMenuEvent(drawerItem.label)
                     eventClickGoldMerchantViaDrawer()
-                    moveActivityInternalApplink(ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                    moveActivityApplink(ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                 }
                 SellerHomeState.DrawerPosition.SHOP_NEW_ORDER -> {
                     eventDrawerClick(EventLabel.NEW_ORDER)
-                    moveActivityInternalApplink(
-                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
-                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_NEW_ORDER)
+                    moveActivityApplink(ApplinkConst.SELLER_NEW_ORDER)
                 }
                 SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING -> {
                     eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
-                    moveActivityInternalApplink(
-                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
-                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_CONFIRM_SHIPPING)
+                    moveActivityApplink(ApplinkConst.SELLER_SHIPMENT)
                 }
                 SellerHomeState.DrawerPosition.SHOP_SHIPPING_STATUS -> {
                     eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
-                    moveActivityInternalApplink(
-                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
-                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_SHIPPING_STATUS)
+                    moveActivityApplink(ApplinkConst.SELLER_STATUS)
                 }
                 SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST -> {
                     eventDrawerClick(EventLabel.SALES_LIST)
-                    moveActivityInternalApplink(
-                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
-                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_TRANSACTION_LIST)
+                    moveActivityApplink(ApplinkConst.SELLER_HISTORY)
                 }
                 SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST -> {
-                    moveActivityInternalApplink(
-                            ApplinkConstInternalMarketplace.SELLING_TRANSACTION,
-                            SellerHomeState.SellingTransaction.TAB_POSITION_SELLING_OPPORTUNITY)
+                    moveActivityApplink(ApplinkConst.SELLER_OPPORTUNITY)
+                }
+                SellerHomeState.DrawerPosition.SELLER_INFO -> {
+                    eventSellerInfo(
+                            Action.CLICK_HAMBURGER_ICON,
+                            EventLabel.SELLER_INFO
+                    )
+                    moveActivityApplink(ApplinkConst.SELLER_INFO)
+                }
+                SellerHomeState.DrawerPosition.INBOX_TICKET -> {
+                    moveActivityClassNameAndSendTrackingInbox(INBOX_TICKET_ACTIVITY, EventLabel.HELP)
+                }
+                SellerHomeState.DrawerPosition.INBOX_REVIEW -> {
+                    moveActivityDeeplinkAndSendTrackingInbox(REPUTATION_DEEPLINK, EventLabel.REVIEW)
+                }
+                SellerHomeState.DrawerPosition.INBOX_TALK -> {
+                    moveActivityDeeplinkAndSendTrackingInbox(ApplinkConst.TALK, EventLabel.PRODUCT_DISCUSSION)
+                }
+                SellerHomeState.DrawerPosition.INBOX_MESSAGE -> {
+                    moveActivityDeeplinkAndSendTrackingInbox(ApplinkConst.TOPCHAT_IDLESS, EventLabel.MESSAGE)
+                    TrackApp.getInstance().gtm.sendGeneralEvent("clickNavigationDrawer",
+                            "left navigation",
+                            "click on groupchat",
+                            "")
                 }
                 SellerHomeState.DrawerPosition.ADD_PRODUCT -> {
-                    //TODO : context is TkpdCoreRouter ?
                     val manageProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                     val addProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
                     TaskStackBuilder.create(context)
@@ -118,7 +138,6 @@ class SellerDrawerHelper(val context: Activity,
                             .startActivities()
                 }
                 SellerHomeState.DrawerPosition.MANAGE_PRODUCT -> {
-                    //TODO : is this applink correct ?
                     RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 }
                 SellerHomeState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP -> {
@@ -133,7 +152,7 @@ class SellerDrawerHelper(val context: Activity,
                 SellerHomeState.DrawerPosition.DRAFT_PRODUCT -> {
                     //TODO : Check the applink
                     eventDrawerClick(EventLabel.DRAFT_PRODUCT)
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DRAFT_LIST)
+                    RouteManager.route(context, ApplinkConst.PRODUCT_DRAFT)
                 }
                 SellerHomeState.DrawerPosition.MANAGE_ETALASE -> {
                     eventDrawerClick(EventLabel.PRODUCT_DISPLAY)
@@ -145,7 +164,7 @@ class SellerDrawerHelper(val context: Activity,
                     RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
                 }
                 SellerHomeState.DrawerPosition.SELLER_MITRA_TOPPERS -> {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.MITRA_TOPPERS_DASHBOARD)
                 }
                 SellerHomeState.DrawerPosition.SELLER_TOP_ADS -> {
                     eventDrawerClick(EventLabel.TOPADS)
@@ -158,16 +177,11 @@ class SellerDrawerHelper(val context: Activity,
                     eventFeaturedProduct(EventLabel.FEATURED_PRODUCT)
                     RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
                 }
-                SellerHomeState.DrawerPosition.SELLER_INFO -> {
-                    eventSellerInfo(
-                            Action.CLICK_HAMBURGER_ICON,
-                            EventLabel.SELLER_INFO
-                    )
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SELLER_INFO)
-                }
                 SellerHomeState.DrawerPosition.RESOLUTION_CENTER -> {
                     eventDrawerClick(EventLabel.RESOLUTION_CENTER)
-                    context.startActivity(SellerHomeWebViewActivity.createIntent(context, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER))
+                    val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.WEBVIEW)
+                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
+                    context.startActivity(intent)
                 }
                 SellerHomeState.DrawerPosition.SETTINGS -> {
                     //TODO: Change ManageGeneral to abstraction
@@ -206,17 +220,16 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     override fun onGoToDeposit() {
-        //TODO: SellerModuleRouter is needed ?
         startSaldoDepositIntent()
         eventDrawerClick(EventLabel.SHOP_EN)
     }
 
     override fun onGoToProfile() {
-        //TODO: Add internal applink to ProfileActivity
+        moveActivityApplink(ApplinkConstInternalContent.PROFILE_DETAIL, userSession.userId)
     }
 
     override fun onGoToProfileCompletion() {
-        //TODO: Add internal applink to ProfileCompletionActivity
+        moveActivityApplink(ApplinkConstInternalGlobal.PROFILE_COMPLETION)
     }
 
     override fun onGroupClicked(sellerDrawerGroup: SellerDrawerGroup, position: Int) {
@@ -383,7 +396,7 @@ class SellerDrawerHelper(val context: Activity,
             addAll(createDrawerData())
         }
 
-        sellerDrawerAdapter = SellerDrawerAdapter(SellerDrawerAdapterTypeFactory(this, this, this, this, this, context), visitableList, drawerCache)
+        sellerDrawerAdapter = SellerDrawerAdapter(context, SellerDrawerAdapterTypeFactory(this, this, this, this, this, context), visitableList, drawerCache)
         sellerDrawerAdapter?.drawerItemData = createDrawerData()
         activity.left_drawer.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -404,7 +417,7 @@ class SellerDrawerHelper(val context: Activity,
     }
 
     private fun onGoToShop() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_DOMAIN, userSession.shopId)
+        RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
     private fun setExpand() {
@@ -452,27 +465,27 @@ class SellerDrawerHelper(val context: Activity,
 
         sellerMenu.apply {
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_opportunity),
-                    id = SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
+                    label = context.getString(R.string.drawer_title_list_selling),
+                    id = SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST,
                     isExpanded = isExpanded))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_new_order),
-                    id = SellerHomeState.DrawerPosition.SHOP_NEW_ORDER,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_NEW_ORDER)))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_confirm_shipping),
-                    id = SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION)))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_shipping_status),
                     id = SellerHomeState.DrawerPosition.SHOP_SHIPPING_STATUS,
                     isExpanded = isExpanded,
                     notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_STATUS)))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_list_selling),
-                    id = SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST,
+                    label = context.getString(R.string.drawer_title_confirm_shipping),
+                    id = SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_new_order),
+                    id = SellerHomeState.DrawerPosition.SHOP_NEW_ORDER,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_SELLING_NEW_ORDER)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_opportunity),
+                    id = SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST,
                     isExpanded = isExpanded))
         }
 
@@ -492,30 +505,30 @@ class SellerDrawerHelper(val context: Activity,
 
         inboxMenu.apply {
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_inbox_message),
-                    id = SellerHomeState.DrawerPosition.INBOX_TALK,
+                    label = context.getString(R.string.drawer_title_seller_info),
+                    id = SellerHomeState.DrawerPosition.SELLER_INFO,
                     isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE)))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_inbox_discussion),
-                    id = SellerHomeState.DrawerPosition.INBOX_TALK,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TALK)))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_inbox_review),
-                    id = SellerHomeState.DrawerPosition.INBOX_REVIEW,
-                    isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_REVIEW)))
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_SELLER_INFO)))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_inbox_ticket),
                     id = SellerHomeState.DrawerPosition.INBOX_TICKET,
                     isExpanded = isExpanded,
                     notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TICKET)))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_seller_info),
-                    id = SellerHomeState.DrawerPosition.SELLER_INFO,
+                    label = context.getString(R.string.drawer_title_inbox_review),
+                    id = SellerHomeState.DrawerPosition.INBOX_REVIEW,
                     isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_SELLER_INFO)))
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_REVIEW)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_inbox_discussion),
+                    id = SellerHomeState.DrawerPosition.INBOX_TALK,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TALK)))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_inbox_message),
+                    id = SellerHomeState.DrawerPosition.INBOX_MESSAGE,
+                    isExpanded = isExpanded,
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE)))
         }
         return inboxMenu
     }
@@ -530,24 +543,24 @@ class SellerDrawerHelper(val context: Activity,
 
         productMenu.apply {
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_add_product),
-                    id = SellerHomeState.DrawerPosition.ADD_PRODUCT,
-                    isExpanded = true))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_product_list),
-                    id = SellerHomeState.DrawerPosition.MANAGE_PRODUCT,
-                    isExpanded = true))
-            add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_draft_list),
-                    id = SellerHomeState.DrawerPosition.DRAFT_PRODUCT,
+                    label = context.getString(R.string.drawer_title_etalase_list),
+                    id = SellerHomeState.DrawerPosition.MANAGE_ETALASE,
                     isExpanded = true))
             add(SellerDrawerItem(
                     label = context.getString(R.string.featured_product_title),
                     id = SellerHomeState.DrawerPosition.FEATURED_PRODUCT,
                     isExpanded = true))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.drawer_title_etalase_list),
-                    id = SellerHomeState.DrawerPosition.MANAGE_ETALASE,
+                    label = context.getString(R.string.drawer_title_draft_list),
+                    id = SellerHomeState.DrawerPosition.DRAFT_PRODUCT,
+                    isExpanded = true))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_product_list),
+                    id = SellerHomeState.DrawerPosition.MANAGE_PRODUCT,
+                    isExpanded = true))
+            add(SellerDrawerItem(
+                    label = context.getString(R.string.drawer_title_add_product),
+                    id = SellerHomeState.DrawerPosition.ADD_PRODUCT,
                     isExpanded = true))
         }
         return productMenu
@@ -573,18 +586,37 @@ class SellerDrawerHelper(val context: Activity,
                     isExpanded = true)
     }
 
-    private fun moveActivityInternalApplink(applink: String) {
+    private fun moveActivityApplink(applink: String) {
         RouteManager.route(context, applink)
     }
 
-    private fun moveActivityInternalApplink(applink: String, vararg params: String) {
+    private fun moveActivityApplink(applink: String, vararg params: String) {
         val intent = RouteManager.getIntent(context, applink, *params)
         context.startActivity(intent)
     }
 
+    private fun moveActivityDeeplinkAndSendTrackingInbox(deeplink: String, subCategory: String) {
+        val intent = RouteManager.getIntent(context, deeplink)
+        context.startActivity(intent)
+        eventDrawerClick(subCategory)
+        intent.component?.className?.let { className ->
+            SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, className, EventLabel.INBOX, subCategory)
+        }
+    }
+
+    private fun moveActivityClassNameAndSendTrackingInbox(activityPath: String, subCategory: String) {
+        val intent = Intent()
+        intent.setClassName(context.packageName, activityPath)
+        context.startActivity(intent)
+        eventDrawerClick(subCategory)
+        intent.component?.className?.let { className ->
+            SellerAnalyticsEventTrackingHelper.hamburgerOptionClicked(context, className, EventLabel.INBOX, subCategory)
+        }
+    }
+
     private fun startSaldoDepositIntent() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
-            moveActivityInternalApplink(ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+            moveActivityApplink(ApplinkConstInternalGlobal.SALDO_DEPOSIT)
         else context.startActivity(SellerHomeWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL))
     }
 

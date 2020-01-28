@@ -40,6 +40,7 @@
     <string name="drawer_title_help">Bantuan</string>
     <string name="drawer_title_pos_riwayat_tx">Riwayat Transaksi</string>
     <string name="drawer_title_pos_choose_outlet">Pilih Outlet</string>
+    <string name="drawer_title_flash_sale">Flash Sale</string>
     <string name="max_notif">999+</string>
     <string name="register_text_login">Belum punya akun? Daftar</string>
     <string name="or">Atau</string>
