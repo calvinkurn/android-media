@@ -97,6 +97,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         const val ALL_ETALASE_ID = "etalase"
+        const val SOLD_ETALASE_ID = "sold"
 
         @JvmStatic
         fun createInstance(shopAttribution: String?): ShopPageProductListFragment {
@@ -307,12 +308,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
         if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
-            return
-        }
-        if (shopProductViewModel.isWishList) {
-            viewModel.removeWishList(shopProductViewModel.id ?: "", this)
         } else {
-            viewModel.addWishList(shopProductViewModel.id ?: "", this)
+            viewModel.clearGetShopProductUseCase()
+            if (shopProductViewModel.isWishList) {
+                viewModel.removeWishList(shopProductViewModel.id ?: "", this)
+            } else {
+                viewModel.addWishList(shopProductViewModel.id ?: "", this)
+            }
         }
     }
 
@@ -467,9 +469,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     viewModel.isMyShop(shopInfo!!.shopCore.shopID),
                     CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
                             shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
-            if(isOwner){
+            if (isOwner) {
                 redirectToShopSettingsEtalase()
-            }else{
+            } else {
                 redirectToEtalasePicker()
             }
         }
@@ -597,14 +599,28 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        return if (shopInfo != null && isOwner && selectedEtalaseId == ALL_ETALASE_ID) {
-            if (shopInfo != null) {
-                shopPageTracking?.impressionZeroProduct(CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
-                        shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
+        val title: String
+        val description: String
+        return if (shopInfo != null && isOwner) {
+            if (selectedEtalaseId == ALL_ETALASE_ID) {
+                if (shopInfo != null) {
+                    shopPageTracking?.impressionZeroProduct(CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
+                            shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
+                }
+                ShopSellerEmptyProductAllEtalaseViewModel()
+            } else if (isOwner && selectedEtalaseId == SOLD_ETALASE_ID) {
+                title = getString(R.string.text_shop_no_product_seller)
+                description = getString(R.string.text_shop_no_product_description_seller)
+                ShopEmptyProductViewModel(isOwner, title, description)
+            } else {
+                title = getString(R.string.shop_product_limited_empty_products_title_owner)
+                description = getString(R.string.shop_product_limited_empty_products_content_owner)
+                ShopEmptyProductViewModel(isOwner, title, description)
             }
-            ShopSellerEmptyProductAllEtalaseViewModel()
         } else {
-            EmptyOwnShopModel(isOwner)
+            title = getString(R.string.text_shop_no_product)
+            description = getString(R.string.text_shop_no_product_follow)
+            ShopEmptyProductViewModel(isOwner, title, description)
         }
     }
 

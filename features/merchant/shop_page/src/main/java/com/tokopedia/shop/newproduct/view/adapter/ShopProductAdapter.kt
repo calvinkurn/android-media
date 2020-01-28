@@ -49,8 +49,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_FEATURED_PRODUCT_DATA_MODEL] as? ShopProductFeaturedViewModel
     private val sellerEmptyProductAllEtalaseDataModel: ShopSellerEmptyProductAllEtalaseViewModel?
         get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] as? ShopSellerEmptyProductAllEtalaseViewModel
-    private val buyerEmptyProductDataModel: EmptyOwnShopModel?
-        get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? EmptyOwnShopModel
+    private val shopEmptyProductViewModel: ShopEmptyProductViewModel?
+        get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? ShopEmptyProductViewModel
     private val shopProductAddViewModel: ShopProductAddViewModel?
         get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddViewModel
 
@@ -141,7 +141,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         sellerEmptyProductAllEtalaseDataModel?.let {
             visitables.remove(it)
         }
-        buyerEmptyProductDataModel?.let {
+        shopEmptyProductViewModel?.let {
             visitables.remove(it)
         }
         shopProductAddViewModel?.let {
@@ -408,7 +408,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopSellerEmptyProductAllEtalaseViewModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] = data
                 }
-                is EmptyOwnShopModel -> {
+                is ShopEmptyProductViewModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] = data
                 }
                 is ShopProductViewModel -> {
