@@ -130,7 +130,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     companion object {
-        private val TAG_COACHMARK = "co`achmark"
+        private val TAG_COACHMARK = "coachMark"
         private const val REQUEST_FILTER = 2888
 
         @JvmStatic
@@ -497,7 +497,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         somListItemAdapter.notifyDataSetChanged()
 
-        showCoachMark()
+//        showCoachMark()
     }
 
     private fun showCoachMark(){
