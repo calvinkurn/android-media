@@ -524,9 +524,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, requestId: String, autofillName: String = "") {
         val departureDate = if (bookingViewModel.getSearchParam().isOneWay) {
-            bookingViewModel.getSearchParam().returnDate
-        } else {
             bookingViewModel.getSearchParam().departureDate
+        } else {
+            bookingViewModel.getSearchParam().returnDate
         }
 
         startActivityForResult(
