@@ -154,12 +154,14 @@
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_4"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_4"
+            android:paddingTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_8"
             android:text="@string/available_at"
             android:textColor="@color/black_70"
             app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_promo"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible" />
 

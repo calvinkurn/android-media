@@ -11,6 +11,7 @@ import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
@@ -86,6 +87,17 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             hotelCheckoutResult.value = Success(data.response)
         }) {
             hotelCheckoutResult.value = Fail(it)
+        }
+    }
+
+    fun onCancelAppliedVoucher(rawQuery: String) {
+        launchCatchError(block = {
+            withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<FlightCancelVoucher>()
+        }) {
+            it.printStackTrace()
         }
     }
 

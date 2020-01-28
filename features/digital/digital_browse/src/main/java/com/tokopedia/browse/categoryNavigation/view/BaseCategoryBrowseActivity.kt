@@ -60,6 +60,8 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         }
     }
 
+    override fun getScreenName() = getString(R.string.belanja_screen_name)
+
     open fun getCategoryLaunchSource(): String {
         return "Belanja/Category"
     }

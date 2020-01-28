@@ -19,8 +19,10 @@ class DigitalHomePageFavoriteViewHolder(itemView: View?, val onItemBindListener:
         val layoutManager = GridLayoutManager(itemView.context, FAVORITES_SPAN_COUNT)
         itemView.rv_digital_homepage_favorites.layoutManager = layoutManager
         if (element.isLoaded) {
-            if (element.isSuccess) {
-                element.data?.section?.run {
+            if (element.isSuccess
+                    && element.data != null
+                    && element.data.section.items.isNotEmpty()) {
+                with (element.data.section) {
                     itemView.digital_homepage_favorites_shimmering.hide()
                     itemView.digital_homepage_favorites_container.show()
                     itemView.digital_homepage_favorites_title.text = title
