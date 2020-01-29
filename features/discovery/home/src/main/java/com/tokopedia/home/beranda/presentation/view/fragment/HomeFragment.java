@@ -134,6 +134,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
+    public static final String REVIEW_CLICK_AT = "rating";
     public static final String UTM_SOURCE = "utm_source";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
