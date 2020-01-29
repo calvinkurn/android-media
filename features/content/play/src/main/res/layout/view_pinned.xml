@@ -40,8 +40,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:lineHeight="@dimen/fontSize_lvl5"
                 android:textColor="@color/Neutral_N0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
