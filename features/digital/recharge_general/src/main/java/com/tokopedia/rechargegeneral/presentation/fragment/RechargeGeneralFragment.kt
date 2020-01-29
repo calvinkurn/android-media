@@ -660,7 +660,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.getProductList(viewModel.createParams(menuId, operator))
     }
 
-    override fun onFinishInput(label: String, input: String, position: Int) {
+    override fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean) {
+        if (label.isNotEmpty() && input.isNotEmpty() && isManual) {
+            rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
+        }
         updateInputData(label, input, position)
     }
 
@@ -675,7 +678,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun updateInputData(label: String, input: String, position: Int) {
         if (label.isNotEmpty() && input.isNotEmpty()) {
-            rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
             inputData[label] = input
         } else {
             inputData.remove(label)
