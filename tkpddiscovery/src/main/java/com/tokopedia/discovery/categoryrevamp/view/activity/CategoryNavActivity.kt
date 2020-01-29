@@ -450,7 +450,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun updateToolBarHeading(header: String) {
-        this.departmentName = header
+        departmentName = header
         et_search.text = header
     }
 
