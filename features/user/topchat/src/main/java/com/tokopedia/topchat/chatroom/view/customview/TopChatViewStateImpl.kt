@@ -69,6 +69,9 @@ class TopChatViewStateImpl(
 
     var roomMenu = LongClickMenu()
 
+    override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
+    override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
+
     init {
         initView()
     }
