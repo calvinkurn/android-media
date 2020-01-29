@@ -44,6 +44,9 @@ class LivenessView constructor(context: Context, attrs: AttributeSet? = null) : 
     val isVertical: Boolean
         get() = true
 
+    private var mRatioWidth = 0
+    private var mRatioHeight = 0
+
     private var mLatestWarnCode: Detector.WarnCode? = null
 
     private fun checkDetectionTypes(vararg detectionTypes: Detector.DetectionType): Boolean {
@@ -128,8 +131,28 @@ class LivenessView constructor(context: Context, attrs: AttributeSet? = null) : 
                 matrix.setRectToRect(fromRect, toRect, Matrix.ScaleToFit.START)
                 this.setTransform(matrix)
             }
+        }
+    }
+
+    fun setAspectRatio(width: Int, height: Int) {
+        require(!(width < 0 || height < 0)) { "Size cannot be negative." }
+        mRatioWidth = width
+        mRatioHeight = height
+        requestLayout()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        val height = MeasureSpec.getSize(heightMeasureSpec)
+        if (0 == mRatioWidth || 0 == mRatioHeight) {
+            setMeasuredDimension(width, height)
         } else {
-            super.transformTexture()
+            if (width < height * mRatioWidth / mRatioHeight) {
+                setMeasuredDimension(height * mRatioWidth / mRatioHeight, height)
+            } else {
+                setMeasuredDimension(width, width * mRatioHeight / mRatioWidth)
+            }
         }
     }
 
@@ -179,7 +202,38 @@ class LivenessView constructor(context: Context, attrs: AttributeSet? = null) : 
                     this.mOnCameraOpening = false
                 }
             } else {
-                super.open(cameraId)
+                if (!this.mOnCameraOpening) {
+                    try {
+                        this.mOnCameraOpening = true
+                        this.mCamera = Camera.open(cameraId)
+                        val cameraInfo = Camera.CameraInfo()
+                        Camera.getCameraInfo(cameraId, cameraInfo)
+                        this.mCamera.setPreviewTexture(this.surfaceTexture)
+                        val params = this.mCamera.parameters
+
+                        this.mCameraAngle = this.getCameraAngle(cameraId)
+                        this.mCamera.setDisplayOrientation(this.mCameraAngle)
+
+                        this.mPreviewSize = this.calBestPreviewSize(this.mCamera.parameters)
+                        params.setPreviewSize(this.mPreviewSize.width, this.mPreviewSize.height)
+                        val size = params.previewSize
+                        val previewWidth = size.width
+                        val previewHeight = size.height
+
+                        this.setAspectRatio(previewHeight, previewWidth)
+
+                        this.mCamera.parameters = params
+//                        this.transformTexture()
+                        this.startAutoFocus()
+                    } catch (var4: Exception) {
+                    }
+
+                    if (this.mCamera == null && this.mCallBack != null) {
+                        this.mCallBack.onCameraOpenFailed()
+                    }
+
+                    this.mOnCameraOpening = false
+                }
             }
         } catch (e: Exception) {
             LivenessResult.setErrorCode(ErrorCode.DEVICE_NOT_SUPPORT)
@@ -195,7 +249,7 @@ class LivenessView constructor(context: Context, attrs: AttributeSet? = null) : 
         }
     }
 
-    override fun openFrontCamera(callBack: GuardianCameraView.CallBack) {
+    override fun openFrontCamera(callBack: CallBack) {
         if (GuardianLivenessDetectionSDK.isDeviceSupportLiveness) {
             try {
                 super.openFrontCamera(callBack)
@@ -275,7 +329,7 @@ class LivenessView constructor(context: Context, attrs: AttributeSet? = null) : 
     }
 
     @Deprecated("")
-    override fun openBackCamera(callback: GuardianCameraView.CallBack) {
+    override fun openBackCamera(callback: CallBack) {
         if (GuardianLivenessDetectionSDK.isEmulator) {
             super.openBackCamera(callback)
         }

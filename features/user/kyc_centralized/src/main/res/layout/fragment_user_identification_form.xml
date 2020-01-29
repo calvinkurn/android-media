@@ -52,10 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:lineSpacingExtra="@dimen/kyc_centralized_6sp"
-            android:fontFamily="SFProText-Regular"
             android:gravity="center"
             android:textColor="@color/Neutral_N700_68"
-            android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title"
             tools:text="@string/face_subtitle" />
@@ -81,8 +79,7 @@
             app:layout_constraintTop_toBottomOf="@id/layout_info_bullet"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginBottom="@dimen/kyc_centralized_17dp"
-            android:drawableLeft="@drawable/ic_shield"
-            android:drawableStart="@drawable/ic_shield"
+            app:drawableLeftCompat="@drawable/ic_shield"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:text="@string/kyc_data_security" />
 
