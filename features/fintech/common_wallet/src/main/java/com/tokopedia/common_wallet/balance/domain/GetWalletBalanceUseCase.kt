@@ -45,7 +45,7 @@ class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext priv
                         graphqlUseCase.clearRequest()
                         graphqlUseCase.addRequest(GraphqlRequest(query, WalletBalanceResponse::class.java, false))
                         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`()).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
                         return@Func1 graphqlUseCase.createObservable(null)
                     }
                     Observable.error(Exception("Query variable are empty"))
