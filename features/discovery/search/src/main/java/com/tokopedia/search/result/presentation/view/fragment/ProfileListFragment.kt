@@ -25,6 +25,7 @@ import com.tokopedia.search.result.presentation.ProfileListSectionContract
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.search.result.presentation.model.TotalSearchCountViewModel
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProfileItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.ProfileListener
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
@@ -106,6 +107,19 @@ class ProfileListFragment :
         super.onActivityCreated(savedInstanceState)
         if (userVisibleHint && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        activity?.let { activity ->
+            getRecyclerView(view).addItemDecoration(ProfileItemDecoration(
+                    activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                    activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                    activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                    activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+            ))
         }
     }
 
