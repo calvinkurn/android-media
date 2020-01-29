@@ -8,10 +8,9 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.view.View
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -87,10 +86,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
                 .inject(this)
         updateShopShedulePresenter.attachView(this)
 
-        val mToolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(mToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        this.title = getString(R.string.set_shop_status)
+        supportActionBar?.title = getString(R.string.shop_settings_set_shop_status)
 
         etShopCloseNote.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
@@ -112,6 +108,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         }
         tvSave.visibility = View.VISIBLE
         tvSave.setOnClickListener { onSaveButtonClicked() }
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
