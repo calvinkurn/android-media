@@ -578,9 +578,7 @@ class TopChatRoomPresenter @Inject constructor(
                 totalPriceAmount
         )
 
-        if (attachmentsPreview.hasInvoicePreview()) {
-            attachmentsPreview.clear()
-        }
+        if (attachmentsPreview.isNotEmpty()) clearAttachmentPreview()
 
         attachmentsPreview.add(invoiceViewModel)
 
@@ -667,7 +665,7 @@ class TopChatRoomPresenter @Inject constructor(
 
         val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
         val sendableVoucher = SendableVoucherPreview(voucherPreview)
-        if (attachmentsPreview.isNotEmpty()) attachmentsPreview.clear()
+        if (attachmentsPreview.isNotEmpty()) clearAttachmentPreview()
         attachmentsPreview.add(sendableVoucher)
     }
 
@@ -688,12 +686,4 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-}
-
-private fun java.util.ArrayList<SendablePreview>.hasInvoicePreview(): Boolean {
-    if (isEmpty()) return false
-    for (item in this) {
-        if (item is InvoicePreviewViewModel) return true
-    }
-    return false
 }
