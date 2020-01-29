@@ -17,7 +17,6 @@ import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase;
 
@@ -52,13 +51,11 @@ public interface ShopComponent {
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 
-    GetShopInfoUseCase getShopInfoUseCase();
+    GQLGetShopInfoUseCase gqlGetShopInfoUseCase();
 
     GetShopInfoByDomainUseCase getShopInfoByDomainUseCase();
 
     ToggleFavouriteShopUseCase toggleFavouriteShopUseCase();
-
-    GQLGetShopInfoUseCase getGqlShopInfoUseCase();
 
     GQLGetShopFavoriteStatusUseCase getGQLGetShopFavoriteStatusUseCase();
 

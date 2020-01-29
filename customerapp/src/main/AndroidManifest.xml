@@ -267,26 +267,10 @@
             android:screenOrientation="portrait" />
         <activity android:name=".home.ReactNativeSubPromoPageActivity"
             android:screenOrientation="portrait" />
-
-        <service
-            android:name="com.tokopedia.digital.product.service.USSDAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/config_accessibility_service"/>
-        </service>
         <service
             android:name=".thankyou.view.ThanksTrackerService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
-
-        <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/DialogTheme"/>
 
         <activity
             android:name=".qrscanner.QrScannerActivity"
@@ -303,16 +287,6 @@
                     android:pathPattern="@string/path_qr_scanner" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".campaign.view.activity.ShakeDetectCampaignActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Translucent"/>
-
-        <activity
-            android:name=".campaign.view.activity.ShakeErrorCampaignActivity"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".flight.presentation.FlightPhoneVerificationActivity"

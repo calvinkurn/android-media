@@ -1,9 +1,9 @@
 package com.tokopedia.digital.newcart.domain.model;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
-
-import javax.annotation.Nullable;
 
 public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFactory> {
     private String categoryName;

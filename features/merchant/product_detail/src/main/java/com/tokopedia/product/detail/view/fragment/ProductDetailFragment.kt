@@ -159,6 +159,7 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_product_trade_in.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import tradein_common.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -466,6 +467,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productInfoViewModel.deviceId = TradeInUtils.getDeviceId(context) ?: productInfoViewModel.userSessionInterface.deviceId
 
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
@@ -522,7 +524,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
                 activity?.let {
                     //TOGGLE_MVC_OFF
-                    productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
+                    productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, productInfo?.basic?.shopID.orZero().toString(), productId.orEmpty(), position)
                     showSnackbarClose(getString(R.string.title_voucher_code_copied))
                 }
             }
@@ -530,7 +532,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
                 activity?.let {
                     productInfo?.run {
-                        productDetailTracking.eventClickMerchantVoucherSeeDetail(basic.id)
+                        productDetailTracking.eventClickMerchantVoucherSeeDetail(merchantVoucherViewModel.voucherId, productId.orEmpty())
                         val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
                                 merchantVoucherViewModel, basic.shopID.toString())
                         startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
@@ -541,7 +543,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onSeeAllClicked() {
                 activity?.let {
                     productInfo?.run {
-                        productDetailTracking.eventClickMerchantVoucherSeeAll(basic.id)
+                        productDetailTracking.eventClickMerchantVoucherSeeAll(productId.orEmpty())
                         if (shopInfo == null) return@let
 
                         val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID.toString(),
@@ -1517,9 +1519,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (productInfoP2.vouchers.isNotEmpty()) {
             merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
             merchantVoucherListWidget.visible()
-            if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID
-                            ?: 0)) {
-                productDetailTracking.eventImpressionMerchantVoucherUse(productInfoP2.vouchers)
+            if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID.orZero())) {
+                productDetailTracking.eventImpressionMerchantVoucherUse(
+                        productInfo?.basic?.shopID.orZero(),
+                        productId ?: return,
+                        productInfoP2.vouchers)
             }
         } else {
             merchantVoucherListWidget.gone()

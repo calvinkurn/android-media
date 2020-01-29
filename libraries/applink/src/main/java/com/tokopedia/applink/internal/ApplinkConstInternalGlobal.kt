@@ -294,6 +294,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
 
+    // RegisterInitialActivity
+    // tokopedia-android-internal://global/init-register
+    @JvmField
+    val INIT_REGISTER = "$INTERNAL_GLOBAL/init-register"
+
     // RegisterEmailActivity
     // tokopedia-android-internal://global/email-register
     @JvmField
@@ -352,6 +357,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // GeneralSettingActivity
+    // tokopedia-android-internal://global/general-setting
+    @JvmField
+    val GENERAL_SETTING = "$INTERNAL_GLOBAL/general-setting"
 
     // PushNotificationCheckerActivity
     // tokopedia-android-internal://global/push-notification-troubleshooter

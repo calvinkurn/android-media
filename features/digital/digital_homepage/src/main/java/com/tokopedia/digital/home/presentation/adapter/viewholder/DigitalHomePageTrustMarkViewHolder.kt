@@ -18,8 +18,10 @@ class DigitalHomePageTrustMarkViewHolder(itemView: View?, val onItemBindListener
         val layoutManager = GridLayoutManager(itemView.context, TRUST_MARK_SPAN_COUNT)
         itemView.rv_digital_homepage_trust_mark.layoutManager = layoutManager
         if (element.isLoaded) {
-            if (element.isSuccess) {
-                element.data?.section?.run {
+            if (element.isSuccess
+                    && element.data != null
+                    && element.data.section.items.isNotEmpty()) {
+                with (element.data.section) {
                     itemView.digital_homepage_trust_mark_shimmering.hide()
                     itemView.digital_homepage_trust_mark_container.show()
                     itemView.rv_digital_homepage_trust_mark.adapter = DigitalItemTrustMarkAdapter(items)

@@ -280,7 +280,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
                 getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_manual_label);
                 getView().setPaymentDescription(renderManualPaymentDescriptionText(flightOrder.getPayment().getManualTransfer()));
-                getView().setTotalTransfer(flightOrder.getPayment().getManualTransfer().getTotal());
+                if (flightOrder.getPayment().getNeedToPayAmount() > 0) getView().setTotalTransfer(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(flightOrder.getPayment().getNeedToPayAmount()));
+                    else getView().setTotalTransfer(flightOrder.getPayment().getManualTransfer().getTotal());
             } else {
                 getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));

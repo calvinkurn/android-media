@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.newcart.data.mapper.ICartMapperData;

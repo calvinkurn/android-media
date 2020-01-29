@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.digital.newcart.data.entity.response.deal.DealCategoryEntity;
 import com.tokopedia.digital.newcart.data.entity.response.deal.DealProductsResponse;
 
