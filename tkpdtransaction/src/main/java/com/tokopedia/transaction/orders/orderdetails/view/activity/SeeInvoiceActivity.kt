@@ -6,6 +6,7 @@ import android.os.Build
 import android.print.PrintAttributes
 import android.print.PrintDocumentAdapter
 import android.print.PrintManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
@@ -28,6 +29,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         webView.settings.builtInZoomControls
         webView.settings.displayZoomControls
         val data = intent?.extras?.getString(KEY_URL, "defaultKey")
+        Log.d("KEY_URL", KEY_URL)
         webView.loadUrl(data)
 
         onPrintClicked(webView)
