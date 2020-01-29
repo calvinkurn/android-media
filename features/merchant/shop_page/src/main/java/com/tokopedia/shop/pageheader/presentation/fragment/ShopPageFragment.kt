@@ -217,7 +217,6 @@ class ShopPageFragment :
         }
         mainLayout.requestFocus()
         initStickyLogin(view)
-        initSearchInputView()
     }
 
     private fun openShopProductSortPage() {
@@ -259,13 +258,6 @@ class ShopPageFragment :
                 is Fail -> onErrorModerateListener(shopModerate.throwable)
             }
         })
-    }
-
-    private fun updateUIByShopName(shopName: String) {
-        searchBarText.text = getString(
-                R.string.shop_product_search_hint_2,
-                MethodChecker.fromHtml(shopName).toString()
-        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -326,25 +318,35 @@ class ShopPageFragment :
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 setSupportActionBar(toolbar)
-                supportActionBar?.title = getString(R.string.text_your_shop)
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 supportActionBar?.setDisplayShowTitleEnabled(true)
                 setHasOptionsMenu(true)
             }
         }
+        if (isMyShop) {
+            displayToolbarSeller()
+        } else {
+            displayToolbarBuyer()
+        }
+    }
+
+    private fun displayToolbarSeller() {
+        text_your_shop.show()
+        searchBarLayout.hide()
+    }
+
+    private fun displayToolbarBuyer() {
+        text_your_shop.hide()
+        searchBarLayout.show()
+        initSearchInputView()
     }
 
     private fun initSearchInputView() {
-        if (isMyShop) {
-            searchBarLayout.hide()
-        } else {
-            searchBarLayout.show()
-            searchBarText.setOnClickListener {
-                redirectToShopSearchProduct()
-            }
-            searchBarSort.setOnClickListener {
-                openShopProductSortPage()
-            }
+        searchBarText.setOnClickListener {
+            redirectToShopSearchProduct()
+        }
+        searchBarSort.setOnClickListener {
+            openShopProductSortPage()
         }
     }
 
@@ -460,8 +462,8 @@ class ShopPageFragment :
     }
 
     private fun redirectToShopSettingsPage() {
-        context?.let {context ->
-            shopId?.let{shopId ->
+        context?.let { context ->
+            shopId?.let { shopId ->
                 startActivity(ShopPageSettingActivity.createIntent(context, shopId))
             }
         }
@@ -498,7 +500,6 @@ class ShopPageFragment :
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             isGoldMerchant = (goldOS.isGoldBadge == 1)
             shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
-            updateUIByShopName(shopCore.name)
             setupTabs()
             if (!isMyShop) {
                 button_chat.show()
