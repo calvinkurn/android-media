@@ -302,7 +302,7 @@ class PlayFragment : BaseDaggerFragment() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            imm?.hideSoftInputFromWindow(v.windowToken, 0)
         }
     }
 
