@@ -1,36 +1,33 @@
 package com.tokopedia.home.account;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.Instrumentation;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.filters.SmallTest;
-import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
 
 import com.banklist.di.test.DaggerSettingBankTestComponent;
-import com.banklist.di.test.SettingBankTestComponent;
 import com.banklist.di.test.SettingBankTestModule;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.settingbank.R;
 import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent;
 import com.tokopedia.settingbank.banklist.di.SettingBankComponent;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
-import com.tokopedia.settingbank.banklist.view.fragment.SettingBankFragment;
-import com.tokopedia.tkpd.BaseJsonFactory;
+import com.tokopedia.settingbank.banklist.view.activity.DebugSettingBankActivity;
+import com.tokopedia.settingbank.banklist.view.fragment.DebugSettingBankFragment;
 import com.tokopedia.tkpd.BaseRetrofitJsonFactory;
+import com.tokopedia.util.FetchingIdlingResource;
 
 import org.hamcrest.Matchers;
-import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,8 +39,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 @RunWith(AndroidJUnit4.class)
 public class SettingBankActivityTest {
     @Rule
-    public ActivityTestRule<SettingBankActivity> mActivityRule =
-            new ActivityTestRule<>(SettingBankActivity.class);
+    public ActivityTestRule<DebugSettingBankActivity> mActivityRule =
+            new ActivityTestRule<>(DebugSettingBankActivity.class, false, false);
 
     private void setContentView(final int layoutId) throws Throwable {
         final Activity activity = mActivityRule.getActivity();
@@ -51,7 +48,7 @@ public class SettingBankActivityTest {
     }
 
     @Test
-    public void test(){
+    public void test() {
         Assert.assertEquals(
                 //new JSONObject(A.INSTANCE.getTest2()).toString(),
                 new Gson().toJson(A.INSTANCE.getTest2()),
@@ -60,12 +57,18 @@ public class SettingBankActivityTest {
         );
     }
 
+    @Before
+    public void setup() {
+        mActivityRule.launchActivity(null);
+        IdlingRegistry.getInstance().register(FetchingIdlingResource.INSTANCE.get());
+    }
+
     @Test
     public void inflation() throws Throwable {
 
         Thread.sleep(10_000);
 
-        SettingBankFragment fragment = (SettingBankFragment)
+        DebugSettingBankFragment fragment = (DebugSettingBankFragment)
                 mActivityRule.
                         getActivity().
                         getSupportFragmentManager().
@@ -96,24 +99,20 @@ public class SettingBankActivityTest {
                 .baseAppComponent(application.getBaseAppComponent())
                 .build();
 
-        fragment.reInitInjector(settingBankComponent);
+        if (fragment != null) {
 
-        mActivityRule.getActivity().runOnUiThread(new Runnable() {
-                                                     @Override
-                                                     public void run() {
-                                                         fragment.getBankList();
-                                                     }
-                                                 });
+            fragment.reInitInjector(settingBankComponent);
 
+            mActivityRule.getActivity().runOnUiThread(fragment::getBankList);
 
-        Thread.sleep(10_000);
+            Espresso.onView(ViewMatchers.withId(R.id.account_list_rv))
+                    .inRoot(RootMatchers.withDecorView(
+                            Matchers.is(mActivityRule.getActivity().getWindow().getDecorView())))
+                    .check(matches(isDisplayed()));
 
-        Espresso.onView(ViewMatchers.withId(R.id.account_list_rv))
-                .inRoot(RootMatchers.withDecorView(
-                        Matchers.is(mActivityRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
+            Log.d("Test", "kakka");
+        }
 
-        Log.d("Test", "kakka");
 
     }
 

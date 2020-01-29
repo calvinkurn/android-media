@@ -39,7 +39,7 @@ import javax.inject.Inject
  * @author by nisie on 6/7/18.
  */
 
-class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, EmptyBankAccountListener,
+open class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, EmptyBankAccountListener,
         BaseDaggerFragment() {
 
     private val REQUEST_ADD_BANK: Int = 101
@@ -67,12 +67,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun getScreenName(): String {
         return SettingBankAnalytics.SCREEN_NAME
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    fun reInitInjector(component: SettingBankComponent){
-        component.inject(this)
-        presenter.attachView(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,7 +126,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         })
     }
 
-    public fun getBankList() {
+    override fun getBankList() {
         presenter.getBankListFirstTime()
     }
 
