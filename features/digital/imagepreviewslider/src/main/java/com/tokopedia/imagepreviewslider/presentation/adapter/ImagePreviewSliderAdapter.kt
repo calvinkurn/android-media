@@ -61,7 +61,7 @@ class ImagePreviewSliderAdapter(val images: MutableList<String>,
     }
 
     inner class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-        val bannerImage: AppCompatImageView = view.findViewById(R.id.image_banner)
+        val bannerImage: ImageView = view.findViewById(R.id.image_banner)
 
         init {
             itemView.setOnClickListener {

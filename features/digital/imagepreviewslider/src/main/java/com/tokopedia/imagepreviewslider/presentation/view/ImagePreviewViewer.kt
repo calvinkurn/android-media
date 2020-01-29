@@ -9,7 +9,6 @@ import com.stfalcon.imageviewer.StfalconImageViewer
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
-import com.tokopedia.imagepreviewslider.presentation.util.ReflectionPosition
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_image_overlay.view.*
 
@@ -40,7 +39,7 @@ class ImagePreviewViewer {
     fun startImagePreviewViewer(title: String = "", imageViewTransitionFrom: ImageView?, imageList: List<String>?, context: Context?, index: Int) {
         imageSliderListener = object : ImageSliderListener {
             override fun onImageClicked(position: Int) {
-                ReflectionPosition(viewer, position)
+                viewer.setCurrentPosition(position)
             }
         }
         setupOverlayView(title, imageList, context, index)
