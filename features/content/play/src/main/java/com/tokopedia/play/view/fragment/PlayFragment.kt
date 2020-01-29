@@ -26,6 +26,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
@@ -144,6 +145,12 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onPause() {
         unregisterKeyboardListener(requireView())
         super.onPause()
+    }
+
+    fun onNewChannelId(channelId: String?) {
+        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
+            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
+        }
     }
 
     private fun initView(view: View) {

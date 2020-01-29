@@ -35,6 +35,9 @@ class HomePlayWidgetHelper(
 
     private var playConnectionMonitor = PlayConnectionMonitor(context)
 
+    private val playManager
+        get() = TokopediaPlayManager.getInstance(context)
+
     /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
@@ -103,16 +106,13 @@ class HomePlayWidgetHelper(
     }
 
     override fun releasePlayer() {
-        masterJob.cancelChildren()
-        exoPlayerView.setPlayer(null)
-        mPlayer = null
-        TokopediaPlayManager.getInstance(context).releasePlayer()
+        playManager.releasePlayer()
     }
 
     override fun playerPause() {
         masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
-        TokopediaPlayManager.getInstance(context).stopPlayer()
+        playManager.stopPlayer()
     }
 
     override fun playerPlayWithDelay() {
@@ -120,7 +120,7 @@ class HomePlayWidgetHelper(
             masterJob.cancelChildren()
             launch(coroutineContext){
                 delay(DELAY_PLAYING)
-                TokopediaPlayManager.getInstance(context).resumeCurrentVideo()
+                playManager.resumeCurrentVideo()
             }
         }
     }
@@ -140,7 +140,7 @@ class HomePlayWidgetHelper(
 
     fun resumeVideo() {
         if(videoUri != null && videoUri.toString().isNotEmpty() && isDeviceHasRequirementAutoPlay() && !isPlayerPlaying()) {
-            TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
+            playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)
             playerPlayWithDelay()
@@ -170,7 +170,7 @@ class HomePlayWidgetHelper(
                 withContext(Dispatchers.Main) {
                     exoPlayerView.setPlayer(mPlayer)
                     muteVideoPlayer()
-                    TokopediaPlayManager.getInstance(context).safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = true)
+                    playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = true)
                 }
             }
         } else {
@@ -187,30 +187,30 @@ class HomePlayWidgetHelper(
     override fun onActivityStop() {
         masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
-        mPlayer?.release()
+        releasePlayer()
         mPlayer = null
         removeVideoPlayerObserver()
     }
 
     private fun observeVideoPlayer() {
-        TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().observeForever(playerObserver)
-        TokopediaPlayManager.getInstance(context).getObservablePlayVideoState().observeForever(playerStateObserver)
+        playManager.getObservableVideoPlayer().observeForever(playerObserver)
+        playManager.getObservablePlayVideoState().observeForever(playerStateObserver)
         playConnectionMonitor.getObservablePlayConnectionState().observeForever(connectionStateObserver)
     }
 
     private fun removeVideoPlayerObserver() {
-        TokopediaPlayManager.getInstance(context).getObservableVideoPlayer().removeObserver(playerObserver)
-        TokopediaPlayManager.getInstance(context).getObservablePlayVideoState().removeObserver(playerStateObserver)
+        playManager.getObservableVideoPlayer().removeObserver(playerObserver)
+        playManager.getObservablePlayVideoState().removeObserver(playerStateObserver)
         playConnectionMonitor.getObservablePlayConnectionState().removeObserver(connectionStateObserver)
     }
 
     private fun muteVideoPlayer() {
-        TokopediaPlayManager.getInstance(context).muteVideo(true)
-        TokopediaPlayManager.getInstance(context).setRepeatMode(true)
+        playManager.muteVideo(true)
+        playManager.setRepeatMode(true)
     }
 
     private fun stopVideoPlayer() {
-        TokopediaPlayManager.getInstance(context).stopPlayer()
+        playManager.stopPlayer()
     }
 
 }
