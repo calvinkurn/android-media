@@ -664,12 +664,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
+                    _trackingLiveData.setValue(Event(homeData?.list?: listOf()))
                     _homeLiveData.setValue(homeData)
                     getHeaderData()
                     getPlayData()
                     getReviewData()
-
-                    _trackingLiveData.setValue(Event(_homeLiveData.value?.list?: listOf()))
                 } else {
                     _homeLiveData.setValue(homeData)
                     refreshHomeData()

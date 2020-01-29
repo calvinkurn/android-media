@@ -883,7 +883,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-        resetImpressionListener();
         layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
@@ -1072,6 +1071,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void addImpressionToTrackingQueue(List<Visitable> visitables) {
+        resetImpressionListener();
+
         if (visitables != null) {
             List<Object> combinedTracking = new ArrayList<>();
             for (Visitable visitable : visitables) {
