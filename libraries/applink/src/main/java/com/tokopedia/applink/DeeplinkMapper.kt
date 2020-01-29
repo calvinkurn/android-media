@@ -221,6 +221,7 @@ object DeeplinkMapper {
                 .buildUpon()
                 .appendPath(reputationId)
                 .appendPath(productId)
+                .appendPath("/")
                 .appendQueryParameter(paramRating, rating)
                 .appendQueryParameter(paramUtmSource, utmSource)
                 .build()
