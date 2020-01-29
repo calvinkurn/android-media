@@ -36,14 +36,34 @@ class ShopScorePMWidget : FrameLayout {
         View.inflate(context, R.layout.sah_progress_bar_widget, this)
     }
 
-    fun setProgress(progress: Float) {
-        progress_bar_current.progress = progress
-        tv_current_progress.text = "${progress.toInt()}"
+    fun setProgress(progress: Int) {
+        progress_bar_current.progress = progress.toFloat()
+        tv_current_progress.text = "$progress"
     }
 
-    fun setProgressColor(progressColors: IntArray) {
-        progress_bar_current.setProgressColor(progressColors)
-        tv_current_progress.setTextColor(ContextCompat.getColor(context, progressColors.last()))
+    fun setMaxProgress(maxProgress: Int) {
+        tv_max_progress.text = "/".plus("$maxProgress")
+    }
+
+    fun setProgressTitle(title: String) {
+        tv_progress_title.text = title
+    }
+
+    fun setProgressColor(state: State) {
+        val colors = when (state) {
+            State.GREEN -> intArrayOf(ContextCompat.getColor(context, R.color.Green_G400), ContextCompat.getColor(context, R.color.Green_G600))
+            State.YELLOW -> intArrayOf(ContextCompat.getColor(context, R.color.Yellow_Y300), ContextCompat.getColor(context, R.color.Yellow_Y400))
+            State.RED -> intArrayOf(ContextCompat.getColor(context, R.color.Red_R400), ContextCompat.getColor(context, R.color.Red_R500))
+        }
+
+        progress_bar_current.setProgressColor(colors)
+        tv_current_progress.setTextColor(ContextCompat.getColor(context, colors.last()))
+    }
+
+    enum class State {
+        GREEN,
+        YELLOW,
+        RED
     }
 }
 

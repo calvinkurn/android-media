@@ -43,7 +43,6 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
         initInjector()
         sellerHomeDashboardDrawerPresenter.attachView(this)
 
-//        inflateView(R.layout.sh_activity_simple_fragment)
         if (savedInstanceState != null) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.container, SellerHomeFragment.newInstance(), TAG)
@@ -55,7 +54,7 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
     }
 
     override fun getNewFragment(): Fragment? {
-        return SellerDashboardFragment.newInstance()
+        return SellerHomeFragment.newInstance()
     }
 
     override fun onResume() {
@@ -148,7 +147,6 @@ class SellerDashboardActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDas
 
     private fun initInjector() {
 
-        //TODO: Inject
         val component = DaggerSellerHomeDashboardComponent.builder()
                 .sellerHomeDashboardModule(SellerHomeDashboardModule(this))
                 .build()
