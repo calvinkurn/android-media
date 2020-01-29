@@ -87,7 +87,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                     @Override
                     public void onClick(View view) {
                         HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                context,
                                 element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                         );
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
@@ -146,7 +145,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         @Override
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                    holder.getContext(),
                                     channel.getEnhanceClickDynamicChannelHomePage(grid, position + 2)
                             );
                             listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid));

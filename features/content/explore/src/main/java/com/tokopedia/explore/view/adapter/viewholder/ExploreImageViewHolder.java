@@ -48,7 +48,7 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
         });
 
         image.setOnClickListener(v -> {
-            listener.goToKolPostDetail(element.getPostId(), element.getUserName());
+            listener.goToKolPostDetail(element.getPostId(), element.getUserName(), element.getTrackingViewModelList().get(0).getRecomId());
             listener.onAffiliateTrack(element.getTrackingViewModelList(), true);
         });
 

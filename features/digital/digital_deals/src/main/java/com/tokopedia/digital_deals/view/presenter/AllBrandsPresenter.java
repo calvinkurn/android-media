@@ -1,13 +1,12 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
@@ -20,6 +19,7 @@ import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.View>
         implements AllBrandsContract.Presenter {
@@ -92,12 +93,12 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
         getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -224,12 +225,12 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
         getLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override

@@ -97,6 +97,8 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(deviceLocation.getLatitude()));
         localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
         localCacheHandler.applyEditor();
-        dealsHomeFragment.setCurrentCoordinates();
+        if(dealsHomeFragment!=null) {
+            dealsHomeFragment.setCurrentCoordinates();
+        }
     }
 }

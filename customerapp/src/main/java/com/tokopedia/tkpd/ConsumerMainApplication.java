@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,6 +14,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -31,6 +33,9 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -50,6 +55,8 @@ import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.shakedetect.ShakeDetectManager;
+import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -72,6 +79,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.jvm.functions.Function1;
+import timber.log.Timber;
 
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -97,6 +105,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
+
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -124,7 +133,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Weaver.Companion.executeWeaveCoRoutine(this::executePreCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
 
         super.onCreate();
-        
+
         initGqlNWClient();
         Weaver.Companion.executeWeaveCoRoutine(this::executePostCreateSequence, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
         Weaver.Companion.executeWeaveCoRoutine(this::loadFontsInBg, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
@@ -201,7 +210,21 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeAbTestVariant();
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
+
+        ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
+            @Override
+            public void onShakeDetected(boolean isLongShake) {
+                openShakeDetectCampaignPage(isLongShake);
+            }
+        });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
         return true;
+    }
+
+    private void openShakeDetectCampaignPage(boolean isLongShake) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
     }
 
 
@@ -315,7 +338,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
+        Timber.d("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
         return handleClick(screenName, extras, deepLinkUri);
     }
 
@@ -360,7 +383,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 startActivity(intent);
 
             } else {
-                CommonUtils.dumper("FCM entered no one");
+                Timber.d("FCM entered no one");
             }
 
             return true;
@@ -392,18 +415,30 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     public boolean checkAppSignature() {
-        PackageInfo info = null;
         try {
-            info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            PackageInfo info;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+                if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
+                    byte[] rawCertNative = bytesFromJNI();
+                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                } else {
+                    return false;
+                }
+            } else {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+                if (null != info && info.signatures.length > 0) {
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
+                    byte[] rawCertNative = bytesFromJNI();
+
+                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                } else {
+                    return false;
+                }
+            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }
-        if (null != info && info.signatures.length > 0) {
-            byte[] rawCertJava = info.signatures[0].toByteArray();
-            byte[] rawCertNative = bytesFromJNI();
-
-            return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-        } else {
             return false;
         }
     }
