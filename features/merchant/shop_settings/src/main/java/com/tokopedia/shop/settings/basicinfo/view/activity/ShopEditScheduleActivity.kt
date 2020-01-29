@@ -33,7 +33,7 @@ import javax.inject.Inject
 class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresenter.View {
 
     @Inject
-    lateinit var updateShopShedulePresenter: UpdateShopShedulePresenter
+    lateinit var updateShopSchedulePresenter: UpdateShopShedulePresenter
 
     private var progressDialog: ProgressDialog? = null
 
@@ -84,7 +84,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        updateShopShedulePresenter.attachView(this)
+        updateShopSchedulePresenter.attachView(this)
 
         supportActionBar?.title = getString(R.string.shop_settings_set_shop_status)
 
@@ -164,7 +164,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             ShopScheduleActionDef.OPEN
         val closeStart = selectedStartCloseUnixTimeMs
         val closeEnd = selectedEndCloseUnixTimeMs
-        updateShopShedulePresenter.updateShopSchedule(
+        updateShopSchedulePresenter.updateShopSchedule(
                 shopAction,
                 isClosedNow,
                 if (closeStart == 0L) null else closeStart.toString(),
@@ -197,7 +197,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
 
     public override fun onDestroy() {
         super.onDestroy()
-        updateShopShedulePresenter.detachView()
+        updateShopSchedulePresenter.detachView()
     }
 
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
