@@ -109,10 +109,11 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.viewpager.widget.ViewPager
+            <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:can_swipe="false"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
