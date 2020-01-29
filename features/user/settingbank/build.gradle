@@ -95,7 +95,9 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
-    debugImplementation "androidx.test.espresso:espresso-idling-resource:3.0.2"
+    debugImplementation ('androidx.test.espresso:espresso-idling-resource:3.1.0'){
+        exclude group: 'androidx.lifecycle', module: 'lifecycle-common'
+    }
 }
 
 project.ext {

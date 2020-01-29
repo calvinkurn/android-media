@@ -1,4 +1,4 @@
-package com.tokopedia.util
+package com.tokopedia.settingbank.util
 
 import androidx.test.espresso.IdlingResource
 

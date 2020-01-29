@@ -22,8 +22,8 @@ import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent;
 import com.tokopedia.settingbank.banklist.di.SettingBankComponent;
 import com.tokopedia.settingbank.banklist.view.activity.DebugSettingBankActivity;
 import com.tokopedia.settingbank.banklist.view.fragment.DebugSettingBankFragment;
+import com.tokopedia.settingbank.util.FetchingIdlingResource;
 import com.tokopedia.tkpd.BaseRetrofitJsonFactory;
-import com.tokopedia.util.FetchingIdlingResource;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
