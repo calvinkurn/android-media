@@ -29,9 +29,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         webView.settings.builtInZoomControls
         webView.settings.displayZoomControls
         val data = intent?.extras?.getString(KEY_URL, "defaultKey")
-        Log.d("KEY_URL", KEY_URL)
         webView.loadUrl(data)
-
         onPrintClicked(webView)
 
     }
@@ -48,18 +46,19 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
     @Suppress("DEPRECATION")
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun onPrintClicked(webView: WebView){
-        val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val jobName = getString(R.string.app_name) + " Document"
-        val printAdapter: PrintDocumentAdapter
-        printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webView.createPrintDocumentAdapter(jobName)
-        } else {
-            webView.createPrintDocumentAdapter()
+    private fun onPrintClicked(webView: WebView?){
+        webView?.let{
+            val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
+            val jobName = getString(R.string.app_name) + " Document"
+            val printAdapter: PrintDocumentAdapter
+            printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                webView.createPrintDocumentAdapter(jobName)
+            } else {
+                webView.createPrintDocumentAdapter()
+            }
+            val builder = PrintAttributes.Builder()
+            builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+            printManager.print(jobName, printAdapter, builder.build())
         }
-        val builder = PrintAttributes.Builder()
-        builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-        printManager.print(jobName, printAdapter, builder.build())
     }
-
 }
