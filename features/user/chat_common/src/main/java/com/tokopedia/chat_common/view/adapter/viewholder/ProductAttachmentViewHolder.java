@@ -46,6 +46,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private ImageView thumbnailsImage;
     private UnifyButton tvBuy;
     private ImageView ivATC;
+    private ImageView ivWishList;
     private View footerLayout;
     private ImageView freeShipping;
 
@@ -72,6 +73,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         freeShipping = itemView.findViewById(R.id.iv_free_shipping);
         tvBuy = chatBalloon.findViewById(R.id.tv_buy);
         ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
+        ivWishList = chatBalloon.findViewById(R.id.ic_add_to_wishlist);
         footerLayout = chatBalloon.findViewById(R.id.footer_layout);
         productVariantContainer = itemView.findViewById(R.id.ll_variant);
         productColorVariant = itemView.findViewById(R.id.ll_variant_color);
@@ -256,6 +258,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             footerLayout.setVisibility(View.VISIBLE);
             tvBuy.setVisibility(View.VISIBLE);
             ivATC.setVisibility(View.VISIBLE);
+            ivWishList.setVisibility(View.VISIBLE);
             tvBuy.setOnClickListener(v -> {
                 viewListener.onClickBuyFromProductAttachment(element);
             });
@@ -265,13 +268,30 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                     viewListener.onClickATCFromProductAttachment(element);
                 }
             });
+            bindWishListView(element);
+            bindClickAddToWishList(element);
         } else {
             footerLayout.setVisibility(View.GONE);
             tvBuy.setVisibility(View.GONE);
             ivATC.setVisibility(View.GONE);
+            ivWishList.setVisibility(View.GONE);
         }
     }
 
+    private void bindWishListView(ProductAttachmentViewModel element) {
+
+    }
+
+    private void bindClickAddToWishList(ProductAttachmentViewModel element) {
+        ivWishList.setOnClickListener(v -> {
+            String productId = String.valueOf(element.getProductId());
+            if (element.isWishListed()) {
+                viewListener.onClickRemoveFromWishList(productId);
+            } else {
+                viewListener.onClickAddToWishList(productId);
+            }
+        });
+    }
 
     private void setUIValue(View productContainer, int id, String value) {
         View destination = productContainer.findViewById(id);

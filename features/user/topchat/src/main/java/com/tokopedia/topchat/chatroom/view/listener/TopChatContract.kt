@@ -12,6 +12,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 
 /**
  * @author : Steven 11/12/18
@@ -125,5 +126,11 @@ interface TopChatContract {
         fun initVoucherPreview(extras: Bundle?)
 
         fun loadChatRoomSettings(messageId: String, onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit)
+
+        fun addToWishList(
+                productId: String,
+                userId: String,
+                wishlistActionListener: WishListActionListener
+        )
     }
 }

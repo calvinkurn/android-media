@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -75,6 +76,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 /**
@@ -918,5 +920,26 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
+    }
+
+    override fun onClickAddToWishList(productId: String) {
+        presenter.addToWishList(productId, session.userId, object : WishListActionListener {
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                Toast.makeText(context, "Success add Wishlist", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                Toast.makeText(context, "Error add Wishlist", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) { }
+
+            override fun onSuccessRemoveWishlist(productId: String?) { }
+        })
+    }
+
+    override fun onClickRemoveFromWishList(productId: String) {
+
     }
 }
