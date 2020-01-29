@@ -5,9 +5,11 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.Assert.assertNull
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -17,7 +19,7 @@ object ShippingDurationPresenterTest : Spek({
     val ratesUseCase: GetRatesUseCase = mockk(relaxed = true)
     val ratesApiUseCase: GetRatesApiUseCase = mockk(relaxed = true)
     val responseConverter: RatesResponseStateConverter = mockk()
-    val courierConverter: ShippingCourierConverter = mockk()
+    val courierConverter: ShippingCourierConverter = mockk(relaxed = true)
     val view: ShippingDurationContract.View = mockk(relaxed = true)
     lateinit var presenter: ShippingDurationPresenter
 
@@ -167,6 +169,89 @@ object ShippingDurationPresenterTest : Spek({
 
         }
 
+    }
+
+    Feature("get courier item data") {
+
+        Scenario("on callled trigger courier converter") {
+            val courierModelWithOneRecc: List<ShippingCourierViewModel> = listOf(
+                    ShippingCourierViewModel().apply {
+                        productData = ProductData().apply {
+                            isRecommend = true
+                        }
+                    }
+            )
+
+            When("called") {
+                presenter.getCourierItemData(courierModelWithOneRecc)
+            }
+
+            Then("courier converter is called") {
+                verify {
+                    courierConverter.convertToCourierItemData(any())
+                }
+            }
+        }
+
+        Scenario("on called return null") {
+            val courierWithNoRecc: List<ShippingCourierViewModel> = listOf(
+                    ShippingCourierViewModel().apply {
+                        productData = ProductData()
+                    }
+            )
+            var actual: CourierItemData? = null
+
+            When("called") {
+                actual = presenter.getCourierItemData(courierWithNoRecc)
+            }
+
+            Then("null is returned") {
+                assertNull(actual)
+            }
+        }
+    }
+
+    Feature("get courier item data with id") {
+        Scenario("on called trigger courier converter") {
+            val sId = 24
+            val courierModelWithId: List<ShippingCourierViewModel> = listOf(
+                    ShippingCourierViewModel().apply {
+                        productData = ProductData().apply {
+                            shipperId = 24
+                        }
+                    }
+            )
+
+            When("called") {
+                presenter.getCourierItemDataById(sId, courierModelWithId)
+            }
+
+            Then("courier converter is called") {
+                verify {
+                    courierConverter.convertToCourierItemData(any())
+                }
+            }
+        }
+
+        Scenario("on called return null") {
+            val sId = 38
+            val courierModelNoId: List<ShippingCourierViewModel> = listOf(
+                ShippingCourierViewModel().apply {
+                    productData = ProductData().apply {
+                        shipperId = 24
+                    }
+                }
+            )
+            var actual: CourierItemData? = null
+
+            When("called") {
+                actual = presenter.getCourierItemDataById(sId, courierModelNoId)
+            }
+
+            Then("null is returned") {
+                assertNull(actual)
+            }
+        }
     }
 
     Feature("basic presenter") {
