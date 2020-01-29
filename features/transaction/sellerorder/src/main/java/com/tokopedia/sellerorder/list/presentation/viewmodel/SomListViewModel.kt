@@ -31,12 +31,23 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val filterListResult: LiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>
         get() = _filterListResult
 
+    private val _statusOrderListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>()
+    val statusOrderListResult: LiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>
+        get() = _statusOrderListResult
+
     private val _orderListResult = MutableLiveData<Result<SomListOrder.Data.OrderList>>()
     val orderListResult: LiveData<Result<SomListOrder.Data.OrderList>>
         get() = _orderListResult
 
-    fun loadSomListData(tickerQuery: String, filterQuery: String) {
+    fun loadTickerList(tickerQuery: String) {
         launch { getTickerList(tickerQuery) }
+    }
+
+    fun loadStatusList(rawQuery: String) {
+        launch { getFilterStatusList(rawQuery) }
+    }
+
+    fun loadFilterList(filterQuery: String) {
         launch { getFilterList(filterQuery) }
     }
 
@@ -52,7 +63,7 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 val tickerRequest = GraphqlRequest(rawQuery, POJO_TICKER, tickerParams as Map<String, Any>?)
                 graphqlRepository.getReseponse(listOf(tickerRequest))
                         .getSuccessData<SomListTicker.Data>()
-                }
+            }
             _tickerListResult.value = Success(tickerListData.orderTickers.listTicker.toMutableList())
         }, onError = {
             _tickerListResult.postValue(Fail(it))
@@ -72,6 +83,21 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         })
     }
 
+    suspend fun getFilterStatusList(rawQuery: String) {
+        launchCatchError(block = {
+            val filterListData = withContext(Dispatchers.IO) {
+                val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER_ALL)
+                graphqlRepository.getReseponse(listOf(filterRequest))
+                        .getSuccessData<SomListAllFilter.Data>()
+            }
+            _statusOrderListResult.postValue(Success(filterListData.orderFilterSomSingle.statusList.toMutableList()))
+
+        }, onError = {
+            _statusOrderListResult.postValue(Fail(it))
+        })
+    }
+
+
     suspend fun getOrderList(rawQuery: String, requestOrderParams: SomListOrderParam) {
         val orderParams = mapOf(PARAM_INPUT to requestOrderParams)
         launchCatchError(block = {
@@ -90,5 +116,6 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         private val POJO_TICKER = SomListTicker.Data::class.java
         private val POJO_FILTER = SomListFilter.Data::class.java
         private val POJO_ORDER = SomListOrder.Data::class.java
+        private val POJO_FILTER_ALL = SomListAllFilter.Data::class.java
     }
 }

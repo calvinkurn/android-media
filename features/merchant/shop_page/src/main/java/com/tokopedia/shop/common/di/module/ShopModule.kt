@@ -43,12 +43,6 @@ class ShopModule {
     }
 
     @Provides
-    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                     @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
-        return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
-    }
-
-    @Provides
     fun provideGetShopReputationUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
                                         @Named(GQLQueryNamedConstant.SHOP_REPUTATION) gqlQuery: String?): GetShopReputationUseCase {
         return GetShopReputationUseCase(gqlQuery!!, graphqlUseCase!!)

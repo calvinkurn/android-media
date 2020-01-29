@@ -89,6 +89,7 @@ class ProductSnapshotViewHolder(private val view: View,
 
     private fun renderTradein(shouldShowTradein: Boolean) {
         if (::header.isInitialized) {
+            view.tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
             header.renderTradein(shouldShowTradein)
         }
     }

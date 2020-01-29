@@ -42,8 +42,11 @@ dependencies {
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.playServicesDependencies.tagManagerImpl
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
 }
 
 project.ext {

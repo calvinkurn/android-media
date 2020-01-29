@@ -17,8 +17,10 @@ class DigitalHomePageNewUserZoneViewHolder(itemView: View?, val onItemBindListen
 
     override fun bind(element: DigitalHomePageNewUserZoneModel) {
         if (element.isLoaded) {
-            if (element.isSuccess) {
-                element.data?.section?.run {
+            if (element.isSuccess
+                    && element.data != null
+                    && element.data.section.items.isNotEmpty()) {
+                with (element.data.section) {
                     itemView.digital_homepage_new_user_zone_shimmering.hide()
                     itemView.digital_homepage_new_user_zone_container.show()
                     ImageHandler.loadImageWithoutFit(itemView.context, itemView.digital_homepage_new_user_zone_image, items[0].mediaUrl)
