@@ -8,6 +8,6 @@
         <activity
             android:name=".presentation.activity.ImagePreviewSliderActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.White.NoActionBar" />
     </application>
 </manifest>
