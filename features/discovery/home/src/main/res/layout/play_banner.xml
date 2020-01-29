@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/play_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:transitionName="@string/home_transition_root"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bannerPlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
         <!-- Use a separate view for the background, rather than on the root view because it is a
                shared element. Otherwise it interferes with the window enter transition i.e. as it is
                resized for the shared element transition, many views are considered 'off-screen' so
@@ -24,7 +22,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:importantForAccessibility="no"
-            android:transitionName="@string/home_transition_root"/>
+            android:transitionName="@string/home_transition_root"
+            tools:targetApi="lollipop" />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
             android:layout_width="match_parent"
@@ -52,7 +51,6 @@
             android:layout_height="@dimen/layout_lvl0"
             android:layout_marginTop="@dimen/home_play_banner_player_margin_top"
             android:layout_gravity="center"
-            android:transitionName="@string/home_transition_video"
             app:layout_constraintDimensionRatio="16:9"
             app:show_play_buffering="when_playing"
             app:layout_constraintTop_toBottomOf="@+id/description"/>

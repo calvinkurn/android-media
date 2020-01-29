@@ -79,6 +79,7 @@ class PlayCardViewHolder(
             title.setValue(model.channel.header.name)
             description.setValue("")
 
+            thumbnailView.show()
             thumbnailView.loadImageWithoutPlaceholder(playChannel.coverUrl, 350, 150, true)
 
             broadcasterName.text = playChannel.moderatorName
@@ -119,6 +120,7 @@ class PlayCardViewHolder(
     }
 
     fun resume(){
+        thumbnailView.show()
         helper?.onActivityResume()
     }
 

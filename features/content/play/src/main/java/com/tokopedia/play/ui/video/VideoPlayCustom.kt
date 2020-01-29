@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Matrix
 import android.graphics.RectF
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.TextureView

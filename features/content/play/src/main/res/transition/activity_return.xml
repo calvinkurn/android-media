@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<transitionSet
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     android:transitionOrdering="together"
-    android:interpolator="@android:interpolator/fast_out_slow_in">
-
-    <targets>
-        <target android:excludeId="@+id/pv_video" />
-<!--        <target android:excludeId="@+id/play_background" />-->
-    </targets>
-    <slide android:slideEdge="bottom" android:duration="@integer/animation_duration"/>
-    <!-- Start fading some views to make sure they disappear before the middle of the screen -->
-    <fade android:duration="@integer/animation_duration" android:fadingMode="fade_out"/>
+    android:interpolator="@android:interpolator/fast_out_linear_in">
+    <slide android:slideEdge="bottom"/>
+    <fade android:duration="@integer/animation_alpha_duration_return" android:fadingMode="fade_out">
+        <targets>
+            <target android:excludeId="@+id/rfl_video_wrapper" />
+        </targets>
+    </fade>
 
 </transitionSet>

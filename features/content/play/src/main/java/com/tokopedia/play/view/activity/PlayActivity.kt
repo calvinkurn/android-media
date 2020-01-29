@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -60,6 +61,14 @@ class PlayActivity : BaseActivity() {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.fl_fragment, getFragment(), PLAY_FRAGMENT_TAG)
                     .commit()
+        }
+    }
+
+    override fun onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition()
+        } else {
+            super.onBackPressed()
         }
     }
 }

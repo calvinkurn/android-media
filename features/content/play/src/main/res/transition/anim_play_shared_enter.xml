@@ -1,26 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:duration="@integer/animation_duration">
-
-    <!-- Change bounds of all shared elements -->
     <transitionSet>
         <targets>
-            <target android:targetId="@+id/play_background" />
-            <target android:targetId="@+id/pv_video" />
+            <target android:targetId="@+id/rfl_video_wrapper" />
         </targets>
         <changeBounds/>
-        <changeImageTransform/>
     </transitionSet>
-
-    <!-- Start fading background of activity -->
-    <transition
-        class="com.tokopedia.play.view.animation.FadeTransition"
-        app:startAlpha="0.5"
-        app:endAlpha="1.0">
-        <targets>
-            <target android:targetId="@+id/play_background" />
-        </targets>
-    </transition>
-
 </transitionSet>
