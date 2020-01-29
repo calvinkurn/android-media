@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.transition.Explode;
-import android.transition.Fade;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +33,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.transition.TransitionInflater;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -151,7 +149,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
-    private androidx.transition.Transition transition;
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     @NonNull
     public static Boolean HIDE_TICKER = false;
@@ -239,7 +236,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setEnterTransition(new Explode());
         getActivity().getWindow().setExitTransition(new Explode());
-        transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.anim_play_shared_enter);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());

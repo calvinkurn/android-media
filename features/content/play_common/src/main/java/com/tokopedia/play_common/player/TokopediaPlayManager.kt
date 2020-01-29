@@ -33,7 +33,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
 
-        private const val RETRY_COUNT_LIVE = 2
+        private const val RETRY_COUNT_LIVE = 1
         private const val RETRY_COUNT_DEFAULT = 3
         private const val RETRY_DELAY = 1000L
 
