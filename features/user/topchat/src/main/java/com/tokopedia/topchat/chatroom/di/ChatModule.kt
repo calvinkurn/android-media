@@ -44,6 +44,7 @@ import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -234,8 +235,14 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
+    internal fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
+    internal fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
     }
 
 }

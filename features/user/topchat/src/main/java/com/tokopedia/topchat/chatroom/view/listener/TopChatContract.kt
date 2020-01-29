@@ -132,5 +132,11 @@ interface TopChatContract {
                 userId: String,
                 wishlistActionListener: WishListActionListener
         )
+
+        fun removeFromWishList(
+                productId: String,
+                userId: String,
+                wishListActionListener: WishListActionListener
+        )
     }
 }

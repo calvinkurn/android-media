@@ -288,19 +288,32 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void bindClickAddToWishList(ProductAttachmentViewModel element) {
         ivWishList.setOnClickListener(v -> {
-            String productId = String.valueOf(element.getProductId());
             if (element.isWishListed()) {
-                viewListener.onClickRemoveFromWishList(productId);
+                removeProductFromWishList(element);
             } else {
-                viewListener.onClickAddToWishList(
-                        productId,
-                        () -> {
-                            onSuccessAddToWishList(element);
-                            return null;
-                        }
-                );
+                addProductToWishList(element);
             }
         });
+    }
+
+    private void removeProductFromWishList(ProductAttachmentViewModel element) {
+        viewListener.onClickRemoveFromWishList(element.getStringProductId(), () -> {
+            onSuccessRemoveFromWishList(element);
+            return null;
+        });
+    }
+
+    private void addProductToWishList(ProductAttachmentViewModel element) {
+        viewListener.onClickAddToWishList(element.getStringProductId(), () -> {
+                    onSuccessAddToWishList(element);
+                    return null;
+                }
+        );
+    }
+
+    private void onSuccessRemoveFromWishList(ProductAttachmentViewModel element) {
+        element.setWishList(false);
+        updateWishListIconState(element);
     }
 
     private void onSuccessAddToWishList(ProductAttachmentViewModel element) {

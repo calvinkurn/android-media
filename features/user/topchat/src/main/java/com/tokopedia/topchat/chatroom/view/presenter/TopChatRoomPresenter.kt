@@ -59,6 +59,7 @@ import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -92,7 +93,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var compressImageUseCase: CompressImageUseCase,
         private var seamlessLoginUsecase: SeamlessLoginUsecase,
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
-        private var addWishListUseCase: AddWishListUseCase)
+        private var addWishListUseCase: AddWishListUseCase,
+        private var removeWishListUseCase: RemoveWishListUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
@@ -706,6 +708,10 @@ class TopChatRoomPresenter @Inject constructor(
             wishlistActionListener: WishListActionListener
     ) {
         addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
+    }
+
+    override fun removeFromWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
+        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
 }

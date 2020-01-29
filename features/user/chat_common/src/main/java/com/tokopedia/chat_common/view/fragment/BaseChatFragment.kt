@@ -287,5 +287,5 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickAddToWishList(productId: String, success: () -> Unit) { }
 
-    override fun onClickRemoveFromWishList(productId: String) { }
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) { }
 }

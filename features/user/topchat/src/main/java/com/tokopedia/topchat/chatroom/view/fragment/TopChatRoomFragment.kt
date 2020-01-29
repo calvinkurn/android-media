@@ -952,7 +952,33 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         })
     }
 
-    override fun onClickRemoveFromWishList(productId: String) {
-
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
+        presenter.removeFromWishList(productId, session.userId, object : WishListActionListener {
+            override fun onSuccessAddWishlist(productId: String?) { }
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) { }
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                success()
+                view?.let {
+                    val successMessage = it.context.getString(R.string.title_topchat_success_rfw)
+                    Toaster.make(
+                            it,
+                            successMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_NORMAL
+                    )
+                }
+            }
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                if (errorMessage == null) return
+                view?.let {
+                    Toaster.make(
+                            it,
+                            errorMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        })
     }
 }
