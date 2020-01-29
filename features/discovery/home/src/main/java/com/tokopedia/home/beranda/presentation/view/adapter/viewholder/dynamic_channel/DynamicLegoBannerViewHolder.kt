@@ -11,6 +11,7 @@ import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
@@ -120,6 +121,9 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                                             channels,
                                             position + 1)
                             )
+                        }
+                        TYPE_FOUR_GRID_LEGO -> {
+                            HomePageTrackingV2.LegoBanner.getLegoBannerFourImageClick(channels, grid, position + 1)
                         }
                     }
 
