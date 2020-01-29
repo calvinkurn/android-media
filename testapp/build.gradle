@@ -136,7 +136,7 @@ android {
         }
     }
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
@@ -151,9 +151,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-    packagingOptions {
-        exclude 'META-INF/**'
     }
 }
 dependencies {
@@ -177,7 +174,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
@@ -229,11 +225,6 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-    implementation project(rootProject.ext.features.home)
-    implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.features.play)
-    implementation project(rootProject.ext.features.playCommon)
 }
 
 repositories {
