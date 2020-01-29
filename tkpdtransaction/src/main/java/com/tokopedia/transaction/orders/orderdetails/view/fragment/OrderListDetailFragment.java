@@ -211,10 +211,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 intent.putExtra(ConstantKt.KEY_URL, URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING));
                 intent.putExtra(ConstantKt.KEY_TITLE, getResources().getString(R.string.title_invoice));
                 startActivity(intent);
-
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplincation()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
