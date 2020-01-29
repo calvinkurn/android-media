@@ -92,11 +92,52 @@ object ShippingDurationPresenterTest : Spek({
                 }
             }
         }
+
+        Scenario("fetch data with empty services") {
+            val shippingData = ShippingRecommendationData()
+
+            Given("observable returns empty services") {
+                every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+                every {
+                    responseConverter.fillState(any(), shopShipments, any(), 0)
+                } returns shippingData
+            }
+
+            When("executed") {
+                presenter.loadCourierRecommendation(shipmentDetailData, 0,
+                        shopShipments, -1, false, false, "",
+                        products, "1479278-30-740525-99367774", false, address)
+            }
+
+            Then("view shows no courier page") {
+                verify {
+                    view.showNoCourierAvailable(any())
+                }
+            }
+        }
+
+        Scenario("fetch data then throwing error") {
+            val err = Throwable("Unexpected error")
+            Given("execute usecase gives error") {
+                every { ratesUseCase.execute(any()) } returns Observable.error(err)
+            }
+
+            When("executed") {
+                presenter.loadCourierRecommendation(shipmentDetailData, 0,
+                        shopShipments, -1, false, false, "",
+                        products, "1479278-30-740525-99367774", false, address)
+            }
+
+            Then("view shows error page") {
+                verify {
+                    view.showErrorPage(any())
+                }
+            }
+        }
+
     }
 
     Feature("load courier recommendation express checkout") {
-
-
         beforeEachTest {
             presenter.attachView(view)
         }

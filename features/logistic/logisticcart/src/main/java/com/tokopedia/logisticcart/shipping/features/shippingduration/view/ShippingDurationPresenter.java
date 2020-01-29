@@ -79,7 +79,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     /**
-     *  Calls rates
+     * Calls rates
      */
     @Override
     public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
@@ -134,7 +134,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
 
                             @Override
                             public void onError(Throwable e) {
-                                e.printStackTrace();
                                 if (getView() != null) {
                                     getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
                                     getView().stopTrace();
