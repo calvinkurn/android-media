@@ -52,7 +52,7 @@ class ImagePreviewViewer {
 
             val overlayBackButton = btn_arrow_back
             overlayBackButton.setOnClickListener {
-                viewer.dismiss()
+                viewer.close()
             }
 
             val overlayTitle = tv_title_overlay
