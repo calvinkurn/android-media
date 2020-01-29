@@ -10,4 +10,5 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TripleBanner(R.layout.multi_banner_layout, "banner_image_triple"),
     QuadrupleBanner(R.layout.multi_banner_layout, "banner_image_quadruple"),
     Share(R.layout.multi_banner_layout, "share"),
+    BannerTimer(R.layout.banner_timer_layout, "timer_with_banner"),
 }

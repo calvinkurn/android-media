@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -25,7 +26,7 @@ class MultiBannerViewModelTest {
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
     private val pushSubscriptionResponse: PushSubscriptionResponse = mockk(relaxed = true)
-    private val multiBannerDataUseCase:CheckPushStatusUseCase = mockk(relaxed = true)
+    private val multiBannerDataUseCase: CheckPushStatusUseCase = mockk(relaxed = true)
 
     private val viewModel: MultiBannerViewModel by lazy {
         spyk(MultiBannerViewModel(application, componentsItem))
@@ -77,15 +78,16 @@ class MultiBannerViewModelTest {
 
         viewModel.onBannerClicked(0)
 
-      //  assertEquals(viewModel.getPushBannerStatusData(), 0)
+        //  assertEquals(viewModel.getPushBannerStatusData(), 0)
         coVerify {
-            multiBannerDataUseCase
-                    .subscribeToPush(any()) }
-    }
+            //            multiBannerDataUseCase
+//                    .subscribeToPush(any()) }
+        }
 
 
-    @After
-    fun shutDown() {
-        Dispatchers.resetMain()
+        @After
+        fun shutDown() {
+            Dispatchers.resetMain()
+        }
     }
 }

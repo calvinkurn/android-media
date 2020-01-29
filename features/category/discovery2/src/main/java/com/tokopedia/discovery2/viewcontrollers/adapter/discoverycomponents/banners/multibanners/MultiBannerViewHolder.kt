@@ -4,20 +4,20 @@ import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery.categoryrevamp.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.utils.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BannerItem
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import kotlinx.android.synthetic.main.multi_banner_layout.view.*
 
-class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
+class MultiBannerViewHolder(customItemView: View) : AbstractViewHolder(customItemView) {
     private var constraintLayout: ConstraintLayout
     private var context: Context
 
@@ -25,15 +25,13 @@ class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
     lateinit var bannersItemList: ArrayList<BannerItem>
 
     init {
-        constraintLayout = itemView.banner_container_layout
+        constraintLayout = customItemView.findViewById(R.id.banner_container_layout)
         context = constraintLayout.context
     }
 
-
-
-    override fun bindView(fragment: Fragment, viewModel: DiscoveryBaseViewModel) {
+    override fun bindView(lifecycleOwner: LifecycleOwner, viewModel: DiscoveryBaseViewModel) {
         multiBannerViewModel = viewModel as MultiBannerViewModel
-        multiBannerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
+        multiBannerViewModel.getComponentData().observe(lifecycleOwner, Observer { item ->
 
             if (item.data != null && item.data.isNotEmpty()) {
                 constraintLayout.removeAllViews()
@@ -42,19 +40,19 @@ class MultiBannerViewHolder(itemView: View) : AbstractViewHolder(itemView) {
             }
         })
 
-        multiBannerViewModel.getPushBannerStatusData().observe(fragment, Observer {
+        multiBannerViewModel.getPushBannerStatusData().observe(lifecycleOwner, Observer {
             if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
                 ImageHandler.LoadImage(bannersItemList[it].bannerImageView, bannersItemList[it].bannerItemData.registeredImageApp)
             }
         })
 
-        multiBannerViewModel.getPushBannerSubscriptionData().observe(fragment, Observer {
+        multiBannerViewModel.getPushBannerSubscriptionData().observe(lifecycleOwner, Observer {
             if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
                 ImageHandler.LoadImage(bannersItemList[it].bannerImageView, bannersItemList[it].bannerItemData.registeredImageApp)
             }
         })
 
-        multiBannerViewModel.getshowLoginData().observe(fragment, Observer {
+        multiBannerViewModel.getshowLoginData().observe(lifecycleOwner, Observer {
             context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
         })
     }

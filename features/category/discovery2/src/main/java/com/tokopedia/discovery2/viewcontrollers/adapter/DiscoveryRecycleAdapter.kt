@@ -21,7 +21,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-        holder.bindView(fragment, viewHolderListModel.getViewHolderModel(
+        holder.bindView(fragment.viewLifecycleOwner, viewHolderListModel.getViewHolderModel(
                 DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position))
     }
 
