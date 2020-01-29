@@ -18,6 +18,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/recharge_general_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_8"
                         android:text="@string/enquiry_label"
-                        app:unifyButtonType="transaction" />
+                        app:unifyButtonType="main" />
 
                 </LinearLayout>
 

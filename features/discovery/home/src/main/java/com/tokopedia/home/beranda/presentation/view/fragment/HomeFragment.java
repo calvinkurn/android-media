@@ -43,7 +43,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -109,13 +108,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 import kotlin.Unit;
-import kotlin.coroutines.CoroutineContext;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
-import rx.Observable;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -192,6 +191,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
+    private Map<Integer,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -368,7 +368,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void evaluateFloatingTextButtonOnStateChanged() {
-        int position = layoutManager.findLastVisibleItemPosition();
+        int position = layoutManager.findMaxVisibleItemPosition();
         if (position == presenter.getRecommendationFeedSectionPosition()) {
             floatingTextButton.hide();
         } else {
@@ -868,6 +868,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
+        resetImpressionListener();
         layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
@@ -1584,6 +1585,33 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
+    }
+
+    @Override
+    public void addRecyclerViewScrollImpressionListener(int adapterPosition, @NotNull Function0<Unit> onImpressionListener) {
+        if (!impressionScrollListeners.containsKey(adapterPosition)) {
+            RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
+                        onImpressionListener.invoke();
+                        homeRecyclerView.removeOnScrollListener(this);
+                    }
+                }
+            };
+            impressionScrollListeners.put(adapterPosition, impressionScrollListener);
+            homeRecyclerView.addOnScrollListener(impressionScrollListener);
+        }
+    }
+
+    private void resetImpressionListener() {
+        for (Map.Entry<Integer, RecyclerView.OnScrollListener> entry : impressionScrollListeners.entrySet()) {
+            if (homeRecyclerView != null) {
+                homeRecyclerView.removeOnScrollListener(entry.getValue());
+            }
+        }
+        impressionScrollListeners.clear();
     }
 
     @Override

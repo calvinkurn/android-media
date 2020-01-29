@@ -259,7 +259,7 @@ class ProductCardViewSmallGrid: ProductCardView {
         initFreeOngkir(productCardModel.freeOngkir)
         initTopAdsIcon(productCardModel.isTopAds)
 
-//        realignLayout()
+        realignLayout()
     }
 
     internal fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {

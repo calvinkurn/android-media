@@ -92,7 +92,7 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
             toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_close_deals));
             toolbar.setTitle(getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.redeem_locations));
         }
-        recyclerView = view.findViewById(com.tokopedia.design.R.id.recyclerView);
+        recyclerView = view.findViewById(com.tokopedia.digital_deals.R.id.recyclerView);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

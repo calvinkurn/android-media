@@ -25,6 +25,7 @@ import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.glide.FPM_THEMATIC_CARD_VIEW
 import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -175,7 +176,7 @@ class ThematicCardView : BaseCustomView {
 
     fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-            it.loadImage(productImageUrl)
+            it.loadImage(productImageUrl, FPM_THEMATIC_CARD_VIEW)
         }
     }
 
