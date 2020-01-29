@@ -6,6 +6,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -32,6 +33,8 @@ import com.tokopedia.applink.ApplinkConst.DISCOVERY_SEARCH
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -423,6 +426,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun initViewNew(view: View) {
+        showSortButton()
         with(getRecyclerView(view) as VerticalRecyclerView) {
             clearItemDecoration()
             addItemDecoration(ShopSearchProductDividerItemDecoration(
@@ -440,12 +444,16 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             )
             addTextChangedListener(getSearchTextWatcher())
             setOnEditorActionListener(getSearchEditorActionListener())
-            setText(searchQuery)
             requestFocus()
             showKeyboard()
+            setText(searchQuery)
+            setSelection(searchQuery.length)
         }
         shopPageMainSortIcon.setOnClickListener {
             onClickSort()
+        }
+        image_view_clear_button.setOnClickListener {
+            editTextSearchProduct.text.clear()
         }
     }
 
@@ -461,8 +469,13 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
             }
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 timer?.cancel()
+                if (TextUtils.isEmpty(text.toString())) {
+                    showSortButton()
+                } else {
+                    showClearButton()
+                }
             }
 
             private fun runTimer(text: String) {
@@ -477,6 +490,16 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 Handler(context?.mainLooper).post(myRunnable)
             }
         }
+    }
+
+    private fun showClearButton() {
+        shopPageMainSortIcon.hide()
+        image_view_clear_button.show()
+    }
+
+    private fun showSortButton() {
+        shopPageMainSortIcon.show()
+        image_view_clear_button.hide()
     }
 
     private fun getSearchEditorActionListener(): TextView.OnEditorActionListener {
