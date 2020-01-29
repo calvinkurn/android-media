@@ -101,7 +101,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success") {
@@ -141,7 +141,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with eligible COD") {
@@ -177,7 +177,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with not eligible COD") {
@@ -202,7 +202,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITHOUT_CHANGES") {
@@ -227,7 +227,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
@@ -264,7 +264,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_ITEM") {
@@ -299,7 +299,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP") {
@@ -352,7 +352,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
@@ -374,7 +374,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render error") {
@@ -393,7 +393,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render error") {
