@@ -213,11 +213,11 @@ object ShippingDurationPresenterTest : Spek({
 
     Feature("get courier item data with id") {
         Scenario("on called trigger courier converter") {
-            val sId = 24
+            val spId = 24
             val courierModelWithId: List<ShippingCourierViewModel> = listOf(
                     ShippingCourierViewModel().apply {
                         productData = ProductData().apply {
-                            shipperId = 24
+                            shipperProductId = 24
                         }
                     }
             )
@@ -238,7 +238,7 @@ object ShippingDurationPresenterTest : Spek({
             val courierModelNoId: List<ShippingCourierViewModel> = listOf(
                 ShippingCourierViewModel().apply {
                     productData = ProductData().apply {
-                        shipperId = 24
+                        shipperProductId = 24
                     }
                 }
             )
