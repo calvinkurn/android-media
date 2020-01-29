@@ -2,6 +2,8 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+            campaignShakeLanding            : ":features:user:campaign_shake_landing",
+
             resourcesCommon                 : ":features:common:resources_common",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
@@ -38,6 +40,7 @@ ext {
             commonTopupBills                : ":features:digital:common_topup_bills",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
             voucherGame                     : ":features:digital:voucher_game",
+            rechargeGeneral                 : ":features:digital:recharge_general",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
             flightOrderList                 : ":features:digital:flight_orderlist",
@@ -56,6 +59,7 @@ ext {
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
+            homePageBanner                  : ":features:discovery:home_page_banner",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
             smartRecycler                   : ":features:discovery:smart_recycler_diffutil_helper",
@@ -149,6 +153,7 @@ ext {
             tokopointsNotification          : ":features:promo:tokopoints_notification",
             promoCheckout                   : ":features:promo:promo_checkout",
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
+            promoGamificationCommon         : ":features:promo:promo_gamification_common",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
@@ -172,6 +177,8 @@ ext {
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
+            attachvoucher                   : ":features:user:attachvoucher",
+            attachcommon                   : ":features:user:attachcommon",
             changepassword                  : ":features:user:changepassword",
 //            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",

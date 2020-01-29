@@ -274,7 +274,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 if (on) {
                     val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
                     passengerAsTraveller = false
-                    if (isFirstTime) navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
+                    if (isFirstTime) navigateToPassengerInfoDetail(firstPassenger, getRequestId(), firstPassenger.passengerFirstName)
                     isFirstTime = true
                 } else {
                     bookingViewModel.resetFirstPassenger()
@@ -505,7 +505,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             flightPassengerAdapter.listener = object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
                 override fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel) {
                     passengerAsTraveller = switch_traveller_as_passenger.isChecked
-                    navigateToPassengerInfoDetail(passenger, bookingViewModel.getDepartureDate(), getRequestId())
+                    navigateToPassengerInfoDetail(passenger, getRequestId())
                 }
             }
         }
@@ -522,7 +522,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String, autofillName: String = "") {
+    private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, requestId: String, autofillName: String = "") {
+        val departureDate = if (bookingViewModel.getSearchParam().isOneWay) {
+            bookingViewModel.getSearchParam().departureDate
+        } else {
+            bookingViewModel.getSearchParam().returnDate
+        }
+
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
@@ -675,7 +681,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             TickerCheckoutView.State.FAILED -> TickerPromoStackingCheckoutView.State.FAILED
             else -> TickerPromoStackingCheckoutView.State.EMPTY
         }
-        flight_promo_ticker_view.title = flightVoucher.promoData.promoCode
+        flight_promo_ticker_view.title = flightVoucher.promoData.title
         flight_promo_ticker_view.desc = flightVoucher.promoData.description
         flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onResetPromoDiscount() {

@@ -1,7 +1,6 @@
 package com.tokopedia.events.data;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
@@ -15,6 +14,7 @@ import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.data.source.EventsApi;
+import com.tokopedia.network.mapper.DataResponseMapper;
 
 import java.util.HashMap;
 import java.util.List;

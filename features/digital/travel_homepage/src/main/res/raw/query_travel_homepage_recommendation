@@ -1,5 +1,5 @@
-query {
-  TravelCollectiveRecommendation(product: ALL) {
+query TravelCollectiveRecommendation($product: TravelColletiveCategory!, $cityID: Int){
+  TravelCollectiveRecommendation(product: $product, cityID: $cityID) {
     items {
       product
       title
