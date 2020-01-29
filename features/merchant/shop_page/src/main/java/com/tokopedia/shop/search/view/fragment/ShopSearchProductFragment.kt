@@ -297,7 +297,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME)
                 sortName?.let {
                     sortValue = sortName
-                    onSearchSubmitted(editTextSearchProduct.text.toString())
+                    searchQuery = editTextSearchProduct.text.toString()
+                    redirectToShopProductListPage()
+                    activity?.finish()
                 }
             }
         }
