@@ -6,6 +6,8 @@ import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
@@ -49,6 +51,16 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
                 .commit()
+    }
+
+    override fun onBackPressed() {
+        if (isTaskRoot) {
+            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+            startActivity(intent)
+            finish()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun inject() {
