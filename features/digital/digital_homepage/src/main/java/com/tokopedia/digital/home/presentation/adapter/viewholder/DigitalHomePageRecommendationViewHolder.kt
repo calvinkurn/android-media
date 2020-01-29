@@ -21,7 +21,7 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         itemView.rv_digital_homepage_recommendation.layoutManager = layoutManager
         if (element.isLoaded) {
-            if (element.isSuccess) {
+            if (element.isSuccess && element.data.recommendationItemEntityList.isNotEmpty()) {
                 element.data.run {
                     val items = recommendationItemEntityList
                     itemView.digital_homepage_recommendation_shimmering.hide()

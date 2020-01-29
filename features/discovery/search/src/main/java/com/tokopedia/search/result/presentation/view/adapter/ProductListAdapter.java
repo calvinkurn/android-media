@@ -6,15 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
-import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
@@ -25,24 +27,75 @@ import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
-import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ProductListAdapter extends SearchSectionGeneralAdapter {
+public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list = new ArrayList<>();
     private ProductListTypeFactory typeFactory;
-    private int startFrom;
-    private int totalData;
-    private LoadingMoreModel loadingMoreModel;
+    private LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     private GlobalNavViewModel globalNavViewModel;
+    private OnItemChangeView itemChangeView;
 
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
-        super(itemChangeView);
+        this.itemChangeView = itemChangeView;
         this.typeFactory = typeFactory;
-        loadingMoreModel = new LoadingMoreModel();
+    }
+
+    public void changeListView() {
+        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
+        itemChangeView.onChangeList();
+    }
+
+    public void changeDoubleGridView() {
+        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        itemChangeView.onChangeDoubleGrid();
+    }
+
+    public void changeSingleGridView() {
+        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        itemChangeView.onChangeSingleGrid();
+    }
+
+    public int getTitleTypeRecyclerView() {
+        switch (getTypeFactory().getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return R.string.list;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return R.string.grid;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return R.string.grid;
+            default:
+                return R.string.grid;
+        }
+    }
+
+    public int getIconTypeRecyclerView() {
+        switch (getTypeFactory().getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return R.drawable.search_ic_list;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return R.drawable.search_ic_grid;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return R.drawable.search_ic_big_list;
+            default:
+                return R.drawable.search_ic_grid;
+        }
+    }
+
+    public SearchConstant.ViewType getCurrentLayoutType() {
+        switch (getTypeFactory().getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return SearchConstant.ViewType.LIST;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return SearchConstant.ViewType.SMALL_GRID;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return SearchConstant.ViewType.BIG_GRID;
+            default:
+                return SearchConstant.ViewType.SMALL_GRID;
+        }
     }
 
     @NonNull
@@ -83,30 +136,10 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
-    public void clearDataBeforeSet() {
-        super.clearData();
-    }
-
     public void appendItems(List<Visitable> list) {
         int start = getItemCount();
         this.list.addAll(list);
         notifyItemRangeInserted(start, list.size());
-    }
-
-    public void incrementStart() {
-        setStartFrom(getStartFrom() + Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS));
-    }
-
-    public boolean isEvenPage() {
-        return getStartFrom() / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS) % 2 == 0;
-    }
-
-    public int getStartFrom() {
-        return startFrom;
-    }
-
-    public void setStartFrom(int start) {
-        this.startFrom = start;
     }
 
     public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
@@ -159,19 +192,22 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return false;
     }
 
+    protected boolean checkDataSize(int position) {
+        return getItemList() != null && getItemList().size() > 0
+                && position > -1 && position < getItemList().size();
+    }
+
     public boolean isRelatedSearch(int position) {
         if (checkDataSize(position))
             return getItemList().get(position) instanceof RelatedSearchViewModel;
         return false;
     }
 
-    @Override
     public List<Visitable> getItemList() {
         return list;
     }
 
-    @Override
-    protected SearchSectionTypeFactory getTypeFactory() {
+    protected ProductListTypeFactory getTypeFactory() {
         return typeFactory;
     }
 
@@ -183,28 +219,8 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(position) && list.get(position) instanceof RecommendationItemViewModel;
     }
 
-    @Override
     public boolean isEmptyItem(int position) {
-        return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchViewModel;
-    }
-
-    public void setTotalData(int totalData) {
-        this.totalData = totalData;
-    }
-
-    public int getTotalData() {
-        return totalData;
-    }
-
-    public boolean hasNextPage() {
-        return getStartFrom() < getTotalData();
-    }
-
-    @Override
-    public void clearData() {
-        super.clearData();
-        setStartFrom(0);
-        setTotalData(0);
+        return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchProductViewModel;
     }
 
     public void addLoading() {
@@ -225,7 +241,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    @Override
     public void showEmptyState(Context context, String query, boolean isFilterActive, String sectionTitle) {
         clearData();
         if (globalNavViewModel != null) {
@@ -236,10 +251,18 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         notifyDataSetChanged();
     }
 
-    private EmptySearchViewModel mapEmptySearch(Context context, String query,
+    public void clearData() {
+        int itemSizeBeforeCleared = getItemCount();
+
+        getItemList().clear();
+
+        notifyItemRangeRemoved(0, itemSizeBeforeCleared);
+    }
+
+    private EmptySearchProductViewModel mapEmptySearch(Context context, String query,
                                                 boolean isFilterActive,
                                                 boolean isBannerAdsAllowed) {
-        EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
+        EmptySearchProductViewModel emptySearchViewModel = new EmptySearchProductViewModel();
         emptySearchViewModel.setImageRes(R.drawable.product_search_not_found);
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
         if (isFilterActive) {
@@ -255,5 +278,21 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
         this.globalNavViewModel = globalNavViewModel;
+    }
+
+    public boolean isListEmpty() {
+        return getItemList().isEmpty();
+    }
+
+    public boolean isLoading(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof LoadingModel;
+    }
+
+    public interface OnItemChangeView {
+        void onChangeList();
+
+        void onChangeDoubleGrid();
+
+        void onChangeSingleGrid();
     }
 }

@@ -10,7 +10,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 import com.tokopedia.common_digital.common.DigitalResponseErrorException;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseDataNullException;

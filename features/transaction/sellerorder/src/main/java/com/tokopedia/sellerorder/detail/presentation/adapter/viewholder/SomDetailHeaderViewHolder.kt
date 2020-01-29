@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
@@ -13,8 +12,8 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_600
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_699
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
@@ -36,7 +35,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         if (item.dataObject is SomDetailHeader) {
             itemView.header_title?.text = item.dataObject.statusText
             itemView.header_see_history?.setOnClickListener {
-                itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.HISTORY_ORDER, "")
+                itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                         .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
                         .putExtra(EXTRA_USER_MODE, 2))
             }
@@ -71,7 +70,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
             if (item.dataObject.deadlineText.isNotEmpty()) {
                 itemView.header_deadline_label?.visibility = View.VISIBLE
-                if (item.dataObject.statusId == STATUS_ORDER_600 || item.dataObject.statusId == STATUS_ORDER_699) {
+                if (item.dataObject.statusId == STATUS_ORDER_DELIVERED || item.dataObject.statusId == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
                     itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
                 } else {
                     itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)

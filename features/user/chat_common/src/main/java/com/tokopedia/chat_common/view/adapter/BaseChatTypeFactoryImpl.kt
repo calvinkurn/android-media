@@ -22,7 +22,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         BaseChatTypeFactory {
 
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
-        return ProductAttachmentViewHolder.LAYOUT;
+        return ProductAttachmentViewHolder.LAYOUT
     }
 
     override fun type(messageViewModel: MessageViewModel): Int {

@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.consts.Resources.BottomSheetDialogTheme
+import com.tokopedia.notifcenter.data.consts.Resources.designBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -61,7 +63,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
+    override fun getTheme(): Int = BottomSheetDialogTheme
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -91,7 +93,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         contentTextView.text = fromHtml(contentText)
 
         if (contentImageUrl.isNotBlank()) {
-            ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_loading_toped_new)
+            ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_notifcenter_loading_toped)
             contentImageView.show()
         } else {
             contentImageView.hide()
@@ -129,7 +131,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         dialog.setOnShowListener {
             //To Anchor View Bottom
             val bottomSheetDialog = it as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<View>(designBottomSheet)
             val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
             val containerLayout: FrameLayout? = bottomSheetDialog.findViewById(R.id.container)
 
