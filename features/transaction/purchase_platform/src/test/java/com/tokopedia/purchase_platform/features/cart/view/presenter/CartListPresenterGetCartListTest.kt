@@ -9,7 +9,9 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentView
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
@@ -132,11 +134,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any(), any()) } answers {
-                    Observable.just(GraphqlResponse(
-                            mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
-                            .subscribe(secondArg() as Subscriber<GraphqlResponse>)
-                }
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
             }
 
             When("process initial get cart data") {
@@ -156,11 +154,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any(), any()) } answers {
-                    Observable.just(GraphqlResponse(
-                            mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
-                            .subscribe(secondArg() as Subscriber<GraphqlResponse>)
-                }
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
             }
 
             When("process initial get cart data") {

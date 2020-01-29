@@ -7,15 +7,15 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentView
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
-import com.tokopedia.wishlist.common.response.GetWishlistResponse
-import com.tokopedia.wishlist.common.response.WishlistDataResponse
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -27,7 +27,11 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListWishlistTest : Spek({
+/**
+ * Created by Irfan Khoirul on 2020-01-29.
+ */
+
+object CartListRecentViewTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -67,77 +71,91 @@ object CartListWishlistTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get wishlist success") {
+        Scenario("get recent view success") {
 
-            val response = GetWishlistResponse().apply {
-                gqlWishList = WishlistDataResponse().apply {
-                    wishlistDataList = mutableListOf<Wishlist>().apply {
-                        add(Wishlist())
+            val response = GqlRecentViewResponse().apply {
+                gqlRecentView = GqlRecentView().apply {
+                    recentViewList = mutableListOf<RecentView>().apply {
+                        add(RecentView())
                     }
                 }
             }
 
             Given("success response") {
-                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            When("process get wishlist") {
-                cartListPresenter.processGetWishlistData()
+            Given("user session") {
+                every { userSessionInterface.userId } returns "1"
             }
 
-            Then("should render wishlist") {
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData()
+            }
+
+            Then("should render recent view") {
                 verify {
-                    view.renderWishlist(response.gqlWishList?.wishlistDataList)
+                    view.renderRecentView(response.gqlRecentView?.recentViewList)
                 }
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadWishList()
+                    view.setHasTriedToLoadRecentView()
                     view.stopAllCartPerformanceTrace()
                 }
             }
 
         }
 
-        Scenario("get wishlist empty") {
+        Scenario("get recent view empty") {
 
-            val response = GetWishlistResponse().apply {
-                gqlWishList = WishlistDataResponse().apply {
-                    wishlistDataList = mutableListOf()
+            val response = GqlRecentViewResponse().apply {
+                gqlRecentView = GqlRecentView().apply {
+                    recentViewList = mutableListOf<RecentView>().apply {
+                        add(RecentView())
+                    }
                 }
             }
 
             Given("success response") {
-                every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
-            When("process get wishlist") {
-                cartListPresenter.processGetWishlistData()
+            Given("user session") {
+                every { userSessionInterface.userId } returns "1"
+            }
+
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData()
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadWishList()
+                    view.setHasTriedToLoadRecentView()
                     view.stopAllCartPerformanceTrace()
                 }
             }
 
         }
 
-        Scenario("get wishlist error") {
+        Scenario("get recent view error") {
 
             Given("error response") {
-                every { getWishlistUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
-            When("process get wishlist") {
-                cartListPresenter.processGetWishlistData()
+            Given("user session") {
+                every { userSessionInterface.userId } returns "1"
+            }
+
+            When("process get recent view") {
+                cartListPresenter.processGetRecentViewData()
             }
 
             Then("should try to stop firebase performance tracker") {
                 verify {
-                    view.setHasTriedToLoadWishList()
+                    view.setHasTriedToLoadRecentView()
                     view.stopAllCartPerformanceTrace()
                 }
             }
