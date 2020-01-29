@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.sellerhome.WidgetType
 import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -143,6 +144,61 @@ class GetLayoutUseCase(
                                                 url = "http://placekitten.com/300/102",
                                                 applink = "",
                                                 featuredMediaURL = "http://placekitten.com/300/103"
+                                        )
+                                )
+                        )
+                ),
+                ProgressUiModel(
+                        widgetType = WidgetType.PROGRESS,
+                        title = "Power Merchant (Aktif)",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("Skor", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = ProgressDataUiModel(
+                                barTitle = "Skor",
+                                valueTxt = "80jt",
+                                maxValueTxt = "100jt",
+                                value = 80,
+                                maxValue = 100,
+                                colorState = ShopScorePMWidget.State.GREEN,
+                                subtitle = "Please maintain your shop score"
+                        )
+                ),
+                ListUiModel(
+                        widgetType = WidgetType.LIST,
+                        title = "Info Seller",
+                        subTitle = "",
+                        tooltip = TooltipUiModel("Skor", "", false),
+                        url = "",
+                        appLink = "",
+                        dataKey = "",
+                        ctaText = "",
+                        data = ListDataUiModel(
+                                dataKey = "articles",
+                                items = listOf(
+                                        ListItemUiModel(
+                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
+                                                appLink = "",
+                                                url = "",
+                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
+                                                subtitle = "FITUR <i> 12 SEP 19"
+                                        ),
+                                        ListItemUiModel(
+                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
+                                                appLink = "",
+                                                url = "",
+                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
+                                                subtitle = "FITUR <i> 12 SEP 20"
+                                        ),
+                                        ListItemUiModel(
+                                                title = "Lihat Siapa Aja yang Udah Promosiin Produkmu Lewat Affiliate Marketing!",
+                                                appLink = "",
+                                                url = "",
+                                                featuredMediaURL = "https://i1.wp.com/ecs7.tokopedia.net/img/blog/seller/2019/12/Seller-Center-6.jpg?fit=1024%2C439&ssl=1",
+                                                subtitle = "FITUR <i> 12 SEP 21"
                                         )
                                 )
                         )

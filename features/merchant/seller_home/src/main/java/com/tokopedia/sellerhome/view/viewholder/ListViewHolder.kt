@@ -45,7 +45,7 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
             itemView.tv_card_title.text = element.title
             setupListInfoSeller()
 
-            (itemView.rv_info_seller.adapter as BaseListAdapter<ListItemUiModel, *>).run {
+            (itemView.rv_item_list.adapter as BaseListAdapter<ListItemUiModel, *>).run {
                 data.addAll(items)
                 notifyDataSetChanged()
             }
@@ -62,13 +62,12 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
     }
 
     private fun setupListInfoSeller() {
-        itemView.rv_info_seller.apply {
+        itemView.rv_item_list.apply {
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = BaseListAdapter<ListItemUiModel, ListAdapterTypeFactory>(ListAdapterTypeFactory(), this@ListViewHolder)
         }
     }
 
-    // TODO: Sah Implement this
     override fun onItemClicked(t: ListItemUiModel?) {
         Toast.makeText(itemView.context, "Hi Bambang!", Toast.LENGTH_SHORT).show()
     }

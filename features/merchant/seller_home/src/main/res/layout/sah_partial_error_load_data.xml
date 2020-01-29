@@ -22,10 +22,12 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@id/tv_error_card_title"
         app:layout_constraintStart_toEndOf="@id/tv_error_card_title"
         app:layout_constraintTop_toTopOf="@id/tv_error_card_title"
-        app:srcCompat="@drawable/sah_ic_information" />
+        app:srcCompat="@drawable/ic_sah_information" />
 
     <ImageView
         android:id="@+id/iv_error"

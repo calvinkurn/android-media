@@ -46,7 +46,7 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
             with(element) {
                 itemView.tv_card_title.text = title
                 itemView.tv_description.text = subtitle
-                setupProgressBar(title, value, maxValue, state)
+                setupProgressBar(barTitle, valueTxt, maxValueTxt, value, maxValue, colorState)
             }
         }
 
@@ -60,10 +60,19 @@ class ProgressViewHolder(view: View?) : AbstractViewHolder<ProgressUiModel>(view
         showErrorLayout()
     }
 
-    private fun setupProgressBar(progressTitle: String, currentProgress: Int, maxProgress: Int, state: ShopScorePMWidget.State) {
+    private fun setupProgressBar(
+            progressTitle: String,
+            currentProgressText: String,
+            maxProgressText: String,
+            currentProgress: Int,
+            maxProgress: Int,
+            state: ShopScorePMWidget.State
+    ) {
         itemView.shop_score_widget.setProgressTitle(progressTitle)
-        itemView.shop_score_widget.setProgress(currentProgress)
-        itemView.shop_score_widget.setMaxProgress(maxProgress)
+        itemView.shop_score_widget.setCurrentProgressText(currentProgressText)
+        itemView.shop_score_widget.setMaxProgressText(maxProgressText)
+        itemView.shop_score_widget.setProgressValue(currentProgress)
+        itemView.shop_score_widget.setMaxProgressValue(maxProgress)
         itemView.shop_score_widget.setProgressColor(state)
     }
 

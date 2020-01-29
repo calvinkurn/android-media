@@ -5,7 +5,7 @@ import com.tokopedia.sellerhome.view.widget.ShopScorePMWidget
 
 data class ProgressDataUiModel(
         @SerializedName("barTitle")
-        val title: String,
+        val barTitle: String,
         @SerializedName("valueTxt")
         val valueTxt: String,
         @SerializedName("maxValuetext")
@@ -15,7 +15,7 @@ data class ProgressDataUiModel(
         @SerializedName("max_value")
         val maxValue: Int,
         @SerializedName("colorState")
-        val state: ShopScorePMWidget.State,
+        val colorState: ShopScorePMWidget.State,
         @SerializedName("subtitle")
         val subtitle: String
 )
