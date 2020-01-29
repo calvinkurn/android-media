@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play_common.util.PlayLifecycleObserver
 import javax.inject.Inject
@@ -17,7 +19,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
-class PlayActivity : BaseActivity() {
+class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     companion object {
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
@@ -31,7 +33,24 @@ class PlayActivity : BaseActivity() {
         setContentView(R.layout.activity_play)
         inject()
         setupPage()
-        setupView()
+
+        val channelId = intent?.data?.lastPathSegment
+        setupView(channelId)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
+        val channelId = intent?.data?.lastPathSegment
+        if (fragment != null && fragment is PlayFragment && channelId != null) {
+            fragment.onNewChannelId(channelId)
+        }
+    }
+
+    override fun onNewChannel(channelId: String?) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
+                .commit()
     }
 
     override fun onBackPressed() {
@@ -53,8 +72,7 @@ class PlayActivity : BaseActivity() {
                 .inject(this)
     }
 
-    private fun getFragment(): Fragment {
-        val channelId = intent?.data?.lastPathSegment
+    private fun getFragment(channelId: String?): Fragment {
         return PlayFragment.newInstance(channelId)
     }
 
@@ -63,11 +81,9 @@ class PlayActivity : BaseActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private fun setupView() {
+    private fun setupView(channelId: String?) {
         if (supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG) == null) {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.fl_fragment, getFragment(), PLAY_FRAGMENT_TAG)
-                    .commit()
+            onNewChannel(channelId)
         }
     }
 }
