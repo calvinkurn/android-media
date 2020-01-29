@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.common
 
 object GQLQueryConstant {
-    const val QUERY_BRANDLIST_CATEGORIES = "gql_query_brandlist_categories"
+    const val QUERY_BRANDLIST_CATEGORIES = "query_brandlist_get_categories"
+    const val QUERY_BRANDLIST_SEARCH_BRAND = "query_brandlist_search_brand"
 }

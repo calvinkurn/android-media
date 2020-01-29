@@ -1,0 +1,13 @@
+{
+  OfficialStoreAllBrands(categoryId: 0, device: 1, offset: 0, query: "", size: 10,sort:1, firstLetter: "a") {
+    brands {
+      id
+      name
+      defaultUrl
+      logoUrl
+      isNew
+      exclusiveLogoURL
+    }
+    totalBrands
+  }
+}

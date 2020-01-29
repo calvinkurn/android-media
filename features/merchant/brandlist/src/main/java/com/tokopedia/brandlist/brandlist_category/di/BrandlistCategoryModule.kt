@@ -17,7 +17,7 @@ class BrandlistCategoryModule {
     @Provides
     @Named(QUERY_BRANDLIST_CATEGORIES)
     fun provideQueryBrandlistCategories(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_brandlist_categories)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_brandlist_get_categories)
     }
 
 }

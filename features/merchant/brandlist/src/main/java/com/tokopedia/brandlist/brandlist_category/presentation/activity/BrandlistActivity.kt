@@ -3,12 +3,10 @@ package com.tokopedia.brandlist.brandlist_category.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment
 
 class BrandlistActivity : BaseSimpleActivity() {
