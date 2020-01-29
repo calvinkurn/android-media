@@ -141,7 +141,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         if (tradeInParams.deviceId == null || tradeInParams.deviceId == fcmDeviceId)
             tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationInstance)
         tradeInParams.userId = repository.getUserLoginState().userId.toInt()
-        tradeInParams.tradeInType = 2
+        tradeInParams.tradeInType = TRADEIN_MONEYIN
         tradeInParams.modelID = modelId
         val variables = HashMap<String, Any>()
         variables["params"] = tradeInParams
@@ -189,7 +189,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             setHomeResultData(jsonObject)
         } else {
             imeiStateLiveData.value = false
-            if (tradeInType == 2) {
+            if (tradeInType == TRADEIN_MONEYIN) {
                 checkMoneyIn(modelId, jsonObject)
             } else {
                 setHomeResultData(jsonObject)
