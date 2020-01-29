@@ -11,12 +11,17 @@ import com.tokopedia.entertainment.adapter.viewmodel.BannerViewModel
  */
 class BannerViewHolder: HomeViewHolder<BannerViewModel> {
 
-    @LayoutRes
-    val LAYOUT: Int = R.layout.ent_banner_view
 
-    constructor(itemView: View?) : super(itemView)
+
+    constructor(itemView: View) : super(itemView)
 
     override fun bind(element: BannerViewModel) {
 
+    }
+
+    companion object {
+        @LayoutRes
+        @kotlin.jvm.JvmField
+        var LAYOUT: Int = R.layout.ent_banner_view
     }
 }

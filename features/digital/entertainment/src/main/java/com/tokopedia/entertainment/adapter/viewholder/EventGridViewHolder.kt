@@ -11,12 +11,15 @@ import com.tokopedia.entertainment.adapter.viewmodel.EventGridViewModel
  */
 class EventGridViewHolder: HomeViewHolder<EventGridViewModel> {
 
-    @LayoutRes
-    val LAYOUT: Int = R.layout.ent_banner_view
-
-    constructor(itemView: View?) : super(itemView)
+    constructor(itemView: View) : super(itemView)
 
     override fun bind(element: EventGridViewModel) {
 
+    }
+
+    companion object {
+        @LayoutRes
+        @kotlin.jvm.JvmField
+        var LAYOUT: Int = R.layout.ent_layout_viewholder_event_grid
     }
 }

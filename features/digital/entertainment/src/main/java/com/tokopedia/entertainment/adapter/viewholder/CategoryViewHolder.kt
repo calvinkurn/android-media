@@ -11,12 +11,15 @@ import com.tokopedia.entertainment.adapter.viewmodel.CategoryViewModel
  */
 class CategoryViewHolder: HomeViewHolder<CategoryViewModel> {
 
-    @LayoutRes
-    val LAYOUT: Int = R.layout.ent_layout_viewholder_category
-
-    constructor(itemView: View?) : super(itemView)
+    constructor(itemView: View) : super(itemView)
 
     override fun bind(element: CategoryViewModel) {
 
+    }
+
+    companion object {
+        @LayoutRes
+        @kotlin.jvm.JvmField
+        var LAYOUT: Int = R.layout.ent_layout_viewholder_category
     }
 }

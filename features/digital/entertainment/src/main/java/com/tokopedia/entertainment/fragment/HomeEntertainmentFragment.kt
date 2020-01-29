@@ -5,10 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.adapter.EntertainmentHomeAdapter
+import com.tokopedia.entertainment.adapter.HomeItem
+import com.tokopedia.entertainment.adapter.factory.HomeTypeFactoryImpl
+import com.tokopedia.entertainment.adapter.viewmodel.CategoryViewModel
+import com.tokopedia.entertainment.adapter.viewmodel.EventCarouselViewModel
+import com.tokopedia.entertainment.adapter.viewmodel.EventGridViewModel
 import kotlinx.android.synthetic.main.ent_home_fragment.*
 import java.util.*
 
@@ -25,6 +32,7 @@ class HomeEntertainmentFragment : BaseDaggerFragment(), BannerView.OnPromoClickL
         val TAG = HomeEntertainmentFragment::class.java.simpleName
     }
 
+
     override fun getScreenName(): String {
         return TAG
     }
@@ -40,7 +48,7 @@ class HomeEntertainmentFragment : BaseDaggerFragment(), BannerView.OnPromoClickL
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        var listPromo = List<String>(5){index: Int ->
+        var listPromo = List<String>(5) { index: Int ->
             "https://ecs7.tokopedia.net/img/attachment/2020/1/1/42484317/42484317_ddeaa295-aef8-4705-9d4e-1a2adc91581c.jpg"
         }
 
@@ -53,6 +61,14 @@ class HomeEntertainmentFragment : BaseDaggerFragment(), BannerView.OnPromoClickL
         banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context!!, R.color.ent_green))
         banner_home_ent?.setBannerIndicator(Indicator.GREEN)
         banner_home_ent?.buildView()
+
+        var listHomeItems = Arrays.asList(
+                CategoryViewModel(),
+                EventCarouselViewModel(),
+                EventGridViewModel()
+        )
+        recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recycler_view.adapter = EntertainmentHomeAdapter(HomeTypeFactoryImpl(), listHomeItems)
     }
 
 
