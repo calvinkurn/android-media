@@ -13,6 +13,9 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
@@ -105,7 +108,19 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         const val REQUEST_CODE_LOGIN = 400
     }
 
+
+    private fun showLayout(){
+        container_umrah_travel_shimmering.gone()
+        container_umrah_travel.show()
+    }
+
+    private fun hideLayout(){
+        container_umrah_travel_shimmering.show()
+        container_umrah_travel.gone()
+    }
+
     private fun setupAll(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
+        showLayout()
         setupTravelAgent(travelAgentBySlugName.umrahTravelAgentBySlug)
         setupViewPager(travelAgentBySlugName)
         setupFAB()
