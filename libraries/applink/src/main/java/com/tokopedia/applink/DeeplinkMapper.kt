@@ -35,6 +35,7 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOr
  */
 object DeeplinkMapper {
 
+    val TOKOPOINTS="tokopoints"
     /**
      * Get registered deeplink navigation in manifest
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
@@ -43,8 +44,13 @@ object DeeplinkMapper {
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         val mappedDeepLink: String = when {
-            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
-            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> tokopointNavigateFromHTTP(deeplink)
+            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> {
+                val path = Uri.parse(deeplink).pathSegments.joinToString("/")
+                when (path) {
+                    TOKOPOINTS -> ApplinkConstInternalPromo.TOKOPOINTS_HOME
+                    else -> getRegisteredNavigationFromHttp(context, deeplink)
+                }
+            }
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
@@ -138,15 +144,6 @@ object DeeplinkMapper {
         }
         return ""
     }
-
-    fun tokopointNavigateFromHTTP(deeplink: String): String {
-        val path = Uri.parse(deeplink).pathSegments.joinToString("/")
-        if (path.isNotEmpty() && path.equals("tokoponits")) {
-            return ApplinkConst.TOKOPOINTS
-        }
-        return ""
-    }
-
     /**
      * Mapping tokopedia link to registered deplink in manifest if necessary
      * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
