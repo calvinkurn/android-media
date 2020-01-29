@@ -133,6 +133,7 @@ internal class LoadDataTest: Spek({
         }
 
         Scenario("Load Data Success Is First Time Load") {
+            val productListView by memoized<ProductListSectionContract.View>()
             val requestParamsSlot = slot<RequestParams>()
             lateinit var productListPresenter: ProductListPresenter
 
@@ -147,19 +148,25 @@ internal class LoadDataTest: Spek({
                 productListPresenter = createProductListPresenter()
             }
 
-            Given("Product List is first time load") {
-                productListPresenter.setIsFirstTimeLoad(true)
+            Given("View is first active tab") {
+                every { productListView.isFirstActiveTab }.returns(true)
             }
 
-            When("Load Data") {
-                val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
-                    it[SearchApiConst.Q] = "samsung"
-                    it[SearchApiConst.START] = "0"
-                    it[SearchApiConst.UNIQUE_ID] = "unique_id"
-                    it[SearchApiConst.USER_ID] = productListPresenter.userId
-                }
+            Given("View reload data immediately calls load data") {
+                every { productListView.reloadData() }.answers {
+                    val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+                        it[SearchApiConst.Q] = "samsung"
+                        it[SearchApiConst.START] = "0"
+                        it[SearchApiConst.UNIQUE_ID] = "unique_id"
+                        it[SearchApiConst.USER_ID] = productListPresenter.userId
+                    }
 
-                productListPresenter.loadData(searchParameter)
+                    productListPresenter.loadData(searchParameter)
+                }
+            }
+
+            When("View is created") {
+                productListPresenter.onViewCreated()
             }
 
             Then("verify use case request params", timeout = 100000) {
@@ -169,9 +176,11 @@ internal class LoadDataTest: Spek({
             }
 
             Then("verify view interaction when load data success") {
-                val productListView by memoized<ProductListSectionContract.View>()
 
                 verifyOrder {
+                    productListView.isFirstActiveTab
+                    productListView.reloadData()
+
                     productListView.isAnyFilterActive
 
                     verifyShowLoading(productListView)
@@ -220,10 +229,6 @@ internal class LoadDataTest: Spek({
 
             Given("Product List Presenter") {
                 productListPresenter = createProductListPresenter()
-            }
-
-            Given("Product List is first time load") {
-                productListPresenter.setIsFirstTimeLoad(true)
             }
 
             When("Load Data") {

@@ -148,7 +148,6 @@ public class ProductListFragment
     private FilterController quickFilterController = new FilterController();
     private FilterController filterController = new FilterController();
 
-    private boolean hasLoadData;
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
@@ -212,7 +211,10 @@ public class ProductListFragment
         super.onViewCreated(view, savedInstanceState);
 
         setupBeforeLoadData(view);
-        startToLoadDataForFirstActiveTab();
+
+        if (presenter != null) {
+            presenter.onViewCreated();
+        }
     }
 
     private void setupBeforeLoadData(@NonNull View view) {
@@ -318,27 +320,13 @@ public class ProductListFragment
         return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16));
     }
 
-    private void startToLoadDataForFirstActiveTab() {
-        if (isFirstActiveTab()) {
-            hasLoadData = true;
-            onFirstTimeLaunch();
-        }
-    }
-
-    private boolean isFirstActiveTab() {
+    @Override
+    public boolean isFirstActiveTab() {
         return getActiveTab().equals(SearchConstant.ActiveTab.PRODUCT);
     }
 
     private String getActiveTab() {
         return searchParameter.get(SearchApiConst.ACTIVE_TAB);
-    }
-
-    private void onFirstTimeLaunch() {
-        if (presenter != null) {
-            presenter.setIsFirstTimeLoad(true);
-        }
-
-        reloadData();
     }
 
     @Override
@@ -396,14 +384,14 @@ public class ProductListFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getView() != null) {
-            setupSearchNavigation();
-            screenTrack();
-            startToLoadData();
+
+        if (presenter != null) {
+            presenter.onViewVisibilityChanged(isVisibleToUser, isAdded());
         }
     }
 
-    private void setupSearchNavigation() {
+    @Override
+    public void setupSearchNavigation() {
         searchNavigationListener
                 .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
                     @Override
@@ -523,25 +511,13 @@ public class ProductListFragment
         }
     }
 
-    private void screenTrack() {
+    @Override
+    public void trackScreenAuthenticated() {
         if (getUserVisibleHint()
                 && getActivity() != null
                 && getActivity().getApplicationContext() != null) {
             SearchTracking.screenTrackSearchSectionFragment(getScreenName());
         }
-    }
-
-    private void startToLoadData() {
-        if (canStartToLoadData()) {
-            hasLoadData = true;
-            onFirstTimeLaunch();
-        }
-    }
-
-    private boolean canStartToLoadData() {
-        return !hasLoadData
-                && isAdded()
-                && getPresenter() != null;
     }
 
     private StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
@@ -1260,6 +1236,7 @@ public class ProductListFragment
         SearchTracking.trackEventImpressionSortPriceMinTicker(getQueryKey());
     }
 
+    @Override
     public void reloadData() {
         if (adapter == null || getSearchParameter() == null) {
             return;
@@ -1281,10 +1258,6 @@ public class ProductListFragment
 
     private ProductListAdapter getAdapter() {
         return adapter;
-    }
-
-    private ProductListSectionContract.Presenter getPresenter() {
-        return presenter;
     }
 
     @Override
