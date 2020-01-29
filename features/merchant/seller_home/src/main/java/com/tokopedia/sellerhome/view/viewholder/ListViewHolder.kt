@@ -39,17 +39,19 @@ class ListViewHolder(view: View?) : AbstractViewHolder<ListUiModel>(view), BaseL
     }
 
     private fun showSuccessState(element: ListUiModel) {
-        hideErrorLayout()
-        hideShimmeringLayout()
-        itemView.tv_card_title.text = element.title
-        setupListInfoSeller()
+        element.data?.run {
+            hideErrorLayout()
+            hideShimmeringLayout()
+            itemView.tv_card_title.text = element.title
+            setupListInfoSeller()
 
-        (itemView.rv_info_seller.adapter as BaseListAdapter<ListItemUiModel, *>).run {
-            data.addAll(element.listItems)
-            notifyDataSetChanged()
+            (itemView.rv_info_seller.adapter as BaseListAdapter<ListItemUiModel, *>).run {
+                data.addAll(items)
+                notifyDataSetChanged()
+            }
+
+            showListLayout()
         }
-
-        showListLayout()
     }
 
     private fun showErrorState(element: ListUiModel) {

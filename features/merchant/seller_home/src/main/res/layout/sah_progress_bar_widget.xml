@@ -6,11 +6,11 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_score"
+        android:id="@+id/tv_progress_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="6sp"
-        android:text="@string/sah_score"
+        tools:text="@string/sah_score"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="@id/tv_current_progress"
         app:layout_constraintStart_toStartOf="parent"
