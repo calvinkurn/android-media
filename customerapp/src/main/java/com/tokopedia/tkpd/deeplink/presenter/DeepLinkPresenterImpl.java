@@ -345,11 +345,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             } else {
                 utmSource = "";
             }
+
             String uriReview = Uri.parse(ApplinkConstInternalMarketplace.CREATE_REVIEW)
                     .buildUpon()
                     .appendPath(reputationId)
                     .appendPath(productId)
-                    .appendPath("/")
                     .appendQueryParameter(PARAM_EXTRA_REVIEW, rating)
                     .appendQueryParameter(PARAM_EXTRA_UTM_SOURCE, utmSource)
                     .build()
