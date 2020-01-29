@@ -21,5 +21,5 @@ data class WishlistDataResponse(
 
         @SerializedName("pagination")
         @Expose
-        var pagination: Pagination
+        var pagination: Pagination? = null
 )

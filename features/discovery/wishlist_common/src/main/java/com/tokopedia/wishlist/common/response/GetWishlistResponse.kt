@@ -10,5 +10,5 @@ import com.google.gson.annotations.SerializedName
 data class GetWishlistResponse(
         @SerializedName("wishlist")
         @Expose
-        var gqlWishList: WishlistDataResponse?
+        var gqlWishList: WishlistDataResponse? = null
 )

@@ -22,12 +22,12 @@ class GetWishlistSubscriber(private val view: ICartListView?, private val presen
     }
 
     override fun onNext(getWishlistResponse: GetWishlistResponse) {
-        if (view != null) {
+        view?.let {
             if (getWishlistResponse.gqlWishList?.wishlistDataList?.isNotEmpty() == true) {
-                view.renderWishlist(getWishlistResponse.gqlWishList?.wishlistDataList)
+                it.renderWishlist(getWishlistResponse.gqlWishList?.wishlistDataList)
             }
-            view.setHasTriedToLoadWishList()
-            view.stopAllCartPerformanceTrace()
+            it.setHasTriedToLoadWishList()
+            it.stopAllCartPerformanceTrace()
         }
     }
 }
