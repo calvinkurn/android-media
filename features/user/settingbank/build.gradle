@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -8,11 +9,37 @@ repositories {
 }
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+
+android {
+    defaultConfig {
+        multiDexEnabled(project.hasProperty('coverage') ? true : false)
+        testInstrumentationRunner 'com.tokopedia.test.application.InstrumentationTestRunner'
+    }
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    testOptions {
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
     }
 }
 
@@ -55,6 +82,35 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation project(rootProject.ext.libraries.remoteConfig)
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation rootProject.ext.playServicesDependencies.core
+    androidTestImplementation rootProject.ext.firebase.core
+    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
+    // For espresso test cases
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    }
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    // For recycler view actions
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.0') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    debugImplementation ('androidx.test.espresso:espresso-idling-resource:3.1.0'){
+        exclude group: 'androidx.lifecycle', module: 'lifecycle-common'
+    }
 }
 
 project.ext {
