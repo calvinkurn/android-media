@@ -40,7 +40,7 @@ object ShippingDurationPresenterTest : Spek({
 
             shipmentDetailData = DummyProvider.getShipmentDetailData()
             shopShipments = DummyProvider.getShopShipments()
-            products = DummyProvider.products
+            products = DummyProvider.getProducts()
             address = DummyProvider.getAddress()
         }
 
@@ -217,13 +217,13 @@ object ShippingDurationPresenterTest : Spek({
             val courierModelWithId: List<ShippingCourierViewModel> = listOf(
                     ShippingCourierViewModel().apply {
                         productData = ProductData().apply {
-                            shipperProductId = 24
+                            shipperProductId = spId
                         }
                     }
             )
 
             When("called") {
-                presenter.getCourierItemDataById(sId, courierModelWithId)
+                presenter.getCourierItemDataById(spId, courierModelWithId)
             }
 
             Then("courier converter is called") {

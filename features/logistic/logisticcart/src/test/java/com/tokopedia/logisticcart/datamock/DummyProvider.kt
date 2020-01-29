@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.datamock
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.FileUtils
+import com.tokopedia.logisticcart.cod.model.CodResponse
 import com.tokopedia.logisticcart.shipping.model.*
 
 internal object DummyProvider {
@@ -15,7 +16,7 @@ internal object DummyProvider {
     fun getShopShipments(): List<ShopShipment> =
             Gson().fromJson(shopShipmentsJson, object : TypeToken<List<ShopShipment>>() {}.type)
 
-    val products: List<Product> =
+    fun getProducts(): List<Product> =
             Gson().fromJson(productsJson, object : TypeToken<List<Product>>() {}.type)
 
     fun getShippingRecommendationDataNoState(): ShippingRecommendationData =
@@ -38,5 +39,11 @@ internal object DummyProvider {
             Gson().fromJson(
                     fileUtils.getJsonFromAsset("address.json"),
                     RecipientAddressModel::class.java
+            )
+
+    fun getCodSuccess(): CodResponse =
+            Gson().fromJson(
+                    fileUtils.getJsonFromAsset("cod_response.json"),
+                    CodResponse::class.java
             )
 }
