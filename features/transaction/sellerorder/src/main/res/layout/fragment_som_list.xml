@@ -9,9 +9,10 @@
         android:id="@+id/ticker_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:tickerShapeType="full"/>
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view"
@@ -53,12 +54,18 @@
                 android:layout_height="wrap_content"
                 android:visibility="visible"/>
 
-            <include
-                android:id="@+id/empty_state_order_list"
-                layout="@layout/empty_list"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:layout_height="wrap_content" >
+
+                <include
+                    android:id="@+id/empty_state_order_list"
+                    layout="@layout/empty_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
+            </ScrollView>
 
         </FrameLayout>
 

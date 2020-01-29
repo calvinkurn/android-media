@@ -1,9 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     defaultConfig {
@@ -51,10 +48,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.miscDependencies.guava
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
 
-    implementation "android.arch.work:work-runtime-ktx:1.0.1"
+    implementation (rootProject.ext.miscDependencies.workManager) {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
 
 }
 

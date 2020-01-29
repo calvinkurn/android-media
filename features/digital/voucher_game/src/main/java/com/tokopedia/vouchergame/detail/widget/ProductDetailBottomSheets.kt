@@ -2,10 +2,10 @@ package com.tokopedia.vouchergame.detail.widget
 
 import android.view.View
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.vouchergame.R
-import kotlinx.android.synthetic.main.bottom_sheets_voucher_game_product.*
 
 /**
  * @author by resakemal on 17/09/19
@@ -34,7 +34,7 @@ class ProductDetailBottomSheets: BottomSheets() {
         }
 
         if(subtitle.isNotEmpty()) detailTitle.text = subtitle
-        detailDescription.text = description
+        detailDescription.text = MethodChecker.fromHtml(description)
         if (url.isEmpty()) {
             detailUrl.visibility = View.GONE
         } else {

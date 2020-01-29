@@ -9,9 +9,6 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -36,6 +33,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

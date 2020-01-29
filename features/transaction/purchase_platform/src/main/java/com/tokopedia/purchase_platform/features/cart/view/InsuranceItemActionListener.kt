@@ -8,7 +8,7 @@ import java.util.ArrayList
 interface InsuranceItemActionListener {
     fun sendEventDeleteInsurance(insuranceTitle: String)
     fun sendEventChangeInsuranceState(isChecked: Boolean, insuranceTitle: String)
-    fun deleteMacroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showconfirmationDialog: Boolean)
+    fun deleteMacroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showConfirmationDialog: Boolean)
     fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
     fun onInsuranceSelectStateChanges()
     fun sendEventInsuranceImpression(title: String)

@@ -4,9 +4,7 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllCategoriesUseCase;
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
@@ -15,6 +13,7 @@ import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -23,6 +22,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 public class AllCategoryPresenter extends BaseDaggerPresenter<AllBrandsHomeContract.View>
         implements AllBrandsHomeContract.Presenter {
@@ -50,12 +50,12 @@ public class AllCategoryPresenter extends BaseDaggerPresenter<AllBrandsHomeContr
         getAllCategoriesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+                Timber.d("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
+                Timber.d("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -94,7 +94,7 @@ public class AllCategoryPresenter extends BaseDaggerPresenter<AllBrandsHomeContr
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper(e);
+                Timber.d(e);
             }
 
             @Override

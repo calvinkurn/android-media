@@ -3,6 +3,8 @@ package com.tokopedia.application;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -55,6 +57,10 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void onCreate() {
+
+        setVersionCode();
+
+        GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -287,21 +293,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-
-    }
-
-    @Override
-    public void unregisterShake() {
-
-    }
-
-    @Override
     public CacheManager getGlobalCacheManager() {
         return null;
     }
@@ -376,4 +367,15 @@ public class MyApplication extends BaseMainApplication
         return null;
     }
 
+    private void setVersionCode() {
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            GlobalConfig.VERSION_CODE = pInfo.versionCode;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        }
+    }
 }

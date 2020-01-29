@@ -55,7 +55,7 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
     @Override
     protected int getHolderLayoutId() {
-        return R.layout.view_widget_radio_choser;
+        return R.layout.view_digital_radio_choser;
     }
 
     @Override
@@ -100,9 +100,9 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
             radioButton.setLayoutParams(layoutParams);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
-            radioButton.setTextSize(getResources().getDimension(R.dimen.sp_12) /
+            radioButton.setTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_12) /
                     getResources().getDisplayMetrics().density);
-            radioButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_600));
+            radioButton.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.grey_600));
             radioGroup.addView(radioButton);
         }
         radioGroup.check(radioGroup.getChildAt(0).getId());

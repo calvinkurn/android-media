@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
+import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.digital_deals.view.model.cart.CartItem;
@@ -113,7 +114,7 @@ public class CheckoutDealPresenter
         loyaltyIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
-        getView().navigateToActivityRequest(loyaltyIntent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+        getView().navigateToActivityRequest(loyaltyIntent, CheckoutHomeFragment.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
 
@@ -169,7 +170,7 @@ public class CheckoutDealPresenter
         try {
             JsonObject jsonObject = convertCartItemToJson(cartData);
             if (jsonObject == null) {
-                getView().showFailureMessageProductExpired();
+                getView().showFailureMessage(getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.product_expired));
                 return;
             } else
                 paymentparams.putObject(Utils.Constants.CHECKOUTDATA, jsonObject);
@@ -215,8 +216,12 @@ public class CheckoutDealPresenter
             @Override
             public void onNext(JsonObject checkoutResponse) {
                 String paymentData = Utils.transform(checkoutResponse);
-                String paymentURL = checkoutResponse.get("url").getAsString();
-                ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
+                if (checkoutResponse.get("url") == null && checkoutResponse.get("error") != null) {
+                    getView().showFailureMessage(checkoutResponse.get("error").getAsString());
+                } else {
+                    String paymentURL = checkoutResponse.get("url").getAsString();
+                    ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.deal_payment));
+                }
                 getView().hideProgressBar();
 
             }

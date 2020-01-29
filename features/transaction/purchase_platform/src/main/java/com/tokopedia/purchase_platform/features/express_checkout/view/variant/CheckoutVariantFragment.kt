@@ -44,6 +44,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
@@ -67,7 +68,6 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.vi
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber
@@ -172,7 +172,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         fragmentListener = context as CheckoutVariantFragmentListener
     }
@@ -260,7 +260,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onClickEditProfile() {
         if (!checkoutProfileBottomSheet.isAdded) {
             checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
-            checkoutProfileBottomSheet.show(activity?.supportFragmentManager, "")
+            activity?.supportFragmentManager?.run {
+                checkoutProfileBottomSheet.show(this, "")
+            }
         }
     }
 
@@ -276,7 +278,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         shippingDurationBottomsheet.updateArguments(shippingParam, selectedServiceId
             ?: 0, -1, true, shopShipmentList)
         if (!shippingDurationBottomsheet.isAdded) {
-            shippingDurationBottomsheet.show(activity?.supportFragmentManager, "")
+            activity?.supportFragmentManager?.run {
+                shippingDurationBottomsheet.show(this, "")
+            }
         }
     }
 
@@ -289,7 +293,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onClickEditCourier() {
         shippingCourierBottomsheet.updateArguments(fragmentViewModel.shippingCourierViewModels)
         if (!shippingCourierBottomsheet.isAdded) {
-            shippingCourierBottomsheet.show(activity?.supportFragmentManager, "")
+            activity?.supportFragmentManager?.run {
+                shippingCourierBottomsheet.show(this, "")
+            }
         }
     }
 
@@ -636,7 +642,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         if (errorBottomsheets.isVisible) {
             errorBottomsheets.dismiss()
         }
-        errorBottomsheets.show(fragmentManager, title)
+        fragmentManager?.run {
+            errorBottomsheets.show(this, title)
+        }
         fragmentViewModel.isStateChanged = true
     }
 

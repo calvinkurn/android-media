@@ -60,6 +60,8 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         }
     }
 
+    override fun getScreenName() = getString(R.string.belanja_screen_name)
+
     open fun getCategoryLaunchSource(): String {
         return "Belanja/Category"
     }
@@ -150,7 +152,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
                 .commit()
     }
 
-    override fun onAttachFragment(fragment: Fragment?) {
+    override fun onAttachFragment(fragment: Fragment) {
         if (fragment is CategorylevelOneFragment) {
             fragment.activityStateListener = this
         } else if (fragment is CategoryLevelTwoFragment) {

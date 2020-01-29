@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
@@ -12,6 +11,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
@@ -22,6 +23,7 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
@@ -213,6 +215,12 @@ class ChatModule {
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideGraphqlRepositoryModule(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
 }

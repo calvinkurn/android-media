@@ -10,10 +10,15 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -23,6 +28,8 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
+    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
+    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -59,6 +66,15 @@ public class ConsumerSplashScreen extends SplashScreen {
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
 
+        trackIrisEventForAppOpen();
+
+    }
+
+    private void trackIrisEventForAppOpen() {
+        Iris instance = IrisAnalytics.Companion.getInstance(this);
+        Map<String, Object> map = new HashMap<>();
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
+        instance.saveEvent(map);
     }
 
     private void checkApkTempered() {
@@ -106,7 +122,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(remoteConfig);
+                TimberWrapper.initByConfig(getApplication(), remoteConfig);
             }
 
             @Override

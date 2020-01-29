@@ -3,11 +3,6 @@ package com.tokopedia.officialstore.category.presentation.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.View.OnTouchListener
 import android.widget.ImageView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -17,6 +12,8 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.*
+import android.view.*
+import com.google.android.material.appbar.AppBarLayout
 
 class OfficialCategoriesTab(context: Context,
                             attributes: AttributeSet) : TabLayout(context, attributes) {
@@ -28,7 +25,7 @@ class OfficialCategoriesTab(context: Context,
     private var tabMinHeight: Int = 0
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
+    fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>, appBarLayout: AppBarLayout) {
         this.categoriesItemTab.clear()
         this.categoriesItemTab.addAll(tabItemDataList)
         initResources()
@@ -99,7 +96,7 @@ class OfficialCategoriesTab(context: Context,
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                startTabHeightExpandAnimation()
+                startTabHeightExpandAnimation(appBarLayout)
             }
 
             override fun onPageSelected(position: Int) {}
@@ -117,23 +114,25 @@ class OfficialCategoriesTab(context: Context,
     private fun adjustCollapseExpandTab(isCollapse: Boolean) {
         if (isCollapse) {
             hideIconForAllTabs()
-            adjustTabLayoutHeight(tabMinHeight)
         } else {
             showIconForAllTabs()
-            adjustTabLayoutHeight(tabMaxHeight)
         }
     }
 
-    private fun startTabHeightExpandAnimation() {
+    private fun startTabHeightExpandAnimation(appBarLayout: AppBarLayout) {
         showIconForAllTabs()
-        adjustTabLayoutHeight(tabMaxHeight)
+        if (layoutParams.height != tabMaxHeight) {
+            appBarLayout.setExpanded(true)
+        }
     }
 
     private fun showIconForAllTabs() {
         for (i in 0 until tabCount) {
             val icon = findViewByIdFromTab(getTabAt(i), R.id.image_view_category_icon)
+            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
             if (icon is ImageView) {
-                icon.visibility = View.VISIBLE
+                icon.animate().translationY(0f).duration = 100
+                textCategory?.animate()?.translationY(0f)?.duration = 200
             }
         }
     }
@@ -141,8 +140,10 @@ class OfficialCategoriesTab(context: Context,
     private fun hideIconForAllTabs() {
         for (i in 0 until tabCount) {
             val icon = findViewByIdFromTab(getTabAt(i), R.id.image_view_category_icon)
+            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
             if (icon is ImageView) {
-                icon.visibility = View.GONE
+                icon.animate().translationY(-50f).duration = 200
+                textCategory?.animate()?.translationY(-14.0f)?.duration = 200
             }
         }
     }
@@ -152,13 +153,6 @@ class OfficialCategoriesTab(context: Context,
             tab.customView!!.findViewById(id)
         } else {
             null
-        }
-    }
-
-    private fun adjustTabLayoutHeight(height: Int) {
-        if (layoutParams.height != height) {
-            layoutParams.height = height
-            requestLayout()
         }
     }
 

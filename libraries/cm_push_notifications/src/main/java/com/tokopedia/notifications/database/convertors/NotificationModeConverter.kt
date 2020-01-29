@@ -8,7 +8,6 @@ class NotificationModeConverter {
     @TypeConverter
     fun toMode(modeInt: Int?): NotificationMode {
         return when (modeInt) {
-            NotificationMode.OFFLINE.modeInt -> NotificationMode.OFFLINE
             NotificationMode.POST_NOW.modeInt -> NotificationMode.POST_NOW
             else -> NotificationMode.OFFLINE
         }

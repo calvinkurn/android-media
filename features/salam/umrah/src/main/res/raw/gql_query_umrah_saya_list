@@ -1,5 +1,5 @@
-query umrahWidgetUmrahSayaList() {
-  umrahWidgetUmrahSayaList(){
+query umrahWidgetUmrahSayaList {
+  umrahWidgetUmrahSayaList{
     subHeader
     header
     nextActionText

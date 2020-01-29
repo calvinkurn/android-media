@@ -23,7 +23,7 @@ class EmptyInboxTalkViewHolder(val v: View) :
 
 
     override fun bind(element: EmptyInboxTalkViewModel?) {
-        ImageHandler.loadImageWithIdWithoutPlaceholder(emptyIcon, R.drawable.ic_empty_state)
+        ImageHandler.loadImageWithIdWithoutPlaceholder(emptyIcon, com.tokopedia.design.R.drawable.ic_empty_state)
     }
 
     override fun onViewRecycled() {

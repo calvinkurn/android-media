@@ -164,7 +164,6 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
         setViewData(model, context);
         checkError(model, context);
         setDeadLine(model.orderShippingList);
-        //CommonUtils.getProcessDay(context, model.deadline, deadline, deadlineView);
     }
 
     @Override

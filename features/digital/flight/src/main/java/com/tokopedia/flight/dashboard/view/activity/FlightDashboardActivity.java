@@ -33,14 +33,14 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     @Override
     protected Fragment getNewFragment() {
         if (getIntent().hasExtra(EXTRA_TRIP) && getIntent().hasExtra(EXTRA_ADULT) && getIntent().hasExtra(EXTRA_CHILD)
-                && getIntent().hasExtra(EXTRA_INFANT) && getIntent().hasExtra(EXTRA_CLASS) && getIntent().hasExtra(EXTRA_AUTO_SEARCH)) {
+                && getIntent().hasExtra(EXTRA_INFANT) && getIntent().hasExtra(EXTRA_CLASS)) {
             return FlightDashboardFragment.getInstance(
                     getIntent().getStringExtra(EXTRA_TRIP),
                     getIntent().getStringExtra(EXTRA_ADULT),
                     getIntent().getStringExtra(EXTRA_CHILD),
                     getIntent().getStringExtra(EXTRA_INFANT),
                     getIntent().getStringExtra(EXTRA_CLASS),
-                    getIntent().getStringExtra(EXTRA_AUTO_SEARCH),
+                    (getIntent().hasExtra(EXTRA_AUTO_SEARCH)) ? getIntent().getStringExtra(EXTRA_AUTO_SEARCH) : "0",
                     getIntent().getData().toString()
             );
         } else {

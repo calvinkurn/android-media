@@ -12,6 +12,7 @@ import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.glide.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
@@ -23,7 +24,8 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 
 class DynamicLegoBannerViewHolder(legoBannerView: View,
                                   private val homeCategoryListener: HomeCategoryListener,
-                                  countDownListener: CountDownView.CountDownListener) :
+                                  countDownListener: CountDownView.CountDownListener,
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
                 legoBannerView, homeCategoryListener, countDownListener
         ) {
@@ -59,12 +61,19 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount, 0, true))
 
+        recyclerView.setRecycledViewPool(parentRecycledViewPool)
+        recyclerView.setHasFixedSize(true)
+
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
 
-        recyclerView.adapter = LegoItemAdapter(context, homeCategoryListener, channel, getLayoutType(channel), adapterPosition)
+        recyclerView.adapter = LegoItemAdapter(context,
+                homeCategoryListener,
+                channel,
+                getLayoutType(channel),
+                adapterPosition)
     }
 
     class LegoItemAdapter(private val context: Context,
@@ -79,22 +88,30 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
             return LegoItemViewHolder(v)
         }
 
+        override fun getItemViewType(position: Int): Int {
+            return R.layout.layout_lego_item
+        }
+
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                holder.imageView.loadImageFitCenter(grid.imageUrl)
+                holder.imageView.loadImageFitCenter(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
                 holder.imageView.setOnClickListener {
                     when(legoBannerType) {
                         TYPE_SIX_GRID_LEGO -> {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                    holder.context,
-                                    channels.getEnhanceClickLegoBannerHomePage(grid, position + 1)
+                                    HomePageTracking.getEnhanceClickLegoBannerHomePage(
+                                            grid,
+                                            channels,
+                                            position + 1)
                             )
                         }
                         TYPE_THREE_GRID_LEGO -> {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                    holder.context,
-                                    channels.getEnhanceClickThreeLegoBannerHomePage(grid, position + 1)
+                                    HomePageTracking.getEnhanceClickThreeLegoBannerHomePage(
+                                            grid,
+                                            channels,
+                                            position + 1)
                             )
                         }
                     }

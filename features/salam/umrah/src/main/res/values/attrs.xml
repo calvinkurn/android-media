@@ -24,4 +24,8 @@
         <attr name="ticketElevation" format="dimension" />
 
     </declare-styleable>
+
+    <declare-styleable name="UmrahSeekbarRangeWidget">
+
+    </declare-styleable>
 </resources>

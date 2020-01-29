@@ -5,8 +5,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
@@ -17,6 +17,10 @@ import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -78,15 +82,15 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventPromotionClick(int position, BannerDetail banner) {
+    public void eventPromotionClick(int position, TravelCollectiveBannerModel.Banner banner) {
         List<Object> promos = new ArrayList<>();
         promos.add(DataLayer.mapOf(
                 EnhanceEccomerce.ID, banner.getId(),
                 EnhanceEccomerce.NAME, String.format(getDefaultLocale(), "%s - %s",
-                        banner.getAttributes().getPromoCode(), "slider banner"),
+                        banner.getAttribute().getPromoCode(), "slider banner"),
                 "position", String.valueOf(position),
-                "creative", banner.getAttributes().getDescription().toLowerCase(),
-                "creative_url", banner.getAttributes().getLinkUrl()
+                "creative", banner.getAttribute().getDescription().toLowerCase(),
+                "creative_url", banner.getAttribute().getAppUrl()
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
@@ -95,7 +99,7 @@ public class FlightAnalytics {
                         EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
                                 Label.FLIGHT_SMALL,
                                 position,
-                                banner.getAttributes().getPromoCode()
+                                banner.getAttribute().getPromoCode()
                         ),
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick",
@@ -642,6 +646,38 @@ public class FlightAnalytics {
         );
     }
 
+    public void eventCheckoutClick(FlightDetailViewModel departureTrip, FlightDetailViewModel returnTrip, FlightSearchPassDataViewModel searchParam, String comboKey) {
+
+        List<Object> products = new ArrayList<>();
+
+        if (departureTrip != null) {
+            products.addAll(constructEnhanceEcommerceProduct(departureTrip, comboKey,
+                    searchParam.getFlightClass().getTitle(), returnTrip == null));
+            if (returnTrip != null) {
+                products.addAll(constructEnhanceEcommerceProduct(returnTrip, comboKey,
+                        searchParam.getFlightClass().getTitle(), false));
+            }
+        }
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, CHECKOUT_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, Category.BOOKING_NEXT,
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                departureTrip.getDepartureAirport(),
+                                departureTrip.getArrivalAirport()),
+                        ECOMMERCE, DataLayer.mapOf(
+                                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
+                                "actionField", DataLayer.mapOf("step", 1,
+                                        "option", Category.BOOKING_NEXT),
+                                "products", DataLayer.listOf(
+                                        products.toArray(new Object[products.size()])
+                                )
+                        )
+                )
+        );
+    }
+
     public void eventReviewNextClick() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
@@ -814,14 +850,14 @@ public class FlightAnalytics {
         return products;
     }
 
-    public void eventPromoImpression(int position, BannerDetail banner) {
+    public void eventPromoImpression(int position, TravelCollectiveBannerModel.Banner banner) {
         List<Object> promos = new ArrayList<>();
         promos.add(DataLayer.mapOf(
                 EnhanceEccomerce.ID, banner.getId(),
                 EnhanceEccomerce.NAME, String.format(getDefaultLocale(), "%s - %s",
-                        banner.getAttributes().getPromoCode(), "slider banner"),
-                "creative", banner.getAttributes().getDescription().toLowerCase(),
-                "creative_url", banner.getAttributes().getLinkUrl(),
+                        banner.getAttribute().getPromoCode(), "slider banner"),
+                "creative", banner.getAttribute().getDescription().toLowerCase(),
+                "creative_url", banner.getAttribute().getAppUrl(),
                 "position", String.valueOf(position + 1)
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
@@ -831,7 +867,7 @@ public class FlightAnalytics {
                         EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
                                 Label.FLIGHT_SMALL,
                                 position + 1,
-                                banner.getAttributes().getPromoCode()
+                                banner.getAttribute().getPromoCode()
                         ),
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoView",
@@ -926,6 +962,24 @@ public class FlightAnalytics {
         ));
     }
 
+    public void eventBranchCheckoutFlight(String productName, String journeyId, String invoiceId,
+                                    String paymentId, String userId, String totalPrice) {
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_PURCHASE_FLIGHT,
+                createLinkerData(productName, journeyId, invoiceId, paymentId, userId, totalPrice)));
+    }
+
+    private LinkerData createLinkerData(String productName, String journeyId, String invoiceId,
+                                        String paymentId, String userId, String totalPrice) {
+        LinkerData linkerData = new LinkerData();
+        linkerData.setProductCategory(Label.FLIGHT_SMALL);
+        linkerData.setProductName(productName);
+        linkerData.setJourneyId(journeyId);
+        linkerData.setUserId(userId);
+        linkerData.setInvoiceId(invoiceId);
+        linkerData.setPaymentId(paymentId);
+        linkerData.setPrice(totalPrice);
+        return linkerData;
+    }
 
     public static final class Screen {
 
