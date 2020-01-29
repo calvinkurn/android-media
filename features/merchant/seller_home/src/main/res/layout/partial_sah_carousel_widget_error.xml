@@ -9,7 +9,7 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl8"
         android:src="@drawable/unify_globalerrors_connection"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -18,11 +18,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Neutral_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
-        android:text="Oops, informasi gagal ditampilkan" />
+        android:text="@string/sah_line_graph_error_message" />
 
 </LinearLayout>

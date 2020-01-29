@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/unify_banner_card_margin_top"
     android:layout_marginBottom="@dimen/unify_banner_card_margin_top"
-    android:layout_marginRight="@dimen/dp_8"
-    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginRight="@dimen/layout_lvl1"
+    android:layout_marginLeft="@dimen/layout_lvl1"
     app:cardPreventCornerOverlap="false"
     app:elevation="@dimen/unify_banner_card_elevation"
     app:cardCornerRadius="@dimen/unify_banner_card_radius">
