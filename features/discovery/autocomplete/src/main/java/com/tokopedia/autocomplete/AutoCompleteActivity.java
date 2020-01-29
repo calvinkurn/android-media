@@ -11,9 +11,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.transition.Fade;
-import androidx.transition.TransitionManager;
-import androidx.transition.TransitionSet;
 
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -96,16 +93,7 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     protected void prepareView() {
-        setContainerAnimation();
         initSearchBarView();
-    }
-
-    private void setContainerAnimation() {
-        TransitionSet transitionSet = new TransitionSet();
-        Fade fade = new Fade(Fade.MODE_IN);
-        transitionSet.addTransition(fade);
-        TransitionManager.beginDelayedTransition(mSuggestionView, fade);
-        TransitionManager.beginDelayedTransition(mInitialStateView, fade);
     }
 
     private void initActivityOnCreate() {
@@ -253,28 +241,12 @@ public class AutoCompleteActivity extends BaseActivity
     public void showInitialStateView() {
         mSuggestionView.setVisibility(View.GONE);
         mInitialStateView.setVisibility(View.VISIBLE);
-        animateInitialStateView();
-    }
-
-    private void animateInitialStateView() {
-        TransitionSet transitionSet = new TransitionSet();
-        Fade fade = new Fade(Fade.MODE_IN);
-        transitionSet.addTransition(fade);
-        TransitionManager.beginDelayedTransition(mInitialStateView, fade);
     }
 
     @Override
     public void showSuggestionView() {
         mInitialStateView.setVisibility(View.GONE);
         mSuggestionView.setVisibility(View.VISIBLE);
-        animateSuggestionView();
-    }
-
-    private void animateSuggestionView() {
-        TransitionSet transitionSet = new TransitionSet();
-        Fade fade = new Fade(Fade.MODE_IN);
-        transitionSet.addTransition(fade);
-        TransitionManager.beginDelayedTransition(mSuggestionView, fade);
     }
 
     @Override
