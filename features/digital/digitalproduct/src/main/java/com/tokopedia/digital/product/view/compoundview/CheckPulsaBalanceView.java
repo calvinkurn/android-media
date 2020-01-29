@@ -55,7 +55,7 @@ public class CheckPulsaBalanceView extends LinearLayout {
         checkBalanceProgressbar = findViewById(R.id.check_balance_progressbar);
         errorOperator = findViewById(R.id.tv_error_operator);
 
-        LayoutInflater.from(context).inflate(R.layout.view_holder_client_check_balance, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_holder_digital_ussd_check_balance, this, true);
     }
 
     public void hideProgressbar() {
@@ -86,7 +86,7 @@ public class CheckPulsaBalanceView extends LinearLayout {
                 tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + operatorName);
             }
         } else {
-            btnCheckBalance.setBackgroundColor(context.getResources().getColor(R.color.grey_hint));
+            btnCheckBalance.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.grey_hint));
             errorOperator.setVisibility(VISIBLE);
             errorOperator.setText(operatorErrorMsg);
             if (operatorName != null) {

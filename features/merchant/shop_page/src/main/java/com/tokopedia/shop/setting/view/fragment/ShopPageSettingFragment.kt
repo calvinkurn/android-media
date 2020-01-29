@@ -151,18 +151,18 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         getShopInfo()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.menu_shop_page_setting, menu)
+        inflater.inflate(R.menu.menu_shop_page_setting, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        menu?.findItem(R.id.action_share)?.isVisible = isShareFunctionReady
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.findItem(R.id.action_share)?.isVisible = isShareFunctionReady
         super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_share) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_share) {
             onShareShop()
         }
         return super.onOptionsItemSelected(item)

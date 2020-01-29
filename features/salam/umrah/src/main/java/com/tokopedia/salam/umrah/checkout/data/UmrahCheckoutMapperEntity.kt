@@ -52,8 +52,7 @@ class ContactUser(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readInt()) {
-    }
+            parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)

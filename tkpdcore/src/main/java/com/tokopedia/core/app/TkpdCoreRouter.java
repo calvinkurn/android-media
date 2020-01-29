@@ -67,6 +67,18 @@ public interface TkpdCoreRouter {
 
     Class getSellingActivityClass();
 
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    Intent getActivitySellingTransactionNewOrder(Context context);
+
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    Intent getActivitySellingTransactionConfirmShipping(Context context);
+
     Intent getActivitySellingTransactionShippingStatus(Context context);
 
     Intent getActivitySellingTransactionList(Context context);
@@ -77,7 +89,31 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    Intent getResolutionCenterIntentSeller(Context context);
+
     Intent getPhoneVerificationActivationIntent(Context context);
+
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    Intent getLoginGoogleIntent(Context context);
+
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    Intent getLoginFacebookIntent(Context context);
+
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
+    Intent getLoginWebviewIntent(Context context, String name, String url);
 
     Intent getShopPageIntent(Context context, String shopId);
 

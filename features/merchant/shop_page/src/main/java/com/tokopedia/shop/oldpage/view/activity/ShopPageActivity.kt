@@ -20,7 +20,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -106,6 +106,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
 
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
+    private val intentData = Intent()
 
     private val errorTextView by lazy {
         findViewById<TextView>(R.id.message_retry)
@@ -127,6 +128,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SHOP_TRACE = "mp_shop"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
@@ -200,6 +202,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         })
 
         shopViewModel.shopFavouriteResp.observe(this, Observer {
+            updateFavouriteResult(it.alreadyFavorited == 1)
             shopPageViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
         })
 
@@ -531,14 +534,20 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onSuccessToggleFavourite(successValue: Boolean) {
         if (successValue) {
             shopPageViewHolder.toggleFavourite()
-            updateFavouriteResult()
+            updateFavouriteResult(shopPageViewHolder.isShopFavourited())
         }
         shopPageViewHolder.updateFavoriteButton()
     }
 
-    private fun updateFavouriteResult() {
-        setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(SHOP_STATUS_FAVOURITE, shopPageViewHolder.isShopFavourited())
+    private fun updateFavouriteResult(isFavorite: Boolean) {
+        setResult(Activity.RESULT_OK, intentData.apply {
+            putExtra(SHOP_STATUS_FAVOURITE, isFavorite )
+        })
+    }
+
+    private fun updateStickyResult() {
+        setResult(Activity.RESULT_OK, intentData.apply {
+            putExtra(SHOP_STICKY_LOGIN, true)
         })
     }
 
@@ -718,7 +727,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 onSuccess = {
                     this.tickerDetail = it
                     updateStickyState()
-                },
+                updateStickyResult()},
                 onError = {
                     stickyLoginView.hide()
                 }

@@ -1,7 +1,7 @@
 package com.tokopedia.events.domain.scanTicketUsecase;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.events.domain.model.scanticket.ScanTicketResponse;

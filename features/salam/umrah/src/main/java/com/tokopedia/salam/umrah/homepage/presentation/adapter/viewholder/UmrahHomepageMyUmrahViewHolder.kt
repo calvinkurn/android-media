@@ -2,14 +2,12 @@ package com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder
 
 
 import android.content.Context
-import android.view.ContextMenu
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,7 +20,6 @@ import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListen
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.partial_umrah_home_page_dream_fund.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_my_umrah.view.*
-import java.net.URLEncoder
 
 /**
  * @author by firman on 23/10/19

@@ -201,7 +201,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     override fun onDestroy() {
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 

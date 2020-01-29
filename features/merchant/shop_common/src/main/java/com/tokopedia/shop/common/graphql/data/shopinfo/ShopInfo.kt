@@ -60,7 +60,12 @@ data class ShopInfo(
 
         @SerializedName("freeOngkir")
         @Expose
-        val freeOngkir: FreeOngkir = FreeOngkir()
+        val freeOngkir: FreeOngkir = FreeOngkir(),
+
+        @SerializedName("addressData")
+        @Expose
+        val addressData: AddressData = AddressData()
+
 ) {
     fun mapToShopInfoData(): ShopInfoData {
         val shipmentsData = shipments.map {
@@ -179,5 +184,35 @@ data class ShopInfo(
             @SerializedName("topURL")
             @Expose
             val topUrl: String = ""
+    )
+
+    data class AddressData(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SerializedName("address")
+            @Expose
+            val address: String = "",
+
+            @SerializedName("area")
+            @Expose
+            val area: String = "",
+
+            @SerializedName("email")
+            @Expose
+            val email: String = "",
+
+            @SerializedName("phone")
+            @Expose
+            val phone: String = "",
+
+            @SerializedName("fax")
+            @Expose
+            val fax: String = ""
     )
 }

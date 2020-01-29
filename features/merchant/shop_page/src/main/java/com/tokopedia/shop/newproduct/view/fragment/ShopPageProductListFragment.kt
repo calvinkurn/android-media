@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -30,6 +29,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.NewShopPageTrackingBuyer
@@ -234,7 +234,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (context == null) {
             return
         }
-        shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, position)
+        shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, shopId, position)
         //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
         /*if (!merchantVoucherListPresenter.isLogin()) {
             if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
@@ -251,7 +251,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        shopPageTracking?.clickDetailMerchantVoucher(isOwner)
+        shopPageTracking?.clickDetailMerchantVoucher(isOwner, merchantVoucherViewModel.voucherId.toString())
         context?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
                     merchantVoucherViewModel, shopInfo!!.shopCore.shopID)
@@ -679,7 +679,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.claimMembershipResp.removeObservers(this)
         viewModel.newMembershipData.removeObservers(this)
         viewModel.newMerchantVoucherData.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
@@ -897,7 +897,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherViewModel) {
-        shopPageTracking?.impressionUseMerchantVoucher(isOwner, data.shopMerchantVoucherViewModelArrayList)
+        shopPageTracking?.impressionUseMerchantVoucher(isOwner, data.shopMerchantVoucherViewModelArrayList, shopId)
         data.shopMerchantVoucherViewModelArrayList?.let {
             if (it.isNotEmpty())
                 shopProductAdapter.setMerchantVoucherDataModel(data)
@@ -979,7 +979,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     data.membershipClaimBenefitResponse.subTitle,
                     data.membershipClaimBenefitResponse.resultStatus.code, lastQuestId)
             bottomSheetMembership.setListener(this)
-            bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+            fragmentManager?.let {
+                bottomSheetMembership.show(it, "membership_shop_page")
+            }
         }
     }
 
