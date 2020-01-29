@@ -545,6 +545,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
 
         presenter.getUpdateNetworkLiveData().observe(this, resource -> {
+            resetImpressionListener();
             if(resource.getStatus() == Resource.Status.SUCCESS){
                 hideLoading();
             } else if(resource.getStatus() == Resource.Status.ERROR){
@@ -883,7 +884,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         //onrefresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
         homeRecyclerView.setItemAnimator(null);
-        resetImpressionListener();
         layoutManager.setExtraLayoutSpace(0);
 
         resetFeedState();
