@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -23,6 +24,11 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        SplitCompat.installActivity(this)
+        super.onCreate(savedInstanceState)
+    }
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun getNewFragment(): SomListFragment? {
