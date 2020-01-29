@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -49,7 +48,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
-import com.tokopedia.transaction.orders.orderdetails.view.activity.SeeInvoiceActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -57,8 +55,6 @@ import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.transaction.util.Utils;
 import com.tokopedia.unifycomponents.Toaster;
-import com.tokopedia.webview.ConstantKt;
-import com.tokopedia.webview.ConstantKt.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -207,10 +203,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         }
         lihat.setOnClickListener(view -> {
             try {
-                Intent intent = new Intent(getActivity(), SeeInvoiceActivity.class);
-                intent.putExtra(ConstantKt.KEY_URL, URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING));
-                intent.putExtra(ConstantKt.KEY_TITLE, getResources().getString(R.string.title_invoice));
-                startActivity(intent);
+                startActivity(((UnifiedOrderListRouter) getActivity()
+                        .getApplication()).getWebviewActivityWithIntent(getContext(),
+                        URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

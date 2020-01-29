@@ -258,10 +258,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SeeInvoiceActivity.class);
-                intent.putExtra(ConstantKt.KEY_URL, URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING));
-                intent.putExtra(ConstantKt.KEY_TITLE, getResources().getString(R.string.title_invoice));
-                startActivity(intent);
+                startActivity(((UnifiedOrderListRouter) getActivity()
+                        .getApplication()).getWebviewActivityWithIntent(getContext(),
+                        invoice.invoiceUrl()));
             }
         });
     }
