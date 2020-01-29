@@ -17,7 +17,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -97,8 +96,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String OVERRIDE_URL = "override_url";
     private static final String PARAM_TITLEBAR = "titlebar";
     private static final String PARAM_NEED_LOGIN = "need_login";
-    private static final String PARAM_EXTRA_REVIEW = "REVIEW_CLICK_AT";
-    private static final String PARAM_EXTRA_UTM_SOURCE = "UTM_SOURCE";
+    private static final String PARAM_EXTRA_REVIEW = "rating";
+    private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
 
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
@@ -327,8 +326,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String productId = segments.get(segments.size() - 1);
 
             String rating;
-            if (!TextUtils.isEmpty(uri.getQueryParameter("rating"))) {
-                rating = uri.getQueryParameter("rating");
+            if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_EXTRA_REVIEW))) {
+                rating = uri.getQueryParameter(PARAM_EXTRA_REVIEW);
             } else {
                 rating = "5";
             }
@@ -341,19 +340,24 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
 
             String utmSource;
-            if (!TextUtils.isEmpty(uri.getQueryParameter("utm_source"))) {
-                utmSource = uri.getQueryParameter("utm_source");
+            if (!TextUtils.isEmpty(uri.getQueryParameter(PARAM_EXTRA_UTM_SOURCE))) {
+                utmSource = uri.getQueryParameter(PARAM_EXTRA_UTM_SOURCE);
             } else {
                 utmSource = "";
             }
-
-            String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating);
+            String uriReview = Uri.parse(ApplinkConstInternalMarketplace.CREATE_REVIEW)
+                    .buildUpon()
+                    .appendPath(reputationId)
+                    .appendPath(productId)
+                    .appendQueryParameter(PARAM_EXTRA_REVIEW, rating)
+                    .appendQueryParameter(PARAM_EXTRA_UTM_SOURCE, utmSource)
+                    .build()
+                    .toString();
             Intent intent = RouteManager.getIntent(
                     context,
                     uriReview);
             intent.putExtras(defaultBundle);
             intent.putExtra(PARAM_EXTRA_REVIEW, ratingNumber);
-            intent.putExtra(PARAM_EXTRA_UTM_SOURCE, utmSource);
             viewListener.goToPage(intent);
         }
     }

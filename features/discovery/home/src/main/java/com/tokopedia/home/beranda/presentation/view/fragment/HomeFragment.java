@@ -38,6 +38,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -104,6 +105,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import org.jetbrains.annotations.NotNull;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,7 +134,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String REVIEW_CLICK_AT = "REVIEW_CLICK_AT";
+    public static final String UTM_SOURCE = "utm_source";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -1547,8 +1549,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onReviewClick(int position, int clickReviewAt, long delay, @NotNull String applink) {
         new Handler().postDelayed(() -> {
-            Intent intent = RouteManager.getIntent(getContext(), applink);
-            intent.putExtra(REVIEW_CLICK_AT, clickReviewAt);
+            String newAppLink = Uri.parse(applink)
+                    .buildUpon()
+                    .appendQueryParameter(REVIEW_CLICK_AT, String.valueOf(clickReviewAt))
+                    .appendQueryParameter(UTM_SOURCE, "home_notif")
+                    .build().toString();
+            Intent intent = RouteManager.getIntent(getContext(), newAppLink);
             startActivityForResult(intent, REQUEST_CODE_REVIEW);
         }, delay);
     }
